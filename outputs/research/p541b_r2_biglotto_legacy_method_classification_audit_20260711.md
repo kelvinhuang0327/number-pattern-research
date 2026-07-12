@@ -80,7 +80,7 @@
 
 ## Frozen Provenance
 
-- Generator SHA-256: `929a7c904dca4e431baa95081a5601348ba1fd929f1a49647dd0f71f541b4063`
+- Generator SHA-256: `0afccd775dfdee114e709e6648248d4c8f277247ed00bb4246e5e25648d4c7c8`
 - Historical P541B JSON blob: `12f1595c96e3f9deddc7a7d2d9549c03144635f0` — verification **PASS**
 - Historical P541B Markdown blob: `3b28e39bfe747c5f196b9aec6610284709466cf8` — verification **PASS**
 - Historical P541A JSON blob: `7557f364160dc09c91a19c07b370cb4b231c0194` — verification **PASS**

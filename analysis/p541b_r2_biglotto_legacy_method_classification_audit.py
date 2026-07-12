@@ -2343,6 +2343,10 @@ def _definition_effect_findings(
     findings: list[dict[str, Any]] = []
     incomplete = False
     category_detector_failed = False
+    dependency_positions = {
+        (binding["line"], binding["column"])
+        for binding in project_dependencies
+    }
     while queue:
         class_name, definition_name = queue.pop(0)
         target = (class_name, definition_name)
@@ -2362,6 +2366,15 @@ def _definition_effect_findings(
             incomplete = incomplete or method_incomplete
             if definition is None:
                 continue
+        if any(
+            isinstance(node, (ast.Import, ast.ImportFrom))
+            and _node_position(node) in dependency_positions
+            for node in ast.walk(definition)
+        ):
+            # Import execution itself loads the deeper repository module.  The
+            # one-hop detector must therefore fail closed even when no symbol
+            # from that module is subsequently called by the reached definition.
+            incomplete = True
         for node in ast.walk(definition):
             if not isinstance(node, ast.Call):
                 continue
@@ -2538,15 +2551,25 @@ def one_hop_transitive_evidence(
                 target_incomplete = target_incomplete or bool(module_unknown)
                 if target_incomplete:
                     unknown_reasons.append(_failure_reason("import_resolution_incomplete"))
-                if definition_targets:
-                    dependencies = _project_dependency_bindings(
-                        imported_tree,
-                        resolved_path,
-                        source_path,
-                        repo_root,
-                        commit,
-                        resolution_cache,
+                dependencies = _project_dependency_bindings(
+                    imported_tree,
+                    resolved_path,
+                    source_path,
+                    repo_root,
+                    commit,
+                    resolution_cache,
+                )
+                if any(
+                    binding.get("definition_target") is None
+                    for binding in dependencies
+                ):
+                    # Module and class-body imports execute while the imported
+                    # module loads.  A deeper repository import crosses the
+                    # one-hop boundary regardless of whether its binding is used.
+                    unknown_reasons.append(
+                        _failure_reason("import_resolution_incomplete")
                     )
+                if definition_targets:
                     (
                         definition_findings,
                         definition_incomplete,

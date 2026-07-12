@@ -1055,6 +1055,79 @@ def test_deeper_project_dependency_is_unknown_at_one_hop_boundary(tmp_path):
     assert result["reason"] == "import_resolution_incomplete"
 
 
+@pytest.mark.parametrize(
+    "helper_source",
+    [
+        "import deeper\n",
+        "from deeper import VALUE\n",
+        "from deeper import decorate\n@decorate\ndef local():\n    return 1\n",
+    ],
+)
+def test_imported_module_load_deeper_project_import_is_unknown(
+    tmp_path, helper_source
+):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "import helper\n",
+            "helper.py": helper_source,
+            "deeper.py": (
+                "import sqlite3\n"
+                "sqlite3.connect('x.db')\n"
+                "VALUE = 1\n"
+                "def decorate(function):\n"
+                "    return function\n"
+            ),
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert result["findings"] == []
+
+
+@pytest.mark.parametrize(
+    ("main_source", "helper_source"),
+    [
+        (
+            "from helper import run\nrun()\n",
+            "def run():\n    import deeper\n    return 1\n",
+        ),
+        (
+            "from helper import Worker\nWorker().run()\n",
+            "class Worker:\n    def run(self):\n        import deeper\n        return 1\n",
+        ),
+    ],
+)
+def test_invoked_definition_deeper_project_import_is_unknown(
+    tmp_path, main_source, helper_source
+):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": main_source,
+            "helper.py": helper_source,
+            "deeper.py": "import sqlite3\nsqlite3.connect('x.db')\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert result["findings"] == []
+
+
+def test_uninvoked_definition_deeper_project_import_remains_dormant(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "import helper\n",
+            "helper.py": "def dormant():\n    import deeper\n    return 1\n",
+            "deeper.py": "import sqlite3\nsqlite3.connect('x.db')\n",
+        },
+    )
+    assert _one_hop(repo, commit, "main.py")["state"] == "not_detected"
+
+
 def test_uninvoked_imported_callable_effect_is_not_promoted(tmp_path):
     repo, commit = _synthetic_repo(
         tmp_path,

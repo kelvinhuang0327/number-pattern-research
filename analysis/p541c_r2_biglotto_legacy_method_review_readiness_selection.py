@@ -10,8 +10,8 @@ representation for unknown/unresolved transitive risk.
 """
 from __future__ import annotations
 
-import json
 import hashlib
+import json
 from pathlib import Path
 from typing import Any
 
@@ -67,8 +67,13 @@ ALLOWED_RUNNABLE_STATUSES = {
 }
 
 SHORTLIST_MAX = 20
-SELECTOR_VERSION = "p541c-r2-selector-v3"
-FINALIZATION_TASK_ID = "P541C_R2_PR686_CONTRACT_FINALIZATION_R3"
+SELECTOR_VERSION = "p541c-r2-selector-v4"
+FINALIZATION_TASK_ID = "P541C_R2_PR686_ATOMIC_PINNED_INPUT_BINDING_REPAIR_R4"
+ATOMIC_INPUT_BINDING_STATEMENT = (
+    "The pinned upstream input is read once into bytes; byte size, SHA-256, strict "
+    "UTF-8 decoding, and strict JSON parsing are all applied to the same immutable "
+    "byte buffer."
+)
 
 
 class P541CR2ValidationError(ValueError):
@@ -85,14 +90,6 @@ def canonical_bytes(value: Any) -> bytes:
         raise P541CR2ValidationError("value is not finite canonical JSON") from exc
 
 
-def file_sha256(path: Path) -> str:
-    value = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            value.update(chunk)
-    return value.hexdigest()
-
-
 def _reject_duplicate_object_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for key, value in pairs:
@@ -102,25 +99,40 @@ def _reject_duplicate_object_pairs(pairs: list[tuple[str, Any]]) -> dict[str, An
     return result
 
 
-def strict_json_load(path: Path) -> dict[str, Any]:
+def strict_json_load_bytes(raw: bytes, source: str = "<bytes>") -> dict[str, Any]:
     def reject_constant(value: str) -> None:
         raise P541CR2ValidationError(f"non-finite JSON constant: {value}")
 
     try:
-        with path.open("r", encoding="utf-8") as handle:
-            value = json.load(
-                handle,
-                object_pairs_hook=_reject_duplicate_object_pairs,
-                parse_constant=reject_constant,
-            )
-    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
-        raise P541CR2ValidationError(f"cannot load strict JSON: {path}") from exc
+        text = raw.decode("utf-8", errors="strict")
+    except UnicodeDecodeError as exc:
+        raise P541CR2ValidationError(f"invalid UTF-8 JSON: {source}") from exc
+    try:
+        value = json.loads(
+            text,
+            object_pairs_hook=_reject_duplicate_object_pairs,
+            parse_constant=reject_constant,
+        )
+    except json.JSONDecodeError as exc:
+        raise P541CR2ValidationError(f"cannot parse strict JSON: {source}") from exc
     if not isinstance(value, dict):
-        raise P541CR2ValidationError(f"top-level JSON object required: {path}")
+        raise P541CR2ValidationError(f"top-level JSON object required: {source}")
     return value
 
 
-def verify_input_identity(repo_root: Path, identity: dict[str, Any] = INPUT_IDENTITY) -> dict[str, Any]:
+def strict_json_load(path: Path) -> dict[str, Any]:
+    try:
+        with path.open("rb") as handle:
+            raw = handle.read()
+    except OSError as exc:
+        raise P541CR2ValidationError(f"cannot load strict JSON: {path}") from exc
+    return strict_json_load_bytes(raw, str(path))
+
+
+def read_verified_input_bytes(
+    repo_root: Path,
+    identity: dict[str, Any] = INPUT_IDENTITY,
+) -> tuple[bytes, dict[str, Any]]:
     repo_root = repo_root.resolve()
     relative = Path(identity["path"])
     if relative.is_absolute() or ".." in relative.parts:
@@ -132,22 +144,38 @@ def verify_input_identity(repo_root: Path, identity: dict[str, Any] = INPUT_IDEN
         path = unresolved.resolve(strict=True)
         if repo_root not in path.parents or not path.is_file():
             raise P541CR2ValidationError(f"input escapes repository: {identity['path']!r}")
-        size = path.stat().st_size
+        with path.open("rb") as handle:
+            raw = handle.read()
     except OSError as exc:
         raise P541CR2ValidationError(f"required input missing: {identity['path']}") from exc
-    actual_sha256 = file_sha256(path)
+    size = len(raw)
+    actual_sha256 = hashlib.sha256(raw).hexdigest()
     if size != identity["byte_size"] or actual_sha256 != identity["sha256"]:
         raise P541CR2ValidationError(
             f"committed input identity mismatch: {identity['path']} "
             f"({size}/{actual_sha256})"
         )
-    return {**identity, "verification": "PASS"}
+    provenance = {
+        **identity,
+        "byte_size": size,
+        "sha256": actual_sha256,
+        "verification": "PASS",
+        "atomic_same_byte_binding": ATOMIC_INPUT_BINDING_STATEMENT,
+    }
+    return raw, provenance
+
+
+def verify_input_identity(
+    repo_root: Path,
+    identity: dict[str, Any] = INPUT_IDENTITY,
+) -> dict[str, Any]:
+    _, provenance = read_verified_input_bytes(repo_root, identity)
+    return provenance
 
 
 def load_verified_input(repo_root: Path = REPO_ROOT) -> tuple[dict[str, Any], dict[str, Any]]:
-    repo_root = repo_root.resolve()
-    provenance = verify_input_identity(repo_root, INPUT_IDENTITY)
-    p541b_r2 = strict_json_load(repo_root / INPUT_IDENTITY["path"])
+    raw, provenance = read_verified_input_bytes(repo_root, INPUT_IDENTITY)
+    p541b_r2 = strict_json_load_bytes(raw, INPUT_IDENTITY["path"])
     validate_upstream_contract(p541b_r2)
     return p541b_r2, provenance
 
@@ -531,12 +559,13 @@ def build_artifact(
                 "Ready requires both low safety risk and explicit historical adapter "
                 "readiness; summary, bucket partitions, and shortlist must be exact "
                 "canonical projections of the reviewed decisions. source_path is an "
-                "identifier inherited from the pinned P541B_R2 input, not a checkout probe."
+                "identifier inherited from the pinned P541B_R2 input, not a checkout probe. "
+                + ATOMIC_INPUT_BINDING_STATEMENT
             ),
             "prior_drift": (
-                "Earlier revisions coupled selection to the mutable checkout by resolving, "
-                "opening and hashing all 580 source_path files even though the pinned "
-                "P541B_R2 artifact is the sole authoritative selector input."
+                "Earlier revisions coupled selection to mutable checkout source files and "
+                "then verified and parsed the pinned input through separate path reads. The "
+                "selector now consumes one verified immutable input buffer only."
             ),
         },
         "summary": summarize(decisions),
@@ -603,7 +632,8 @@ def build_artifact(
             "method": (
                 "Static, read-only re-bucketing of exactly one pinned P541B_R2 artifact "
                 "(which already embeds historical P541B v1 identity fields per record). "
-                "Strict JSON rejects duplicate keys and non-finite values. source_path is "
+                + ATOMIC_INPUT_BINDING_STATEMENT + " Strict JSON rejects duplicate keys and "
+                "non-finite values. source_path is "
                 "retained only as an identifier from that pinned input; no reviewed source "
                 "is resolved, opened, statted, hashed, imported or executed. No DB access, "
                 "replay generation, or scoring/promotion gate."
@@ -682,6 +712,7 @@ def render_markdown(artifact: dict[str, Any]) -> str:
         f"`{identity['detector_version']}`, manifest "
         f"`{identity['source_manifest_sha256']}`, records {identity['record_count']}"
     )
+    lines.append(f"- Atomic input binding: {identity['atomic_same_byte_binding']}")
     lines.append("- Fail-closed behavior: any input hash, schema, record, or contract mismatch aborts generation.")
     lines.append("")
     lines.append("## Bucket Definitions")

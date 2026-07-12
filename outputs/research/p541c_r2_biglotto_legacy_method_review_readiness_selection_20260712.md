@@ -2,7 +2,7 @@
 
 > generated_at: 2026-07-12T00:00:00+00:00
 > task_id: P541C_R2_BIG_LOTTO_LEGACY_METHOD_REVIEW_READINESS_SELECTION_REPLACEMENT
-> selector_version: p541c-r2-selector-v3
+> selector_version: p541c-r2-selector-v4
 
 **Disclaimer:** Historical legacy method review and replay-readiness selection only; not a prediction, betting edge, future-winning, or production-readiness claim.
 
@@ -25,16 +25,17 @@
 
 ## Contract Reconciliation
 
-- task_id: `P541C_R2_PR686_CONTRACT_FINALIZATION_R3`
+- task_id: `P541C_R2_PR686_ATOMIC_PINNED_INPUT_BINDING_REPAIR_R4`
 - status: **PASS**
-- reconciled_invariant: Ready requires both low safety risk and explicit historical adapter readiness; summary, bucket partitions, and shortlist must be exact canonical projections of the reviewed decisions. source_path is an identifier inherited from the pinned P541B_R2 input, not a checkout probe.
-- prior_drift: Earlier revisions coupled selection to the mutable checkout by resolving, opening and hashing all 580 source_path files even though the pinned P541B_R2 artifact is the sole authoritative selector input.
+- reconciled_invariant: Ready requires both low safety risk and explicit historical adapter readiness; summary, bucket partitions, and shortlist must be exact canonical projections of the reviewed decisions. source_path is an identifier inherited from the pinned P541B_R2 input, not a checkout probe. The pinned upstream input is read once into bytes; byte size, SHA-256, strict UTF-8 decoding, and strict JSON parsing are all applied to the same immutable byte buffer.
+- prior_drift: Earlier revisions coupled selection to mutable checkout source files and then verified and parsed the pinned input through separate path reads. The selector now consumes one verified immutable input buffer only.
 
 ## Verified Input Provenance
 
 - Implementation base commit: `137dbff5938a74117bb33a4a3db5ccc5de2e8454`
 - Input: `outputs/research/p541b_r2_biglotto_legacy_method_classification_audit_20260711.json` — 10,478,598 bytes, SHA-256 `9c9a28d871113c63f3de024f056d7a4e2d6949e934e76da161a9c891e662103f`, verification **PASS**
 - Upstream contract: schema `p541b-r2-evidence-v1`, detector `p541b-r2-detector-v4`, manifest `ca0f84b23f1a3f6613c5f78d6020ec954a3e28fb702152fbf1fa1fb53dbf4e40`, records 580
+- Atomic input binding: The pinned upstream input is read once into bytes; byte size, SHA-256, strict UTF-8 decoding, and strict JSON parsing are all applied to the same immutable byte buffer.
 - Fail-closed behavior: any input hash, schema, record, or contract mismatch aborts generation.
 
 ## Bucket Definitions
@@ -65,7 +66,7 @@ needs_adapter_before_readiness members only with P541B_R2 risk_level=low, confir
 
 ## Provenance and Limits
 
-- **method**: Static, read-only re-bucketing of exactly one pinned P541B_R2 artifact (which already embeds historical P541B v1 identity fields per record). Strict JSON rejects duplicate keys and non-finite values. source_path is retained only as an identifier from that pinned input; no reviewed source is resolved, opened, statted, hashed, imported or executed. No DB access, replay generation, or scoring/promotion gate.
+- **method**: Static, read-only re-bucketing of exactly one pinned P541B_R2 artifact (which already embeds historical P541B v1 identity fields per record). The pinned upstream input is read once into bytes; byte size, SHA-256, strict UTF-8 decoding, and strict JSON parsing are all applied to the same immutable byte buffer. Strict JSON rejects duplicate keys and non-finite values. source_path is retained only as an identifier from that pinned input; no reviewed source is resolved, opened, statted, hashed, imported or executed. No DB access, replay generation, or scoring/promotion gate.
 - **p541b_r2_artifact_consumed**:
   - outputs/research/p541b_r2_biglotto_legacy_method_classification_audit_20260711.json
 - **not_performed_by_this_task**:

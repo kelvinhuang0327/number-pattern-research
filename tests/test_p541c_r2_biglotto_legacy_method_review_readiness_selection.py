@@ -8,6 +8,7 @@ connection and never writes to `outputs/` except through `main()`.
 """
 import ast
 import copy
+import hashlib
 import inspect
 import json
 import os
@@ -84,6 +85,23 @@ def input_provenance(verified_input):
     return verified_input[1]
 
 
+def _install_input_bytes(mod, tmp_path, monkeypatch, raw):
+    path = tmp_path / "input.json"
+    path.write_bytes(raw)
+    identity = {
+        **mod.INPUT_IDENTITY,
+        "path": "input.json",
+        "byte_size": len(raw),
+        "sha256": hashlib.sha256(raw).hexdigest(),
+    }
+    monkeypatch.setattr(mod, "INPUT_IDENTITY", identity)
+    return path
+
+
+def _encoded_input(value):
+    return json.dumps(value, ensure_ascii=False, allow_nan=False).encode("utf-8")
+
+
 def test_p541b_r2_has_580_records(p541b_r2):
     assert len(p541b_r2["method_classification_records"]) == 580
 
@@ -97,6 +115,137 @@ def test_input_matches_pinned_identity(input_provenance):
     assert input_provenance["source_manifest_sha256"] == mod.SOURCE_MANIFEST_SHA256
     assert input_provenance["record_count"] == 580
     assert input_provenance["verification"] == "PASS"
+    assert input_provenance["atomic_same_byte_binding"] == (
+        "The pinned upstream input is read once into bytes; byte size, SHA-256, strict "
+        "UTF-8 decoding, and strict JSON parsing are all applied to the same immutable "
+        "byte buffer."
+    )
+
+
+def test_load_verified_input_reads_pinned_path_exactly_once(
+    monkeypatch, tmp_path, p541b_r2
+):
+    mod = _module()
+    path = _install_input_bytes(mod, tmp_path, monkeypatch, _encoded_input(p541b_r2))
+    original_open = Path.open
+    input_opens = 0
+
+    def counting_open(self, *args, **kwargs):
+        nonlocal input_opens
+        if self == path:
+            input_opens += 1
+        return original_open(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", counting_open)
+    loaded, provenance = mod.load_verified_input(tmp_path)
+    assert len(loaded["method_classification_records"]) == 580
+    assert provenance["verification"] == "PASS"
+    assert input_opens == 1
+
+
+def test_load_verified_input_has_no_second_path_read(
+    monkeypatch, tmp_path, p541b_r2
+):
+    mod = _module()
+    path = _install_input_bytes(mod, tmp_path, monkeypatch, _encoded_input(p541b_r2))
+    original_open = Path.open
+    input_opens = 0
+
+    def fail_on_second_open(self, *args, **kwargs):
+        nonlocal input_opens
+        if self == path:
+            input_opens += 1
+            if input_opens > 1:
+                raise AssertionError("pinned input path reopened")
+        return original_open(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", fail_on_second_open)
+    loaded, _ = mod.load_verified_input(tmp_path)
+    assert len(loaded["method_classification_records"]) == 580
+    assert input_opens == 1
+
+
+def test_path_replacement_after_read_cannot_change_verified_parse(
+    monkeypatch, tmp_path, p541b_r2
+):
+    mod = _module()
+    original_raw = _encoded_input(p541b_r2)
+    replacement_raw = b'{"replacement":true}'
+    path = _install_input_bytes(mod, tmp_path, monkeypatch, original_raw)
+    original_open = Path.open
+    input_reads = 0
+
+    class ReplacingReader:
+        def __init__(self, handle):
+            self.handle = handle
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, traceback):
+            return self.handle.__exit__(exc_type, exc, traceback)
+
+        def read(self):
+            nonlocal input_reads
+            input_reads += 1
+            raw = self.handle.read()
+            with original_open(path, "wb") as replacement:
+                replacement.write(replacement_raw)
+            return raw
+
+    def replacing_open(self, *args, **kwargs):
+        handle = original_open(self, *args, **kwargs)
+        if self == path and args and args[0] == "rb":
+            return ReplacingReader(handle)
+        return handle
+
+    monkeypatch.setattr(Path, "open", replacing_open)
+    loaded, provenance = mod.load_verified_input(tmp_path)
+    assert len(loaded["method_classification_records"]) == 580
+    assert provenance["sha256"] == hashlib.sha256(original_raw).hexdigest()
+    assert input_reads == 1
+    with original_open(path, "rb") as replaced:
+        assert replaced.read() == replacement_raw
+
+
+@pytest.mark.parametrize(
+    ("identity_field", "identity_value"),
+    [("sha256", "0" * 64), ("byte_size", -1)],
+)
+def test_identity_mismatch_fails_before_json_parsing(
+    monkeypatch, tmp_path, p541b_r2, identity_field, identity_value
+):
+    mod = _module()
+    _install_input_bytes(mod, tmp_path, monkeypatch, _encoded_input(p541b_r2))
+    monkeypatch.setattr(
+        mod,
+        "INPUT_IDENTITY",
+        {**mod.INPUT_IDENTITY, identity_field: identity_value},
+    )
+
+    def parsing_forbidden(*_args, **_kwargs):
+        raise AssertionError("identity mismatch must fail before JSON parsing")
+
+    monkeypatch.setattr(mod, "strict_json_load_bytes", parsing_forbidden)
+    with pytest.raises(mod.P541CR2ValidationError, match="identity mismatch"):
+        mod.load_verified_input(tmp_path)
+
+
+@pytest.mark.parametrize(
+    ("raw", "message"),
+    [
+        (b'\xff', "invalid UTF-8 JSON"),
+        (b'{"same":1,"same":2}', "duplicate JSON key"),
+        (b'{"value":NaN}', "non-finite JSON constant"),
+        (b'{"value":Infinity}', "non-finite JSON constant"),
+        (b'{"value":-Infinity}', "non-finite JSON constant"),
+    ],
+)
+def test_same_buffer_strict_parse_failures(monkeypatch, tmp_path, raw, message):
+    mod = _module()
+    _install_input_bytes(mod, tmp_path, monkeypatch, raw)
+    with pytest.raises(mod.P541CR2ValidationError, match=message):
+        mod.load_verified_input(tmp_path)
 
 
 def test_strict_json_rejects_duplicate_keys_and_nonfinite(tmp_path):
@@ -158,6 +307,52 @@ def test_upstream_schema_mismatch_fails_closed(p541b_r2):
     rec["safety_classification"]["low_risk_eligible"] = "false"
     with pytest.raises(mod.P541CR2ValidationError, match="low_risk_eligible must be boolean"):
         mod.validate_upstream_contract(non_boolean_eligibility)
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "message"),
+    [
+        ("detector_version", "wrong", "detector_version mismatch"),
+        ("manifest_sha256", "0" * 64, "source manifest sha256 mismatch"),
+        ("manifest_record_count", 579, "source manifest record_count mismatch"),
+        ("manifest_verification", "FAIL", "source manifest not verified PASS"),
+    ],
+)
+def test_parsed_upstream_identity_mismatches_fail_closed(
+    monkeypatch, tmp_path, p541b_r2, field, value, message
+):
+    mod = _module()
+    modified = copy.deepcopy(p541b_r2)
+    if field == "detector_version":
+        modified["detector_version"] = value
+    elif field == "manifest_sha256":
+        modified["provenance"]["source_manifest"]["canonical_sha256"] = value
+    elif field == "manifest_record_count":
+        modified["provenance"]["source_manifest"]["record_count"] = value
+    else:
+        modified["provenance"]["source_manifest"]["verification"] = value
+    _install_input_bytes(mod, tmp_path, monkeypatch, _encoded_input(modified))
+    with pytest.raises(mod.P541CR2ValidationError, match=message):
+        mod.load_verified_input(tmp_path)
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "message"),
+    [
+        ("recommended_action", "unknown_action", "unknown recommended_action"),
+        ("runnable_status", "unknown_status", "unknown runnable_status"),
+        ("confidence", "unknown_confidence", "unknown confidence"),
+        ("method_family", "", "invalid method_family"),
+        ("method_family", 123, "invalid method_family"),
+        ("why_not_runnable", None, "invalid why_not_runnable"),
+    ],
+)
+def test_malformed_historical_fields_fail_closed(p541b_r2, field, value, message):
+    mod = _module()
+    modified = copy.deepcopy(p541b_r2)
+    modified["method_classification_records"][0]["historical_p541b_classification"][field] = value
+    with pytest.raises(mod.P541CR2ValidationError, match=message):
+        mod.validate_upstream_contract(modified)
 
 
 def test_duplicate_method_id_and_source_path_fail_terminally(p541b_r2):
@@ -366,7 +561,6 @@ def test_build_performs_no_per_record_source_filesystem_io(
     monkeypatch.setattr(Path, "stat", forbidden)
     monkeypatch.setattr(Path, "is_file", forbidden)
     monkeypatch.setattr(Path, "open", forbidden)
-    monkeypatch.setattr(mod, "file_sha256", forbidden)
 
     artifact = mod.build_artifact(p541b_r2, input_provenance, generated_at="TEST")
     assert len(artifact["reviewed_method_decisions"]) == 580
@@ -493,7 +687,7 @@ def test_build_artifact_has_all_required_sections(p541b_r2, input_provenance):
 def test_selector_version_is_exact_and_fails_closed(p541b_r2, input_provenance):
     mod = _module()
     artifact = mod.build_artifact(p541b_r2, input_provenance, generated_at="TEST")
-    assert artifact["selector_version"] == "p541c-r2-selector-v3"
+    assert artifact["selector_version"] == "p541c-r2-selector-v4"
 
     missing = copy.deepcopy(artifact)
     del missing["selector_version"]
@@ -501,7 +695,7 @@ def test_selector_version_is_exact_and_fails_closed(p541b_r2, input_provenance):
         mod.validate_artifact(missing)
 
     wrong = copy.deepcopy(artifact)
-    wrong["selector_version"] = "p541c-r2-selector-v2"
+    wrong["selector_version"] = "p541c-r2-selector-v3"
     with pytest.raises(mod.P541CR2ValidationError, match="selector_version mismatch"):
         mod.validate_artifact(wrong)
 
@@ -575,7 +769,8 @@ def test_render_markdown_contains_key_sections(p541b_r2, input_provenance):
     assert "## Contract Reconciliation" in md
     assert "## Bucket Definitions" in md
     assert "## Shortlist" in md
-    assert "> selector_version: p541c-r2-selector-v3" in md
+    assert "> selector_version: p541c-r2-selector-v4" in md
+    assert mod.ATOMIC_INPUT_BINDING_STATEMENT in md
     assert artifact["next_task_recommendation"] in md
     assert artifact["disclaimer"] in md
 
@@ -590,7 +785,7 @@ def test_committed_json_and_markdown_agree():
         Path(REPO_ROOT)
         / "outputs/research/p541c_r2_biglotto_legacy_method_review_readiness_selection_20260712.md"
     ).read_text(encoding="utf-8")
-    assert committed_json["selector_version"] == "p541c-r2-selector-v3"
+    assert committed_json["selector_version"] == "p541c-r2-selector-v4"
     assert f"> selector_version: {committed_json['selector_version']}" in committed_md
     for key, value in committed_json["summary"].items():
         assert f"| {key} | {value} |" in committed_md

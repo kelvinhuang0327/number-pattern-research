@@ -2,6 +2,7 @@
 
 > generated_at: 2026-07-12T00:00:00+00:00
 > task_id: P541C_R2_BIG_LOTTO_LEGACY_METHOD_REVIEW_READINESS_SELECTION_REPLACEMENT
+> selector_version: p541c-r2-selector-v3
 
 **Disclaimer:** Historical legacy method review and replay-readiness selection only; not a prediction, betting edge, future-winning, or production-readiness claim.
 
@@ -24,15 +25,16 @@
 
 ## Contract Reconciliation
 
-- task_id: `P541C_R2_PR686_CONTRACT_RECONCILIATION_R2`
+- task_id: `P541C_R2_PR686_CONTRACT_FINALIZATION_R3`
 - status: **PASS**
-- reconciled_invariant: Ready requires both low safety risk and explicit historical adapter readiness; summary, bucket partitions, and shortlist must be exact canonical projections of the reviewed decisions.
-- prior_drift: R1 corrected readiness labels but its artifact validator still accepted a drifted summary, duplicated or misplaced bucket members, a non-canonical shortlist, and medium-risk records in the ready bucket.
+- reconciled_invariant: Ready requires both low safety risk and explicit historical adapter readiness; summary, bucket partitions, and shortlist must be exact canonical projections of the reviewed decisions. source_path is an identifier inherited from the pinned P541B_R2 input, not a checkout probe.
+- prior_drift: Earlier revisions coupled selection to the mutable checkout by resolving, opening and hashing all 580 source_path files even though the pinned P541B_R2 artifact is the sole authoritative selector input.
 
 ## Verified Input Provenance
 
 - Implementation base commit: `137dbff5938a74117bb33a4a3db5ccc5de2e8454`
 - Input: `outputs/research/p541b_r2_biglotto_legacy_method_classification_audit_20260711.json` — 10,478,598 bytes, SHA-256 `9c9a28d871113c63f3de024f056d7a4e2d6949e934e76da161a9c891e662103f`, verification **PASS**
+- Upstream contract: schema `p541b-r2-evidence-v1`, detector `p541b-r2-detector-v4`, manifest `ca0f84b23f1a3f6613c5f78d6020ec954a3e28fb702152fbf1fa1fb53dbf4e40`, records 580
 - Fail-closed behavior: any input hash, schema, record, or contract mismatch aborts generation.
 
 ## Bucket Definitions
@@ -63,7 +65,7 @@ needs_adapter_before_readiness members only with P541B_R2 risk_level=low, confir
 
 ## Provenance and Limits
 
-- **method**: Static, read-only re-bucketing of exactly one pinned P541B_R2 artifact (which already embeds historical P541B v1 identity fields per record). Strict JSON rejects duplicate keys and non-finite values. Every source is a repository-contained, non-symlink Python file whose size/SHA-256 is recorded per decision. No source is imported or executed; no DB access, replay generation, or scoring/promotion gate.
+- **method**: Static, read-only re-bucketing of exactly one pinned P541B_R2 artifact (which already embeds historical P541B v1 identity fields per record). Strict JSON rejects duplicate keys and non-finite values. source_path is retained only as an identifier from that pinned input; no reviewed source is resolved, opened, statted, hashed, imported or executed. No DB access, replay generation, or scoring/promotion gate.
 - **p541b_r2_artifact_consumed**:
   - outputs/research/p541b_r2_biglotto_legacy_method_classification_audit_20260711.json
 - **not_performed_by_this_task**:
@@ -74,6 +76,6 @@ needs_adapter_before_readiness members only with P541B_R2 risk_level=low, confir
   - No adapter code was written; only the decision to route a method to needs_adapter_before_readiness / needs_refactor_before_readiness / needs_cto_review.
 - **known_limits**:
   - needs_cto_review records (from unknown risk, unresolved identity, or a non-actionable safety/readiness combination) were not further resolved; P541B_R2's own evidence already represents the limit of static analysis.
-  - Source identity verification reads raw bytes only to compute size and SHA-256; this does not constitute new semantic or runtime analysis.
+  - No current-checkout source existence or identity claim is made; source_path stability is inherited from the pinned P541B_R2 artifact contract.
   - Bucket/priority assignment is a deterministic function of P541B_R2's risk evidence plus P541B's historical identity, runnable_status, and confidence fields; it is a triage aid for the next task, not a safety guarantee.
 - **disclaimer**: Historical legacy method review and replay-readiness selection only; not a prediction, betting edge, future-winning, or production-readiness claim.

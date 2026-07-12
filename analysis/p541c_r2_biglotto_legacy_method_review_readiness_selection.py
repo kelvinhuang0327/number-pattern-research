@@ -25,6 +25,8 @@ INPUT_IDENTITY = {
     "sha256": "9c9a28d871113c63f3de024f056d7a4e2d6949e934e76da161a9c891e662103f",
     "schema_version": "p541b-r2-evidence-v1",
     "detector_version": "p541b-r2-detector-v4",
+    "source_manifest_sha256": "ca0f84b23f1a3f6613c5f78d6020ec954a3e28fb702152fbf1fa1fb53dbf4e40",
+    "record_count": 580,
 }
 SOURCE_MANIFEST_SHA256 = "ca0f84b23f1a3f6613c5f78d6020ec954a3e28fb702152fbf1fa1fb53dbf4e40"
 SOURCE_MANIFEST_COUNT = 580
@@ -65,7 +67,8 @@ ALLOWED_RUNNABLE_STATUSES = {
 }
 
 SHORTLIST_MAX = 20
-RECONCILIATION_TASK_ID = "P541C_R2_PR686_CONTRACT_RECONCILIATION_R2"
+SELECTOR_VERSION = "p541c-r2-selector-v3"
+FINALIZATION_TASK_ID = "P541C_R2_PR686_CONTRACT_FINALIZATION_R3"
 
 
 class P541CR2ValidationError(ValueError):
@@ -216,30 +219,7 @@ def validate_upstream_contract(p541b_r2: dict[str, Any]) -> None:
             raise P541CR2ValidationError(f"invalid why_not_runnable: {method_id}")
 
 
-def source_file_identity(source_path: str, repo_root: Path = REPO_ROOT) -> dict[str, Any]:
-    repo_root = repo_root.resolve()
-    if not isinstance(source_path, str) or not source_path:
-        raise P541CR2ValidationError(f"unsafe source_path: {source_path!r}")
-    relative = Path(source_path)
-    if relative.is_absolute() or ".." in relative.parts or relative.suffix != ".py":
-        raise P541CR2ValidationError(f"unsafe source_path: {source_path!r}")
-    unresolved = repo_root / relative
-    if unresolved.is_symlink():
-        raise P541CR2ValidationError(f"symlink source_path rejected: {source_path!r}")
-    try:
-        resolved = unresolved.resolve(strict=True)
-    except OSError as exc:
-        raise P541CR2ValidationError(f"source_path missing: {source_path!r}") from exc
-    if repo_root not in resolved.parents or not resolved.is_file():
-        raise P541CR2ValidationError(f"source_path escapes repository: {source_path!r}")
-    return {
-        "source_path": source_path,
-        "byte_size": resolved.stat().st_size,
-        "sha256": file_sha256(resolved),
-    }
-
-
-def classify_record(rec: dict[str, Any], repo_root: Path = REPO_ROOT) -> dict[str, Any]:
+def classify_record(rec: dict[str, Any]) -> dict[str, Any]:
     """Map one P541B_R2 method_classification_record to a P541C_R2 decision.
 
     Safety (risk_level) is always the primary, fail-closed gate: unknown never
@@ -253,7 +233,6 @@ def classify_record(rec: dict[str, Any], repo_root: Path = REPO_ROOT) -> dict[st
     risk = safety["risk_level"]
     identity = historical["is_actual_prediction_method"]
     recommended_action = historical["recommended_action"]
-    source_identity = source_file_identity(rec["source_path"], repo_root)
 
     # Safety (risk_level) is checked before any identity-based exclusion: an
     # unknown or high risk record must never be routed to EXCLUDED on the
@@ -381,14 +360,13 @@ def classify_record(rec: dict[str, Any], repo_root: Path = REPO_ROOT) -> dict[st
         "required_change_before_replay": required_change,
         "replay_readiness_priority": priority,
         "evidence": {
-            "source_path_exists": True,
-            "source_file_identity": source_identity,
+            "source_path_contract": "identifier_only_from_pinned_p541b_r2",
         },
     }
 
 
-def classify_all(p541b_r2: dict[str, Any], repo_root: Path = REPO_ROOT) -> list[dict[str, Any]]:
-    return [classify_record(rec, repo_root) for rec in p541b_r2["method_classification_records"]]
+def classify_all(p541b_r2: dict[str, Any]) -> list[dict[str, Any]]:
+    return [classify_record(rec) for rec in p541b_r2["method_classification_records"]]
 
 
 def build_shortlist(decisions: list[dict[str, Any]], limit: int = SHORTLIST_MAX) -> list[dict[str, Any]]:
@@ -441,9 +419,11 @@ def summarize(decisions: list[dict[str, Any]]) -> dict[str, Any]:
 def validate_artifact(artifact: dict[str, Any]) -> None:
     if artifact.get("schema_version") != "p541c-r2-selection-v3":
         raise P541CR2ValidationError("artifact schema_version mismatch")
+    if artifact.get("selector_version") != SELECTOR_VERSION:
+        raise P541CR2ValidationError("artifact selector_version mismatch")
     reconciliation = artifact.get("contract_reconciliation")
-    if not isinstance(reconciliation, dict) or reconciliation.get("task_id") != RECONCILIATION_TASK_ID:
-        raise P541CR2ValidationError("contract reconciliation task mismatch")
+    if not isinstance(reconciliation, dict) or reconciliation.get("task_id") != FINALIZATION_TASK_ID:
+        raise P541CR2ValidationError("contract finalization task mismatch")
     if reconciliation.get("status") != "PASS":
         raise P541CR2ValidationError("contract reconciliation not PASS")
     decisions = artifact.get("reviewed_method_decisions")
@@ -498,13 +478,12 @@ def validate_artifact(artifact: dict[str, Any]) -> None:
 def build_artifact(
     p541b_r2: dict[str, Any],
     input_provenance: dict[str, Any],
-    repo_root: Path = REPO_ROOT,
     generated_at: str | None = None,
 ) -> dict[str, Any]:
     validate_upstream_contract(p541b_r2)
     if input_provenance.get("verification") != "PASS":
         raise P541CR2ValidationError("input provenance not verified PASS")
-    decisions = classify_all(p541b_r2, repo_root)
+    decisions = classify_all(p541b_r2)
     shortlist = build_shortlist(decisions)
 
     by_bucket: dict[str, list[dict[str, Any]]] = {k: [] for k in ALL_BUCKETS}
@@ -522,6 +501,7 @@ def build_artifact(
 
     artifact = {
         "schema_version": "p541c-r2-selection-v3",
+        "selector_version": SELECTOR_VERSION,
         "task_id": "P541C_R2_BIG_LOTTO_LEGACY_METHOD_REVIEW_READINESS_SELECTION_REPLACEMENT",
         "generated_at": generated_at,
         "implementation_base_commit": IMPLEMENTATION_BASE_COMMIT,
@@ -545,17 +525,18 @@ def build_artifact(
             "fail_closed": True,
         },
         "contract_reconciliation": {
-            "task_id": RECONCILIATION_TASK_ID,
+            "task_id": FINALIZATION_TASK_ID,
             "status": "PASS",
             "reconciled_invariant": (
                 "Ready requires both low safety risk and explicit historical adapter "
                 "readiness; summary, bucket partitions, and shortlist must be exact "
-                "canonical projections of the reviewed decisions."
+                "canonical projections of the reviewed decisions. source_path is an "
+                "identifier inherited from the pinned P541B_R2 input, not a checkout probe."
             ),
             "prior_drift": (
-                "R1 corrected readiness labels but its artifact validator still accepted "
-                "a drifted summary, duplicated or misplaced bucket members, a non-canonical "
-                "shortlist, and medium-risk records in the ready bucket."
+                "Earlier revisions coupled selection to the mutable checkout by resolving, "
+                "opening and hashing all 580 source_path files even though the pinned "
+                "P541B_R2 artifact is the sole authoritative selector input."
             ),
         },
         "summary": summarize(decisions),
@@ -622,9 +603,9 @@ def build_artifact(
             "method": (
                 "Static, read-only re-bucketing of exactly one pinned P541B_R2 artifact "
                 "(which already embeds historical P541B v1 identity fields per record). "
-                "Strict JSON rejects duplicate keys and non-finite values. Every source "
-                "is a repository-contained, non-symlink Python file whose size/SHA-256 is "
-                "recorded per decision. No source is imported or executed; no DB access, "
+                "Strict JSON rejects duplicate keys and non-finite values. source_path is "
+                "retained only as an identifier from that pinned input; no reviewed source "
+                "is resolved, opened, statted, hashed, imported or executed. No DB access, "
                 "replay generation, or scoring/promotion gate."
             ),
             "p541b_r2_artifact_consumed": [INPUT_IDENTITY["path"]],
@@ -641,8 +622,8 @@ def build_artifact(
                 "needs_cto_review records (from unknown risk, unresolved identity, or a "
                 "non-actionable safety/readiness combination) were not further resolved; "
                 "P541B_R2's own evidence already represents the limit of static analysis.",
-                "Source identity verification reads raw bytes only to compute size and "
-                "SHA-256; this does not constitute new semantic or runtime analysis.",
+                "No current-checkout source existence or identity claim is made; source_path "
+                "stability is inherited from the pinned P541B_R2 artifact contract.",
                 "Bucket/priority assignment is a deterministic function of P541B_R2's "
                 "risk evidence plus P541B's historical identity, runnable_status, and "
                 "confidence fields; it is a "
@@ -663,6 +644,7 @@ def render_markdown(artifact: dict[str, Any]) -> str:
     lines.append("")
     lines.append(f"> generated_at: {artifact['generated_at']}")
     lines.append(f"> task_id: {artifact['task_id']}")
+    lines.append(f"> selector_version: {artifact['selector_version']}")
     lines.append("")
     lines.append(f"**Disclaimer:** {artifact['disclaimer']}")
     lines.append("")
@@ -694,6 +676,11 @@ def render_markdown(artifact: dict[str, Any]) -> str:
     lines.append(
         f"- Input: `{identity['path']}` — {identity['byte_size']:,} bytes, SHA-256 "
         f"`{identity['sha256']}`, verification **{identity['verification']}**"
+    )
+    lines.append(
+        f"- Upstream contract: schema `{identity['schema_version']}`, detector "
+        f"`{identity['detector_version']}`, manifest "
+        f"`{identity['source_manifest_sha256']}`, records {identity['record_count']}"
     )
     lines.append("- Fail-closed behavior: any input hash, schema, record, or contract mismatch aborts generation.")
     lines.append("")

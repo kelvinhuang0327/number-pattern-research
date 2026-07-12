@@ -1,10 +1,10 @@
 """P541C_R2 — read-only tests for the BIG_LOTTO legacy method review and
 replay-readiness selection replacement artifact.
 
-The module pins and strictly parses a single P541B_R2 artifact, then hashes
-repository-contained Python sources without importing or executing them. It
-never opens a DB connection and never writes to `outputs/` except through
-`main()`.
+The module pins and strictly parses a single P541B_R2 artifact. Reviewed
+source_path values remain identifiers only; source files are not resolved,
+opened, statted, hashed, imported or executed. The module never opens a DB
+connection and never writes to `outputs/` except through `main()`.
 """
 import ast
 import copy
@@ -12,6 +12,7 @@ import inspect
 import json
 import os
 import sys
+from pathlib import Path
 
 import pytest
 
@@ -49,10 +50,14 @@ def test_module_never_uses_importlib_or_exec_on_targets():
     assert "\nexec(" not in src and " exec(" not in src
 
 
-def test_module_only_touches_disk_via_isfile_and_open():
+def test_module_has_no_per_record_source_io_contract():
     mod = _module()
-    src = inspect.getsource(mod)
-    assert "is_file()" in src
+    classify_src = inspect.getsource(mod.classify_record)
+    classify_all_src = inspect.getsource(mod.classify_all)
+    for forbidden in ("resolve(", "stat(", "is_file(", "open(", "file_sha256"):
+        assert forbidden not in classify_src
+        assert forbidden not in classify_all_src
+    assert not hasattr(mod, "source_file_identity")
 
 
 # ── artifact input ──────────────────────────────────────────────────────
@@ -87,6 +92,10 @@ def test_input_matches_pinned_identity(input_provenance):
     mod = _module()
     assert input_provenance["byte_size"] == mod.INPUT_IDENTITY["byte_size"]
     assert input_provenance["sha256"] == mod.INPUT_IDENTITY["sha256"]
+    assert input_provenance["schema_version"] == "p541b-r2-evidence-v1"
+    assert input_provenance["detector_version"] == "p541b-r2-detector-v4"
+    assert input_provenance["source_manifest_sha256"] == mod.SOURCE_MANIFEST_SHA256
+    assert input_provenance["record_count"] == 580
     assert input_provenance["verification"] == "PASS"
 
 
@@ -151,18 +160,21 @@ def test_upstream_schema_mismatch_fails_closed(p541b_r2):
         mod.validate_upstream_contract(non_boolean_eligibility)
 
 
-def test_source_path_escape_missing_and_symlink_fail_closed(tmp_path):
+def test_duplicate_method_id_and_source_path_fail_terminally(p541b_r2):
     mod = _module()
-    with pytest.raises(mod.P541CR2ValidationError, match="unsafe source_path"):
-        mod.source_file_identity("../escape.py", tmp_path)
-    with pytest.raises(mod.P541CR2ValidationError, match="source_path missing"):
-        mod.source_file_identity("missing.py", tmp_path)
-    target = tmp_path / "target.py"
-    target.write_text("pass\n", encoding="utf-8")
-    link = tmp_path / "link.py"
-    link.symlink_to(target)
-    with pytest.raises(mod.P541CR2ValidationError, match="symlink source_path rejected"):
-        mod.source_file_identity("link.py", tmp_path)
+    duplicate_method = copy.deepcopy(p541b_r2)
+    duplicate_method["method_classification_records"][1]["method_id"] = (
+        duplicate_method["method_classification_records"][0]["method_id"]
+    )
+    with pytest.raises(mod.P541CR2ValidationError, match="duplicate method_id"):
+        mod.validate_upstream_contract(duplicate_method)
+
+    duplicate_source = copy.deepcopy(p541b_r2)
+    duplicate_source["method_classification_records"][1]["source_path"] = (
+        duplicate_source["method_classification_records"][0]["source_path"]
+    )
+    with pytest.raises(mod.P541CR2ValidationError, match="duplicate source_path"):
+        mod.validate_upstream_contract(duplicate_source)
 
 
 # ── classify_record: one synthetic record per bucket ────────────────────
@@ -201,7 +213,7 @@ def _synthetic_record(
 def test_classify_record_low_risk_confirmed_preserves_adapter_requirement():
     mod = _module()
     rec = _synthetic_record("low", True, True)
-    d = mod.classify_record(rec, REPO_ROOT and mod.REPO_ROOT)
+    d = mod.classify_record(rec)
     assert d["p541c_r2_bucket"] == mod.BUCKET_NEEDS_ADAPTER
     assert d["replay_readiness_priority"] == "high"
     assert d["required_change_before_replay"] == "adapter_wrapper"
@@ -211,7 +223,7 @@ def test_classify_record_low_risk_confirmed_preserves_adapter_requirement():
 def test_classify_record_ready_requires_explicit_upstream_ready_status():
     mod = _module()
     rec = _synthetic_record("low", True, True, runnable_status="runnable_with_existing_adapter")
-    d = mod.classify_record(rec, mod.REPO_ROOT)
+    d = mod.classify_record(rec)
     assert d["p541c_r2_bucket"] == mod.BUCKET_READY
     assert d["required_change_before_replay"] == "none"
 
@@ -221,7 +233,7 @@ def test_classify_record_medium_risk_never_becomes_ready():
     rec = _synthetic_record(
         "medium", False, True, runnable_status="runnable_with_existing_adapter"
     )
-    d = mod.classify_record(rec, mod.REPO_ROOT)
+    d = mod.classify_record(rec)
     assert d["p541c_r2_bucket"] == mod.BUCKET_NEEDS_CTO_REVIEW
     assert d["required_change_before_replay"] == "safety_review"
 
@@ -229,21 +241,21 @@ def test_classify_record_medium_risk_never_becomes_ready():
 def test_classify_record_low_risk_identity_unresolved_needs_cto_review():
     mod = _module()
     rec = _synthetic_record("low", True, "unknown")
-    d = mod.classify_record(rec, mod.REPO_ROOT)
+    d = mod.classify_record(rec)
     assert d["p541c_r2_bucket"] == mod.BUCKET_NEEDS_CTO_REVIEW
 
 
 def test_classify_record_low_but_not_a_method_is_excluded():
     mod = _module()
     rec = _synthetic_record("low", True, False)
-    d = mod.classify_record(rec, mod.REPO_ROOT)
+    d = mod.classify_record(rec)
     assert d["p541c_r2_bucket"] == mod.BUCKET_EXCLUDED
 
 
 def test_classify_record_medium_confirmed_preserves_adapter_requirement():
     mod = _module()
     rec = _synthetic_record("medium", False, True)
-    d = mod.classify_record(rec, mod.REPO_ROOT)
+    d = mod.classify_record(rec)
     assert d["p541c_r2_bucket"] == mod.BUCKET_NEEDS_ADAPTER
     assert d["replay_readiness_priority"] == "medium"
 
@@ -253,7 +265,7 @@ def test_classify_record_confirmed_refactor_status_stays_separate():
     rec = _synthetic_record(
         "low", True, True, runnable_status="needs_db_safety_refactor"
     )
-    d = mod.classify_record(rec, mod.REPO_ROOT)
+    d = mod.classify_record(rec)
     assert d["p541c_r2_bucket"] == mod.BUCKET_NEEDS_REFACTOR
     assert d["required_change_before_replay"] == "db_safety_refactor"
     assert d["replay_readiness_priority"] == "medium"
@@ -262,7 +274,7 @@ def test_classify_record_confirmed_refactor_status_stays_separate():
 def test_classify_record_medium_unresolved_needs_cto_review():
     mod = _module()
     rec = _synthetic_record("medium", False, "unknown")
-    d = mod.classify_record(rec, mod.REPO_ROOT)
+    d = mod.classify_record(rec)
     assert d["p541c_r2_bucket"] == mod.BUCKET_NEEDS_CTO_REVIEW
 
 
@@ -270,7 +282,7 @@ def test_classify_record_unknown_risk_always_needs_cto_review():
     mod = _module()
     for identity in (True, False, "unknown"):
         rec = _synthetic_record("unknown", False, identity)
-        d = mod.classify_record(rec, mod.REPO_ROOT)
+        d = mod.classify_record(rec)
         assert d["p541c_r2_bucket"] == mod.BUCKET_NEEDS_CTO_REVIEW, identity
 
 
@@ -278,14 +290,14 @@ def test_classify_record_high_risk_always_excluded_regardless_of_identity():
     mod = _module()
     for identity in (True, False, "unknown"):
         rec = _synthetic_record("high", False, identity)
-        d = mod.classify_record(rec, mod.REPO_ROOT)
+        d = mod.classify_record(rec)
         assert d["p541c_r2_bucket"] == mod.BUCKET_EXCLUDED, identity
 
 
 def test_classify_record_mark_duplicate_always_excluded_even_if_low_risk():
     mod = _module()
     rec = _synthetic_record("low", True, True, recommended_action="mark_duplicate")
-    d = mod.classify_record(rec, mod.REPO_ROOT)
+    d = mod.classify_record(rec)
     assert d["p541c_r2_bucket"] == mod.BUCKET_EXCLUDED
 
 
@@ -314,13 +326,50 @@ def test_bucket_totals_sum_to_580(p541b_r2):
     total = sum(summary[b] for b in mod.ALL_BUCKETS)
     assert total == 580
     assert summary["total_reviewed_from_p541b_r2"] == 580
+    assert [summary[b] for b in mod.ALL_BUCKETS] == [0, 12, 0, 458, 110]
 
 
-def test_all_reviewed_source_paths_exist_on_disk(p541b_r2):
+def test_source_path_is_identifier_only(p541b_r2):
     mod = _module()
     decisions = mod.classify_all(p541b_r2)
-    missing = [d for d in decisions if not d["evidence"]["source_path_exists"]]
-    assert missing == []
+    upstream_paths = [r["source_path"] for r in p541b_r2["method_classification_records"]]
+    assert [d["source_path"] for d in decisions] == upstream_paths
+    for decision in decisions:
+        assert decision["evidence"] == {
+            "source_path_contract": "identifier_only_from_pinned_p541b_r2"
+        }
+
+
+def test_nonexistent_source_path_does_not_affect_classification_or_build(
+    p541b_r2, input_provenance
+):
+    mod = _module()
+    nonexistent = "does/not/exist/identifier-only.py"
+    rec = _synthetic_record("low", True, True, source_path=nonexistent)
+    assert mod.classify_record(rec)["source_path"] == nonexistent
+
+    modified = copy.deepcopy(p541b_r2)
+    modified["method_classification_records"][0]["source_path"] = nonexistent
+    artifact = mod.build_artifact(modified, input_provenance, generated_at="TEST")
+    assert artifact["reviewed_method_decisions"][0]["source_path"] == nonexistent
+
+
+def test_build_performs_no_per_record_source_filesystem_io(
+    monkeypatch, p541b_r2, input_provenance
+):
+    mod = _module()
+
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("per-record source filesystem I/O is forbidden")
+
+    monkeypatch.setattr(Path, "resolve", forbidden)
+    monkeypatch.setattr(Path, "stat", forbidden)
+    monkeypatch.setattr(Path, "is_file", forbidden)
+    monkeypatch.setattr(Path, "open", forbidden)
+    monkeypatch.setattr(mod, "file_sha256", forbidden)
+
+    artifact = mod.build_artifact(p541b_r2, input_provenance, generated_at="TEST")
+    assert len(artifact["reviewed_method_decisions"]) == 580
 
 
 # ── the two safety invariants this replacement exists to enforce ────────
@@ -392,6 +441,24 @@ def test_shortlist_is_not_padded_to_historical_size(p541b_r2):
     assert len(shortlist) < 20
 
 
+def test_shortlist_exact_membership_and_contract(p541b_r2):
+    mod = _module()
+    shortlist = mod.build_shortlist(mod.classify_all(p541b_r2))
+    assert [d["method_id"] for d in shortlist] == [
+        "tools/advanced_prediction_engine.py",
+        "lottery_api/models/social_wisdom_predictor.py",
+        "tools/quick_ml_predict.py",
+        "tools/big_lotto_exhaustive_audit.py",
+        "lottery_api/models/zone_split.py",
+    ]
+    for decision in shortlist:
+        assert decision["p541c_r2_bucket"] == mod.BUCKET_NEEDS_ADAPTER
+        assert decision["p541b_r2_status"]["risk_level"] == "low"
+        assert decision["historical_p541b_status"]["confidence"] == "high"
+        assert decision["historical_p541b_status"]["is_actual_prediction_method"] is True
+        assert decision["required_change_before_replay"] != "none"
+
+
 def test_shortlist_is_deterministic(p541b_r2):
     mod = _module()
     decisions = mod.classify_all(p541b_r2)
@@ -412,6 +479,7 @@ def test_build_artifact_has_all_required_sections(p541b_r2, input_provenance):
     mod = _module()
     artifact = mod.build_artifact(p541b_r2, input_provenance, generated_at="TEST")
     required_sections = [
+        "schema_version", "selector_version",
         "summary", "bucket_definitions", "selection_policy", "reviewed_method_decisions",
         mod.BUCKET_READY, mod.BUCKET_NEEDS_ADAPTER, mod.BUCKET_NEEDS_REFACTOR,
         mod.BUCKET_NEEDS_CTO_REVIEW, "excluded_methods",
@@ -420,6 +488,22 @@ def test_build_artifact_has_all_required_sections(p541b_r2, input_provenance):
     ]
     for section in required_sections:
         assert section in artifact, f"missing section: {section}"
+
+
+def test_selector_version_is_exact_and_fails_closed(p541b_r2, input_provenance):
+    mod = _module()
+    artifact = mod.build_artifact(p541b_r2, input_provenance, generated_at="TEST")
+    assert artifact["selector_version"] == "p541c-r2-selector-v3"
+
+    missing = copy.deepcopy(artifact)
+    del missing["selector_version"]
+    with pytest.raises(mod.P541CR2ValidationError, match="selector_version mismatch"):
+        mod.validate_artifact(missing)
+
+    wrong = copy.deepcopy(artifact)
+    wrong["selector_version"] = "p541c-r2-selector-v2"
+    with pytest.raises(mod.P541CR2ValidationError, match="selector_version mismatch"):
+        mod.validate_artifact(wrong)
 
 
 def test_build_artifact_disclaimer_text(p541b_r2, input_provenance):
@@ -491,8 +575,27 @@ def test_render_markdown_contains_key_sections(p541b_r2, input_provenance):
     assert "## Contract Reconciliation" in md
     assert "## Bucket Definitions" in md
     assert "## Shortlist" in md
+    assert "> selector_version: p541c-r2-selector-v3" in md
     assert artifact["next_task_recommendation"] in md
     assert artifact["disclaimer"] in md
+
+
+def test_committed_json_and_markdown_agree():
+    mod = _module()
+    committed_json = mod.strict_json_load(
+        Path(REPO_ROOT)
+        / "outputs/research/p541c_r2_biglotto_legacy_method_review_readiness_selection_20260712.json"
+    )
+    committed_md = (
+        Path(REPO_ROOT)
+        / "outputs/research/p541c_r2_biglotto_legacy_method_review_readiness_selection_20260712.md"
+    ).read_text(encoding="utf-8")
+    assert committed_json["selector_version"] == "p541c-r2-selector-v3"
+    assert f"> selector_version: {committed_json['selector_version']}" in committed_md
+    for key, value in committed_json["summary"].items():
+        assert f"| {key} | {value} |" in committed_md
+    for decision in committed_json["high_priority_candidate_shortlist"]:
+        assert f"| {decision['method_id']} |" in committed_md
 
 
 def test_default_build_is_deterministic_and_matches_committed_artifacts(p541b_r2, input_provenance):

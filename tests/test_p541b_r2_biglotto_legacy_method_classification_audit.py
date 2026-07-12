@@ -79,9 +79,93 @@ def _frozen_analysis(source_path: str):
     )
 
 
+def _frozen_one_hop_analysis(source_path: str):
+    mod = _module()
+    entries = mod.git_tree_entries(REPO_ROOT, mod.FROZEN_SOURCE_COMMIT, [source_path])
+    entry = entries[source_path]
+    raw = mod.git_blob(REPO_ROOT, entry["blob_id"])
+    transitive = mod.one_hop_transitive_evidence(
+        source_path,
+        raw,
+        REPO_ROOT,
+        mod.FROZEN_SOURCE_COMMIT,
+    )
+    return mod.analyze_source_bytes(
+        source_path,
+        raw,
+        entry["blob_id"],
+        transitive_evidence=transitive,
+    )
+
+
 def _generator_source_tree():
     source = inspect.getsource(_module())
     return source, ast.parse(source)
+
+
+def _static_resolved_name(node: ast.AST, aliases: dict[str, str]) -> str | None:
+    if isinstance(node, ast.Name):
+        return aliases.get(node.id, node.id)
+    if isinstance(node, ast.Attribute):
+        base = _static_resolved_name(node.value, aliases)
+        return f"{base}.{node.attr}" if base else node.attr
+    if isinstance(node, ast.Call):
+        called = _static_resolved_name(node.func, aliases)
+        if called == "getattr" and node.args:
+            base = _static_resolved_name(node.args[0], aliases)
+            if (
+                len(node.args) >= 2
+                and isinstance(node.args[1], ast.Constant)
+                and isinstance(node.args[1].value, str)
+            ):
+                return f"{base}.{node.args[1].value}" if base else None
+            return f"{base}.<dynamic_getattr>" if base else "<dynamic_getattr>"
+        return f"{called}()" if called else None
+    return None
+
+
+def _static_aliases(tree: ast.AST) -> dict[str, str]:
+    aliases: dict[str, str] = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                aliases[alias.asname or alias.name.split(".")[0]] = alias.name
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            for alias in node.names:
+                if alias.name != "*":
+                    aliases[alias.asname or alias.name] = f"{node.module}.{alias.name}"
+    for _ in range(6):
+        changed = False
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Assign):
+                value, targets = node.value, node.targets
+            elif isinstance(node, ast.AnnAssign) and node.value is not None:
+                value, targets = node.value, [node.target]
+            else:
+                continue
+            if isinstance(value, ast.Call):
+                called = _static_resolved_name(value.func, aliases)
+                if called != "getattr":
+                    continue
+            resolved = _static_resolved_name(value, aliases)
+            if not resolved:
+                continue
+            for target in targets:
+                if isinstance(target, ast.Name) and aliases.get(target.id) != resolved:
+                    aliases[target.id] = resolved
+                    changed = True
+        if not changed:
+            break
+    return aliases
+
+
+def _static_resolved_calls(tree: ast.AST) -> list[tuple[ast.Call, str]]:
+    aliases = _static_aliases(tree)
+    return [
+        (node, _static_resolved_name(node.func, aliases) or "<unresolved>")
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Call)
+    ]
 
 
 @pytest.fixture(scope="module")
@@ -430,6 +514,64 @@ def test_frozen_torch_save_fixture_detects_filesystem_write():
     assert result["safety_classification"]["risk_level"] == "high"
 
 
+def test_frozen_sibling_tools_import_cannot_remain_low_risk():
+    result = _frozen_one_hop_analysis("tools/get_more_bets.py")
+    transitive = result["evidence"]["transitive_external_state"]
+    assert transitive["state"] != "not_detected"
+    assert any(
+        finding["resolved_api"] == "sqlite3.connect"
+        and finding["imported_module_path"]
+        == "tools/evolving_strategy_engine/data_loader.py"
+        for finding in transitive["findings"]
+    )
+    assert result["safety_classification"]["low_risk_eligible"] is False
+
+
+@pytest.mark.parametrize(
+    "source_path",
+    [
+        "tools/backtest_apriori.py",
+        "tools/predict_sequence_transformer.py",
+    ],
+)
+def test_frozen_unresolved_import_dispatch_cannot_remain_low_risk(source_path):
+    result = _frozen_one_hop_analysis(source_path)
+    assert result["evidence"]["transitive_external_state"]["state"] != "not_detected"
+    assert result["safety_classification"]["low_risk_eligible"] is False
+
+
+def test_frozen_quantum_nested_import_cannot_remain_low_risk():
+    result = _frozen_one_hop_analysis("lottery_api/models/unified_predictor.py")
+    transitive = result["evidence"]["transitive_external_state"]
+    assert transitive["state"] == "unknown"
+    assert "import_resolution_incomplete" in transitive["reason"]
+    assert result["safety_classification"]["low_risk_eligible"] is False
+
+
+def test_frozen_xgboost_import_time_constructor_cannot_remain_low_risk():
+    result = _frozen_one_hop_analysis("lottery_api/models/xgboost_model.py")
+    transitive = result["evidence"]["transitive_external_state"]
+    assert transitive["state"] == "unknown"
+    assert "import_resolution_incomplete" in transitive["reason"]
+    assert result["safety_classification"]["low_risk_eligible"] is False
+
+
+def test_frozen_backtest_inherited_database_effect_is_preserved():
+    result = _frozen_one_hop_analysis("tools/backtest_apriori.py")
+    transitive = result["evidence"]["transitive_external_state"]
+    assert {
+        (finding["resolved_api"], finding["imported_module_path"])
+        for finding in transitive["findings"]
+    } >= {
+        ("database.DatabaseManager", "tools/predict_biglotto_apriori.py"),
+        (
+            "database.DatabaseManager().get_all_draws",
+            "tools/predict_biglotto_apriori.py",
+        ),
+    }
+    assert result["safety_classification"]["low_risk_eligible"] is False
+
+
 def test_one_hop_db_coupled_import_detected(tmp_path):
     repo, commit = _synthetic_repo(
         tmp_path,
@@ -460,6 +602,29 @@ def test_one_hop_module_level_effect_detected(tmp_path):
     assert _one_hop(repo, commit, "main.py")["state"] == "detected"
 
 
+def test_one_hop_module_level_local_constructor_effect_detected(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "import helper\n",
+            "helper.py": (
+                "import requests\n"
+                "class Worker:\n"
+                "    def __init__(self):\n"
+                "        requests.get('https://example.test')\n"
+                "worker = Worker()\n"
+            ),
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "detected"
+    assert any(
+        finding["resolved_api"] == "requests.get"
+        and finding["imported_module_path"] == "helper.py"
+        for finding in result["findings"]
+    )
+
+
 def test_one_hop_invoked_constructor_effect_detected(tmp_path):
     repo, commit = _synthetic_repo(
         tmp_path,
@@ -469,6 +634,561 @@ def test_one_hop_invoked_constructor_effect_detected(tmp_path):
         },
     )
     assert _one_hop(repo, commit, "main.py")["state"] == "detected"
+
+
+def test_one_hop_sibling_tools_import_detects_database_effect(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "tools/main.py": (
+                "from evolving_strategy_engine.data_loader import load_big_lotto_draws\n"
+                "load_big_lotto_draws()\n"
+            ),
+            "tools/evolving_strategy_engine/data_loader.py": (
+                "import sqlite3\n"
+                "def load_big_lotto_draws():\n"
+                "    return sqlite3.connect('x.db')\n"
+            ),
+        },
+    )
+    result = _one_hop(repo, commit, "tools/main.py")
+    assert result["state"] == "detected"
+    assert any(
+        finding["resolved_api"] == "sqlite3.connect"
+        and finding["imported_module_path"]
+        == "tools/evolving_strategy_engine/data_loader.py"
+        for finding in result["findings"]
+    )
+
+
+@pytest.mark.parametrize(
+    "path_setup",
+    [
+        (
+            "from pathlib import Path\n"
+            "tool_root = Path(__file__).resolve().parents[1] / 'tools'\n"
+            "sys.path.insert(0, str(tool_root))\n"
+        ),
+        (
+            "import os\n"
+            "repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))\n"
+            "sys.path.insert(0, os.path.join(repo_root, 'tools'))\n"
+        ),
+    ],
+)
+def test_bounded_sys_path_project_import_resolves_frozen_tree(tmp_path, path_setup):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "scripts/main.py": (
+                "import sys\n"
+                f"{path_setup}"
+                "from hidden.data import load\n"
+                "load()\n"
+            ),
+            "tools/hidden/data.py": (
+                "import sqlite3\n"
+                "def load():\n"
+                "    return sqlite3.connect('x.db')\n"
+            ),
+        },
+    )
+    result = _one_hop(repo, commit, "scripts/main.py")
+    assert result["state"] == "detected"
+    assert any(
+        finding["resolved_api"] == "sqlite3.connect"
+        and finding["imported_module_path"] == "tools/hidden/data.py"
+        for finding in result["findings"]
+    )
+
+
+def test_same_line_sys_path_update_precedes_project_import(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "scripts/main.py": (
+                "import sys\n"
+                "from pathlib import Path\n"
+                "tool_root = Path(__file__).resolve().parents[1] / 'tools'\n"
+                "sys.path.insert(0, str(tool_root)); from hidden.data import load\n"
+                "load()\n"
+            ),
+            "tools/hidden/data.py": (
+                "import sqlite3\n"
+                "def load():\n"
+                "    return sqlite3.connect('x.db')\n"
+            ),
+        },
+    )
+    result = _one_hop(repo, commit, "scripts/main.py")
+    assert result["state"] == "detected"
+    assert any(
+        finding["resolved_api"] == "sqlite3.connect"
+        and finding["imported_module_path"] == "tools/hidden/data.py"
+        for finding in result["findings"]
+    )
+
+
+def test_conditional_sys_path_variable_is_unknown(tmp_path):
+    source = (
+        "import sys\n"
+        "from pathlib import Path\n"
+        "repo_root = Path(__file__).resolve().parents[1]\n"
+        "root = repo_root / 'danger'\n"
+        "if enabled:\n"
+        "    root = repo_root / 'safe'\n"
+        "sys.path.insert(0, str(root))\n"
+        "from hidden import run\n"
+        "run()\n"
+    )
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "scripts/main.py": source,
+            "danger/hidden.py": (
+                "import sqlite3\n"
+                "def run():\n"
+                "    return sqlite3.connect('x.db')\n"
+            ),
+            "safe/hidden.py": "def run():\n    return None\n",
+        },
+    )
+    result = _one_hop(repo, commit, "scripts/main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    analysis = _module().analyze_source_bytes(
+        "scripts/main.py",
+        source.encode("utf-8"),
+        "1" * 40,
+        transitive_evidence=result,
+    )
+    assert analysis["safety_classification"]["risk_level"] == "unknown"
+    assert analysis["safety_classification"]["low_risk_eligible"] is False
+
+
+def test_loop_rebound_sys_path_variable_is_unknown(tmp_path):
+    source = (
+        "import sys\n"
+        "from pathlib import Path\n"
+        "repo_root = Path(__file__).resolve().parents[1]\n"
+        "root = repo_root / 'clean'\n"
+        "for root in [repo_root / 'danger']:\n"
+        "    pass\n"
+        "sys.path.insert(0, str(root))\n"
+        "from hidden import run\n"
+        "run()\n"
+    )
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "scripts/main.py": source,
+            "clean/hidden.py": "def run():\n    return None\n",
+            "danger/hidden.py": (
+                "import sqlite3\n"
+                "def run():\n"
+                "    return sqlite3.connect('x.db')\n"
+            ),
+        },
+    )
+    result = _one_hop(repo, commit, "scripts/main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    analysis = _module().analyze_source_bytes(
+        "scripts/main.py",
+        source.encode("utf-8"),
+        "1" * 40,
+        transitive_evidence=result,
+    )
+    assert analysis["safety_classification"]["low_risk_eligible"] is False
+
+
+@pytest.mark.parametrize(
+    "source_path",
+    [
+        "tools/testing/test-all-optimizations.py",
+        "tools/testing/test-optimization-b.py",
+        "tools/testing/test-optimization-simple.py",
+    ],
+)
+def test_frozen_invalid_sys_path_root_cannot_remain_low_risk(source_path):
+    result = _frozen_one_hop_analysis(source_path)
+    assert result["evidence"]["transitive_external_state"]["state"] == "unknown"
+    assert result["safety_classification"]["low_risk_eligible"] is False
+
+
+def test_one_hop_function_local_import_detects_network_effect(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": (
+                "def run():\n"
+                "    from helper import fetch\n"
+                "    return fetch()\n"
+                "run()\n"
+            ),
+            "helper.py": "import requests\ndef fetch():\n    return requests.get('https://example.test')\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "detected"
+    assert any(finding["resolved_api"] == "requests.get" for finding in result["findings"])
+
+
+def test_uninvoked_nested_project_import_is_unknown_without_promoted_effect(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "def dormant():\n    from helper import connect\n    return connect()\n",
+            "helper.py": "import sqlite3\nsqlite3.connect('x.db')\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert result["findings"] == []
+
+
+def test_conditional_nested_project_import_is_unknown_without_promoted_effect(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "if enabled:\n    from helper import connect\n    connect()\n",
+            "helper.py": "import sqlite3\nsqlite3.connect('x.db')\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert result["findings"] == []
+
+
+def test_one_hop_imported_instance_method_effect_detected(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import Worker\nworker = Worker()\nworker.fetch()\n",
+            "helper.py": (
+                "import requests\n"
+                "class Worker:\n"
+                "    def fetch(self):\n"
+                "        return requests.get('https://example.test')\n"
+            ),
+        },
+    )
+    assert _one_hop(repo, commit, "main.py")["state"] == "detected"
+
+
+def test_ambiguous_imported_instance_dispatch_is_unknown(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": (
+                "from helper import Worker\n"
+                "worker = Worker()\n"
+                "if enabled:\n"
+                "    worker = other_factory()\n"
+                "worker.fetch()\n"
+            ),
+            "helper.py": (
+                "import requests\n"
+                "class Worker:\n"
+                "    def fetch(self):\n"
+                "        return requests.get('https://example.test')\n"
+            ),
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert result["findings"] == []
+    analysis = _module().analyze_source_bytes(
+        "main.py",
+        b"from helper import Worker\nworker = Worker()\nworker.fetch()\n",
+        "1" * 40,
+        transitive_evidence=result,
+    )
+    assert analysis["safety_classification"]["risk_level"] == "unknown"
+    assert analysis["safety_classification"]["low_risk_eligible"] is False
+
+
+def test_ambiguous_imported_callable_alias_is_unknown(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": (
+                "from helper import dangerous\n"
+                "target = dangerous\n"
+                "if enabled:\n"
+                "    target = safe\n"
+                "target()\n"
+            ),
+            "helper.py": (
+                "import sqlite3\n"
+                "def dangerous():\n"
+                "    return sqlite3.connect('x.db')\n"
+            ),
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_conditional_imported_factory_dispatch_is_unknown(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": (
+                "from helper import Worker\n"
+                "factory = Worker if enabled else Other\n"
+                "factory().fetch()\n"
+            ),
+            "helper.py": (
+                "import requests\n"
+                "class Worker:\n"
+                "    def fetch(self):\n"
+                "        return requests.get('https://example.test')\n"
+            ),
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_local_factory_returning_imported_class_is_unknown(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": (
+                "from helper import Worker\n"
+                "def choose():\n"
+                "    return Worker\n"
+                "factory = choose()\n"
+                "factory().fetch()\n"
+            ),
+            "helper.py": (
+                "import requests\n"
+                "class Worker:\n"
+                "    def fetch(self):\n"
+                "        return requests.get('https://example.test')\n"
+            ),
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_loop_bound_imported_instance_dispatch_is_unknown(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": (
+                "from helper import Worker\n"
+                "for worker in [Worker()]:\n"
+                "    pass\n"
+                "worker.fetch()\n"
+            ),
+            "helper.py": (
+                "import requests\n"
+                "class Worker:\n"
+                "    def fetch(self):\n"
+                "        return requests.get('https://example.test')\n"
+            ),
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_one_hop_imported_instance_method_follows_same_class_helper(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import Worker\nworker = Worker()\nworker.run()\n",
+            "helper.py": (
+                "import requests\n"
+                "class Worker:\n"
+                "    def run(self):\n"
+                "        return self._fetch()\n"
+                "    def _fetch(self):\n"
+                "        return requests.get('https://example.test')\n"
+            ),
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "detected"
+    assert any(finding["resolved_api"] == "requests.get" for finding in result["findings"])
+
+
+def test_one_hop_imported_inherited_method_effect_detected(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import Worker\nworker = Worker()\nworker.load()\n",
+            "helper.py": (
+                "import sqlite3\n"
+                "class Base:\n"
+                "    def load(self):\n"
+                "        return sqlite3.connect('x.db')\n"
+                "class Worker(Base):\n"
+                "    pass\n"
+            ),
+        },
+    )
+    assert _one_hop(repo, commit, "main.py")["state"] == "detected"
+
+
+def test_deeper_project_dependency_is_unknown_at_one_hop_boundary(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import Worker\nWorker()\n",
+            "helper.py": "from deeper import DatabaseWorker\nclass Worker(DatabaseWorker):\n    pass\n",
+            "deeper.py": "import sqlite3\nclass DatabaseWorker:\n    def load(self):\n        return sqlite3.connect('x.db')\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_uninvoked_imported_callable_effect_is_not_promoted(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "import helper\n",
+            "helper.py": "import sqlite3\ndef connect():\n    return sqlite3.connect('x.db')\n",
+        },
+    )
+    assert _one_hop(repo, commit, "main.py")["state"] == "not_detected"
+
+
+def test_source_relative_resolution_cache_is_importer_specific(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "a/main.py": "from helper import connect\nconnect()\n",
+            "a/helper.py": "import sqlite3\ndef connect():\n    return sqlite3.connect('a.db')\n",
+            "b/main.py": "from helper import choose\nchoose()\n",
+            "b/helper.py": "def choose():\n    return 1\n",
+        },
+    )
+    mod = _module()
+    cache = {}
+    a_entry = mod.git_tree_entries(repo, commit, ["a/main.py"])["a/main.py"]
+    b_entry = mod.git_tree_entries(repo, commit, ["b/main.py"])["b/main.py"]
+    a_result = mod.one_hop_transitive_evidence(
+        "a/main.py",
+        mod.git_blob(repo, a_entry["blob_id"]),
+        repo,
+        commit,
+        resolution_cache=cache,
+    )
+    b_result = mod.one_hop_transitive_evidence(
+        "b/main.py",
+        mod.git_blob(repo, b_entry["blob_id"]),
+        repo,
+        commit,
+        resolution_cache=cache,
+    )
+    assert a_result["state"] == "detected"
+    assert b_result["state"] == "not_detected"
+
+
+def test_incomplete_imported_scan_preserves_known_finding(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "import helper\n",
+            "helper.py": "import sqlite3\nsqlite3.connect('x.db')\nfrom mystery import *\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "imported_scan_incomplete"
+    assert any(
+        finding["resolved_api"] == "sqlite3.connect"
+        and finding["imported_module_path"] == "helper.py"
+        for finding in result["findings"]
+    )
+    analysis = _module().analyze_source_bytes(
+        "main.py",
+        b"import helper\n",
+        "1" * 40,
+        transitive_evidence=result,
+    )
+    assert _state(analysis, "transitive_external_state") == "unknown"
+    assert analysis["safety_classification"]["risk_level"] == "unknown"
+    assert analysis["safety_classification"]["low_risk_eligible"] is False
+    unsupported = _module().analyze_source_bytes(
+        "main.py",
+        b"from mystery import *\n",
+        "1" * 40,
+        transitive_evidence=result,
+    )
+    assert unsupported["scan_status"] == "unsupported"
+    assert unsupported["evidence"]["transitive_external_state"]["state"] == "unknown"
+    assert unsupported["evidence"]["transitive_external_state"]["findings"]
+
+
+def test_later_transitive_failure_preserves_earlier_finding(tmp_path, monkeypatch):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from first import connect\nfrom second import choose\nconnect()\nchoose()\n",
+            "first.py": "import sqlite3\ndef connect():\n    return sqlite3.connect('x.db')\n",
+            "second.py": "def choose():\n    return 1\n",
+        },
+    )
+    mod = _module()
+    original = mod._resolve_project_binding
+
+    def injected(repo_root, frozen_commit, binding, cache):
+        if binding["module"] == "second":
+            raise RuntimeError("/Users/private/transitive failure")
+        return original(repo_root, frozen_commit, binding, cache)
+
+    monkeypatch.setattr(mod, "_resolve_project_binding", injected)
+    first = _one_hop(repo, commit, "main.py")
+    second = _one_hop(repo, commit, "main.py")
+    assert first == second
+    assert first["state"] == "unknown"
+    assert first["reason"] == "transitive_detector_failed"
+    assert any(finding["resolved_api"] == "sqlite3.connect" for finding in first["findings"])
+    assert "/Users/" not in json.dumps(first)
+
+
+def test_transitive_category_failure_preserves_earlier_finding(monkeypatch):
+    mod = _module()
+    tree = ast.parse(
+        "import sqlite3\n"
+        "import requests\n"
+        "def run():\n"
+        "    sqlite3.connect('x.db')\n"
+        "    requests.get('https://example.test')\n"
+    )
+    original = mod.classify_call
+
+    def injected(call, resolved):
+        if resolved == "requests.get":
+            raise RuntimeError("/Users/private/category failure")
+        return original(call, resolved)
+
+    monkeypatch.setattr(mod, "classify_call", injected)
+    findings, incomplete, category_failed = mod._definition_effect_findings(
+        tree,
+        "helper.py",
+        "main.py",
+        {(None, "run")},
+        [],
+    )
+    assert incomplete is False
+    assert category_failed is True
+    assert any(finding["resolved_api"] == "sqlite3.connect" for finding in findings)
+    assert "/Users/" not in json.dumps(findings)
 
 
 def test_one_hop_import_cycle_stops_safely(tmp_path):
@@ -535,6 +1255,127 @@ def test_repository_or_git_failure_remains_terminal(monkeypatch):
         mod.build_artifact(REPO_ROOT)
 
 
+def test_git_executable_failure_remains_terminal(monkeypatch):
+    mod = _module()
+
+    def unavailable(*_args, **_kwargs):
+        raise OSError("/Users/private/git missing")
+
+    monkeypatch.setattr(mod.subprocess, "run", unavailable)
+    with pytest.raises(
+        mod.GitExecutableUnavailableError, match="Git executable is unavailable"
+    ):
+        mod.run_git(REPO_ROOT, ["status", "--porcelain"])
+
+
+def test_repository_failure_during_primary_blob_read_remains_terminal(
+    artifact, monkeypatch
+):
+    mod = _module()
+    target = artifact["provenance"]["source_manifest"]["ordered_entries"][0]["blob_id"]
+    original = mod.git_blob
+
+    def injected(repo_root, blob_id):
+        if blob_id == target:
+            raise mod.GitUnavailableError("Git repository is unavailable")
+        return original(repo_root, blob_id)
+
+    monkeypatch.setattr(mod, "git_blob", injected)
+    with pytest.raises(mod.GitUnavailableError, match="repository is unavailable"):
+        mod.build_artifact(REPO_ROOT)
+
+
+def test_nonzero_repository_failure_during_imported_blob_read_is_terminal(
+    tmp_path, monkeypatch
+):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {"main.py": "import helper\n", "helper.py": "VALUE = 1\n"},
+    )
+    mod = _module()
+    helper_entry = mod.git_tree_entries(repo, commit, ["helper.py"])["helper.py"]
+    real_run = subprocess.run
+
+    def injected(command, **kwargs):
+        if command == ["git", "cat-file", "blob", helper_entry["blob_id"]]:
+            return subprocess.CompletedProcess(
+                command,
+                128,
+                stdout=b"",
+                stderr=b"fatal: not a git repository",
+            )
+        return real_run(command, **kwargs)
+
+    monkeypatch.setattr(mod.subprocess, "run", injected)
+    with pytest.raises(mod.GitUnavailableError, match="repository is unavailable"):
+        _one_hop(repo, commit, "main.py")
+
+
+def test_object_store_failure_during_imported_blob_read_is_terminal(
+    tmp_path, monkeypatch
+):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {"main.py": "import helper\n", "helper.py": "VALUE = 1\n"},
+    )
+    mod = _module()
+    helper_entry = mod.git_tree_entries(repo, commit, ["helper.py"])["helper.py"]
+    real_run = subprocess.run
+
+    def injected(command, **kwargs):
+        if command == ["git", "cat-file", "blob", helper_entry["blob_id"]]:
+            return subprocess.CompletedProcess(
+                command, 128, stdout=b"", stderr=b"fatal: object unavailable"
+            )
+        if command == ["git", "cat-file", "-e", "HEAD^{commit}"]:
+            return subprocess.CompletedProcess(
+                command, 128, stdout=b"", stderr=b"fatal: object store unavailable"
+            )
+        return real_run(command, **kwargs)
+
+    monkeypatch.setattr(mod.subprocess, "run", injected)
+    with pytest.raises(mod.GitRepositoryUnavailableError, match="repository is unavailable"):
+        _one_hop(repo, commit, "main.py")
+
+
+def test_imported_isolated_blob_failure_preserves_findings_and_continues(
+    tmp_path, monkeypatch
+):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": (
+                "from first import connect\n"
+                "import second\n"
+                "from third import fetch\n"
+                "connect()\n"
+                "fetch()\n"
+            ),
+            "first.py": "import sqlite3\ndef connect():\n    return sqlite3.connect('x.db')\n",
+            "second.py": "VALUE = 1\n",
+            "third.py": "import requests\ndef fetch():\n    return requests.get('https://example.test')\n",
+        },
+    )
+    mod = _module()
+    second_entry = mod.git_tree_entries(repo, commit, ["second.py"])["second.py"]
+    original = mod.git_blob
+
+    def injected(repo_root, blob_id):
+        if blob_id == second_entry["blob_id"]:
+            raise mod.GitBlobReadError("isolated /Users/private/blob failure")
+        return original(repo_root, blob_id)
+
+    monkeypatch.setattr(mod, "git_blob", injected)
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "git_blob_read_failed"
+    assert {finding["resolved_api"] for finding in result["findings"]} >= {
+        "sqlite3.connect",
+        "requests.get",
+    }
+    assert "/Users/" not in json.dumps(result)
+
+
 def test_provenance_mismatch_fails_closed(monkeypatch):
     mod = _module()
     monkeypatch.setattr(mod, "git_blob", lambda *_args: b"forged")
@@ -554,12 +1395,43 @@ def test_unknown_detector_version_fails_closed():
         mod.validate_consumer_contract(mod.SCHEMA_VERSION, "future-detector")
 
 
+def test_canonical_runtime_mismatch_fails_before_artifact_reads(monkeypatch):
+    mod = _module()
+    called = False
+
+    def forbidden_read(*_args, **_kwargs):
+        nonlocal called
+        called = True
+        raise AssertionError("artifact read must not begin")
+
+    monkeypatch.setattr(
+        mod,
+        "canonical_runtime_provenance",
+        lambda: {
+            "implementation": "CPython",
+            "version": "3.14.4",
+            "requirement": "CPython==3.9.6",
+            "verification": "PASS",
+        },
+    )
+    monkeypatch.setattr(mod, "verified_historical_inputs", forbidden_read)
+    with pytest.raises(mod.P541BR2Error, match="canonical generation runtime mismatch"):
+        mod.build_artifact(REPO_ROOT)
+    assert called is False
+
+
 def test_strict_json_rejects_duplicate_and_nonfinite_values():
     mod = _module()
     with pytest.raises(mod.P541BR2Error, match="duplicate JSON key"):
         mod.strict_json_bytes(b'{"same":1,"same":2}')
     with pytest.raises(mod.P541BR2Error, match="non-finite"):
         mod.strict_json_bytes(b'{"value":NaN}')
+
+
+def test_canonical_serialization_failure_remains_terminal():
+    mod = _module()
+    with pytest.raises(mod.P541BR2Error, match="not finite canonical JSON"):
+        mod.canonical_bytes({"not_json": object()})
 
 
 def test_findings_publish_separate_resolved_api_and_syntax_fields():
@@ -630,6 +1502,12 @@ def test_artifact_contract_is_complete(artifact):
     mod = _module()
     assert artifact["schema_version"] == mod.SCHEMA_VERSION
     assert artifact["detector_version"] == mod.DETECTOR_VERSION
+    assert artifact["runtime_contract"] == {
+        "implementation": "CPython",
+        "version": "3.9.6",
+        "requirement": "CPython==3.9.6",
+        "verification": "PASS",
+    }
     assert artifact["summary"]["total_records"] == 580
     assert len(artifact["provenance"]["source_manifest"]["ordered_entries"]) == 580
     assert artifact["provenance"]["source_manifest"]["content_read_failures"] == 0
@@ -640,6 +1518,172 @@ def test_artifact_contract_is_complete(artifact):
         assert sum(counts.values()) == 580
     assert set(artifact["provenance"]["historical_inputs"]) == set(mod.HISTORICAL_INPUTS)
     mod.validate_artifact(artifact)
+
+
+@pytest.mark.parametrize(
+    ("field", "message"),
+    [
+        ("implementation_base_oid", "top-level provenance"),
+        ("frozen_source_commit", "top-level provenance"),
+    ],
+)
+def test_top_level_provenance_mismatch_remains_terminal(artifact, field, message):
+    mod = _module()
+    forged = copy.deepcopy(artifact)
+    forged[field] = "0" * 40
+    with pytest.raises(mod.P541BR2Error, match=message):
+        mod.validate_artifact(forged)
+
+
+def test_generator_provenance_mismatch_remains_terminal(artifact):
+    mod = _module()
+    forged = copy.deepcopy(artifact)
+    forged["generator"]["sha256"] = "0" * 64
+    with pytest.raises(mod.P541BR2Error, match="generator provenance"):
+        mod.validate_artifact(forged)
+
+
+def test_runtime_provenance_mismatch_remains_terminal(artifact):
+    mod = _module()
+    forged = copy.deepcopy(artifact)
+    forged["runtime_contract"]["version"] = "3.14.4"
+    with pytest.raises(mod.P541BR2Error, match="runtime provenance"):
+        mod.validate_artifact(forged)
+
+
+@pytest.mark.parametrize("location", ["detector", "provenance"])
+def test_nested_runtime_contract_mismatch_remains_terminal(artifact, location):
+    mod = _module()
+    forged = copy.deepcopy(artifact)
+    if location == "detector":
+        forged["detector_contract"]["canonical_generation_runtime"] = "CPython==3.14.4"
+    else:
+        del forged["provenance"]["generation_runtime"]
+    with pytest.raises(mod.P541BR2Error, match="runtime contract"):
+        mod.validate_artifact(forged)
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "read_failed_decode_succeeded",
+        "decode_failed_parse_succeeded",
+        "parse_failed_complete",
+    ],
+)
+def test_impossible_scan_phase_transition_is_rejected(artifact, mutation):
+    mod = _module()
+    forged = copy.deepcopy(artifact)
+    record = next(
+        item
+        for item in forged["method_classification_records"]
+        if item["scan_status"] == "unsupported"
+    )
+    if mutation == "read_failed_decode_succeeded":
+        record["scan"]["read_status"] = "failed"
+        record["source_identity"]["git_blob_read_status"] = "failed"
+        record["source_identity"]["byte_size"] = None
+        record["source_identity"]["sha256"] = None
+    elif mutation == "decode_failed_parse_succeeded":
+        record["scan"]["decode_status"] = "failed"
+        record["source_identity"]["utf8_decoding_status"] = "failed"
+    else:
+        complete = next(
+            item
+            for item in forged["method_classification_records"]
+            if item["scan_status"] == "complete"
+        )
+        complete["scan"]["parse_status"] = "failed"
+    with pytest.raises(mod.P541BR2Error, match="scan phase|complete scan"):
+        mod.validate_artifact(forged)
+
+
+def test_semantically_impossible_low_risk_record_is_rejected(artifact):
+    mod = _module()
+    forged = copy.deepcopy(artifact)
+    record = next(
+        item
+        for item in forged["method_classification_records"]
+        if item["scan_status"] == "complete"
+        and item["evidence"]["transitive_external_state"]["state"] == "unknown"
+    )
+    record["safety_classification"] = {
+        "risk_level": "low",
+        "low_risk_eligible": True,
+        "disposition": "STATIC_LOW_RISK_ELIGIBLE",
+        "reasons": [],
+    }
+    with pytest.raises(mod.P541BR2Error, match="safety classification|unsafe low-risk"):
+        mod.validate_artifact(forged)
+
+
+def test_scan_failure_reason_must_match_failed_phase(artifact):
+    mod = _module()
+    forged = copy.deepcopy(artifact)
+    record = next(
+        item
+        for item in forged["method_classification_records"]
+        if item["scan_status"] == "syntax_error"
+    )
+    record["scan"]["error"]["code"] = "git_blob_read_failed"
+    record["scan"]["error"]["message"] = "git_blob_read_failed"
+    record["safety_classification"]["reasons"] = ["git_blob_read_failed"]
+    with pytest.raises(mod.P541BR2Error, match="failure reason mismatch"):
+        mod.validate_artifact(forged)
+
+
+def test_conclusive_evidence_cannot_publish_unknown_reason(artifact):
+    mod = _module()
+    forged = copy.deepcopy(artifact)
+    record = next(
+        item
+        for item in forged["method_classification_records"]
+        if item["safety_classification"]["risk_level"] == "low"
+    )
+    record["evidence"]["transitive_external_state"]["reason"] = (
+        "import_resolution_incomplete"
+    )
+    with pytest.raises(mod.P541BR2Error, match="evidence reason/state mismatch"):
+        mod.validate_artifact(forged)
+
+
+@pytest.mark.parametrize(
+    "reason",
+    [
+        "import_resolution_incomplete:ValueError(secret)",
+        "import_resolution_incomplete:/Users/private/source.py",
+        "ast_parse_failed:byte=1",
+        "utf8_decode_failed:line=1",
+        "imported_scan_incomplete; import_resolution_incomplete",
+        "import_resolution_incomplete; import_resolution_incomplete",
+    ],
+)
+def test_unknown_evidence_reason_requires_exact_bounded_grammar(artifact, reason):
+    mod = _module()
+    forged = copy.deepcopy(artifact)
+    record = next(
+        item
+        for item in forged["method_classification_records"]
+        if item["evidence"]["transitive_external_state"]["state"] == "unknown"
+    )
+    record["evidence"]["transitive_external_state"]["reason"] = reason
+    with pytest.raises(mod.P541BR2Error, match="unknown evidence reason mismatch"):
+        mod.validate_artifact(forged)
+
+
+@pytest.mark.parametrize(
+    "reason",
+    [
+        "ast_parse_failed:line=1",
+        "utf8_decode_failed:byte=0",
+        "import_resolution_incomplete",
+        "import_resolution_incomplete; imported_scan_incomplete",
+        "ambiguous DB-like API could not be resolved",
+        "one-hop resolver not supplied",
+    ],
+)
+def test_bounded_unknown_reason_grammar_accepts_generated_forms(reason):
+    assert _module()._valid_bounded_failure_reason(reason) is True
 
 
 def test_aggregate_mismatch_remains_terminal(artifact):
@@ -668,7 +1712,7 @@ def test_blob_read_failure_retains_order_continues_and_is_byte_deterministic(
 
     def injected(repo_root, blob_id):
         if blob_id == target["blob_id"]:
-            raise RuntimeError("injected /Users/private/blob failure")
+            raise mod.GitBlobReadError("injected /Users/private/blob failure")
         return original(repo_root, blob_id)
 
     monkeypatch.setattr(mod, "git_blob", injected)
@@ -731,8 +1775,28 @@ def test_historical_p541b_artifacts_remain_unchanged():
         assert hashlib.sha256(raw).hexdigest() == identity["sha256"]
 
 
+def test_static_guard_resolves_aliases_without_generator_self_certification():
+    tree = ast.parse(
+        "import sqlite3 as s\n"
+        "import subprocess as sp\n"
+        "connector = s.connect\n"
+        "runner = getattr(sp, 'run')\n"
+        "loader = __import__\n"
+        "dynamic = getattr(sp, member)\n"
+        "connector('x.db')\n"
+        "runner(['git', 'status'])\n"
+        "loader('target')\n"
+        "dynamic([])\n"
+    )
+    names = {name for _node, name in _static_resolved_calls(tree)}
+    assert "sqlite3.connect" in names
+    assert "subprocess.run" in names
+    assert "__import__" in names
+    assert "subprocess.<dynamic_getattr>" in names
+
+
 def test_generator_opens_no_project_database():
-    source, tree = _generator_source_tree()
+    _source, tree = _generator_source_tree()
     imported = {
         alias.name
         for node in ast.walk(tree)
@@ -744,54 +1808,44 @@ def test_generator_opens_no_project_database():
         if isinstance(node, ast.ImportFrom) and node.module
     }
     assert {"sqlite3", "sqlalchemy", "lottery_api.database"}.isdisjoint(imported)
-    call_names = {
-        ast.unparse(node.func)
-        for node in ast.walk(tree)
-        if isinstance(node, ast.Call)
+    resolved_calls = _static_resolved_calls(tree)
+    call_names = {name.replace("()", "") for _node, name in resolved_calls}
+    forbidden_db_leaves = {"connect", "execute", "executemany", "cursor"}
+    assert not {
+        name
+        for name in call_names
+        if any(marker in name.lower() for marker in ("sqlite3", "sqlalchemy", "databasemanager"))
+        or name.rsplit(".", 1)[-1].lower() in forbidden_db_leaves
     }
-    assert {"open", "builtins.open", "connect", "execute", "executemany", "cursor"}.isdisjoint(
-        call_names
-    )
+    assert {"open", "builtins.open"}.isdisjoint(call_names)
 
     db_suffix = re.compile(r"(?i)(?:^|[/\\])[^/\\\s]+\.(?:db|sqlite|sqlite3)$")
-    path_arguments = [
-        argument.value
+    string_literals = [
+        node.value
         for node in ast.walk(tree)
-        if isinstance(node, ast.Call)
-        and ast.unparse(node.func).rsplit(".", 1)[-1]
-        in {"Path", "open", "read_bytes", "read_text", "write_bytes", "write_text"}
-        for argument in node.args
-        if isinstance(argument, ast.Constant) and isinstance(argument.value, str)
+        if isinstance(node, ast.Constant) and isinstance(node.value, str)
     ]
-    assert not [value for value in path_arguments if db_suffix.search(value)]
+    assert not [value for value in string_literals if db_suffix.search(value)]
 
     subprocess_calls = [
-        node
-        for node in ast.walk(tree)
-        if isinstance(node, ast.Call) and ast.unparse(node.func).startswith("subprocess.")
+        (node, name)
+        for node, name in resolved_calls
+        if name.startswith("subprocess.")
     ]
     assert subprocess_calls
-    for call in subprocess_calls:
-        assert ast.unparse(call.func) == "subprocess.run"
+    for call, name in subprocess_calls:
+        assert name == "subprocess.run"
         assert isinstance(call.args[0], ast.List)
         assert isinstance(call.args[0].elts[0], ast.Constant)
         assert call.args[0].elts[0].value == "git"
-        assert not any(
-            keyword.arg == "shell"
-            and isinstance(keyword.value, ast.Constant)
-            and keyword.value.value is True
-            for keyword in call.keywords
-        )
-    assert "sqlite3" not in imported
-    assert "sqlalchemy" not in imported
-    assert "lottery_v2.db" not in source
+        assert not any(keyword.arg == "shell" for keyword in call.keywords)
 
 
 def test_generator_does_not_import_target_modules():
     _source, tree = _generator_source_tree()
     allowed_roots = {
         "__future__", "ast", "hashlib", "json", "posixpath", "re",
-        "subprocess", "collections", "pathlib", "typing",
+        "subprocess", "sys", "collections", "pathlib", "typing",
     }
     imported_roots = {
         alias.name.split(".", 1)[0]
@@ -808,11 +1862,8 @@ def test_generator_does_not_import_target_modules():
 
 def test_generator_does_not_execute_target_modules():
     source, tree = _generator_source_tree()
-    call_names = {
-        ast.unparse(node.func)
-        for node in ast.walk(tree)
-        if isinstance(node, ast.Call)
-    }
+    resolved_calls = _static_resolved_calls(tree)
+    call_names = {name.replace("()", "") for _node, name in resolved_calls}
     forbidden_calls = {
         "exec",
         "eval",
@@ -825,6 +1876,13 @@ def test_generator_does_not_execute_target_modules():
         "os.popen",
     }
     assert forbidden_calls.isdisjoint(call_names)
+    assert not {
+        name
+        for name in call_names
+        if "<dynamic_getattr>" in name
+        and name.split(".", 1)[0]
+        in {"builtins", "importlib", "os", "runpy", "subprocess"}
+    }
     assert "__import__(" not in source
     assert "exec(" not in source
     imported_roots = {
@@ -838,9 +1896,10 @@ def test_generator_does_not_execute_target_modules():
         if isinstance(node, ast.ImportFrom) and node.module
     }
     assert {"importlib", "runpy"}.isdisjoint(imported_roots)
-    for node in ast.walk(tree):
-        if not isinstance(node, ast.Call) or ast.unparse(node.func) != "subprocess.run":
+    for node, name in resolved_calls:
+        if not name.startswith("subprocess."):
             continue
+        assert name == "subprocess.run"
         assert isinstance(node.args[0], ast.List)
         assert isinstance(node.args[0].elts[0], ast.Constant)
         assert node.args[0].elts[0].value == "git"

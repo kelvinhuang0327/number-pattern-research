@@ -13,7 +13,8 @@
 ## Evidence Schema and Fail-Closed Rules
 
 - Schema: `p541b-r2-evidence-v1`
-- Detector: `p541b-r2-detector-v3`
+- Detector: `p541b-r2-detector-v4`
+- Canonical generation runtime: `CPython==3.9.6` — verification **PASS**.
 - Every evidence family publishes `state`, `scope`, `detector_id`, and deterministic `findings`.
 - Every finding publishes separate `resolved_api` and `resolved_syntax` fields plus `imported_module_path`; exactly one resolved field is populated.
 - States are exactly `detected`, `not_detected`, and `unknown`.
@@ -32,7 +33,7 @@
 - Requests/urllib/http.client/httpx/aiohttp/socket network I/O and external URLs.
 - Direct and aliased subprocess/process-spawning APIs.
 - Hardcoded absolute, DB-like, draw/date, and external-service inputs.
-- Bounded one-hop project imports with cycle stops and ambiguity routed to `unknown`.
+- Bounded one-hop project imports promote module-load effects and effects reachable through invoked functions, classes, instance methods, same-module inheritance, and helper calls; cycles stop and unresolved direct imports or invoked deeper project dependencies route to `unknown`.
 
 ## Summary
 
@@ -42,15 +43,15 @@
 | Complete scans | 544 |
 | Unknown scans | 36 |
 | Direct findings | 3545 |
-| Transitive findings | 77 |
+| Transitive findings | 11484 |
 | Scan `complete` | 544 |
 | Scan `syntax_error` | 1 |
 | Scan `unreadable` | 0 |
 | Scan `unsupported` | 35 |
-| Risk `high` | 419 |
-| Risk `low` | 52 |
-| Risk `medium` | 9 |
-| Risk `unknown` | 100 |
+| Risk `high` | 110 |
+| Risk `low` | 22 |
+| Risk `medium` | 4 |
+| Risk `unknown` | 444 |
 
 ## Tri-State Evidence
 
@@ -61,7 +62,7 @@
 | `network_io` | 17 | 527 | 36 |
 | `process_execution` | 12 | 532 | 36 |
 | `other_external_effect` | 57 | 512 | 11 |
-| `transitive_external_state` | 33 | 451 | 96 |
+| `transitive_external_state` | 0 | 137 | 443 |
 | `import_time_execution` | 12 | 536 | 32 |
 | `hardcoded_absolute_path` | 56 | 489 | 35 |
 | `hardcoded_draw_or_date` | 42 | 503 | 35 |
@@ -79,7 +80,7 @@
 
 ## Frozen Provenance
 
-- Generator SHA-256: `77c9059ef8ccd5ce86c30bdf5392944ef89b8364b0761383599bd407864aec0d`
+- Generator SHA-256: `929a7c904dca4e431baa95081a5601348ba1fd929f1a49647dd0f71f541b4063`
 - Historical P541B JSON blob: `12f1595c96e3f9deddc7a7d2d9549c03144635f0` — verification **PASS**
 - Historical P541B Markdown blob: `3b28e39bfe747c5f196b9aec6610284709466cf8` — verification **PASS**
 - Historical P541A JSON blob: `7557f364160dc09c91a19c07b370cb4b231c0194` — verification **PASS**
@@ -96,6 +97,7 @@ PR #663 remains **HOLD_DO_NOT_MERGE** and was not changed. A separately authoriz
 
 - Static detection is conservative and does not prove runtime safety.
 - Unknown blocks low-risk eligibility and requires targeted review or detector support.
+- Canonical artifact generation is pinned to CPython 3.9.6; other runtimes fail closed before source reads.
 - Historical identity/method-family classifications are retained as context, not re-proven.
 - No database, source import, source execution, replay, or predictive evaluation was performed.
 

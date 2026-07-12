@@ -161,8 +161,15 @@ def test_source_path_escape_missing_and_symlink_fail_closed(tmp_path):
 # ── classify_record: one synthetic record per bucket ────────────────────
 
 
-def _synthetic_record(risk_level, low_risk_eligible, identity, recommended_action="include_in_replay_readiness",
-                       source_path="analysis/p541c_r2_biglotto_legacy_method_review_readiness_selection.py"):
+def _synthetic_record(
+    risk_level,
+    low_risk_eligible,
+    identity,
+    recommended_action="include_in_replay_readiness",
+    runnable_status="needs_adapter_wrapper",
+    confidence="high",
+    source_path="analysis/p541c_r2_biglotto_legacy_method_review_readiness_selection.py",
+):
     return {
         "method_id": "synthetic",
         "source_path": source_path,
@@ -176,27 +183,37 @@ def _synthetic_record(risk_level, low_risk_eligible, identity, recommended_actio
             "method_family": "synthetic_family",
             "is_actual_prediction_method": identity,
             "recommended_action": recommended_action,
-            "runnable_status": "runnable_with_existing_adapter",
-            "confidence": "high",
+            "runnable_status": runnable_status,
+            "confidence": confidence,
             "duplicate_of_existing_strategy": None,
             "why_not_runnable": "",
         },
     }
 
 
-def test_classify_record_safe_confirmed():
+def test_classify_record_low_risk_confirmed_preserves_adapter_requirement():
     mod = _module()
     rec = _synthetic_record("low", True, True)
     d = mod.classify_record(rec, REPO_ROOT and mod.REPO_ROOT)
-    assert d["p541c_r2_bucket"] == mod.BUCKET_SAFE_CONFIRMED
+    assert d["p541c_r2_bucket"] == mod.BUCKET_NEEDS_ADAPTER
     assert d["replay_readiness_priority"] == "high"
+    assert d["required_change_before_replay"] == "adapter_wrapper"
+    assert d["p541c_decision"] == d["p541c_r2_bucket"]
 
 
-def test_classify_record_safe_identity_unresolved():
+def test_classify_record_ready_requires_explicit_upstream_ready_status():
+    mod = _module()
+    rec = _synthetic_record("low", True, True, runnable_status="runnable_with_existing_adapter")
+    d = mod.classify_record(rec, mod.REPO_ROOT)
+    assert d["p541c_r2_bucket"] == mod.BUCKET_READY
+    assert d["required_change_before_replay"] == "none"
+
+
+def test_classify_record_low_risk_identity_unresolved_needs_cto_review():
     mod = _module()
     rec = _synthetic_record("low", True, "unknown")
     d = mod.classify_record(rec, mod.REPO_ROOT)
-    assert d["p541c_r2_bucket"] == mod.BUCKET_SAFE_IDENTITY_UNRESOLVED
+    assert d["p541c_r2_bucket"] == mod.BUCKET_NEEDS_CTO_REVIEW
 
 
 def test_classify_record_low_but_not_a_method_is_excluded():
@@ -206,11 +223,23 @@ def test_classify_record_low_but_not_a_method_is_excluded():
     assert d["p541c_r2_bucket"] == mod.BUCKET_EXCLUDED
 
 
-def test_classify_record_medium_confirmed_needs_adapter_or_refactor():
+def test_classify_record_medium_confirmed_preserves_adapter_requirement():
     mod = _module()
     rec = _synthetic_record("medium", False, True)
     d = mod.classify_record(rec, mod.REPO_ROOT)
-    assert d["p541c_r2_bucket"] == mod.BUCKET_NEEDS_ADAPTER_OR_REFACTOR
+    assert d["p541c_r2_bucket"] == mod.BUCKET_NEEDS_ADAPTER
+    assert d["replay_readiness_priority"] == "medium"
+
+
+def test_classify_record_confirmed_refactor_status_stays_separate():
+    mod = _module()
+    rec = _synthetic_record(
+        "low", True, True, runnable_status="needs_db_safety_refactor"
+    )
+    d = mod.classify_record(rec, mod.REPO_ROOT)
+    assert d["p541c_r2_bucket"] == mod.BUCKET_NEEDS_REFACTOR
+    assert d["required_change_before_replay"] == "db_safety_refactor"
+    assert d["replay_readiness_priority"] == "medium"
 
 
 def test_classify_record_medium_unresolved_needs_cto_review():
@@ -294,13 +323,29 @@ def test_invariant_identity_unresolved_records_never_appear_in_shortlist(p541b_r
     decisions = mod.classify_all(p541b_r2)
     shortlist = mod.build_shortlist(decisions)
     identity_unresolved_ids = {
-        d["method_id"] for d in decisions if d["p541c_r2_bucket"] == mod.BUCKET_SAFE_IDENTITY_UNRESOLVED
+        d["method_id"]
+        for d in decisions
+        if d["historical_p541b_status"]["is_actual_prediction_method"] == "unknown"
     }
     shortlist_ids = {d["method_id"] for d in shortlist}
     assert identity_unresolved_ids & shortlist_ids == set()
     for d in shortlist:
-        assert d["p541c_r2_bucket"] == mod.BUCKET_SAFE_CONFIRMED
+        assert d["p541c_r2_bucket"] == mod.BUCKET_NEEDS_ADAPTER
         assert d["historical_p541b_status"]["is_actual_prediction_method"] is True
+
+
+def test_invariant_low_risk_does_not_erase_upstream_readiness_contract(p541b_r2):
+    mod = _module()
+    decisions = mod.classify_all(p541b_r2)
+    low_confirmed_adapter = [
+        d for d in decisions
+        if d["p541b_r2_status"]["risk_level"] == "low"
+        and d["historical_p541b_status"]["is_actual_prediction_method"] is True
+        and d["historical_p541b_status"]["runnable_status"] == "needs_adapter_wrapper"
+    ]
+    assert len(low_confirmed_adapter) == 12
+    assert all(d["p541c_r2_bucket"] == mod.BUCKET_NEEDS_ADAPTER for d in low_confirmed_adapter)
+    assert all(d["required_change_before_replay"] == "adapter_wrapper" for d in low_confirmed_adapter)
 
 
 # ── shortlist ────────────────────────────────────────────────────────────
@@ -318,9 +363,15 @@ def test_shortlist_capped_and_deduplicated(p541b_r2):
 def test_shortlist_is_not_padded_to_historical_size(p541b_r2):
     mod = _module()
     decisions = mod.classify_all(p541b_r2)
-    pool = [d for d in decisions if d["p541c_r2_bucket"] == mod.BUCKET_SAFE_CONFIRMED]
+    pool = [
+        d for d in decisions
+        if d["p541c_r2_bucket"] == mod.BUCKET_NEEDS_ADAPTER
+        and d["p541b_r2_status"]["risk_level"] == "low"
+        and d["replay_readiness_priority"] == "high"
+    ]
     shortlist = mod.build_shortlist(decisions)
     assert len(shortlist) == len(pool)
+    assert len(shortlist) == 5
     assert len(shortlist) < 20
 
 
@@ -344,10 +395,10 @@ def test_build_artifact_has_all_required_sections(p541b_r2, input_provenance):
     mod = _module()
     artifact = mod.build_artifact(p541b_r2, input_provenance, generated_at="TEST")
     required_sections = [
-        "summary", "bucket_definitions", "shortlist_rule", "reviewed_method_decisions",
-        mod.BUCKET_SAFE_CONFIRMED, mod.BUCKET_SAFE_IDENTITY_UNRESOLVED,
-        mod.BUCKET_NEEDS_ADAPTER_OR_REFACTOR, mod.BUCKET_NEEDS_CTO_REVIEW, mod.BUCKET_EXCLUDED,
-        "shortlist_safe_confirmed_methods", "next_task_recommendation",
+        "summary", "bucket_definitions", "selection_policy", "reviewed_method_decisions",
+        mod.BUCKET_READY, mod.BUCKET_NEEDS_ADAPTER, mod.BUCKET_NEEDS_REFACTOR,
+        mod.BUCKET_NEEDS_CTO_REVIEW, "excluded_methods",
+        "high_priority_candidate_shortlist", "next_task_recommendation", "contract_reconciliation",
         "input_provenance", "provenance_and_limits", "disclaimer", "supersedes",
     ]
     for section in required_sections:
@@ -385,6 +436,7 @@ def test_render_markdown_contains_key_sections(p541b_r2, input_provenance):
     md = mod.render_markdown(artifact)
     assert "# P541C_R2" in md
     assert "## Summary" in md
+    assert "## Contract Reconciliation" in md
     assert "## Bucket Definitions" in md
     assert "## Shortlist" in md
     assert artifact["next_task_recommendation"] in md

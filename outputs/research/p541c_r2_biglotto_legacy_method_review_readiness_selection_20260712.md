@@ -16,11 +16,18 @@
 | Metric | Count |
 |---|---|
 | total_reviewed_from_p541b_r2 | 580 |
-| safe_confirmed_method | 12 |
-| safe_identity_unresolved_needs_cto_review | 10 |
-| needs_adapter_or_refactor_before_readiness | 0 |
-| needs_cto_review | 448 |
-| excluded_from_replay | 110 |
+| ready_for_replay_readiness_now | 0 |
+| needs_adapter_before_readiness | 12 |
+| needs_refactor_before_readiness | 0 |
+| needs_cto_review | 458 |
+| exclude_from_replay | 110 |
+
+## Contract Reconciliation
+
+- task_id: `P541C_R2_PR686_CONTRACT_RECONCILIATION_R1`
+- status: **PASS**
+- reconciled_invariant: P541B_R2 safety risk and historical replay readiness are orthogonal: risk_level=low does not erase runnable_status or required change.
+- prior_drift: PR #686 v1 labeled 12 low-risk confirmed methods safe_confirmed_method with required_change_before_replay=none even though all 12 upstream records say runnable_status=needs_adapter_wrapper.
 
 ## Verified Input Provenance
 
@@ -30,32 +37,25 @@
 
 ## Bucket Definitions
 
-- **safe_confirmed_method**: P541B_R2 risk_level=low (low_risk_eligible=True) AND P541B historical is_actual_prediction_method=True. Safety-clear and identity-confirmed; the only bucket eligible for the shortlist.
-- **safe_identity_unresolved_needs_cto_review**: P541B_R2 risk_level=low AND P541B historical is_actual_prediction_method=unknown. Safety-clear but identity itself is unresolved; routed to CTO review for identity confirmation only, never silently promoted to the shortlist.
-- **needs_adapter_or_refactor_before_readiness**: P541B_R2 risk_level=medium AND P541B historical is_actual_prediction_method=True. Confirmed method with a bounded, non-high-risk blocker needing adapter or refactor work.
-- **needs_cto_review**: P541B_R2 risk_level=unknown (any identity), OR risk_level=medium with unresolved/negative identity. Unresolved risk is never resolved to safe; carried through to human review verbatim.
-- **excluded_from_replay**: P541B_R2 risk_level=high (any identity, safety-blocking regardless of confidence), OR P541B historical recommended_action is mark_duplicate/mark_not_strategy/mark_deprecated, OR risk_level=low with is_actual_prediction_method=False (safe but not a prediction method).
+- **ready_for_replay_readiness_now**: P541B_R2 risk_level=low, historical identity confirmed, and historical runnable_status=runnable_with_existing_adapter. No readiness change remains.
+- **needs_adapter_before_readiness**: Confirmed method whose historical runnable_status requires an adapter wrapper or parameterization. Low-risk/high-confidence members alone may enter the shortlist.
+- **needs_refactor_before_readiness**: Confirmed method whose historical runnable_status requires pure-function or DB-safety refactoring. High safety risk remains excluded.
+- **needs_cto_review**: P541B_R2 risk_level=unknown (any identity), unresolved historical identity at low/medium risk, or a confirmed method with a non-actionable readiness status. Unresolved risk is never resolved to safe.
+- **exclude_from_replay**: P541B_R2 risk_level=high (any identity, safety-blocking regardless of confidence), OR P541B historical recommended_action is mark_duplicate/mark_not_strategy/mark_deprecated, OR risk_level=low with is_actual_prediction_method=False (safe but not a prediction method).
 
 ## Shortlist Rule
 
-BUCKET_SAFE_CONFIRMED members only, deduplicated by method_id, round-robin diversified across method_family, capped at 20, sorted deterministically by method_id within each family. Never padded: if fewer candidates qualify, the shortlist is exactly that smaller set.
+needs_adapter_before_readiness members only with P541B_R2 risk_level=low, confirmed method identity, and historical confidence=high; deduplicated by method_id, round-robin diversified across method_family, capped at 20, sorted deterministically by method_id within each family. Never padded: if fewer candidates qualify, the shortlist is exactly that smaller set.
 
-## Shortlist (n=12)
+## Shortlist (n=5)
 
 | method_id | method_family | source_path | reason |
 |---|---|---|---|
-| lottery_api/models/autogluon_model.py | ML_like | lottery_api/models/autogluon_model.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method. Safe and identity-confirmed. |
-| lottery_api/models/social_wisdom_predictor.py | folklore | lottery_api/models/social_wisdom_predictor.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method. Safe and identity-confirmed. |
-| tools/quick_ml_predict.py | frequency | tools/quick_ml_predict.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method. Safe and identity-confirmed. |
-| lottery_api/models/big_lotto_optimizer.py | hot_cold | lottery_api/models/big_lotto_optimizer.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method. Safe and identity-confirmed. |
-| tools/big_lotto_exhaustive_audit.py | report | tools/big_lotto_exhaustive_audit.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method. Safe and identity-confirmed. |
-| lottery_api/models/core_satellite.py | unknown | lottery_api/models/core_satellite.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method. Safe and identity-confirmed. |
-| lottery_api/models/p47_wave4_powerlotto_adapters.py | utility | lottery_api/models/p47_wave4_powerlotto_adapters.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method. Safe and identity-confirmed. |
-| lottery_api/models/zone_split.py | zone | lottery_api/models/zone_split.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method. Safe and identity-confirmed. |
-| lottery_api/models/bayesian_ensemble.py | ML_like | lottery_api/models/bayesian_ensemble.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method. Safe and identity-confirmed. |
-| tools/analyze_theoretical_vs_actual.py | unknown | tools/analyze_theoretical_vs_actual.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method. Safe and identity-confirmed. |
-| lottery_api/models/optimized_ensemble.py | ML_like | lottery_api/models/optimized_ensemble.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method. Safe and identity-confirmed. |
-| tools/advanced_prediction_engine.py | ML_like | tools/advanced_prediction_engine.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method. Safe and identity-confirmed. |
+| tools/advanced_prediction_engine.py | ML_like | tools/advanced_prediction_engine.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method with runnable_status=needs_adapter_wrapper. Readiness requirement preserved as adapter_wrapper. |
+| lottery_api/models/social_wisdom_predictor.py | folklore | lottery_api/models/social_wisdom_predictor.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method with runnable_status=needs_adapter_wrapper. Readiness requirement preserved as adapter_wrapper. |
+| tools/quick_ml_predict.py | frequency | tools/quick_ml_predict.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method with runnable_status=needs_adapter_wrapper. Readiness requirement preserved as adapter_wrapper. |
+| tools/big_lotto_exhaustive_audit.py | report | tools/big_lotto_exhaustive_audit.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method with runnable_status=needs_adapter_wrapper. Readiness requirement preserved as adapter_wrapper. |
+| lottery_api/models/zone_split.py | zone | lottery_api/models/zone_split.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method with runnable_status=needs_adapter_wrapper. Readiness requirement preserved as adapter_wrapper. |
 
 ## Recommended Next Task
 
@@ -75,5 +75,5 @@ BUCKET_SAFE_CONFIRMED members only, deduplicated by method_id, round-robin diver
 - **known_limits**:
   - needs_cto_review records (from unknown risk or unresolved/negative identity at medium risk) were not further resolved; P541B_R2's own evidence already represents the limit of static analysis.
   - Source identity verification reads raw bytes only to compute size and SHA-256; this does not constitute new semantic or runtime analysis.
-  - Bucket/priority assignment is a deterministic function of P541B_R2's own risk evidence and P541B's historical identity fields; it is a triage aid for the next task, not a safety guarantee.
+  - Bucket/priority assignment is a deterministic function of P541B_R2's risk evidence plus P541B's historical identity, runnable_status, and confidence fields; it is a triage aid for the next task, not a safety guarantee.
 - **disclaimer**: Historical legacy method review and replay-readiness selection only; not a prediction, betting edge, future-winning, or production-readiness claim.

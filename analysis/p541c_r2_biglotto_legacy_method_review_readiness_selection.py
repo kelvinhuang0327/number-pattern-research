@@ -36,21 +36,33 @@ DISCLAIMER = (
     "not a prediction, betting edge, future-winning, or production-readiness claim."
 )
 
-BUCKET_SAFE_CONFIRMED = "safe_confirmed_method"
-BUCKET_SAFE_IDENTITY_UNRESOLVED = "safe_identity_unresolved_needs_cto_review"
-BUCKET_NEEDS_ADAPTER_OR_REFACTOR = "needs_adapter_or_refactor_before_readiness"
+BUCKET_READY = "ready_for_replay_readiness_now"
+BUCKET_NEEDS_ADAPTER = "needs_adapter_before_readiness"
+BUCKET_NEEDS_REFACTOR = "needs_refactor_before_readiness"
 BUCKET_NEEDS_CTO_REVIEW = "needs_cto_review"
-BUCKET_EXCLUDED = "excluded_from_replay"
+BUCKET_EXCLUDED = "exclude_from_replay"
 
 ALL_BUCKETS = (
-    BUCKET_SAFE_CONFIRMED,
-    BUCKET_SAFE_IDENTITY_UNRESOLVED,
-    BUCKET_NEEDS_ADAPTER_OR_REFACTOR,
+    BUCKET_READY,
+    BUCKET_NEEDS_ADAPTER,
+    BUCKET_NEEDS_REFACTOR,
     BUCKET_NEEDS_CTO_REVIEW,
     BUCKET_EXCLUDED,
 )
 
 EXCLUDE_RECOMMENDED_ACTIONS = {"mark_duplicate", "mark_not_strategy", "mark_deprecated"}
+ALLOWED_RECOMMENDED_ACTIONS = {
+    "exclude_from_replay", "include_in_replay_readiness", "mark_deprecated",
+    "mark_duplicate", "mark_not_strategy", "needs_cto_review",
+}
+ALLOWED_RUNNABLE_STATUSES = {
+    "ambiguous_needs_cto_review", "broken_or_import_error",
+    "hardcoded_paths_or_dates", "imports_db_or_runs_work_at_module_load",
+    "needs_adapter_wrapper", "needs_db_safety_refactor",
+    "needs_refactor_to_pure_function", "not_a_strategy",
+    "obsolete_or_deprecated", "runnable_with_existing_adapter",
+    "unsafe_side_effects",
+}
 
 SHORTLIST_MAX = 20
 
@@ -183,6 +195,12 @@ def validate_upstream_contract(p541b_r2: dict[str, Any]) -> None:
         identity = historical["is_actual_prediction_method"]
         if identity is not True and identity is not False and identity != "unknown":
             raise P541CR2ValidationError(f"unknown historical method identity: {method_id}")
+        if historical["recommended_action"] not in ALLOWED_RECOMMENDED_ACTIONS:
+            raise P541CR2ValidationError(f"unknown recommended_action: {method_id}")
+        if historical["runnable_status"] not in ALLOWED_RUNNABLE_STATUSES:
+            raise P541CR2ValidationError(f"unknown runnable_status: {method_id}")
+        if historical["confidence"] not in ("high", "medium", "low"):
+            raise P541CR2ValidationError(f"unknown confidence: {method_id}")
 
 
 def source_file_identity(source_path: str, repo_root: Path = REPO_ROOT) -> dict[str, Any]:
@@ -212,9 +230,9 @@ def classify_record(rec: dict[str, Any], repo_root: Path = REPO_ROOT) -> dict[st
     """Map one P541B_R2 method_classification_record to a P541C_R2 decision.
 
     Safety (risk_level) is always the primary, fail-closed gate: unknown never
-    resolves to eligible, and only records already proven low_risk_eligible by
-    P541B_R2 are further split by historical method identity. This is the only
-    place identity is allowed to matter for bucket assignment.
+    resolves to eligible. Replay readiness is then derived from P541B's
+    historical runnable_status; low safety risk never means that an adapter or
+    refactor requirement has disappeared.
     """
     method_id = rec["method_id"]
     safety = rec["safety_classification"]
@@ -254,53 +272,68 @@ def classify_record(rec: dict[str, Any], repo_root: Path = REPO_ROOT) -> dict[st
             f"P541B historical: {recommended_action}; superseded/non-strategy, "
             "excluded regardless of P541B_R2 risk_level."
         )
-    elif risk == "low":
-        if identity is True:
-            bucket = BUCKET_SAFE_CONFIRMED
-            priority = "high"
+    elif identity == "unknown":
+        bucket = BUCKET_NEEDS_CTO_REVIEW
+        priority = "unknown"
+        required_change = "identity_confirmation"
+        reason = (
+            f"P541B_R2: risk_level={risk} ({safety['disposition']}), but P541B historical "
+            "method identity is unresolved (is_actual_prediction_method=unknown). "
+            "Safety and identity remain separate; needs CTO identity review before any "
+            "readiness investment."
+        )
+    elif identity is False:
+        bucket = BUCKET_EXCLUDED
+        priority = "exclude"
+        required_change = "none"
+        reason = (
+            f"P541B_R2: risk_level={risk} ({safety['disposition']}), but P541B historical "
+            "confirms this is not an actual prediction method; not a replay-readiness "
+            "candidate regardless of safety."
+        )
+    else:
+        runnable_status = historical["runnable_status"]
+        confidence = historical["confidence"]
+        if runnable_status == "runnable_with_existing_adapter":
+            bucket = BUCKET_READY
             required_change = "none"
-            reason = (
-                f"P541B_R2: risk_level=low ({safety['disposition']}); P541B historical: "
-                "confirmed actual prediction method. Safe and identity-confirmed."
-            )
-        elif identity == "unknown":
-            bucket = BUCKET_SAFE_IDENTITY_UNRESOLVED
-            priority = "unknown"
-            required_change = "identity_confirmation"
-            reason = (
-                f"P541B_R2: risk_level=low ({safety['disposition']}), but P541B historical "
-                "method identity is unresolved (is_actual_prediction_method=unknown). "
-                "Safety-clear but not silently promoted to the shortlist without confirmed "
-                "identity; needs a CTO read to confirm identity only, not safety."
-            )
-        else:
-            bucket = BUCKET_EXCLUDED
-            priority = "exclude"
-            required_change = "none"
-            reason = (
-                f"P541B_R2: risk_level=low ({safety['disposition']}), but P541B historical "
-                "confirms this is not an actual prediction method; not a replay-readiness "
-                "candidate regardless of safety."
-            )
-    else:  # medium
-        if identity is True:
-            bucket = BUCKET_NEEDS_ADAPTER_OR_REFACTOR
-            priority = historical["confidence"]
-            required_change = "adapter_or_refactor"
-            reason = (
-                f"P541B_R2: risk_level=medium ({safety['disposition']}); P541B historical: "
-                "confirmed actual prediction method needing adapter/refactor before any "
-                "readiness work."
+        elif runnable_status == "needs_adapter_wrapper":
+            bucket = BUCKET_NEEDS_ADAPTER
+            required_change = "adapter_wrapper"
+        elif runnable_status == "hardcoded_paths_or_dates":
+            bucket = BUCKET_NEEDS_ADAPTER
+            required_change = "parameterization"
+        elif runnable_status in ("needs_refactor_to_pure_function", "needs_db_safety_refactor"):
+            bucket = BUCKET_NEEDS_REFACTOR
+            required_change = (
+                "pure_function_refactor"
+                if runnable_status == "needs_refactor_to_pure_function"
+                else "db_safety_refactor"
             )
         else:
             bucket = BUCKET_NEEDS_CTO_REVIEW
             priority = "unknown"
             required_change = "unknown"
             reason = (
-                f"P541B_R2: risk_level=medium ({safety['disposition']}); P541B historical "
-                "method identity is not confirmed (is_actual_prediction_method="
-                f"{identity!r}); deferred to CTO review rather than auto-scoping repair "
-                "work for an unconfirmed method."
+                f"P541B_R2: risk_level={risk} ({safety['disposition']}); confirmed method "
+                f"has non-actionable runnable_status={runnable_status!r}; fail-closed CTO "
+                "review required."
+            )
+        if bucket != BUCKET_NEEDS_CTO_REVIEW:
+            if bucket == BUCKET_READY:
+                priority = "n-a"
+            elif bucket == BUCKET_NEEDS_REFACTOR:
+                priority = "medium" if confidence == "high" else "low"
+            elif confidence == "high" and risk == "low":
+                priority = "high"
+            elif confidence in ("high", "medium"):
+                priority = "medium"
+            else:
+                priority = "low"
+            reason = (
+                f"P541B_R2: risk_level={risk} ({safety['disposition']}); P541B historical: "
+                f"confirmed actual prediction method with runnable_status={runnable_status}. "
+                f"Readiness requirement preserved as {required_change}."
             )
 
     return {
@@ -321,6 +354,7 @@ def classify_record(rec: dict[str, Any], repo_root: Path = REPO_ROOT) -> dict[st
             "confidence": historical["confidence"],
         },
         "p541c_r2_bucket": bucket,
+        "p541c_decision": bucket,
         "decision_reason": reason,
         "required_change_before_replay": required_change,
         "replay_readiness_priority": priority,
@@ -336,12 +370,18 @@ def classify_all(p541b_r2: dict[str, Any], repo_root: Path = REPO_ROOT) -> list[
 
 
 def build_shortlist(decisions: list[dict[str, Any]], limit: int = SHORTLIST_MAX) -> list[dict[str, Any]]:
-    """Deterministic, family-diversified pick of BUCKET_SAFE_CONFIRMED only.
+    """Deterministic, family-diversified pick of safest high-priority adapters.
 
     Never pads: if fewer than `limit` records qualify, the shortlist is
     exactly that (possibly smaller) set, not artificially inflated.
     """
-    pool = [d for d in decisions if d["p541c_r2_bucket"] == BUCKET_SAFE_CONFIRMED]
+    pool = [
+        d for d in decisions
+        if d["p541c_r2_bucket"] == BUCKET_NEEDS_ADAPTER
+        and d["p541b_r2_status"]["risk_level"] == "low"
+        and d["replay_readiness_priority"] == "high"
+        and d["historical_p541b_status"]["is_actual_prediction_method"] is True
+    ]
     by_family: dict[str, list[dict[str, Any]]] = {}
     for d in sorted(pool, key=lambda d: d["method_id"]):
         by_family.setdefault(d["method_family"], []).append(d)
@@ -368,9 +408,9 @@ def summarize(decisions: list[dict[str, Any]]) -> dict[str, Any]:
         counts[d["p541c_r2_bucket"]] += 1
     return {
         "total_reviewed_from_p541b_r2": len(decisions),
-        BUCKET_SAFE_CONFIRMED: counts[BUCKET_SAFE_CONFIRMED],
-        BUCKET_SAFE_IDENTITY_UNRESOLVED: counts[BUCKET_SAFE_IDENTITY_UNRESOLVED],
-        BUCKET_NEEDS_ADAPTER_OR_REFACTOR: counts[BUCKET_NEEDS_ADAPTER_OR_REFACTOR],
+        BUCKET_READY: counts[BUCKET_READY],
+        BUCKET_NEEDS_ADAPTER: counts[BUCKET_NEEDS_ADAPTER],
+        BUCKET_NEEDS_REFACTOR: counts[BUCKET_NEEDS_REFACTOR],
         BUCKET_NEEDS_CTO_REVIEW: counts[BUCKET_NEEDS_CTO_REVIEW],
         BUCKET_EXCLUDED: counts[BUCKET_EXCLUDED],
     }
@@ -388,14 +428,24 @@ def validate_artifact(artifact: dict[str, Any]) -> None:
             raise P541CR2ValidationError(
                 f"fail-closed invariant violated: unknown risk routed to {d['p541c_r2_bucket']}: {d['method_id']}"
             )
-    shortlist_ids = {d["method_id"] for d in artifact["shortlist_safe_confirmed_methods"]}
+    shortlist_ids = {d["method_id"] for d in artifact["high_priority_candidate_shortlist"]}
     for d in decisions:
         if d["method_id"] in shortlist_ids:
-            if d["p541c_r2_bucket"] != BUCKET_SAFE_CONFIRMED:
-                raise P541CR2ValidationError(f"shortlist contains non-safe-confirmed record: {d['method_id']}")
+            if d["p541c_r2_bucket"] != BUCKET_NEEDS_ADAPTER:
+                raise P541CR2ValidationError(f"shortlist contains non-adapter record: {d['method_id']}")
             if d["historical_p541b_status"]["is_actual_prediction_method"] is not True:
                 raise P541CR2ValidationError(f"shortlist contains identity-unresolved record: {d['method_id']}")
-    by_bucket_total = sum(len(artifact[b]) for b in ALL_BUCKETS)
+            if d["required_change_before_replay"] == "none":
+                raise P541CR2ValidationError(f"shortlist loses readiness requirement: {d['method_id']}")
+            if d["replay_readiness_priority"] != "high":
+                raise P541CR2ValidationError(f"shortlist contains non-high-priority record: {d['method_id']}")
+    by_bucket_total = (
+        len(artifact[BUCKET_READY])
+        + len(artifact[BUCKET_NEEDS_ADAPTER])
+        + len(artifact[BUCKET_NEEDS_REFACTOR])
+        + len(artifact[BUCKET_NEEDS_CTO_REVIEW])
+        + len(artifact["excluded_methods"])
+    )
     if by_bucket_total != SOURCE_MANIFEST_COUNT:
         raise P541CR2ValidationError("bucket partition does not sum to 580")
     canonical_bytes(artifact)
@@ -417,7 +467,7 @@ def build_artifact(
     for d in decisions:
         by_bucket[d["p541c_r2_bucket"]].append(d)
 
-    if by_bucket[BUCKET_NEEDS_ADAPTER_OR_REFACTOR] or by_bucket[BUCKET_NEEDS_CTO_REVIEW]:
+    if by_bucket[BUCKET_NEEDS_ADAPTER] or by_bucket[BUCKET_NEEDS_REFACTOR] or by_bucket[BUCKET_NEEDS_CTO_REVIEW]:
         next_task = "P541D_R2_BIG_LOTTO_ADAPTER_DESIGN_OR_CTO_REVIEW_NO_DB_WRITE"
     elif shortlist:
         next_task = "P541D_R2_BIG_LOTTO_ADAPTER_DESIGN_FOR_SELECTED_METHODS_NO_DB_WRITE"
@@ -427,7 +477,7 @@ def build_artifact(
     generated_at = generated_at or GENERATED_AT
 
     artifact = {
-        "schema_version": "p541c-r2-selection-v1",
+        "schema_version": "p541c-r2-selection-v2",
         "task_id": "P541C_R2_BIG_LOTTO_LEGACY_METHOD_REVIEW_READINESS_SELECTION_REPLACEMENT",
         "generated_at": generated_at,
         "implementation_base_commit": IMPLEMENTATION_BASE_COMMIT,
@@ -450,28 +500,38 @@ def build_artifact(
             "artifact": input_provenance,
             "fail_closed": True,
         },
+        "contract_reconciliation": {
+            "task_id": "P541C_R2_PR686_CONTRACT_RECONCILIATION_R1",
+            "status": "PASS",
+            "reconciled_invariant": (
+                "P541B_R2 safety risk and historical replay readiness are orthogonal: "
+                "risk_level=low does not erase runnable_status or required change."
+            ),
+            "prior_drift": (
+                "PR #686 v1 labeled 12 low-risk confirmed methods safe_confirmed_method "
+                "with required_change_before_replay=none even though all 12 upstream "
+                "records say runnable_status=needs_adapter_wrapper."
+            ),
+        },
         "summary": summarize(decisions),
         "bucket_definitions": {
-            BUCKET_SAFE_CONFIRMED: (
-                "P541B_R2 risk_level=low (low_risk_eligible=True) AND P541B historical "
-                "is_actual_prediction_method=True. Safety-clear and identity-confirmed; "
-                "the only bucket eligible for the shortlist."
+            BUCKET_READY: (
+                "P541B_R2 risk_level=low, historical identity confirmed, and historical "
+                "runnable_status=runnable_with_existing_adapter. No readiness change remains."
             ),
-            BUCKET_SAFE_IDENTITY_UNRESOLVED: (
-                "P541B_R2 risk_level=low AND P541B historical is_actual_prediction_method="
-                "unknown. Safety-clear but identity itself is unresolved; routed to CTO "
-                "review for identity confirmation only, never silently promoted to the "
-                "shortlist."
+            BUCKET_NEEDS_ADAPTER: (
+                "Confirmed method whose historical runnable_status requires an adapter "
+                "wrapper or parameterization. Low-risk/high-confidence members alone may "
+                "enter the shortlist."
             ),
-            BUCKET_NEEDS_ADAPTER_OR_REFACTOR: (
-                "P541B_R2 risk_level=medium AND P541B historical "
-                "is_actual_prediction_method=True. Confirmed method with a bounded, "
-                "non-high-risk blocker needing adapter or refactor work."
+            BUCKET_NEEDS_REFACTOR: (
+                "Confirmed method whose historical runnable_status requires pure-function "
+                "or DB-safety refactoring. High safety risk remains excluded."
             ),
             BUCKET_NEEDS_CTO_REVIEW: (
-                "P541B_R2 risk_level=unknown (any identity), OR risk_level=medium with "
-                "unresolved/negative identity. Unresolved risk is never resolved to safe; "
-                "carried through to human review verbatim."
+                "P541B_R2 risk_level=unknown (any identity), unresolved historical identity "
+                "at low/medium risk, or a confirmed method with a non-actionable readiness "
+                "status. Unresolved risk is never resolved to safe."
             ),
             BUCKET_EXCLUDED: (
                 "P541B_R2 risk_level=high (any identity, safety-blocking regardless of "
@@ -480,20 +540,36 @@ def build_artifact(
                 "is_actual_prediction_method=False (safe but not a prediction method)."
             ),
         },
-        "shortlist_rule": (
-            "BUCKET_SAFE_CONFIRMED members only, deduplicated by method_id, "
-            "round-robin diversified across method_family, capped at "
-            f"{SHORTLIST_MAX}, sorted deterministically by method_id within each "
-            "family. Never padded: if fewer candidates qualify, the shortlist is "
-            "exactly that smaller set."
-        ),
+        "selection_policy": {
+            "safety_first_rule": (
+                "P541B_R2 risk_level is evaluated first: unknown routes to CTO review and "
+                "high routes to exclusion before historical identity/readiness can refine a bucket."
+            ),
+            "readiness_rule": (
+                "For low/medium-risk confirmed methods, historical runnable_status maps to "
+                "ready, adapter, or refactor without being erased by the safety tier."
+            ),
+            "priority_rule": (
+                "Adapter: high only when confidence=high and risk=low; medium when confidence "
+                "is high/medium and risk is not high; low otherwise. Refactor: medium only "
+                "when confidence=high and risk is not high; low otherwise."
+            ),
+            "shortlist_rule": (
+                "needs_adapter_before_readiness members only with P541B_R2 risk_level=low, "
+                "confirmed method identity, and historical confidence=high; deduplicated by "
+                "method_id, round-robin diversified across method_family, capped at "
+                f"{SHORTLIST_MAX}, sorted deterministically by method_id within each family. "
+                "Never padded: if fewer candidates qualify, the shortlist is exactly that "
+                "smaller set."
+            ),
+        },
         "reviewed_method_decisions": decisions,
-        BUCKET_SAFE_CONFIRMED: by_bucket[BUCKET_SAFE_CONFIRMED],
-        BUCKET_SAFE_IDENTITY_UNRESOLVED: by_bucket[BUCKET_SAFE_IDENTITY_UNRESOLVED],
-        BUCKET_NEEDS_ADAPTER_OR_REFACTOR: by_bucket[BUCKET_NEEDS_ADAPTER_OR_REFACTOR],
+        BUCKET_READY: by_bucket[BUCKET_READY],
+        BUCKET_NEEDS_ADAPTER: by_bucket[BUCKET_NEEDS_ADAPTER],
+        BUCKET_NEEDS_REFACTOR: by_bucket[BUCKET_NEEDS_REFACTOR],
         BUCKET_NEEDS_CTO_REVIEW: by_bucket[BUCKET_NEEDS_CTO_REVIEW],
-        BUCKET_EXCLUDED: by_bucket[BUCKET_EXCLUDED],
-        "shortlist_safe_confirmed_methods": shortlist,
+        "excluded_methods": by_bucket[BUCKET_EXCLUDED],
+        "high_priority_candidate_shortlist": shortlist,
         "next_task_recommendation": next_task,
         "provenance_and_limits": {
             "method": (
@@ -520,7 +596,8 @@ def build_artifact(
                 "Source identity verification reads raw bytes only to compute size and "
                 "SHA-256; this does not constitute new semantic or runtime analysis.",
                 "Bucket/priority assignment is a deterministic function of P541B_R2's "
-                "own risk evidence and P541B's historical identity fields; it is a "
+                "risk evidence plus P541B's historical identity, runnable_status, and "
+                "confidence fields; it is a "
                 "triage aid for the next task, not a safety guarantee.",
             ],
             "disclaimer": DISCLAIMER,
@@ -554,6 +631,14 @@ def render_markdown(artifact: dict[str, Any]) -> str:
     for k, v in s.items():
         lines.append(f"| {k} | {v} |")
     lines.append("")
+    lines.append("## Contract Reconciliation")
+    lines.append("")
+    reconciliation = artifact["contract_reconciliation"]
+    lines.append(f"- task_id: `{reconciliation['task_id']}`")
+    lines.append(f"- status: **{reconciliation['status']}**")
+    lines.append(f"- reconciled_invariant: {reconciliation['reconciled_invariant']}")
+    lines.append(f"- prior_drift: {reconciliation['prior_drift']}")
+    lines.append("")
     lines.append("## Verified Input Provenance")
     lines.append("")
     lines.append(f"- Implementation base commit: `{artifact['implementation_base_commit']}`")
@@ -571,13 +656,13 @@ def render_markdown(artifact: dict[str, Any]) -> str:
     lines.append("")
     lines.append(f"## Shortlist Rule")
     lines.append("")
-    lines.append(artifact["shortlist_rule"])
+    lines.append(artifact["selection_policy"]["shortlist_rule"])
     lines.append("")
-    lines.append(f"## Shortlist (n={len(artifact['shortlist_safe_confirmed_methods'])})")
+    lines.append(f"## Shortlist (n={len(artifact['high_priority_candidate_shortlist'])})")
     lines.append("")
     lines.append("| method_id | method_family | source_path | reason |")
     lines.append("|---|---|---|---|")
-    for d in artifact["shortlist_safe_confirmed_methods"]:
+    for d in artifact["high_priority_candidate_shortlist"]:
         reason = d["decision_reason"].replace("|", "/").replace("\n", " ")
         lines.append(f"| {d['method_id']} | {d['method_family']} | {d['source_path']} | {reason} |")
     lines.append("")
@@ -616,7 +701,7 @@ def main() -> None:
     print(f"wrote {out_json}")
     print(f"wrote {out_md}")
     print(json.dumps(artifact["summary"], ensure_ascii=False, indent=2))
-    print("shortlist size:", len(artifact["shortlist_safe_confirmed_methods"]))
+    print("shortlist size:", len(artifact["high_priority_candidate_shortlist"]))
     print("next_task_recommendation:", artifact["next_task_recommendation"])
 
 

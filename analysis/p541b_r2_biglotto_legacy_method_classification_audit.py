@@ -14,6 +14,7 @@ import json
 import posixpath
 import re
 import subprocess
+import sys
 from collections import Counter
 from pathlib import Path, PurePosixPath
 from typing import Any, Iterable, Sequence
@@ -23,7 +24,9 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 TASK_ID = "P541B_R2_BIG_LOTTO_LEGACY_METHOD_CLASSIFICATION_AUDIT"
 SCHEMA_VERSION = "p541b-r2-evidence-v1"
-DETECTOR_VERSION = "p541b-r2-detector-v3"
+DETECTOR_VERSION = "p541b-r2-detector-v4"
+CANONICAL_RUNTIME_IMPLEMENTATION = "CPython"
+CANONICAL_RUNTIME_VERSION = "3.9.6"
 BASE_MAIN_COMMIT = "c50137583243d4f9f4915a3e1d9babee50b5bbd7"
 FROZEN_SOURCE_COMMIT = "49a25effa62fc24f40789c16be6f11bdfb41a4a9"
 GENERATED_AT_UTC = "2026-07-11T12:43:50Z"
@@ -184,6 +187,18 @@ OTHER_EXTERNAL_CALLS = {
     "breakpoint",
 }
 
+CONTROL_FLOW_NODES: tuple[type[ast.AST], ...] = (
+    ast.For,
+    ast.AsyncFor,
+    ast.If,
+    ast.Try,
+    ast.While,
+    ast.With,
+    ast.AsyncWith,
+)
+if hasattr(ast, "Match"):
+    CONTROL_FLOW_NODES += (getattr(ast, "Match"),)
+
 DISCLAIMER = (
     "Historical static safety-evidence remediation only. This artifact does not "
     "establish prediction quality, replay readiness, betting edge, ROI, or "
@@ -196,7 +211,47 @@ class P541BR2Error(RuntimeError):
 
 
 class GitUnavailableError(P541BR2Error):
-    """Raised when Git itself cannot be executed; this remains terminal."""
+    """Raised when Git or its repository is unavailable; this remains terminal."""
+
+
+class GitExecutableUnavailableError(GitUnavailableError):
+    """Raised when the Git executable cannot be launched."""
+
+
+class GitRepositoryUnavailableError(GitUnavailableError):
+    """Raised when repository metadata or its object store is unavailable."""
+
+
+class GitBlobReadError(P541BR2Error):
+    """Raised for an individual Git blob-read failure in an available repository."""
+
+
+def canonical_runtime_provenance() -> dict[str, Any]:
+    implementation = (
+        "CPython" if sys.implementation.name == "cpython" else sys.implementation.name
+    )
+    return {
+        "implementation": implementation,
+        "version": ".".join(str(part) for part in sys.version_info[:3]),
+        "requirement": (
+            f"{CANONICAL_RUNTIME_IMPLEMENTATION}=={CANONICAL_RUNTIME_VERSION}"
+        ),
+        "verification": "PASS",
+    }
+
+
+def require_canonical_runtime() -> dict[str, Any]:
+    provenance = canonical_runtime_provenance()
+    if (
+        provenance["implementation"] != CANONICAL_RUNTIME_IMPLEMENTATION
+        or provenance["version"] != CANONICAL_RUNTIME_VERSION
+    ):
+        raise P541BR2Error(
+            "canonical generation runtime mismatch: "
+            f"required {CANONICAL_RUNTIME_IMPLEMENTATION} "
+            f"{CANONICAL_RUNTIME_VERSION}"
+        )
+    return provenance
 
 
 FAILURE_REASON_CODES = frozenset(
@@ -214,6 +269,25 @@ FAILURE_REASON_CODES = frozenset(
     }
 )
 
+TRANSITIVE_FAILURE_REASON_CODES = frozenset(
+    {
+        "category_detector_failed",
+        "detector_failed",
+        "git_blob_read_failed",
+        "import_resolution_incomplete",
+        "imported_blob_invalid",
+        "imported_scan_incomplete",
+        "transitive_detector_failed",
+    }
+)
+
+APPROVED_UNKNOWN_REASON_LITERALS = frozenset(
+    {
+        "ambiguous DB-like API could not be resolved",
+        "one-hop resolver not supplied",
+    }
+)
+
 
 def _failure_reason(code: str, *, line: int | None = None, byte: int | None = None) -> str:
     """Return a bounded deterministic reason containing no exception or host-path text."""
@@ -225,6 +299,28 @@ def _failure_reason(code: str, *, line: int | None = None, byte: int | None = No
     if byte is not None:
         fields.append(f"byte={max(0, int(byte))}")
     return ":".join(fields)
+
+
+def _valid_bounded_failure_reason(reason: Any) -> bool:
+    """Accept only reasons emitted by the bounded deterministic reason contract."""
+    if not isinstance(reason, str) or not reason or len(reason) > 256:
+        return False
+    if HARD_CODED_PATH_RE.search(reason):
+        return False
+    if reason in APPROVED_UNKNOWN_REASON_LITERALS:
+        return True
+    parts = reason.split("; ")
+    if len(parts) > 1:
+        return (
+            parts == sorted(set(parts))
+            and all(part in TRANSITIVE_FAILURE_REASON_CODES for part in parts)
+        )
+    if reason in FAILURE_REASON_CODES - {"utf8_decode_failed"}:
+        return True
+    return bool(
+        re.fullmatch(r"ast_parse_failed:line=(?:0|[1-9][0-9]*)", reason)
+        or re.fullmatch(r"utf8_decode_failed:byte=(?:0|[1-9][0-9]*)", reason)
+    )
 
 
 def canonical_bytes(value: Any) -> bytes:
@@ -283,6 +379,34 @@ def _safe_repo_path(path: str) -> None:
         raise P541BR2Error(f"unsafe repository path: {path!r}")
 
 
+def _git_repository_available(repo_root: Path) -> bool:
+    try:
+        completed = subprocess.run(
+            ["git", "rev-parse", "--git-dir"],
+            cwd=repo_root,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+    except OSError:
+        return False
+    return completed.returncode == 0
+
+
+def _git_object_store_available(repo_root: Path) -> bool:
+    try:
+        completed = subprocess.run(
+            ["git", "cat-file", "-e", "HEAD^{commit}"],
+            cwd=repo_root,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+    except OSError:
+        return False
+    return completed.returncode == 0
+
+
 def run_git(repo_root: Path, arguments: Sequence[str], *, stdin: bytes | None = None) -> bytes:
     try:
         completed = subprocess.run(
@@ -294,10 +418,25 @@ def run_git(repo_root: Path, arguments: Sequence[str], *, stdin: bytes | None = 
             check=False,
         )
     except OSError as exc:
-        raise GitUnavailableError("Git is unavailable") from exc
+        raise GitExecutableUnavailableError("Git executable is unavailable") from exc
     if completed.returncode:
         detail = completed.stderr.decode("utf-8", errors="replace").strip()
-        raise P541BR2Error(f"git {' '.join(arguments[:2])} failed: {detail}")
+        repository_failure_markers = (
+            "not a git repository",
+            "cannot change to",
+            "cannot chdir",
+            "detected dubious ownership",
+            "must be run in a work tree",
+            "permission denied",
+            "unable to read current working directory",
+        )
+        if (
+            any(marker in detail.lower() for marker in repository_failure_markers)
+            or not _git_repository_available(repo_root)
+            or not _git_object_store_available(repo_root)
+        ):
+            raise GitRepositoryUnavailableError("Git repository is unavailable")
+        raise P541BR2Error(f"git {' '.join(arguments[:2])} failed")
     return completed.stdout
 
 
@@ -323,7 +462,12 @@ def git_tree_entries(
 def git_blob(repo_root: Path, blob_id: str) -> bytes:
     if not re.fullmatch(r"[0-9a-f]{40}", blob_id):
         raise P541BR2Error(f"invalid Git blob id: {blob_id!r}")
-    return run_git(repo_root, ["cat-file", "blob", blob_id])
+    try:
+        return run_git(repo_root, ["cat-file", "blob", blob_id])
+    except GitUnavailableError:
+        raise
+    except P541BR2Error as exc:
+        raise GitBlobReadError("Git blob is unavailable") from exc
 
 
 def validate_historical_payload(payload: dict[str, Any]) -> list[dict[str, Any]]:
@@ -679,7 +823,7 @@ def _evidence(
                 item.get("resolved_syntax") or "",
                 item.get("imported_module_path") or "",
             ),
-        )[:100],
+        ),
     }
     if reason:
         result["reason"] = reason
@@ -698,7 +842,12 @@ def unknown_analysis(
 ) -> dict[str, Any]:
     if scan_status not in SCAN_STATUSES or scan_status == "complete":
         raise P541BR2Error(f"invalid incomplete scan status: {scan_status}")
-    if reason_code not in FAILURE_REASON_CODES or not reason.startswith(reason_code):
+    if (
+        reason_code not in FAILURE_REASON_CODES
+        or not _valid_bounded_failure_reason(reason)
+        or "; " in reason
+        or reason.split(":", 1)[0] != reason_code
+    ):
         raise P541BR2Error(f"invalid bounded failure reason: {reason_code}")
     evidence = {
         key: _evidence("unknown", scope="unknown", reason=reason)
@@ -710,6 +859,13 @@ def unknown_analysis(
                 "detected",
                 scope=str(item.get("scope", "whole_file")),
                 findings=item.get("findings", ()),
+            )
+        elif key in evidence and item.get("state") == "unknown" and item.get("findings"):
+            evidence[key] = _evidence(
+                "unknown",
+                scope=str(item.get("scope", "whole_file")),
+                findings=item["findings"],
+                reason=str(item.get("reason") or reason),
             )
     read_status = "succeeded" if raw is not None else "failed"
     if raw is None:
@@ -1129,19 +1285,342 @@ def _absolute_import_module(source_path: str, module: str | None, level: int) ->
     return ".".join(part for part in base if part)
 
 
+def _normalized_static_repo_path(value: PurePosixPath) -> str | None:
+    normalized = PurePosixPath(posixpath.normpath(value.as_posix()))
+    if normalized.is_absolute() or ".." in normalized.parts:
+        return None
+    return "" if normalized.as_posix() == "." else normalized.as_posix()
+
+
+def _static_repo_path_value(
+    node: ast.AST,
+    source_path: str,
+    aliases: dict[str, str],
+    variables: dict[str, PurePosixPath],
+) -> PurePosixPath | None:
+    if isinstance(node, ast.Name):
+        if node.id == "__file__":
+            return PurePosixPath(source_path)
+        return variables.get(node.id)
+    if isinstance(node, ast.Constant) and isinstance(node.value, str):
+        value = PurePosixPath(node.value)
+        return value if _normalized_static_repo_path(value) is not None else None
+    if isinstance(node, ast.Attribute) and node.attr == "parent":
+        base = _static_repo_path_value(node.value, source_path, aliases, variables)
+        return base.parent if base is not None else None
+    if (
+        isinstance(node, ast.Subscript)
+        and isinstance(node.value, ast.Attribute)
+        and node.value.attr == "parents"
+    ):
+        base = _static_repo_path_value(
+            node.value.value, source_path, aliases, variables
+        )
+        index = node.slice
+        if (
+            base is not None
+            and isinstance(index, ast.Constant)
+            and isinstance(index.value, int)
+            and 0 <= index.value < len(base.parts)
+        ):
+            for _ in range(index.value + 1):
+                base = base.parent
+            return base
+        return None
+    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Div):
+        left = _static_repo_path_value(node.left, source_path, aliases, variables)
+        right = _static_repo_path_value(node.right, source_path, aliases, variables)
+        if left is not None and right is not None and not right.is_absolute():
+            return left / right
+        return None
+    if not isinstance(node, ast.Call):
+        return None
+    resolved = (_dotted_name(node.func, aliases) or "").replace("()", "")
+    if resolved in {"str", "os.fspath"} and len(node.args) == 1:
+        return _static_repo_path_value(node.args[0], source_path, aliases, variables)
+    if resolved in {"Path", "pathlib.Path"} and len(node.args) <= 1:
+        argument = node.args[0] if node.args else ast.Constant(value=".")
+        return _static_repo_path_value(argument, source_path, aliases, variables)
+    if resolved in {
+        "os.path.abspath",
+        "os.path.normpath",
+        "os.path.realpath",
+    } and len(node.args) == 1:
+        return _static_repo_path_value(node.args[0], source_path, aliases, variables)
+    if resolved == "os.path.dirname" and len(node.args) == 1:
+        value = _static_repo_path_value(node.args[0], source_path, aliases, variables)
+        return value.parent if value is not None else None
+    if resolved == "os.path.join" and node.args:
+        value = _static_repo_path_value(node.args[0], source_path, aliases, variables)
+        if value is None:
+            return None
+        for argument in node.args[1:]:
+            component = _static_repo_path_value(
+                argument, source_path, aliases, variables
+            )
+            if component is None or component.is_absolute():
+                return None
+            value /= component
+        return value
+    if isinstance(node.func, ast.Attribute) and node.func.attr in {
+        "absolute",
+        "resolve",
+    }:
+        return _static_repo_path_value(
+            node.func.value, source_path, aliases, variables
+        )
+    return None
+
+
+def _static_path_variables(
+    tree: ast.Module, source_path: str, aliases: dict[str, str]
+) -> dict[str, PurePosixPath]:
+    parents = _ast_parent_map(tree)
+    definitions: dict[str, list[tuple[ast.AST, ast.AST | None]]] = {}
+    binding_counts: Counter[str] = Counter(
+        node.id
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Name) and isinstance(node.ctx, (ast.Store, ast.Del))
+    )
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            binding_counts.update(
+                alias.asname or alias.name.split(".", 1)[0]
+                for alias in node.names
+            )
+        elif isinstance(node, ast.ImportFrom):
+            binding_counts.update(
+                alias.asname or alias.name
+                for alias in node.names
+                if alias.name != "*"
+            )
+        elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            binding_counts[node.name] += 1
+        elif isinstance(node, ast.arg):
+            binding_counts[node.arg] += 1
+        elif isinstance(node, ast.ExceptHandler) and isinstance(node.name, str):
+            binding_counts[node.name] += 1
+        elif isinstance(node, (ast.Global, ast.Nonlocal)):
+            binding_counts.update(node.names)
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Assign):
+            value, targets = node.value, node.targets
+        elif isinstance(node, ast.AnnAssign):
+            value, targets = node.value, [node.target]
+        elif isinstance(node, ast.AugAssign):
+            value, targets = None, [node.target]
+        elif isinstance(node, ast.NamedExpr):
+            value, targets = None, [node.target]
+        else:
+            continue
+        for target in targets:
+            target_names = [target.id] if isinstance(target, ast.Name) else []
+            for name in target_names:
+                definitions.setdefault(name, []).append((node, value))
+
+    eligible: dict[str, ast.AST] = {}
+    for name, items in definitions.items():
+        if len(items) != 1:
+            continue
+        node, value = items[0]
+        if (
+            value is not None
+            and binding_counts[name] == 1
+            and parents.get(id(node)) is tree
+            and not any(isinstance(item, ast.IfExp) for item in ast.walk(value))
+        ):
+            eligible[name] = value
+
+    variables: dict[str, PurePosixPath] = {}
+    for _ in range(8):
+        changed = False
+        for name, value in eligible.items():
+            resolved = _static_repo_path_value(
+                value, source_path, aliases, variables
+            )
+            if resolved is None or _normalized_static_repo_path(resolved) is None:
+                continue
+            if variables.get(name) != resolved:
+                variables[name] = resolved
+                changed = True
+        if not changed:
+            break
+    return variables
+
+
+def _node_position(node: ast.AST) -> tuple[int, int]:
+    return (getattr(node, "lineno", 0), getattr(node, "col_offset", 0))
+
+
+def _bounded_sys_path_updates(
+    tree: ast.Module, source_path: str
+) -> tuple[
+    tuple[tuple[tuple[int, int], str], ...],
+    tuple[tuple[int, int], ...],
+]:
+    aliases = collect_aliases(tree)
+    variables = _static_path_variables(tree, source_path, aliases)
+    parents = _ast_parent_map(tree)
+    reached, unknown, known = _invoked_local_definition_reachability(tree)
+    roots: set[tuple[tuple[int, int], str]] = set()
+    incomplete_positions: set[tuple[int, int]] = set()
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call):
+            continue
+        resolved = (_dotted_name(node.func, aliases) or "").replace("()", "")
+        if resolved not in {
+            "sys.path.append",
+            "sys.path.extend",
+            "sys.path.insert",
+        }:
+            continue
+        context = _import_lexical_context(node, parents)
+        lexical_state = _lexical_reachability(context, reached, unknown, known)
+        if lexical_state == "unreachable":
+            continue
+        if lexical_state != "reached" or context["definition_target"] is not None:
+            incomplete_positions.add(_node_position(node))
+            continue
+        arguments: list[ast.AST] = []
+        if resolved == "sys.path.insert" and len(node.args) >= 2:
+            arguments = [node.args[1]]
+        elif resolved == "sys.path.append" and node.args:
+            arguments = [node.args[0]]
+        elif resolved == "sys.path.extend" and node.args:
+            if isinstance(node.args[0], (ast.List, ast.Tuple)):
+                arguments = list(node.args[0].elts)
+        if not arguments:
+            incomplete_positions.add(_node_position(node))
+            continue
+        for argument in arguments:
+            value = _static_repo_path_value(
+                argument, source_path, aliases, variables
+            )
+            normalized = (
+                _normalized_static_repo_path(value) if value is not None else None
+            )
+            if normalized is not None:
+                roots.add((_node_position(node), normalized))
+            else:
+                incomplete_positions.add(_node_position(node))
+    return tuple(sorted(roots)), tuple(sorted(incomplete_positions))
+
+
+def _ast_parent_map(tree: ast.AST) -> dict[int, ast.AST]:
+    return {
+        id(child): parent
+        for parent in ast.walk(tree)
+        for child in ast.iter_child_nodes(parent)
+    }
+
+
+def _import_lexical_context(
+    statement: ast.AST,
+    parents: dict[int, ast.AST],
+) -> dict[str, Any]:
+    function_owner: ast.FunctionDef | ast.AsyncFunctionDef | None = None
+    function_depth = 0
+    class_owner: ast.ClassDef | None = None
+    conditional = False
+    current: ast.AST | None = statement
+    while current is not None and id(current) in parents:
+        current = parents[id(current)]
+        if isinstance(current, CONTROL_FLOW_NODES):
+            conditional = True
+        if isinstance(current, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            function_depth += 1
+            if function_owner is None:
+                function_owner = current
+                continue
+        if class_owner is None and isinstance(current, ast.ClassDef):
+            class_owner = current
+    definition_target = (
+        (class_owner.name if class_owner is not None else None, function_owner.name)
+        if function_owner is not None
+        else None
+    )
+    return {
+        "lexical_scope": (
+            "method"
+            if function_owner is not None and class_owner is not None
+            else "function"
+            if function_owner is not None
+            else "class_body"
+            if class_owner is not None
+            else "module"
+        ),
+        "definition_target": definition_target,
+        "conditional_context": conditional,
+        "nested_definition": function_depth > 1,
+    }
+
+
+def _lexical_reachability(
+    context: dict[str, Any],
+    reached_definitions: set[tuple[str | None, str]],
+    unknown_definitions: set[tuple[str | None, str]],
+    known_definitions: set[tuple[str | None, str]],
+) -> str:
+    definition_target = context.get("definition_target")
+    if definition_target is None:
+        return "unknown" if context["conditional_context"] else "reached"
+    if context.get("nested_definition"):
+        return "unknown"
+    if definition_target in reached_definitions:
+        return "unknown" if context["conditional_context"] else "reached"
+    if definition_target in unknown_definitions:
+        return "unknown"
+    if definition_target in known_definitions:
+        return "unreachable"
+    return "unknown"
+
+
 def _import_bindings(tree: ast.Module, source_path: str) -> list[dict[str, Any]]:
     bindings: list[dict[str, Any]] = []
-    for statement in tree.body:
+    root_updates, incomplete_updates = _bounded_sys_path_updates(tree, source_path)
+    parents = _ast_parent_map(tree)
+    statements = sorted(
+        (
+            node
+            for node in ast.walk(tree)
+            if isinstance(node, (ast.Import, ast.ImportFrom))
+        ),
+        key=lambda node: (
+            getattr(node, "lineno", -1),
+            getattr(node, "col_offset", -1),
+            ast.dump(node, include_attributes=False),
+        ),
+    )
+    for statement in statements:
+        lexical_context = _import_lexical_context(statement, parents)
+        statement_position = _node_position(statement)
+        search_roots = tuple(
+            sorted(
+                {
+                    root
+                    for update_position, root in root_updates
+                    if update_position < statement_position
+                }
+            )
+        )
+        sys_path_resolution_incomplete = any(
+            update_position < statement_position
+            for update_position in incomplete_updates
+        )
         if isinstance(statement, ast.Import):
             for alias in statement.names:
                 bindings.append(
                     {
+                        "source_path": source_path,
+                        "search_roots": search_roots,
+                        "sys_path_resolution_incomplete": sys_path_resolution_incomplete,
                         "module": alias.name,
                         "symbol": None,
                         "local_name": alias.asname or alias.name.split(".")[0],
                         "line": statement.lineno,
                         "column": statement.col_offset,
                         "relative": False,
+                        **lexical_context,
                     }
                 )
         elif isinstance(statement, ast.ImportFrom):
@@ -1149,15 +1628,28 @@ def _import_bindings(tree: ast.Module, source_path: str) -> list[dict[str, Any]]
             for alias in statement.names:
                 bindings.append(
                     {
+                        "source_path": source_path,
+                        "search_roots": search_roots,
+                        "sys_path_resolution_incomplete": sys_path_resolution_incomplete,
                         "module": module,
                         "symbol": alias.name,
                         "local_name": alias.asname or alias.name,
                         "line": statement.lineno,
                         "column": statement.col_offset,
                         "relative": statement.level > 0,
+                        **lexical_context,
                     }
                 )
-    return bindings
+    return sorted(
+        bindings,
+        key=lambda item: (
+            item["line"],
+            item["column"],
+            item["module"] or "",
+            item["symbol"] or "",
+            item["local_name"],
+        ),
+    )
 
 
 def _module_candidates(module: str, symbol: str | None) -> list[str]:
@@ -1168,13 +1660,40 @@ def _module_candidates(module: str, symbol: str | None) -> list[str]:
     return list(dict.fromkeys(candidates))
 
 
+def _binding_module_candidates(binding: dict[str, Any]) -> list[str]:
+    module = binding["module"]
+    if not module:
+        return []
+    candidates = _module_candidates(module, binding["symbol"])
+    if not binding["relative"]:
+        base_candidates = _module_candidates(module, binding["symbol"])
+        for root in binding.get("search_roots", ()):
+            candidates.extend(
+                f"{root}/{candidate}" if root else candidate
+                for candidate in base_candidates
+            )
+        parent_parts = PurePosixPath(binding["source_path"]).parent.parts
+        for length in range(len(parent_parts), 0, -1):
+            prefix = "/".join(parent_parts[:length])
+            candidates.extend(f"{prefix}/{candidate}" for candidate in base_candidates)
+    return list(dict.fromkeys(candidates))
+
+
 def _resolve_project_binding(
     repo_root: Path,
     commit: str,
     binding: dict[str, Any],
-    cache: dict[tuple[str | None, str | None], tuple[str, str | None]],
+    cache: dict[tuple[Any, ...], tuple[str, str | None]],
 ) -> tuple[str, str | None]:
-    key = (binding["module"], binding["symbol"])
+    key = (
+        binding["source_path"],
+        binding["module"],
+        binding["symbol"],
+        binding["relative"],
+        tuple(binding.get("search_roots", ())),
+        bool(binding.get("sys_path_resolution_incomplete")),
+        commit,
+    )
     if key in cache:
         return cache[key]
     module = binding["module"]
@@ -1182,15 +1701,29 @@ def _resolve_project_binding(
         result = ("unknown", "relative import has no resolvable module")
         cache[key] = result
         return result
-    candidates = _module_candidates(module, binding["symbol"])
-    entries = git_tree_entries(repo_root, commit, candidates)
+    candidates = _binding_module_candidates(binding)
+    search_roots = [root for root in binding.get("search_roots", ()) if root]
+    entries = git_tree_entries(
+        repo_root, commit, list(dict.fromkeys([*candidates, *search_roots]))
+    )
     resolved = [path for path in candidates if path in entries]
-    if len(resolved) > 1:
+    invalid_search_roots = [
+        root
+        for root in search_roots
+        if root not in entries
+        or entries[root]["type"] != "tree"
+        or entries[root]["mode"] != "040000"
+    ]
+    if binding.get("sys_path_resolution_incomplete"):
+        result = ("unknown", "repository-relative sys.path resolution is incomplete")
+    elif len(resolved) > 1:
         result = ("unknown", f"ambiguous project import resolves to {resolved}")
     elif len(resolved) == 1:
         result = (resolved[0], None)
     elif binding["relative"]:
         result = ("unknown", f"relative project import not found: {module}")
+    elif invalid_search_roots:
+        result = ("unknown", "repository-relative sys.path root is absent")
     else:
         # Absent absolute modules are external dependencies, not project imports.
         result = ("external", None)
@@ -1198,49 +1731,661 @@ def _resolve_project_binding(
     return result
 
 
-def _invoked_definition_names(tree: ast.Module, binding: dict[str, Any]) -> set[str]:
-    names: set[str] = set()
-    local = binding["local_name"]
+def _node_references_binding(
+    node: ast.AST,
+    binding: dict[str, Any],
+    aliases: dict[str, str],
+) -> bool:
+    local_name = binding["local_name"]
+    module = binding["module"] or ""
     symbol = binding["symbol"]
-    for node in ast.walk(tree):
+    canonical = f"{module}.{symbol}" if symbol and symbol != "*" else module
+    raw = (_dotted_name(node, {}) or "").replace("()", "")
+    resolved = (_dotted_name(node, aliases) or "").replace("()", "")
+    return (
+        raw == local_name
+        or raw.startswith(f"{local_name}.")
+        or resolved == canonical
+        or (canonical and resolved.startswith(f"{canonical}."))
+    )
+
+
+def _promote_imported_module_load_findings(
+    imported: dict[str, Any],
+    source_path: str,
+    imported_path: str,
+    import_line: int,
+) -> tuple[list[dict[str, Any]], bool]:
+    promoted: list[dict[str, Any]] = []
+    incomplete = False
+    for family in EFFECT_KEYS:
+        evidence = imported["evidence"][family]
+        if evidence["state"] == "unknown":
+            incomplete = True
+        for direct in evidence["findings"]:
+            if direct["scope"] != "module_load":
+                continue
+            promoted.append(
+                {
+                    **direct,
+                    "rule_id": f"transitive.{family}.module_load",
+                    "scope": "transitive",
+                    "direct_or_transitive": "transitive",
+                    "source_path": source_path,
+                    "imported_module_path": imported_path,
+                    "import_line": import_line,
+                }
+            )
+    return promoted, incomplete
+
+
+def _call_targets_for_binding(
+    call_name: str,
+    binding: dict[str, Any],
+    function_names: set[str],
+    class_names: set[str],
+) -> tuple[set[tuple[str | None, str]], bool]:
+    targets: set[tuple[str | None, str]] = set()
+    incomplete = False
+    unresolved_match = False
+    symbol = binding["symbol"]
+    module = binding["module"] or ""
+    prefixes = [binding["local_name"]]
+    canonical = f"{module}.{symbol}" if symbol and symbol != "*" else module
+    if canonical:
+        prefixes.append(canonical)
+    if not symbol and module:
+        prefixes.append(module)
+    for prefix in sorted(set(prefixes), key=len, reverse=True):
+        if call_name == prefix:
+            definition_name = symbol if symbol and symbol != "*" else prefix.rsplit(".", 1)[-1]
+            if definition_name in function_names:
+                targets.add((None, definition_name))
+            elif definition_name in class_names:
+                targets.add((definition_name, "__init__"))
+            else:
+                unresolved_match = True
+            continue
+        if not call_name.startswith(f"{prefix}.") and not call_name.startswith(
+            f"{prefix}()."
+        ):
+            continue
+        suffix = call_name[len(prefix):].lstrip(".")
+        if suffix.startswith("()."):
+            suffix = suffix[3:]
+            if symbol in class_names:
+                targets.add((symbol, suffix.split(".", 1)[0]))
+            else:
+                unresolved_match = True
+            continue
+        if "()." in suffix:
+            class_name, method_name = suffix.split("().", 1)
+            class_name = class_name.rsplit(".", 1)[-1]
+            if class_name in class_names:
+                targets.add((class_name, method_name.split(".", 1)[0]))
+            else:
+                unresolved_match = True
+            continue
+        first, _, remainder = suffix.partition(".")
+        if first in function_names:
+            targets.add((None, first))
+            incomplete = incomplete or bool(remainder)
+        elif first in class_names:
+            targets.add((first, remainder.split(".", 1)[0] if remainder else "__init__"))
+        else:
+            unresolved_match = True
+    return targets, incomplete or (unresolved_match and not targets)
+
+
+def _has_ambiguous_binding_dispatch(
+    importing_tree: ast.Module,
+    binding: dict[str, Any],
+    imported_tree: ast.Module,
+) -> bool:
+    function_names = {
+        node.name
+        for node in imported_tree.body
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
+    class_names = {
+        node.name for node in imported_tree.body if isinstance(node, ast.ClassDef)
+    }
+    aliases = collect_aliases(importing_tree)
+    parents = _ast_parent_map(importing_tree)
+    assignments: dict[str, list[dict[str, Any]]] = {}
+    for node in ast.walk(importing_tree):
+        if isinstance(node, ast.Assign):
+            value, targets = node.value, node.targets
+        elif isinstance(node, ast.AnnAssign) and node.value is not None:
+            value, targets = node.value, [node.target]
+        else:
+            continue
+        for target in targets:
+            if isinstance(target, ast.Name):
+                assignments.setdefault(target.id, []).append(
+                    {
+                        "value": value,
+                        "conditional": (
+                            _control_flow_between(node, None, parents)
+                            or any(
+                                isinstance(item, ast.IfExp)
+                                for item in ast.walk(value)
+                            )
+                        ),
+                        "signature": ast.dump(value, include_attributes=False),
+                    }
+                )
+
+    binding_names = {binding["local_name"]}
+    for node in ast.walk(importing_tree):
+        if _node_references_binding(node, binding, aliases) and isinstance(
+            node, ast.Name
+        ):
+            binding_names.add(node.id)
+
+    tainted = set(binding_names)
+    changed = True
+    while changed:
+        changed = False
+        for target, values in assignments.items():
+            if target in tainted:
+                continue
+            if any(
+                any(
+                    isinstance(item, ast.Name) and item.id in tainted
+                    for item in ast.walk(value["value"])
+                )
+                or any(
+                    _node_references_binding(item, binding, aliases)
+                    for item in ast.walk(value["value"])
+                )
+                for value in values
+            ):
+                tainted.add(target)
+                changed = True
+
+    def references_tainted(node: ast.AST | None) -> bool:
+        if node is None:
+            return False
+        return any(
+            (isinstance(child, ast.Name) and child.id in tainted)
+            or _node_references_binding(child, binding, aliases)
+            for child in ast.walk(node)
+        )
+
+    for node in ast.walk(importing_tree):
+        if isinstance(node, (ast.Return, ast.Yield, ast.YieldFrom)):
+            if references_tainted(node.value):
+                if isinstance(node, ast.Return) and isinstance(node.value, ast.Call):
+                    returned_targets: set[tuple[str | None, str]] = set()
+                    returned_incomplete = False
+                    for call_name in {
+                        _dotted_name(node.value.func, {}) or "",
+                        _dotted_name(node.value.func, aliases) or "",
+                    }:
+                        found, unresolved = _call_targets_for_binding(
+                            call_name, binding, function_names, class_names
+                        )
+                        returned_targets.update(found)
+                        returned_incomplete = returned_incomplete or unresolved
+                    if (
+                        returned_targets
+                        and not returned_incomplete
+                        and all(
+                            class_name is None
+                            for class_name, _definition_name in returned_targets
+                        )
+                    ):
+                        continue
+                return True
+        elif isinstance(node, ast.Lambda) and references_tainted(node.body):
+            return True
+        elif isinstance(node, ast.Call):
+            if any(references_tainted(argument) for argument in node.args) or any(
+                references_tainted(keyword.value) for keyword in node.keywords
+            ):
+                return True
+        elif isinstance(node, (ast.Assign, ast.AnnAssign)):
+            value = getattr(node, "value", None)
+            targets = node.targets if isinstance(node, ast.Assign) else [node.target]
+            if references_tainted(value) and any(
+                not isinstance(target, ast.Name) for target in targets
+            ):
+                return True
+        elif isinstance(node, (ast.For, ast.AsyncFor)):
+            target_names = [
+                child
+                for child in ast.walk(node.target)
+                if isinstance(child, ast.Name)
+            ]
+            if any(child.id in tainted for child in target_names) or (
+                target_names and references_tainted(node.iter)
+            ):
+                return True
+        elif isinstance(node, (ast.With, ast.AsyncWith)):
+            if any(
+                item.optional_vars is not None
+                and (
+                    references_tainted(item.context_expr)
+                    or any(
+                        isinstance(child, ast.Name) and child.id in tainted
+                        for child in ast.walk(item.optional_vars)
+                    )
+                )
+                for item in node.items
+            ):
+                return True
+        elif isinstance(node, ast.comprehension):
+            if references_tainted(node.iter) and any(
+                isinstance(child, ast.Name) for child in ast.walk(node.target)
+            ):
+                return True
+        elif isinstance(node, ast.NamedExpr):
+            if references_tainted(node.value):
+                return True
+        elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            if node.name in tainted and node.lineno != binding["line"]:
+                return True
+        elif isinstance(node, (ast.Import, ast.ImportFrom)):
+            for alias in node.names:
+                local_name = alias.asname or (
+                    alias.name.split(".", 1)[0]
+                    if isinstance(node, ast.Import)
+                    else alias.name
+                )
+                if local_name in tainted and node.lineno != binding["line"]:
+                    return True
+
+    called_names = {
+        item.id
+        for call in ast.walk(importing_tree)
+        if isinstance(call, ast.Call)
+        for item in ast.walk(call.func)
+        if isinstance(item, ast.Name)
+    }
+    for target in sorted(tainted & called_names):
+        values = assignments.get(target, [])
+        if not values:
+            continue
+        derived: list[bool] = []
+        direct: list[bool] = []
+        for item in values:
+            value = item["value"]
+            value_names = {
+                child.id
+                for child in ast.walk(value)
+                if isinstance(child, ast.Name)
+            }
+            references = bool(value_names & tainted) or any(
+                _node_references_binding(child, binding, aliases)
+                for child in ast.walk(value)
+            )
+            derived.append(references)
+            direct_value = value.func if isinstance(value, ast.Call) else value
+            direct.append(
+                isinstance(direct_value, (ast.Name, ast.Attribute))
+                and (
+                    any(
+                        isinstance(child, ast.Name) and child.id in tainted
+                        for child in ast.walk(direct_value)
+                    )
+                    or _node_references_binding(direct_value, binding, aliases)
+                )
+            )
+        if (
+            len(values) > 1
+            or any(item["conditional"] for item in values)
+            or any(not item for item in derived)
+            or any(not item for item in direct)
+        ):
+            return True
+    return False
+
+
+def _invoked_definition_targets(
+    importing_tree: ast.Module,
+    binding: dict[str, Any],
+    imported_tree: ast.Module,
+) -> tuple[set[tuple[str | None, str]], bool]:
+    functions = {
+        node.name
+        for node in imported_tree.body
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
+    classes = {
+        node.name: node for node in imported_tree.body if isinstance(node, ast.ClassDef)
+    }
+    aliases = collect_aliases(importing_tree)
+    targets: set[tuple[str | None, str]] = set()
+    incomplete = _has_ambiguous_binding_dispatch(
+        importing_tree, binding, imported_tree
+    )
+    for node in ast.walk(importing_tree):
         if not isinstance(node, ast.Call):
             continue
-        raw_name = _dotted_name(node.func, {}) or ""
-        parts = raw_name.replace("()", "").split(".")
-        if not parts or parts[0] != local:
+        call_targets: set[tuple[str | None, str]] = set()
+        references_binding = any(
+            _node_references_binding(child, binding, aliases)
+            for child in ast.walk(node.func)
+        )
+        for call_name in {
+            _dotted_name(node.func, {}) or "",
+            _dotted_name(node.func, aliases) or "",
+        }:
+            found, unresolved = _call_targets_for_binding(
+                call_name, binding, functions, set(classes)
+            )
+            call_targets.update(found)
+            incomplete = incomplete or unresolved
+        targets.update(call_targets)
+        if references_binding and not call_targets:
+            incomplete = True
+
+    imported_class_names = set(classes)
+    local_subclasses: dict[str, tuple[str, set[str]]] = {}
+    for local_class in (
+        node for node in importing_tree.body if isinstance(node, ast.ClassDef)
+    ):
+        for base in local_class.bases:
+            for base_name in {
+                _dotted_name(base, {}) or "",
+                _dotted_name(base, aliases) or "",
+            }:
+                found, _unresolved = _call_targets_for_binding(
+                    base_name, binding, set(), imported_class_names
+                )
+                incomplete = incomplete or _unresolved
+                imported_bases = {name for name, method in found if method == "__init__"}
+                if imported_bases:
+                    methods = {
+                        item.name
+                        for item in local_class.body
+                        if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))
+                    }
+                    local_subclasses[local_class.name] = (
+                        sorted(imported_bases)[0],
+                        methods,
+                    )
+                    if len(imported_bases) > 1 or len(local_class.bases) > 1:
+                        incomplete = True
+    for node in ast.walk(importing_tree):
+        if not isinstance(node, ast.Call):
             continue
-        if symbol and len(parts) == 1:
-            names.add(symbol)
-        elif len(parts) >= 2:
-            names.add(parts[-1])
-    return names
+        names = {
+            _dotted_name(node.func, {}) or "",
+            _dotted_name(node.func, aliases) or "",
+        }
+        for local_name, (imported_base, local_methods) in local_subclasses.items():
+            for call_name in names:
+                if call_name == local_name and "__init__" not in local_methods:
+                    targets.add((imported_base, "__init__"))
+                prefix = f"{local_name}()."
+                if call_name.startswith(prefix):
+                    method_name = call_name[len(prefix):].split(".", 1)[0]
+                    if method_name not in local_methods:
+                        targets.add((imported_base, method_name))
+                if call_name.startswith("super()."):
+                    method_name = call_name[len("super()."):].split(".", 1)[0]
+                    targets.add((imported_base, method_name))
+    return targets, incomplete
+
+
+def _project_dependency_bindings(
+    imported_tree: ast.Module,
+    imported_path: str,
+    source_path: str,
+    repo_root: Path,
+    commit: str,
+    resolution_cache: dict[tuple[Any, ...], tuple[str, str | None]],
+) -> list[dict[str, Any]]:
+    dependencies: list[dict[str, Any]] = []
+    for binding in _import_bindings(imported_tree, imported_path):
+        resolved_path, _issue = _resolve_project_binding(
+            repo_root, commit, binding, resolution_cache
+        )
+        if resolved_path == "unknown":
+            dependencies.append(binding)
+            continue
+        if resolved_path not in {"external", source_path, imported_path}:
+            dependencies.append(binding)
+    return dependencies
+
+
+def _resolve_imported_method(
+    classes: dict[str, ast.ClassDef],
+    class_name: str,
+    method_name: str,
+    seen: frozenset[str] = frozenset(),
+) -> tuple[ast.FunctionDef | ast.AsyncFunctionDef | None, str | None, bool]:
+    if class_name in seen or class_name not in classes:
+        return None, None, True
+    class_node = classes[class_name]
+    for item in class_node.body:
+        if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)) and item.name == method_name:
+            return item, class_name, False
+    local_bases: list[str] = []
+    external_base = False
+    for base in class_node.bases:
+        base_name = (_dotted_name(base, {}) or "").replace("()", "")
+        if base_name in classes:
+            local_bases.append(base_name)
+        elif base_name not in {"", "object"}:
+            external_base = True
+    for base_name in local_bases:
+        found, owner, incomplete = _resolve_imported_method(
+            classes, base_name, method_name, seen | {class_name}
+        )
+        if found is not None or not incomplete:
+            return found, owner, incomplete or external_base
+        external_base = external_base or incomplete
+    if method_name == "__init__" and not local_bases and not external_base:
+        return None, class_name, False
+    return None, None, True
+
+
+def _nearest_function_owner(
+    node: ast.AST, parents: dict[int, ast.AST]
+) -> ast.FunctionDef | ast.AsyncFunctionDef | None:
+    current = node
+    while id(current) in parents:
+        current = parents[id(current)]
+        if isinstance(current, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            return current
+    return None
+
+
+def _control_flow_between(
+    node: ast.AST,
+    stop: ast.AST | None,
+    parents: dict[int, ast.AST],
+) -> bool:
+    current = node
+    while id(current) in parents:
+        current = parents[id(current)]
+        if current is stop:
+            return False
+        if isinstance(current, CONTROL_FLOW_NODES):
+            return True
+    return False
+
+
+def _local_call_targets(
+    call: ast.Call,
+    aliases: dict[str, str],
+    function_names: set[str],
+    class_names: set[str],
+    owner: str | None,
+) -> set[tuple[str | None, str]]:
+    targets: set[tuple[str | None, str]] = set()
+    names = {
+        _dotted_name(call.func, {}) or "",
+        _dotted_name(call.func, aliases) or "",
+    }
+    for name in names:
+        if name in function_names:
+            targets.add((None, name))
+        if name in class_names:
+            targets.add((name, "__init__"))
+        if owner and name.startswith(("self.", "cls.")):
+            targets.add((owner, name.split(".", 1)[1].split(".", 1)[0]))
+        constructor_method = re.fullmatch(
+            r"([A-Za-z_]\w*)\(\)\.([A-Za-z_]\w*)", name
+        )
+        if constructor_method and constructor_method.group(1) in class_names:
+            targets.add(
+                (constructor_method.group(1), constructor_method.group(2))
+            )
+        class_method = re.fullmatch(r"([A-Za-z_]\w*)\.([A-Za-z_]\w*)", name)
+        if class_method and class_method.group(1) in class_names:
+            targets.add((class_method.group(1), class_method.group(2)))
+    return targets
+
+
+def _invoked_local_definition_reachability(
+    tree: ast.Module,
+) -> tuple[
+    set[tuple[str | None, str]],
+    set[tuple[str | None, str]],
+    set[tuple[str | None, str]],
+]:
+    functions = {
+        node.name: node
+        for node in tree.body
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
+    classes = {
+        node.name: node for node in tree.body if isinstance(node, ast.ClassDef)
+    }
+    known = {(None, name) for name in functions} | {
+        (class_name, item.name)
+        for class_name, class_node in classes.items()
+        for item in class_node.body
+        if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
+    aliases = collect_aliases(tree)
+    parents = _ast_parent_map(tree)
+    states: dict[tuple[str | None, str], str] = {}
+    queue: list[tuple[tuple[str | None, str], str]] = []
+
+    def enqueue(target: tuple[str | None, str], state: str) -> None:
+        previous = states.get(target)
+        if previous == "reached" or previous == state:
+            return
+        states[target] = state
+        queue.append((target, state))
+
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call) or _nearest_function_owner(node, parents):
+            continue
+        state = "unknown" if _control_flow_between(node, None, parents) else "reached"
+        class_owner: str | None = None
+        current: ast.AST = node
+        while id(current) in parents:
+            current = parents[id(current)]
+            if isinstance(current, ast.ClassDef):
+                class_owner = current.name
+                break
+        for target in _local_call_targets(
+            node, aliases, set(functions), set(classes), class_owner
+        ):
+            enqueue(target, state)
+
+    while queue:
+        (class_name, definition_name), state = queue.pop(0)
+        if class_name is None:
+            definition = functions.get(definition_name)
+            owner = None
+        else:
+            definition, owner, _incomplete = _resolve_imported_method(
+                classes, class_name, definition_name
+            )
+        if definition is None:
+            continue
+        for node in ast.walk(definition):
+            if (
+                not isinstance(node, ast.Call)
+                or _nearest_function_owner(node, parents) is not definition
+            ):
+                continue
+            child_state = (
+                "unknown"
+                if state == "unknown"
+                or _control_flow_between(node, definition, parents)
+                else "reached"
+            )
+            for target in _local_call_targets(
+                node, aliases, set(functions), set(classes), owner
+            ):
+                enqueue(target, child_state)
+    reached = {target for target, state in states.items() if state == "reached"}
+    unknown = {target for target, state in states.items() if state == "unknown"}
+    return reached, unknown, known
 
 
 def _definition_effect_findings(
     imported_tree: ast.Module,
     imported_path: str,
     importing_path: str,
-    definition_names: set[str],
-) -> list[dict[str, Any]]:
+    definition_targets: set[tuple[str | None, str]],
+    project_dependencies: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], bool, bool]:
+    functions = {
+        node.name: node
+        for node in imported_tree.body
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
+    classes = {
+        node.name: node for node in imported_tree.body if isinstance(node, ast.ClassDef)
+    }
     aliases = collect_aliases(imported_tree)
-    target_nodes: list[ast.AST] = []
-    for node in imported_tree.body:
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name in definition_names:
-            target_nodes.extend(node.body)
-        elif isinstance(node, ast.ClassDef) and node.name in definition_names:
-            target_nodes.extend(
-                child
-                for item in node.body
-                if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)) and item.name == "__init__"
-                for child in item.body
-            )
+    queue = sorted(definition_targets, key=lambda item: (item[0] or "", item[1]))
+    visited: set[tuple[str | None, str]] = set()
     findings: list[dict[str, Any]] = []
-    for target in target_nodes:
-        for node in ast.walk(target):
+    incomplete = False
+    category_detector_failed = False
+    dependency_positions = {
+        (binding["line"], binding["column"])
+        for binding in project_dependencies
+    }
+    while queue:
+        class_name, definition_name = queue.pop(0)
+        target = (class_name, definition_name)
+        if target in visited:
+            continue
+        visited.add(target)
+        owner = class_name
+        if class_name is None:
+            definition = functions.get(definition_name)
+            if definition is None:
+                incomplete = True
+                continue
+        else:
+            definition, owner, method_incomplete = _resolve_imported_method(
+                classes, class_name, definition_name
+            )
+            incomplete = incomplete or method_incomplete
+            if definition is None:
+                continue
+        if any(
+            isinstance(node, (ast.Import, ast.ImportFrom))
+            and _node_position(node) in dependency_positions
+            for node in ast.walk(definition)
+        ):
+            # Import execution itself loads the deeper repository module.  The
+            # one-hop detector must therefore fail closed even when no symbol
+            # from that module is subsequently called by the reached definition.
+            incomplete = True
+        for node in ast.walk(definition):
             if not isinstance(node, ast.Call):
                 continue
             resolved = _dotted_name(node.func, aliases) or "<unresolved>"
-            categories, _ = classify_call(node, resolved)
+            try:
+                categories, _unsupported = classify_call(node, resolved)
+            except P541BR2Error:
+                raise
+            except Exception:
+                category_detector_failed = True
+                continue
             for category in sorted(categories & set(EFFECT_KEYS)):
                 findings.append(
                     _call_finding(
@@ -1251,10 +2396,44 @@ def _definition_effect_findings(
                         category,
                         classification="transitive",
                         imported_module_path=imported_path,
-                        operation=_db_operation(node, resolved) if category == "database_access" else None,
+                        operation=(
+                            _db_operation(node, resolved)
+                            if category == "database_access"
+                            else None
+                        ),
                     )
                 )
-    return findings
+            if any(
+                _node_references_binding(node.func, binding, aliases)
+                for binding in project_dependencies
+            ):
+                incomplete = True
+            raw = (_dotted_name(node.func, {}) or "").replace("()", "")
+            resolved_clean = resolved.replace("()", "")
+            if raw in functions:
+                queue.append((None, raw))
+            elif resolved_clean in functions:
+                queue.append((None, resolved_clean))
+            if raw in classes:
+                queue.append((raw, "__init__"))
+            if owner and raw.startswith(("self.", "cls.")):
+                queue.append((owner, raw.split(".", 1)[1].split(".", 1)[0]))
+            if owner and raw.startswith("super()."):
+                method_name = raw[len("super()."):].split(".", 1)[0]
+                local_bases = [
+                    (_dotted_name(base, {}) or "").replace("()", "")
+                    for base in classes[owner].bases
+                ]
+                matching_bases = [base for base in local_bases if base in classes]
+                if matching_bases:
+                    queue.append((matching_bases[0], method_name))
+                else:
+                    incomplete = True
+            for candidate in {raw, resolved_clean}:
+                match = re.fullmatch(r"([A-Za-z_]\w*)\.([A-Za-z_]\w*)", candidate)
+                if match and match.group(1) in classes:
+                    queue.append((match.group(1), match.group(2)))
+    return findings, incomplete, category_detector_failed
 
 
 def one_hop_transitive_evidence(
@@ -1263,8 +2442,9 @@ def one_hop_transitive_evidence(
     repo_root: Path,
     commit: str,
     *,
-    resolution_cache: dict[tuple[str | None, str | None], tuple[str, str | None]] | None = None,
+    resolution_cache: dict[tuple[Any, ...], tuple[str, str | None]] | None = None,
     blob_cache: dict[str, bytes] | None = None,
+    analysis_cache: dict[tuple[str, str], dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     try:
         content = raw.decode("utf-8")
@@ -1277,90 +2457,156 @@ def one_hop_transitive_evidence(
         )
     resolution_cache = resolution_cache if resolution_cache is not None else {}
     blob_cache = blob_cache if blob_cache is not None else {}
+    analysis_cache = analysis_cache if analysis_cache is not None else {}
     findings: list[dict[str, Any]] = []
     unknown_reasons: list[str] = []
+    reached_definitions, unknown_definitions, known_definitions = (
+        _invoked_local_definition_reachability(tree)
+    )
     for binding in _import_bindings(tree, source_path):
-        resolved_path, issue = _resolve_project_binding(
-            repo_root, commit, binding, resolution_cache
-        )
-        if resolved_path == "external":
-            continue
-        if resolved_path == "unknown":
-            unknown_reasons.append(_failure_reason("import_resolution_incomplete"))
-            continue
-        if resolved_path == source_path:  # One-hop cycle stops without recursion.
-            continue
-        entries = git_tree_entries(repo_root, commit, [resolved_path])
-        entry = entries.get(resolved_path)
-        if not entry or entry["type"] != "blob" or entry["mode"] not in {"100644", "100755"}:
-            unknown_reasons.append(_failure_reason("imported_blob_invalid"))
-            continue
-        imported_raw = blob_cache.get(entry["blob_id"])
-        if imported_raw is None:
-            try:
-                imported_raw = git_blob(repo_root, entry["blob_id"])
-            except GitUnavailableError:
-                raise
-            except Exception:
-                unknown_reasons.append(
-                    _failure_reason("git_blob_read_failed")
-                )
-                continue
-            blob_cache[entry["blob_id"]] = imported_raw
         try:
-            imported = analyze_source_bytes(
-                resolved_path,
-                imported_raw,
-                entry["blob_id"],
-                transitive_evidence=complete_transitive_absence(),
+            lexical_state = _lexical_reachability(
+                binding,
+                reached_definitions,
+                unknown_definitions,
+                known_definitions,
             )
-        except P541BR2Error:
-            raise
-        except Exception:
-            unknown_reasons.append(
-                _failure_reason("detector_failed")
+            resolved_path, _issue = _resolve_project_binding(
+                repo_root, commit, binding, resolution_cache
             )
-            continue
-        if imported["scan_status"] != "complete":
-            unknown_reasons.append(_failure_reason("imported_scan_incomplete"))
-            continue
-        for family in EFFECT_KEYS:
-            for direct in imported["evidence"][family]["findings"]:
-                if direct["scope"] != "module_load":
-                    continue
-                findings.append(
-                    {
-                        **direct,
-                        "rule_id": f"transitive.{family}.module_load",
-                        "scope": "transitive",
-                        "direct_or_transitive": "transitive",
-                        "source_path": source_path,
-                        "imported_module_path": resolved_path,
-                        "import_line": binding["line"],
-                    }
-                )
-        definition_names = _invoked_definition_names(tree, binding)
-        if definition_names:
-            try:
-                imported_tree = ast.parse(imported_raw.decode("utf-8"), filename=resolved_path)
-            except (UnicodeDecodeError, SyntaxError) as exc:
-                unknown_reasons.append(_failure_reason("imported_scan_incomplete"))
-            else:
+            if resolved_path == "external":
+                continue
+            if resolved_path == "unknown":
+                unknown_reasons.append(_failure_reason("import_resolution_incomplete"))
+                continue
+            if lexical_state in {"unknown", "unreachable"}:
+                unknown_reasons.append(_failure_reason("import_resolution_incomplete"))
+                continue
+            if resolved_path == source_path:  # One-hop cycle stops without recursion.
+                continue
+            entries = git_tree_entries(repo_root, commit, [resolved_path])
+            entry = entries.get(resolved_path)
+            if (
+                not entry
+                or entry["type"] != "blob"
+                or entry["mode"] not in {"100644", "100755"}
+            ):
+                unknown_reasons.append(_failure_reason("imported_blob_invalid"))
+                continue
+            imported_raw = blob_cache.get(entry["blob_id"])
+            if imported_raw is None:
                 try:
-                    findings.extend(
-                        _definition_effect_findings(
-                            imported_tree,
-                            resolved_path,
-                            source_path,
-                            definition_names,
-                        )
+                    imported_raw = git_blob(repo_root, entry["blob_id"])
+                except GitUnavailableError:
+                    raise
+                except GitBlobReadError:
+                    unknown_reasons.append(_failure_reason("git_blob_read_failed"))
+                    continue
+                blob_cache[entry["blob_id"]] = imported_raw
+            analysis_key = (resolved_path, entry["blob_id"])
+            imported = analysis_cache.get(analysis_key)
+            if imported is None:
+                try:
+                    imported = analyze_source_bytes(
+                        resolved_path,
+                        imported_raw,
+                        entry["blob_id"],
+                        transitive_evidence=complete_transitive_absence(),
                     )
                 except P541BR2Error:
                     raise
                 except Exception:
+                    unknown_reasons.append(_failure_reason("detector_failed"))
+                    continue
+                analysis_cache[analysis_key] = imported
+            promoted, imported_evidence_incomplete = (
+                _promote_imported_module_load_findings(
+                    imported,
+                    source_path,
+                    resolved_path,
+                    binding["line"],
+                )
+            )
+            findings.extend(promoted)
+            if imported["scan_status"] != "complete":
+                unknown_reasons.append(_failure_reason("imported_scan_incomplete"))
+                continue
+            if imported_evidence_incomplete:
+                unknown_reasons.append(_failure_reason("imported_scan_incomplete"))
+            try:
+                imported_tree = ast.parse(
+                    imported_raw.decode("utf-8"), filename=resolved_path
+                )
+            except (UnicodeDecodeError, SyntaxError) as exc:
+                unknown_reasons.append(_failure_reason("imported_scan_incomplete"))
+            else:
+                definition_targets, target_incomplete = _invoked_definition_targets(
+                    tree, binding, imported_tree
+                )
+                module_reached, module_unknown, _module_known = (
+                    _invoked_local_definition_reachability(imported_tree)
+                )
+                definition_targets.update(module_reached)
+                definition_targets.update(module_unknown)
+                target_incomplete = target_incomplete or bool(module_unknown)
+                if target_incomplete:
+                    unknown_reasons.append(_failure_reason("import_resolution_incomplete"))
+                dependencies = _project_dependency_bindings(
+                    imported_tree,
+                    resolved_path,
+                    source_path,
+                    repo_root,
+                    commit,
+                    resolution_cache,
+                )
+                if any(
+                    binding.get("definition_target") is None
+                    for binding in dependencies
+                ):
+                    # Module and class-body imports execute while the imported
+                    # module loads.  A deeper repository import crosses the
+                    # one-hop boundary regardless of whether its binding is used.
                     unknown_reasons.append(
-                        _failure_reason("category_detector_failed")
+                        _failure_reason("import_resolution_incomplete")
                     )
+                if definition_targets:
+                    (
+                        definition_findings,
+                        definition_incomplete,
+                        definition_category_failed,
+                    ) = (
+                        _definition_effect_findings(
+                            imported_tree,
+                            resolved_path,
+                            source_path,
+                            definition_targets,
+                            dependencies,
+                        )
+                    )
+                    findings.extend(definition_findings)
+                    if definition_incomplete:
+                        unknown_reasons.append(
+                            _failure_reason("import_resolution_incomplete")
+                        )
+                    if definition_category_failed:
+                        unknown_reasons.append(
+                            _failure_reason("category_detector_failed")
+                        )
+        except GitUnavailableError:
+            raise
+        except P541BR2Error:
+            raise
+        except Exception:
+            unknown_reasons.append(_failure_reason("transitive_detector_failed"))
+    deduplicated: dict[bytes, dict[str, Any]] = {}
+    for finding in findings:
+        try:
+            key = canonical_bytes(finding)
+        except P541BR2Error:
+            unknown_reasons.append(_failure_reason("transitive_detector_failed"))
+            continue
+        deduplicated.setdefault(key, finding)
+    findings = list(deduplicated.values())
     if unknown_reasons:
         return _evidence(
             "unknown",
@@ -1403,6 +2649,36 @@ def validate_artifact(artifact: dict[str, Any]) -> None:
         raise P541BR2Error("scan status taxonomy mismatch")
     if artifact.get("task_id") != TASK_ID:
         raise P541BR2Error("artifact identity mismatch")
+    expected_runtime = {
+        "implementation": CANONICAL_RUNTIME_IMPLEMENTATION,
+        "version": CANONICAL_RUNTIME_VERSION,
+        "requirement": (
+            f"{CANONICAL_RUNTIME_IMPLEMENTATION}=={CANONICAL_RUNTIME_VERSION}"
+        ),
+        "verification": "PASS",
+    }
+    if artifact.get("runtime_contract") != expected_runtime:
+        raise P541BR2Error("canonical runtime provenance mismatch")
+    if (
+        artifact.get("detector_contract", {}).get("canonical_generation_runtime")
+        != expected_runtime["requirement"]
+        or artifact.get("provenance", {}).get("generation_runtime")
+        != expected_runtime
+    ):
+        raise P541BR2Error("canonical runtime contract mismatch")
+    if (
+        artifact.get("implementation_base_oid") != BASE_MAIN_COMMIT
+        or artifact.get("frozen_source_commit") != FROZEN_SOURCE_COMMIT
+    ):
+        raise P541BR2Error("artifact top-level provenance mismatch")
+    generator_raw = Path(__file__).read_bytes()
+    generator = artifact.get("generator", {})
+    if (
+        generator.get("path") != GENERATOR_PATH
+        or generator.get("byte_size") != len(generator_raw)
+        or generator.get("sha256") != sha256_bytes(generator_raw)
+    ):
+        raise P541BR2Error("generator provenance mismatch")
     records = artifact.get("method_classification_records")
     if not isinstance(records, list) or len(records) != 580:
         raise P541BR2Error("artifact must contain exactly 580 records")
@@ -1433,6 +2709,42 @@ def validate_artifact(artifact: dict[str, Any]) -> None:
             or scan.get("parse_status") not in {"succeeded", "failed", "not_attempted"}
         ):
             raise P541BR2Error(f"scan phase status mismatch: {record.get('source_path')}")
+        phase_tuple = (
+            scan["read_status"],
+            scan["decode_status"],
+            scan["parse_status"],
+        )
+        allowed_phase_tuples = {
+            "complete": {("succeeded", "succeeded", "succeeded")},
+            "syntax_error": {("succeeded", "succeeded", "failed")},
+            "unreadable": {
+                ("failed", "not_attempted", "not_attempted"),
+                ("succeeded", "failed", "not_attempted"),
+            },
+            "unsupported": {("succeeded", "succeeded", "succeeded")},
+        }
+        if (
+            phase_tuple not in allowed_phase_tuples[record["scan_status"]]
+            or identity["git_blob_read_status"] != scan["read_status"]
+            or identity["utf8_decoding_status"] != scan["decode_status"]
+        ):
+            raise P541BR2Error(
+                f"impossible scan phase transition: {record.get('source_path')}"
+            )
+        if scan["read_status"] == "failed":
+            if identity.get("byte_size") is not None or identity.get("sha256") is not None:
+                raise P541BR2Error(
+                    f"failed read published content identity: {record.get('source_path')}"
+                )
+        elif (
+            not isinstance(identity.get("byte_size"), int)
+            or identity["byte_size"] < 0
+            or not isinstance(identity.get("sha256"), str)
+            or not re.fullmatch(r"[0-9a-f]{64}", identity["sha256"])
+        ):
+            raise P541BR2Error(
+                f"successful read missing content identity: {record.get('source_path')}"
+            )
         if record["scan_status"] == "complete":
             if (
                 scan.get("complete") is not True
@@ -1447,16 +2759,38 @@ def validate_artifact(artifact: dict[str, Any]) -> None:
             reason = error.get("message")
             if (
                 scan.get("complete") is not False
+                or error.get("type") != record["scan_status"]
                 or reason_code not in FAILURE_REASON_CODES
-                or not isinstance(reason, str)
-                or not reason.startswith(reason_code)
-                or HARD_CODED_PATH_RE.search(reason)
+                or not _valid_bounded_failure_reason(reason)
+                or "; " in reason
+                or reason.split(":", 1)[0] != reason_code
             ):
                 raise P541BR2Error(f"incomplete scan status mismatch: {record.get('source_path')}")
-            if (
-                record.get("safety_classification", {}).get("risk_level") != "unknown"
-                or record.get("safety_classification", {}).get("low_risk_eligible") is not False
-            ):
+            expected_reason_codes = {
+                "syntax_error": {"ast_parse_failed"},
+                "unsupported": {
+                    "category_detector_failed",
+                    "detector_failed",
+                    "transitive_detector_failed",
+                    "unsupported_static_structure",
+                },
+                "unreadable": {
+                    "git_blob_read_failed"
+                    if scan["read_status"] == "failed"
+                    else "utf8_decode_failed"
+                },
+            }
+            if reason_code not in expected_reason_codes[record["scan_status"]]:
+                raise P541BR2Error(
+                    f"scan failure reason mismatch: {record.get('source_path')}"
+                )
+            expected_incomplete_safety = {
+                "risk_level": "unknown",
+                "low_risk_eligible": False,
+                "disposition": "BLOCKED_UNKNOWN",
+                "reasons": [reason],
+            }
+            if record.get("safety_classification") != expected_incomplete_safety:
                 raise P541BR2Error(f"incomplete scan safety mismatch: {record.get('source_path')}")
         evidence = record.get("evidence")
         if not isinstance(evidence, dict) or set(evidence) != set(ALL_EVIDENCE_KEYS):
@@ -1469,6 +2803,23 @@ def validate_artifact(artifact: dict[str, Any]) -> None:
                 raise P541BR2Error(f"incomplete structured evidence: {record.get('source_path')}")
             if item["detector_id"] != DETECTOR_VERSION or not isinstance(item["findings"], list):
                 raise P541BR2Error(f"detector evidence identity mismatch: {record.get('source_path')}")
+            if (
+                (item["state"] == "detected" and not item["findings"])
+                or (item["state"] == "not_detected" and item["findings"])
+            ):
+                raise P541BR2Error(
+                    f"evidence state/finding mismatch: {record.get('source_path')}"
+                )
+            if item["state"] != "unknown" and "reason" in item:
+                raise P541BR2Error(
+                    f"evidence reason/state mismatch: {record.get('source_path')}"
+                )
+            if item["state"] == "unknown":
+                item_reason = item.get("reason")
+                if not _valid_bounded_failure_reason(item_reason):
+                    raise P541BR2Error(
+                        f"unknown evidence reason mismatch: {record.get('source_path')}"
+                    )
             for finding in item["findings"]:
                 required = {
                     "line", "column", "rule_id", "resolved_api", "resolved_syntax",
@@ -1499,7 +2850,12 @@ def validate_artifact(artifact: dict[str, Any]) -> None:
                 elif classification != "direct":
                     raise P541BR2Error(f"finding classification mismatch: {record.get('source_path')}")
         scan_complete = record.get("scan", {}).get("complete") is True
-        low_risk = record.get("safety_classification", {}).get("low_risk_eligible") is True
+        safety = record.get("safety_classification", {})
+        low_risk = safety.get("low_risk_eligible") is True
+        if scan_complete and safety != classify_safety("complete", evidence):
+            raise P541BR2Error(
+                f"safety classification mismatch: {record.get('source_path')}"
+            )
         if low_risk and (
             not scan_complete
             or any(evidence[key]["state"] != "not_detected" for key in RISK_EVIDENCE_KEYS)
@@ -1569,6 +2925,7 @@ def validate_artifact(artifact: dict[str, Any]) -> None:
 
 
 def build_artifact(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
+    runtime_contract = require_canonical_runtime()
     historical, historical_provenance = verified_historical_inputs(repo_root)
     historical_records = historical["method_classification_records"]
     paths = [record["source_path"] for record in historical_records]
@@ -1576,9 +2933,9 @@ def build_artifact(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
     require_frozen_entries(paths, entries)
 
     records: list[dict[str, Any]] = []
-    raw_by_path: dict[str, bytes] = {}
     blob_cache: dict[str, bytes] = {}
-    resolution_cache: dict[tuple[str | None, str | None], tuple[str, str | None]] = {}
+    analysis_cache: dict[tuple[str, str], dict[str, Any]] = {}
+    resolution_cache: dict[tuple[Any, ...], tuple[str, str | None]] = {}
     for historical_record in historical_records:
         source_path = historical_record["source_path"]
         _safe_repo_path(source_path)
@@ -1593,7 +2950,7 @@ def build_artifact(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
             raw = git_blob(repo_root, entry["blob_id"])
         except GitUnavailableError:
             raise
-        except Exception:
+        except GitBlobReadError:
             reason = _failure_reason("git_blob_read_failed")
             analysis = unknown_analysis(
                 source_path,
@@ -1612,7 +2969,6 @@ def build_artifact(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
                 }
             )
             continue
-        raw_by_path[source_path] = raw
         blob_cache[entry["blob_id"]] = raw
         transitive_failed = False
         try:
@@ -1623,6 +2979,7 @@ def build_artifact(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
                 FROZEN_SOURCE_COMMIT,
                 resolution_cache=resolution_cache,
                 blob_cache=blob_cache,
+                analysis_cache=analysis_cache,
             )
         except P541BR2Error:
             raise
@@ -1705,6 +3062,7 @@ def build_artifact(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
         "scan_status_taxonomy": list(SCAN_STATUS_TAXONOMY),
         "task_id": TASK_ID,
         "generated_at_utc": GENERATED_AT_UTC,
+        "runtime_contract": runtime_contract,
         "implementation_base_oid": BASE_MAIN_COMMIT,
         "frozen_source_commit": FROZEN_SOURCE_COMMIT,
         "generator": {
@@ -1721,6 +3079,7 @@ def build_artifact(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
         },
         "detector_contract": {
             "detector_version": DETECTOR_VERSION,
+            "canonical_generation_runtime": runtime_contract["requirement"],
             "evidence_states": sorted(TRI_STATES),
             "scan_status_taxonomy": list(SCAN_STATUS_TAXONOMY),
             "failure_reason_codes": sorted(FAILURE_REASON_CODES),
@@ -1745,6 +3104,7 @@ def build_artifact(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
                 "detector exception",
                 "category-detector exception",
                 "incomplete alias resolution",
+                "invoked deeper repository-local dependency beyond one-hop boundary",
                 "star import",
                 "dynamic code or import",
                 "dynamic file mode",
@@ -1761,7 +3121,12 @@ def build_artifact(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
                 "scan.complete=true and every risk evidence category is explicitly not_detected"
             ),
             "source_access": "pinned Git blobs only; no working-tree discovery/import/execution",
-            "one_hop_policy": "direct repository-local imports only; no recursion beyond one hop",
+            "one_hop_policy": (
+                "module-load effects and effects reachable through invoked imported functions, "
+                "classes, instance methods, same-module inheritance, and same-module helper calls "
+                "are promoted; unresolved direct imports or invoked deeper repository dependencies "
+                "are unknown; no source is imported, executed, or recursively scanned beyond one hop"
+            ),
         },
         "summary": {
             "total_records": len(records),
@@ -1775,6 +3140,7 @@ def build_artifact(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
             "transitive_finding_count": transitive_finding_count,
         },
         "provenance": {
+            "generation_runtime": runtime_contract,
             "historical_inputs": historical_provenance,
             "source_manifest": {
                 "record_count": 580,
@@ -1808,6 +3174,7 @@ def build_artifact(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
         "limitations": [
             "Static detection is conservative and does not prove runtime safety.",
             "Unknown blocks low-risk eligibility and requires targeted review or detector support.",
+            "Canonical artifact generation is pinned to CPython 3.9.6; other runtimes fail closed before source reads.",
             "Historical identity/method-family classifications are retained as context, not re-proven.",
             "No database, source import, source execution, replay, or predictive evaluation was performed.",
         ],
@@ -1837,6 +3204,7 @@ def render_markdown(artifact: dict[str, Any]) -> str:
         "",
         f"- Schema: `{artifact['schema_version']}`",
         f"- Detector: `{artifact['detector_version']}`",
+        f"- Canonical generation runtime: `{artifact['runtime_contract']['requirement']}` — verification **{artifact['runtime_contract']['verification']}**.",
         "- Every evidence family publishes `state`, `scope`, `detector_id`, and deterministic `findings`.",
         "- Every finding publishes separate `resolved_api` and `resolved_syntax` fields plus `imported_module_path`; exactly one resolved field is populated.",
         "- States are exactly `detected`, `not_detected`, and `unknown`.",
@@ -1855,7 +3223,7 @@ def render_markdown(artifact: dict[str, Any]) -> str:
         "- Requests/urllib/http.client/httpx/aiohttp/socket network I/O and external URLs.",
         "- Direct and aliased subprocess/process-spawning APIs.",
         "- Hardcoded absolute, DB-like, draw/date, and external-service inputs.",
-        "- Bounded one-hop project imports with cycle stops and ambiguity routed to `unknown`.",
+        "- Bounded one-hop project imports promote module-load effects and effects reachable through invoked functions, classes, instance methods, same-module inheritance, and helper calls; cycles stop and unresolved direct imports or invoked deeper project dependencies route to `unknown`.",
         "",
         "## Summary",
         "",

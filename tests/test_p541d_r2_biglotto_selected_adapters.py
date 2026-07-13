@@ -52,6 +52,49 @@ ZONE_BETS = [
 ]
 
 
+class _IntLike:
+    def __init__(self):
+        self.calls = 0
+
+    def __int__(self):
+        self.calls += 1
+        return 1
+
+
+class _IntSubclass(int):
+    pass
+
+
+class _ListSubclass(list):
+    pass
+
+
+class _DictSubclass(dict):
+    pass
+
+
+class _StrSubclass(str):
+    pass
+
+
+class _StableStringObject:
+    def __init__(self):
+        self.calls = 0
+
+    def __str__(self):
+        self.calls += 1
+        return "stable"
+
+
+class _UnstableStringObject:
+    def __init__(self):
+        self.calls = 0
+
+    def __str__(self):
+        self.calls += 1
+        return f"unstable-{self.calls}"
+
+
 def _source_tree() -> ast.Module:
     return ast.parse(inspect.getsource(adapters))
 
@@ -253,6 +296,9 @@ def test_social_last_50_newest_first_copy_and_excluded_methods(monkeypatch):
 
         def predict(self, history, pick_count):
             assert pick_count == 6
+            assert all(type(row) is dict for row in history)
+            assert all(list(row) == ["draw", "date", "numbers"] for row in history)
+            assert all(type(row["numbers"]) is list for row in history)
             received.extend(copy.deepcopy(history))
             history[0]["numbers"][0] = 49
             return [1, 2, 3, 4, 5, 6]
@@ -494,6 +540,332 @@ def test_zone_malformed_or_missing_history_fields_fail_closed(history):
         adapters.BigLottoZoneSplit3BetBet1Adapter().get_one_bet(
             history, "BIG_LOTTO"
         )
+
+
+@pytest.mark.parametrize("adapter_class", ADAPTER_CLASSES)
+def test_unsupported_lottery_precedes_malformed_history_validation(adapter_class):
+    with pytest.raises(registry.UnsupportedLotteryType):
+        adapter_class().get_one_bet(None, "POWER_LOTTO")
+
+
+@pytest.mark.parametrize("adapter_class", ADAPTER_CLASSES)
+@pytest.mark.parametrize(
+    "history_factory",
+    [
+        lambda: tuple(copy.deepcopy(ZONE_HISTORY)),
+        lambda: iter(copy.deepcopy(ZONE_HISTORY)),
+        lambda: "history",
+        lambda: {"row": copy.deepcopy(ZONE_HISTORY[0])},
+        lambda: None,
+        lambda: _ListSubclass(copy.deepcopy(ZONE_HISTORY)),
+    ],
+    ids=["tuple", "iterator", "string", "mapping", "none", "list-subclass"],
+)
+def test_history_container_requires_exact_builtin_list(adapter_class, history_factory):
+    with pytest.raises(registry.InvalidOutput):
+        adapter_class().get_one_bet(history_factory(), "BIG_LOTTO")
+
+
+@pytest.mark.parametrize("adapter_class", ADAPTER_CLASSES)
+@pytest.mark.parametrize(
+    "row_factory",
+    [
+        lambda: None,
+        lambda: (),
+        lambda: [],
+        lambda: "row",
+        lambda: _DictSubclass(copy.deepcopy(ZONE_HISTORY[0])),
+    ],
+    ids=["none", "tuple", "list", "string", "dict-subclass"],
+)
+def test_history_row_requires_exact_builtin_dict(adapter_class, row_factory):
+    with pytest.raises(registry.InvalidOutput):
+        adapter_class().get_one_bet([row_factory()], "BIG_LOTTO")
+
+
+@pytest.mark.parametrize("adapter_class", ADAPTER_CLASSES)
+@pytest.mark.parametrize("missing_field", ["draw", "date", "numbers"])
+def test_history_row_requires_each_canonical_field(adapter_class, missing_field):
+    row = copy.deepcopy(ZONE_HISTORY[0])
+    del row[missing_field]
+    with pytest.raises(registry.InvalidOutput):
+        adapter_class().get_one_bet([row], "BIG_LOTTO")
+
+
+@pytest.mark.parametrize("adapter_class", ADAPTER_CLASSES)
+@pytest.mark.parametrize("field", ["draw", "date"])
+@pytest.mark.parametrize(
+    "value_factory",
+    [
+        lambda: None,
+        lambda: True,
+        lambda: 1,
+        lambda: 1.0,
+        lambda: [],
+        lambda: {},
+        lambda: _StrSubclass("1"),
+        lambda: _StableStringObject(),
+        lambda: _UnstableStringObject(),
+        lambda: "",
+    ],
+    ids=[
+        "none", "bool", "integer", "float", "list", "dict",
+        "str-subclass", "stable-str-object", "unstable-str-object", "empty",
+    ],
+)
+def test_draw_and_date_require_exact_nonempty_builtin_strings(
+    adapter_class, field, value_factory
+):
+    value = value_factory()
+    row = copy.deepcopy(ZONE_HISTORY[0])
+    row[field] = value
+    with pytest.raises(registry.InvalidOutput):
+        adapter_class().get_one_bet([row], "BIG_LOTTO")
+    if type(value) in {_StableStringObject, _UnstableStringObject}:
+        assert value.calls == 0
+
+
+@pytest.mark.parametrize("adapter_class", ADAPTER_CLASSES)
+@pytest.mark.parametrize(
+    "value_factory",
+    [
+        lambda: True,
+        lambda: "1",
+        lambda: 1.0,
+        lambda: 1.9,
+        lambda: float("nan"),
+        lambda: float("inf"),
+        lambda: float("-inf"),
+        lambda: _IntLike(),
+        lambda: _IntSubclass(1),
+    ],
+    ids=[
+        "bool", "numeric-string", "integral-float", "nonintegral-float",
+        "nan", "positive-infinity", "negative-infinity", "int-object",
+        "int-subclass",
+    ],
+)
+def test_historical_numbers_reject_every_non_exact_integer(
+    adapter_class, value_factory
+):
+    value = value_factory()
+    row = copy.deepcopy(ZONE_HISTORY[0])
+    row["numbers"] = [value, 2, 3, 4, 5, 6]
+    with pytest.raises(registry.InvalidOutput):
+        adapter_class().get_one_bet([row], "BIG_LOTTO")
+    if type(value) is _IntLike:
+        assert value.calls == 0
+
+
+@pytest.mark.parametrize("adapter_class", ADAPTER_CLASSES)
+@pytest.mark.parametrize(
+    "numbers_factory",
+    [
+        lambda: None,
+        lambda: (1, 2, 3, 4, 5, 6),
+        lambda: _ListSubclass([1, 2, 3, 4, 5, 6]),
+    ],
+    ids=["none", "tuple", "list-subclass"],
+)
+def test_historical_numbers_container_requires_exact_builtin_list(
+    adapter_class, numbers_factory
+):
+    row = copy.deepcopy(ZONE_HISTORY[0])
+    row["numbers"] = numbers_factory()
+    with pytest.raises(registry.InvalidOutput):
+        adapter_class().get_one_bet([row], "BIG_LOTTO")
+
+
+@pytest.mark.parametrize("adapter_class", ADAPTER_CLASSES)
+@pytest.mark.parametrize(
+    "numbers",
+    [
+        [1, 1, 2, 3, 4, 5],
+        [0, 2, 3, 4, 5, 6],
+        [1, 2, 3, 4, 5, 50],
+    ],
+    ids=["duplicate", "below-range", "above-range"],
+)
+def test_historical_numbers_preserve_duplicate_and_range_checks(
+    adapter_class, numbers
+):
+    row = copy.deepcopy(ZONE_HISTORY[0])
+    row["numbers"] = numbers
+    with pytest.raises(registry.InvalidOutput):
+        adapter_class().get_one_bet([row], "BIG_LOTTO")
+
+
+def test_social_validates_malformed_selected_row_before_predictor_invocation(monkeypatch):
+    social_module = importlib.import_module(SOCIAL_MODULE_NAME)
+
+    class NeverConstructedPredictor:
+        def __init__(self, max_num):
+            raise AssertionError("predictor must not be invoked for malformed history")
+
+    monkeypatch.setattr(
+        social_module, "SocialWisdomPredictor", NeverConstructedPredictor
+    )
+    history = [
+        {
+            "draw": str(index),
+            "date": f"2026-02-{index % 28 + 1:02d}",
+            "numbers": [1, 2, 3, 4, 5, 6],
+        }
+        for index in range(51)
+    ]
+    history[1]["numbers"] = [True, 2, 3, 4, 5, 6]
+    with pytest.raises(registry.InvalidOutput):
+        adapters.BigLottoSocialWisdomAntiPopularityAdapter().get_one_bet(
+            history, "BIG_LOTTO"
+        )
+
+
+def test_zone_validates_malformed_row_in_full_causal_history():
+    history = [
+        {"draw": "1", "date": None, "numbers": [1, 2, 3, 4, 5, 6]},
+        {"draw": "2", "date": "2026-01-02", "numbers": [7, 8, 9, 10, 11, 12]},
+    ]
+    with pytest.raises(registry.InvalidOutput):
+        adapters.BigLottoZoneSplit3BetBet1Adapter().get_one_bet(
+            history, "BIG_LOTTO"
+        )
+
+
+@pytest.mark.parametrize(
+    "output_factory",
+    [
+        lambda: [True, 2, 3, 4, 5, 6],
+        lambda: ["1", 2, 3, 4, 5, 6],
+        lambda: [1.0, 2, 3, 4, 5, 6],
+        lambda: [1.9, 2, 3, 4, 5, 6],
+        lambda: [float("nan"), 2, 3, 4, 5, 6],
+        lambda: [float("inf"), 2, 3, 4, 5, 6],
+        lambda: [float("-inf"), 2, 3, 4, 5, 6],
+        lambda: [_IntLike(), 2, 3, 4, 5, 6],
+        lambda: [_IntSubclass(1), 2, 3, 4, 5, 6],
+        lambda: (1, 2, 3, 4, 5, 6),
+        lambda: [1, 1, 2, 3, 4, 5],
+        lambda: [0, 2, 3, 4, 5, 6],
+        lambda: [1, 2, 3, 4, 5, 50],
+    ],
+    ids=[
+        "bool", "numeric-string", "integral-float", "nonintegral-float",
+        "nan", "positive-infinity", "negative-infinity", "int-object",
+        "int-subclass", "tuple", "duplicate", "below-range", "above-range",
+    ],
+)
+def test_social_target_output_rejects_every_noncanonical_ticket(
+    monkeypatch, output_factory
+):
+    social_module = importlib.import_module(SOCIAL_MODULE_NAME)
+    malformed = output_factory()
+
+    class MalformedPredictor:
+        def __init__(self, max_num):
+            assert max_num == 49
+
+        def predict(self, history, pick_count):
+            assert pick_count == 6
+            return malformed
+
+    monkeypatch.setattr(social_module, "SocialWisdomPredictor", MalformedPredictor)
+    with pytest.raises(registry.InvalidOutput):
+        adapters.BigLottoSocialWisdomAntiPopularityAdapter().get_one_bet(
+            ZONE_HISTORY, "BIG_LOTTO"
+        )
+    if type(malformed) is list and type(malformed[0]) is _IntLike:
+        assert malformed[0].calls == 0
+
+
+def test_zone_integer_and_numeric_string_cannot_both_yield_a_seed():
+    assert adapters._zone_seed_digest(copy.deepcopy(ZONE_HISTORY)) == ZONE_DIGEST
+    malformed = copy.deepcopy(ZONE_HISTORY)
+    malformed[0]["numbers"][0] = "1"
+    with pytest.raises(registry.InvalidOutput):
+        adapters._zone_seed_digest(malformed)
+
+
+@pytest.mark.parametrize(
+    ("accepted_string", "rejected_factory"),
+    [
+        ("None", lambda: None),
+        ("True", lambda: True),
+        ("[1, 2]", lambda: [1, 2]),
+        ("stable", lambda: _StableStringObject()),
+    ],
+    ids=["none", "bool", "container-repr", "custom-str-object"],
+)
+def test_zone_string_representation_and_nonstring_value_cannot_both_yield_a_seed(
+    accepted_string, rejected_factory
+):
+    accepted = copy.deepcopy(ZONE_HISTORY)
+    accepted[0]["draw"] = accepted_string
+    assert len(adapters._zone_seed_digest(accepted)) == 64
+
+    rejected_value = rejected_factory()
+    rejected = copy.deepcopy(ZONE_HISTORY)
+    rejected[0]["draw"] = rejected_value
+    with pytest.raises(registry.InvalidOutput):
+        adapters._zone_seed_digest(rejected)
+    if type(rejected_value) is _StableStringObject:
+        assert rejected_value.calls == 0
+
+
+def test_zone_unstable_str_is_never_invoked_and_same_input_always_fails():
+    unstable = _UnstableStringObject()
+    history = copy.deepcopy(ZONE_HISTORY)
+    history[0]["date"] = unstable
+    for _ in range(2):
+        with pytest.raises(registry.InvalidOutput):
+            adapters._zone_seed_digest(history)
+    assert unstable.calls == 0
+
+
+def test_zone_valid_vector_is_independently_reconstructed_without_adapter_constants():
+    history = [
+        {"draw": "1", "date": "2026-01-01", "numbers": [1, 2, 3, 4, 5, 6]}
+    ]
+    payload = {
+        "strategy_id": "biglotto_zone_split_3bet_bet1",
+        "lottery_type": "BIG_LOTTO",
+        "causal_history": [
+            {"draw": "1", "date": "2026-01-01", "numbers": [1, 2, 3, 4, 5, 6]}
+        ],
+    }
+    preimage = json.dumps(
+        payload,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+        allow_nan=False,
+    ).encode("utf-8")
+    assert preimage == (
+        b'{"causal_history":[{"date":"2026-01-01","draw":"1",'
+        b'"numbers":[1,2,3,4,5,6]}],"lottery_type":"BIG_LOTTO",'
+        b'"strategy_id":"biglotto_zone_split_3bet_bet1"}'
+    )
+    digest_bytes = hashlib.sha256(preimage).digest()
+    assert digest_bytes.hex() == (
+        "8d1984bfcf997abb35fd4eaf53115c0afcbcfd7bb763dc9a1fd66dbe869872f3"
+    )
+    pools = [list(range(1, 19)), list(range(15, 35)), list(range(31, 50))]
+    local_rng = random.Random(int.from_bytes(digest_bytes, byteorder="big", signed=False))
+    sequential_bets = [
+        sorted(local_rng.sample(pool, 6))
+        for pool in pools
+    ]
+    assert sequential_bets == [
+        [4, 6, 11, 14, 15, 18],
+        [15, 16, 17, 21, 26, 31],
+        [38, 41, 42, 44, 48, 49],
+    ]
+    assert adapters._zone_split_pools() == pools
+    assert adapters._zone_seed_preimage(history) == preimage
+    assert adapters._zone_seed_digest(history) == digest_bytes.hex()
+    assert adapters._zone_split_bets(history) == sequential_bets
+    assert adapters.BigLottoZoneSplit3BetBet1Adapter().get_one_bet(
+        history, "BIG_LOTTO"
+    ) == (sequential_bets[0], None)
 
 
 def test_design_artifact_identity_and_exact_two_approved_records():

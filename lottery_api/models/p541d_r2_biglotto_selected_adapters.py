@@ -6,7 +6,6 @@ replay generation remain outside this module's scope.
 """
 from __future__ import annotations
 
-import copy
 import hashlib
 import json
 import random
@@ -39,16 +38,50 @@ _ZONE_NUM_BETS = 3
 _ZONE_OVERLAP_SIZE = 2
 
 
+def _require_exact_history_list(history: object, strategy_id: str) -> List[dict]:
+    """Reject every history container except an exact built-in list."""
+    if type(history) is not list:
+        raise InvalidOutput(f"{strategy_id}: expected a history list")
+    return history
+
+
 def _validated_biglotto_numbers(numbers: object, strategy_id: str) -> List[int]:
-    """Apply the canonical validator and map malformed containers to InvalidOutput."""
-    if not isinstance(numbers, list):
+    """Validate an exact six-item built-in integer list without coercion."""
+    if type(numbers) is not list:
         raise InvalidOutput(f"{strategy_id}: expected a number list")
-    try:
-        return _validate_numbers(numbers, _BIG_LOTTO, strategy_id)
-    except InvalidOutput:
-        raise
-    except (TypeError, ValueError, OverflowError) as exc:
-        raise InvalidOutput(f"{strategy_id}: malformed number list") from exc
+    if len(numbers) != _ZONE_PICK_COUNT:
+        raise InvalidOutput(
+            f"{strategy_id}: expected {_ZONE_PICK_COUNT} numbers, got {len(numbers)}"
+        )
+    if not all(type(number) is int for number in numbers):
+        raise InvalidOutput(f"{strategy_id}: numbers must be exact built-in integers")
+    return _validate_numbers(numbers, _BIG_LOTTO, strategy_id)
+
+
+def _validated_history_row(row: object, index: int, strategy_id: str) -> dict:
+    """Return a fresh canonical row after exact required-field validation."""
+    if type(row) is not dict:
+        raise InvalidOutput(f"{strategy_id}: history row {index} is not an object")
+
+    missing = [field for field in ("draw", "date", "numbers") if field not in row]
+    if missing:
+        raise InvalidOutput(
+            f"{strategy_id}: history row {index} missing {','.join(missing)}"
+        )
+
+    draw = row["draw"]
+    date = row["date"]
+    if type(draw) is not str or not draw:
+        raise InvalidOutput(
+            f"{strategy_id}: history row {index} draw must be a non-empty string"
+        )
+    if type(date) is not str or not date:
+        raise InvalidOutput(
+            f"{strategy_id}: history row {index} date must be a non-empty string"
+        )
+
+    numbers = _validated_biglotto_numbers(row["numbers"], strategy_id)
+    return {"draw": draw, "date": date, "numbers": numbers}
 
 
 def _zone_split_pools() -> List[List[int]]:
@@ -75,29 +108,13 @@ def _zone_split_pools() -> List[List[int]]:
     return pools
 
 
-def _canonical_zone_history(history: List[dict]) -> List[dict]:
+def _canonical_zone_history(history: object) -> List[dict]:
     """Copy and canonicalize causal rows without changing their order."""
-    canonical_history: List[dict] = []
-    for index, row in enumerate(history):
-        if not isinstance(row, dict):
-            raise InvalidOutput(f"{_ZONE_STRATEGY_ID}: history row {index} is not an object")
-        missing = [field for field in ("draw", "date", "numbers") if field not in row]
-        if missing:
-            raise InvalidOutput(
-                f"{_ZONE_STRATEGY_ID}: history row {index} missing {','.join(missing)}"
-            )
-
-        numbers = _validated_biglotto_numbers(row["numbers"], _ZONE_STRATEGY_ID)
-        try:
-            draw = str(row["draw"])
-            date = str(row["date"])
-        except (TypeError, ValueError) as exc:
-            raise InvalidOutput(
-                f"{_ZONE_STRATEGY_ID}: history row {index} has unstable draw/date"
-            ) from exc
-        canonical_history.append({"draw": draw, "date": date, "numbers": numbers})
-
-    return canonical_history
+    rows = _require_exact_history_list(history, _ZONE_STRATEGY_ID)
+    return [
+        _validated_history_row(row, index, _ZONE_STRATEGY_ID)
+        for index, row in enumerate(rows)
+    ]
 
 
 def _zone_seed_preimage(history: List[dict]) -> bytes:
@@ -147,10 +164,22 @@ class BigLottoSocialWisdomAntiPopularityAdapter(ReplayStrategyAdapter):
         status="OBSERVATION",
     )
 
+    def get_one_bet(self, history: object, lottery_type: str):
+        if lottery_type not in self.meta.supported_lottery_types:
+            raise UnsupportedLotteryType(
+                f"{self.meta.strategy_id} does not support {lottery_type}"
+            )
+        _require_exact_history_list(history, self.meta.strategy_id)
+        return super().get_one_bet(history, lottery_type)
+
     def _call_strategy(self, history: List[dict], lottery_type: str) -> List[int]:
         from lottery_api.models.social_wisdom_predictor import SocialWisdomPredictor
 
-        newest_first_history = copy.deepcopy(list(history[-50:]))
+        selected_history = _require_exact_history_list(history, self.meta.strategy_id)[-50:]
+        newest_first_history = [
+            _validated_history_row(row, index, self.meta.strategy_id)
+            for index, row in enumerate(selected_history)
+        ]
         newest_first_history.reverse()
         predicted = SocialWisdomPredictor(max_num=49).predict(
             newest_first_history,
@@ -170,6 +199,14 @@ class BigLottoZoneSplit3BetBet1Adapter(ReplayStrategyAdapter):
         min_history=1,
         status="OBSERVATION",
     )
+
+    def get_one_bet(self, history: object, lottery_type: str):
+        if lottery_type not in self.meta.supported_lottery_types:
+            raise UnsupportedLotteryType(
+                f"{self.meta.strategy_id} does not support {lottery_type}"
+            )
+        _require_exact_history_list(history, self.meta.strategy_id)
+        return super().get_one_bet(history, lottery_type)
 
     def _call_strategy(self, history: List[dict], lottery_type: str) -> List[int]:
         return _zone_split_bets(history)[0]

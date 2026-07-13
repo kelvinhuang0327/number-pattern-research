@@ -2384,6 +2384,364 @@ def test_r6_nested_scope_storage_owners_do_not_collide(tmp_path):
     assert result["findings"] == []
 
 
+def _assert_r7_unknown_without_dangerous_finding(result):
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert not any(
+        finding["resolved_api"] == "sqlite3.connect"
+        for finding in result["findings"]
+    )
+
+
+def test_r7_original_iteration_bound_dispatch_reproduction(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    for f in [dangerous]:\n        f()\n",
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        "    for f in (dangerous,):\n        f()\n",
+        "    for f in {dangerous}:\n        f()\n",
+        "    for f in [safe, dangerous]:\n        f()\n",
+        "    for _, f in [(0, dangerous)]:\n        f()\n",
+        "    for *_, f in [(0, 1, dangerous)]:\n        f()\n",
+        (
+            "    callbacks = [dangerous]\n"
+            "    for f in callbacks:\n"
+            "        f()\n"
+        ),
+        (
+            "    pair = (0, dangerous)\n"
+            "    for _, f in [pair]:\n"
+            "        f()\n"
+        ),
+        "    for f in {dangerous: 1}:\n        f()\n",
+    ],
+    ids=[
+        "tuple",
+        "set",
+        "multiple-candidates",
+        "destructuring",
+        "starred-destructuring",
+        "bounded-alias",
+        "destructured-element-alias",
+        "dict-keys",
+    ],
+)
+def test_r7_bounded_for_dispatch_reaches_local_callable(tmp_path, flow_source):
+    _assert_r6_dangerous_reached(
+        _r6_callable_flow_result(tmp_path, flow_source)
+    )
+
+
+def test_r7_empty_bounded_for_body_does_not_dispatch(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    for f in []:\n        f()\n",
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r7_dynamic_for_dispatch_fails_closed(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    for f in unresolved_callbacks:\n        f()\n",
+    )
+    _assert_r7_unknown_without_dangerous_finding(result)
+
+
+def test_r7_async_for_dispatch_fails_closed(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "async def run():\n"
+            "    async for f in unresolved_callbacks:\n"
+            "        f()\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert result["findings"] == []
+
+
+def test_r7_post_loop_dispatch_uses_guaranteed_nonempty_binding(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    for f in [dangerous]:\n        pass\n    f()\n",
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r7_post_loop_dispatch_from_unresolved_iterable_is_incomplete(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    for f in unresolved_callbacks:\n        pass\n    f()\n",
+    )
+    _assert_r7_unknown_without_dangerous_finding(result)
+
+
+def test_r7_dynamic_post_loop_binding_preserves_known_candidate(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    f = dangerous\n"
+            "    for f in unresolved_callbacks:\n"
+            "        pass\n"
+            "    f()\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r7_future_loop_binding_does_not_reach_earlier_call(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    f()\n    for f in [dangerous]:\n        pass\n",
+    )
+    _assert_r7_unknown_without_dangerous_finding(result)
+
+
+@pytest.mark.parametrize(
+    "expression",
+    [
+        "[f() for f in [dangerous]]",
+        "{f() for f in [dangerous]}",
+        "{f(): 1 for f in [dangerous]}",
+        "(f() for f in [dangerous])",
+        "[[f() for f in [dangerous]] for _ in [0]]",
+        "[f() for _ in [0] for f in [dangerous]]",
+    ],
+    ids=[
+        "list",
+        "set",
+        "dict",
+        "generator",
+        "nested",
+        "multiple-generators",
+    ],
+)
+def test_r7_comprehension_local_dispatch_reaches_callable(
+    tmp_path, expression
+):
+    _assert_r6_dangerous_reached(
+        _r6_callable_flow_result(tmp_path, f"    {expression}\n")
+    )
+
+
+def test_r7_later_comprehension_generator_shadows_earlier_binding(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    [f() for f in [dangerous] for f in [safe]]\n",
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r7_comprehension_target_shadows_outer_binding_locally(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    f = dangerous\n    [f() for f in [safe]]\n",
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r7_comprehension_binding_does_not_overwrite_outer_binding(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    f = dangerous\n    [f for f in [safe]]\n    f()\n",
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r7_empty_comprehension_does_not_dispatch(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    [f() for f in []]\n",
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r7_dynamic_comprehension_dispatch_fails_closed(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    [f() for f in unresolved_callbacks]\n",
+    )
+    _assert_r7_unknown_without_dangerous_finding(result)
+
+
+def test_r7_known_comprehension_target_survives_later_dynamic_generator(
+    tmp_path,
+):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    [f() for f in [dangerous] "
+            "for _ in unresolved_callbacks]\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        "    import json\n    [f() for f in [json.dumps]]\n",
+        "    import json\n    for f in [json.dumps]:\n        f()\n",
+    ],
+    ids=["comprehension", "for"],
+)
+def test_r7_external_iteration_values_do_not_create_repository_taint(
+    tmp_path, flow_source
+):
+    result = _r6_callable_flow_result(tmp_path, flow_source)
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r7_named_expression_is_a_reaching_assignment(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    (f := dangerous)\n    f()\n",
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        "    if (f := dangerous):\n        f()\n",
+        "    while (f := dangerous):\n        f()\n        break\n",
+    ],
+    ids=["if", "while"],
+)
+def test_r7_named_expression_in_condition_reaches_body(tmp_path, flow_source):
+    _assert_r6_dangerous_reached(
+        _r6_callable_flow_result(tmp_path, flow_source)
+    )
+
+
+def test_r7_conditional_named_expression_preserves_candidate_and_unknown(
+    tmp_path,
+):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    if enabled:\n        (f := dangerous)\n    f()\n",
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r7_named_expression_obeys_later_overwrite(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    (f := dangerous)\n    f = safe\n    f()\n",
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        "    [(f := dangerous) for _ in [0]]\n    f()\n",
+        "    [f() for _ in [0] if (f := dangerous)]\n",
+    ],
+    ids=["binding-escapes-comprehension", "filter-dispatch"],
+)
+def test_r7_named_expression_inside_comprehension_reaches_callable(
+    tmp_path, flow_source
+):
+    _assert_r6_dangerous_reached(
+        _r6_callable_flow_result(tmp_path, flow_source)
+    )
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        "    with manager() as f:\n        f()\n",
+        (
+            "    with manager() as first, other_manager() as f:\n"
+            "        f()\n"
+        ),
+        "    with manager() as (_, f):\n        f()\n",
+        (
+            "    try:\n"
+            "        return 1\n"
+            "    except SomeError as f:\n"
+            "        f()\n"
+        ),
+    ],
+    ids=["with", "multiple-with-items", "destructured-with", "except"],
+)
+def test_r7_context_and_exception_bound_calls_fail_closed(
+    tmp_path, flow_source
+):
+    result = _r6_callable_flow_result(tmp_path, flow_source)
+    _assert_r7_unknown_without_dangerous_finding(result)
+
+
+def test_r7_async_with_bound_call_fails_closed(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "async def run():\n"
+            "    async with manager() as f:\n"
+            "        f()\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert result["findings"] == []
+
+
+def test_r7_unused_context_binding_does_not_taint_siblings(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    with manager() as f:\n        safe()\n",
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r7_dormant_context_bound_dispatch_does_not_taint_reached_sibling(
+    tmp_path,
+):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    def dormant():\n"
+            "        with manager() as f:\n"
+            "            f()\n"
+            "    safe()\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r7_known_candidate_with_conditional_context_binding_is_preserved(
+    tmp_path,
+):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    f = dangerous\n"
+            "    if enabled:\n"
+            "        with manager() as f:\n"
+            "            pass\n"
+            "    f()\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
 def test_nested_same_name_does_not_fall_through_to_top_level(tmp_path):
     repo, commit = _synthetic_repo(
         tmp_path,

@@ -24,7 +24,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 TASK_ID = "P541B_R2_BIG_LOTTO_LEGACY_METHOD_CLASSIFICATION_AUDIT"
 SCHEMA_VERSION = "p541b-r2-evidence-v1"
-DETECTOR_VERSION = "p541b-r2-detector-v8"
+DETECTOR_VERSION = "p541b-r2-detector-v9"
 CANONICAL_RUNTIME_IMPLEMENTATION = "CPython"
 CANONICAL_RUNTIME_VERSION = "3.9.6"
 BASE_MAIN_COMMIT = "c50137583243d4f9f4915a3e1d9babee50b5bbd7"
@@ -2403,10 +2403,14 @@ def _definition_execution_nodes(
         str, ast.FunctionDef | ast.AsyncFunctionDef
     ] | None = None,
     module_classes: dict[str, ast.ClassDef] | None = None,
+    project_binding_names: set[str] | None = None,
 ) -> tuple[list[ast.AST], dict[int, str], dict[int, str], bool]:
     """Expand nested callables with lexical scope and explicit resolution state."""
     module_functions = module_functions or {}
     module_classes = module_classes or {}
+    if project_binding_names is None:
+        # Callers without repository-resolution context remain conservative.
+        project_binding_names = set(aliases)
     parents = _ast_parent_map(definition)
     nodes: list[ast.AST] = []
     added: set[int] = set()
@@ -2445,6 +2449,9 @@ def _definition_execution_nodes(
         ],
     ] = {}
     scope_bound_names: dict[int, set[str]] = {}
+    scope_special_bindings: dict[
+        int, dict[str, list[dict[str, Any]]]
+    ] = {}
 
     def lexical_owner(node: ast.AST) -> ast.AST | None:
         current = node
@@ -2505,8 +2512,65 @@ def _definition_execution_nodes(
         return False
 
     def occurs_before(event: ast.AST, use: ast.AST) -> bool:
+        if isinstance(event, ast.NamedExpr):
+            event_comprehension = nearest_comprehension(event)
+            use_comprehension = nearest_comprehension(use)
+            if (
+                event_comprehension is not None
+                and event_comprehension is use_comprehension
+            ):
+                event_phase = comprehension_phase(
+                    event, event_comprehension
+                )
+                use_phase = comprehension_phase(use, use_comprehension)
+                if event_phase != use_phase:
+                    return event_phase < use_phase
         return _node_position(event) < _node_position(use) and not is_ancestor(
             event, use
+        )
+
+    def contains_node(root: ast.AST, node: ast.AST) -> bool:
+        return root is node or is_ancestor(root, node)
+
+    def nearest_comprehension(
+        node: ast.AST,
+    ) -> ast.ListComp | ast.SetComp | ast.DictComp | ast.GeneratorExp | None:
+        current = node
+        while id(current) in parents:
+            current = parents[id(current)]
+            if isinstance(
+                current,
+                (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp),
+            ):
+                return current
+            if isinstance(
+                current, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)
+            ):
+                return None
+        return None
+
+    def comprehension_phase(
+        node: ast.AST,
+        comprehension: (
+            ast.ListComp | ast.SetComp | ast.DictComp | ast.GeneratorExp
+        ),
+    ) -> tuple[int, int, int, int]:
+        for index, generator in enumerate(comprehension.generators):
+            if contains_node(generator.iter, node):
+                return (index, 0, *_node_position(node))
+            if contains_node(generator.target, node):
+                return (index, 1, *_node_position(node))
+            for condition_index, condition in enumerate(generator.ifs):
+                if contains_node(condition, node):
+                    return (
+                        index,
+                        2 + condition_index,
+                        *_node_position(node),
+                    )
+        return (
+            len(comprehension.generators),
+            0,
+            *_node_position(node),
         )
 
     def control_regions(node: ast.AST) -> dict[int, tuple[str, int]]:
@@ -2540,6 +2604,12 @@ def _definition_execution_nodes(
         return regions
 
     def conditional_at_use(event: ast.AST, use: ast.AST) -> bool:
+        if isinstance(event, ast.NamedExpr):
+            event_comprehension = nearest_comprehension(event)
+            if event_comprehension is not None:
+                if nearest_comprehension(use) is event_comprehension:
+                    return False
+                return True
         use_regions = control_regions(use)
         return any(
             use_regions.get(control_id) != region
@@ -2577,6 +2647,29 @@ def _definition_execution_nodes(
     indexed_nodes: set[int] = set()
     indexed_roots: set[int] = set()
 
+    def add_special_binding(
+        scope: ast.FunctionDef | ast.AsyncFunctionDef,
+        name: str,
+        *,
+        kind: str,
+        source: ast.AST | None,
+        target: ast.AST | None,
+        event: ast.AST,
+        owner: ast.AST,
+        item_index: int | None = None,
+    ) -> None:
+        scope_bound_names.setdefault(id(scope), set()).add(name)
+        scope_special_bindings.setdefault(id(scope), {}).setdefault(
+            name, []
+        ).append({
+            "kind": kind,
+            "source": source,
+            "target": target,
+            "event": event,
+            "owner": owner,
+            "item_index": item_index,
+        })
+
     def index_scope_root(root: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
         if id(root) in indexed_roots:
             return
@@ -2590,23 +2683,51 @@ def _definition_execution_nodes(
                 continue
             candidate_scope = lexical_owner(candidate)
             if isinstance(candidate_scope, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                bound_names: set[str] = set()
-                if isinstance(
-                    candidate, (ast.For, ast.AsyncFor, ast.comprehension)
-                ):
-                    bound_names.update(bound_target_names(candidate.target))
+                if isinstance(candidate, (ast.For, ast.AsyncFor)):
+                    for name in sorted(bound_target_names(candidate.target)):
+                        add_special_binding(
+                            candidate_scope,
+                            name,
+                            kind=(
+                                "async_for"
+                                if isinstance(candidate, ast.AsyncFor)
+                                else "for"
+                            ),
+                            source=candidate.iter,
+                            target=candidate.target,
+                            event=candidate.target,
+                            owner=candidate,
+                        )
                 elif isinstance(candidate, (ast.With, ast.AsyncWith)):
-                    for item in candidate.items:
+                    for item_index, item in enumerate(candidate.items):
                         if item.optional_vars is not None:
-                            bound_names.update(
+                            for name in sorted(
                                 bound_target_names(item.optional_vars)
-                            )
+                            ):
+                                add_special_binding(
+                                    candidate_scope,
+                                    name,
+                                    kind=(
+                                        "async_with"
+                                        if isinstance(candidate, ast.AsyncWith)
+                                        else "with"
+                                    ),
+                                    source=item.context_expr,
+                                    target=item.optional_vars,
+                                    event=item.optional_vars,
+                                    owner=candidate,
+                                    item_index=item_index,
+                                )
                 elif isinstance(candidate, ast.ExceptHandler) and candidate.name:
-                    bound_names.add(candidate.name)
-                if bound_names:
-                    scope_bound_names.setdefault(
-                        id(candidate_scope), set()
-                    ).update(bound_names)
+                    add_special_binding(
+                        candidate_scope,
+                        candidate.name,
+                        kind="except",
+                        source=None,
+                        target=None,
+                        event=candidate,
+                        owner=candidate,
+                    )
             if isinstance(
                 candidate, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
             ):
@@ -2626,12 +2747,29 @@ def _definition_execution_nodes(
                 and candidate.value is not None
             ):
                 value, targets = candidate.value, [candidate.target]
+            elif isinstance(candidate, ast.NamedExpr):
+                current: ast.AST = candidate
+                inside_lambda = False
+                while id(current) in parents:
+                    current = parents[id(current)]
+                    if current is candidate_scope:
+                        break
+                    if isinstance(current, ast.Lambda):
+                        inside_lambda = True
+                        break
+                if inside_lambda:
+                    continue
+                value, targets = candidate.value, [candidate.target]
             else:
                 continue
             scope = lexical_owner(candidate)
             if not isinstance(scope, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 continue
             conditional = _control_flow_between(candidate, scope, parents)
+            if isinstance(candidate, ast.NamedExpr):
+                conditional = conditional or nearest_comprehension(
+                    candidate
+                ) is not None
             for target in targets:
                 target_bound_names = bound_target_names(target)
                 if target_bound_names:
@@ -2782,6 +2920,532 @@ def _definition_execution_nodes(
                 ))
         return tuple(signature)
 
+    comprehension_types = (
+        ast.ListComp,
+        ast.SetComp,
+        ast.DictComp,
+        ast.GeneratorExp,
+    )
+
+    def raw_deduplicate(values: list[ast.AST]) -> list[ast.AST]:
+        deduplicated: dict[int, ast.AST] = {}
+        for value in values:
+            deduplicated.setdefault(id(value), value)
+        return list(deduplicated.values())
+
+    def comprehension_ancestors(
+        use: ast.AST,
+    ) -> list[ast.ListComp | ast.SetComp | ast.DictComp | ast.GeneratorExp]:
+        result: list[
+            ast.ListComp | ast.SetComp | ast.DictComp | ast.GeneratorExp
+        ] = []
+        current = use
+        while id(current) in parents:
+            current = parents[id(current)]
+            if isinstance(current, comprehension_types):
+                result.append(current)
+            if isinstance(
+                current, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)
+            ):
+                break
+        return result
+
+    def visible_generator_count(
+        comprehension: (
+            ast.ListComp | ast.SetComp | ast.DictComp | ast.GeneratorExp
+        ),
+        use: ast.AST,
+    ) -> int:
+        for index, generator in enumerate(comprehension.generators):
+            if contains_node(generator.iter, use) or contains_node(
+                generator.target, use
+            ):
+                return index
+            if any(
+                contains_node(condition, use) for condition in generator.ifs
+            ):
+                return index + 1
+        return len(comprehension.generators)
+
+    def visible_comprehension_binding(
+        name: str, use: ast.AST
+    ) -> dict[str, Any] | None:
+        for comprehension in comprehension_ancestors(use):
+            visible = visible_generator_count(comprehension, use)
+            for index in range(visible - 1, -1, -1):
+                generator = comprehension.generators[index]
+                if name in bound_target_names(generator.target):
+                    return {
+                        "kind": "comprehension",
+                        "source": generator.iter,
+                        "target": generator.target,
+                        "event": generator.target,
+                        "owner": comprehension,
+                        "generator_index": index,
+                    }
+        return None
+
+    def target_contains_name(target: ast.AST, name: str) -> bool:
+        return name in bound_target_names(target)
+
+    def destructured_sources(
+        target: ast.AST,
+        element: ast.AST,
+        name: str,
+        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+        use: ast.AST,
+        seen: frozenset[tuple[str, int]],
+    ) -> tuple[list[ast.AST], str]:
+        if isinstance(target, ast.Name):
+            return ([element], "complete") if target.id == name else ([], "complete")
+        if isinstance(target, ast.Starred):
+            return destructured_sources(
+                target.value,
+                element,
+                name,
+                current_definition,
+                use,
+                seen,
+            )
+        if not isinstance(target, (ast.Tuple, ast.List)):
+            return (
+                ([], "incomplete")
+                if target_contains_name(target, name)
+                else ([], "complete")
+            )
+        if not target_contains_name(target, name):
+            return [], "complete"
+        if isinstance(element, ast.Name):
+            key = (f"destructure-alias:{element.id}", id(element))
+            if key in seen:
+                return [], "incomplete"
+            aliases_to_elements, alias_status, local = raw_name_sources(
+                element.id,
+                current_definition,
+                element,
+                seen | {key},
+            )
+            if local:
+                values: list[ast.AST] = []
+                status = alias_status
+                for alias_value in aliases_to_elements:
+                    nested_values, nested_status = destructured_sources(
+                        target,
+                        alias_value,
+                        name,
+                        current_definition,
+                        use,
+                        seen | {key},
+                    )
+                    values.extend(nested_values)
+                    status = merge_status(status, nested_status)
+                return raw_deduplicate(values), status
+        if not isinstance(element, (ast.Tuple, ast.List)):
+            return [], "incomplete"
+
+        target_items = list(target.elts)
+        element_items = list(element.elts)
+        starred_indexes = [
+            index
+            for index, item in enumerate(target_items)
+            if isinstance(item, ast.Starred)
+        ]
+        if len(starred_indexes) > 1:
+            return [], "incomplete"
+        pairs: list[tuple[ast.AST, ast.AST]] = []
+        if not starred_indexes:
+            if len(target_items) != len(element_items):
+                return [], "incomplete"
+            pairs.extend(zip(target_items, element_items))
+        else:
+            starred_index = starred_indexes[0]
+            trailing = len(target_items) - starred_index - 1
+            if len(element_items) < starred_index + trailing:
+                return [], "incomplete"
+            pairs.extend(zip(
+                target_items[:starred_index],
+                element_items[:starred_index],
+            ))
+            starred_values = element_items[
+                starred_index:len(element_items) - trailing if trailing else None
+            ]
+            starred_value = ast.copy_location(
+                ast.List(elts=starred_values, ctx=ast.Load()), element
+            )
+            pairs.append((target_items[starred_index], starred_value))
+            if trailing:
+                pairs.extend(zip(
+                    target_items[-trailing:], element_items[-trailing:]
+                ))
+
+        values: list[ast.AST] = []
+        status = "complete"
+        for nested_target, nested_element in pairs:
+            if not target_contains_name(nested_target, name):
+                continue
+            nested_values, nested_status = destructured_sources(
+                nested_target,
+                nested_element,
+                name,
+                current_definition,
+                use,
+                seen,
+            )
+            values.extend(nested_values)
+            status = merge_status(status, nested_status)
+        return raw_deduplicate(values), status
+
+    def raw_name_sources(
+        name: str,
+        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+        use: ast.AST,
+        seen: frozenset[tuple[str, int]],
+    ) -> tuple[list[ast.AST], str, bool]:
+        comprehension_binding = visible_comprehension_binding(name, use)
+        if comprehension_binding is not None:
+            key = (f"raw-comprehension:{name}", id(comprehension_binding["event"]))
+            if key in seen:
+                return [], "incomplete", True
+            sources, status, _order = iteration_target_sources(
+                comprehension_binding["source"],
+                comprehension_binding["target"],
+                name,
+                current_definition,
+                use,
+                seen | {key},
+            )
+            return sources, status, True
+
+        for scope in function_scope_chain(current_definition):
+            assignments = scope_assignments.get(id(scope), {}).get(name, [])
+            definitions = scope_definitions.get(id(scope), {}).get(name, [])
+            is_parameter = name in parameter_names(scope)
+            is_bound = name in scope_bound_names.get(id(scope), set())
+            if not assignments and not definitions and not is_parameter and not is_bound:
+                continue
+            key = (f"raw-name:{name}", id(scope))
+            if key in seen:
+                return [], "incomplete", True
+            values: list[ast.AST] = []
+            status = "not_local"
+            if is_parameter:
+                binding = invocation_bindings.get(id(scope), {}).get(name)
+                if binding is None:
+                    status = "incomplete"
+                else:
+                    values.extend(item[1] for item in binding[0])
+                    status = binding[1]
+            events, conditional = reaching_records(assignments, use)
+            if events and not events[0][1]:
+                values = []
+                status = "complete"
+            for source, is_conditional, _event in events:
+                if is_conditional:
+                    values.append(source)
+                    status = "incomplete"
+                else:
+                    values = [source]
+                    status = "complete"
+            if conditional:
+                status = "incomplete"
+            if not events and not is_parameter:
+                return [], "incomplete", True
+            if not values and status == "not_local":
+                status = "incomplete"
+            return raw_deduplicate(values), status, True
+        return [], "not_local", False
+
+    def bounded_iterable_elements(
+        value: ast.AST,
+        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+        use: ast.AST,
+        seen: frozenset[tuple[str, int]] = frozenset(),
+    ) -> tuple[list[ast.AST], str, str]:
+        key = ("bounded-iterable", id(value))
+        if key in seen:
+            return [], "incomplete", "unknown"
+        next_seen = seen | {key}
+
+        if isinstance(value, (ast.List, ast.Tuple, ast.Set)):
+            elements: list[ast.AST] = []
+            status = "complete"
+            order = "unordered" if isinstance(value, ast.Set) else "ordered"
+            for element in value.elts:
+                if not isinstance(element, ast.Starred):
+                    elements.append(element)
+                    continue
+                expanded, expanded_status, expanded_order = (
+                    bounded_iterable_elements(
+                        element.value,
+                        current_definition,
+                        element.value,
+                        next_seen,
+                    )
+                )
+                elements.extend(expanded)
+                status = merge_status(status, expanded_status)
+                if expanded_order != "ordered":
+                    order = "unordered"
+            return raw_deduplicate(elements), status, order
+
+        if isinstance(value, ast.Dict):
+            elements = []
+            status = "complete"
+            for key_node, item in zip(value.keys, value.values):
+                if key_node is not None:
+                    elements.append(key_node)
+                    continue
+                expanded, expanded_status, _expanded_order = (
+                    bounded_iterable_elements(
+                        item, current_definition, item, next_seen
+                    )
+                )
+                elements.extend(expanded)
+                status = merge_status(status, expanded_status)
+            return raw_deduplicate(elements), status, "ordered"
+
+        if isinstance(value, ast.Name):
+            sources, source_status, local = raw_name_sources(
+                value.id, current_definition, value, next_seen
+            )
+            if not local:
+                return [], "incomplete", "unknown"
+            elements: list[ast.AST] = []
+            status = source_status
+            orders: set[str] = set()
+            for source in sources:
+                expanded, expanded_status, expanded_order = (
+                    bounded_iterable_elements(
+                        source, current_definition, source, next_seen
+                    )
+                )
+                elements.extend(expanded)
+                status = merge_status(status, expanded_status)
+                orders.add(expanded_order)
+            order = orders.pop() if len(orders) == 1 else "unknown"
+            if not sources:
+                status = "incomplete"
+            return raw_deduplicate(elements), status, order
+
+        if isinstance(value, ast.IfExp):
+            left, left_status, left_order = bounded_iterable_elements(
+                value.body, current_definition, value.body, next_seen
+            )
+            right, right_status, right_order = bounded_iterable_elements(
+                value.orelse, current_definition, value.orelse, next_seen
+            )
+            order = left_order if left_order == right_order else "unknown"
+            return (
+                raw_deduplicate([*left, *right]),
+                "incomplete"
+                if "incomplete" in {left_status, right_status}
+                else "incomplete",
+                order,
+            )
+        return [], "incomplete", "unknown"
+
+    def iteration_target_sources(
+        source: ast.AST,
+        target: ast.AST,
+        name: str,
+        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+        use: ast.AST,
+        seen: frozenset[tuple[str, int]] = frozenset(),
+        *,
+        post_loop: bool = False,
+        preserve_all_ordered: bool = False,
+    ) -> tuple[list[ast.AST], str, str]:
+        elements, status, order = bounded_iterable_elements(
+            source, current_definition, use, seen
+        )
+        selected = elements
+        if (
+            post_loop
+            and elements
+            and order == "ordered"
+            and status == "complete"
+            and not preserve_all_ordered
+        ):
+            selected = [elements[-1]]
+        values: list[ast.AST] = []
+        for element in selected:
+            extracted, extracted_status = destructured_sources(
+                target,
+                element,
+                name,
+                current_definition,
+                use,
+                seen,
+            )
+            values.extend(extracted)
+            status = merge_status(status, extracted_status)
+        return raw_deduplicate(values), status, order
+
+    def node_in_suite(nodes: list[ast.stmt], use: ast.AST) -> bool:
+        return any(contains_node(node, use) for node in nodes)
+
+    def loop_has_owned_break(owner: ast.For | ast.AsyncFor) -> bool:
+        for candidate in ast.walk(owner):
+            if not isinstance(candidate, ast.Break):
+                continue
+            current: ast.AST = candidate
+            while id(current) in parents:
+                current = parents[id(current)]
+                if isinstance(current, (ast.For, ast.AsyncFor, ast.While)):
+                    if current is owner:
+                        return True
+                    break
+        return False
+
+    def special_binding_event(
+        record: dict[str, Any],
+        name: str,
+        scope: ast.FunctionDef | ast.AsyncFunctionDef,
+        use: ast.AST,
+        seen: frozenset[tuple[str, int]],
+    ) -> dict[str, Any] | None:
+        kind = record["kind"]
+        owner = record["owner"]
+        event = record["event"]
+        owner_conditional = _control_flow_between(owner, scope, parents)
+
+        if kind in {"for", "async_for"}:
+            assert isinstance(owner, (ast.For, ast.AsyncFor))
+            if contains_node(owner.iter, use) or contains_node(
+                owner.target, use
+            ):
+                return None
+            in_body = node_in_suite(owner.body, use)
+            in_orelse = node_in_suite(owner.orelse, use)
+            if not in_body and not in_orelse and not occurs_before(event, use):
+                return None
+            if kind == "async_for":
+                return {
+                    "event": event,
+                    "conditional": not in_body,
+                    "sources": [],
+                    "status": "incomplete",
+                }
+            preserve_all = post_loop = not in_body
+            preserve_all = preserve_all and loop_has_owned_break(owner)
+            sources, status, _order = iteration_target_sources(
+                record["source"],
+                record["target"],
+                name,
+                scope,
+                use,
+                seen,
+                post_loop=post_loop,
+                preserve_all_ordered=preserve_all,
+            )
+            if status == "complete" and not sources:
+                return None
+            conditional = False
+            if post_loop and status == "incomplete":
+                conditional = True
+            if owner_conditional and conditional_at_use(event, use):
+                conditional = True
+            return {
+                "event": event,
+                "conditional": conditional,
+                "sources": sources,
+                "status": status,
+            }
+
+        if kind in {"with", "async_with"}:
+            assert isinstance(owner, (ast.With, ast.AsyncWith))
+            record_index = int(record["item_index"])
+            visible_in_owner = node_in_suite(owner.body, use)
+            for item_index, item in enumerate(owner.items):
+                if contains_node(item.context_expr, use):
+                    visible_in_owner = record_index < item_index
+                    break
+                if item.optional_vars is not None and contains_node(
+                    item.optional_vars, use
+                ):
+                    visible_in_owner = record_index < item_index
+                    break
+            if contains_node(owner, use) and not visible_in_owner:
+                return None
+            if not contains_node(owner, use) and not occurs_before(event, use):
+                return None
+            conditional = not visible_in_owner
+            if owner_conditional and conditional_at_use(event, use):
+                conditional = True
+            return {
+                "event": event,
+                "conditional": conditional,
+                "sources": [],
+                "status": "incomplete",
+            }
+
+        assert kind == "except" and isinstance(owner, ast.ExceptHandler)
+        if owner.type is not None and contains_node(owner.type, use):
+            return None
+        in_body = node_in_suite(owner.body, use)
+        if not in_body and not occurs_before(event, use):
+            return None
+        return {
+            "event": event,
+            "conditional": not in_body,
+            "sources": [],
+            "status": "incomplete",
+        }
+
+    def resolve_source_values(
+        sources: list[ast.AST],
+        source_status: str,
+        scope: ast.FunctionDef | ast.AsyncFunctionDef,
+        seen: frozenset[tuple[str, int]],
+    ) -> tuple[list[tuple[str, ast.AST, ast.ClassDef | None]], str]:
+        values: list[tuple[str, ast.AST, ast.ClassDef | None]] = []
+        status = source_status
+        for source in sources:
+            resolved, resolved_status = resolve_value(
+                source,
+                scope,
+                definition_class_owner(scope),
+                seen,
+            )
+            if resolved_status == "not_local":
+                if isinstance(source, ast.Name):
+                    resolved_status = "incomplete"
+                else:
+                    resolved = [("opaque", source, None)]
+                    resolved_status = "complete"
+            values.extend(resolved)
+            status = merge_status(status, resolved_status)
+        return deduplicate_values(values), status
+
+    def call_is_proven_iteration_unreachable(
+        call: ast.Call,
+        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+    ) -> bool:
+        current: ast.AST = call
+        while id(current) in parents:
+            current = parents[id(current)]
+            if current is current_definition:
+                break
+            if isinstance(current, ast.For) and node_in_suite(
+                current.body, call
+            ):
+                elements, status, _order = bounded_iterable_elements(
+                    current.iter, current_definition, current.iter
+                )
+                if status == "complete" and not elements:
+                    return True
+            if isinstance(current, comprehension_types):
+                required = visible_generator_count(current, call)
+                for generator in current.generators[:required]:
+                    elements, status, _order = bounded_iterable_elements(
+                        generator.iter,
+                        current_definition,
+                        generator.iter,
+                    )
+                    if status == "complete" and not elements:
+                        return True
+        return False
+
     def storage_scope(
         root_name: str,
         current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
@@ -2913,18 +3577,76 @@ def _definition_execution_nodes(
         use: ast.AST,
         seen: frozenset[tuple[str, int]],
     ) -> tuple[list[tuple[str, ast.AST, ast.ClassDef | None]], str]:
+        comprehension_binding = visible_comprehension_binding(name, use)
+        if comprehension_binding is not None:
+            key = (
+                f"comprehension:{name}",
+                id(comprehension_binding["event"]),
+            )
+            if key in seen:
+                return [], "incomplete"
+            sources, source_status, _order = iteration_target_sources(
+                comprehension_binding["source"],
+                comprehension_binding["target"],
+                name,
+                current_definition,
+                use,
+                seen | {key},
+            )
+            return resolve_source_values(
+                sources,
+                source_status,
+                current_definition,
+                seen | {key},
+            )
+
         for scope in function_scope_chain(current_definition):
             definitions = scope_definitions.get(id(scope), {}).get(name, [])
             assignments = scope_assignments.get(id(scope), {}).get(name, [])
+            special_bindings = scope_special_bindings.get(id(scope), {}).get(
+                name, []
+            )
             is_parameter = name in parameter_names(scope)
-            if not definitions and not assignments and not is_parameter:
+            if (
+                not definitions
+                and not assignments
+                and not special_bindings
+                and not is_parameter
+            ):
                 continue
             key = (name, id(scope))
             if key in seen:
                 return [], "incomplete"
-            events, conditional = reaching_records(
-                [*definitions, *assignments], use
+
+            events: list[dict[str, Any]] = []
+            for target, conditional, event in [*definitions, *assignments]:
+                if not occurs_before(event, use):
+                    continue
+                events.append({
+                    "event": event,
+                    "conditional": bool(conditional)
+                    and conditional_at_use(event, use),
+                    "sources": [target],
+                    "status": "complete",
+                    "definition": isinstance(
+                        target,
+                        (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef),
+                    ),
+                })
+            for record in special_bindings:
+                resolved_event = special_binding_event(
+                    record, name, scope, use, seen | {key}
+                )
+                if resolved_event is not None:
+                    resolved_event["definition"] = False
+                    events.append(resolved_event)
+            events.sort(
+                key=lambda item: (
+                    *_node_position(item["event"]),
+                    ast.dump(item["event"], include_attributes=False),
+                )
             )
+
             values: list[tuple[str, ast.AST, ast.ClassDef | None]] = []
             status = "not_local"
             if is_parameter:
@@ -2934,43 +3656,34 @@ def _definition_execution_nodes(
                 else:
                     values.extend(binding[0])
                     status = binding[1]
-            if events and not events[0][1]:
-                values = []
-                status = "complete"
-            for target, is_conditional, _event in events:
-                if isinstance(
-                    target, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
-                ):
+            for event in events:
+                event_sources = event["sources"]
+                if event["definition"]:
+                    target = event_sources[0]
                     resolved = [(
-                        "class" if isinstance(target, ast.ClassDef) else "callable",
+                        "class"
+                        if isinstance(target, ast.ClassDef)
+                        else "callable",
                         target,
                         None
                         if isinstance(target, ast.ClassDef)
                         else definition_class_owner(target),
                     )]
-                    target_status = "complete"
+                    event_status = "complete"
                 else:
-                    resolved, target_status = resolve_value(
-                        target,
+                    resolved, event_status = resolve_source_values(
+                        event_sources,
+                        event["status"],
                         scope,
-                        definition_class_owner(scope),
                         seen | {key},
                     )
-                    if target_status == "not_local":
-                        if isinstance(target, ast.Name):
-                            target_status = "incomplete"
-                        else:
-                            resolved = [("opaque", target, None)]
-                            target_status = "complete"
-                if is_conditional:
+                if event["conditional"]:
                     values.extend(resolved)
-                    status = merge_status(status, target_status)
+                    status = merge_status(status, event_status)
                     status = "incomplete"
                 else:
                     values = list(resolved)
-                    status = target_status
-            if conditional:
-                status = "incomplete"
+                    status = event_status
             if not events and not is_parameter:
                 # The name is lexically local but no binding reaches this use.
                 return [], "incomplete"
@@ -2996,6 +3709,13 @@ def _definition_execution_nodes(
         if isinstance(value, ast.Name):
             return resolve_name(
                 value.id, current_definition, current_owner, value, seen
+            )
+        if isinstance(value, ast.NamedExpr):
+            return resolve_value(
+                value.value,
+                current_definition,
+                current_owner,
+                seen,
             )
         if isinstance(value, (ast.Attribute, ast.Subscript)):
             storage = storage_reference(value)
@@ -3411,6 +4131,26 @@ def _definition_execution_nodes(
         ] = []
         saw_opaque = False
         saw_bound_opaque = False
+
+        def proven_nonproject_opaque(target: ast.AST) -> bool:
+            root = target
+            while isinstance(root, (ast.Attribute, ast.Subscript)):
+                root = root.value
+            if not isinstance(root, ast.Name):
+                return False
+            if root.id in project_binding_names:
+                return False
+            if root.id not in aliases and root.id not in safe_global_names:
+                return False
+            resolved = _dotted_name(target, aliases)
+            if not resolved:
+                return False
+            try:
+                categories, unsupported = classify_call(call, resolved)
+            except Exception:
+                return False
+            return not categories and not unsupported
+
         for kind, target, target_owner in values:
             if kind == "callable" and isinstance(
                 target, (ast.FunctionDef, ast.AsyncFunctionDef)
@@ -3448,7 +4188,10 @@ def _definition_execution_nodes(
                 status = "incomplete"
             elif kind in {"opaque", "opaque_attribute"}:
                 saw_opaque = True
-                saw_bound_opaque = saw_bound_opaque or target is not call.func
+                saw_bound_opaque = saw_bound_opaque or (
+                    target is not call.func
+                    and not proven_nonproject_opaque(target)
+                )
                 if targets:
                     status = "incomplete"
         if status == "not_local":
@@ -3912,6 +4655,11 @@ def _definition_execution_nodes(
                         )
             if not isinstance(node, ast.Call):
                 continue
+            if call_is_proven_iteration_unreachable(
+                node, current_definition
+            ):
+                call_resolutions[id(node)] = "complete"
+                continue
             call_owner = enclosing_class(node, current_definition)
             targets, resolution = resolve_call(
                 node,
@@ -4080,6 +4828,7 @@ def _definition_effect_findings(
             classes.get(owner) if owner is not None else None,
             functions,
             classes,
+            {binding["local_name"] for binding in project_dependencies},
         )
         incomplete = incomplete or local_resolution_incomplete
         if any(

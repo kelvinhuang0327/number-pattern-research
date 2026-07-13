@@ -1,0 +1,1097 @@
+{
+  "base": {
+    "branch": "main",
+    "commit": "9572d994e94fae44cf7730297e7537c0901d5a78"
+  },
+  "canonical_adapter_references": [
+    {
+      "byte_size": 33862,
+      "git_blob_sha": "45770dabaa46c80e6f564b61e5dae96b03bd856e",
+      "path": "lottery_api/models/replay_strategy_registry.py",
+      "reused_contract": [
+        "ReplayStrategyAdapter",
+        "_StrategyMeta",
+        "_validate_numbers",
+        "RejectPrediction",
+        "InsufficientHistory",
+        "InvalidOutput",
+        "UnsupportedLotteryType"
+      ],
+      "sha256": "bdc035b2f49a0368001ffd1af07d90f4d382cba79671abdea904e8b91de9a54f"
+    },
+    {
+      "byte_size": 22464,
+      "git_blob_sha": "213193465f205faac47a23b4e6b07d6701626571",
+      "path": "lottery_api/models/p42_wave3_biglotto_adapters.py",
+      "reused_contract": [
+        "strictly-prior history",
+        "one recorded bet",
+        "BIG_LOTTO 1..49 validation"
+      ],
+      "sha256": "d07b1c90f6971c01729d94919d7070ee23d45bf5357d3faf1f2f5b047dd2bb79"
+    },
+    {
+      "byte_size": 15990,
+      "git_blob_sha": "297681147267d937383d7f898e59b26f811c6722",
+      "path": "lottery_api/models/p93_tierb_replay_adapters.py",
+      "reused_contract": [
+        "canonical primitive reuse",
+        "lazy strategy imports",
+        "first-bet normalization"
+      ],
+      "sha256": "569f85988cec49e55c0b429f093fabaad93ff9036506cac29ebf052bb1d10995"
+    }
+  ],
+  "designer_version": "p541d-r2-designer-v1",
+  "disclaimer": "Static adapter-design research only; not a runtime adapter, replay result, production-readiness claim, prediction, betting edge, or betting advice. Lottery outcomes remain random; this material is for research and entertainment only.",
+  "implementation_sequencing": [
+    {
+      "methods": [
+        "lottery_api/models/social_wisdom_predictor.py"
+      ],
+      "reason": "safe lazy direct reuse",
+      "wave": 1
+    },
+    {
+      "methods": [
+        "tools/quick_ml_predict.py"
+      ],
+      "reason": "pure in-memory extraction and parity vectors",
+      "wave": 2
+    },
+    {
+      "methods": [
+        "lottery_api/models/zone_split.py"
+      ],
+      "reason": "local deterministic RNG reimplementation",
+      "wave": 3
+    },
+    {
+      "methods": [
+        "tools/advanced_prediction_engine.py"
+      ],
+      "reason": "select exact mode/dependency identity",
+      "wave": "CTO"
+    },
+    {
+      "methods": [
+        "tools/big_lotto_exhaustive_audit.py"
+      ],
+      "reason": "outcome-aware audit is not a predictor",
+      "wave": "REJECTED"
+    }
+  ],
+  "limits": [
+    "Static design does not prove future implementation parity.",
+    "No adapter, registry, lifecycle, replay row, DB state or target runtime was created or observed.",
+    "Equivalent audit is pinned to Git objects at the authoritative base."
+  ],
+  "method_designs": [
+    {
+      "blockers_and_cto_decisions": [
+        "Select exactly one legacy prediction identity.",
+        "Decide whether sklearn/XGBoost availability is part of identity or prohibited."
+      ],
+      "causal_cutoff": "Every input draw must be strictly before the target draw; reject equal/future rows.",
+      "deferred_registry_lifecycle_changes": [
+        "No registry entry in this task or implied by this design.",
+        "Lifecycle assignment, replay generation, promotion and ONLINE status require separate authorization."
+      ],
+      "design_rationale": "The file exposes five predict_next_draw modes. Default ensemble behavior changes with optional sklearn/XGBoost availability, imports print warnings, and an untrained ensemble silently falls back to statistical mode. P541C selected only the file identity, so choosing one mode would invent the selected identity.",
+      "design_status": "CTO_REVIEW_REQUIRED",
+      "disclaimer": "Static adapter-design research only; not a runtime adapter, replay result, production-readiness claim, prediction, betting edge, or betting advice. Lottery outcomes remain random; this material is for research and entertainment only.",
+      "equivalent_audit": {
+        "distinct_identity_proven": true,
+        "evidence": [
+          {
+            "finding": "overlapping frequency/hot-cold/statistical features, not exact engine identity",
+            "path": "tools/quick_ml_predict.py"
+          },
+          {
+            "finding": "native deterministic scoring precedent, not an equivalent adapter",
+            "path": "lottery_api/models/p42_wave3_biglotto_adapters.py"
+          }
+        ],
+        "result": "EXISTING_PARTIAL_EQUIVALENT"
+      },
+      "exception_mapping": {
+        "history shorter than minimum": "InsufficientHistory",
+        "intentional no-bet": "RejectPrediction",
+        "shape/range/duplicate/type failure": "InvalidOutput",
+        "unexpected failure": "propagate for caller mapping to REPLAY_ERROR",
+        "unsupported lottery": "UnsupportedLotteryType"
+      },
+      "external_state_and_dependencies": {
+        "dependencies": [
+          "pandas",
+          "numpy",
+          "optional sklearn",
+          "optional xgboost"
+        ],
+        "forbidden_legacy_reads": [
+          "CSV load_data"
+        ],
+        "prediction_reads": [
+          "in-memory history"
+        ]
+      },
+      "future_implementation_files": [],
+      "history_ordering": "Unresolved: statistical paths use oldest-to-newest DataFrame tail windows; P541C does not select a mode.",
+      "import_safety_plan": "Do not import the source. CTO must select a single identity; then prefer adapter-owned pure extraction or explicitly approve a dependency-pinned implementation.",
+      "input_output_normalization": {
+        "input": "unresolved until mode selection",
+        "output": "one flat six-number list after selection"
+      },
+      "legacy_entrypoints": [
+        "AdvancedLotteryPredictor.predict_next_draw(method='ensemble')",
+        "AdvancedLotteryPredictor._predict_frequency",
+        "AdvancedLotteryPredictor._predict_hot_cold_hybrid",
+        "AdvancedLotteryPredictor._predict_pattern_matching",
+        "AdvancedLotteryPredictor._predict_statistical"
+      ],
+      "method_id": "tools/advanced_prediction_engine.py",
+      "minimum_history": null,
+      "no_db_proof_obligations": [
+        "Prediction receives the complete causal history as an argument.",
+        "No DB, file, CSV, environment, network or runtime-state read is reachable during prediction.",
+        "No selected legacy module is imported unless the approved plan explicitly permits a lazy safe import.",
+        "One and only one validated bet is returned for a strategy/draw pair."
+      ],
+      "p541c_provenance": {
+        "confidence": "high",
+        "identity_confirmed": true,
+        "low_risk_eligible": true,
+        "method_family": "ML_like",
+        "method_id": "tools/advanced_prediction_engine.py",
+        "p541c_r2_bucket": "needs_adapter_before_readiness",
+        "required_change_before_replay": "adapter_wrapper",
+        "risk_level": "low",
+        "source_path": "tools/advanced_prediction_engine.py"
+      },
+      "parity_oracle": {
+        "requirement": "CTO must pin the exact mode and optional-dependency semantics before parity can be defined.",
+        "type": "blocked"
+      },
+      "proposed_strategy": {
+        "lifecycle": "NOT_PROPOSED",
+        "strategy_id": null,
+        "strategy_name": null,
+        "strategy_version": null,
+        "supported_lottery_types": []
+      },
+      "randomness_and_seed_contract": {
+        "contract": "ML model seeds are fixed at 42, but dependency-conditional mode selection remains unresolved.",
+        "deterministic": false,
+        "present": true
+      },
+      "readiness_gates": {
+        "causality_resolved": false,
+        "external_state_resolved": false,
+        "identity_distinct": true,
+        "randomness_resolved": false
+      },
+      "ready_for_implementation": false,
+      "rejection_and_insufficient_history": {
+        "deliberate_no_bet": "Raise RejectPrediction with a stable reason.",
+        "insufficient_history": "Raise InsufficientHistory before strategy logic.",
+        "malformed_result": "Raise InvalidOutput; do not fabricate or repair a ticket."
+      },
+      "required_history_fields": [
+        "draw",
+        "date",
+        "numbers"
+      ],
+      "selected_entrypoint": null,
+      "six_number_validation": "Pass the flat result to repository-native _validate_numbers(numbers, 'BIG_LOTTO', strategy_id): exactly six distinct integers in [1,49], sorted.",
+      "source_path": "tools/advanced_prediction_engine.py",
+      "special_number_behavior": "Return None; BIG_LOTTO special number is not predicted by replay v0.1.",
+      "synthetic_vectors": [
+        {
+          "expected": "mode-independent output is required before READY; currently unresolved",
+          "id": "advanced-mode-boundary",
+          "input": "same 50 causal draws under ML-present and ML-absent environments"
+        }
+      ]
+    },
+    {
+      "blockers_and_cto_decisions": [],
+      "causal_cutoff": "Every input draw must be strictly before the target draw; reject equal/future rows.",
+      "deferred_registry_lifecycle_changes": [
+        "No registry entry in this task or implied by this design.",
+        "Lifecycle assignment, replay generation, promotion and ONLINE status require separate authorization."
+      ],
+      "design_rationale": "SocialWisdomPredictor.predict is import-safe, deterministic and already accepts in-memory history. The random generate_8_bets and empty-history random branch of predict_with_balance are explicitly excluded.",
+      "design_status": "LAZY_DIRECT_WRAPPER_READY",
+      "disclaimer": "Static adapter-design research only; not a runtime adapter, replay result, production-readiness claim, prediction, betting edge, or betting advice. Lottery outcomes remain random; this material is for research and entertainment only.",
+      "equivalent_audit": {
+        "distinct_identity_proven": true,
+        "evidence": [
+          {
+            "finding": "social_wisdom_predict delegates to SocialWisdomPredictor.predict; reuse the selected pure callable, not the facade's logging/special-number work",
+            "path": "lottery_api/models/unified_predictor.py"
+          }
+        ],
+        "result": "EXISTING_EQUIVALENT_REUSE"
+      },
+      "exception_mapping": {
+        "history shorter than minimum": "InsufficientHistory",
+        "intentional no-bet": "RejectPrediction",
+        "shape/range/duplicate/type failure": "InvalidOutput",
+        "unexpected failure": "propagate for caller mapping to REPLAY_ERROR",
+        "unsupported lottery": "UnsupportedLotteryType"
+      },
+      "external_state_and_dependencies": {
+        "dependencies": [
+          "numpy"
+        ],
+        "forbidden_legacy_reads": [],
+        "prediction_reads": [
+          "in-memory history"
+        ]
+      },
+      "future_implementation_files": [
+        "lottery_api/models/p541d_r2_biglotto_selected_adapters.py",
+        "tests/test_p541d_r2_biglotto_selected_adapters.py"
+      ],
+      "history_ordering": "Canonical replay supplies oldest-to-newest; wrapper passes reversed(history[-50:]) because the legacy callable treats history[:50] as newest-first.",
+      "import_safety_plan": "Lazy-import only SocialWisdomPredictor inside _call_strategy; module has no import-time executable output or I/O.",
+      "input_output_normalization": {
+        "input": "copy strictly-prior history, keep last 50, reverse to newest-first",
+        "output": "the returned sorted list[int]; ignore facade confidence/meta/special"
+      },
+      "legacy_entrypoints": [
+        "SocialWisdomPredictor.predict",
+        "UnifiedPredictor.social_wisdom_predict"
+      ],
+      "method_id": "lottery_api/models/social_wisdom_predictor.py",
+      "minimum_history": 1,
+      "no_db_proof_obligations": [
+        "Prediction receives the complete causal history as an argument.",
+        "No DB, file, CSV, environment, network or runtime-state read is reachable during prediction.",
+        "No selected legacy module is imported unless the approved plan explicitly permits a lazy safe import.",
+        "One and only one validated bet is returned for a strategy/draw pair."
+      ],
+      "p541c_provenance": {
+        "confidence": "high",
+        "identity_confirmed": true,
+        "low_risk_eligible": true,
+        "method_family": "folklore",
+        "method_id": "lottery_api/models/social_wisdom_predictor.py",
+        "p541c_r2_bucket": "needs_adapter_before_readiness",
+        "required_change_before_replay": "adapter_wrapper",
+        "risk_level": "low",
+        "source_path": "lottery_api/models/social_wisdom_predictor.py"
+      },
+      "parity_oracle": {
+        "callable": "SocialWisdomPredictor(max_num=49).predict(newest_first_history, pick_count=6)",
+        "comparison": "exact six-number equality",
+        "type": "direct-call parity"
+      },
+      "proposed_strategy": {
+        "lifecycle": "DEFERRED_NOT_REGISTERED",
+        "strategy_id": "biglotto_social_wisdom_anti_popularity",
+        "strategy_name": "大樂透 Social Wisdom Anti-Popularity",
+        "strategy_version": "v0.1-design",
+        "supported_lottery_types": [
+          "BIG_LOTTO"
+        ]
+      },
+      "randomness_and_seed_contract": {
+        "contract": "Use predict() only; never call predict_with_balance(empty history) or generate_8_bets().",
+        "deterministic": true,
+        "present": false
+      },
+      "readiness_gates": {
+        "causality_resolved": true,
+        "external_state_resolved": true,
+        "identity_distinct": true,
+        "randomness_resolved": true
+      },
+      "ready_for_implementation": true,
+      "rejection_and_insufficient_history": {
+        "deliberate_no_bet": "Raise RejectPrediction with a stable reason.",
+        "insufficient_history": "Raise InsufficientHistory before strategy logic.",
+        "malformed_result": "Raise InvalidOutput; do not fabricate or repair a ticket."
+      },
+      "required_history_fields": [
+        "draw",
+        "date",
+        "numbers"
+      ],
+      "selected_entrypoint": "SocialWisdomPredictor.predict(history, pick_count=6)",
+      "six_number_validation": "Pass the flat result to repository-native _validate_numbers(numbers, 'BIG_LOTTO', strategy_id): exactly six distinct integers in [1,49], sorted.",
+      "source_path": "lottery_api/models/social_wisdom_predictor.py",
+      "special_number_behavior": "Return None; BIG_LOTTO special number is not predicted by replay v0.1.",
+      "synthetic_vectors": [
+        {
+          "expected_numbers": [
+            32,
+            33,
+            34,
+            35,
+            41,
+            49
+          ],
+          "id": "social-repeated-high",
+          "input": "50 newest-first draws each [32,33,34,35,41,49]"
+        }
+      ]
+    },
+    {
+      "blockers_and_cto_decisions": [],
+      "causal_cutoff": "Every input draw must be strictly before the target draw; reject equal/future rows.",
+      "deferred_registry_lifecycle_changes": [
+        "No registry entry in this task or implied by this design.",
+        "Lifecycle assignment, replay generation, promotion and ONLINE status require separate authorization."
+      ],
+      "design_rationale": "The constructor's CSV read and printing cannot enter replay. The selected deterministic predict_advanced_ensemble formula can be extracted unchanged to a pure in-memory helper, including newest-first ordering and stable numeric tie order.",
+      "design_status": "ADAPTER_OWNED_PURE_EXTRACTION_READY",
+      "disclaimer": "Static adapter-design research only; not a runtime adapter, replay result, production-readiness claim, prediction, betting edge, or betting advice. Lottery outcomes remain random; this material is for research and entertainment only.",
+      "equivalent_audit": {
+        "distinct_identity_proven": true,
+        "evidence": [
+          {
+            "finding": "overlapping statistical features but not the same ten-weight QuickML formula",
+            "path": "tools/advanced_prediction_engine.py"
+          }
+        ],
+        "result": "EXISTING_PARTIAL_EQUIVALENT"
+      },
+      "exception_mapping": {
+        "history shorter than minimum": "InsufficientHistory",
+        "intentional no-bet": "RejectPrediction",
+        "shape/range/duplicate/type failure": "InvalidOutput",
+        "unexpected failure": "propagate for caller mapping to REPLAY_ERROR",
+        "unsupported lottery": "UnsupportedLotteryType"
+      },
+      "external_state_and_dependencies": {
+        "dependencies": [
+          "stdlib-only extraction preferred"
+        ],
+        "forbidden_legacy_reads": [
+          "pd.read_csv in constructor",
+          "temporary CSV"
+        ],
+        "prediction_reads": [
+          "in-memory history"
+        ]
+      },
+      "future_implementation_files": [
+        "lottery_api/models/p541d_r2_biglotto_selected_adapters.py",
+        "tests/test_p541d_r2_biglotto_selected_adapters.py"
+      ],
+      "history_ordering": "Canonical oldest-to-newest history is truncated to the last 50 then reversed; this preserves legacy DataFrame.head() newest-first semantics.",
+      "import_safety_plan": "Never import or construct QuickMLPredictor in replay. Extract the selected scoring formula into the future adapter module with source/blob provenance comments.",
+      "input_output_normalization": {
+        "input": "list[dict] -> newest-first list[list[int]] without pandas or CSV",
+        "output": "take ranked top six, sorted; discard confidence/top_n metadata"
+      },
+      "legacy_entrypoints": [
+        "QuickMLPredictor.__init__",
+        "QuickMLPredictor.predict_advanced_ensemble",
+        "QuickMLPredictor.predict_smart_hybrid"
+      ],
+      "method_id": "tools/quick_ml_predict.py",
+      "minimum_history": 50,
+      "no_db_proof_obligations": [
+        "Prediction receives the complete causal history as an argument.",
+        "No DB, file, CSV, environment, network or runtime-state read is reachable during prediction.",
+        "No selected legacy module is imported unless the approved plan explicitly permits a lazy safe import.",
+        "One and only one validated bet is returned for a strategy/draw pair."
+      ],
+      "p541c_provenance": {
+        "confidence": "high",
+        "identity_confirmed": true,
+        "low_risk_eligible": true,
+        "method_family": "frequency",
+        "method_id": "tools/quick_ml_predict.py",
+        "p541c_r2_bucket": "needs_adapter_before_readiness",
+        "required_change_before_replay": "adapter_wrapper",
+        "risk_level": "low",
+        "source_path": "tools/quick_ml_predict.py"
+      },
+      "parity_oracle": {
+        "callable": "QuickMLPredictor.predict_advanced_ensemble",
+        "comparison": "future isolated parity test only, with in-memory-vs-legacy fixture conversion outside prediction; never a runtime temp CSV",
+        "type": "controlled legacy oracle"
+      },
+      "proposed_strategy": {
+        "lifecycle": "DEFERRED_NOT_REGISTERED",
+        "strategy_id": "biglotto_quickml_advanced_ensemble",
+        "strategy_name": "大樂透 QuickML Advanced Ensemble",
+        "strategy_version": "v0.1-design",
+        "supported_lottery_types": [
+          "BIG_LOTTO"
+        ]
+      },
+      "randomness_and_seed_contract": {
+        "contract": "predict_advanced_ensemble contains no random call; preserve ascending number tie-breaks.",
+        "deterministic": true,
+        "present": false
+      },
+      "readiness_gates": {
+        "causality_resolved": true,
+        "external_state_resolved": true,
+        "identity_distinct": true,
+        "randomness_resolved": true
+      },
+      "ready_for_implementation": true,
+      "rejection_and_insufficient_history": {
+        "deliberate_no_bet": "Raise RejectPrediction with a stable reason.",
+        "insufficient_history": "Raise InsufficientHistory before strategy logic.",
+        "malformed_result": "Raise InvalidOutput; do not fabricate or repair a ticket."
+      },
+      "required_history_fields": [
+        "draw",
+        "date",
+        "numbers"
+      ],
+      "selected_entrypoint": "adapter-owned pure extraction of QuickMLPredictor.predict_advanced_ensemble(top_n=10)",
+      "six_number_validation": "Pass the flat result to repository-native _validate_numbers(numbers, 'BIG_LOTTO', strategy_id): exactly six distinct integers in [1,49], sorted.",
+      "source_path": "tools/quick_ml_predict.py",
+      "special_number_behavior": "Return None; BIG_LOTTO special number is not predicted by replay v0.1.",
+      "synthetic_vectors": [
+        {
+          "expected_numbers": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "id": "quickml-repeated-low",
+          "input": "50 newest-first draws each [1,2,3,4,5,6]"
+        }
+      ]
+    },
+    {
+      "blockers_and_cto_decisions": [
+        "Rejected as adapter candidate. Any new predictor requires a separately named strategy and CTO approval."
+      ],
+      "causal_cutoff": "Every input draw must be strictly before the target draw; reject equal/future rows.",
+      "deferred_registry_lifecycle_changes": [
+        "No registry entry in this task or implied by this design.",
+        "Lifecycle assignment, replay generation, promotion and ONLINE status require separate authorization."
+      ],
+      "design_rationale": "BigLottoAuditor.run_audit is an outcome-aware multi-period evaluator. It reads CSV in the constructor, silently substitutes synthetic random history on every exception, samples multiple random bets, observes the actual draw, and returns aggregate hit-rate/ROI rather than a ticket.",
+      "design_status": "NOT_AN_ADAPTER_CANDIDATE",
+      "disclaimer": "Static adapter-design research only; not a runtime adapter, replay result, production-readiness claim, prediction, betting edge, or betting advice. Lottery outcomes remain random; this material is for research and entertainment only.",
+      "equivalent_audit": {
+        "distinct_identity_proven": true,
+        "evidence": [
+          {
+            "finding": "only the batch auditor identity was found; no genuine one-draw callable or adapter exists",
+            "path": "tools/big_lotto_exhaustive_audit.py"
+          }
+        ],
+        "result": "NO_EXISTING_EQUIVALENT"
+      },
+      "exception_mapping": {
+        "history shorter than minimum": "InsufficientHistory",
+        "intentional no-bet": "RejectPrediction",
+        "shape/range/duplicate/type failure": "InvalidOutput",
+        "unexpected failure": "propagate for caller mapping to REPLAY_ERROR",
+        "unsupported lottery": "UnsupportedLotteryType"
+      },
+      "external_state_and_dependencies": {
+        "dependencies": [
+          "pandas",
+          "numpy",
+          "random"
+        ],
+        "forbidden_legacy_reads": [
+          "CSV",
+          "synthetic fallback",
+          "outcome"
+        ],
+        "prediction_reads": [
+          "CSV",
+          "actual draw"
+        ]
+      },
+      "future_implementation_files": [],
+      "history_ordering": "run_audit internally slices prior rows, then consumes the current outcome; it is not a target-time predictor contract.",
+      "import_safety_plan": "Never import or wrap. A future task may separately design a new hot/cold predictor, but it must not claim BigLottoAuditor identity.",
+      "input_output_normalization": {
+        "input": "not normalizable to a one-draw predictor without invention",
+        "output": "aggregate metrics; no valid one-bet extraction"
+      },
+      "legacy_entrypoints": [
+        "BigLottoAuditor.__init__",
+        "BigLottoAuditor.run_audit",
+        "get_hits",
+        "calculate_payout"
+      ],
+      "method_id": "tools/big_lotto_exhaustive_audit.py",
+      "minimum_history": null,
+      "no_db_proof_obligations": [
+        "Prediction receives the complete causal history as an argument.",
+        "No DB, file, CSV, environment, network or runtime-state read is reachable during prediction.",
+        "No selected legacy module is imported unless the approved plan explicitly permits a lazy safe import.",
+        "One and only one validated bet is returned for a strategy/draw pair."
+      ],
+      "p541c_provenance": {
+        "confidence": "high",
+        "identity_confirmed": true,
+        "low_risk_eligible": true,
+        "method_family": "report",
+        "method_id": "tools/big_lotto_exhaustive_audit.py",
+        "p541c_r2_bucket": "needs_adapter_before_readiness",
+        "required_change_before_replay": "adapter_wrapper",
+        "risk_level": "low",
+        "source_path": "tools/big_lotto_exhaustive_audit.py"
+      },
+      "parity_oracle": {
+        "requirement": "No parity oracle exists for a one-bet adapter because the source has no one-bet output.",
+        "type": "not applicable"
+      },
+      "proposed_strategy": {
+        "lifecycle": "NOT_PROPOSED",
+        "strategy_id": null,
+        "strategy_name": null,
+        "strategy_version": null,
+        "supported_lottery_types": []
+      },
+      "randomness_and_seed_contract": {
+        "contract": "global random.sample and synthetic fallback are prohibited; no seed can convert an evaluator into a predictor identity.",
+        "deterministic": false,
+        "present": true
+      },
+      "readiness_gates": {
+        "causality_resolved": false,
+        "external_state_resolved": false,
+        "identity_distinct": true,
+        "randomness_resolved": false
+      },
+      "ready_for_implementation": false,
+      "rejection_and_insufficient_history": {
+        "deliberate_no_bet": "Raise RejectPrediction with a stable reason.",
+        "insufficient_history": "Raise InsufficientHistory before strategy logic.",
+        "malformed_result": "Raise InvalidOutput; do not fabricate or repair a ticket."
+      },
+      "required_history_fields": [
+        "historical outcomes including target draw"
+      ],
+      "selected_entrypoint": null,
+      "six_number_validation": "Pass the flat result to repository-native _validate_numbers(numbers, 'BIG_LOTTO', strategy_id): exactly six distinct integers in [1,49], sorted.",
+      "source_path": "tools/big_lotto_exhaustive_audit.py",
+      "special_number_behavior": "Return None; BIG_LOTTO special number is not predicted by replay v0.1.",
+      "synthetic_vectors": [
+        {
+          "expected": "reject adapter candidacy; never invoke synthetic fallback or random audit",
+          "id": "auditor-fail-closed",
+          "input": "missing CSV or any 50-draw window"
+        }
+      ]
+    },
+    {
+      "blockers_and_cto_decisions": [],
+      "causal_cutoff": "Every input draw must be strictly before the target draw; reject equal/future rows.",
+      "deferred_registry_lifecycle_changes": [
+        "No registry entry in this task or implied by this design.",
+        "Lifecycle assignment, replay generation, promotion and ONLINE status require separate authorization."
+      ],
+      "design_rationale": "Preserve the exact three-zone boundaries, overlap=2 and first-bet selection, but replace global random.sample with a local random.Random instance seeded from canonical strategy identity plus strictly-prior causal history. No historical signal or equivalent strategy is borrowed.",
+      "design_status": "DETERMINISTIC_REIMPLEMENTATION_READY",
+      "disclaimer": "Static adapter-design research only; not a runtime adapter, replay result, production-readiness claim, prediction, betting edge, or betting advice. Lottery outcomes remain random; this material is for research and entertainment only.",
+      "equivalent_audit": {
+        "distinct_identity_proven": true,
+        "evidence": [
+          {
+            "finding": "multiple zone variants exist, but their pools/weighting differ from ZoneSplitStrategy.generate_bets",
+            "path": "tools/zone_split_optimizer.py"
+          },
+          {
+            "finding": "front-end zone strategy is a separate implementation surface, not a ReplayStrategyAdapter",
+            "path": "src/engine/strategies/ZoneSplitStrategy.js"
+          },
+          {
+            "finding": "runtime route calls the exact selected factory; no replay adapter exists",
+            "path": "lottery_api/routes/prediction.py"
+          }
+        ],
+        "result": "EXISTING_PARTIAL_EQUIVALENT"
+      },
+      "exception_mapping": {
+        "history shorter than minimum": "InsufficientHistory",
+        "intentional no-bet": "RejectPrediction",
+        "shape/range/duplicate/type failure": "InvalidOutput",
+        "unexpected failure": "propagate for caller mapping to REPLAY_ERROR",
+        "unsupported lottery": "UnsupportedLotteryType"
+      },
+      "external_state_and_dependencies": {
+        "dependencies": [
+          "stdlib hashlib",
+          "stdlib json",
+          "stdlib random.Random"
+        ],
+        "forbidden_legacy_reads": [],
+        "prediction_reads": [
+          "in-memory causal history for seed only"
+        ]
+      },
+      "future_implementation_files": [
+        "lottery_api/models/p541d_r2_biglotto_selected_adapters.py",
+        "tests/test_p541d_r2_biglotto_selected_adapters.py"
+      ],
+      "history_ordering": "Canonical oldest-to-newest history is retained only for seed material; all rows must be strictly prior and canonicalized by draw/date/numbers.",
+      "import_safety_plan": "Do not import the selected module because it uses global random. Reimplement only its 1..49, three-zone, overlap=2 candidate-pool construction in the future adapter.",
+      "input_output_normalization": {
+        "input": "canonical history used only in deterministic seed preimage",
+        "output": "first of three sequential local-RNG bets; validate and discard other bets/coverage metadata"
+      },
+      "legacy_entrypoints": [
+        "ZoneSplitStrategy.generate_bets",
+        "ZoneSplitStrategy.get_coverage_meta",
+        "get_zone_split_predictor"
+      ],
+      "method_id": "lottery_api/models/zone_split.py",
+      "minimum_history": 1,
+      "no_db_proof_obligations": [
+        "Prediction receives the complete causal history as an argument.",
+        "No DB, file, CSV, environment, network or runtime-state read is reachable during prediction.",
+        "No selected legacy module is imported unless the approved plan explicitly permits a lazy safe import.",
+        "One and only one validated bet is returned for a strategy/draw pair."
+      ],
+      "p541c_provenance": {
+        "confidence": "high",
+        "identity_confirmed": true,
+        "low_risk_eligible": true,
+        "method_family": "zone",
+        "method_id": "lottery_api/models/zone_split.py",
+        "p541c_r2_bucket": "needs_adapter_before_readiness",
+        "required_change_before_replay": "adapter_wrapper",
+        "risk_level": "low",
+        "source_path": "lottery_api/models/zone_split.py"
+      },
+      "parity_oracle": {
+        "callable": "legacy zone boundary/pool construction",
+        "comparison": "same pools and sample count; deterministic seed intentionally replaces nondeterministic global RNG",
+        "type": "algorithm parity"
+      },
+      "proposed_strategy": {
+        "lifecycle": "DEFERRED_NOT_REGISTERED",
+        "strategy_id": "biglotto_zone_split_3bet_bet1",
+        "strategy_name": "大樂透 Zone Split 3注（Replay Bet 1）",
+        "strategy_version": "v0.1-design",
+        "supported_lottery_types": [
+          "BIG_LOTTO"
+        ]
+      },
+      "randomness_and_seed_contract": {
+        "contract": "Build UTF-8 canonical JSON of {strategy_id, lottery_type, causal_history:[{draw,date,numbers}]}; SHA-256 it; seed local random.Random with the full digest integer; sample each legacy zone sequentially; record bet 1 only. Never seed or call global RNG.",
+        "deterministic": true,
+        "present": true
+      },
+      "readiness_gates": {
+        "causality_resolved": true,
+        "external_state_resolved": true,
+        "identity_distinct": true,
+        "randomness_resolved": true
+      },
+      "ready_for_implementation": true,
+      "rejection_and_insufficient_history": {
+        "deliberate_no_bet": "Raise RejectPrediction with a stable reason.",
+        "insufficient_history": "Raise InsufficientHistory before strategy logic.",
+        "malformed_result": "Raise InvalidOutput; do not fabricate or repair a ticket."
+      },
+      "required_history_fields": [
+        "draw",
+        "date",
+        "numbers"
+      ],
+      "selected_entrypoint": "deterministic reimplementation of get_zone_split_predictor('BIG_LOTTO', 3), first bet only",
+      "six_number_validation": "Pass the flat result to repository-native _validate_numbers(numbers, 'BIG_LOTTO', strategy_id): exactly six distinct integers in [1,49], sorted.",
+      "source_path": "lottery_api/models/zone_split.py",
+      "special_number_behavior": "Return None; BIG_LOTTO special number is not predicted by replay v0.1.",
+      "synthetic_vectors": [
+        {
+          "expected": "identical output across processes; six distinct values from first zone pool [1,18]",
+          "id": "zone-single-draw",
+          "input": "one prior draw {draw:'1',date:'2026-01-01',numbers:[1,2,3,4,5,6]}"
+        }
+      ]
+    }
+  ],
+  "no_db_no_execution_evidence": {
+    "data_runtime_access": "NONE",
+    "db_access": "NONE",
+    "environment_access": "NONE",
+    "network_access": "NONE",
+    "selected_modules_executed": false,
+    "selected_modules_imported": false,
+    "source_read_mechanism": "git show <base>:<relative-path>",
+    "writes": [
+      "outputs/research/p541d_r2_biglotto_selected_method_adapter_design_20260713.json",
+      "outputs/research/p541d_r2_biglotto_selected_method_adapter_design_20260713.md"
+    ]
+  },
+  "projections": {
+    "cto_review": [
+      "tools/advanced_prediction_engine.py"
+    ],
+    "implementation_ready": [
+      "lottery_api/models/social_wisdom_predictor.py",
+      "tools/quick_ml_predict.py",
+      "lottery_api/models/zone_split.py"
+    ],
+    "rejected": [
+      "tools/big_lotto_exhaustive_audit.py"
+    ]
+  },
+  "schema_version": "p541d-r2-adapter-design-v1",
+  "selected_source_manifest": [
+    {
+      "ast_parse": "PASS",
+      "broad_exception_handlers": [],
+      "byte_size": 24006,
+      "causal_history_requirements": "tail windows imply oldest-to-newest history; mode identity is unresolved",
+      "classes": [
+        {
+          "methods": [
+            "__init__(self, lottery_type = 'BIG_LOTTO')",
+            "load_data(self, csv_file)",
+            "extract_features(self)",
+            "train_ensemble_model(self)",
+            "predict_next_draw(self, method = 'ensemble')",
+            "_predict_ensemble(self)",
+            "_predict_frequency(self)",
+            "_predict_hot_cold_hybrid(self)",
+            "_predict_pattern_matching(self)",
+            "_predict_statistical(self)",
+            "backtest(self, periods = 20)"
+          ],
+          "name": "AdvancedLotteryPredictor"
+        }
+      ],
+      "external_references": {
+        "db_calls": [],
+        "environment_calls": [],
+        "file_literals": [
+          "../data/converted_2024.csv",
+          "../data/lotto649_realistic_data.csv",
+          "../data/sample-data.csv"
+        ],
+        "network_calls": []
+      },
+      "functions": [
+        "main()"
+      ],
+      "git_blob_sha": "5c72f7e87de6d2f7721d7fc9eb7eb57f4e848744",
+      "imports": [
+        "datetime",
+        "json",
+        "numpy",
+        "os",
+        "pandas",
+        "sklearn.ensemble",
+        "sklearn.metrics",
+        "sklearn.model_selection",
+        "sklearn.preprocessing",
+        "sys",
+        "warnings",
+        "xgboost"
+      ],
+      "input_shape": "AdvancedLotteryPredictor.data DataFrame with chronological numbers_list rows",
+      "main_guard": true,
+      "optional_dependencies": [
+        "sklearn.ensemble",
+        "sklearn.metrics",
+        "sklearn.model_selection",
+        "sklearn.preprocessing",
+        "xgboost"
+      ],
+      "output_shape": "dict containing numbers, probabilities, method and confidence",
+      "print_log_side_effect_calls": [
+        "print"
+      ],
+      "randomness_calls": [
+        "RandomForestClassifier"
+      ],
+      "sha256": "f92be0a25fc2da83eb9d999081a80d59c4c9af089edcefcdf44f6f3cfc16a8ce",
+      "source_path": "tools/advanced_prediction_engine.py",
+      "top_level_executable_statements": [
+        {
+          "line": 12,
+          "node": "Expr"
+        },
+        {
+          "line": 15,
+          "node": "Try"
+        },
+        {
+          "line": 26,
+          "node": "Try"
+        },
+        {
+          "line": 655,
+          "node": "If"
+        }
+      ],
+      "utf8_parse": "PASS"
+    },
+    {
+      "ast_parse": "PASS",
+      "broad_exception_handlers": [],
+      "byte_size": 12772,
+      "causal_history_requirements": "adapter must reverse canonical oldest-to-newest tail(50) before predict()",
+      "classes": [
+        {
+          "methods": [
+            "__init__(self, max_num: int = 49)",
+            "_define_popular_numbers(self) -> Set[int]",
+            "_calculate_unpopular_scores(self) -> np.ndarray",
+            "predict(self, history: List[Dict], pick_count: int = 6) -> List[int]",
+            "_calculate_historical_frequency(self, history: List[Dict]) -> np.ndarray",
+            "predict_with_balance(self, history: List[Dict], pick_count: int = 6, cold_ratio: float = 0.67) -> List[int]",
+            "generate_8_bets(self, history: List[Dict], pick_count: int = 6) -> List[Dict]",
+            "analyze_popularity(self, numbers: List[int]) -> Dict",
+            "_grade_uniqueness(self, score: float) -> str"
+          ],
+          "name": "SocialWisdomPredictor"
+        }
+      ],
+      "external_references": {
+        "db_calls": [],
+        "environment_calls": [],
+        "file_literals": [],
+        "network_calls": []
+      },
+      "functions": [],
+      "git_blob_sha": "1a1f4119f4ade1b5605a988f595c7ed8300e6a40",
+      "imports": [
+        "collections",
+        "numpy",
+        "typing"
+      ],
+      "input_shape": "list[dict] with numbers; source consumes history[:50] as most-recent-first",
+      "main_guard": true,
+      "optional_dependencies": [],
+      "output_shape": "sorted list[int] of pick_count numbers for predict()",
+      "print_log_side_effect_calls": [
+        "print"
+      ],
+      "randomness_calls": [
+        "np.random.choice",
+        "np.random.normal"
+      ],
+      "sha256": "a00829b5d875cb8202c3bbd90ad7202fa6b95f568e3e8d821a6cdbffe6a95e3b",
+      "source_path": "lottery_api/models/social_wisdom_predictor.py",
+      "top_level_executable_statements": [
+        {
+          "line": 351,
+          "node": "If"
+        }
+      ],
+      "utf8_parse": "PASS"
+    },
+    {
+      "ast_parse": "PASS",
+      "broad_exception_handlers": [],
+      "byte_size": 11213,
+      "causal_history_requirements": "future extraction must accept in-memory tail(50), normalized newest-first",
+      "classes": [
+        {
+          "methods": [
+            "__init__(self, data_file, lottery_type = 'BIG_LOTTO')",
+            "predict_advanced_ensemble(self, top_n = 10)",
+            "predict_smart_hybrid(self)"
+          ],
+          "name": "QuickMLPredictor"
+        }
+      ],
+      "external_references": {
+        "db_calls": [],
+        "environment_calls": [],
+        "file_literals": [
+          "範例: python quick_ml_predict.py ../data/sample-data.csv BIG_LOTTO"
+        ],
+        "network_calls": []
+      },
+      "functions": [
+        "main()"
+      ],
+      "git_blob_sha": "36cf12dcef80d7f0bada22e024336eb22f8bfee5",
+      "imports": [
+        "collections",
+        "json",
+        "numpy",
+        "pandas",
+        "sys"
+      ],
+      "input_shape": "constructor CSV DataFrame with numbers column, newest rows first",
+      "main_guard": true,
+      "optional_dependencies": [],
+      "output_shape": "dict containing numbers, method, confidence, top_probabilities and details",
+      "print_log_side_effect_calls": [
+        "print"
+      ],
+      "randomness_calls": [],
+      "sha256": "8b7ba0b52e2dfcb7bd39997be9dbfab90a81f6e44c3fcf269ac5c9ddaa266d80",
+      "source_path": "tools/quick_ml_predict.py",
+      "top_level_executable_statements": [
+        {
+          "line": 302,
+          "node": "If"
+        }
+      ],
+      "utf8_parse": "PASS"
+    },
+    {
+      "ast_parse": "PASS",
+      "broad_exception_handlers": [
+        {
+          "line": 33,
+          "type": "bare"
+        }
+      ],
+      "byte_size": 3292,
+      "causal_history_requirements": "run_audit observes each target outcome after randomized bet construction",
+      "classes": [
+        {
+          "methods": [
+            "__init__(self, csv_path = 'data/lotto649_realistic_data.csv', window = 50)",
+            "run_audit(self, num_bets = 3)"
+          ],
+          "name": "BigLottoAuditor"
+        }
+      ],
+      "external_references": {
+        "db_calls": [],
+        "environment_calls": [],
+        "file_literals": [
+          "data/lotto649_realistic_data.csv"
+        ],
+        "network_calls": []
+      },
+      "functions": [
+        "get_hits(bet, draw)",
+        "calculate_payout(hits)"
+      ],
+      "git_blob_sha": "ff9efe54d3519c47798c9f6b47a5e3dc44f0b730",
+      "imports": [
+        "collections",
+        "numpy",
+        "pandas",
+        "random"
+      ],
+      "input_shape": "CSV-backed full draw history plus window and num_bets",
+      "main_guard": true,
+      "optional_dependencies": [],
+      "output_shape": "aggregate (hit_rate, roi, periods), not a one-draw bet",
+      "print_log_side_effect_calls": [
+        "print"
+      ],
+      "randomness_calls": [
+        "random.sample"
+      ],
+      "sha256": "694d353b7ca230af6a860f5ef8977fdecbab031a30ad4e6c51b3d0c0f98b910c",
+      "source_path": "tools/big_lotto_exhaustive_audit.py",
+      "top_level_executable_statements": [
+        {
+          "line": 80,
+          "node": "If"
+        }
+      ],
+      "utf8_parse": "PASS"
+    },
+    {
+      "ast_parse": "PASS",
+      "broad_exception_handlers": [],
+      "byte_size": 3916,
+      "causal_history_requirements": "future local RNG seed must bind strategy identity to strictly prior history",
+      "classes": [
+        {
+          "methods": [
+            "__init__(self, min_num: int = 1, max_num: int = 49, pick_count: int = 6)",
+            "generate_bets(self, num_bets: int, overlap_size: int = 2) -> List[List[int]]",
+            "get_coverage_meta(self, bets: List[List[int]]) -> Dict"
+          ],
+          "name": "ZoneSplitStrategy"
+        }
+      ],
+      "external_references": {
+        "db_calls": [],
+        "environment_calls": [],
+        "file_literals": [],
+        "network_calls": []
+      },
+      "functions": [
+        "get_zone_split_predictor(lottery_type: str, num_bets: int = 3)"
+      ],
+      "git_blob_sha": "5ce1ce023cab846791550bd7240106600ee9b95e",
+      "imports": [
+        "random",
+        "typing"
+      ],
+      "input_shape": "lottery_type and num_bets; no historical signal in legacy callable",
+      "main_guard": true,
+      "optional_dependencies": [],
+      "output_shape": "dict with multiple bets and coverage metadata",
+      "print_log_side_effect_calls": [
+        "print"
+      ],
+      "randomness_calls": [
+        "random.sample"
+      ],
+      "sha256": "b6144f9d479feded3746d81e0d5682e7cfb28ba8d8aa03ff65f3706649996211",
+      "source_path": "lottery_api/models/zone_split.py",
+      "top_level_executable_statements": [
+        {
+          "line": 101,
+          "node": "If"
+        }
+      ],
+      "utf8_parse": "PASS"
+    }
+  ],
+  "shared_future_adapter_primitives": {
+    "base": "ReplayStrategyAdapter",
+    "contract": [
+      "strictly-prior causal history",
+      "no DB/file/env/network reads during prediction",
+      "six distinct integers in [1,49]",
+      "one recorded bet per strategy/draw",
+      "explicit rejection/insufficient-history/invalid-output/error mapping",
+      "no ONLINE or production lifecycle implication"
+    ],
+    "exceptions": [
+      "RejectPrediction",
+      "InsufficientHistory",
+      "InvalidOutput",
+      "UnsupportedLotteryType"
+    ],
+    "metadata": "_StrategyMeta",
+    "validation": "_validate_numbers"
+  },
+  "summary": {
+    "counts_by_status": {
+      "ADAPTER_OWNED_PURE_EXTRACTION_READY": 1,
+      "CTO_REVIEW_REQUIRED": 1,
+      "DETERMINISTIC_REIMPLEMENTATION_READY": 1,
+      "LAZY_DIRECT_WRAPPER_READY": 1,
+      "NOT_AN_ADAPTER_CANDIDATE": 1
+    },
+    "cto_review_count": 1,
+    "implementation_ready_count": 3,
+    "rejected_count": 1,
+    "selected_methods": 5
+  },
+  "task": {
+    "design_only": true,
+    "generated_at": "2026-07-13T00:00:00+00:00",
+    "scope": "static no-DB adapter design for exactly five selected BIG_LOTTO methods",
+    "task_id": "P541D_R2_BIG_LOTTO_SELECTED_METHOD_ADAPTER_DESIGN_NO_DB_WRITE"
+  },
+  "upstream_identity": {
+    "byte_size": 1401576,
+    "path": "outputs/research/p541c_r2_biglotto_legacy_method_review_readiness_selection_20260712.json",
+    "read_mechanism": "pinned Git blob",
+    "record_count": 580,
+    "schema_version": "p541c-r2-selection-v3",
+    "selector_version": "p541c-r2-selector-v4",
+    "sha256": "f470b3c9da81fcb66ed5b0d60bc88c97bd8e51467a5e6e02dfd03cfb5ada013d",
+    "verification": "PASS"
+  }
+}

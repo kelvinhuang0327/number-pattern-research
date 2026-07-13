@@ -13,7 +13,7 @@
 ## Evidence Schema and Fail-Closed Rules
 
 - Schema: `p541b-r2-evidence-v1`
-- Detector: `p541b-r2-detector-v5`
+- Detector: `p541b-r2-detector-v6`
 - Canonical generation runtime: `CPython==3.9.6` — verification **PASS**.
 - Every evidence family publishes `state`, `scope`, `detector_id`, and deterministic `findings`.
 - Every finding publishes separate `resolved_api` and `resolved_syntax` fields plus `imported_module_path`; exactly one resolved field is populated.
@@ -48,10 +48,10 @@
 | Scan `syntax_error` | 1 |
 | Scan `unreadable` | 0 |
 | Scan `unsupported` | 35 |
-| Risk `high` | 110 |
-| Risk `low` | 22 |
+| Risk `high` | 95 |
+| Risk `low` | 24 |
 | Risk `medium` | 4 |
-| Risk `unknown` | 444 |
+| Risk `unknown` | 457 |
 
 ## Tri-State Evidence
 
@@ -62,7 +62,7 @@
 | `network_io` | 17 | 527 | 36 |
 | `process_execution` | 12 | 532 | 36 |
 | `other_external_effect` | 57 | 512 | 11 |
-| `transitive_external_state` | 0 | 137 | 443 |
+| `transitive_external_state` | 0 | 124 | 456 |
 | `import_time_execution` | 12 | 536 | 32 |
 | `hardcoded_absolute_path` | 56 | 489 | 35 |
 | `hardcoded_draw_or_date` | 42 | 503 | 35 |
@@ -80,7 +80,7 @@
 
 ## Frozen Provenance
 
-- Generator SHA-256: `6e4c54b635b8c8c314bb1da60056e2301f93764deeae4bc7dbb1a7784daeabc0`
+- Generator SHA-256: `6335159df2b56e33f8b5e75132da115fc3bdc3091f665a223589b9dcea48b5c9`
 - Historical P541B JSON blob: `12f1595c96e3f9deddc7a7d2d9549c03144635f0` — verification **PASS**
 - Historical P541B Markdown blob: `3b28e39bfe747c5f196b9aec6610284709466cf8` — verification **PASS**
 - Historical P541A JSON blob: `7557f364160dc09c91a19c07b370cb4b231c0194` — verification **PASS**

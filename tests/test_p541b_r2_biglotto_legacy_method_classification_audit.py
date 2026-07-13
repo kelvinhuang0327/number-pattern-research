@@ -1612,6 +1612,287 @@ def test_unresolved_callback_without_project_import_is_unknown(
     assert result["reason"] == "import_resolution_incomplete"
 
 
+def _escaped_nested_callable_result(
+    tmp_path,
+    helper_source: str,
+    *,
+    main_source: str = "from helper import run\nrun()\n",
+):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": main_source,
+            "helper.py": helper_source,
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    return _one_hop(repo, commit, "main.py")
+
+
+@pytest.mark.parametrize(
+    "escape_statement",
+    [
+        "    register(dangerous)\n",
+        "    register(callback=dangerous)\n",
+        "    scheduler.submit(dangerous)\n",
+        "    register((dangerous,))\n",
+        "    register([dangerous])\n",
+        "    register({dangerous})\n",
+        "    register({'callback': dangerous})\n",
+    ],
+)
+def test_escaped_nested_callable_argument_and_container_references_are_unknown(
+    tmp_path, escape_statement
+):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    async def dangerous():\n"
+            "        import deeper\n"
+            f"{escape_statement}"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+@pytest.mark.parametrize(
+    ("escape_statement", "main_source"),
+    [
+        ("    return dangerous\n", "from helper import run\nrun()\n"),
+        ("    yield dangerous\n", "from helper import run\nnext(run())\n"),
+    ],
+)
+def test_returned_or_yielded_nested_callable_is_unknown(
+    tmp_path, escape_statement, main_source
+):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    def dangerous():\n"
+            "        import deeper\n"
+            f"{escape_statement}"
+        ),
+        main_source=main_source,
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_bound_nested_class_method_passed_externally_is_unknown(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    class Nested:\n"
+            "        def dangerous(self):\n"
+            "            import deeper\n"
+            "    register(Nested().dangerous)\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+@pytest.mark.parametrize(
+    "wrapper_source",
+    [
+        "    register(lambda: dangerous())\n",
+        (
+            "    def wrapper():\n"
+            "        dangerous()\n"
+            "    register(wrapper)\n"
+        ),
+    ],
+)
+def test_escaping_lambda_or_local_wrapper_capture_is_unknown(
+    tmp_path, wrapper_source
+):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    def dangerous():\n"
+            "        import deeper\n"
+            f"{wrapper_source}"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+@pytest.mark.parametrize(
+    "storage_source",
+    [
+        (
+            "    class Holder:\n"
+            "        pass\n"
+            "    holder = Holder()\n"
+            "    holder.callback = dangerous\n"
+            "    register(holder)\n"
+        ),
+        (
+            "    callbacks = {}\n"
+            "    callbacks['callback'] = dangerous\n"
+            "    register(callbacks)\n"
+        ),
+    ],
+)
+def test_callable_stored_on_escaping_owner_is_unknown(tmp_path, storage_source):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    def dangerous():\n"
+            "        import deeper\n"
+            f"{storage_source}"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_local_callable_used_directly_as_decorator_is_unknown(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    def dangerous(callback):\n"
+            "        import deeper\n"
+            "        return callback\n"
+            "    @dangerous\n"
+            "    def wrapped():\n"
+            "        return 1\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_local_callable_passed_to_unresolved_decorator_factory_is_unknown(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    def dangerous():\n"
+            "        import deeper\n"
+            "    @decorate(dangerous)\n"
+            "    def wrapped():\n"
+            "        return 1\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_escaped_known_target_with_unresolved_target_preserves_finding(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "def run():\n"
+            "    sqlite3.connect('x.db')\n"
+            "    def dangerous():\n"
+            "        import deeper\n"
+            "    register(dangerous, unresolved)\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert any(
+        finding["resolved_api"] == "sqlite3.connect"
+        for finding in result["findings"]
+    )
+
+
+def test_escaped_target_does_not_taint_unrelated_dormant_nested_callable(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    def escaped():\n"
+            "        return 1\n"
+            "    def dormant():\n"
+            "        import deeper\n"
+            "    register(escaped)\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+
+
+@pytest.mark.parametrize(
+    "local_storage",
+    [
+        "    callbacks = (dangerous,)\n",
+        "    callbacks = [dangerous]\n",
+        "    callbacks = {dangerous}\n",
+        "    callbacks = {'callback': dangerous}\n",
+    ],
+)
+def test_callable_in_provably_local_container_remains_dormant(
+    tmp_path, local_storage
+):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    def dangerous():\n"
+            "        import deeper\n"
+            f"{local_storage}"
+            "    return 1\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+
+
+def test_escaped_nested_same_name_remains_scope_correct(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def dangerous():\n"
+            "    import deeper\n"
+            "def run():\n"
+            "    def dangerous():\n"
+            "        return 1\n"
+            "    register(dangerous)\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+
+
+def test_fully_local_consumer_does_not_escape_callable_argument(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    def dangerous():\n"
+            "        import deeper\n"
+            "    def consume(callback):\n"
+            "        return 1\n"
+            "    consume(dangerous)\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+
+
+@pytest.mark.parametrize("reference", ["json.dumps", "requests.get"])
+def test_external_callable_reference_does_not_create_repository_taint(
+    tmp_path, reference
+):
+    module_name = reference.split(".", 1)[0]
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            f"    import {module_name}\n"
+            f"    register({reference})\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+
+
 def test_nested_same_name_does_not_fall_through_to_top_level(tmp_path):
     repo, commit = _synthetic_repo(
         tmp_path,

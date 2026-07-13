@@ -13,7 +13,7 @@
 ## Evidence Schema and Fail-Closed Rules
 
 - Schema: `p541b-r2-evidence-v1`
-- Detector: `p541b-r2-detector-v6`
+- Detector: `p541b-r2-detector-v7`
 - Canonical generation runtime: `CPython==3.9.6` — verification **PASS**.
 - Every evidence family publishes `state`, `scope`, `detector_id`, and deterministic `findings`.
 - Every finding publishes separate `resolved_api` and `resolved_syntax` fields plus `imported_module_path`; exactly one resolved field is populated.
@@ -80,7 +80,7 @@
 
 ## Frozen Provenance
 
-- Generator SHA-256: `6335159df2b56e33f8b5e75132da115fc3bdc3091f665a223589b9dcea48b5c9`
+- Generator SHA-256: `93c14875a414e8fc4e919dc9c1db12a6ce0ebdf6a684745710f1349b413f7eaf`
 - Historical P541B JSON blob: `12f1595c96e3f9deddc7a7d2d9549c03144635f0` — verification **PASS**
 - Historical P541B Markdown blob: `3b28e39bfe747c5f196b9aec6610284709466cf8` — verification **PASS**
 - Historical P541A JSON blob: `7557f364160dc09c91a19c07b370cb4b231c0194` — verification **PASS**

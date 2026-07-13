@@ -24,7 +24,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 TASK_ID = "P541B_R2_BIG_LOTTO_LEGACY_METHOD_CLASSIFICATION_AUDIT"
 SCHEMA_VERSION = "p541b-r2-evidence-v1"
-DETECTOR_VERSION = "p541b-r2-detector-v6"
+DETECTOR_VERSION = "p541b-r2-detector-v7"
 CANONICAL_RUNTIME_IMPLEMENTATION = "CPython"
 CANONICAL_RUNTIME_VERSION = "3.9.6"
 BASE_MAIN_COMMIT = "c50137583243d4f9f4915a3e1d9babee50b5bbd7"
@@ -2416,10 +2416,18 @@ def _definition_execution_nodes(
     queue: list[
         tuple[ast.FunctionDef | ast.AsyncFunctionDef, ast.ClassDef | None, str]
     ] = [(definition, owner_class, "reached")]
+    queued_definitions: set[tuple[int, str]] = {(id(definition), "reached")}
     visited_definitions: dict[int, str] = {}
+    escaped_unknown_definitions: set[int] = set()
+    flow_unknown_definitions: set[int] = set()
+    visited_escape_only: set[int] = set()
+    reprocess_flow_unknown: set[int] = set()
 
     scope_definitions: dict[int, dict[str, list[ast.AST]]] = {}
     scope_assignments: dict[int, dict[str, list[tuple[ast.AST, bool]]]] = {}
+    scope_stored_values: dict[
+        int, dict[str, list[tuple[ast.AST, bool]]]
+    ] = {}
 
     def lexical_owner(node: ast.AST) -> ast.AST | None:
         current = node
@@ -2430,6 +2438,18 @@ def _definition_execution_nodes(
             ):
                 return current
         return None
+
+    def storage_owner_name(target: ast.AST) -> str | None:
+        current = target
+        if isinstance(current, ast.Attribute):
+            current = current.value
+        elif isinstance(current, ast.Subscript):
+            current = current.value
+        else:
+            return None
+        while isinstance(current, (ast.Attribute, ast.Subscript)):
+            current = current.value
+        return current.id if isinstance(current, ast.Name) else None
 
     for candidate in ast.walk(definition):
         if candidate is definition:
@@ -2456,6 +2476,12 @@ def _definition_execution_nodes(
             if isinstance(target, ast.Name):
                 scope_assignments.setdefault(id(scope), {}).setdefault(
                     target.id, []
+                ).append((value, conditional))
+                continue
+            owner_name = storage_owner_name(target)
+            if owner_name is not None:
+                scope_stored_values.setdefault(id(scope), {}).setdefault(
+                    owner_name, []
                 ).append((value, conditional))
 
     for definitions in scope_definitions.values():
@@ -2776,6 +2802,187 @@ def _definition_execution_nodes(
             ),
         ), "complete" if status == "complete" else "incomplete"
 
+    def callable_targets(
+        values: list[tuple[str, ast.AST, ast.ClassDef | None]],
+    ) -> list[
+        tuple[ast.FunctionDef | ast.AsyncFunctionDef, ast.ClassDef | None]
+    ]:
+        targets = {
+            (target, target_owner)
+            for kind, target, target_owner in values
+            if kind == "callable"
+            and isinstance(target, (ast.FunctionDef, ast.AsyncFunctionDef))
+        }
+        return sorted(
+            targets,
+            key=lambda item: (
+                getattr(item[0], "lineno", 0),
+                getattr(item[0], "col_offset", 0),
+                item[0].name,
+                item[1].name if item[1] else "",
+            ),
+        )
+
+    def escaped_callable_targets(
+        value: ast.AST | None,
+        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+        current_owner: ast.ClassDef | None,
+        seen: frozenset[tuple[str, int]] = frozenset(),
+    ) -> list[
+        tuple[ast.FunctionDef | ast.AsyncFunctionDef, ast.ClassDef | None]
+    ]:
+        """Resolve only local callables contained in an escaping value."""
+        if value is None:
+            return []
+        key = ("escape", id(value))
+        if key in seen:
+            return []
+        next_seen = seen | {key}
+        targets: list[
+            tuple[ast.FunctionDef | ast.AsyncFunctionDef, ast.ClassDef | None]
+        ] = []
+
+        if isinstance(value, (ast.List, ast.Set, ast.Tuple)):
+            for item in value.elts:
+                targets.extend(
+                    escaped_callable_targets(
+                        item, current_definition, current_owner, next_seen
+                    )
+                )
+            return callable_targets_from_targets(targets)
+        if isinstance(value, ast.Dict):
+            for item in (*value.keys, *value.values):
+                targets.extend(
+                    escaped_callable_targets(
+                        item, current_definition, current_owner, next_seen
+                    )
+                )
+            return callable_targets_from_targets(targets)
+        if isinstance(value, ast.Starred):
+            return escaped_callable_targets(
+                value.value, current_definition, current_owner, next_seen
+            )
+        if isinstance(value, ast.IfExp):
+            for item in (value.body, value.orelse):
+                targets.extend(
+                    escaped_callable_targets(
+                        item, current_definition, current_owner, next_seen
+                    )
+                )
+            return callable_targets_from_targets(targets)
+        if isinstance(value, ast.NamedExpr):
+            return escaped_callable_targets(
+                value.value, current_definition, current_owner, next_seen
+            )
+        if isinstance(value, ast.Lambda):
+            references = sorted(
+                (
+                    item
+                    for item in ast.walk(value)
+                    if isinstance(item, (ast.Name, ast.Attribute))
+                    and isinstance(getattr(item, "ctx", ast.Load()), ast.Load)
+                ),
+                key=lambda item: (
+                    getattr(item, "lineno", 0),
+                    getattr(item, "col_offset", 0),
+                    ast.dump(item, include_attributes=False),
+                ),
+            )
+            for reference in references:
+                targets.extend(
+                    escaped_callable_targets(
+                        reference, current_definition, current_owner, next_seen
+                    )
+                )
+            return callable_targets_from_targets(targets)
+
+        resolved, _status = resolve_value(
+            value, current_definition, current_owner
+        )
+        targets.extend(callable_targets(resolved))
+
+        owner_name: str | None = None
+        if isinstance(value, ast.Name):
+            owner_name = value.id
+        elif isinstance(value, (ast.Attribute, ast.Subscript)):
+            owner_name = storage_owner_name(value)
+        if owner_name is not None:
+            for scope in function_scope_chain(current_definition):
+                definitions = scope_definitions.get(id(scope), {}).get(
+                    owner_name, []
+                )
+                assignments = scope_assignments.get(id(scope), {}).get(
+                    owner_name, []
+                )
+                stored_values = scope_stored_values.get(id(scope), {}).get(
+                    owner_name, []
+                )
+                is_parameter = owner_name in parameter_names(scope)
+                if not (
+                    definitions or assignments or stored_values or is_parameter
+                ):
+                    continue
+                binding_key = (f"escape-binding:{owner_name}", id(scope))
+                if binding_key not in next_seen:
+                    binding_seen = next_seen | {binding_key}
+                    for assigned, _conditional in (*assignments, *stored_values):
+                        targets.extend(
+                            escaped_callable_targets(
+                                assigned,
+                                scope,
+                                definition_class_owner(scope),
+                                binding_seen,
+                            )
+                        )
+                break
+        return callable_targets_from_targets(targets)
+
+    def callable_targets_from_targets(
+        targets: list[
+            tuple[ast.FunctionDef | ast.AsyncFunctionDef, ast.ClassDef | None]
+        ],
+    ) -> list[
+        tuple[ast.FunctionDef | ast.AsyncFunctionDef, ast.ClassDef | None]
+    ]:
+        return sorted(
+            set(targets),
+            key=lambda item: (
+                getattr(item[0], "lineno", 0),
+                getattr(item[0], "col_offset", 0),
+                item[0].name,
+                item[1].name if item[1] else "",
+            ),
+        )
+
+    def enqueue_definition(
+        target: ast.FunctionDef | ast.AsyncFunctionDef,
+        target_owner: ast.ClassDef | None,
+        state: str,
+        *,
+        escaped: bool = False,
+    ) -> None:
+        target_id = id(target)
+        if state == "unknown":
+            if escaped:
+                escaped_unknown_definitions.add(target_id)
+            else:
+                flow_unknown_definitions.add(target_id)
+        previous = visited_definitions.get(target_id)
+        if previous == "reached" or previous == state:
+            if (
+                previous == state == "unknown"
+                and not escaped
+                and target_id in visited_escape_only
+            ):
+                reprocess_flow_unknown.add(target_id)
+            else:
+                return
+        key = (target_id, state)
+        if key in queued_definitions:
+            return
+        queued_definitions.add(key)
+        queue.append((target, target_owner, state))
+
     def add_nodes(candidates: list[ast.AST], state: str) -> None:
         for candidate in candidates:
             if id(candidate) not in added:
@@ -2802,23 +3009,75 @@ def _definition_execution_nodes(
 
     while queue:
         current_definition, current_owner, current_state = queue.pop(0)
-        previous_state = visited_definitions.get(id(current_definition))
-        if previous_state == "reached" or previous_state == current_state:
+        current_id = id(current_definition)
+        queued_definitions.discard((current_id, current_state))
+        previous_state = visited_definitions.get(current_id)
+        allow_flow_reprocess = (
+            current_state == "unknown" and current_id in reprocess_flow_unknown
+        )
+        if previous_state == "reached" or (
+            previous_state == current_state and not allow_flow_reprocess
+        ):
             continue
-        visited_definitions[id(current_definition)] = current_state
+        reprocess_flow_unknown.discard(current_id)
+        escape_only = (
+            current_state == "unknown"
+            and current_id in escaped_unknown_definitions
+            and current_id not in flow_unknown_definitions
+        )
+        if escape_only:
+            visited_escape_only.add(current_id)
+        else:
+            visited_escape_only.discard(current_id)
+        visited_definitions[current_id] = current_state
         eager_nodes = _eager_execution_nodes(current_definition)
         add_nodes(eager_nodes, current_state)
 
         for node in eager_nodes:
+            if isinstance(node, (ast.Return, ast.Yield, ast.YieldFrom)):
+                for target, target_owner in escaped_callable_targets(
+                    node.value, current_definition, current_owner
+                ):
+                    enqueue_definition(
+                        target, target_owner, "unknown", escaped=True
+                    )
+            if node is not current_definition and isinstance(
+                node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+            ):
+                decorator_owner = (
+                    enclosing_class(node, current_definition) or current_owner
+                )
+                for decorator in node.decorator_list:
+                    for target, target_owner in escaped_callable_targets(
+                        decorator, current_definition, decorator_owner
+                    ):
+                        enqueue_definition(
+                            target, target_owner, "unknown", escaped=True
+                        )
             if not isinstance(node, ast.Call):
                 continue
             call_owner = enclosing_class(node, current_definition)
             targets, resolution = resolve_call(
                 node, current_definition, call_owner or current_owner
             )
-            call_resolutions[id(node)] = resolution
-            if resolution == "incomplete":
+            call_resolutions[id(node)] = (
+                "complete"
+                if resolution == "incomplete" and escape_only
+                else resolution
+            )
+            if resolution == "incomplete" and not escape_only:
                 resolution_incomplete = True
+            if resolution != "complete":
+                escaped_values = [*node.args, *(kw.value for kw in node.keywords)]
+                for escaped_value in escaped_values:
+                    for target, target_owner in escaped_callable_targets(
+                        escaped_value,
+                        current_definition,
+                        call_owner or current_owner,
+                    ):
+                        enqueue_definition(
+                            target, target_owner, "unknown", escaped=True
+                        )
             child_state = (
                 "unknown"
                 if current_state == "unknown"
@@ -2827,9 +3086,12 @@ def _definition_execution_nodes(
                 else "reached"
             )
             for target, target_owner in targets:
-                queued_state = visited_definitions.get(id(target))
-                if queued_state != "reached" and queued_state != child_state:
-                    queue.append((target, target_owner, child_state))
+                enqueue_definition(
+                    target,
+                    target_owner,
+                    child_state,
+                    escaped=escape_only and child_state == "unknown",
+                )
 
     return nodes, node_states, call_resolutions, resolution_incomplete
 

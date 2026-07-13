@@ -2,7 +2,7 @@
 
 ## Executive summary
 
-Pinned static design at `9572d994e94fae44cf7730297e7537c0901d5a78` for exactly five P541C_R2-selected methods. Three designs are implementation-ready, one requires a CTO identity decision, and one is rejected as not an adapter candidate. No selected module was imported or executed; no DB, data, runtime, network, environment, registry or lifecycle state was accessed or changed.
+Pinned static design at `9572d994e94fae44cf7730297e7537c0901d5a78` for exactly five P541C_R2-selected methods. Two designs are implementation-ready, two require CTO identity decisions, and one is rejected as not an adapter candidate. No selected module was imported or executed; no DB, data, runtime, network, environment, registry or lifecycle state was accessed or changed.
 
 ## Five-method decision table
 
@@ -10,7 +10,7 @@ Pinned static design at `9572d994e94fae44cf7730297e7537c0901d5a78` for exactly f
 |---|---|---|---:|---|
 | `tools/advanced_prediction_engine.py` | EXISTING_PARTIAL_EQUIVALENT | CTO_REVIEW_REQUIRED | no | `—` |
 | `lottery_api/models/social_wisdom_predictor.py` | EXISTING_EQUIVALENT_REUSE | LAZY_DIRECT_WRAPPER_READY | yes | `biglotto_social_wisdom_anti_popularity` |
-| `tools/quick_ml_predict.py` | EXISTING_PARTIAL_EQUIVALENT | ADAPTER_OWNED_PURE_EXTRACTION_READY | yes | `biglotto_quickml_advanced_ensemble` |
+| `tools/quick_ml_predict.py` | EXISTING_PARTIAL_EQUIVALENT | CTO_REVIEW_REQUIRED | no | `—` |
 | `tools/big_lotto_exhaustive_audit.py` | NO_EXISTING_EQUIVALENT | NOT_AN_ADAPTER_CANDIDATE | no | `—` |
 | `lottery_api/models/zone_split.py` | EXISTING_PARTIAL_EQUIVALENT | DETERMINISTIC_REIMPLEMENTATION_READY | yes | `biglotto_zone_split_3bet_bet1` |
 
@@ -45,15 +45,17 @@ Pinned static design at `9572d994e94fae44cf7730297e7537c0901d5a78` for exactly f
 ### `tools/quick_ml_predict.py`
 
 - Source identity: blob `36cf12dcef80d7f0bada22e024336eb22f8bfee5`, 11213 bytes, SHA-256 `8b7ba0b52e2dfcb7bd39997be9dbfab90a81f6e44c3fcf269ac5c9ddaa266d80`; UTF-8/AST `PASS/PASS`.
-- Decision: **ADAPTER_OWNED_PURE_EXTRACTION_READY** — The constructor's CSV read and printing cannot enter replay. The selected deterministic predict_advanced_ensemble formula can be extracted unchanged to a pure in-memory helper, including newest-first ordering and stable numeric tie order.
-- Entry point: `adapter-owned pure extraction of QuickMLPredictor.predict_advanced_ensemble(top_n=10)`.
+- Decision: **CTO_REVIEW_REQUIRED** — QuickMLPredictor.predict_advanced_ensemble is only a candidate legacy entrypoint; no canonical runtime entrypoint is approved. Its Method 9 terminal iteration always forms a two-row pattern and then reads pattern[2], so the pinned callable raises IndexError for every usable history length (at least five), including the proposed 50-row minimum. A direct crash-faithful wrapper is not a useful replay strategy, while correcting the loop boundary changes executable semantics and requires a separately identified strategy or explicit CTO approval.
+- Entry point: `UNRESOLVED / NONE`.
 - Equivalent audit: EXISTING_PARTIAL_EQUIVALENT; overlapping statistical features but not the same ten-weight QuickML formula
-- History/cutoff: Canonical oldest-to-newest history is truncated to the last 50 then reversed; this preserves legacy DataFrame.head() newest-first semantics. Every input draw must be strictly before the target draw; reject equal/future rows.
-- Randomness: predict_advanced_ensemble contains no random call; preserve ascending number tie-breaks.
-- External state/import plan: Never import or construct QuickMLPredictor in replay. Extract the selected scoring formula into the future adapter module with source/blob provenance comments.
-- Normalization/validation: list[dict] -> newest-first list[list[int]] without pandas or CSV → take ranked top six, sorted; discard confidence/top_n metadata; Pass the flat result to repository-native _validate_numbers(numbers, 'BIG_LOTTO', strategy_id): exactly six distinct integers in [1,49], sorted.
-- Parity oracle: controlled legacy oracle — future isolated parity test only, with in-memory-vs-legacy fixture conversion outside prediction; never a runtime temp CSV.
-- Blockers/CTO decisions: none.
+- History/cutoff: Source-proven observation only: DataFrame.head() treats the CSV as newest-first. This ordering observation does not establish runtime readiness or approve a canonical adapter contract. Every input draw must be strictly before the target draw; reject equal/future rows.
+- Randomness: The observed failure is deterministic; absence of random calls does not make the crashing callable implementation-ready.
+- External state/import plan: Do not import or construct QuickMLPredictor, do not create a temporary CSV, and do not implement an adapter. A corrected in-memory variant is a future, separately authorized strategy identity rather than a faithful wrapper of the pinned callable.
+- Normalization/validation: No canonical runtime input contract is approved; newest-first behavior remains a source observation only → No successful legacy ticket exists for parity; pattern[2] raises IndexError before ranking completes; Pass the flat result to repository-native _validate_numbers(numbers, 'BIG_LOTTO', strategy_id): exactly six distinct integers in [1,49], sorted.
+- Parity oracle: blocked — No successful legacy parity oracle exists. CTO must first decide whether to reject the historical identity or authorize a separately named bounds-repaired strategy and its corrected parity contract..
+- Blockers/CTO decisions: Reject the historical QuickML identity entirely; or; Authorize a separately identified bounds-repaired QuickML strategy; and; Specify the corrected loop boundary and parity contract..
+- Semantic defect evidence: Method 9 uses `range(3, len(df) - 1)`; at `i = len(df) - 2`, `df.iloc[i:i+3]` has 2 rows while `range(3)` accesses indices [0, 1, 2]. pattern[2] raises IndexError for every history length >= 5.
+- Semantic identity consequence: Clamping the loop boundary is a semantic repair, not identity-preserving extraction. The proposed minimum history of 50 cannot produce a successful legacy ticket.
 
 ### `tools/big_lotto_exhaustive_audit.py`
 
@@ -96,20 +98,23 @@ Future implementations must reuse `ReplayStrategyAdapter`, `_StrategyMeta`, `_va
 ## Implementation waves
 
 - Wave 1: `lottery_api/models/social_wisdom_predictor.py` — safe lazy direct reuse.
-- Wave 2: `tools/quick_ml_predict.py` — pure in-memory extraction and parity vectors.
-- Wave 3: `lottery_api/models/zone_split.py` — local deterministic RNG reimplementation.
-- Wave CTO: `tools/advanced_prediction_engine.py` — select exact mode/dependency identity.
+- Wave 2: `lottery_api/models/zone_split.py` — local deterministic RNG reimplementation.
+- Wave CTO: `tools/advanced_prediction_engine.py`, `tools/quick_ml_predict.py` — select Advanced mode/dependency identity and decide QuickML bounds-repair identity.
 - Wave REJECTED: `tools/big_lotto_exhaustive_audit.py` — outcome-aware audit is not a predictor.
 
 ## CTO decisions
 
 - Select one AdvancedPredictionEngine mode and decide whether optional sklearn/XGBoost availability is identity-defining or prohibited.
+- QuickML decision 1: reject the historical QuickML identity entirely; or
+- QuickML decision 2: authorize a separately identified bounds-repaired QuickML strategy; and
+- QuickML decision 3: specify the corrected loop boundary and parity contract.
 - BigLottoAuditor remains rejected; any new hot/cold predictor must have a new identity and separate authorization.
 
 ## Future test plan
 
 - Assert strictly-prior cutoff, canonical ordering, minimum history, unsupported lottery mapping and one-bet storage.
-- Run exact synthetic vectors and parity oracles for Social Wisdom and QuickML.
+- Run exact synthetic vectors and the direct parity oracle for Social Wisdom; QuickML parity remains BLOCKED because the pinned callable has no successful legacy output.
+- Preserve an order-asymmetric QuickML defect vector so newest/oldest history drift cannot be hidden by repeated draws.
 - Run ZoneSplit in separate processes and assert identical tickets, local-RNG isolation and first-zone membership.
 - Monkeypatch DB/file/env/network APIs to fail and prove prediction reaches none of them.
 - Exercise malformed, duplicate, out-of-range and deliberate no-bet outputs through canonical exceptions.

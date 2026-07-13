@@ -2,9 +2,11 @@
 import ast
 import builtins
 import copy
+import hashlib
 import inspect
 import json
 import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -248,12 +250,167 @@ def test_zone_split_has_local_deterministic_rng_design(packet):
     assert design["input_output_normalization"]["output"].startswith("first of three")
 
 
-def test_quickml_has_no_temporary_csv_plan(packet):
+def test_quickml_is_fail_closed_and_has_no_implementation_identity(packet):
     design = packet["method_designs"][2]
-    assert design["design_status"] == "ADAPTER_OWNED_PURE_EXTRACTION_READY"
+    assert design["design_status"] == "CTO_REVIEW_REQUIRED"
+    assert design["ready_for_implementation"] is False
+    assert design["equivalent_audit"]["result"] == "EXISTING_PARTIAL_EQUIVALENT"
+    assert design["candidate_legacy_entrypoint"] == "QuickMLPredictor.predict_advanced_ensemble"
+    assert design["selected_entrypoint"] is None
+    assert design["minimum_history"] == 50
+    assert design["proposed_strategy"] == {
+        "strategy_id": None,
+        "strategy_name": None,
+        "strategy_version": None,
+        "lifecycle": None,
+        "supported_lottery_types": [],
+    }
+    assert design["future_implementation_files"] == []
+
+
+def test_quickml_has_no_temporary_csv_workaround(packet):
+    design = packet["method_designs"][2]
     assert "temporary CSV" in design["external_state_and_dependencies"]["forbidden_legacy_reads"]
-    assert "Never import or construct" in design["import_safety_plan"]
-    assert "without pandas or CSV" in design["input_output_normalization"]["input"]
+    assert "constructor CSV access" in design["external_state_and_dependencies"]["forbidden_legacy_reads"]
+    assert "Do not import or construct" in design["import_safety_plan"]
+    assert "do not create a temporary CSV" in design["import_safety_plan"]
+    assert design["external_state_and_dependencies"]["prediction_reads"] == []
+
+
+def test_quickml_parity_is_blocked_and_old_success_claim_is_absent(packet):
+    design = packet["method_designs"][2]
+    assert design["parity_oracle"]["type"] == "blocked"
+    assert design["parity_oracle"]["status"] == "BLOCKED"
+    assert "No successful legacy parity oracle exists" in design["parity_oracle"]["requirement"]
+    encoded = json.dumps(design, ensure_ascii=False, sort_keys=True)
+    assert "expected_numbers" not in encoded
+    assert "quickml-repeated-low" not in encoded
+    assert "can be extracted unchanged" not in encoded
+    assert "correcting the loop boundary changes executable semantics" in design["design_rationale"]
+
+
+def test_quickml_cto_decisions_and_order_asymmetric_vector_are_explicit(packet):
+    design = packet["method_designs"][2]
+    assert design["blockers_and_cto_decisions"] == [
+        "Reject the historical QuickML identity entirely; or",
+        "Authorize a separately identified bounds-repaired QuickML strategy; and",
+        "Specify the corrected loop boundary and parity contract.",
+    ]
+    vectors = {item["id"]: item for item in design["synthetic_vectors"]}
+    assert set(vectors) == {
+        "quickml-method9-minimum-history-crash",
+        "quickml-order-asymmetric-source-observation",
+    }
+    order_input = vectors["quickml-order-asymmetric-source-observation"]["input"]
+    assert order_input["newest_row"] != order_input["middle_row"]
+    assert order_input["middle_row"] != order_input["older_row"]
+    assert "successful legacy output" in vectors["quickml-order-asymmetric-source-observation"]["expected_observation"]
+
+
+def test_quickml_method9_defect_from_pinned_source_without_import(packet):
+    mod = _module()
+    path = "tools/quick_ml_predict.py"
+    completed = subprocess.run(
+        ["git", "-C", str(REPO_ROOT), "show", f"{mod.BASE_COMMIT}:{path}"],
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    source_bytes = completed.stdout
+    assert len(source_bytes) == 11213
+    assert hashlib.sha256(source_bytes).hexdigest() == (
+        "8b7ba0b52e2dfcb7bd39997be9dbfab90a81f6e44c3fcf269ac5c9ddaa266d80"
+    )
+    tree = ast.parse(source_bytes.decode("utf-8"), filename=path)
+    method = next(
+        node
+        for node in ast.walk(tree)
+        if isinstance(node, ast.FunctionDef) and node.name == "predict_advanced_ensemble"
+    )
+    outer = next(
+        node
+        for node in ast.walk(method)
+        if isinstance(node, ast.For)
+        and isinstance(node.target, ast.Name)
+        and node.target.id == "i"
+        and ast.unparse(node.iter) == "range(3, len(self.df) - 1)"
+    )
+    pattern_assignment = next(
+        node
+        for node in outer.body
+        if isinstance(node, ast.Assign)
+        and any(isinstance(target, ast.Name) and target.id == "pattern" for target in node.targets)
+    )
+    assert ast.unparse(pattern_assignment.value) == "list(self.df.iloc[i:i + 3]['numbers_list'])"
+    inner = next(
+        node
+        for node in ast.walk(outer)
+        if isinstance(node, ast.For)
+        and isinstance(node.target, ast.Name)
+        and node.target.id == "j"
+    )
+    assert ast.unparse(inner.iter) == "range(3)"
+    assert any(
+        isinstance(node, ast.Subscript)
+        and isinstance(node.value, ast.Name)
+        and node.value.id == "pattern"
+        and isinstance(node.slice, ast.Name)
+        and node.slice.id == "j"
+        for node in ast.walk(inner)
+    )
+
+    for history_length in range(5, 101):
+        iterations = list(range(3, history_length - 1))
+        terminal_i = iterations[-1]
+        order_asymmetric_rows = [[row] for row in range(history_length)]
+        terminal_pattern = order_asymmetric_rows[terminal_i:terminal_i + 3]
+        assert terminal_i == history_length - 2
+        assert len(terminal_pattern) == 2
+        with pytest.raises(IndexError):
+            terminal_pattern[2]
+
+    evidence = packet["method_designs"][2]["semantic_defect_evidence"]
+    assert evidence["normalized_outer_loop"] == "range(3, len(df) - 1)"
+    assert evidence["terminal_iteration"] == "i = len(df) - 2"
+    assert evidence["normalized_pattern_slice"] == "df.iloc[i:i+3]"
+    assert evidence["accessed_pattern_indices"] == [0, 1, 2]
+    assert evidence["failure"] == "pattern[2] raises IndexError for every history length >= 5"
+    assert evidence["candidate_minimum_history_result"] == "cannot produce a successful legacy ticket"
+    assert "semantic repair" in evidence["semantic_identity_consequence"]
+    assert path[:-3].replace("/", ".") not in sys.modules
+
+
+def test_quickml_cannot_be_mutated_back_to_ready(packet):
+    mod = _module()
+    changed = copy.deepcopy(packet)
+    quick = changed["method_designs"][2]
+    quick["design_status"] = "ADAPTER_OWNED_PURE_EXTRACTION_READY"
+    quick["ready_for_implementation"] = True
+    quick["readiness_gates"] = {
+        "causality_resolved": True,
+        "randomness_resolved": True,
+        "external_state_resolved": True,
+        "identity_distinct": True,
+    }
+    with pytest.raises(mod.P541DR2ValidationError, match="QuickML fail-closed identity gate"):
+        mod.validate_packet(changed)
+
+
+def test_quickml_defect_evidence_cannot_disappear(packet):
+    mod = _module()
+    changed = copy.deepcopy(packet)
+    changed["method_designs"][2]["semantic_defect_evidence"] = {}
+    with pytest.raises(mod.P541DR2ValidationError, match="semantic-defect evidence missing"):
+        mod.validate_packet(changed)
+
+
+@pytest.mark.parametrize("false_claim", ["expected_numbers", "can be extracted unchanged"])
+def test_quickml_false_success_or_identity_claim_is_rejected(packet, false_claim):
+    mod = _module()
+    changed = copy.deepcopy(packet)
+    changed["method_designs"][2]["false_claim"] = false_claim
+    with pytest.raises(mod.P541DR2ValidationError, match="false success/identity claim"):
+        mod.validate_packet(changed)
 
 
 def test_advanced_optional_dependency_boundary_requires_cto(packet):
@@ -267,24 +424,39 @@ def test_advanced_optional_dependency_boundary_requires_cto(packet):
 
 def test_exact_summary_and_projections(packet):
     mod = _module()
+    assert packet["schema_version"] == "p541d-r2-adapter-design-v1"
+    assert packet["designer_version"] == "p541d-r2-designer-v2"
     assert packet["summary"] == {
         "selected_methods": 5,
         "counts_by_status": {
-            "ADAPTER_OWNED_PURE_EXTRACTION_READY": 1,
-            "CTO_REVIEW_REQUIRED": 1,
+            "ADAPTER_OWNED_PURE_EXTRACTION_READY": 0,
+            "CTO_REVIEW_REQUIRED": 2,
             "DETERMINISTIC_REIMPLEMENTATION_READY": 1,
             "LAZY_DIRECT_WRAPPER_READY": 1,
             "NOT_AN_ADAPTER_CANDIDATE": 1,
         },
-        "implementation_ready_count": 3,
-        "cto_review_count": 1,
+        "implementation_ready_count": 2,
+        "cto_review_count": 2,
         "rejected_count": 1,
     }
     assert packet["projections"] == {
-        "implementation_ready": mod.SELECTED_PATHS[1:3] + [mod.SELECTED_PATHS[4]],
-        "cto_review": [mod.SELECTED_PATHS[0]],
+        "implementation_ready": [mod.SELECTED_PATHS[1], mod.SELECTED_PATHS[4]],
+        "cto_review": [mod.SELECTED_PATHS[0], mod.SELECTED_PATHS[2]],
         "rejected": [mod.SELECTED_PATHS[3]],
     }
+    assert [item["design_status"] for item in packet["method_designs"]] == [
+        "CTO_REVIEW_REQUIRED",
+        "LAZY_DIRECT_WRAPPER_READY",
+        "CTO_REVIEW_REQUIRED",
+        "NOT_AN_ADAPTER_CANDIDATE",
+        "DETERMINISTIC_REIMPLEMENTATION_READY",
+    ]
+    quick_waves = [
+        wave["wave"]
+        for wave in packet["implementation_sequencing"]
+        if mod.SELECTED_PATHS[2] in wave["methods"]
+    ]
+    assert quick_waves == ["CTO"]
 
 
 def test_canonical_adapter_contract_is_reused(packet):
@@ -311,9 +483,11 @@ def test_json_markdown_agree(packet):
         strategy_id = design["proposed_strategy"]["strategy_id"]
         if strategy_id:
             assert strategy_id in markdown
-    assert "Three designs are implementation-ready" in markdown
-    assert "one requires a CTO identity decision" in markdown
+    assert "Two designs are implementation-ready" in markdown
+    assert "two require CTO identity decisions" in markdown
     assert "one is rejected" in markdown
+    assert "pattern[2] raises IndexError for every history length >= 5" in markdown
+    assert "QuickML parity remains BLOCKED" in markdown
     assert packet["disclaimer"] in markdown
 
 

@@ -19,7 +19,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 BASE_COMMIT = "9572d994e94fae44cf7730297e7537c0901d5a78"
 TASK_ID = "P541D_R2_BIG_LOTTO_SELECTED_METHOD_ADAPTER_DESIGN_NO_DB_WRITE"
 SCHEMA_VERSION = "p541d-r2-adapter-design-v1"
-DESIGNER_VERSION = "p541d-r2-designer-v1"
+DESIGNER_VERSION = "p541d-r2-designer-v2"
 GENERATED_AT = "2026-07-13T00:00:00+00:00"
 
 UPSTREAM_PATH = (
@@ -265,7 +265,7 @@ SOURCE_SEMANTICS = {
     "tools/quick_ml_predict.py": {
         "input_shape": "constructor CSV DataFrame with numbers column, newest rows first",
         "output_shape": "dict containing numbers, method, confidence, top_probabilities and details",
-        "causal_history_requirements": "future extraction must accept in-memory tail(50), normalized newest-first",
+        "causal_history_requirements": "source head/slice operations show newest-first ordering, but the Method 9 bounds defect blocks runtime readiness",
     },
     "tools/big_lotto_exhaustive_audit.py": {
         "input_shape": "CSV-backed full draw history plus window and num_bets",
@@ -504,7 +504,7 @@ def build_method_designs(shortlist: list[dict[str, Any]]) -> list[dict[str, Any]
         "shape/range/duplicate/type failure": "InvalidOutput",
         "unexpected failure": "propagate for caller mapping to REPLAY_ERROR",
     }
-    return [
+    designs = [
         _common_design(
             SELECTED_PATHS[0], provenance[SELECTED_PATHS[0]],
             "EXISTING_PARTIAL_EQUIVALENT",
@@ -564,25 +564,45 @@ def build_method_designs(shortlist: list[dict[str, Any]]) -> list[dict[str, Any]
             SELECTED_PATHS[2], provenance[SELECTED_PATHS[2]],
             "EXISTING_PARTIAL_EQUIVALENT",
             [{"path": "tools/advanced_prediction_engine.py", "finding": "overlapping statistical features but not the same ten-weight QuickML formula"}],
-            "ADAPTER_OWNED_PURE_EXTRACTION_READY",
-            "The constructor's CSV read and printing cannot enter replay. The selected deterministic predict_advanced_ensemble formula can be extracted unchanged to a pure in-memory helper, including newest-first ordering and stable numeric tie order.",
-            "biglotto_quickml_advanced_ensemble",
-            "大樂透 QuickML Advanced Ensemble",
-            "adapter-owned pure extraction of QuickMLPredictor.predict_advanced_ensemble(top_n=10)",
+            "CTO_REVIEW_REQUIRED",
+            "QuickMLPredictor.predict_advanced_ensemble is only a candidate legacy entrypoint; no canonical runtime entrypoint is approved. Its Method 9 terminal iteration always forms a two-row pattern and then reads pattern[2], so the pinned callable raises IndexError for every usable history length (at least five), including the proposed 50-row minimum. A direct crash-faithful wrapper is not a useful replay strategy, while correcting the loop boundary changes executable semantics and requires a separately identified strategy or explicit CTO approval.",
+            None,
+            None,
+            None,
             ["QuickMLPredictor.__init__", "QuickMLPredictor.predict_advanced_ensemble", "QuickMLPredictor.predict_smart_hybrid"],
             50,
-            "Canonical oldest-to-newest history is truncated to the last 50 then reversed; this preserves legacy DataFrame.head() newest-first semantics.",
+            "Source-proven observation only: DataFrame.head() treats the CSV as newest-first. This ordering observation does not establish runtime readiness or approve a canonical adapter contract.",
             ["draw", "date", "numbers"],
-            {"present": False, "deterministic": True, "contract": "predict_advanced_ensemble contains no random call; preserve ascending number tie-breaks."},
-            {"prediction_reads": ["in-memory history"], "forbidden_legacy_reads": ["pd.read_csv in constructor", "temporary CSV"], "dependencies": ["stdlib-only extraction preferred"]},
-            "Never import or construct QuickMLPredictor in replay. Extract the selected scoring formula into the future adapter module with source/blob provenance comments.",
-            {"input": "list[dict] -> newest-first list[list[int]] without pandas or CSV", "output": "take ranked top six, sorted; discard confidence/top_n metadata"},
+            {"present": False, "deterministic": True, "contract": "The observed failure is deterministic; absence of random calls does not make the crashing callable implementation-ready."},
+            {"prediction_reads": [], "forbidden_legacy_reads": ["pd.read_csv in constructor", "constructor CSV access", "temporary CSV"], "dependencies": ["pandas and numpy in the prohibited legacy execution path"]},
+            "Do not import or construct QuickMLPredictor, do not create a temporary CSV, and do not implement an adapter. A corrected in-memory variant is a future, separately authorized strategy identity rather than a faithful wrapper of the pinned callable.",
+            {"input": "No canonical runtime input contract is approved; newest-first behavior remains a source observation only", "output": "No successful legacy ticket exists for parity; pattern[2] raises IndexError before ranking completes"},
             common_exceptions,
-            {"type": "controlled legacy oracle", "callable": "QuickMLPredictor.predict_advanced_ensemble", "comparison": "future isolated parity test only, with in-memory-vs-legacy fixture conversion outside prediction; never a runtime temp CSV"},
-            [{"id": "quickml-repeated-low", "input": "50 newest-first draws each [1,2,3,4,5,6]", "expected_numbers": [1, 2, 3, 4, 5, 6]}],
-            ["lottery_api/models/p541d_r2_biglotto_selected_adapters.py", "tests/test_p541d_r2_biglotto_selected_adapters.py"],
+            {"type": "blocked", "status": "BLOCKED", "callable": "QuickMLPredictor.predict_advanced_ensemble", "requirement": "No successful legacy parity oracle exists. CTO must first decide whether to reject the historical identity or authorize a separately named bounds-repaired strategy and its corrected parity contract."},
+            [
+                {
+                    "id": "quickml-method9-minimum-history-crash",
+                    "input": "50 order-asymmetric newest-first rows, with distinct row contents so ordering cannot be hidden",
+                    "expected_failure": "The pinned callable reaches terminal i=48, obtains a two-row pattern slice, and raises IndexError at pattern[2]",
+                    "purpose": "defect witness only; not a successful parity vector",
+                },
+                {
+                    "id": "quickml-order-asymmetric-source-observation",
+                    "input": {
+                        "newest_row": [1, 7, 13, 19, 25, 31],
+                        "middle_row": [2, 8, 14, 20, 26, 32],
+                        "older_row": [3, 9, 15, 21, 27, 33],
+                    },
+                    "expected_observation": "head(3) preserves this newest-to-older order; it does not supply a successful legacy output",
+                },
+            ],
             [],
-            {"causality_resolved": True, "randomness_resolved": True, "external_state_resolved": True, "identity_distinct": True},
+            [
+                "Reject the historical QuickML identity entirely; or",
+                "Authorize a separately identified bounds-repaired QuickML strategy; and",
+                "Specify the corrected loop boundary and parity contract.",
+            ],
+            {"causality_resolved": False, "randomness_resolved": False, "external_state_resolved": False, "identity_distinct": False},
         ),
         _common_design(
             SELECTED_PATHS[3], provenance[SELECTED_PATHS[3]],
@@ -639,6 +659,25 @@ def build_method_designs(shortlist: list[dict[str, Any]]) -> list[dict[str, Any]
             {"causality_resolved": True, "randomness_resolved": True, "external_state_resolved": True, "identity_distinct": True},
         ),
     ]
+    quick = designs[2]
+    quick["candidate_legacy_entrypoint"] = "QuickMLPredictor.predict_advanced_ensemble"
+    quick["proposed_strategy"]["lifecycle"] = None
+    quick["semantic_defect_evidence"] = {
+        "analysis_method": "independent AST inspection plus a pandas-free list-slice bounds witness",
+        "source_outer_loop": "range(3, len(self.df) - 1)",
+        "normalized_outer_loop": "range(3, len(df) - 1)",
+        "terminal_iteration": "i = len(df) - 2",
+        "source_pattern_slice": "self.df.iloc[i:i+3]",
+        "normalized_pattern_slice": "df.iloc[i:i+3]",
+        "terminal_slice_row_count": 2,
+        "inner_loop": "range(3)",
+        "accessed_pattern_indices": [0, 1, 2],
+        "failure": "pattern[2] raises IndexError for every history length >= 5",
+        "candidate_minimum_history": 50,
+        "candidate_minimum_history_result": "cannot produce a successful legacy ticket",
+        "semantic_identity_consequence": "Clamping the loop boundary is a semantic repair, not identity-preserving extraction.",
+    }
+    return designs
 
 
 def validate_upstream(upstream: dict[str, Any]) -> list[dict[str, Any]]:
@@ -727,9 +766,8 @@ def build_packet(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
         },
         "implementation_sequencing": [
             {"wave": 1, "methods": [SELECTED_PATHS[1]], "reason": "safe lazy direct reuse"},
-            {"wave": 2, "methods": [SELECTED_PATHS[2]], "reason": "pure in-memory extraction and parity vectors"},
-            {"wave": 3, "methods": [SELECTED_PATHS[4]], "reason": "local deterministic RNG reimplementation"},
-            {"wave": "CTO", "methods": [SELECTED_PATHS[0]], "reason": "select exact mode/dependency identity"},
+            {"wave": 2, "methods": [SELECTED_PATHS[4]], "reason": "local deterministic RNG reimplementation"},
+            {"wave": "CTO", "methods": [SELECTED_PATHS[0], SELECTED_PATHS[2]], "reason": "select Advanced mode/dependency identity and decide QuickML bounds-repair identity"},
             {"wave": "REJECTED", "methods": [SELECTED_PATHS[3]], "reason": "outcome-aware audit is not a predictor"},
         ],
         "no_db_no_execution_evidence": {
@@ -810,15 +848,67 @@ def validate_packet(packet: dict[str, Any]) -> None:
     quick = by_path[SELECTED_PATHS[2]]
     if "temporary CSV" not in quick["external_state_and_dependencies"]["forbidden_legacy_reads"]:
         raise P541DR2ValidationError("QuickML no-temp-CSV gate failed")
+    quick_strategy = quick.get("proposed_strategy", {})
+    quick_evidence = quick.get("semantic_defect_evidence", {})
+    quick_parity = quick.get("parity_oracle", {})
+    if (
+        quick.get("design_status") != "CTO_REVIEW_REQUIRED"
+        or quick.get("ready_for_implementation") is not False
+        or quick.get("equivalent_audit", {}).get("result") != "EXISTING_PARTIAL_EQUIVALENT"
+        or quick.get("candidate_legacy_entrypoint") != "QuickMLPredictor.predict_advanced_ensemble"
+        or quick.get("selected_entrypoint") is not None
+    ):
+        raise P541DR2ValidationError("QuickML fail-closed identity gate failed")
+    if (
+        quick_strategy.get("strategy_id") is not None
+        or quick_strategy.get("strategy_name") is not None
+        or quick_strategy.get("strategy_version") is not None
+        or quick_strategy.get("lifecycle") is not None
+        or quick.get("future_implementation_files")
+    ):
+        raise P541DR2ValidationError("QuickML implementation authorization gate failed")
+    if quick_parity.get("type") != "blocked" or quick_parity.get("status") != "BLOCKED":
+        raise P541DR2ValidationError("QuickML parity must remain blocked")
+    if not quick.get("blockers_and_cto_decisions"):
+        raise P541DR2ValidationError("QuickML CTO decisions required")
+    expected_evidence = {
+        "source_outer_loop": "range(3, len(self.df) - 1)",
+        "normalized_outer_loop": "range(3, len(df) - 1)",
+        "terminal_iteration": "i = len(df) - 2",
+        "source_pattern_slice": "self.df.iloc[i:i+3]",
+        "normalized_pattern_slice": "df.iloc[i:i+3]",
+        "terminal_slice_row_count": 2,
+        "inner_loop": "range(3)",
+        "accessed_pattern_indices": [0, 1, 2],
+        "failure": "pattern[2] raises IndexError for every history length >= 5",
+        "candidate_minimum_history": 50,
+        "candidate_minimum_history_result": "cannot produce a successful legacy ticket",
+    }
+    if any(quick_evidence.get(key) != value for key, value in expected_evidence.items()):
+        raise P541DR2ValidationError("QuickML semantic-defect evidence missing")
+    quick_text = json.dumps(quick, ensure_ascii=False, sort_keys=True)
+    if "expected_numbers" in quick_text or "can be extracted unchanged" in quick_text:
+        raise P541DR2ValidationError("QuickML false success/identity claim")
     ready = [item["method_id"] for item in designs if item["ready_for_implementation"]]
     cto = [item["method_id"] for item in designs if item["design_status"] == "CTO_REVIEW_REQUIRED"]
     rejected = [item["method_id"] for item in designs if item["design_status"] == "NOT_AN_ADAPTER_CANDIDATE"]
     if packet.get("projections") != {"implementation_ready": ready, "cto_review": cto, "rejected": rejected}:
         raise P541DR2ValidationError("projection mismatch")
-    if packet.get("summary", {}).get("implementation_ready_count") != 3:
-        raise P541DR2ValidationError("implementation-ready projection must be 3")
-    if packet["summary"].get("cto_review_count") != 1 or packet["summary"].get("rejected_count") != 1:
+    if ready != [SELECTED_PATHS[1], SELECTED_PATHS[4]]:
+        raise P541DR2ValidationError("implementation-ready projection must contain exactly Social Wisdom and ZoneSplit")
+    if cto != [SELECTED_PATHS[0], SELECTED_PATHS[2]]:
+        raise P541DR2ValidationError("CTO projection must contain exactly Advanced and QuickML")
+    if packet.get("summary", {}).get("implementation_ready_count") != 2:
+        raise P541DR2ValidationError("implementation-ready projection must be 2")
+    if packet["summary"].get("cto_review_count") != 2 or packet["summary"].get("rejected_count") != 1:
         raise P541DR2ValidationError("CTO/rejected projection mismatch")
+    quick_waves = [
+        wave.get("wave")
+        for wave in packet.get("implementation_sequencing", [])
+        if SELECTED_PATHS[2] in wave.get("methods", [])
+    ]
+    if quick_waves != ["CTO"]:
+        raise P541DR2ValidationError("QuickML must appear only in the CTO decision wave")
     if packet.get("disclaimer") != DISCLAIMER or any(item.get("disclaimer") != DISCLAIMER for item in designs):
         raise P541DR2ValidationError("disclaimer mismatch")
 
@@ -833,7 +923,7 @@ def render_markdown(packet: dict[str, Any]) -> str:
         "## Executive summary",
         "",
         f"Pinned static design at `{packet['base']['commit']}` for exactly five P541C_R2-selected methods. "
-        "Three designs are implementation-ready, one requires a CTO identity decision, and one is rejected as not an adapter candidate. "
+        "Two designs are implementation-ready, two require CTO identity decisions, and one is rejected as not an adapter candidate. "
         "No selected module was imported or executed; no DB, data, runtime, network, environment, registry or lifecycle state was accessed or changed.",
         "",
         "## Five-method decision table",
@@ -867,6 +957,13 @@ def render_markdown(packet: dict[str, Any]) -> str:
                 "",
             ]
         )
+        defect = design.get("semantic_defect_evidence")
+        if defect:
+            lines[-1:] = [
+                f"- Semantic defect evidence: Method 9 uses `{defect['normalized_outer_loop']}`; at `{defect['terminal_iteration']}`, `{defect['normalized_pattern_slice']}` has {defect['terminal_slice_row_count']} rows while `{defect['inner_loop']}` accesses indices {defect['accessed_pattern_indices']}. {defect['failure']}.",
+                f"- Semantic identity consequence: {defect['semantic_identity_consequence']} The proposed minimum history of {defect['candidate_minimum_history']} {defect['candidate_minimum_history_result']}.",
+                "",
+            ]
     lines.extend(["## Duplicate/equivalent findings", ""])
     for design in designs:
         lines.append(f"- `{design['source_path']}` — {design['equivalent_audit']['result']}: " + "; ".join(f"`{item['path']}` ({item['finding']})" for item in design["equivalent_audit"]["evidence"]))
@@ -889,12 +986,16 @@ def render_markdown(packet: dict[str, Any]) -> str:
             "## CTO decisions",
             "",
             "- Select one AdvancedPredictionEngine mode and decide whether optional sklearn/XGBoost availability is identity-defining or prohibited.",
+            "- QuickML decision 1: reject the historical QuickML identity entirely; or",
+            "- QuickML decision 2: authorize a separately identified bounds-repaired QuickML strategy; and",
+            "- QuickML decision 3: specify the corrected loop boundary and parity contract.",
             "- BigLottoAuditor remains rejected; any new hot/cold predictor must have a new identity and separate authorization.",
             "",
             "## Future test plan",
             "",
             "- Assert strictly-prior cutoff, canonical ordering, minimum history, unsupported lottery mapping and one-bet storage.",
-            "- Run exact synthetic vectors and parity oracles for Social Wisdom and QuickML.",
+            "- Run exact synthetic vectors and the direct parity oracle for Social Wisdom; QuickML parity remains BLOCKED because the pinned callable has no successful legacy output.",
+            "- Preserve an order-asymmetric QuickML defect vector so newest/oldest history drift cannot be hidden by repeated draws.",
             "- Run ZoneSplit in separate processes and assert identical tickets, local-RNG isolation and first-zone membership.",
             "- Monkeypatch DB/file/env/network APIs to fail and prove prediction reaches none of them.",
             "- Exercise malformed, duplicate, out-of-range and deliberate no-bet outputs through canonical exceptions.",

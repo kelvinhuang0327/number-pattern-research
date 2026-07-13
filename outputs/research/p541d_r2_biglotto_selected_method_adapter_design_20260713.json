@@ -42,7 +42,7 @@
       "sha256": "569f85988cec49e55c0b429f093fabaad93ff9036506cac29ebf052bb1d10995"
     }
   ],
-  "designer_version": "p541d-r2-designer-v1",
+  "designer_version": "p541d-r2-designer-v2",
   "disclaimer": "Static adapter-design research only; not a runtime adapter, replay result, production-readiness claim, prediction, betting edge, or betting advice. Lottery outcomes remain random; this material is for research and entertainment only.",
   "implementation_sequencing": [
     {
@@ -54,23 +54,17 @@
     },
     {
       "methods": [
-        "tools/quick_ml_predict.py"
+        "lottery_api/models/zone_split.py"
       ],
-      "reason": "pure in-memory extraction and parity vectors",
+      "reason": "local deterministic RNG reimplementation",
       "wave": 2
     },
     {
       "methods": [
-        "lottery_api/models/zone_split.py"
+        "tools/advanced_prediction_engine.py",
+        "tools/quick_ml_predict.py"
       ],
-      "reason": "local deterministic RNG reimplementation",
-      "wave": 3
-    },
-    {
-      "methods": [
-        "tools/advanced_prediction_engine.py"
-      ],
-      "reason": "select exact mode/dependency identity",
+      "reason": "select Advanced mode/dependency identity and decide QuickML bounds-repair identity",
       "wave": "CTO"
     },
     {
@@ -338,14 +332,19 @@
       ]
     },
     {
-      "blockers_and_cto_decisions": [],
+      "blockers_and_cto_decisions": [
+        "Reject the historical QuickML identity entirely; or",
+        "Authorize a separately identified bounds-repaired QuickML strategy; and",
+        "Specify the corrected loop boundary and parity contract."
+      ],
+      "candidate_legacy_entrypoint": "QuickMLPredictor.predict_advanced_ensemble",
       "causal_cutoff": "Every input draw must be strictly before the target draw; reject equal/future rows.",
       "deferred_registry_lifecycle_changes": [
         "No registry entry in this task or implied by this design.",
         "Lifecycle assignment, replay generation, promotion and ONLINE status require separate authorization."
       ],
-      "design_rationale": "The constructor's CSV read and printing cannot enter replay. The selected deterministic predict_advanced_ensemble formula can be extracted unchanged to a pure in-memory helper, including newest-first ordering and stable numeric tie order.",
-      "design_status": "ADAPTER_OWNED_PURE_EXTRACTION_READY",
+      "design_rationale": "QuickMLPredictor.predict_advanced_ensemble is only a candidate legacy entrypoint; no canonical runtime entrypoint is approved. Its Method 9 terminal iteration always forms a two-row pattern and then reads pattern[2], so the pinned callable raises IndexError for every usable history length (at least five), including the proposed 50-row minimum. A direct crash-faithful wrapper is not a useful replay strategy, while correcting the loop boundary changes executable semantics and requires a separately identified strategy or explicit CTO approval.",
+      "design_status": "CTO_REVIEW_REQUIRED",
       "disclaimer": "Static adapter-design research only; not a runtime adapter, replay result, production-readiness claim, prediction, betting edge, or betting advice. Lottery outcomes remain random; this material is for research and entertainment only.",
       "equivalent_audit": {
         "distinct_identity_proven": true,
@@ -366,25 +365,21 @@
       },
       "external_state_and_dependencies": {
         "dependencies": [
-          "stdlib-only extraction preferred"
+          "pandas and numpy in the prohibited legacy execution path"
         ],
         "forbidden_legacy_reads": [
           "pd.read_csv in constructor",
+          "constructor CSV access",
           "temporary CSV"
         ],
-        "prediction_reads": [
-          "in-memory history"
-        ]
+        "prediction_reads": []
       },
-      "future_implementation_files": [
-        "lottery_api/models/p541d_r2_biglotto_selected_adapters.py",
-        "tests/test_p541d_r2_biglotto_selected_adapters.py"
-      ],
-      "history_ordering": "Canonical oldest-to-newest history is truncated to the last 50 then reversed; this preserves legacy DataFrame.head() newest-first semantics.",
-      "import_safety_plan": "Never import or construct QuickMLPredictor in replay. Extract the selected scoring formula into the future adapter module with source/blob provenance comments.",
+      "future_implementation_files": [],
+      "history_ordering": "Source-proven observation only: DataFrame.head() treats the CSV as newest-first. This ordering observation does not establish runtime readiness or approve a canonical adapter contract.",
+      "import_safety_plan": "Do not import or construct QuickMLPredictor, do not create a temporary CSV, and do not implement an adapter. A corrected in-memory variant is a future, separately authorized strategy identity rather than a faithful wrapper of the pinned callable.",
       "input_output_normalization": {
-        "input": "list[dict] -> newest-first list[list[int]] without pandas or CSV",
-        "output": "take ranked top six, sorted; discard confidence/top_n metadata"
+        "input": "No canonical runtime input contract is approved; newest-first behavior remains a source observation only",
+        "output": "No successful legacy ticket exists for parity; pattern[2] raises IndexError before ranking completes"
       },
       "legacy_entrypoints": [
         "QuickMLPredictor.__init__",
@@ -412,30 +407,29 @@
       },
       "parity_oracle": {
         "callable": "QuickMLPredictor.predict_advanced_ensemble",
-        "comparison": "future isolated parity test only, with in-memory-vs-legacy fixture conversion outside prediction; never a runtime temp CSV",
-        "type": "controlled legacy oracle"
+        "requirement": "No successful legacy parity oracle exists. CTO must first decide whether to reject the historical identity or authorize a separately named bounds-repaired strategy and its corrected parity contract.",
+        "status": "BLOCKED",
+        "type": "blocked"
       },
       "proposed_strategy": {
-        "lifecycle": "DEFERRED_NOT_REGISTERED",
-        "strategy_id": "biglotto_quickml_advanced_ensemble",
-        "strategy_name": "大樂透 QuickML Advanced Ensemble",
-        "strategy_version": "v0.1-design",
-        "supported_lottery_types": [
-          "BIG_LOTTO"
-        ]
+        "lifecycle": null,
+        "strategy_id": null,
+        "strategy_name": null,
+        "strategy_version": null,
+        "supported_lottery_types": []
       },
       "randomness_and_seed_contract": {
-        "contract": "predict_advanced_ensemble contains no random call; preserve ascending number tie-breaks.",
+        "contract": "The observed failure is deterministic; absence of random calls does not make the crashing callable implementation-ready.",
         "deterministic": true,
         "present": false
       },
       "readiness_gates": {
-        "causality_resolved": true,
-        "external_state_resolved": true,
-        "identity_distinct": true,
-        "randomness_resolved": true
+        "causality_resolved": false,
+        "external_state_resolved": false,
+        "identity_distinct": false,
+        "randomness_resolved": false
       },
-      "ready_for_implementation": true,
+      "ready_for_implementation": false,
       "rejection_and_insufficient_history": {
         "deliberate_no_bet": "Raise RejectPrediction with a stable reason.",
         "insufficient_history": "Raise InsufficientHistory before strategy logic.",
@@ -446,22 +440,65 @@
         "date",
         "numbers"
       ],
-      "selected_entrypoint": "adapter-owned pure extraction of QuickMLPredictor.predict_advanced_ensemble(top_n=10)",
+      "selected_entrypoint": null,
+      "semantic_defect_evidence": {
+        "accessed_pattern_indices": [
+          0,
+          1,
+          2
+        ],
+        "analysis_method": "independent AST inspection plus a pandas-free list-slice bounds witness",
+        "candidate_minimum_history": 50,
+        "candidate_minimum_history_result": "cannot produce a successful legacy ticket",
+        "failure": "pattern[2] raises IndexError for every history length >= 5",
+        "inner_loop": "range(3)",
+        "normalized_outer_loop": "range(3, len(df) - 1)",
+        "normalized_pattern_slice": "df.iloc[i:i+3]",
+        "semantic_identity_consequence": "Clamping the loop boundary is a semantic repair, not identity-preserving extraction.",
+        "source_outer_loop": "range(3, len(self.df) - 1)",
+        "source_pattern_slice": "self.df.iloc[i:i+3]",
+        "terminal_iteration": "i = len(df) - 2",
+        "terminal_slice_row_count": 2
+      },
       "six_number_validation": "Pass the flat result to repository-native _validate_numbers(numbers, 'BIG_LOTTO', strategy_id): exactly six distinct integers in [1,49], sorted.",
       "source_path": "tools/quick_ml_predict.py",
       "special_number_behavior": "Return None; BIG_LOTTO special number is not predicted by replay v0.1.",
       "synthetic_vectors": [
         {
-          "expected_numbers": [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6
-          ],
-          "id": "quickml-repeated-low",
-          "input": "50 newest-first draws each [1,2,3,4,5,6]"
+          "expected_failure": "The pinned callable reaches terminal i=48, obtains a two-row pattern slice, and raises IndexError at pattern[2]",
+          "id": "quickml-method9-minimum-history-crash",
+          "input": "50 order-asymmetric newest-first rows, with distinct row contents so ordering cannot be hidden",
+          "purpose": "defect witness only; not a successful parity vector"
+        },
+        {
+          "expected_observation": "head(3) preserves this newest-to-older order; it does not supply a successful legacy output",
+          "id": "quickml-order-asymmetric-source-observation",
+          "input": {
+            "middle_row": [
+              2,
+              8,
+              14,
+              20,
+              26,
+              32
+            ],
+            "newest_row": [
+              1,
+              7,
+              13,
+              19,
+              25,
+              31
+            ],
+            "older_row": [
+              3,
+              9,
+              15,
+              21,
+              27,
+              33
+            ]
+          }
         }
       ]
     },
@@ -729,11 +766,11 @@
   },
   "projections": {
     "cto_review": [
-      "tools/advanced_prediction_engine.py"
+      "tools/advanced_prediction_engine.py",
+      "tools/quick_ml_predict.py"
     ],
     "implementation_ready": [
       "lottery_api/models/social_wisdom_predictor.py",
-      "tools/quick_ml_predict.py",
       "lottery_api/models/zone_split.py"
     ],
     "rejected": [
@@ -890,7 +927,7 @@
       "ast_parse": "PASS",
       "broad_exception_handlers": [],
       "byte_size": 11213,
-      "causal_history_requirements": "future extraction must accept in-memory tail(50), normalized newest-first",
+      "causal_history_requirements": "source head/slice operations show newest-first ordering, but the Method 9 bounds defect blocks runtime readiness",
       "classes": [
         {
           "methods": [
@@ -1067,14 +1104,14 @@
   },
   "summary": {
     "counts_by_status": {
-      "ADAPTER_OWNED_PURE_EXTRACTION_READY": 1,
-      "CTO_REVIEW_REQUIRED": 1,
+      "ADAPTER_OWNED_PURE_EXTRACTION_READY": 0,
+      "CTO_REVIEW_REQUIRED": 2,
       "DETERMINISTIC_REIMPLEMENTATION_READY": 1,
       "LAZY_DIRECT_WRAPPER_READY": 1,
       "NOT_AN_ADAPTER_CANDIDATE": 1
     },
-    "cto_review_count": 1,
-    "implementation_ready_count": 3,
+    "cto_review_count": 2,
+    "implementation_ready_count": 2,
     "rejected_count": 1,
     "selected_methods": 5
   },

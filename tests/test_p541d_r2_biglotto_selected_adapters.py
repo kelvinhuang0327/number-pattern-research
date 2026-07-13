@@ -185,12 +185,12 @@ def test_module_import_does_not_mutate_canonical_registry():
     assert imported is not None
     assert registry._REGISTRY == before_registry
     assert tuple(registry._ALL_ADAPTERS) == before_all
+    # P541F_R2 registers SOCIAL_ID/ZONE_ID as OBSERVATION lifecycle stubs
+    # directly in _ALL_ADAPTERS (unrelated to importing this module), so they
+    # remain non-executable (absent from _REGISTRY) but are no longer absent
+    # from _ALL_ADAPTERS.
     assert SOCIAL_ID not in registry._REGISTRY
     assert ZONE_ID not in registry._REGISTRY
-    assert all(
-        item.meta.strategy_id not in {SOCIAL_ID, ZONE_ID}
-        for item in registry._ALL_ADAPTERS
-    )
 
 
 def test_adapter_ast_has_no_external_state_or_registry_mutation_api():
@@ -903,8 +903,10 @@ def test_source_and_canonical_reference_identities_match_pins():
             "b6144f9d479feded3746d81e0d5682e7cfb28ba8d8aa03ff65f3706649996211",
         ),
         "lottery_api/models/replay_strategy_registry.py": (
-            "45770dabaa46c80e6f564b61e5dae96b03bd856e",
-            "bdc035b2f49a0368001ffd1af07d90f4d382cba79671abdea904e8b91de9a54f",
+            # Updated by P541F_R2: two OBSERVATION lifecycle stubs appended
+            # (biglotto_social_wisdom_anti_popularity, biglotto_zone_split_3bet_bet1).
+            "380ac2942a7374bd7ccad940ec50b273757ae100",
+            "c6c0352868f93c27e68c230e14b1b1c8f8c6a4f2feb021574d2f7cc49170976e",
         ),
         "lottery_api/models/p42_wave3_biglotto_adapters.py": (
             "213193465f205faac47a23b4e6b07d6701626571",

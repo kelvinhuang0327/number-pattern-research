@@ -686,6 +686,22 @@ _NON_EXECUTABLE_STUBS: List[_LifecycleStub] = [
         supported_lottery_types=["POWER_LOTTO"],
         status="OBSERVATION",
     ),
+    _LifecycleStub(
+        strategy_id="biglotto_social_wisdom_anti_popularity",
+        strategy_name="大樂透 Social Wisdom Anti-Popularity",
+        strategy_version="v0.1",
+        supported_lottery_types=["BIG_LOTTO"],
+        min_history=1,
+        status="OBSERVATION",
+    ),
+    _LifecycleStub(
+        strategy_id="biglotto_zone_split_3bet_bet1",
+        strategy_name="大樂透 Zone Split 3注（Replay Bet 1）",
+        strategy_version="v0.1",
+        supported_lottery_types=["BIG_LOTTO"],
+        min_history=1,
+        status="OBSERVATION",
+    ),
 ]
 
 

@@ -24,7 +24,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 TASK_ID = "P541B_R2_BIG_LOTTO_LEGACY_METHOD_CLASSIFICATION_AUDIT"
 SCHEMA_VERSION = "p541b-r2-evidence-v1"
-DETECTOR_VERSION = "p541b-r2-detector-v7"
+DETECTOR_VERSION = "p541b-r2-detector-v8"
 CANONICAL_RUNTIME_IMPLEMENTATION = "CPython"
 CANONICAL_RUNTIME_VERSION = "3.9.6"
 BASE_MAIN_COMMIT = "c50137583243d4f9f4915a3e1d9babee50b5bbd7"
@@ -2405,29 +2405,46 @@ def _definition_execution_nodes(
     module_classes: dict[str, ast.ClassDef] | None = None,
 ) -> tuple[list[ast.AST], dict[int, str], dict[int, str], bool]:
     """Expand nested callables with lexical scope and explicit resolution state."""
+    module_functions = module_functions or {}
+    module_classes = module_classes or {}
     parents = _ast_parent_map(definition)
     nodes: list[ast.AST] = []
     added: set[int] = set()
     node_states: dict[int, str] = {}
     call_resolutions: dict[int, str] = {}
     resolution_incomplete = False
-    module_functions = module_functions or {}
-    module_classes = module_classes or {}
-    queue: list[
-        tuple[ast.FunctionDef | ast.AsyncFunctionDef, ast.ClassDef | None, str]
-    ] = [(definition, owner_class, "reached")]
-    queued_definitions: set[tuple[int, str]] = {(id(definition), "reached")}
-    visited_definitions: dict[int, str] = {}
-    escaped_unknown_definitions: set[int] = set()
-    flow_unknown_definitions: set[int] = set()
-    visited_escape_only: set[int] = set()
-    reprocess_flow_unknown: set[int] = set()
+    queue: list[tuple[Any, ...]] = []
+    queued_definitions: set[tuple[Any, ...]] = set()
+    visited_definitions: set[tuple[Any, ...]] = set()
 
-    scope_definitions: dict[int, dict[str, list[ast.AST]]] = {}
-    scope_assignments: dict[int, dict[str, list[tuple[ast.AST, bool]]]] = {}
-    scope_stored_values: dict[
-        int, dict[str, list[tuple[ast.AST, bool]]]
+    # Bindings are scoped by the exact lexical definition identity.  Each
+    # formal retains a deterministic set of possible values plus independent
+    # completeness, so separate invocation sites can be merged soundly.
+    invocation_bindings: dict[
+        int, dict[str, tuple[list[tuple[str, ast.AST, ast.ClassDef | None]], str]]
     ] = {}
+    binding_in_progress: set[tuple[int, int]] = set()
+
+    # Assignment records retain their source node and conditionality.  Name
+    # and storage resolution can therefore select only reaching bindings at a
+    # particular use, rather than unioning the entire flow-insensitive history.
+    scope_definitions: dict[
+        int, dict[str, list[tuple[ast.AST, bool, ast.AST]]]
+    ] = {}
+    scope_assignments: dict[
+        int, dict[str, list[tuple[ast.AST, bool, ast.AST]]]
+    ] = {}
+    scope_stored_values: dict[
+        int,
+        dict[
+            str,
+            dict[
+                tuple[tuple[str, str], ...],
+                list[tuple[ast.AST, bool, ast.AST]],
+            ],
+        ],
+    ] = {}
+    scope_bound_names: dict[int, set[str]] = {}
 
     def lexical_owner(node: ast.AST) -> ast.AST | None:
         current = node
@@ -2439,60 +2456,212 @@ def _definition_execution_nodes(
                 return current
         return None
 
-    def storage_owner_name(target: ast.AST) -> str | None:
-        current = target
-        if isinstance(current, ast.Attribute):
-            current = current.value
-        elif isinstance(current, ast.Subscript):
-            current = current.value
-        else:
-            return None
-        while isinstance(current, (ast.Attribute, ast.Subscript)):
-            current = current.value
-        return current.id if isinstance(current, ast.Name) else None
+    def subscript_component(node: ast.AST) -> tuple[str, str]:
+        value = node.value if isinstance(node, ast.Index) else node
+        if isinstance(value, ast.Constant):
+            if isinstance(value.value, str):
+                return ("key:str", value.value)
+            if isinstance(value.value, bool):
+                return ("key:bool", str(value.value))
+            if isinstance(value.value, int):
+                return ("key:int", str(value.value))
+        return ("dynamic", ast.dump(value, include_attributes=False))
 
-    for candidate in ast.walk(definition):
-        if candidate is definition:
-            continue
-        if isinstance(
-            candidate, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+    def storage_reference(
+        target: ast.AST,
+    ) -> tuple[str, tuple[tuple[str, str], ...]] | None:
+        if isinstance(target, ast.Name):
+            return target.id, ()
+        if isinstance(target, ast.Attribute):
+            base = storage_reference(target.value)
+            if base is None:
+                return None
+            return base[0], (*base[1], ("attr", target.attr))
+        if isinstance(target, ast.Subscript):
+            base = storage_reference(target.value)
+            if base is None:
+                return None
+            return base[0], (*base[1], subscript_component(target.slice))
+        return None
+
+    def bound_target_names(target: ast.AST) -> set[str]:
+        if isinstance(target, ast.Name):
+            return {target.id}
+        if isinstance(target, (ast.Tuple, ast.List)):
+            names: set[str] = set()
+            for item in target.elts:
+                names.update(bound_target_names(item))
+            return names
+        if isinstance(target, ast.Starred):
+            return bound_target_names(target.value)
+        return set()
+
+    def is_ancestor(ancestor: ast.AST, node: ast.AST) -> bool:
+        current = node
+        while id(current) in parents:
+            current = parents[id(current)]
+            if current is ancestor:
+                return True
+        return False
+
+    def occurs_before(event: ast.AST, use: ast.AST) -> bool:
+        return _node_position(event) < _node_position(use) and not is_ancestor(
+            event, use
+        )
+
+    def control_regions(node: ast.AST) -> dict[int, tuple[str, int]]:
+        """Return the conditional suites that must run before ``node``."""
+        regions: dict[int, tuple[str, int]] = {}
+        current = node
+        while id(current) in parents:
+            parent = parents[id(current)]
+            if isinstance(parent, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                break
+            if isinstance(parent, CONTROL_FLOW_NODES):
+                region = ("body", 0)
+                for field, value in ast.iter_fields(parent):
+                    if isinstance(value, list) and any(
+                        item is current for item in value
+                    ):
+                        branch_index = 0
+                        if field in {"handlers", "cases"}:
+                            branch_index = next(
+                                index
+                                for index, item in enumerate(value)
+                                if item is current
+                            )
+                        region = (field, branch_index)
+                        break
+                    if value is current:
+                        region = (field, 0)
+                        break
+                regions[id(parent)] = region
+            current = parent
+        return regions
+
+    def conditional_at_use(event: ast.AST, use: ast.AST) -> bool:
+        use_regions = control_regions(use)
+        return any(
+            use_regions.get(control_id) != region
+            for control_id, region in control_regions(event).items()
+        )
+
+    def reaching_records(
+        records: list[tuple[Any, ...]], use: ast.AST
+    ) -> tuple[list[tuple[Any, ...]], bool]:
+        active: list[tuple[Any, ...]] = []
+        incomplete = False
+        for record in sorted(
+            (item for item in records if occurs_before(item[2], use)),
+            key=lambda item: (
+                *_node_position(item[2]),
+                ast.dump(item[2], include_attributes=False),
+            ),
         ):
-            scope = lexical_owner(candidate)
-            if scope is not None:
-                scope_definitions.setdefault(id(scope), {}).setdefault(
-                    candidate.name, []
-                ).append(candidate)
-        if isinstance(candidate, ast.Assign):
-            value, targets = candidate.value, candidate.targets
-        elif isinstance(candidate, ast.AnnAssign) and candidate.value is not None:
-            value, targets = candidate.value, [candidate.target]
-        else:
-            continue
-        scope = lexical_owner(candidate)
-        if not isinstance(scope, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            continue
-        conditional = _control_flow_between(candidate, scope, parents)
-        for target in targets:
-            if isinstance(target, ast.Name):
-                scope_assignments.setdefault(id(scope), {}).setdefault(
-                    target.id, []
-                ).append((value, conditional))
-                continue
-            owner_name = storage_owner_name(target)
-            if owner_name is not None:
-                scope_stored_values.setdefault(id(scope), {}).setdefault(
-                    owner_name, []
-                ).append((value, conditional))
-
-    for definitions in scope_definitions.values():
-        for values in definitions.values():
-            values.sort(
-                key=lambda item: (
-                    getattr(item, "lineno", 0),
-                    getattr(item, "col_offset", 0),
-                    getattr(item, "name", ""),
-                )
+            effective_conditional = bool(record[1]) and conditional_at_use(
+                record[2], use
             )
+            effective_record = (
+                record[0],
+                effective_conditional,
+                *record[2:],
+            )
+            if effective_conditional:
+                active.append(effective_record)
+                incomplete = True
+            else:
+                active = [effective_record]
+                incomplete = False
+        return active, incomplete
+
+    indexed_nodes: set[int] = set()
+    indexed_roots: set[int] = set()
+
+    def index_scope_root(root: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
+        if id(root) in indexed_roots:
+            return
+        indexed_roots.add(id(root))
+        parents.update(_ast_parent_map(root))
+        for candidate in ast.walk(root):
+            if id(candidate) in indexed_nodes:
+                continue
+            indexed_nodes.add(id(candidate))
+            if candidate is root:
+                continue
+            candidate_scope = lexical_owner(candidate)
+            if isinstance(candidate_scope, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                bound_names: set[str] = set()
+                if isinstance(
+                    candidate, (ast.For, ast.AsyncFor, ast.comprehension)
+                ):
+                    bound_names.update(bound_target_names(candidate.target))
+                elif isinstance(candidate, (ast.With, ast.AsyncWith)):
+                    for item in candidate.items:
+                        if item.optional_vars is not None:
+                            bound_names.update(
+                                bound_target_names(item.optional_vars)
+                            )
+                elif isinstance(candidate, ast.ExceptHandler) and candidate.name:
+                    bound_names.add(candidate.name)
+                if bound_names:
+                    scope_bound_names.setdefault(
+                        id(candidate_scope), set()
+                    ).update(bound_names)
+            if isinstance(
+                candidate, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+            ):
+                scope = lexical_owner(candidate)
+                if scope is not None:
+                    scope_definitions.setdefault(id(scope), {}).setdefault(
+                        candidate.name, []
+                    ).append((
+                        candidate,
+                        _control_flow_between(candidate, scope, parents),
+                        candidate,
+                    ))
+            if isinstance(candidate, ast.Assign):
+                value, targets = candidate.value, candidate.targets
+            elif (
+                isinstance(candidate, ast.AnnAssign)
+                and candidate.value is not None
+            ):
+                value, targets = candidate.value, [candidate.target]
+            else:
+                continue
+            scope = lexical_owner(candidate)
+            if not isinstance(scope, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                continue
+            conditional = _control_flow_between(candidate, scope, parents)
+            for target in targets:
+                target_bound_names = bound_target_names(target)
+                if target_bound_names:
+                    scope_bound_names.setdefault(id(scope), set()).update(
+                        target_bound_names
+                    )
+                if isinstance(target, ast.Name):
+                    scope_assignments.setdefault(id(scope), {}).setdefault(
+                        target.id, []
+                    ).append((value, conditional, candidate))
+                    continue
+                storage = storage_reference(target)
+                if storage is not None and storage[1]:
+                    owner_name, path = storage
+                    scope_stored_values.setdefault(id(scope), {}).setdefault(
+                        owner_name, {}
+                    ).setdefault(path, []).append((
+                        value, conditional, candidate
+                    ))
+        for definitions in scope_definitions.values():
+            for values in definitions.values():
+                values.sort(
+                    key=lambda item: (
+                        getattr(item[0], "lineno", 0),
+                        getattr(item[0], "col_offset", 0),
+                        getattr(item[0], "name", ""),
+                    )
+                )
+
+    index_scope_root(definition)
 
     def parameter_names(
         function: ast.FunctionDef | ast.AsyncFunctionDef,
@@ -2556,6 +2725,154 @@ def _definition_execution_nodes(
             return "incomplete"
         return "not_local"
 
+    safe_global_names = frozenset({
+        "abs", "all", "any", "ascii", "bin", "bool", "bytes", "callable",
+        "chr", "dict", "dir", "divmod", "enumerate", "filter", "float",
+        "format", "frozenset", "getattr", "hasattr", "hash", "hex", "id",
+        "int", "isinstance", "issubclass", "iter", "len", "list", "map",
+        "max", "min", "next", "object", "oct", "open", "ord", "pow",
+        "print", "range", "repr", "reversed", "round", "set", "slice",
+        "sorted", "str", "sum", "super", "tuple", "type", "vars", "zip",
+    })
+
+    def value_signature(
+        value: tuple[str, ast.AST, ast.ClassDef | None],
+    ) -> tuple[Any, ...]:
+        kind, target, target_owner = value
+        return (
+            kind,
+            type(target).__name__,
+            getattr(target, "lineno", 0),
+            getattr(target, "col_offset", 0),
+            getattr(target, "end_lineno", 0),
+            getattr(target, "end_col_offset", 0),
+            getattr(target, "name", ""),
+            type(target_owner).__name__ if target_owner is not None else "",
+            getattr(target_owner, "lineno", 0) if target_owner is not None else 0,
+            getattr(target_owner, "col_offset", 0)
+            if target_owner is not None
+            else 0,
+            getattr(target_owner, "name", "")
+            if target_owner is not None
+            else "",
+        )
+
+    def binding_signature(
+        function: ast.FunctionDef | ast.AsyncFunctionDef,
+    ) -> tuple[Any, ...]:
+        signature: list[tuple[Any, ...]] = []
+        for scope in sorted(
+            function_scope_chain(function),
+            key=lambda item: (
+                getattr(item, "lineno", 0),
+                getattr(item, "col_offset", 0),
+                item.name,
+            ),
+        ):
+            for name, (values, status) in sorted(
+                invocation_bindings.get(id(scope), {}).items()
+            ):
+                signature.append((
+                    getattr(scope, "lineno", 0),
+                    getattr(scope, "col_offset", 0),
+                    scope.name,
+                    name,
+                    status,
+                    tuple(value_signature(value) for value in values),
+                ))
+        return tuple(signature)
+
+    def storage_scope(
+        root_name: str,
+        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+    ) -> ast.FunctionDef | ast.AsyncFunctionDef | None:
+        for scope in function_scope_chain(current_definition):
+            if (
+                root_name in scope_definitions.get(id(scope), {})
+                or root_name in scope_assignments.get(id(scope), {})
+                or root_name in scope_stored_values.get(id(scope), {})
+                or root_name in parameter_names(scope)
+            ):
+                return scope
+        return None
+
+    def storage_records(
+        reference: tuple[str, tuple[tuple[str, str], ...]],
+        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+        use: ast.AST,
+        *,
+        whole_owner: bool = False,
+    ) -> tuple[
+        list[tuple[ast.AST, bool, ast.AST]],
+        bool,
+        ast.FunctionDef | ast.AsyncFunctionDef | None,
+    ]:
+        root_name, requested_path = reference
+        scope = storage_scope(root_name, current_definition)
+        if scope is None:
+            return [], False, None
+        paths = scope_stored_values.get(id(scope), {}).get(root_name, {})
+        selected: list[tuple[ast.AST, bool, ast.AST]] = []
+        incomplete = False
+        request_dynamic = any(item[0] == "dynamic" for item in requested_path)
+        for path, records in sorted(paths.items()):
+            path_dynamic = any(item[0] == "dynamic" for item in path)
+            include = whole_owner or request_dynamic or path == requested_path
+            if include:
+                active, conditional = reaching_records(records, use)
+                selected.extend(active)
+                incomplete = incomplete or (
+                    (conditional or path_dynamic) and not whole_owner
+                )
+            elif path_dynamic:
+                # A dynamic write could overlap an exact lookup.  Preserve
+                # incompleteness without attributing its callable to every
+                # unrelated exact key.
+                active, _conditional = reaching_records(records, use)
+                incomplete = incomplete or bool(active)
+        return selected, incomplete, scope
+
+    def resolve_storage_values(
+        reference: tuple[str, tuple[tuple[str, str], ...]],
+        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+        current_owner: ast.ClassDef | None,
+        use: ast.AST,
+        seen: frozenset[tuple[str, int]],
+        *,
+        whole_owner: bool = False,
+    ) -> tuple[
+        list[tuple[str, ast.AST, ast.ClassDef | None]], str, bool
+    ]:
+        records, incomplete, scope = storage_records(
+            reference,
+            current_definition,
+            use,
+            whole_owner=whole_owner,
+        )
+        if scope is None:
+            return [], "not_local", False
+        values: list[tuple[str, ast.AST, ast.ClassDef | None]] = []
+        status = "incomplete" if incomplete else "complete"
+        key = (f"storage:{reference[0]}:{reference[1]}", id(scope))
+        if key in seen:
+            return [], "incomplete", True
+        for stored, _conditional, _event in records:
+            resolved, stored_status = resolve_value(
+                stored,
+                scope,
+                definition_class_owner(scope),
+                seen | {key},
+            )
+            if stored_status == "not_local":
+                if isinstance(stored, ast.Name):
+                    stored_status = "incomplete"
+                else:
+                    resolved = [("opaque", stored, None)]
+                    stored_status = "complete"
+            values.extend(resolved)
+            status = merge_status(status, stored_status)
+        return deduplicate_values(values), status, True
+
     def resolve_returns(
         target: ast.FunctionDef | ast.AsyncFunctionDef,
         target_owner: ast.ClassDef | None,
@@ -2593,6 +2910,7 @@ def _definition_execution_nodes(
         name: str,
         current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
         current_owner: ast.ClassDef | None,
+        use: ast.AST,
         seen: frozenset[tuple[str, int]],
     ) -> tuple[list[tuple[str, ast.AST, ast.ClassDef | None]], str]:
         for scope in function_scope_chain(current_definition):
@@ -2604,45 +2922,67 @@ def _definition_execution_nodes(
             key = (name, id(scope))
             if key in seen:
                 return [], "incomplete"
+            events, conditional = reaching_records(
+                [*definitions, *assignments], use
+            )
             values: list[tuple[str, ast.AST, ast.ClassDef | None]] = []
-            status = "complete"
+            status = "not_local"
             if is_parameter:
-                values.append(("opaque", ast.Name(id=name, ctx=ast.Load()), None))
-            for target in definitions:
-                if isinstance(target, ast.ClassDef):
-                    values.append(("class", target, None))
-                else:
-                    values.append((
-                        "callable",
-                        target,
-                        definition_class_owner(target),
-                    ))
-            for value, conditional in assignments:
-                resolved, assignment_status = resolve_value(
-                    value,
-                    scope,
-                    definition_class_owner(scope),
-                    seen | {key},
-                )
-                if assignment_status == "not_local":
-                    if isinstance(value, ast.Name):
-                        assignment_status = "incomplete"
-                    else:
-                        resolved = [("opaque", value, None)]
-                        assignment_status = "complete"
-                values.extend(resolved)
-                status = merge_status(status, assignment_status)
-                if conditional:
+                binding = invocation_bindings.get(id(scope), {}).get(name)
+                if binding is None:
                     status = "incomplete"
-            if len(definitions) + len(assignments) + int(is_parameter) > 1:
+                else:
+                    values.extend(binding[0])
+                    status = binding[1]
+            if events and not events[0][1]:
+                values = []
+                status = "complete"
+            for target, is_conditional, _event in events:
+                if isinstance(
+                    target, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+                ):
+                    resolved = [(
+                        "class" if isinstance(target, ast.ClassDef) else "callable",
+                        target,
+                        None
+                        if isinstance(target, ast.ClassDef)
+                        else definition_class_owner(target),
+                    )]
+                    target_status = "complete"
+                else:
+                    resolved, target_status = resolve_value(
+                        target,
+                        scope,
+                        definition_class_owner(scope),
+                        seen | {key},
+                    )
+                    if target_status == "not_local":
+                        if isinstance(target, ast.Name):
+                            target_status = "incomplete"
+                        else:
+                            resolved = [("opaque", target, None)]
+                            target_status = "complete"
+                if is_conditional:
+                    values.extend(resolved)
+                    status = merge_status(status, target_status)
+                    status = "incomplete"
+                else:
+                    values = list(resolved)
+                    status = target_status
+            if conditional:
                 status = "incomplete"
-            if not values:
+            if not events and not is_parameter:
+                # The name is lexically local but no binding reaches this use.
+                return [], "incomplete"
+            if not values and status == "not_local":
                 status = "incomplete"
             return deduplicate_values(values), status
         if name in module_functions:
             return [("callable", module_functions[name], None)], "complete"
         if name in module_classes:
             return [("class", module_classes[name], None)], "complete"
+        if name in aliases or name in safe_global_names:
+            return [("opaque", use, None)], "complete"
         return [], "not_local"
 
     def resolve_value(
@@ -2655,8 +2995,24 @@ def _definition_execution_nodes(
             return [], "incomplete"
         if isinstance(value, ast.Name):
             return resolve_name(
-                value.id, current_definition, current_owner, seen
+                value.id, current_definition, current_owner, value, seen
             )
+        if isinstance(value, (ast.Attribute, ast.Subscript)):
+            storage = storage_reference(value)
+            if storage is not None and storage[1]:
+                stored, stored_status, storage_known = resolve_storage_values(
+                    storage,
+                    current_definition,
+                    current_owner,
+                    value,
+                    seen,
+                )
+                if stored:
+                    return stored, stored_status
+                if storage_known and stored_status == "incomplete":
+                    return [], "incomplete"
+                if storage_known and isinstance(value, ast.Subscript):
+                    return [("opaque_attribute", value, None)], "complete"
         if isinstance(value, ast.Attribute):
             if (
                 isinstance(value.value, ast.Name)
@@ -2698,13 +3054,25 @@ def _definition_execution_nodes(
                     {target.name: target}, target.name, value.attr
                 )
                 if method is None:
-                    status = "incomplete"
+                    methods.append(("opaque_attribute", value, None))
                     continue
                 methods.append(("callable", method, target))
                 if method_incomplete or method_owner is None:
                     status = "incomplete"
             if methods:
                 return deduplicate_values(methods), status
+            if base_status == "not_local":
+                return [("opaque_attribute", value, None)], "complete"
+            return [], "incomplete"
+        if isinstance(value, ast.Subscript):
+            base_values, base_status = resolve_value(
+                value.value, current_definition, current_owner, seen
+            )
+            if base_values and all(
+                kind in {"opaque", "opaque_attribute"}
+                for kind, _target, _target_owner in base_values
+            ):
+                return [("opaque_attribute", value, None)], "complete"
             if base_status == "not_local":
                 return [("opaque_attribute", value, None)], "complete"
             return [], "incomplete"
@@ -2716,10 +3084,38 @@ def _definition_execution_nodes(
             status = called_status
             for kind, target, target_owner in called_values:
                 if kind == "class" and isinstance(target, ast.ClassDef):
+                    constructor, _method_owner, constructor_incomplete = (
+                        _resolve_imported_method(
+                            {target.name: target}, target.name, "__init__"
+                        )
+                    )
+                    if constructor is not None:
+                        status = merge_status(
+                            status,
+                            bind_invocation(
+                                value,
+                                constructor,
+                                target,
+                                current_definition,
+                                current_owner,
+                            ),
+                        )
+                    if constructor_incomplete:
+                        status = "incomplete"
                     results.append(("instance", target, None))
                 elif kind == "callable" and isinstance(
                     target, (ast.FunctionDef, ast.AsyncFunctionDef)
                 ):
+                    status = merge_status(
+                        status,
+                        bind_invocation(
+                            value,
+                            target,
+                            target_owner,
+                            current_definition,
+                            current_owner,
+                        ),
+                    )
                     returned, returned_status = resolve_returns(
                         target, target_owner, seen
                     )
@@ -2753,10 +3149,256 @@ def _definition_execution_nodes(
             return [("opaque", value, None)], "complete"
         return [], "not_local"
 
+    def merge_invocation_binding(
+        target: ast.FunctionDef | ast.AsyncFunctionDef,
+        name: str,
+        values: list[tuple[str, ast.AST, ast.ClassDef | None]],
+        status: str,
+    ) -> None:
+        bindings = invocation_bindings.setdefault(id(target), {})
+        previous = bindings.get(name)
+        if previous is None:
+            bindings[name] = (deduplicate_values(values), status)
+            return
+        merged_values = deduplicate_values([*previous[0], *values])
+        merged_status = (
+            "incomplete"
+            if "incomplete" in {previous[1], status}
+            else "complete"
+        )
+        bindings[name] = (merged_values, merged_status)
+
+    def bounded_positional_values(value: ast.AST) -> list[ast.AST] | None:
+        if not isinstance(value, (ast.List, ast.Tuple)):
+            return None
+        result: list[ast.AST] = []
+        for item in value.elts:
+            if isinstance(item, ast.Starred):
+                expanded = bounded_positional_values(item.value)
+                if expanded is None:
+                    return None
+                result.extend(expanded)
+            else:
+                result.append(item)
+        return result
+
+    def bounded_keyword_values(
+        value: ast.AST,
+    ) -> list[tuple[str, ast.AST]] | None:
+        if not isinstance(value, ast.Dict):
+            return None
+        result: list[tuple[str, ast.AST]] = []
+        for key, item in zip(value.keys, value.values):
+            if key is None:
+                expanded = bounded_keyword_values(item)
+                if expanded is None:
+                    return None
+                result.extend(expanded)
+            elif (
+                isinstance(key, ast.Constant)
+                and isinstance(key.value, str)
+            ):
+                result.append((key.value, item))
+            else:
+                return None
+        return result
+
+    def lexical_parent_function(
+        target: ast.FunctionDef | ast.AsyncFunctionDef,
+    ) -> ast.FunctionDef | ast.AsyncFunctionDef | None:
+        current: ast.AST = target
+        while id(current) in parents:
+            current = parents[id(current)]
+            if isinstance(current, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                return current
+        return None
+
+    def bind_invocation(
+        call: ast.Call,
+        target: ast.FunctionDef | ast.AsyncFunctionDef,
+        target_owner: ast.ClassDef | None,
+        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+        current_owner: ast.ClassDef | None,
+    ) -> str:
+        index_scope_root(target)
+        guard = (id(call), id(target))
+        if guard in binding_in_progress:
+            return "incomplete"
+        binding_in_progress.add(guard)
+        try:
+            posonly = list(getattr(target.args, "posonlyargs", ()))
+            positional = [*posonly, *target.args.args]
+            kwonly = list(target.args.kwonlyargs)
+            vararg = target.args.vararg
+            kwarg = target.args.kwarg
+            defaults: dict[str, ast.AST] = {}
+            if target.args.defaults:
+                for argument, default in zip(
+                    positional[-len(target.args.defaults):],
+                    target.args.defaults,
+                ):
+                    defaults[argument.arg] = default
+            for argument, default in zip(kwonly, target.args.kw_defaults):
+                if default is not None:
+                    defaults[argument.arg] = default
+
+            sources: dict[
+                str,
+                list[
+                    tuple[
+                        ast.AST,
+                        ast.FunctionDef | ast.AsyncFunctionDef,
+                        ast.ClassDef | None,
+                    ]
+                ],
+            ] = {argument.arg: [] for argument in (*positional, *kwonly)}
+            if vararg is not None:
+                sources[vararg.arg] = []
+            if kwarg is not None:
+                sources[kwarg.arg] = []
+            incomplete_names: set[str] = set()
+            mapping_incomplete = False
+
+            implicit = bool(target_owner is not None and positional)
+            available_positional = positional[1:] if implicit else positional
+            if implicit:
+                merge_invocation_binding(target, positional[0].arg, [], "complete")
+
+            positional_values: list[ast.AST] = []
+            unbounded_positional: list[ast.AST] = []
+            for argument in call.args:
+                if isinstance(argument, ast.Starred):
+                    expanded = bounded_positional_values(argument.value)
+                    if expanded is None:
+                        unbounded_positional.append(argument.value)
+                    else:
+                        positional_values.extend(expanded)
+                else:
+                    positional_values.append(argument)
+
+            for index, argument in enumerate(positional_values):
+                if index < len(available_positional):
+                    sources[available_positional[index].arg].append((
+                        argument, current_definition, current_owner
+                    ))
+                elif vararg is not None:
+                    sources[vararg.arg].append((
+                        argument, current_definition, current_owner
+                    ))
+                else:
+                    mapping_incomplete = True
+                    incomplete_names.update(item.arg for item in available_positional)
+
+            keyword_items: list[tuple[str, ast.AST]] = []
+            unbounded_keywords: list[ast.AST] = []
+            for keyword in call.keywords:
+                if keyword.arg is None:
+                    expanded = bounded_keyword_values(keyword.value)
+                    if expanded is None:
+                        unbounded_keywords.append(keyword.value)
+                    else:
+                        keyword_items.extend(expanded)
+                else:
+                    keyword_items.append((keyword.arg, keyword.value))
+
+            positional_names = {argument.arg for argument in positional}
+            posonly_names = {argument.arg for argument in posonly}
+            kwonly_names = {argument.arg for argument in kwonly}
+            for name, argument in keyword_items:
+                if name in posonly_names:
+                    mapping_incomplete = True
+                    incomplete_names.add(name)
+                elif name in positional_names or name in kwonly_names:
+                    if sources[name]:
+                        mapping_incomplete = True
+                        incomplete_names.add(name)
+                    sources[name].append((
+                        argument, current_definition, current_owner
+                    ))
+                elif kwarg is not None:
+                    sources[kwarg.arg].append((
+                        argument, current_definition, current_owner
+                    ))
+                else:
+                    mapping_incomplete = True
+
+            if unbounded_positional:
+                mapping_incomplete = True
+                affected = [argument.arg for argument in available_positional]
+                if vararg is not None:
+                    affected.append(vararg.arg)
+                incomplete_names.update(affected)
+                for argument in unbounded_positional:
+                    destination_names = (
+                        [vararg.arg]
+                        if vararg is not None
+                        else [item.arg for item in available_positional]
+                    )
+                    for name in destination_names:
+                        sources[name].append((
+                            argument, current_definition, current_owner
+                        ))
+            if unbounded_keywords:
+                mapping_incomplete = True
+                affected = [
+                    argument.arg
+                    for argument in (*target.args.args, *kwonly)
+                ]
+                if kwarg is not None:
+                    affected.append(kwarg.arg)
+                incomplete_names.update(affected)
+                for argument in unbounded_keywords:
+                    destination_names = (
+                        [kwarg.arg]
+                        if kwarg is not None
+                        else affected
+                    )
+                    for name in destination_names:
+                        sources[name].append((
+                            argument, current_definition, current_owner
+                        ))
+
+            default_scope = lexical_parent_function(target) or target
+            default_owner = definition_class_owner(default_scope)
+            for argument in (*available_positional, *kwonly):
+                if not sources[argument.arg]:
+                    default = defaults.get(argument.arg)
+                    if default is None:
+                        incomplete_names.add(argument.arg)
+                        mapping_incomplete = True
+                    else:
+                        sources[argument.arg].append((
+                            default, default_scope, default_owner
+                        ))
+
+            for name in sorted(sources):
+                values: list[tuple[str, ast.AST, ast.ClassDef | None]] = []
+                status = "incomplete" if name in incomplete_names else "complete"
+                for argument, argument_scope, argument_owner in sources[name]:
+                    resolved, argument_status = resolve_value(
+                        argument, argument_scope, argument_owner
+                    )
+                    if argument_status == "not_local":
+                        if isinstance(argument, ast.Name):
+                            argument_status = "incomplete"
+                        else:
+                            resolved = [("opaque", argument, None)]
+                            argument_status = "complete"
+                    values.extend(resolved)
+                    status = merge_status(status, argument_status)
+                merge_invocation_binding(
+                    target, name, deduplicate_values(values), status
+                )
+            return "incomplete" if mapping_incomplete else "complete"
+        finally:
+            binding_in_progress.discard(guard)
+
     def resolve_call(
         call: ast.Call,
         current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
         current_owner: ast.ClassDef | None,
+        *,
+        escape_provenance: bool = False,
     ) -> tuple[
         list[tuple[ast.FunctionDef | ast.AsyncFunctionDef, ast.ClassDef | None]],
         str,
@@ -2767,31 +3409,58 @@ def _definition_execution_nodes(
         targets: list[
             tuple[ast.FunctionDef | ast.AsyncFunctionDef, ast.ClassDef | None]
         ] = []
+        saw_opaque = False
+        saw_bound_opaque = False
         for kind, target, target_owner in values:
             if kind == "callable" and isinstance(
                 target, (ast.FunctionDef, ast.AsyncFunctionDef)
             ):
                 targets.append((target, target_owner))
+                status = merge_status(
+                    status,
+                    bind_invocation(
+                        call,
+                        target,
+                        target_owner,
+                        current_definition,
+                        current_owner,
+                    ),
+                )
             elif kind == "class" and isinstance(target, ast.ClassDef):
                 constructor, _owner, constructor_incomplete = _resolve_imported_method(
                     {target.name: target}, target.name, "__init__"
                 )
                 if constructor is not None:
                     targets.append((constructor, target))
+                    status = merge_status(
+                        status,
+                        bind_invocation(
+                            call,
+                            constructor,
+                            target,
+                            current_definition,
+                            current_owner,
+                        ),
+                    )
                 if constructor_incomplete:
                     status = "incomplete"
             elif kind == "instance":
                 status = "incomplete"
             elif kind in {"opaque", "opaque_attribute"}:
-                status = (
-                    "not_local"
-                    if isinstance(call.func, ast.Attribute)
-                    else "incomplete"
-                )
+                saw_opaque = True
+                saw_bound_opaque = saw_bound_opaque or target is not call.func
+                if targets:
+                    status = "incomplete"
         if status == "not_local":
             return [], "not_local"
         if isinstance(call.func, ast.Attribute) and not targets:
             return [], "not_local"
+        if not targets and saw_opaque:
+            return [], (
+                "incomplete"
+                if saw_bound_opaque and not escape_provenance
+                else "not_local"
+            )
         return sorted(
             set(targets),
             key=lambda item: (
@@ -2828,59 +3497,125 @@ def _definition_execution_nodes(
         current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
         current_owner: ast.ClassDef | None,
         seen: frozenset[tuple[str, int]] = frozenset(),
-    ) -> list[
-        tuple[ast.FunctionDef | ast.AsyncFunctionDef, ast.ClassDef | None]
+        shadowed: frozenset[str] = frozenset(),
+    ) -> tuple[
+        list[tuple[ast.FunctionDef | ast.AsyncFunctionDef, ast.ClassDef | None]],
+        str,
     ]:
-        """Resolve only local callables contained in an escaping value."""
+        """Resolve local callables and completeness in an escaping value."""
         if value is None:
-            return []
-        key = ("escape", id(value))
+            return [], "complete"
+        shadow_key = ",".join(sorted(shadowed))
+        key = (f"escape:{shadow_key}", id(value))
         if key in seen:
-            return []
+            return [], "complete"
         next_seen = seen | {key}
         targets: list[
             tuple[ast.FunctionDef | ast.AsyncFunctionDef, ast.ClassDef | None]
         ] = []
+        status = "complete"
+
+        def collect(item: ast.AST | None, names: frozenset[str] = shadowed) -> None:
+            nonlocal status
+            nested_targets, nested_status = escaped_callable_targets(
+                item,
+                current_definition,
+                current_owner,
+                next_seen,
+                names,
+            )
+            targets.extend(nested_targets)
+            if nested_status == "incomplete":
+                status = "incomplete"
+
+        def target_names(target: ast.AST) -> set[str]:
+            if isinstance(target, ast.Name):
+                return {target.id}
+            if isinstance(target, (ast.Tuple, ast.List)):
+                names: set[str] = set()
+                for item in target.elts:
+                    names.update(target_names(item))
+                return names
+            if isinstance(target, ast.Starred):
+                return target_names(target.value)
+            return set()
 
         if isinstance(value, (ast.List, ast.Set, ast.Tuple)):
             for item in value.elts:
-                targets.extend(
-                    escaped_callable_targets(
-                        item, current_definition, current_owner, next_seen
-                    )
-                )
-            return callable_targets_from_targets(targets)
+                collect(item)
+            return callable_targets_from_targets(targets), status
         if isinstance(value, ast.Dict):
             for item in (*value.keys, *value.values):
-                targets.extend(
-                    escaped_callable_targets(
-                        item, current_definition, current_owner, next_seen
-                    )
-                )
-            return callable_targets_from_targets(targets)
+                collect(item)
+            return callable_targets_from_targets(targets), status
+        if isinstance(
+            value, (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)
+        ):
+            comprehension_shadowed = shadowed
+            for generator in value.generators:
+                collect(generator.iter, comprehension_shadowed)
+                comprehension_shadowed = frozenset({
+                    *comprehension_shadowed,
+                    *target_names(generator.target),
+                })
+                for condition in generator.ifs:
+                    collect(condition, comprehension_shadowed)
+            if isinstance(value, ast.DictComp):
+                collect(value.key, comprehension_shadowed)
+                collect(value.value, comprehension_shadowed)
+            else:
+                collect(value.elt, comprehension_shadowed)
+            return callable_targets_from_targets(targets), status
         if isinstance(value, ast.Starred):
             return escaped_callable_targets(
-                value.value, current_definition, current_owner, next_seen
+                value.value,
+                current_definition,
+                current_owner,
+                next_seen,
+                shadowed,
             )
         if isinstance(value, ast.IfExp):
             for item in (value.body, value.orelse):
-                targets.extend(
-                    escaped_callable_targets(
-                        item, current_definition, current_owner, next_seen
-                    )
-                )
-            return callable_targets_from_targets(targets)
+                collect(item)
+            return callable_targets_from_targets(targets), status
         if isinstance(value, ast.NamedExpr):
             return escaped_callable_targets(
-                value.value, current_definition, current_owner, next_seen
+                value.value,
+                current_definition,
+                current_owner,
+                next_seen,
+                shadowed,
             )
         if isinstance(value, ast.Lambda):
+            lambda_shadowed = frozenset({
+                *shadowed,
+                *(argument.arg for argument in (
+                    *getattr(value.args, "posonlyargs", ()),
+                    *value.args.args,
+                    *value.args.kwonlyargs,
+                )),
+                *(
+                    (value.args.vararg.arg,)
+                    if value.args.vararg is not None
+                    else ()
+                ),
+                *(
+                    (value.args.kwarg.arg,)
+                    if value.args.kwarg is not None
+                    else ()
+                ),
+            })
+            for default in (*value.args.defaults, *value.args.kw_defaults):
+                collect(default, shadowed)
             references = sorted(
                 (
-                    item
-                    for item in ast.walk(value)
+                    item for item in ast.walk(value.body)
                     if isinstance(item, (ast.Name, ast.Attribute))
                     and isinstance(getattr(item, "ctx", ast.Load()), ast.Load)
+                    and not (
+                        isinstance(item, ast.Name)
+                        and item.id in lambda_shadowed
+                    )
                 ),
                 key=lambda item: (
                     getattr(item, "lineno", 0),
@@ -2889,53 +3624,98 @@ def _definition_execution_nodes(
                 ),
             )
             for reference in references:
-                targets.extend(
-                    escaped_callable_targets(
-                        reference, current_definition, current_owner, next_seen
-                    )
-                )
-            return callable_targets_from_targets(targets)
+                collect(reference, lambda_shadowed)
+            return callable_targets_from_targets(targets), status
 
-        resolved, _status = resolve_value(
+        if isinstance(value, ast.Name) and value.id in shadowed:
+            return [], "complete"
+
+        resolved, resolved_status = resolve_value(
             value, current_definition, current_owner
         )
         targets.extend(callable_targets(resolved))
+        if resolved_status == "incomplete" and (
+            not resolved
+            or any(kind == "callable" for kind, _target, _owner in resolved)
+        ):
+            status = "incomplete"
+        elif resolved_status == "not_local":
+            locally_bound = isinstance(value, ast.Name) and any(
+                value.id in scope_bound_names.get(id(scope), set())
+                for scope in function_scope_chain(current_definition)
+            )
+            if (
+                isinstance(value, ast.Name)
+                and value.id not in aliases
+                and value.id not in safe_global_names
+                and not locally_bound
+            ):
+                status = "incomplete"
 
-        owner_name: str | None = None
         if isinstance(value, ast.Name):
-            owner_name = value.id
-        elif isinstance(value, (ast.Attribute, ast.Subscript)):
-            owner_name = storage_owner_name(value)
-        if owner_name is not None:
-            for scope in function_scope_chain(current_definition):
-                definitions = scope_definitions.get(id(scope), {}).get(
-                    owner_name, []
-                )
-                assignments = scope_assignments.get(id(scope), {}).get(
-                    owner_name, []
-                )
-                stored_values = scope_stored_values.get(id(scope), {}).get(
-                    owner_name, []
-                )
-                is_parameter = owner_name in parameter_names(scope)
-                if not (
-                    definitions or assignments or stored_values or is_parameter
-                ):
-                    continue
-                binding_key = (f"escape-binding:{owner_name}", id(scope))
+            scope = storage_scope(value.id, current_definition)
+            if scope is not None:
+                binding_key = (f"escape-binding:{value.id}", id(scope))
                 if binding_key not in next_seen:
+                    assignments = scope_assignments.get(id(scope), {}).get(
+                        value.id, []
+                    )
+                    active, conditional = reaching_records(assignments, value)
                     binding_seen = next_seen | {binding_key}
-                    for assigned, _conditional in (*assignments, *stored_values):
-                        targets.extend(
-                            escaped_callable_targets(
-                                assigned,
-                                scope,
-                                definition_class_owner(scope),
-                                binding_seen,
-                            )
+                    for assigned, _conditional, _event in active:
+                        nested_targets, nested_status = escaped_callable_targets(
+                            assigned,
+                            scope,
+                            definition_class_owner(scope),
+                            binding_seen,
+                            shadowed,
                         )
-                break
-        return callable_targets_from_targets(targets)
+                        targets.extend(nested_targets)
+                        if nested_status == "incomplete":
+                            status = "incomplete"
+                    stored, stored_incomplete, _stored_scope = storage_records(
+                        (value.id, ()),
+                        current_definition,
+                        value,
+                        whole_owner=True,
+                    )
+                    if stored_incomplete:
+                        status = "incomplete"
+                    for assigned, _conditional, _event in stored:
+                        nested_targets, nested_status = escaped_callable_targets(
+                            assigned,
+                            scope,
+                            definition_class_owner(scope),
+                            binding_seen,
+                            shadowed,
+                        )
+                        targets.extend(nested_targets)
+                        if nested_status == "incomplete":
+                            status = "incomplete"
+        elif isinstance(value, (ast.Attribute, ast.Subscript)):
+            reference = storage_reference(value)
+            if reference is not None:
+                stored, stored_incomplete, scope = storage_records(
+                    reference, current_definition, value
+                )
+                if stored_incomplete:
+                    status = "incomplete"
+                if scope is not None:
+                    binding_seen = next_seen | {
+                        (f"escape-storage:{reference}", id(scope))
+                    }
+                    for assigned, _conditional, _event in stored:
+                        nested_targets, nested_status = escaped_callable_targets(
+                            assigned,
+                            scope,
+                            definition_class_owner(scope),
+                            binding_seen,
+                            shadowed,
+                        )
+                        targets.extend(nested_targets)
+                        if nested_status == "incomplete":
+                            status = "incomplete"
+        return callable_targets_from_targets(targets), status
 
     def callable_targets_from_targets(
         targets: list[
@@ -2960,28 +3740,54 @@ def _definition_execution_nodes(
         state: str,
         *,
         escaped: bool = False,
+        escape_provenance: bool = False,
     ) -> None:
-        target_id = id(target)
-        if state == "unknown":
-            if escaped:
-                escaped_unknown_definitions.add(target_id)
-            else:
-                flow_unknown_definitions.add(target_id)
-        previous = visited_definitions.get(target_id)
-        if previous == "reached" or previous == state:
-            if (
-                previous == state == "unknown"
-                and not escaped
-                and target_id in visited_escape_only
+        index_scope_root(target)
+        if escaped:
+            escape_provenance = True
+            positional = [
+                *getattr(target.args, "posonlyargs", ()),
+                *target.args.args,
+            ]
+            defaults: dict[str, ast.AST] = {}
+            if target.args.defaults:
+                for argument, default in zip(
+                    positional[-len(target.args.defaults):],
+                    target.args.defaults,
+                ):
+                    defaults[argument.arg] = default
+            for argument, default in zip(
+                target.args.kwonlyargs, target.args.kw_defaults
             ):
-                reprocess_flow_unknown.add(target_id)
-            else:
-                return
-        key = (target_id, state)
+                if default is not None:
+                    defaults[argument.arg] = default
+            default_scope = lexical_parent_function(target) or target
+            default_owner = definition_class_owner(default_scope)
+            for name in sorted(parameter_names(target)):
+                values: list[tuple[str, ast.AST, ast.ClassDef | None]] = []
+                default = defaults.get(name)
+                if default is not None:
+                    values, _default_status = resolve_value(
+                        default, default_scope, default_owner
+                    )
+                merge_invocation_binding(target, name, values, "incomplete")
+        signature = binding_signature(target)
+        target_id = id(target)
+        if state == "unknown" and (
+            target_id, "reached", signature, escape_provenance
+        ) in visited_definitions:
+            return
+        key = (target_id, state, signature, escape_provenance)
         if key in queued_definitions:
             return
         queued_definitions.add(key)
-        queue.append((target, target_owner, state))
+        queue.append((
+            target,
+            target_owner,
+            state,
+            signature,
+            escape_provenance,
+        ))
 
     def add_nodes(candidates: list[ast.AST], state: str) -> None:
         for candidate in candidates:
@@ -3007,37 +3813,84 @@ def _definition_execution_nodes(
                 return None
         return None
 
-    while queue:
-        current_definition, current_owner, current_state = queue.pop(0)
-        current_id = id(current_definition)
-        queued_definitions.discard((current_id, current_state))
-        previous_state = visited_definitions.get(current_id)
-        allow_flow_reprocess = (
-            current_state == "unknown" and current_id in reprocess_flow_unknown
-        )
-        if previous_state == "reached" or (
-            previous_state == current_state and not allow_flow_reprocess
+    def unresolved_escape_sink(
+        call: ast.Call,
+        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+    ) -> bool:
+        current: ast.AST = call.func
+        while isinstance(current, (ast.Attribute, ast.Subscript)):
+            current = current.value
+        while isinstance(current, ast.Call):
+            current = current.func
+            while isinstance(current, (ast.Attribute, ast.Subscript)):
+                current = current.value
+        if not isinstance(current, ast.Name):
+            return False
+        name = current.id
+        if (
+            name in aliases
+            or name in safe_global_names
+            or name in module_functions
+            or name in module_classes
         ):
+            return False
+        if name.isupper():
+            return False
+        for scope in function_scope_chain(current_definition):
+            if (
+                name in scope_definitions.get(id(scope), {})
+                or name in scope_assignments.get(id(scope), {})
+                or name in parameter_names(scope)
+                or name in scope_bound_names.get(id(scope), set())
+            ):
+                return False
+        return True
+
+    enqueue_definition(definition, owner_class, "reached")
+
+    while queue:
+        (
+            current_definition,
+            current_owner,
+            current_state,
+            queued_signature,
+            current_escape_provenance,
+        ) = queue.pop(0)
+        current_id = id(current_definition)
+        queued_definitions.discard((
+            current_id,
+            current_state,
+            queued_signature,
+            current_escape_provenance,
+        ))
+        current_signature = binding_signature(current_definition)
+        if current_state == "unknown" and (
+            current_id,
+            "reached",
+            current_signature,
+            current_escape_provenance,
+        ) in visited_definitions:
             continue
-        reprocess_flow_unknown.discard(current_id)
-        escape_only = (
-            current_state == "unknown"
-            and current_id in escaped_unknown_definitions
-            and current_id not in flow_unknown_definitions
+        visit_key = (
+            current_id,
+            current_state,
+            current_signature,
+            current_escape_provenance,
         )
-        if escape_only:
-            visited_escape_only.add(current_id)
-        else:
-            visited_escape_only.discard(current_id)
-        visited_definitions[current_id] = current_state
+        if visit_key in visited_definitions:
+            continue
+        visited_definitions.add(visit_key)
         eager_nodes = _eager_execution_nodes(current_definition)
         add_nodes(eager_nodes, current_state)
 
         for node in eager_nodes:
             if isinstance(node, (ast.Return, ast.Yield, ast.YieldFrom)):
-                for target, target_owner in escaped_callable_targets(
+                escaped_targets, escape_status = escaped_callable_targets(
                     node.value, current_definition, current_owner
-                ):
+                )
+                if escape_status == "incomplete" and current_escape_provenance:
+                    resolution_incomplete = True
+                for target, target_owner in escaped_targets:
                     enqueue_definition(
                         target, target_owner, "unknown", escaped=True
                     )
@@ -3048,9 +3901,12 @@ def _definition_execution_nodes(
                     enclosing_class(node, current_definition) or current_owner
                 )
                 for decorator in node.decorator_list:
-                    for target, target_owner in escaped_callable_targets(
+                    escaped_targets, escape_status = escaped_callable_targets(
                         decorator, current_definition, decorator_owner
-                    ):
+                    )
+                    if escape_status == "incomplete":
+                        resolution_incomplete = True
+                    for target, target_owner in escaped_targets:
                         enqueue_definition(
                             target, target_owner, "unknown", escaped=True
                         )
@@ -3058,23 +3914,33 @@ def _definition_execution_nodes(
                 continue
             call_owner = enclosing_class(node, current_definition)
             targets, resolution = resolve_call(
-                node, current_definition, call_owner or current_owner
+                node,
+                current_definition,
+                call_owner or current_owner,
+                escape_provenance=current_escape_provenance,
             )
-            call_resolutions[id(node)] = (
-                "complete"
-                if resolution == "incomplete" and escape_only
-                else resolution
-            )
-            if resolution == "incomplete" and not escape_only:
+            previous_resolution = call_resolutions.get(id(node))
+            if "incomplete" in {previous_resolution, resolution}:
+                call_resolutions[id(node)] = "incomplete"
+            elif "complete" in {previous_resolution, resolution}:
+                call_resolutions[id(node)] = "complete"
+            else:
+                call_resolutions[id(node)] = resolution
+            if resolution == "incomplete":
                 resolution_incomplete = True
             if resolution != "complete":
                 escaped_values = [*node.args, *(kw.value for kw in node.keywords)]
                 for escaped_value in escaped_values:
-                    for target, target_owner in escaped_callable_targets(
+                    escaped_targets, escape_status = escaped_callable_targets(
                         escaped_value,
                         current_definition,
                         call_owner or current_owner,
+                    )
+                    if escape_status == "incomplete" and unresolved_escape_sink(
+                        node, current_definition
                     ):
+                        resolution_incomplete = True
+                    for target, target_owner in escaped_targets:
                         enqueue_definition(
                             target, target_owner, "unknown", escaped=True
                         )
@@ -3090,7 +3956,7 @@ def _definition_execution_nodes(
                     target,
                     target_owner,
                     child_state,
-                    escaped=escape_only and child_state == "unknown",
+                    escape_provenance=current_escape_provenance,
                 )
 
     return nodes, node_states, call_resolutions, resolution_incomplete

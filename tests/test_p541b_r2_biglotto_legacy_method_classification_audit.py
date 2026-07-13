@@ -1893,6 +1893,497 @@ def test_external_callable_reference_does_not_create_repository_taint(
     assert result["state"] == "not_detected"
 
 
+def _r6_callable_flow_result(tmp_path, flow_source: str):
+    return _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "def run(callbacks=()):\n"
+            "    def dangerous():\n"
+            "        import deeper\n"
+            "        sqlite3.connect('x.db')\n"
+            "    def safe():\n"
+            "        return 1\n"
+            f"{flow_source}"
+        ),
+    )
+
+
+def _assert_r6_dangerous_reached(result):
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert any(
+        finding["resolved_api"] == "sqlite3.connect"
+        for finding in result["findings"]
+    )
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        (
+            "    def forward(cb):\n"
+            "        register(cb)\n"
+            "    forward(dangerous)\n"
+        ),
+        (
+            "    def forward(cb):\n"
+            "        register(callback=cb)\n"
+            "    forward(cb=dangerous)\n"
+        ),
+        (
+            "    def second(cb):\n"
+            "        register(cb)\n"
+            "    def first(cb):\n"
+            "        second(cb)\n"
+            "    first(dangerous)\n"
+        ),
+        (
+            "    def third(cb):\n"
+            "        register(cb)\n"
+            "    def second(cb):\n"
+            "        third(cb)\n"
+            "    def first(cb):\n"
+            "        second(cb)\n"
+            "    first(dangerous)\n"
+        ),
+        (
+            "    def forward(prefix, /, *, cb):\n"
+            "        register(cb)\n"
+            "    forward(1, cb=dangerous)\n"
+        ),
+        (
+            "    def forward(cb=dangerous):\n"
+            "        register(cb)\n"
+            "    forward()\n"
+        ),
+        (
+            "    def forward(cb):\n"
+            "        register(cb)\n"
+            "    forward(*(dangerous,))\n"
+        ),
+        (
+            "    def forward(*, cb):\n"
+            "        register(cb)\n"
+            "    forward(**{'cb': dangerous})\n"
+        ),
+    ],
+    ids=[
+        "positional",
+        "keyword",
+        "two-level",
+        "three-level",
+        "positional-only-keyword-only",
+        "default",
+        "bounded-star-args",
+        "bounded-star-kwargs",
+    ],
+)
+def test_r6_actual_arguments_propagate_to_formals(tmp_path, flow_source):
+    _assert_r6_dangerous_reached(_r6_callable_flow_result(tmp_path, flow_source))
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        (
+            "    def forward(cb, *rest):\n"
+            "        register(cb)\n"
+            "    forward(dangerous, *callbacks)\n"
+        ),
+        (
+            "    def forward(cb, **rest):\n"
+            "        register(cb)\n"
+            "    forward(dangerous, **unknown_keywords)\n"
+        ),
+    ],
+    ids=["unbounded-star-args", "unbounded-star-kwargs"],
+)
+def test_r6_unbounded_expansion_fails_closed_and_preserves_known_target(
+    tmp_path, flow_source
+):
+    _assert_r6_dangerous_reached(_r6_callable_flow_result(tmp_path, flow_source))
+
+
+def test_r6_multiple_invocations_keep_distinct_callable_actuals(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "def run():\n"
+            "    def database_callback():\n"
+            "        import deeper\n"
+            "        sqlite3.connect('x.db')\n"
+            "    def filesystem_callback():\n"
+            "        import deeper\n"
+            "        open('x.txt', 'w')\n"
+            "    def forward(cb):\n"
+            "        register(cb)\n"
+            "    forward(database_callback)\n"
+            "    forward(filesystem_callback)\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert {finding["resolved_api"] for finding in result["findings"]} >= {
+        "sqlite3.connect",
+        "open",
+    }
+
+
+def test_r6_known_and_unresolved_invocations_preserve_finding_and_unknown(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    def forward(cb):\n"
+            "        register(cb)\n"
+            "    forward(dangerous)\n"
+            "    forward(unresolved)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        (
+            "    def escaped(cb=dangerous):\n"
+            "        register(cb)\n"
+            "    register(escaped)\n"
+        ),
+        (
+            "    def decorator(cb):\n"
+            "        def apply(function):\n"
+            "            register(cb)\n"
+            "            return function\n"
+            "        return apply\n"
+            "    @decorator(dangerous)\n"
+            "    def wrapped():\n"
+            "        return 1\n"
+        ),
+        (
+            "    async def forward(cb):\n"
+            "        register(cb)\n"
+            "    forward(dangerous)\n"
+        ),
+        (
+            "    def factory(cb):\n"
+            "        def wrapper():\n"
+            "            register(cb)\n"
+            "        return wrapper\n"
+            "    register(factory(dangerous))\n"
+        ),
+    ],
+    ids=[
+        "escaped-callable-default",
+        "parameterized-decorator-factory",
+        "async-callback-factory",
+        "factory-returning-forwarder",
+    ],
+)
+def test_r6_defaults_decorators_async_and_factory_wrappers_propagate(
+    tmp_path, flow_source
+):
+    _assert_r6_dangerous_reached(_r6_callable_flow_result(tmp_path, flow_source))
+
+
+@pytest.mark.parametrize(
+    "escaping_expression",
+    [
+        "[dangerous for _ in (1,)]",
+        "{dangerous for _ in (1,)}",
+        "{dangerous: dangerous for _ in (1,)}",
+        "(dangerous for _ in (1,))",
+        "[dangerous for _ in [item for item in (1,)]]",
+        "([dangerous for _ in (1,)],)",
+        "[dangerous for _ in (1,) if dangerous]",
+    ],
+    ids=[
+        "list",
+        "set",
+        "dict-key-value",
+        "generator",
+        "nested",
+        "literal-container",
+        "filter",
+    ],
+)
+def test_r6_comprehensions_expose_local_callable_references(
+    tmp_path, escaping_expression
+):
+    result = _r6_callable_flow_result(
+        tmp_path, f"    register({escaping_expression})\n"
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+@pytest.mark.parametrize(
+    "escape_statement",
+    [
+        "    register(*[dangerous])\n",
+        "    register(**{'callback': dangerous})\n",
+    ],
+    ids=["starred-positional-literal", "dictionary-unpacked-literal"],
+)
+def test_r6_bounded_unpacking_exposes_local_callable(tmp_path, escape_statement):
+    _assert_r6_dangerous_reached(
+        _r6_callable_flow_result(tmp_path, escape_statement)
+    )
+
+
+def test_r6_comprehension_target_shadows_outer_callable(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    import json\n"
+            "    values = (json.dumps,)\n"
+            "    register([dangerous for dangerous in values])\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r6_external_comprehension_values_do_not_create_repository_taint(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "import json\n"
+            "def run():\n"
+            "    register([json.dumps for _ in range(1)])\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r6_escaped_function_with_unresolved_formal_is_incomplete(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    def escaped(callback):\n"
+            "        register(callback)\n"
+            "    register(escaped)\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert result["findings"] == []
+
+
+def test_r6_escaped_function_ambiguous_local_call_preserves_known_target(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    def escaped():\n"
+            "        callback = dangerous\n"
+            "        if enabled:\n"
+            "            callback = unresolved\n"
+            "        callback()\n"
+            "    register(escaped)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r6_escape_then_reached_invocation_keeps_distinct_binding_states(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    def worker(callback):\n"
+            "        register(callback)\n"
+            "    register(worker)\n"
+            "    worker(dangerous)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r6_mixed_escape_and_mutual_recursion_is_bounded(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    def first(callback):\n"
+            "        register(callback)\n"
+            "        second(callback)\n"
+            "    def second(callback):\n"
+            "        if enabled:\n"
+            "            first(callback)\n"
+            "    register(first)\n"
+            "    first(dangerous)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        (
+            "    callback = dangerous\n"
+            "    callback = None\n"
+            "    register(callback)\n"
+        ),
+        (
+            "    callback = None\n"
+            "    register(callback)\n"
+            "    callback = dangerous\n"
+        ),
+        (
+            "    callback = dangerous\n"
+            "    callback = safe\n"
+            "    register(callback)\n"
+        ),
+    ],
+    ids=["overwritten-none", "future-assignment", "latest-unconditional"],
+)
+def test_r6_name_bindings_use_reaching_assignment_at_escape(
+    tmp_path, flow_source
+):
+    result = _r6_callable_flow_result(tmp_path, flow_source)
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r6_conditional_name_binding_merges_possible_values(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    callback = safe\n"
+            "    if enabled:\n"
+            "        callback = dangerous\n"
+            "    register(callback)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        (
+            "    class Holder:\n"
+            "        pass\n"
+            "    holder = Holder()\n"
+            "    holder.callback = dangerous\n"
+            "    holder.safe = safe\n"
+            "    register(holder.safe)\n"
+        ),
+        (
+            "    class Holder:\n"
+            "        pass\n"
+            "    first = Holder()\n"
+            "    second = Holder()\n"
+            "    first.callback = dangerous\n"
+            "    second.callback = safe\n"
+            "    register(second.callback)\n"
+        ),
+        (
+            "    callbacks = {}\n"
+            "    callbacks['dangerous'] = dangerous\n"
+            "    callbacks['safe'] = safe\n"
+            "    register(callbacks['safe'])\n"
+        ),
+        (
+            "    callbacks = {}\n"
+            "    callbacks[0] = dangerous\n"
+            "    callbacks['0'] = safe\n"
+            "    register(callbacks['0'])\n"
+        ),
+        (
+            "    class Holder:\n"
+            "        pass\n"
+            "    holder = Holder()\n"
+            "    holder.callback = dangerous\n"
+            "    holder.callback = None\n"
+            "    register(holder)\n"
+        ),
+    ],
+    ids=[
+        "distinct-attributes",
+        "distinct-owners",
+        "distinct-string-keys",
+        "string-int-keys",
+        "storage-overwrite",
+    ],
+)
+def test_r6_exact_storage_paths_do_not_taint_unrelated_escape(
+    tmp_path, flow_source
+):
+    result = _r6_callable_flow_result(tmp_path, flow_source)
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r6_whole_owner_escape_includes_callable_fields(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    class Holder:\n"
+            "        pass\n"
+            "    holder = Holder()\n"
+            "    holder.callback = dangerous\n"
+            "    register(holder)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r6_conditional_storage_assignment_merges_possible_values(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    class Holder:\n"
+            "        pass\n"
+            "    holder = Holder()\n"
+            "    holder.callback = safe\n"
+            "    if enabled:\n"
+            "        holder.callback = dangerous\n"
+            "    register(holder.callback)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r6_dynamic_subscript_fails_closed_without_exact_key_taint(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    callbacks = {}\n"
+            "    callbacks[key] = dangerous\n"
+            "    register(callbacks['safe'])\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert not any(
+        finding["resolved_api"] == "sqlite3.connect"
+        for finding in result["findings"]
+    )
+
+
+def test_r6_nested_scope_storage_owners_do_not_collide(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    class Holder:\n"
+            "        pass\n"
+            "    holder = Holder()\n"
+            "    holder.callback = dangerous\n"
+            "    def inner():\n"
+            "        class Holder:\n"
+            "            pass\n"
+            "        holder = Holder()\n"
+            "        holder.callback = safe\n"
+            "        register(holder.callback)\n"
+            "    inner()\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
 def test_nested_same_name_does_not_fall_through_to_top_level(tmp_path):
     repo, commit = _synthetic_repo(
         tmp_path,

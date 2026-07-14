@@ -24,7 +24,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 TASK_ID = "P541B_R2_BIG_LOTTO_LEGACY_METHOD_CLASSIFICATION_AUDIT"
 SCHEMA_VERSION = "p541b-r2-evidence-v1"
-DETECTOR_VERSION = "p541b-r2-detector-v9"
+DETECTOR_VERSION = "p541b-r2-detector-v10"
 CANONICAL_RUNTIME_IMPLEMENTATION = "CPython"
 CANONICAL_RUNTIME_VERSION = "3.9.6"
 BASE_MAIN_COMMIT = "c50137583243d4f9f4915a3e1d9babee50b5bbd7"
@@ -176,6 +176,17 @@ SUBPROCESS_LEAF_CALLS = {
 }
 
 READ_LEAF_CALLS = {"read", "read_text", "read_bytes", "load", "loads", "fetchone", "fetchall"}
+TABULAR_FILESYSTEM_READ_CALLS = {
+    "pandas.read_csv",
+    "pandas.read_excel",
+    "pandas.read_feather",
+    "pandas.read_parquet",
+    "pandas.read_pickle",
+    "pandas.read_table",
+    "polars.read_csv",
+    "polars.read_excel",
+    "polars.read_parquet",
+}
 DATABASE_READ_WORDS = {"select", "pragma", "explain", "show", "describe"}
 DATABASE_WRITE_WORDS = {"insert", "update", "delete", "replace", "create", "alter", "drop", "vacuum"}
 OTHER_EXTERNAL_CALLS = {
@@ -610,6 +621,47 @@ def _mentions_name_guard(test: ast.AST) -> bool:
     return any(isinstance(node, ast.Name) and node.id == "__name__" for node in ast.walk(test))
 
 
+def _function_header_expressions(
+    node: ast.FunctionDef | ast.AsyncFunctionDef,
+    *,
+    annotations_eager: bool,
+) -> list[ast.AST]:
+    """Return expressions evaluated when one function definition executes."""
+    expressions: list[ast.AST] = [
+        *node.decorator_list,
+        *node.args.defaults,
+        *(item for item in node.args.kw_defaults if item is not None),
+    ]
+    if not annotations_eager:
+        return expressions
+    arguments = [
+        *getattr(node.args, "posonlyargs", ()),
+        *node.args.args,
+        *node.args.kwonlyargs,
+    ]
+    if node.args.vararg is not None:
+        arguments.append(node.args.vararg)
+    if node.args.kwarg is not None:
+        arguments.append(node.args.kwarg)
+    expressions.extend(
+        argument.annotation
+        for argument in arguments
+        if argument.annotation is not None
+    )
+    if node.returns is not None:
+        expressions.append(node.returns)
+    return expressions
+
+
+def _module_annotations_are_eager(tree: ast.Module) -> bool:
+    return not any(
+        isinstance(statement, ast.ImportFrom)
+        and statement.module == "__future__"
+        and any(alias.name == "annotations" for alias in statement.names)
+        for statement in tree.body
+    )
+
+
 class _RuntimeCallVisitor(ast.NodeVisitor):
     """Collect calls evaluated while a module is imported.
 
@@ -617,19 +669,19 @@ class _RuntimeCallVisitor(ast.NodeVisitor):
     are evaluated at definition time. Class bodies execute at import time.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, *, annotations_eager: bool = True) -> None:
         self.calls: list[ast.Call] = []
+        self.annotations_eager = annotations_eager
 
     def visit_Call(self, node: ast.Call) -> None:  # noqa: N802
         self.calls.append(node)
         self.generic_visit(node)
 
     def _visit_function_header(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
-        for item in [*node.decorator_list, *node.args.defaults, *node.args.kw_defaults]:
-            if item is not None:
-                self.visit(item)
-        if node.returns:
-            self.visit(node.returns)
+        for item in _function_header_expressions(
+            node, annotations_eager=self.annotations_eager
+        ):
+            self.visit(item)
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:  # noqa: N802
         self._visit_function_header(node)
@@ -644,7 +696,9 @@ class _RuntimeCallVisitor(ast.NodeVisitor):
 
 
 def import_time_calls(tree: ast.Module) -> list[ast.Call]:
-    visitor = _RuntimeCallVisitor()
+    visitor = _RuntimeCallVisitor(
+        annotations_eager=_module_annotations_are_eager(tree)
+    )
     for statement in tree.body:
         if isinstance(statement, ast.If) and is_valid_main_guard_test(statement.test):
             for alternate in statement.orelse:
@@ -655,7 +709,9 @@ def import_time_calls(tree: ast.Module) -> list[ast.Call]:
 
 
 def guarded_calls(tree: ast.Module) -> list[ast.Call]:
-    visitor = _RuntimeCallVisitor()
+    visitor = _RuntimeCallVisitor(
+        annotations_eager=_module_annotations_are_eager(tree)
+    )
     for statement in tree.body:
         if isinstance(statement, ast.If) and is_valid_main_guard_test(statement.test):
             for guarded_statement in statement.body:
@@ -768,6 +824,8 @@ def classify_call(
     if leaf in READ_LEAF_CALLS and (
         "path" in normalized or normalized.startswith("json.") or normalized.startswith("pickle.")
     ):
+        categories.add("filesystem_read")
+    if normalized in TABULAR_FILESYSTEM_READ_CALLS:
         categories.add("filesystem_read")
     if normalized.startswith("os.") and leaf in {
         "remove", "unlink", "rename", "replace", "mkdir", "makedirs", "rmdir",
@@ -1461,10 +1519,13 @@ def _bounded_sys_path_updates(
     aliases = collect_aliases(tree)
     variables = _static_path_variables(tree, source_path, aliases)
     parents = _ast_parent_map(tree)
-    reached, unknown, known = _invoked_local_definition_reachability(tree)
+    reached, unknown, known, module_incomplete = (
+        _invoked_local_definition_reachability(tree)
+    )
     execution_states, execution_incomplete = _definition_execution_reachability(
         tree, reached, unknown
     )
+    execution_incomplete = execution_incomplete or module_incomplete
     roots: set[tuple[tuple[int, int], str]] = set()
     incomplete_positions: set[tuple[int, int]] = set()
     for node in ast.walk(tree):
@@ -2274,6 +2335,7 @@ def _invoked_local_definition_reachability(
     set[tuple[str | None, str]],
     set[tuple[str | None, str]],
     set[tuple[str | None, str]],
+    bool,
 ]:
     functions = {
         node.name: node
@@ -2289,68 +2351,63 @@ def _invoked_local_definition_reachability(
         for item in class_node.body
         if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))
     }
-    aliases = collect_aliases(tree)
-    parents = _ast_parent_map(tree)
-    states: dict[tuple[str | None, str], str] = {}
-    queue: list[tuple[tuple[str | None, str], str]] = []
-
-    def enqueue(target: tuple[str | None, str], state: str) -> None:
-        previous = states.get(target)
-        if previous == "reached" or previous == state:
-            return
-        states[target] = state
-        queue.append((target, state))
-
-    for node in ast.walk(tree):
-        if not isinstance(node, ast.Call) or _nearest_function_owner(node, parents):
-            continue
-        state = "unknown" if _control_flow_between(node, None, parents) else "reached"
-        class_owner: str | None = None
-        current: ast.AST = node
-        while id(current) in parents:
-            current = parents[id(current)]
-            if isinstance(current, ast.ClassDef):
-                class_owner = current.name
-                break
-        for target in _local_call_targets(
-            node, aliases, set(functions), set(classes), class_owner
-        ):
-            enqueue(target, state)
-
-    while queue:
-        (class_name, definition_name), state = queue.pop(0)
-        if class_name is None:
-            definition = functions.get(definition_name)
-            owner = None
-        else:
-            definition, owner, _incomplete = _resolve_imported_method(
-                classes, class_name, definition_name
-            )
-        if definition is None:
-            continue
-        for node in ast.walk(definition):
-            if (
-                not isinstance(node, ast.Call)
-                or _nearest_function_owner(node, parents) is not definition
-            ):
-                continue
-            child_state = (
-                "unknown"
-                if state == "unknown"
-                or _control_flow_between(node, definition, parents)
-                else "reached"
-            )
-            for target in _local_call_targets(
-                node, aliases, set(functions), set(classes), owner
-            ):
-                enqueue(target, child_state)
-    reached = {target for target, state in states.items() if state == "reached"}
-    unknown = {target for target, state in states.items() if state == "unknown"}
-    return reached, unknown, known
+    wrapper = ast.FunctionDef(
+        name="__p541b_module_scope__",
+        args=ast.arguments(
+            posonlyargs=[],
+            args=[],
+            vararg=None,
+            kwonlyargs=[],
+            kw_defaults=[],
+            kwarg=None,
+            defaults=[],
+        ),
+        body=list(tree.body),
+        decorator_list=[],
+        returns=None,
+        type_comment=None,
+    )
+    wrapper.lineno = 0
+    wrapper.col_offset = 0
+    wrapper.end_lineno = 0
+    wrapper.end_col_offset = 0
+    definition_states: dict[int, str] = {}
+    _nodes, _node_states, _call_states, incomplete = (
+        _definition_execution_nodes(
+            wrapper,
+            collect_aliases(tree),
+            None,
+            functions,
+            classes,
+            definition_states=definition_states,
+        )
+    )
+    target_nodes: dict[tuple[str | None, str], ast.AST] = {
+        (None, name): node for name, node in functions.items()
+    }
+    target_nodes.update({
+        (class_name, item.name): item
+        for class_name, class_node in classes.items()
+        for item in class_node.body
+        if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))
+    })
+    reached = {
+        target
+        for target, node in target_nodes.items()
+        if definition_states.get(id(node)) == "reached"
+    }
+    unknown = {
+        target
+        for target, node in target_nodes.items()
+        if definition_states.get(id(node)) == "unknown"
+    }
+    return reached, unknown, known, incomplete
 
 
 def _eager_execution_nodes(
     definition: ast.FunctionDef | ast.AsyncFunctionDef,
+    *,
+    annotations_eager: bool,
 ) -> list[ast.AST]:
     """Nodes that unconditionally execute whenever ``definition`` runs.
 
@@ -2368,14 +2425,18 @@ def _eager_execution_nodes(
     while todo:
         node = todo.pop(0)
         nodes.append(node)
+        if node is definition:
+            # The definition's own header was evaluated when its enclosing
+            # scope created it.  Invoking the function executes only its body.
+            todo.extend(node.body)
+            continue
         if node is not definition and isinstance(
             node, (ast.FunctionDef, ast.AsyncFunctionDef)
         ):
-            todo.extend(node.decorator_list)
             todo.extend(
-                default
-                for default in (*node.args.defaults, *node.args.kw_defaults)
-                if default is not None
+                _function_header_expressions(
+                    node, annotations_eager=annotations_eager
+                )
             )
             continue
         if isinstance(node, ast.Lambda):
@@ -2404,10 +2465,14 @@ def _definition_execution_nodes(
     ] | None = None,
     module_classes: dict[str, ast.ClassDef] | None = None,
     project_binding_names: set[str] | None = None,
+    definition_states: dict[int, str] | None = None,
 ) -> tuple[list[ast.AST], dict[int, str], dict[int, str], bool]:
     """Expand nested callables with lexical scope and explicit resolution state."""
     module_functions = module_functions or {}
     module_classes = module_classes or {}
+    definition_states = (
+        definition_states if definition_states is not None else {}
+    )
     if project_binding_names is None:
         # Callers without repository-resolution context remain conservative.
         project_binding_names = set(aliases)
@@ -2452,6 +2517,7 @@ def _definition_execution_nodes(
     scope_special_bindings: dict[
         int, dict[str, list[dict[str, Any]]]
     ] = {}
+    scope_iterable_events: dict[int, list[dict[str, Any]]] = {}
 
     def lexical_owner(node: ast.AST) -> ast.AST | None:
         current = node
@@ -2648,7 +2714,7 @@ def _definition_execution_nodes(
     indexed_roots: set[int] = set()
 
     def add_special_binding(
-        scope: ast.FunctionDef | ast.AsyncFunctionDef,
+        scope: ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef,
         name: str,
         *,
         kind: str,
@@ -2682,7 +2748,10 @@ def _definition_execution_nodes(
             if candidate is root:
                 continue
             candidate_scope = lexical_owner(candidate)
-            if isinstance(candidate_scope, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            if isinstance(
+                candidate_scope,
+                (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef),
+            ):
                 if isinstance(candidate, (ast.For, ast.AsyncFor)):
                     for name in sorted(bound_target_names(candidate.target)):
                         add_special_binding(
@@ -2760,10 +2829,52 @@ def _definition_execution_nodes(
                 if inside_lambda:
                     continue
                 value, targets = candidate.value, [candidate.target]
+            elif isinstance(candidate, ast.AugAssign):
+                scope = lexical_owner(candidate)
+                if isinstance(
+                    scope,
+                    (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef),
+                ):
+                    scope_iterable_events.setdefault(id(scope), []).append({
+                        "kind": "augassign",
+                        "event": candidate,
+                        "target": candidate.target,
+                        "value": candidate.value,
+                        "conditional": _control_flow_between(
+                            candidate, scope, parents
+                        ),
+                    })
+                continue
             else:
+                if isinstance(candidate, ast.Call):
+                    scope = lexical_owner(candidate)
+                    current: ast.AST = candidate
+                    inside_lambda = False
+                    while id(current) in parents:
+                        current = parents[id(current)]
+                        if current is scope:
+                            break
+                        if isinstance(current, ast.Lambda):
+                            inside_lambda = True
+                            break
+                    if isinstance(
+                        scope,
+                        (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef),
+                    ) and not inside_lambda:
+                        scope_iterable_events.setdefault(id(scope), []).append({
+                            "kind": "call",
+                            "event": candidate,
+                            "call": candidate,
+                            "conditional": _control_flow_between(
+                                candidate, scope, parents
+                            ),
+                        })
                 continue
             scope = lexical_owner(candidate)
-            if not isinstance(scope, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            if not isinstance(
+                scope,
+                (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef),
+            ):
                 continue
             conditional = _control_flow_between(candidate, scope, parents)
             if isinstance(candidate, ast.NamedExpr):
@@ -2780,6 +2891,26 @@ def _definition_execution_nodes(
                     scope_assignments.setdefault(id(scope), {}).setdefault(
                         target.id, []
                     ).append((value, conditional, candidate))
+                    scope_iterable_events.setdefault(id(scope), []).append({
+                        "kind": "bind",
+                        "event": candidate,
+                        "target": target,
+                        "value": value,
+                        "conditional": conditional,
+                        "value_identity": id(value),
+                    })
+                    continue
+                if isinstance(target, (ast.Tuple, ast.List, ast.Starred)):
+                    for name in sorted(target_bound_names):
+                        add_special_binding(
+                            scope,
+                            name,
+                            kind="destructure",
+                            source=value,
+                            target=target,
+                            event=candidate,
+                            owner=candidate,
+                        )
                     continue
                 storage = storage_reference(target)
                 if storage is not None and storage[1]:
@@ -2789,6 +2920,13 @@ def _definition_execution_nodes(
                     ).setdefault(path, []).append((
                         value, conditional, candidate
                     ))
+                    scope_iterable_events.setdefault(id(scope), []).append({
+                        "kind": "storage_write",
+                        "event": candidate,
+                        "target": target,
+                        "value": value,
+                        "conditional": conditional,
+                    })
         for definitions in scope_definitions.values():
             for values in definitions.values():
                 values.sort(
@@ -2802,8 +2940,10 @@ def _definition_execution_nodes(
     index_scope_root(definition)
 
     def parameter_names(
-        function: ast.FunctionDef | ast.AsyncFunctionDef,
+        function: ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef,
     ) -> set[str]:
+        if isinstance(function, ast.ClassDef):
+            return set()
         result = {
             argument.arg
             for argument in (
@@ -2827,6 +2967,37 @@ def _definition_execution_nodes(
             current = parents[id(current)]
             if isinstance(current, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 result.append(current)
+        return result
+
+    def resolution_scope_chain(
+        current_definition: ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef,
+        use: ast.AST,
+    ) -> list[ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef]:
+        """Return lexical bindings visible at ``use`` without method leakage."""
+        result: list[
+            ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef
+        ] = []
+        current = use
+        while id(current) in parents:
+            current = parents[id(current)]
+            if isinstance(
+                current,
+                (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef),
+            ):
+                result.append(current)
+                if current is current_definition:
+                    break
+                if isinstance(current, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    # A function body never closes over an enclosing class
+                    # namespace.  Its enclosing function scopes are appended
+                    # below from the exact definition chain instead.
+                    break
+        if isinstance(current_definition, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            for scope in function_scope_chain(current_definition):
+                if scope not in result:
+                    result.append(scope)
+        elif current_definition not in result:
+            result.append(current_definition)
         return result
 
     def definition_class_owner(node: ast.AST) -> ast.ClassDef | None:
@@ -3097,7 +3268,9 @@ def _definition_execution_nodes(
 
     def raw_name_sources(
         name: str,
-        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+        current_definition: (
+            ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef
+        ),
         use: ast.AST,
         seen: frozenset[tuple[str, int]],
     ) -> tuple[list[ast.AST], str, bool]:
@@ -3116,12 +3289,26 @@ def _definition_execution_nodes(
             )
             return sources, status, True
 
-        for scope in function_scope_chain(current_definition):
+        for scope in resolution_scope_chain(current_definition, use):
             assignments = scope_assignments.get(id(scope), {}).get(name, [])
             definitions = scope_definitions.get(id(scope), {}).get(name, [])
+            destructuring = [
+                record
+                for record in scope_special_bindings.get(id(scope), {}).get(
+                    name, []
+                )
+                if record["kind"] == "destructure"
+                and occurs_before(record["event"], use)
+            ]
             is_parameter = name in parameter_names(scope)
             is_bound = name in scope_bound_names.get(id(scope), set())
-            if not assignments and not definitions and not is_parameter and not is_bound:
+            if (
+                not assignments
+                and not definitions
+                and not destructuring
+                and not is_parameter
+                and not is_bound
+            ):
                 continue
             key = (f"raw-name:{name}", id(scope))
             if key in seen:
@@ -3148,16 +3335,326 @@ def _definition_execution_nodes(
                     status = "complete"
             if conditional:
                 status = "incomplete"
-            if not events and not is_parameter:
+            for record in destructuring:
+                extracted, extracted_status = destructured_sources(
+                    record["target"],
+                    record["source"],
+                    name,
+                    current_definition,
+                    use,
+                    seen | {key},
+                )
+                if record.get("conditional") and conditional_at_use(
+                    record["event"], use
+                ):
+                    values.extend(extracted)
+                    status = "incomplete"
+                else:
+                    values = list(extracted)
+                    status = extracted_status
+            if not events and not destructuring and not is_parameter:
                 return [], "incomplete", True
             if not values and status == "not_local":
                 status = "incomplete"
             return raw_deduplicate(values), status, True
         return [], "not_local", False
 
+    def root_reference_name(node: ast.AST) -> str | None:
+        current = node
+        while isinstance(current, (ast.Attribute, ast.Subscript)):
+            current = current.value
+        return current.id if isinstance(current, ast.Name) else None
+
+    def mutable_name_iterable_elements(
+        name: str,
+        current_definition: (
+            ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef
+        ),
+        use: ast.AST,
+        seen: frozenset[tuple[str, int]],
+    ) -> tuple[list[ast.AST], str, str] | None:
+        """Reconstruct a name-bound iterable through reaching alias mutations."""
+        binding_scope: (
+            ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef | None
+        ) = None
+        for scope in resolution_scope_chain(current_definition, use):
+            if name in scope_assignments.get(id(scope), {}):
+                binding_scope = scope
+                break
+        if binding_scope is None:
+            return None
+        events = scope_iterable_events.get(id(binding_scope), [])
+        if not events:
+            return None
+        guard = (f"mutable-name:{name}", id(binding_scope))
+        if guard in seen:
+            return [], "incomplete", "unknown"
+        next_seen = seen | {guard}
+
+        Token = tuple[str, int, int]
+        bindings: dict[str, set[Token]] = {}
+        token_sources: dict[Token, ast.AST] = {}
+        token_incomplete: dict[Token, bool] = {}
+        token_mutations: dict[Token, list[dict[str, Any]]] = {}
+        binding_uncertain: set[str] = set()
+
+        def current_tokens(reference: ast.AST) -> set[Token]:
+            root_name = root_reference_name(reference)
+            return set(bindings.get(root_name or "", set()))
+
+        def mark_tokens_unknown(tokens: set[Token], event: ast.AST) -> None:
+            for token in tokens:
+                token_mutations.setdefault(token, []).append({
+                    "kind": "unknown",
+                    "event": event,
+                    "conditional": True,
+                })
+
+        read_only_methods = frozenset({
+            "__contains__", "copy", "count", "get", "index", "isdisjoint",
+            "issubset", "issuperset", "items", "keys", "values",
+        })
+        safe_consumers = frozenset({
+            "all", "any", "enumerate", "frozenset", "iter", "len", "list",
+            "max", "min", "print", "reversed", "set", "sorted", "sum",
+            "tuple", "zip",
+        })
+
+        ordered_events = sorted(
+            (
+                event
+                for event in events
+                if occurs_before(event["event"], use)
+            ),
+            key=lambda item: (
+                *_node_position(item["event"]),
+                {"bind": 0, "augassign": 1}.get(item["kind"], 2),
+                ast.dump(item["event"], include_attributes=False),
+            ),
+        )
+        for record in ordered_events:
+            event = record["event"]
+            conditional = bool(record.get("conditional")) and (
+                conditional_at_use(event, use)
+            )
+            kind = record["kind"]
+            if kind == "bind":
+                target = record["target"]
+                if not isinstance(target, ast.Name):
+                    continue
+                value = record["value"]
+                if isinstance(value, ast.Name) and value.id in bindings:
+                    new_tokens = set(bindings[value.id])
+                else:
+                    token = (
+                        "value",
+                        int(record["value_identity"]),
+                        id(event),
+                    )
+                    token_sources.setdefault(token, value)
+                    token_incomplete.setdefault(
+                        token,
+                        isinstance(value, ast.Name),
+                    )
+                    new_tokens = {token}
+                if conditional:
+                    bindings.setdefault(target.id, set()).update(new_tokens)
+                    binding_uncertain.add(target.id)
+                    for token in new_tokens:
+                        token_incomplete[token] = True
+                else:
+                    bindings[target.id] = new_tokens
+                    binding_uncertain.discard(target.id)
+                continue
+
+            if kind == "augassign":
+                target = record["target"]
+                tokens = current_tokens(target)
+                if not tokens:
+                    continue
+                mutation_kind = (
+                    "extend"
+                    if isinstance(target, ast.Name)
+                    and isinstance(event.op, ast.Add)
+                    else "unknown"
+                )
+                for token in tokens:
+                    token_mutations.setdefault(token, []).append({
+                        "kind": mutation_kind,
+                        "event": event,
+                        "value": record["value"],
+                        "conditional": conditional,
+                    })
+                    if conditional or mutation_kind == "unknown":
+                        token_incomplete[token] = True
+                continue
+
+            if kind == "storage_write":
+                mark_tokens_unknown(current_tokens(record["target"]), event)
+                continue
+
+            assert kind == "call"
+            call = record["call"]
+            handled_method = False
+            if isinstance(call.func, ast.Attribute):
+                tokens = current_tokens(call.func.value)
+                if tokens:
+                    handled_method = True
+                    method = call.func.attr
+                    mutation: dict[str, Any]
+                    if method == "append" and len(call.args) == 1 and not call.keywords:
+                        mutation = {
+                            "kind": "append",
+                            "value": call.args[0],
+                        }
+                    elif method == "extend" and len(call.args) == 1 and not call.keywords:
+                        mutation = {
+                            "kind": "extend",
+                            "value": call.args[0],
+                        }
+                    elif method == "update" and len(call.args) <= 1:
+                        update_values: list[ast.AST] = list(call.args)
+                        if call.keywords:
+                            if any(item.arg is None for item in call.keywords):
+                                update_values = []
+                            else:
+                                update_values.append(
+                                    ast.copy_location(
+                                        ast.Dict(
+                                            keys=[
+                                                ast.Constant(value=item.arg)
+                                                for item in call.keywords
+                                            ],
+                                            values=[item.value for item in call.keywords],
+                                        ),
+                                        call,
+                                    )
+                                )
+                        mutation = {
+                            "kind": (
+                                "dict_update"
+                                if update_values or not call.args and not call.keywords
+                                else "unknown"
+                            ),
+                            "values": update_values,
+                        }
+                    elif method in read_only_methods:
+                        mutation = {"kind": "none"}
+                    elif method in {"add", "insert"} and call.args:
+                        mutation = {
+                            "kind": "append",
+                            "value": call.args[-1],
+                            "force_incomplete": True,
+                        }
+                    else:
+                        mutation = {"kind": "unknown"}
+                    if mutation["kind"] != "none":
+                        for token in tokens:
+                            token_mutations.setdefault(token, []).append({
+                                **mutation,
+                                "event": event,
+                                "conditional": conditional,
+                            })
+                            if (
+                                conditional
+                                or mutation["kind"] == "unknown"
+                                or mutation.get("force_incomplete")
+                            ):
+                                token_incomplete[token] = True
+            if handled_method:
+                continue
+
+            resolved_call = (_dotted_name(call.func, aliases) or "").replace(
+                "()", ""
+            )
+            if resolved_call in safe_consumers:
+                continue
+            referenced_names = {
+                item.id
+                for value in [
+                    *call.args,
+                    *(keyword.value for keyword in call.keywords),
+                ]
+                for item in ast.walk(value)
+                if isinstance(item, ast.Name) and isinstance(item.ctx, ast.Load)
+            }
+            for referenced_name in referenced_names:
+                mark_tokens_unknown(
+                    set(bindings.get(referenced_name, set())), event
+                )
+
+        final_tokens = set(bindings.get(name, set()))
+        if not final_tokens:
+            return [], "incomplete", "unknown"
+        elements: list[ast.AST] = []
+        status = "incomplete" if (
+            len(final_tokens) > 1 or name in binding_uncertain
+        ) else "complete"
+        orders: set[str] = set()
+        for token in sorted(final_tokens):
+            source = token_sources.get(token)
+            if source is None:
+                status = "incomplete"
+                orders.add("unknown")
+                continue
+            base, base_status, order = bounded_iterable_elements(
+                source,
+                current_definition,
+                source,
+                next_seen,
+            )
+            token_elements = list(base)
+            token_status = base_status
+            if token_incomplete.get(token):
+                token_status = "incomplete"
+            for mutation in token_mutations.get(token, []):
+                mutation_kind = mutation["kind"]
+                if mutation_kind == "append":
+                    token_elements.append(mutation["value"])
+                    if mutation.get("conditional") or mutation.get(
+                        "force_incomplete"
+                    ):
+                        token_status = "incomplete"
+                        order = "unknown"
+                elif mutation_kind in {"extend", "dict_update"}:
+                    values = (
+                        [mutation["value"]]
+                        if mutation_kind == "extend"
+                        else mutation.get("values", [])
+                    )
+                    if not values and mutation_kind == "dict_update":
+                        continue
+                    for extension in values:
+                        expanded, expanded_status, expanded_order = (
+                            bounded_iterable_elements(
+                                extension,
+                                current_definition,
+                                mutation["event"],
+                                next_seen,
+                            )
+                        )
+                        token_elements.extend(expanded)
+                        token_status = merge_status(
+                            token_status, expanded_status
+                        )
+                        if expanded_order != "ordered":
+                            order = "unknown"
+                    if mutation.get("conditional"):
+                        token_status = "incomplete"
+                else:
+                    token_status = "incomplete"
+                    order = "unknown"
+            elements.extend(token_elements)
+            status = merge_status(status, token_status)
+            orders.add(order)
+        order = orders.pop() if len(orders) == 1 else "unknown"
+        return raw_deduplicate(elements), status, order
+
     def bounded_iterable_elements(
         value: ast.AST,
-        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+        current_definition: (
+            ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef
+        ),
         use: ast.AST,
         seen: frozenset[tuple[str, int]] = frozenset(),
     ) -> tuple[list[ast.AST], str, str]:
@@ -3205,8 +3702,16 @@ def _definition_execution_nodes(
             return raw_deduplicate(elements), status, "ordered"
 
         if isinstance(value, ast.Name):
+            reconstructed = mutable_name_iterable_elements(
+                value.id,
+                current_definition,
+                use,
+                next_seen,
+            )
+            if reconstructed is not None:
+                return reconstructed
             sources, source_status, local = raw_name_sources(
-                value.id, current_definition, value, next_seen
+                value.id, current_definition, use, next_seen
             )
             if not local:
                 return [], "incomplete", "unknown"
@@ -3243,6 +3748,43 @@ def _definition_execution_nodes(
                 order,
             )
         return [], "incomplete", "unknown"
+
+    def modeled_iterable_mutation_call(
+        call: ast.Call,
+        current_definition: (
+            ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef
+        ),
+    ) -> str | None:
+        if not isinstance(call.func, ast.Attribute):
+            return None
+        if call.func.attr not in {
+            "add", "append", "clear", "extend", "insert", "pop", "remove",
+            "reverse", "setdefault", "sort", "update",
+        }:
+            return None
+        if not isinstance(call.func.value, ast.Name):
+            return None
+        binding_scope = next(
+            (
+                scope
+                for scope in resolution_scope_chain(current_definition, call)
+                if call.func.value.id
+                in scope_assignments.get(id(scope), {})
+            ),
+            None,
+        )
+        if binding_scope is None:
+            return None
+        reconstructed = mutable_name_iterable_elements(
+            call.func.value.id,
+            current_definition,
+            call,
+            frozenset(),
+        )
+        if reconstructed is None or reconstructed[2] == "unknown":
+            return None
+        active_scope = resolution_scope_chain(current_definition, call)[0]
+        return "modeled" if binding_scope is active_scope else "incomplete"
 
     def iteration_target_sources(
         source: ast.AST,
@@ -3300,7 +3842,7 @@ def _definition_execution_nodes(
     def special_binding_event(
         record: dict[str, Any],
         name: str,
-        scope: ast.FunctionDef | ast.AsyncFunctionDef,
+        scope: ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef,
         use: ast.AST,
         seen: frozenset[tuple[str, int]],
     ) -> dict[str, Any] | None:
@@ -3308,6 +3850,27 @@ def _definition_execution_nodes(
         owner = record["owner"]
         event = record["event"]
         owner_conditional = _control_flow_between(owner, scope, parents)
+
+        if kind == "destructure":
+            if not occurs_before(event, use):
+                return None
+            sources, status = destructured_sources(
+                record["target"],
+                record["source"],
+                name,
+                scope,
+                use,
+                seen,
+            )
+            conditional = owner_conditional and conditional_at_use(event, use)
+            return {
+                "event": event,
+                "conditional": conditional,
+                "sources": sources,
+                "status": (
+                    "incomplete" if conditional else status
+                ),
+            }
 
         if kind in {"for", "async_for"}:
             assert isinstance(owner, (ast.For, ast.AsyncFor))
@@ -3395,7 +3958,10 @@ def _definition_execution_nodes(
     def resolve_source_values(
         sources: list[ast.AST],
         source_status: str,
-        scope: ast.FunctionDef | ast.AsyncFunctionDef,
+        current_definition: (
+            ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef
+        ),
+        current_owner: ast.ClassDef | None,
         seen: frozenset[tuple[str, int]],
     ) -> tuple[list[tuple[str, ast.AST, ast.ClassDef | None]], str]:
         values: list[tuple[str, ast.AST, ast.ClassDef | None]] = []
@@ -3403,8 +3969,8 @@ def _definition_execution_nodes(
         for source in sources:
             resolved, resolved_status = resolve_value(
                 source,
-                scope,
-                definition_class_owner(scope),
+                current_definition,
+                current_owner,
                 seen,
             )
             if resolved_status == "not_local":
@@ -3448,9 +4014,12 @@ def _definition_execution_nodes(
 
     def storage_scope(
         root_name: str,
-        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
-    ) -> ast.FunctionDef | ast.AsyncFunctionDef | None:
-        for scope in function_scope_chain(current_definition):
+        current_definition: (
+            ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef
+        ),
+        use: ast.AST,
+    ) -> ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef | None:
+        for scope in resolution_scope_chain(current_definition, use):
             if (
                 root_name in scope_definitions.get(id(scope), {})
                 or root_name in scope_assignments.get(id(scope), {})
@@ -3462,17 +4031,19 @@ def _definition_execution_nodes(
 
     def storage_records(
         reference: tuple[str, tuple[tuple[str, str], ...]],
-        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+        current_definition: (
+            ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef
+        ),
         use: ast.AST,
         *,
         whole_owner: bool = False,
     ) -> tuple[
         list[tuple[ast.AST, bool, ast.AST]],
         bool,
-        ast.FunctionDef | ast.AsyncFunctionDef | None,
+        ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef | None,
     ]:
         root_name, requested_path = reference
-        scope = storage_scope(root_name, current_definition)
+        scope = storage_scope(root_name, current_definition, use)
         if scope is None:
             return [], False, None
         paths = scope_stored_values.get(id(scope), {}).get(root_name, {})
@@ -3498,7 +4069,9 @@ def _definition_execution_nodes(
 
     def resolve_storage_values(
         reference: tuple[str, tuple[tuple[str, str], ...]],
-        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+        current_definition: (
+            ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef
+        ),
         current_owner: ast.ClassDef | None,
         use: ast.AST,
         seen: frozenset[tuple[str, int]],
@@ -3523,8 +4096,8 @@ def _definition_execution_nodes(
         for stored, _conditional, _event in records:
             resolved, stored_status = resolve_value(
                 stored,
-                scope,
-                definition_class_owner(scope),
+                current_definition,
+                current_owner,
                 seen | {key},
             )
             if stored_status == "not_local":
@@ -3572,7 +4145,9 @@ def _definition_execution_nodes(
 
     def resolve_name(
         name: str,
-        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+        current_definition: (
+            ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef
+        ),
         current_owner: ast.ClassDef | None,
         use: ast.AST,
         seen: frozenset[tuple[str, int]],
@@ -3597,10 +4172,11 @@ def _definition_execution_nodes(
                 sources,
                 source_status,
                 current_definition,
+                current_owner,
                 seen | {key},
             )
 
-        for scope in function_scope_chain(current_definition):
+        for scope in resolution_scope_chain(current_definition, use):
             definitions = scope_definitions.get(id(scope), {}).get(name, [])
             assignments = scope_assignments.get(id(scope), {}).get(name, [])
             special_bindings = scope_special_bindings.get(id(scope), {}).get(
@@ -3674,7 +4250,8 @@ def _definition_execution_nodes(
                     resolved, event_status = resolve_source_values(
                         event_sources,
                         event["status"],
-                        scope,
+                        current_definition,
+                        current_owner,
                         seen | {key},
                     )
                 if event["conditional"]:
@@ -3700,7 +4277,9 @@ def _definition_execution_nodes(
 
     def resolve_value(
         value: ast.AST | None,
-        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+        current_definition: (
+            ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef
+        ),
         current_owner: ast.ClassDef | None,
         seen: frozenset[tuple[str, int]] = frozenset(),
     ) -> tuple[list[tuple[str, ast.AST, ast.ClassDef | None]], str]:
@@ -3804,24 +4383,20 @@ def _definition_execution_nodes(
             status = called_status
             for kind, target, target_owner in called_values:
                 if kind == "class" and isinstance(target, ast.ClassDef):
-                    constructor, _method_owner, constructor_incomplete = (
-                        _resolve_imported_method(
-                            {target.name: target}, target.name, "__init__"
+                    constructors, constructor_status = (
+                        resolve_local_class_construction(
+                            value,
+                            target,
+                            current_definition,
+                            current_owner,
                         )
                     )
-                    if constructor is not None:
-                        status = merge_status(
-                            status,
-                            bind_invocation(
-                                value,
-                                constructor,
-                                target,
-                                current_definition,
-                                current_owner,
-                            ),
-                        )
-                    if constructor_incomplete:
-                        status = "incomplete"
+                    # The executable-call pass enqueues these exact targets;
+                    # value resolution still performs argument binding so an
+                    # instance carried through aliases retains constructor
+                    # parameter provenance.
+                    _ = constructors
+                    status = merge_status(status, constructor_status)
                     results.append(("instance", target, None))
                 elif kind == "callable" and isinstance(
                     target, (ast.FunctionDef, ast.AsyncFunctionDef)
@@ -3937,7 +4512,9 @@ def _definition_execution_nodes(
         call: ast.Call,
         target: ast.FunctionDef | ast.AsyncFunctionDef,
         target_owner: ast.ClassDef | None,
-        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+        current_definition: (
+            ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef
+        ),
         current_owner: ast.ClassDef | None,
     ) -> str:
         index_scope_root(target)
@@ -3967,7 +4544,7 @@ def _definition_execution_nodes(
                 list[
                     tuple[
                         ast.AST,
-                        ast.FunctionDef | ast.AsyncFunctionDef,
+                        ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef,
                         ast.ClassDef | None,
                     ]
                 ],
@@ -4113,9 +4690,850 @@ def _definition_execution_nodes(
         finally:
             binding_in_progress.discard(guard)
 
+    def resolve_local_class_construction(
+        call: ast.Call,
+        target: ast.ClassDef,
+        current_definition: (
+            ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef
+        ),
+        current_owner: ast.ClassDef | None,
+    ) -> tuple[
+        list[tuple[ast.FunctionDef | ast.AsyncFunctionDef, ast.ClassDef]],
+        str,
+    ]:
+        """Resolve the bounded eager behavior of one exact local class call.
+
+        Python class construction is not equivalent to invoking every method
+        on the class.  A call reaches only the effective metaclass ``__call__``
+        (when locally overridden) and the first ``__new__``/``__init__`` found
+        in the class MRO.  This resolver therefore builds a bounded local C3
+        MRO, rejects any external or dynamic construction input, and preserves
+        only those constructor definitions as reached targets.
+        """
+
+        def evaluation_scope(
+            class_node: ast.ClassDef,
+        ) -> ast.FunctionDef | ast.AsyncFunctionDef:
+            current: ast.AST = class_node
+            while id(current) in parents:
+                current = parents[id(current)]
+                if isinstance(current, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    return current
+            return definition
+
+        def evaluation_owner(class_node: ast.ClassDef) -> ast.ClassDef | None:
+            current: ast.AST = class_node
+            while id(current) in parents:
+                current = parents[id(current)]
+                if isinstance(current, ast.ClassDef):
+                    return current
+                if isinstance(current, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    return None
+            return None
+
+        # Constructor lookup needs the class's complete lexical tree.  The
+        # caller may be a different function (for example, module-level class
+        # ``C`` constructed inside ``main``), so the caller-rooted ``parents``
+        # map cannot decide whether a method binding is direct or conditional.
+        # Build an effective class-dictionary environment in source order for
+        # each class participating in construction instead.
+        class_binding_cache: dict[int, dict[str, dict[str, Any]]] = {}
+
+        def empty_class_binding() -> dict[str, Any]:
+            return {
+                "targets": [],
+                "unknown": False,
+                "absent": True,
+                "incomplete": False,
+            }
+
+        def copy_class_binding(binding: dict[str, Any]) -> dict[str, Any]:
+            return {
+                "targets": list(binding["targets"]),
+                "unknown": bool(binding["unknown"]),
+                "absent": bool(binding["absent"]),
+                "incomplete": bool(binding["incomplete"]),
+            }
+
+        def copy_class_environment(
+            environment: dict[str, dict[str, Any]],
+        ) -> dict[str, dict[str, Any]]:
+            return {
+                name: copy_class_binding(binding)
+                for name, binding in environment.items()
+            }
+
+        def ordered_constructor_targets(
+            targets: Iterable[ast.FunctionDef | ast.AsyncFunctionDef],
+        ) -> list[ast.FunctionDef | ast.AsyncFunctionDef]:
+            unique = {id(target): target for target in targets}
+            return sorted(
+                unique.values(),
+                key=lambda item: (
+                    getattr(item, "lineno", 0),
+                    getattr(item, "col_offset", 0),
+                    item.name,
+                ),
+            )
+
+        def function_class_binding(
+            function: ast.FunctionDef | ast.AsyncFunctionDef,
+        ) -> dict[str, Any]:
+            uncertain = bool(function.decorator_list) or isinstance(
+                function, ast.AsyncFunctionDef
+            )
+            return {
+                # A decorator can be the identity, so retain the raw function
+                # as a possible target while failing closed on its result.
+                "targets": [function],
+                "unknown": uncertain,
+                "absent": False,
+                "incomplete": uncertain,
+            }
+
+        def merge_class_bindings(
+            bindings: Iterable[dict[str, Any]],
+            *,
+            force_incomplete: bool,
+        ) -> dict[str, Any]:
+            values = list(bindings)
+            if not values:
+                return empty_class_binding()
+            targets = ordered_constructor_targets(
+                target
+                for binding in values
+                for target in binding["targets"]
+            )
+            return {
+                "targets": targets,
+                "unknown": any(binding["unknown"] for binding in values),
+                "absent": any(binding["absent"] for binding in values),
+                "incomplete": (
+                    force_incomplete
+                    or len(targets) > 1
+                    or any(binding["incomplete"] for binding in values)
+                ),
+            }
+
+        def class_binding_environment(
+            class_node: ast.ClassDef,
+        ) -> dict[str, dict[str, Any]]:
+            cached = class_binding_cache.get(id(class_node))
+            if cached is not None:
+                return copy_class_environment(cached)
+
+            class_parents = _ast_parent_map(class_node)
+
+            def class_scoped(node: ast.AST) -> bool:
+                current = node
+                while id(current) in class_parents:
+                    current = class_parents[id(current)]
+                    if current is class_node:
+                        return True
+                    if isinstance(
+                        current,
+                        (
+                            ast.FunctionDef,
+                            ast.AsyncFunctionDef,
+                            ast.Lambda,
+                            ast.ClassDef,
+                        ),
+                    ):
+                        return False
+                return False
+
+            def value_binding(
+                value: ast.AST,
+                environment: dict[str, dict[str, Any]],
+            ) -> dict[str, Any]:
+                if isinstance(value, ast.Name):
+                    local = environment.get(value.id)
+                    if local is not None:
+                        result = copy_class_binding(local)
+                        # Assignment itself definitely creates the target
+                        # name, but a possibly absent source is unresolved.
+                        result["unknown"] = (
+                            result["unknown"] or result["absent"]
+                        )
+                        result["incomplete"] = (
+                            result["incomplete"] or result["absent"]
+                        )
+                        result["absent"] = False
+                        return result
+                    module_function = module_functions.get(value.id)
+                    if module_function is not None:
+                        return function_class_binding(module_function)
+                    resolved, resolved_status = resolve_value(
+                        value,
+                        evaluation_scope(class_node),
+                        evaluation_owner(class_node),
+                    )
+                    callable_values = [
+                        target
+                        for kind, target, _target_owner in resolved
+                        if kind == "callable"
+                        and isinstance(
+                            target,
+                            (ast.FunctionDef, ast.AsyncFunctionDef),
+                        )
+                    ]
+                    only_callables = bool(resolved) and len(
+                        callable_values
+                    ) == len(resolved)
+                    if resolved_status == "complete" and only_callables:
+                        bindings = [
+                            function_class_binding(target)
+                            for target in callable_values
+                        ]
+                        merged = merge_class_bindings(
+                            bindings, force_incomplete=len(bindings) != 1
+                        )
+                        merged["absent"] = False
+                        return merged
+                    return {
+                        "targets": ordered_constructor_targets(
+                            callable_values
+                        ),
+                        "unknown": True,
+                        "absent": False,
+                        "incomplete": True,
+                    }
+                if isinstance(value, ast.IfExp):
+                    alternatives = [
+                        value_binding(value.body, environment),
+                        value_binding(value.orelse, environment),
+                    ]
+                    merged = merge_class_bindings(
+                        alternatives, force_incomplete=True
+                    )
+                    merged["unknown"] = (
+                        merged["unknown"] or merged["absent"]
+                    )
+                    merged["absent"] = False
+                    return merged
+                # Descriptors, factories, lambdas, attributes, subscripts,
+                # and arbitrary expressions need semantics beyond an exact
+                # local function identity.  They shadow the MRO but remain
+                # unresolved.
+                return {
+                    "targets": [],
+                    "unknown": True,
+                    "absent": False,
+                    "incomplete": True,
+                }
+
+            def bind_target(
+                environment: dict[str, dict[str, Any]],
+                target: ast.AST,
+                binding: dict[str, Any],
+            ) -> set[str]:
+                if isinstance(target, ast.Name):
+                    environment[target.id] = copy_class_binding(binding)
+                    return {target.id}
+                names = bound_target_names(target)
+                for name in names:
+                    environment[name] = {
+                        "targets": [],
+                        "unknown": True,
+                        "absent": False,
+                        "incomplete": True,
+                    }
+                return names
+
+            def delete_target(
+                environment: dict[str, dict[str, Any]], target: ast.AST
+            ) -> set[str]:
+                names = bound_target_names(target)
+                for name in names:
+                    environment[name] = empty_class_binding()
+                return names
+
+            def unknown_target(
+                environment: dict[str, dict[str, Any]], target: ast.AST
+            ) -> set[str]:
+                names = bound_target_names(target)
+                for name in names:
+                    previous = environment.get(name, empty_class_binding())
+                    environment[name] = {
+                        "targets": list(previous["targets"]),
+                        "unknown": True,
+                        "absent": False,
+                        "incomplete": True,
+                    }
+                return names
+
+            def merge_environments(
+                base: dict[str, dict[str, Any]],
+                branches: list[dict[str, dict[str, Any]]],
+                touched: set[str],
+            ) -> dict[str, dict[str, Any]]:
+                result = copy_class_environment(base)
+                for name in touched:
+                    result[name] = merge_class_bindings(
+                        [
+                            branch.get(name, empty_class_binding())
+                            for branch in branches
+                        ],
+                        force_incomplete=True,
+                    )
+                return result
+
+            def preserve_nested_function_candidates(
+                statement: ast.AST,
+                environment: dict[str, dict[str, Any]],
+                touched: set[str],
+            ) -> None:
+                candidates = sorted(
+                    (
+                        item
+                        for item in ast.walk(statement)
+                        if isinstance(
+                            item,
+                            (ast.FunctionDef, ast.AsyncFunctionDef),
+                        )
+                        and class_scoped(item)
+                    ),
+                    key=lambda item: (
+                        getattr(item, "lineno", 0),
+                        getattr(item, "col_offset", 0),
+                        item.name,
+                    ),
+                )
+                for candidate in candidates:
+                    previous = environment.get(
+                        candidate.name, empty_class_binding()
+                    )
+                    previous["targets"] = ordered_constructor_targets([
+                        *previous["targets"],
+                        candidate,
+                    ])
+                    previous["incomplete"] = True
+                    environment[candidate.name] = previous
+                    touched.add(candidate.name)
+
+            def named_expression_bindings(
+                statement: ast.AST,
+            ) -> list[ast.NamedExpr]:
+                found: list[ast.NamedExpr] = []
+                todo = list(ast.iter_child_nodes(statement))
+                while todo:
+                    item = todo.pop(0)
+                    if isinstance(
+                        item,
+                        (
+                            ast.FunctionDef,
+                            ast.AsyncFunctionDef,
+                            ast.Lambda,
+                            ast.ClassDef,
+                        ),
+                    ):
+                        continue
+                    if isinstance(item, ast.NamedExpr) and class_scoped(item):
+                        found.append(item)
+                    todo.extend(ast.iter_child_nodes(item))
+                return sorted(found, key=_node_position)
+
+            def process_statements(
+                statements: list[ast.stmt],
+                environment: dict[str, dict[str, Any]],
+            ) -> tuple[dict[str, dict[str, Any]], set[str]]:
+                result = copy_class_environment(environment)
+                all_touched: set[str] = set()
+                for statement in statements:
+                    before = copy_class_environment(result)
+                    touched: set[str] = set()
+                    if isinstance(
+                        statement,
+                        (ast.FunctionDef, ast.AsyncFunctionDef),
+                    ):
+                        result[statement.name] = function_class_binding(
+                            statement
+                        )
+                        touched.add(statement.name)
+                    elif isinstance(statement, ast.ClassDef):
+                        result[statement.name] = {
+                            "targets": [],
+                            "unknown": True,
+                            "absent": False,
+                            "incomplete": True,
+                        }
+                        touched.add(statement.name)
+                    elif isinstance(statement, ast.Assign):
+                        binding = value_binding(statement.value, result)
+                        for target in statement.targets:
+                            touched.update(
+                                bind_target(result, target, binding)
+                            )
+                    elif isinstance(statement, ast.AnnAssign):
+                        if statement.value is not None:
+                            touched.update(bind_target(
+                                result,
+                                statement.target,
+                                value_binding(statement.value, result),
+                            ))
+                    elif isinstance(statement, ast.AugAssign):
+                        touched.update(unknown_target(result, statement.target))
+                    elif isinstance(statement, (ast.Import, ast.ImportFrom)):
+                        for alias in statement.names:
+                            name = alias.asname or alias.name.split(".", 1)[0]
+                            result[name] = {
+                                "targets": [],
+                                "unknown": True,
+                                "absent": False,
+                                "incomplete": True,
+                            }
+                            touched.add(name)
+                    elif isinstance(statement, ast.Delete):
+                        for target in statement.targets:
+                            touched.update(delete_target(result, target))
+                    elif isinstance(statement, ast.If):
+                        if isinstance(statement.test, ast.Constant) and isinstance(
+                            statement.test.value, bool
+                        ):
+                            selected = (
+                                statement.body
+                                if statement.test.value
+                                else statement.orelse
+                            )
+                            result, touched = process_statements(
+                                selected, result
+                            )
+                        else:
+                            body, body_touched = process_statements(
+                                statement.body, result
+                            )
+                            alternate, alternate_touched = process_statements(
+                                statement.orelse, result
+                            )
+                            touched = body_touched | alternate_touched
+                            result = merge_environments(
+                                before, [body, alternate], touched
+                            )
+                            preserve_nested_function_candidates(
+                                statement, result, touched
+                            )
+                    elif isinstance(statement, (ast.For, ast.AsyncFor)):
+                        iteration = copy_class_environment(result)
+                        target_touched = unknown_target(
+                            iteration, statement.target
+                        )
+                        body, body_touched = process_statements(
+                            statement.body, iteration
+                        )
+                        body_else, body_else_touched = process_statements(
+                            statement.orelse, body
+                        )
+                        zero_else, zero_else_touched = process_statements(
+                            statement.orelse, result
+                        )
+                        touched = (
+                            target_touched
+                            | body_touched
+                            | body_else_touched
+                            | zero_else_touched
+                        )
+                        result = merge_environments(
+                            before, [body, body_else, zero_else], touched
+                        )
+                        preserve_nested_function_candidates(
+                            statement, result, touched
+                        )
+                    elif isinstance(statement, ast.While):
+                        body, body_touched = process_statements(
+                            statement.body, result
+                        )
+                        body_else, body_else_touched = process_statements(
+                            statement.orelse, body
+                        )
+                        zero_else, zero_else_touched = process_statements(
+                            statement.orelse, result
+                        )
+                        touched = (
+                            body_touched
+                            | body_else_touched
+                            | zero_else_touched
+                        )
+                        result = merge_environments(
+                            before, [body, body_else, zero_else], touched
+                        )
+                        preserve_nested_function_candidates(
+                            statement, result, touched
+                        )
+                    elif isinstance(statement, (ast.With, ast.AsyncWith)):
+                        entered = copy_class_environment(result)
+                        for item in statement.items:
+                            if item.optional_vars is not None:
+                                touched.update(
+                                    unknown_target(entered, item.optional_vars)
+                                )
+                        body, body_touched = process_statements(
+                            statement.body, entered
+                        )
+                        touched.update(body_touched)
+                        # ``__exit__`` may suppress a failure before a later
+                        # body binding, so retain the pre-With possibility.
+                        result = merge_environments(
+                            before, [before, body], touched
+                        )
+                        preserve_nested_function_candidates(
+                            statement, result, touched
+                        )
+                    elif isinstance(statement, ast.Try):
+                        body, body_touched = process_statements(
+                            statement.body, result
+                        )
+                        body_else, body_else_touched = process_statements(
+                            statement.orelse, body
+                        )
+                        branches = [before, body, body_else]
+                        touched = body_touched | body_else_touched
+                        for handler in statement.handlers:
+                            handled = copy_class_environment(before)
+                            handler_touched: set[str] = set()
+                            if handler.name:
+                                target = ast.copy_location(
+                                    ast.Name(id=handler.name, ctx=ast.Store()),
+                                    handler,
+                                )
+                                handler_touched.update(
+                                    unknown_target(handled, target)
+                                )
+                            handled, nested_touched = process_statements(
+                                handler.body, handled
+                            )
+                            handler_touched.update(nested_touched)
+                            if handler.name:
+                                target = ast.copy_location(
+                                    ast.Name(id=handler.name, ctx=ast.Del()),
+                                    handler,
+                                )
+                                handler_touched.update(
+                                    delete_target(handled, target)
+                                )
+                            touched.update(handler_touched)
+                            branches.append(handled)
+                        result = merge_environments(before, branches, touched)
+                        if statement.finalbody:
+                            result, final_touched = process_statements(
+                                statement.finalbody, result
+                            )
+                            touched.update(final_touched)
+                        preserve_nested_function_candidates(
+                            statement, result, touched
+                        )
+                        for name in touched:
+                            result[name]["incomplete"] = True
+                    elif hasattr(ast, "Match") and isinstance(
+                        statement, getattr(ast, "Match")
+                    ):
+                        branches = [before]
+                        for case in statement.cases:
+                            branch = copy_class_environment(before)
+                            capture_names: set[str] = set()
+                            for pattern in ast.walk(case.pattern):
+                                if type(pattern).__name__.startswith("Match"):
+                                    name = getattr(pattern, "name", None)
+                                    rest = getattr(pattern, "rest", None)
+                                    if isinstance(name, str):
+                                        capture_names.add(name)
+                                    if isinstance(rest, str):
+                                        capture_names.add(rest)
+                            for name in capture_names:
+                                target = ast.copy_location(
+                                    ast.Name(id=name, ctx=ast.Store()),
+                                    case.pattern,
+                                )
+                                touched.update(unknown_target(branch, target))
+                            branch, case_touched = process_statements(
+                                case.body, branch
+                            )
+                            touched.update(case_touched)
+                            branches.append(branch)
+                        result = merge_environments(before, branches, touched)
+                        preserve_nested_function_candidates(
+                            statement, result, touched
+                        )
+                    elif isinstance(statement, (ast.Global, ast.Nonlocal)):
+                        for name in statement.names:
+                            result[name] = {
+                                "targets": [],
+                                "unknown": True,
+                                "absent": True,
+                                "incomplete": True,
+                            }
+                            touched.add(name)
+
+                    # Assignment expressions and other expression-contained
+                    # bindings are conditional with respect to short-circuit
+                    # evaluation unless modeled as a direct statement above.
+                    for named in named_expression_bindings(statement):
+                        if not isinstance(named.target, ast.Name):
+                            continue
+                        name = named.target.id
+                        alternative = value_binding(named.value, result)
+                        result[name] = merge_class_bindings(
+                            [
+                                before.get(name, empty_class_binding()),
+                                alternative,
+                            ],
+                            force_incomplete=True,
+                        )
+                        touched.add(name)
+                    all_touched.update(touched)
+                return result, all_touched
+
+            environment, _touched = process_statements(
+                class_node.body, {}
+            )
+            class_binding_cache[id(class_node)] = copy_class_environment(
+                environment
+            )
+            return environment
+
+        def direct_magic_definitions(
+            class_node: ast.ClassDef, name: str
+        ) -> tuple[
+            list[ast.FunctionDef | ast.AsyncFunctionDef], bool, bool
+        ]:
+            binding = class_binding_environment(class_node).get(
+                name, empty_class_binding()
+            )
+            incomplete = bool(
+                binding["unknown"]
+                or binding["incomplete"]
+                or len(binding["targets"]) > 1
+            )
+            return (
+                list(binding["targets"]),
+                incomplete,
+                bool(binding["absent"]),
+            )
+
+        mro_cache: dict[
+            tuple[int, bool], tuple[list[ast.ClassDef], str]
+        ] = {}
+
+        def local_bases(
+            class_node: ast.ClassDef,
+            *,
+            allow_type: bool,
+        ) -> tuple[list[ast.ClassDef], str]:
+            bases: list[ast.ClassDef] = []
+            status = "complete"
+            scope = evaluation_scope(class_node)
+            owner = evaluation_owner(class_node)
+            for base in class_node.bases:
+                if isinstance(base, ast.Name) and base.id == "object":
+                    continue
+                if allow_type and isinstance(base, ast.Name) and base.id == "type":
+                    continue
+                if isinstance(base, ast.Name):
+                    # Bases are captured when the ClassDef executes.  Resolve
+                    # against the enclosing scope at that event, before the
+                    # new class namespace exists and before any later rebinding.
+                    values, base_status = resolve_name(
+                        base.id, scope, owner, class_node, frozenset()
+                    )
+                else:
+                    # Attribute/subscript/factory bases can change class
+                    # identity dynamically and are deliberately fail closed.
+                    values, base_status = [], "incomplete"
+                local = sorted(
+                    {
+                        value
+                        for kind, value, _value_owner in values
+                        if kind == "class" and isinstance(value, ast.ClassDef)
+                    },
+                    key=lambda item: (
+                        getattr(item, "lineno", 0),
+                        getattr(item, "col_offset", 0),
+                        item.name,
+                    ),
+                )
+                if (
+                    base_status != "complete"
+                    or len(local) != 1
+                    or any(kind != "class" for kind, _value, _owner in values)
+                ):
+                    status = "incomplete"
+                if len(local) == 1:
+                    bases.append(local[0])
+            if len({id(base) for base in bases}) != len(bases):
+                status = "incomplete"
+            return bases, status
+
+        def local_c3_mro(
+            class_node: ast.ClassDef,
+            *,
+            allow_type: bool = False,
+            stack: frozenset[int] = frozenset(),
+        ) -> tuple[list[ast.ClassDef], str]:
+            cache_key = (id(class_node), allow_type)
+            if cache_key in mro_cache and id(class_node) not in stack:
+                cached_mro, cached_status = mro_cache[cache_key]
+                return list(cached_mro), cached_status
+            if id(class_node) in stack:
+                return [class_node], "incomplete"
+
+            bases, status = local_bases(class_node, allow_type=allow_type)
+            if class_node.decorator_list:
+                status = "incomplete"
+            if any(keyword.arg != "metaclass" for keyword in class_node.keywords):
+                status = "incomplete"
+
+            sequences: list[list[ast.ClassDef]] = []
+            for base in bases:
+                base_mro, base_status = local_c3_mro(
+                    base,
+                    allow_type=allow_type,
+                    stack=stack | {id(class_node)},
+                )
+                sequences.append(list(base_mro))
+                status = merge_status(status, base_status)
+            sequences.append(list(bases))
+            result = [class_node]
+            while any(sequences):
+                sequences = [sequence for sequence in sequences if sequence]
+                candidate = next(
+                    (
+                        sequence[0]
+                        for sequence in sequences
+                        if all(
+                            sequence[0] not in other[1:]
+                            for other in sequences
+                        )
+                    ),
+                    None,
+                )
+                if candidate is None:
+                    status = "incomplete"
+                    for sequence in sequences:
+                        for item in sequence:
+                            if item not in result:
+                                result.append(item)
+                    break
+                result.append(candidate)
+                for sequence in sequences:
+                    if sequence and sequence[0] is candidate:
+                        sequence.pop(0)
+            mro_cache[cache_key] = (list(result), status)
+            return result, status
+
+        def explicit_metaclass(
+            class_node: ast.ClassDef,
+        ) -> tuple[ast.ClassDef | None, str, bool]:
+            keywords = [
+                keyword
+                for keyword in class_node.keywords
+                if keyword.arg == "metaclass"
+            ]
+            if not keywords:
+                return None, "complete", False
+            if len(keywords) != 1:
+                return None, "incomplete", True
+            value = keywords[0].value
+            if isinstance(value, ast.Name) and value.id == "type":
+                return None, "complete", True
+            if isinstance(value, ast.Name):
+                values, status = resolve_name(
+                    value.id,
+                    evaluation_scope(class_node),
+                    evaluation_owner(class_node),
+                    class_node,
+                    frozenset(),
+                )
+            else:
+                values, status = [], "incomplete"
+            local = sorted(
+                {
+                    item
+                    for kind, item, _item_owner in values
+                    if kind == "class" and isinstance(item, ast.ClassDef)
+                },
+                key=lambda item: (
+                    getattr(item, "lineno", 0),
+                    getattr(item, "col_offset", 0),
+                    item.name,
+                ),
+            )
+            if (
+                status != "complete"
+                or len(local) != 1
+                or any(kind != "class" for kind, _item, _owner in values)
+            ):
+                return local[0] if len(local) == 1 else None, "incomplete", True
+            return local[0], "complete", True
+
+        class_mro, status = local_c3_mro(target)
+        metaclasses: list[ast.ClassDef] = []
+        explicit_default_metaclass = False
+        for class_node in class_mro:
+            metaclass, metaclass_status, was_explicit = explicit_metaclass(class_node)
+            status = merge_status(status, metaclass_status)
+            if was_explicit and metaclass is None and metaclass_status == "complete":
+                explicit_default_metaclass = True
+            if metaclass is not None:
+                metaclasses.append(metaclass)
+        unique_metaclasses = list(dict.fromkeys(metaclasses))
+        if len(unique_metaclasses) > 1 or (
+            explicit_default_metaclass and unique_metaclasses
+        ):
+            status = "incomplete"
+
+        targets: list[
+            tuple[ast.FunctionDef | ast.AsyncFunctionDef, ast.ClassDef]
+        ] = []
+
+        def preserve_first_magic(
+            mro: list[ast.ClassDef],
+            name: str,
+            dispatch_owner: ast.ClassDef,
+        ) -> None:
+            nonlocal status
+            for class_node in mro:
+                (
+                    definitions,
+                    definitions_incomplete,
+                    may_be_absent,
+                ) = direct_magic_definitions(class_node, name)
+                if definitions_incomplete:
+                    status = "incomplete"
+                if definitions:
+                    for constructor in definitions:
+                        targets.append((constructor, dispatch_owner))
+                        status = merge_status(
+                            status,
+                            bind_invocation(
+                                call,
+                                constructor,
+                                dispatch_owner,
+                                current_definition,
+                                current_owner,
+                            ),
+                        )
+                if not may_be_absent:
+                    return
+
+        if unique_metaclasses:
+            metaclass_mro, metaclass_mro_status = local_c3_mro(
+                unique_metaclasses[0], allow_type=True
+            )
+            status = merge_status(status, metaclass_mro_status)
+            preserve_first_magic(
+                metaclass_mro, "__call__", unique_metaclasses[0]
+            )
+
+        preserve_first_magic(class_mro, "__new__", target)
+        preserve_first_magic(class_mro, "__init__", target)
+        return list(dict.fromkeys(targets)), (
+            "complete" if status == "complete" else "incomplete"
+        )
+
     def resolve_call(
         call: ast.Call,
-        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+        current_definition: (
+            ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef
+        ),
         current_owner: ast.ClassDef | None,
         *,
         escape_provenance: bool = False,
@@ -4167,23 +5585,16 @@ def _definition_execution_nodes(
                     ),
                 )
             elif kind == "class" and isinstance(target, ast.ClassDef):
-                constructor, _owner, constructor_incomplete = _resolve_imported_method(
-                    {target.name: target}, target.name, "__init__"
-                )
-                if constructor is not None:
-                    targets.append((constructor, target))
-                    status = merge_status(
-                        status,
-                        bind_invocation(
-                            call,
-                            constructor,
-                            target,
-                            current_definition,
-                            current_owner,
-                        ),
+                constructors, constructor_status = (
+                    resolve_local_class_construction(
+                        call,
+                        target,
+                        current_definition,
+                        current_owner,
                     )
-                if constructor_incomplete:
-                    status = "incomplete"
+                )
+                targets.extend(constructors)
+                status = merge_status(status, constructor_status)
             elif kind == "instance":
                 status = "incomplete"
             elif kind in {"opaque", "opaque_attribute"}:
@@ -4204,15 +5615,9 @@ def _definition_execution_nodes(
                 if saw_bound_opaque and not escape_provenance
                 else "not_local"
             )
-        return sorted(
-            set(targets),
-            key=lambda item: (
-                getattr(item[0], "lineno", 0),
-                getattr(item[0], "col_offset", 0),
-                item[0].name,
-                item[1].name if item[1] else "",
-            ),
-        ), "complete" if status == "complete" else "incomplete"
+        return list(dict.fromkeys(targets)), (
+            "complete" if status == "complete" else "incomplete"
+        )
 
     def callable_targets(
         values: list[tuple[str, ast.AST, ast.ClassDef | None]],
@@ -4237,7 +5642,9 @@ def _definition_execution_nodes(
 
     def escaped_callable_targets(
         value: ast.AST | None,
-        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+        current_definition: (
+            ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef
+        ),
         current_owner: ast.ClassDef | None,
         seen: frozenset[tuple[str, int]] = frozenset(),
         shadowed: frozenset[str] = frozenset(),
@@ -4385,7 +5792,9 @@ def _definition_execution_nodes(
         elif resolved_status == "not_local":
             locally_bound = isinstance(value, ast.Name) and any(
                 value.id in scope_bound_names.get(id(scope), set())
-                for scope in function_scope_chain(current_definition)
+                for scope in resolution_scope_chain(
+                    current_definition, value
+                )
             )
             if (
                 isinstance(value, ast.Name)
@@ -4396,7 +5805,7 @@ def _definition_execution_nodes(
                 status = "incomplete"
 
         if isinstance(value, ast.Name):
-            scope = storage_scope(value.id, current_definition)
+            scope = storage_scope(value.id, current_definition, value)
             if scope is not None:
                 binding_key = (f"escape-binding:{value.id}", id(scope))
                 if binding_key not in next_seen:
@@ -4558,7 +5967,9 @@ def _definition_execution_nodes(
 
     def unresolved_escape_sink(
         call: ast.Call,
-        current_definition: ast.FunctionDef | ast.AsyncFunctionDef,
+        current_definition: (
+            ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef
+        ),
     ) -> bool:
         current: ast.AST = call.func
         while isinstance(current, (ast.Attribute, ast.Subscript)):
@@ -4579,7 +5990,7 @@ def _definition_execution_nodes(
             return False
         if name.isupper():
             return False
-        for scope in function_scope_chain(current_definition):
+        for scope in resolution_scope_chain(current_definition, call):
             if (
                 name in scope_definitions.get(id(scope), {})
                 or name in scope_assignments.get(id(scope), {})
@@ -4623,7 +6034,19 @@ def _definition_execution_nodes(
         if visit_key in visited_definitions:
             continue
         visited_definitions.add(visit_key)
-        eager_nodes = _eager_execution_nodes(current_definition)
+        previous_definition_state = definition_states.get(current_id)
+        if previous_definition_state != "reached":
+            definition_states[current_id] = (
+                "reached"
+                if current_state == "reached"
+                else previous_definition_state or "unknown"
+            )
+        eager_nodes = _eager_execution_nodes(
+            current_definition,
+            annotations_eager=(
+                aliases.get("annotations") != "__future__.annotations"
+            ),
+        )
         add_nodes(eager_nodes, current_state)
 
         for node in eager_nodes:
@@ -4660,6 +6083,22 @@ def _definition_execution_nodes(
             ):
                 call_resolutions[id(node)] = "complete"
                 continue
+            mutation_call_state = modeled_iterable_mutation_call(
+                node, current_definition
+            )
+            if mutation_call_state == "modeled":
+                # The mutation model consumes this local container operation;
+                # its callable values are reached only through a later
+                # iterable dispatch, not by storing them in the container.
+                call_resolutions[id(node)] = "complete"
+                continue
+            if mutation_call_state == "incomplete":
+                # A reached nested scope may mutate an iterable owned by an
+                # outer scope.  Preserve any concrete callable argument via
+                # the ordinary escape walk, but do not claim exact mutation
+                # reconstruction across the call boundary.
+                call_resolutions[id(node)] = "incomplete"
+                resolution_incomplete = True
             call_owner = enclosing_class(node, current_definition)
             targets, resolution = resolve_call(
                 node,
@@ -4932,13 +6371,21 @@ def one_hop_transitive_evidence(
     analysis_cache = analysis_cache if analysis_cache is not None else {}
     findings: list[dict[str, Any]] = []
     unknown_reasons: list[str] = []
-    reached_definitions, unknown_definitions, known_definitions = (
+    (
+        reached_definitions,
+        unknown_definitions,
+        known_definitions,
+        module_dispatch_incomplete,
+    ) = (
         _invoked_local_definition_reachability(tree)
     )
     primary_execution_states, primary_execution_incomplete = (
         _definition_execution_reachability(
             tree, reached_definitions, unknown_definitions
         )
+    )
+    primary_execution_incomplete = (
+        primary_execution_incomplete or module_dispatch_incomplete
     )
     if primary_execution_incomplete:
         unknown_reasons.append(_failure_reason("import_resolution_incomplete"))
@@ -5026,12 +6473,21 @@ def one_hop_transitive_evidence(
                 definition_targets, target_incomplete = _invoked_definition_targets(
                     tree, binding, imported_tree
                 )
-                module_reached, module_unknown, _module_known = (
+                (
+                    module_reached,
+                    module_unknown,
+                    _module_known,
+                    module_dispatch_incomplete,
+                ) = (
                     _invoked_local_definition_reachability(imported_tree)
                 )
                 definition_targets.update(module_reached)
                 definition_targets.update(module_unknown)
-                target_incomplete = target_incomplete or bool(module_unknown)
+                target_incomplete = (
+                    target_incomplete
+                    or bool(module_unknown)
+                    or module_dispatch_incomplete
+                )
                 if target_incomplete:
                     unknown_reasons.append(_failure_reason("import_resolution_incomplete"))
                 dependencies = _project_dependency_bindings(

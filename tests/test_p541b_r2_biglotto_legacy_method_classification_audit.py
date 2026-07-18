@@ -16,6 +16,34 @@ import pytest
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+GENERATOR_PATH = (
+    REPO_ROOT / "analysis/p541b_r2_biglotto_legacy_method_classification_audit.py"
+)
+PROTECTED_JSON_PATH = (
+    REPO_ROOT
+    / "outputs/research/p541b_r2_biglotto_legacy_method_classification_audit_20260711.json"
+)
+PROTECTED_MARKDOWN_PATH = (
+    REPO_ROOT
+    / "outputs/research/p541b_r2_biglotto_legacy_method_classification_audit_20260711.md"
+)
+PROTECTED_JSON_BYTE_SIZE = 10490289
+PROTECTED_JSON_SHA256 = "6e1c84b899dbc0b8a662f54c378d0bb2c8812b53b0377447c9c7e94b52fda61e"
+PROTECTED_MARKDOWN_BYTE_SIZE = 5579
+PROTECTED_MARKDOWN_SHA256 = "af92cf54340def8bb4e36c548a149561ed449f67784bb4304bfb8e93bc1c55c8"
+ALLOWED_SELF_IDENTITY_JSON_POINTERS = frozenset(
+    {"/generator/byte_size", "/generator/sha256"}
+)
+GENERATOR_BLOCK_PATTERN = re.compile(
+    rb"(?m)^  \"generator\": \{\n"
+    rb"    \"path\": \"(?P<path>[^\"\r\n]+)\",\n"
+    rb"    \"byte_size\": (?P<byte_size>0|[1-9][0-9]*),\n"
+    rb"    \"sha256\": \"(?P<sha256>[^\"\r\n]*)\"\n"
+    rb"  \},$"
+)
+MARKDOWN_GENERATOR_SHA_PATTERN = re.compile(
+    rb"^- Generator SHA-256: `(?P<sha256>[^`\r\n]*)`$"
+)
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
@@ -24,6 +52,337 @@ def _module():
     from analysis import p541b_r2_biglotto_legacy_method_classification_audit as mod
 
     return mod
+
+
+def _sha256(raw: bytes) -> str:
+    return hashlib.sha256(raw).hexdigest()
+
+
+def _canonical_generator_path() -> Path:
+    module_path = Path(_module().__file__).resolve()
+    assert module_path == GENERATOR_PATH.resolve(), "canonical generator path mismatch"
+    return module_path
+
+
+def _generator_identity(generator_path: Path) -> dict[str, object]:
+    raw = generator_path.read_bytes()
+    digest = _sha256(raw)
+    assert re.fullmatch(r"[0-9a-f]{64}", digest), "generator SHA-256 is not lowercase hex"
+    return {"byte_size": len(raw), "sha256": digest}
+
+
+def _assert_protected_artifact_pins(
+    protected_json_raw: bytes, protected_markdown_raw: bytes
+) -> None:
+    assert len(protected_json_raw) == PROTECTED_JSON_BYTE_SIZE, (
+        "protected JSON pin byte-size drift"
+    )
+    assert _sha256(protected_json_raw) == PROTECTED_JSON_SHA256, (
+        "protected JSON pin SHA-256 drift"
+    )
+    assert len(protected_markdown_raw) == PROTECTED_MARKDOWN_BYTE_SIZE, (
+        "protected Markdown pin byte-size drift"
+    )
+    assert _sha256(protected_markdown_raw) == PROTECTED_MARKDOWN_SHA256, (
+        "protected Markdown pin SHA-256 drift"
+    )
+
+
+def _strict_json_load(raw: bytes):
+    def reject_constant(value: str):
+        raise AssertionError(f"non-finite JSON constant is forbidden: {value}")
+
+    def reject_duplicate_keys(pairs):
+        result = {}
+        for key, value in pairs:
+            assert key not in result, f"duplicate JSON key: {key}"
+            result[key] = value
+        return result
+
+    try:
+        text = raw.decode("utf-8")
+        return json.loads(
+            text,
+            object_pairs_hook=reject_duplicate_keys,
+            parse_constant=reject_constant,
+        )
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise AssertionError(f"strict JSON parse failed: {exc}") from exc
+
+
+def _json_pointer_child(pointer: str, token) -> str:
+    escaped = str(token).replace("~", "~0").replace("/", "~1")
+    return f"{pointer}/{escaped}" if pointer else f"/{escaped}"
+
+
+def _json_differences(protected, regenerated, pointer: str = "") -> list[dict[str, str]]:
+    differences = []
+    if type(protected) is not type(regenerated):
+        return [{"pointer": pointer or "/", "kind": "type"}]
+    if isinstance(protected, dict):
+        protected_keys = list(protected)
+        regenerated_keys = list(regenerated)
+        if protected_keys != regenerated_keys:
+            kind = "key_order" if set(protected_keys) == set(regenerated_keys) else "key_set"
+            differences.append({"pointer": pointer or "/", "kind": kind})
+        for key in protected_keys:
+            if key in regenerated:
+                differences.extend(
+                    _json_differences(
+                        protected[key],
+                        regenerated[key],
+                        _json_pointer_child(pointer, key),
+                    )
+                )
+        return differences
+    if isinstance(protected, list):
+        if len(protected) != len(regenerated):
+            differences.append({"pointer": pointer or "/", "kind": "list_length"})
+        for index, (left, right) in enumerate(zip(protected, regenerated)):
+            differences.extend(
+                _json_differences(left, right, _json_pointer_child(pointer, index))
+            )
+        return differences
+    if protected != regenerated:
+        differences.append({"pointer": pointer or "/", "kind": "value"})
+    return differences
+
+
+def _generator_block_match(raw: bytes):
+    matches = list(GENERATOR_BLOCK_PATTERN.finditer(raw))
+    assert len(matches) == 1, "generator identity block must occur exactly once"
+    return matches[0]
+
+
+def _replace_captured_spans(raw: bytes, replacements) -> bytes:
+    result = raw
+    for start, end, value in sorted(replacements, reverse=True):
+        result = result[:start] + value + result[end:]
+    return result
+
+
+def _expected_json_with_current_identity(
+    protected_json_raw: bytes, identity: dict[str, object]
+) -> bytes:
+    match = _generator_block_match(protected_json_raw)
+    assert match.group("path").decode("utf-8") == GENERATOR_PATH.relative_to(
+        REPO_ROOT
+    ).as_posix()
+    return _replace_captured_spans(
+        protected_json_raw,
+        [
+            (
+                match.start("byte_size"),
+                match.end("byte_size"),
+                str(identity["byte_size"]).encode("ascii"),
+            ),
+            (
+                match.start("sha256"),
+                match.end("sha256"),
+                str(identity["sha256"]).encode("ascii"),
+            ),
+        ],
+    )
+
+
+def _assert_json_self_identity_contract(
+    regenerated_json_raw: bytes,
+    *,
+    generator_path: Path,
+    protected_json_raw: bytes,
+    protected_markdown_raw: bytes,
+) -> None:
+    _assert_protected_artifact_pins(protected_json_raw, protected_markdown_raw)
+    identity = _generator_identity(generator_path)
+    protected = _strict_json_load(protected_json_raw)
+    regenerated = _strict_json_load(regenerated_json_raw)
+    assert type(protected) is dict, "protected JSON root must be an object"
+    assert type(regenerated) is dict, "regenerated JSON root must be an object"
+    generator = regenerated.get("generator")
+    assert type(generator) is dict, "regenerated /generator must be an object"
+    assert "byte_size" in generator, "regenerated /generator/byte_size is missing"
+    assert "sha256" in generator, "regenerated /generator/sha256 is missing"
+    assert type(generator["byte_size"]) is int, (
+        "regenerated /generator/byte_size must be an integer"
+    )
+    assert type(generator["sha256"]) is str, (
+        "regenerated /generator/sha256 must be a string"
+    )
+    assert re.fullmatch(r"[0-9a-f]{64}", generator["sha256"]), (
+        "regenerated /generator/sha256 must be 64-character lowercase hex"
+    )
+    assert generator["byte_size"] == identity["byte_size"], (
+        "regenerated /generator/byte_size does not match generator bytes"
+    )
+    assert generator["sha256"] == identity["sha256"], (
+        "regenerated /generator/sha256 does not match generator bytes"
+    )
+    differences = _json_differences(protected, regenerated)
+    signature = {(item["pointer"], item["kind"]) for item in differences}
+    expected_signature = {
+        (pointer, "value") for pointer in ALLOWED_SELF_IDENTITY_JSON_POINTERS
+    }
+    assert len(differences) == 2 and signature == expected_signature, (
+        f"closed JSON exception mismatch: {differences}"
+    )
+    expected_raw = _expected_json_with_current_identity(protected_json_raw, identity)
+    assert regenerated_json_raw == expected_raw, (
+        "JSON bytes differ outside the two exact self-identity scalar spans"
+    )
+
+
+def _line_ending(line: bytes) -> bytes:
+    if line.endswith(b"\r\n"):
+        return b"\r\n"
+    if line.endswith(b"\n"):
+        return b"\n"
+    if line.endswith(b"\r"):
+        return b"\r"
+    return b""
+
+
+def _markdown_generator_sha_candidates(raw: bytes):
+    lines = raw.splitlines(keepends=True)
+    candidates = []
+    for index, line in enumerate(lines):
+        ending = _line_ending(line)
+        body = line[: -len(ending)] if ending else line
+        match = MARKDOWN_GENERATOR_SHA_PATTERN.fullmatch(body)
+        if match:
+            candidates.append(
+                {
+                    "index": index,
+                    "line": line,
+                    "ending": ending,
+                    "sha256": match.group("sha256"),
+                }
+            )
+    return lines, candidates
+
+
+def _expected_markdown_with_current_identity(
+    protected_markdown_raw: bytes, identity: dict[str, object]
+) -> bytes:
+    lines, candidates = _markdown_generator_sha_candidates(protected_markdown_raw)
+    assert len(candidates) == 1, (
+        "protected Markdown must contain exactly one Generator SHA-256 line"
+    )
+    candidate = candidates[0]
+    lines[candidate["index"]] = (
+        b"- Generator SHA-256: `"
+        + str(identity["sha256"]).encode("ascii")
+        + b"`"
+        + candidate["ending"]
+    )
+    return b"".join(lines)
+
+
+def _assert_markdown_self_identity_contract(
+    regenerated_markdown_raw: bytes,
+    regenerated_json_raw: bytes,
+    *,
+    generator_path: Path,
+    protected_json_raw: bytes,
+    protected_markdown_raw: bytes,
+) -> None:
+    _assert_protected_artifact_pins(protected_json_raw, protected_markdown_raw)
+    identity = _generator_identity(generator_path)
+    regenerated_json = _strict_json_load(regenerated_json_raw)
+    assert type(regenerated_json) is dict, "regenerated JSON root must be an object"
+    generator = regenerated_json.get("generator")
+    assert type(generator) is dict, "regenerated JSON /generator must be an object"
+    json_sha256 = generator.get("sha256")
+    assert type(json_sha256) is str, (
+        "regenerated JSON /generator/sha256 must be a string"
+    )
+    assert re.fullmatch(r"[0-9a-f]{64}", json_sha256), (
+        "regenerated JSON /generator/sha256 must be 64-character lowercase hex"
+    )
+    protected_lines, protected_candidates = _markdown_generator_sha_candidates(
+        protected_markdown_raw
+    )
+    regenerated_lines, regenerated_candidates = _markdown_generator_sha_candidates(
+        regenerated_markdown_raw
+    )
+    assert len(protected_candidates) == 1, (
+        "protected Markdown must contain exactly one Generator SHA-256 line"
+    )
+    assert len(regenerated_candidates) == 1, (
+        "regenerated Markdown must contain exactly one Generator SHA-256 line"
+    )
+    assert len(regenerated_lines) == len(protected_lines), (
+        "Markdown line count differs from the protected artifact"
+    )
+    protected_candidate = protected_candidates[0]
+    regenerated_candidate = regenerated_candidates[0]
+    assert regenerated_candidate["index"] == protected_candidate["index"], (
+        "Generator SHA-256 line moved"
+    )
+    try:
+        markdown_sha256 = regenerated_candidate["sha256"].decode("ascii")
+    except UnicodeDecodeError as exc:
+        raise AssertionError("Markdown generator SHA-256 is not ASCII") from exc
+    assert re.fullmatch(r"[0-9a-f]{64}", markdown_sha256), (
+        "Markdown generator SHA-256 must be 64-character lowercase hex"
+    )
+    assert markdown_sha256 == json_sha256, (
+        "Markdown generator SHA-256 is inconsistent with regenerated JSON"
+    )
+    assert json_sha256 == identity["sha256"], (
+        "regenerated JSON/Markdown generator SHA-256 is inconsistent with generator bytes"
+    )
+    assert markdown_sha256 == identity["sha256"], (
+        "Markdown generator SHA-256 is inconsistent with generator bytes"
+    )
+    expected_line = (
+        b"- Generator SHA-256: `"
+        + str(identity["sha256"]).encode("ascii")
+        + b"`"
+        + protected_candidate["ending"]
+    )
+    assert regenerated_candidate["line"] == expected_line, (
+        "Markdown Generator SHA-256 line is not the deterministic expected line"
+    )
+    for index, (protected_line, regenerated_line) in enumerate(
+        zip(protected_lines, regenerated_lines)
+    ):
+        if index != protected_candidate["index"]:
+            assert regenerated_line == protected_line, (
+                f"Markdown line {index + 1} differs outside the closed exception"
+            )
+    expected_raw = _expected_markdown_with_current_identity(
+        protected_markdown_raw, identity
+    )
+    assert regenerated_markdown_raw == expected_raw, (
+        "Markdown bytes differ outside the one exact Generator SHA-256 line"
+    )
+
+
+def _canonical_json_bytes(value) -> bytes:
+    return (json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + "\n").encode(
+        "utf-8"
+    )
+
+
+@pytest.fixture(scope="module")
+def self_identity_contract_samples():
+    protected_json_raw = PROTECTED_JSON_PATH.read_bytes()
+    protected_markdown_raw = PROTECTED_MARKDOWN_PATH.read_bytes()
+    _assert_protected_artifact_pins(protected_json_raw, protected_markdown_raw)
+    generator_path = _canonical_generator_path()
+    identity = _generator_identity(generator_path)
+    return {
+        "generator_path": generator_path,
+        "identity": identity,
+        "protected_json": protected_json_raw,
+        "protected_markdown": protected_markdown_raw,
+        "regenerated_json": _expected_json_with_current_identity(
+            protected_json_raw, identity
+        ),
+        "regenerated_markdown": _expected_markdown_with_current_identity(
+            protected_markdown_raw, identity
+        ),
+    }
 
 
 def _analyze(source: str, path: str = "sample.py", *, resolve_transitive: bool = True):
@@ -3096,6 +3455,207 @@ def test_r8_mutation_dispatch_cycle_terminates_with_known_finding(tmp_path):
     _assert_r6_dangerous_reached(result)
 
 
+def test_r9_min_loop_carried_append_preserves_candidate(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    fs = []\n"
+            "    for item in [1, 2]:\n"
+            "        for f in fs:\n"
+            "            f()\n"
+            "        fs.append(dangerous)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r9_min_loop_carried_alias_append_preserves_candidate(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    fs = []\n"
+            "    alias = fs\n"
+            "    for item in [1, 2]:\n"
+            "        for f in fs:\n"
+            "            f()\n"
+            "        alias.append(dangerous)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r9_min_loop_carried_mutation_before_and_after_use_preserves_candidate(
+    tmp_path,
+):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    fs = []\n"
+            "    for item in [1, 2]:\n"
+            "        fs.append(safe)\n"
+            "        for f in fs:\n"
+            "            f()\n"
+            "        fs.append(dangerous)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r9_min_loop_carried_augassign_preserves_candidate(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    fs = []\n"
+            "    for item in [1, 2]:\n"
+            "        for f in fs:\n"
+            "            f()\n"
+            "        fs += [dangerous]\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r9_min_loop_carried_nested_suite_preserves_candidate(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    fs = []\n"
+            "    for item in [1, 2]:\n"
+            "        if item:\n"
+            "            for f in fs:\n"
+            "                f()\n"
+            "            fs.append(dangerous)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r9_min_loop_carried_branch_split_ordering_fails_closed(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    fs = []\n"
+            "    for item in [1, 2]:\n"
+            "        if item == 1:\n"
+            "            for f in fs:\n"
+            "                f()\n"
+            "        else:\n"
+            "            fs.append(dangerous)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r9_min_loop_carried_unrelated_owner_stays_sealed(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    fs = []\n"
+            "    other = [safe]\n"
+            "    for item in [1, 2]:\n"
+            "        fs.append(dangerous)\n"
+            "        for f in other:\n"
+            "            f()\n"
+        ),
+    )
+    assert result["state"] in {"not_detected", "unknown"}
+    assert not any(
+        finding["resolved_api"] == "sqlite3.connect"
+        for finding in result["findings"]
+    )
+
+
+def test_r9_min_loop_carried_unrelated_alias_stays_sealed(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    fs = []\n"
+            "    other = []\n"
+            "    alias = other\n"
+            "    for item in [1, 2]:\n"
+            "        for f in fs:\n"
+            "            f()\n"
+            "        alias.append(dangerous)\n"
+        ),
+    )
+    assert result["state"] in {"not_detected", "unknown"}
+    assert not any(
+        finding["resolved_api"] == "sqlite3.connect"
+        for finding in result["findings"]
+    )
+
+
+@pytest.mark.parametrize(
+    "consumer",
+    [
+        "    unknown(callbacks)\n",
+        "    unknown(callback=callbacks)\n",
+        (
+            "    def forward(values):\n"
+            "        unknown(values)\n"
+            "    forward(callbacks)\n"
+        ),
+        "    return callbacks\n",
+        "    yield callbacks\n",
+        (
+            "    class Holder:\n"
+            "        pass\n"
+            "    holder = Holder()\n"
+            "    holder.callbacks = callbacks\n"
+            "    unknown(holder)\n"
+        ),
+        (
+            "    box = {}\n"
+            "    box['callbacks'] = callbacks\n"
+            "    unknown(box)\n"
+        ),
+        (
+            "    box = [callbacks]\n"
+            "    unknown(box)\n"
+        ),
+        (
+            "    import json\n"
+            "    json.dumps(callbacks)\n"
+        ),
+        (
+            "    for cb in callbacks:\n"
+            "        cb()\n"
+        ),
+        (
+            "    def run_all(values):\n"
+            "        for value in values:\n"
+            "            value()\n"
+            "    run_all(callbacks)\n"
+        ),
+        "    scheduler.submit(callbacks)\n",
+    ],
+    ids=[
+        "positional-escape",
+        "keyword-escape",
+        "parameter-flow",
+        "return",
+        "yield",
+        "attribute-storage",
+        "subscript-storage",
+        "container-storage",
+        "serialization",
+        "iteration-consumer",
+        "local-call-transfer",
+        "attribute-call-consumer",
+    ],
+)
+def test_r9_min_modeled_mutator_consumer_preserves_candidate(tmp_path, consumer):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    callbacks = []\n"
+            "    callbacks.append(dangerous)\n"
+            f"{consumer}"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
 def _r8_constructor_result(tmp_path, helper_source: str):
     return _r8_module_scope_result(tmp_path, helper_source)
 
@@ -4653,13 +5213,370 @@ def test_blob_read_failure_retains_order_continues_and_is_byte_deterministic(
 
 def test_json_regeneration_equals_committed_json(artifact):
     mod = _module()
-    expected = json.dumps(artifact, ensure_ascii=False, indent=2, allow_nan=False) + "\n"
-    assert (REPO_ROOT / mod.OUTPUT_JSON).read_text(encoding="utf-8") == expected
+    protected_json_path = (REPO_ROOT / mod.OUTPUT_JSON).resolve()
+    protected_markdown_path = (REPO_ROOT / mod.OUTPUT_MARKDOWN).resolve()
+    assert protected_json_path == PROTECTED_JSON_PATH.resolve()
+    assert protected_markdown_path == PROTECTED_MARKDOWN_PATH.resolve()
+    _assert_json_self_identity_contract(
+        _canonical_json_bytes(artifact),
+        generator_path=_canonical_generator_path(),
+        protected_json_raw=protected_json_path.read_bytes(),
+        protected_markdown_raw=protected_markdown_path.read_bytes(),
+    )
 
 
 def test_markdown_regeneration_equals_committed_markdown(artifact):
     mod = _module()
-    assert (REPO_ROOT / mod.OUTPUT_MARKDOWN).read_text(encoding="utf-8") == mod.render_markdown(artifact)
+    protected_json_path = (REPO_ROOT / mod.OUTPUT_JSON).resolve()
+    protected_markdown_path = (REPO_ROOT / mod.OUTPUT_MARKDOWN).resolve()
+    assert protected_json_path == PROTECTED_JSON_PATH.resolve()
+    assert protected_markdown_path == PROTECTED_MARKDOWN_PATH.resolve()
+    _assert_markdown_self_identity_contract(
+        mod.render_markdown(artifact).encode("utf-8"),
+        _canonical_json_bytes(artifact),
+        generator_path=_canonical_generator_path(),
+        protected_json_raw=protected_json_path.read_bytes(),
+        protected_markdown_raw=protected_markdown_path.read_bytes(),
+    )
+
+
+def test_self_identity_contract_allows_exact_two_json_substitutions(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    _assert_json_self_identity_contract(
+        sample["regenerated_json"],
+        generator_path=sample["generator_path"],
+        protected_json_raw=sample["protected_json"],
+        protected_markdown_raw=sample["protected_markdown"],
+    )
+
+
+def test_self_identity_contract_allows_exact_one_markdown_substitution(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    _assert_markdown_self_identity_contract(
+        sample["regenerated_markdown"],
+        sample["regenerated_json"],
+        generator_path=sample["generator_path"],
+        protected_json_raw=sample["protected_json"],
+        protected_markdown_raw=sample["protected_markdown"],
+    )
+
+
+def test_self_identity_contract_rejects_wrong_generator_byte_size(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    forged = _strict_json_load(sample["regenerated_json"])
+    forged["generator"]["byte_size"] += 1
+    with pytest.raises(AssertionError, match="byte_size"):
+        _assert_json_self_identity_contract(
+            _canonical_json_bytes(forged),
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_wrong_generator_hash(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    forged = _strict_json_load(sample["regenerated_json"])
+    forged["generator"]["sha256"] = "0" * 64
+    with pytest.raises(AssertionError, match="sha256"):
+        _assert_json_self_identity_contract(
+            _canonical_json_bytes(forged),
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+@pytest.mark.parametrize("variant", ["uppercase", "shortened"])
+def test_self_identity_contract_rejects_noncanonical_generator_hash(
+    self_identity_contract_samples, variant
+):
+    sample = self_identity_contract_samples
+    forged = _strict_json_load(sample["regenerated_json"])
+    current = forged["generator"]["sha256"]
+    forged["generator"]["sha256"] = (
+        current.upper() if variant == "uppercase" else current[:-1]
+    )
+    with pytest.raises(AssertionError, match="64-character lowercase hex"):
+        _assert_json_self_identity_contract(
+            _canonical_json_bytes(forged),
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+@pytest.mark.parametrize("field", ["byte_size", "sha256"])
+def test_self_identity_contract_rejects_missing_json_identity_field(
+    self_identity_contract_samples, field
+):
+    sample = self_identity_contract_samples
+    forged = _strict_json_load(sample["regenerated_json"])
+    del forged["generator"][field]
+    with pytest.raises(AssertionError, match=f"generator/{field}"):
+        _assert_json_self_identity_contract(
+            _canonical_json_bytes(forged),
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+@pytest.mark.parametrize(
+    ("field", "wrong_value"),
+    [("byte_size", "304503"), ("sha256", 520313)],
+)
+def test_self_identity_contract_rejects_wrong_json_identity_type(
+    self_identity_contract_samples, field, wrong_value
+):
+    sample = self_identity_contract_samples
+    forged = _strict_json_load(sample["regenerated_json"])
+    forged["generator"][field] = wrong_value
+    with pytest.raises(AssertionError, match=f"generator/{field}"):
+        _assert_json_self_identity_contract(
+            _canonical_json_bytes(forged),
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_any_third_json_pointer_difference(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    forged = _strict_json_load(sample["regenerated_json"])
+    forged["task_id"] += "_DRIFT"
+    with pytest.raises(AssertionError, match="closed JSON exception mismatch"):
+        _assert_json_self_identity_contract(
+            _canonical_json_bytes(forged),
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_json_key_order_difference(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    forged = _strict_json_load(sample["regenerated_json"])
+    forged["generator"] = dict(reversed(list(forged["generator"].items())))
+    with pytest.raises(AssertionError, match="closed JSON exception mismatch"):
+        _assert_json_self_identity_contract(
+            _canonical_json_bytes(forged),
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_json_whitespace_or_serialization_difference(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    marker = b'{\n  "schema_version"'
+    assert sample["regenerated_json"].count(marker) == 1
+    forged = sample["regenerated_json"].replace(
+        marker, b'{\n   "schema_version"', 1
+    )
+    with pytest.raises(AssertionError, match="JSON bytes differ"):
+        _assert_json_self_identity_contract(
+            forged,
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_duplicate_json_semantic_location(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    sha256 = str(sample["identity"]["sha256"]).encode("ascii")
+    line = b'    "sha256": "' + sha256 + b'"\n'
+    assert sample["regenerated_json"].count(line) == 1
+    forged = sample["regenerated_json"].replace(
+        line, line[:-1] + b",\n" + line, 1
+    )
+    with pytest.raises(AssertionError, match="duplicate JSON key"):
+        _assert_json_self_identity_contract(
+            forged,
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_zero_markdown_sha_lines(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    prefix = b"- Generator SHA-256: `"
+    assert sample["regenerated_markdown"].count(prefix) == 1
+    forged = sample["regenerated_markdown"].replace(
+        prefix, b"- Generator digest: `", 1
+    )
+    with pytest.raises(AssertionError, match="exactly one Generator SHA-256 line"):
+        _assert_markdown_self_identity_contract(
+            forged,
+            sample["regenerated_json"],
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_duplicate_markdown_sha_lines(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    _lines, candidates = _markdown_generator_sha_candidates(
+        sample["regenerated_markdown"]
+    )
+    assert len(candidates) == 1
+    line = candidates[0]["line"]
+    forged = sample["regenerated_markdown"].replace(line, line + line, 1)
+    with pytest.raises(AssertionError, match="exactly one Generator SHA-256 line"):
+        _assert_markdown_self_identity_contract(
+            forged,
+            sample["regenerated_json"],
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_wrong_markdown_hash(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    current = str(sample["identity"]["sha256"]).encode("ascii")
+    forged = sample["regenerated_markdown"].replace(current, b"0" * 64, 1)
+    with pytest.raises(AssertionError, match="inconsistent with regenerated JSON"):
+        _assert_markdown_self_identity_contract(
+            forged,
+            sample["regenerated_json"],
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_markdown_hash_inconsistent_with_json(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    current = str(sample["identity"]["sha256"]).encode("ascii")
+    forged = sample["regenerated_markdown"].replace(current, b"1" * 64, 1)
+    with pytest.raises(AssertionError, match="inconsistent with regenerated JSON"):
+        _assert_markdown_self_identity_contract(
+            forged,
+            sample["regenerated_json"],
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_markdown_hash_inconsistent_with_generator_bytes(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    wrong_identity = _generator_identity(Path(__file__).resolve())
+    forged_json = _strict_json_load(sample["regenerated_json"])
+    forged_json["generator"]["sha256"] = wrong_identity["sha256"]
+    current = str(sample["identity"]["sha256"]).encode("ascii")
+    forged_markdown = sample["regenerated_markdown"].replace(
+        current, str(wrong_identity["sha256"]).encode("ascii"), 1
+    )
+    with pytest.raises(AssertionError, match="inconsistent with generator bytes"):
+        _assert_markdown_self_identity_contract(
+            forged_markdown,
+            _canonical_json_bytes(forged_json),
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_any_second_markdown_line_difference(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    marker = "# P541B R2 — Fail-Closed Structured Evidence Classification".encode(
+        "utf-8"
+    )
+    assert sample["regenerated_markdown"].count(marker) == 1
+    forged = sample["regenerated_markdown"].replace(
+        marker,
+        "# P541B RX — Fail-Closed Structured Evidence Classification".encode("utf-8"),
+        1,
+    )
+    with pytest.raises(AssertionError, match="differs outside the closed exception"):
+        _assert_markdown_self_identity_contract(
+            forged,
+            sample["regenerated_json"],
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_protected_json_pin_drift(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    forged_protected = b"X" + sample["protected_json"][1:]
+    with pytest.raises(AssertionError, match="protected JSON pin"):
+        _assert_json_self_identity_contract(
+            sample["regenerated_json"],
+            generator_path=sample["generator_path"],
+            protected_json_raw=forged_protected,
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_protected_markdown_pin_drift(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    forged_protected = b"X" + sample["protected_markdown"][1:]
+    with pytest.raises(AssertionError, match="protected Markdown pin"):
+        _assert_markdown_self_identity_contract(
+            sample["regenerated_markdown"],
+            sample["regenerated_json"],
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=forged_protected,
+        )
+
+
+@pytest.mark.parametrize("mutation", ["generator_prefix", "identity_wildcard"])
+def test_self_identity_contract_rejects_wildcard_or_prefix_style_behavior(
+    self_identity_contract_samples, mutation
+):
+    sample = self_identity_contract_samples
+    forged = _strict_json_load(sample["regenerated_json"])
+    if mutation == "generator_prefix":
+        forged["generator"]["path"] += ".unexpected"
+    else:
+        forged["generator"]["sha256_backup"] = forged["generator"]["sha256"]
+    with pytest.raises(AssertionError, match="closed JSON exception mismatch"):
+        _assert_json_self_identity_contract(
+            _canonical_json_bytes(forged),
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
 
 
 def test_json_and_markdown_describe_the_same_finding_and_status_schema(artifact):

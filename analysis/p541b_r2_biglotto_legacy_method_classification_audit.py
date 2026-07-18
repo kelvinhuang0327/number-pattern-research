@@ -2492,6 +2492,7 @@ def _definition_execution_nodes(
     invocation_bindings: dict[
         int, dict[str, tuple[list[tuple[str, ast.AST, ast.ClassDef | None]], str]]
     ] = {}
+    invocation_argument_aliases: dict[int, dict[str, list[ast.AST]]] = {}
     binding_in_progress: set[tuple[int, int]] = set()
 
     # Assignment records retain their source node and conditionality.  Name
@@ -2518,6 +2519,158 @@ def _definition_execution_nodes(
         int, dict[str, list[dict[str, Any]]]
     ] = {}
     scope_iterable_events: dict[int, list[dict[str, Any]]] = {}
+    scope_projection_names: dict[int, set[str]] = {}
+    scope_nested_projection: dict[tuple[int, str], bool] = {}
+    scope_alias_links: dict[int, dict[str, set[str]]] = {}
+    tree_definition_names: dict[int, frozenset[str]] = {}
+    scope_callable_projection: dict[int, bool] = {}
+
+    def projected_mutable_names(
+        scope: ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef,
+    ) -> set[str]:
+        cached = scope_projection_names.get(id(scope))
+        if cached is not None:
+            return cached
+
+        def root_name(node: ast.AST) -> str | None:
+            current = node
+            while isinstance(current, (ast.Attribute, ast.Subscript)):
+                current = current.value
+            return current.id if isinstance(current, ast.Name) else None
+
+        direct: set[str] = set()
+        for event in scope_iterable_events.get(id(scope), []):
+            if event["kind"] == "augassign":
+                name = root_name(event["target"])
+                if name is not None:
+                    direct.add(name)
+            elif event["kind"] == "call":
+                call = event["call"]
+                if isinstance(call.func, ast.Attribute) and call.func.attr in {
+                    "add", "append", "clear", "extend", "insert", "pop",
+                    "remove", "reverse", "setdefault", "sort", "update",
+                }:
+                    name = root_name(call.func.value)
+                    if name is not None:
+                        direct.add(name)
+
+        if not direct:
+            scope_projection_names[id(scope)] = set()
+            return set()
+
+        scope_projection_names[id(scope)] = direct
+        return direct
+
+    def name_has_nested_projection(
+        scope: ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef,
+        name: str,
+    ) -> bool:
+        key = (id(scope), name)
+        cached = scope_nested_projection.get(key)
+        if cached is not None:
+            return cached
+        direct = projected_mutable_names(scope)
+        result = name in direct
+        if not result:
+            result = any(
+                any(
+                    isinstance(nested, ast.Name)
+                    and nested.id in direct
+                    for nested in ast.walk(source)
+                )
+                for source, _conditional, _event in (
+                    scope_assignments.get(id(scope), {}).get(name, [])
+                )
+            )
+        scope_nested_projection[key] = result
+        return result
+
+    def local_definition_names(node: ast.AST) -> frozenset[str]:
+        root = node
+        while id(root) in parents:
+            root = parents[id(root)]
+        cached = tree_definition_names.get(id(root))
+        if cached is not None:
+            return cached
+        names = frozenset(
+            definition.name
+            for definition in ast.walk(root)
+            if isinstance(
+                definition,
+                (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef),
+            )
+        )
+        tree_definition_names[id(root)] = names
+        return names
+
+    def references_local_callable(
+        node: ast.AST, definitions: frozenset[str]
+    ) -> bool:
+        for nested in ast.walk(node):
+            if isinstance(
+                nested,
+                (ast.Lambda, ast.FunctionDef, ast.AsyncFunctionDef,
+                 ast.ClassDef),
+            ):
+                return True
+            if isinstance(nested, ast.Name) and nested.id in definitions:
+                return True
+        return False
+
+    def scope_projects_local_callable(
+        scope: ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef,
+    ) -> bool:
+        """Whether any projected container content can reference a local
+        callable.  The reaching-mutation and escape widenings only engage for
+        this materiality class; data-only containers keep the exact prior
+        reconstruction so dormant definitions stay sealed and precise local
+        cases stay precise."""
+        cached = scope_callable_projection.get(id(scope))
+        if cached is not None:
+            return cached
+        definitions = local_definition_names(scope)
+        result = False
+        for event in scope_iterable_events.get(id(scope), []):
+            kind = event["kind"]
+            if kind == "call":
+                call = event["call"]
+                if not (
+                    isinstance(call.func, ast.Attribute)
+                    and call.func.attr in {
+                        "add", "append", "clear", "extend", "insert", "pop",
+                        "remove", "reverse", "setdefault", "sort", "update",
+                    }
+                ):
+                    continue
+                values = [
+                    *call.args,
+                    *(keyword.value for keyword in call.keywords),
+                ]
+            elif kind == "bind":
+                bind_value = event.get("value")
+                values = (
+                    [bind_value]
+                    if isinstance(
+                        bind_value, (ast.List, ast.Tuple, ast.Set, ast.Dict)
+                    )
+                    else []
+                )
+            else:
+                candidate = event.get("value")
+                if candidate is None and isinstance(
+                    event.get("event"), ast.AugAssign
+                ):
+                    candidate = event["event"].value
+                values = [candidate] if candidate is not None else []
+            if any(
+                references_local_callable(value, definitions)
+                for value in values
+                if value is not None
+            ):
+                result = True
+                break
+        scope_callable_projection[id(scope)] = result
+        return result
 
     def lexical_owner(node: ast.AST) -> ast.AST | None:
         current = node
@@ -2598,6 +2751,34 @@ def _definition_execution_nodes(
     def contains_node(root: ast.AST, node: ast.AST) -> bool:
         return root is node or is_ancestor(root, node)
 
+    enclosing_loop_cache: dict[int, set[int]] = {}
+
+    def enclosing_loop_bodies(node: ast.AST) -> set[int]:
+        cached = enclosing_loop_cache.get(id(node))
+        if cached is not None:
+            return cached
+        loops: set[int] = set()
+        current = node
+        while id(current) in parents:
+            parent = parents[id(current)]
+            if isinstance(parent, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                break
+            if isinstance(parent, (ast.For, ast.AsyncFor, ast.While)):
+                if any(contains_node(statement, node) for statement in parent.body):
+                    loops.add(id(parent))
+            current = parent
+        enclosing_loop_cache[id(node)] = loops
+        return loops
+
+    def loop_carried_event(event: ast.AST, use: ast.AST) -> bool:
+        if event is use:
+            return False
+        if is_ancestor(event, use) or is_ancestor(use, event):
+            return False
+        if _node_position(event) < _node_position(use):
+            return False
+        return bool(enclosing_loop_bodies(event) & enclosing_loop_bodies(use))
+
     def nearest_comprehension(
         node: ast.AST,
     ) -> ast.ListComp | ast.SetComp | ast.DictComp | ast.GeneratorExp | None:
@@ -2639,8 +2820,13 @@ def _definition_execution_nodes(
             *_node_position(node),
         )
 
+    control_region_cache: dict[int, dict[int, tuple[str, int]]] = {}
+
     def control_regions(node: ast.AST) -> dict[int, tuple[str, int]]:
         """Return the conditional suites that must run before ``node``."""
+        cached = control_region_cache.get(id(node))
+        if cached is not None:
+            return cached
         regions: dict[int, tuple[str, int]] = {}
         current = node
         while id(current) in parents:
@@ -2667,6 +2853,7 @@ def _definition_execution_nodes(
                         break
                 regions[id(parent)] = region
             current = parent
+        control_region_cache[id(node)] = regions
         return regions
 
     def conditional_at_use(event: ast.AST, use: ast.AST) -> bool:
@@ -3420,11 +3607,79 @@ def _definition_execution_nodes(
             "tuple", "zip",
         })
 
+        def is_mutating_event(record: dict[str, Any]) -> bool:
+            if record["kind"] in {"augassign", "storage_write"}:
+                return True
+            if record["kind"] != "call":
+                return False
+            call = record["call"]
+            return isinstance(call.func, ast.Attribute) and call.func.attr in {
+                "add", "append", "clear", "extend", "insert", "pop",
+                "remove", "reverse", "setdefault", "sort", "update",
+            }
+
+        # Loop-carried reaching mutations only engage for scopes whose
+        # projected container contents can reference local callables; all
+        # other scopes keep the exact positional reconstruction.
+        loop_carried_admission = scope_projects_local_callable(binding_scope)
+
+        # Fail-closed alias closure: names linked to the requested owner by
+        # simple name-to-name binds may denote the same mutable object, so
+        # their reaching mutations must participate in the reconstruction.
+        mutation_owner_names = {name}
+        if loop_carried_admission:
+            alias_links = scope_alias_links.get(id(binding_scope))
+            if alias_links is None:
+                alias_links = {}
+                for record in events:
+                    if record["kind"] != "bind":
+                        continue
+                    bind_target = record["target"]
+                    bind_value = record["value"]
+                    if not isinstance(
+                        bind_target, ast.Name
+                    ) or not isinstance(bind_value, ast.Name):
+                        continue
+                    alias_links.setdefault(bind_target.id, set()).add(
+                        bind_value.id
+                    )
+                    alias_links.setdefault(bind_value.id, set()).add(
+                        bind_target.id
+                    )
+                scope_alias_links[id(binding_scope)] = alias_links
+
+            alias_frontier = [name]
+            while alias_frontier:
+                alias_current = alias_frontier.pop()
+                for alias_linked in alias_links.get(alias_current, ()):
+                    if alias_linked not in mutation_owner_names:
+                        mutation_owner_names.add(alias_linked)
+                        alias_frontier.append(alias_linked)
+
+        def mutates_requested_owner(record: dict[str, Any]) -> bool:
+            if record["kind"] == "augassign":
+                return root_reference_name(record["target"]) in mutation_owner_names
+            if record["kind"] == "storage_write":
+                return root_reference_name(record["target"]) in mutation_owner_names
+            if record["kind"] != "call":
+                return False
+            call = record["call"]
+            return (
+                isinstance(call.func, ast.Attribute)
+                and root_reference_name(call.func.value) in mutation_owner_names
+            )
+
         ordered_events = sorted(
             (
                 event
                 for event in events
                 if occurs_before(event["event"], use)
+                or (
+                    loop_carried_admission
+                    and is_mutating_event(event)
+                    and mutates_requested_owner(event)
+                    and loop_carried_event(event["event"], use)
+                )
             ),
             key=lambda item: (
                 *_node_position(item["event"]),
@@ -3434,8 +3689,14 @@ def _definition_execution_nodes(
         )
         for record in ordered_events:
             event = record["event"]
-            conditional = bool(record.get("conditional")) and (
-                conditional_at_use(event, use)
+            conditional = (
+                loop_carried_admission
+                and is_mutating_event(record)
+                and mutates_requested_owner(record)
+                and loop_carried_event(event, use)
+            ) or (
+                bool(record.get("conditional"))
+                and conditional_at_use(event, use)
             )
             kind = record["kind"]
             if kind == "bind":
@@ -3727,6 +3988,44 @@ def _definition_execution_nodes(
                 elements.extend(expanded)
                 status = merge_status(status, expanded_status)
                 orders.add(expanded_order)
+            # Mutation-aware invocation arguments: a parameter bound to a
+            # projected (modeled-mutator-mutated) caller name must expose the
+            # caller-side reaching mutations, not only the mutation-blind
+            # resolved sources.
+            for scope in resolution_scope_chain(current_definition, value):
+                for alias in invocation_argument_aliases.get(
+                    id(scope), {}
+                ).get(value.id, []):
+                    if alias is value:
+                        continue
+                    alias_key = ("argument-alias", id(alias))
+                    if alias_key in next_seen:
+                        continue
+                    alias_owner = lexical_owner(alias)
+                    if not isinstance(
+                        alias_owner,
+                        (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef),
+                    ):
+                        continue
+                    if not any(
+                        name_has_nested_projection(alias_scope, alias.id)
+                        and scope_projects_local_callable(alias_scope)
+                        for alias_scope in resolution_scope_chain(
+                            alias_owner, alias
+                        )
+                    ):
+                        continue
+                    expanded, expanded_status, expanded_order = (
+                        bounded_iterable_elements(
+                            alias,
+                            alias_owner,
+                            alias,
+                            next_seen | {alias_key},
+                        )
+                    )
+                    elements.extend(expanded)
+                    status = merge_status(status, expanded_status)
+                    orders.add(expanded_order)
             order = orders.pop() if len(orders) == 1 else "unknown"
             if not sources:
                 status = "incomplete"
@@ -4672,6 +4971,15 @@ def _definition_execution_nodes(
                 values: list[tuple[str, ast.AST, ast.ClassDef | None]] = []
                 status = "incomplete" if name in incomplete_names else "complete"
                 for argument, argument_scope, argument_owner in sources[name]:
+                    if isinstance(argument, ast.Name):
+                        recorded_aliases = invocation_argument_aliases.setdefault(
+                            id(target), {}
+                        ).setdefault(name, [])
+                        if not any(
+                            recorded is argument
+                            for recorded in recorded_aliases
+                        ):
+                            recorded_aliases.append(argument)
                     resolved, argument_status = resolve_value(
                         argument, argument_scope, argument_owner
                     )
@@ -5648,6 +5956,7 @@ def _definition_execution_nodes(
         current_owner: ast.ClassDef | None,
         seen: frozenset[tuple[str, int]] = frozenset(),
         shadowed: frozenset[str] = frozenset(),
+        collected_iterables: set[int] | None = None,
     ) -> tuple[
         list[tuple[ast.FunctionDef | ast.AsyncFunctionDef, ast.ClassDef | None]],
         str,
@@ -5660,6 +5969,13 @@ def _definition_execution_nodes(
         if key in seen:
             return [], "complete"
         next_seen = seen | {key}
+        if collected_iterables is None:
+            # One visited set per outermost escape walk: a container node's
+            # bounded contents are collected once per walk, which keeps the
+            # walk's target/status aggregate identical while bounding the
+            # alias-follow recursion.
+            collected_iterables = set()
+        walk_collected = collected_iterables
         targets: list[
             tuple[ast.FunctionDef | ast.AsyncFunctionDef, ast.ClassDef | None]
         ] = []
@@ -5673,9 +5989,48 @@ def _definition_execution_nodes(
                 current_owner,
                 next_seen,
                 names,
+                walk_collected,
             )
             targets.extend(nested_targets)
             if nested_status == "incomplete":
+                status = "incomplete"
+
+        def collect_bounded_iterable(item: ast.AST) -> None:
+            nonlocal status
+            if id(item) in walk_collected:
+                return
+            walk_collected.add(id(item))
+            if isinstance(item, ast.Name):
+                for scope in resolution_scope_chain(
+                    current_definition, item
+                ):
+                    for alias in invocation_argument_aliases.get(
+                        id(scope), {}
+                    ).get(item.id, []):
+                        if alias is not item:
+                            collect_bounded_iterable(alias)
+                scopes = resolution_scope_chain(current_definition, item)
+                direct_projection = any(
+                    (
+                        name_has_nested_projection(scope, item.id)
+                        and scope_projects_local_callable(scope)
+                    )
+                    or invocation_argument_aliases.get(id(scope), {}).get(
+                        item.id
+                    )
+                    for scope in scopes
+                )
+                if not direct_projection:
+                    return
+            elements, elements_status, _order = bounded_iterable_elements(
+                item,
+                current_definition,
+                item,
+                next_seen,
+            )
+            for element in elements:
+                collect(element)
+            if elements_status == "incomplete":
                 status = "incomplete"
 
         def target_names(target: ast.AST) -> set[str]:
@@ -5805,6 +6160,7 @@ def _definition_execution_nodes(
                 status = "incomplete"
 
         if isinstance(value, ast.Name):
+            collect_bounded_iterable(value)
             scope = storage_scope(value.id, current_definition, value)
             if scope is not None:
                 binding_key = (f"escape-binding:{value.id}", id(scope))

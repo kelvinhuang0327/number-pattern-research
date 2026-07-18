@@ -1,8 +1,9 @@
 # Randomness Final Verdict — Minimal Version
 
-**Version:** 1.0 (Minimal)  
-**Effective:** 2026-05-06  
-**Authority:** wiki/system/governance.md  
+**Version:** 1.2<br>
+**Effective:** 2026-05-06<br>
+**Last verified:** 2026-07-18<br>
+**Authority:** wiki/system/governance.md<br>
 **Status:** ACTIVE — Source-of-Truth for research position  
 
 > **This document is the trusted source-of-truth for LotteryNew's current assessment of lottery randomness and exploitability.**  
@@ -41,17 +42,26 @@ This classification does not mean "research failed." It means: "We found the beg
 
 ## 3. Randomness Audit Result
 
-**Last audit run:** 2026-05-01T23:39:17  
-**Audit script:** `scripts/randomness_audit.py`  
-**Audit outputs:** `outputs/randomness_audit/`  
+- **Last audit run:** 2026-07-18T13:35:18.685255Z
+- **Audit implementation:** `scripts/randomness_audit.py` (`RECONSTRUCTED`; historical implementation parity is not claimed)
+- **Audit outputs:** `outputs/randomness_audit/randomness_audit_results.json` and `outputs/randomness_audit/randomness_audit_summary.md`
+- **Verified normalized result SHA-256:** `ca097c324970ce06acb1fee29efccb48576b48cb9c34317fc24d341042338616`
 
 **Verdict:** `WEAK_DEVIATIONS_NOT_SIGNIFICANT_AFTER_CORRECTION`
 
 Interpretation:
-- Some raw p-values showed marginal deviations
-- After Bonferroni correction for multiple hypotheses: **none passed threshold**
+- The fresh executable audit analyzed 1,929 Power Lotto draws (through 2026-07-16), 2,125 canonical-main Big Lotto draws (through 2026-07-14), and 5,916 Daily 539 draws (through 2026-07-16)
+- One of 44 pre-declared confirmatory tests was nominally significant before correction: Big Lotto special-number uniformity, raw p = 0.0459634
+- The Big Lotto special-number null uses the full **1..49** marginal domain, consistent with the official sequential six-main-plus-special draw process
+- After Bonferroni correction for 44 hypotheses: **none passed threshold**
 - After BH-FDR correction: **none passed threshold**
 - No ball-level or draw-machine bias confirmed
+
+Limitations:
+- Statistical compatibility does not prove physical randomness
+- Monte Carlo p-values use 2,000 simulations and therefore have finite resolution
+- The confirmatory tests are correlated; Bonferroni remains the conservative family-wise gate
+- This result is not a prediction, strategy promotion, or betting recommendation
 
 **What this means for research:**
 - The deviations observed are consistent with random fluctuation
@@ -163,8 +173,10 @@ No shortcuts. No "just a quick check." All gates are mandatory.
 
 **Enforcement:**
 - `tests/test_randomness_audit_cadence.py` CI gate enforces this policy (P0-1, 2026-05-08)
-- Summary file: `outputs/randomness_audit/randomness_audit_summary.md` — `Run timestamp:` line is parsed
-- Gate fails if summary is absent, unreadable, or timestamp is stale per policy
+- The cadence anchor is the audit artifact's UTC `run_timestamp`; the summary's `Run timestamp:` line must match it exactly
+- Human re-attestation of unchanged evidence does **not** reset either cadence trigger
+- The gate validates required audit evidence, immutable dataset digests, and the current canonical draw count; a timestamp without dataset evidence fails closed
+- The gate fails if either artifact is absent or unreadable, the audit is more than 14 days old, audited history changed, or 50 new canonical draws accumulated
 
 **Routing:**  
 → cadence test: `tests/test_randomness_audit_cadence.py`  
@@ -179,3 +191,4 @@ No shortcuts. No "just a quick check." All gates are mandatory.
 |---------|------|--------|
 | 1.0 (Minimal) | 2026-05-06 | Initial creation as part of P1-Rank1 Governance Lock-in. Establishes minimal trusted verdict; full audit cadence to be defined in future governance tasks. |
 | 1.1 | 2026-05-08 | Added §9 Audit Cadence Policy (policy v0.1): 14 calendar days / 50 draws, whichever comes first. CI gate added: tests/test_randomness_audit_cadence.py. |
+| 1.2 | 2026-07-18 | Replaced human-only freshness with a verified executable audit bound to current canonical data; retained the verdict after Bonferroni and BH-FDR correction; anchored cadence to `run_timestamp` plus dataset evidence. |

@@ -45,6 +45,7 @@ P238B_SOURCE = REPO_ROOT / "scripts" / "p238b_nist_randomness_audit_artifact_bui
 P246K_SOURCE = REPO_ROOT / "analysis" / "p246k_canonical_big_lotto_nist_reaudit.py"
 DEFAULT_RESULTS_PATH = REPO_ROOT / "outputs" / "randomness_audit" / "randomness_audit_results.json"
 DEFAULT_SUMMARY_PATH = REPO_ROOT / "outputs" / "randomness_audit" / "randomness_audit_summary.md"
+DEFAULT_WIKI_PATH = REPO_ROOT / "wiki" / "system" / "randomness_final_verdict.md"
 
 CANONICAL_VIEW_NAME = "draws_big_lotto_canonical_main"
 CANONICAL_POPULATION_SQL = """SELECT draw, date, numbers, special
@@ -94,12 +95,61 @@ P246K_CHECK_PATHS = (
     ("entropy",),
 )
 
+P246K_REQUIRED_AUDIT_METHODS = {
+    "draw_sum_ks_test": "KS test vs normal distribution",
+    "number_frequency_chi2": "Chi-square uniformity test (pool_size=49, k=6)",
+    "runs_test": "Runs test on above/below-mean draw sums",
+    "ljung_box_lag10": "Ljung-Box autocorrelation test (lag=10)",
+    "shannon_entropy": "Normalized Shannon entropy of number frequencies",
+    "per_position_analysis": "Mean/range of sorted-position numbers",
+    "era_stability": "Per-year sum mean — temporal stability check",
+}
+
+HISTORICAL_DATE_CONFLICT = {
+    "wiki_historical_date": "2026-05-01",
+    "preserved_historical_artifact_date": "2026-06-02",
+    "protected_historical_producer_status": "ABSENT",
+    "wiki_date_is_currently_reproducible": False,
+    "artifact_date_is_currently_reproducible": False,
+    "current_existing_logic_migration_is_separate": True,
+    "continuity_or_direct_comparability_claimed": False,
+    "disclosure": (
+        "The wiki historically cited 2026-05-01, while the preserved historical "
+        "artifact timestamp is 2026-06-02. The protected historical producer is "
+        "absent, so neither historical date represents a currently reproducible "
+        "audit. The current executable existing-logic migration is separate; no "
+        "continuity or direct comparability is claimed."
+    ),
+}
+
+WIKI_AUDIT_BEGIN = "<!-- P692_CURRENT_EXECUTABLE_AUDIT_BEGIN -->"
+WIKI_AUDIT_END = "<!-- P692_CURRENT_EXECUTABLE_AUDIT_END -->"
+
 LEGACY_SUMMARY_BEGIN = "<!-- P691_LEGACY_44_TEST_SUMMARY_BEGIN -->"
 LEGACY_SUMMARY_END = "<!-- P691_LEGACY_44_TEST_SUMMARY_END -->"
 
 
 class AuditProvenanceError(ValueError):
     """Raised when audit or population provenance cannot be trusted."""
+
+
+def _reject_duplicate_json_object(pairs: Sequence[tuple[str, Any]]) -> dict[str, Any]:
+    value: dict[str, Any] = {}
+    for key, item in pairs:
+        if key in value:
+            raise AuditProvenanceError(f"duplicate JSON object key rejected: {key!r}")
+        value[key] = item
+    return value
+
+
+def strict_json_loads(payload: Any, *, source: str) -> Any:
+    """Parse one JSON trust boundary while rejecting duplicate object keys."""
+    try:
+        return json.loads(payload, object_pairs_hook=_reject_duplicate_json_object)
+    except AuditProvenanceError:
+        raise
+    except (json.JSONDecodeError, UnicodeDecodeError, TypeError) as exc:
+        raise AuditProvenanceError(f"strict JSON parse failed for {source}") from exc
 
 
 @dataclass(frozen=True)
@@ -251,16 +301,24 @@ def load_canonical_big_lotto_population(db_path: Path) -> PopulationLoad:
 
     draws: list[dict[str, Any]] = []
     for row in rows:
-        try:
-            numbers = json.loads(row["numbers"])
-        except (TypeError, json.JSONDecodeError) as exc:
+        numbers = strict_json_loads(
+            row["numbers"],
+            source=f"canonical row {row['draw']!r} numbers",
+        )
+        if not isinstance(numbers, list):
             raise AuditProvenanceError(
-                f"canonical row {row['draw']!r} contains malformed numbers JSON"
+                f"canonical row {row['draw']!r} numbers JSON must be an array"
+            )
+        try:
+            parsed_numbers = [int(number) for number in numbers]
+        except (TypeError, ValueError) as exc:
+            raise AuditProvenanceError(
+                f"canonical row {row['draw']!r} contains non-numeric numbers"
             ) from exc
         draw = {
             "draw": str(row["draw"]),
             "date": str(row["date"]),
-            "numbers": [int(number) for number in numbers],
+            "numbers": parsed_numbers,
             "special": row["special"],
         }
         draws.append(draw)
@@ -334,6 +392,105 @@ def _p246k_semantic_payload(result: Mapping[str, Any]) -> dict[str, Any]:
     if missing:
         raise AuditProvenanceError(f"P246K result is missing semantic fields: {missing}")
     return {key: result[key] for key in P246K_SEMANTIC_KEYS}
+
+
+def _scientific_limitations(p246k_result: Mapping[str, Any]) -> list[dict[str, str]]:
+    audit_results = p246k_result.get("audit_results")
+    if not isinstance(audit_results, Mapping):
+        raise AuditProvenanceError("P246K audit results are unavailable for limitation publication")
+    frequency = audit_results.get("number_frequency_uniformity")
+    if not isinstance(frequency, Mapping):
+        raise AuditProvenanceError("P246K frequency result is unavailable for limitation publication")
+    current_max = frequency.get("max_frequency")
+    current_min = frequency.get("min_frequency")
+    if not _is_positive_int(current_max) or not _is_positive_int(current_min):
+        raise AuditProvenanceError("P246K frequency extrema are missing or malformed")
+    return [
+        {
+            "id": "fitted_normal_ks_discrete_sum_calibration",
+            "statement": (
+                "The fitted-normal KS diagnostic is applied to a discrete draw-sum "
+                "distribution and is not a fully calibrated goodness-of-fit proof."
+            ),
+        },
+        {
+            "id": "entropy_threshold_not_p_value",
+            "statement": "The entropy threshold is not a p-value.",
+        },
+        {
+            "id": "five_diagnostics_no_multiplicity_correction",
+            "statement": "The five P246K diagnostics have no multiplicity correction.",
+        },
+        {
+            "id": "power_and_mde_not_established",
+            "statement": (
+                "Statistical power and minimum-detectable-effect have not been established "
+                "for the published five-test diagnostic."
+            ),
+        },
+        {
+            "id": "p246k_green_not_randomness_proof",
+            "statement": "P246K GREEN does not prove randomness.",
+        },
+        {
+            "id": "historical_frequency_extrema_conflict",
+            "statement": (
+                "Earlier JSON and Markdown frequency-extrema values were inconsistent "
+                "(JSON max/min 285/221; Markdown max/min 284/243). The current migration "
+                "preserves both as conflicting historical evidence, selects neither "
+                "historical value, and reports the separately recomputed current canonical "
+                f"extrema {current_max}/{current_min} only as part of the unchanged P246K "
+                "source diagnostic payload."
+            ),
+        },
+    ]
+
+
+def _p246k_payload_metadata(p246k_result: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "status": "UNCHANGED_SOURCE_DIAGNOSTIC_PAYLOAD",
+        "statistical_payload_unchanged": True,
+        "authoritative_for_proving_randomness": False,
+        "equivalent_to_historical_44_test_audit": False,
+        "evidence_of_no_exploitable_edge": False,
+        "validates_another_lottery": False,
+        "authorizes_prediction": False,
+        "authorizes_betting": False,
+        "scientific_limitations": _scientific_limitations(p246k_result),
+    }
+
+
+def _bounded_current_conclusion(p246k_result: Mapping[str, Any]) -> dict[str, Any]:
+    audit_results = p246k_result.get("audit_results")
+    summary = audit_results.get("summary") if isinstance(audit_results, Mapping) else None
+    if not isinstance(summary, Mapping):
+        raise AuditProvenanceError("P246K summary is unavailable for bounded publication")
+    total = summary.get("total_tests")
+    green = summary.get("green")
+    yellow = summary.get("yellow")
+    overall = summary.get("overall_status")
+    if not _is_positive_int(total):
+        raise AuditProvenanceError("P246K bounded conclusion total is malformed")
+    if not isinstance(green, int) or isinstance(green, bool) or green < 0:
+        raise AuditProvenanceError("P246K bounded conclusion green count is malformed")
+    if not isinstance(yellow, int) or isinstance(yellow, bool) or yellow < 0:
+        raise AuditProvenanceError("P246K bounded conclusion yellow count is malformed")
+    if green + yellow != total or overall not in {"GREEN", "YELLOW"}:
+        raise AuditProvenanceError("P246K bounded conclusion is inconsistent")
+    return {
+        "status": "DIAGNOSTIC_ONLY",
+        "p246k_overall_status": overall,
+        "total_checks": total,
+        "green_checks": green,
+        "yellow_checks": yellow,
+        "statement": (
+            f"The unchanged P246K source diagnostics report {green} GREEN and {yellow} "
+            f"YELLOW outcomes across {total} checks for the current canonical BIG_LOTTO "
+            "population. This bounded diagnostic result does not prove randomness, "
+            "establish absence of an exploitable edge, validate another lottery, or "
+            "authorize prediction or betting."
+        ),
+    }
 
 
 def _published_p246k_result(result: Mapping[str, Any]) -> dict[str, Any]:
@@ -427,8 +584,15 @@ def build_results_document(
                 },
                 "implementation_sources": _source_implementations(),
                 "input_provenance": population.provenance,
+                "p246k_existing_logic_payload_metadata": _p246k_payload_metadata(
+                    published_p246k
+                ),
                 "p246k_existing_logic_result": published_p246k,
                 "p246k_semantic_output_sha256": semantic_hash,
+                "current_authoritative_conclusion": _bounded_current_conclusion(
+                    published_p246k
+                ),
+                "historical_date_conflict": dict(HISTORICAL_DATE_CONFLICT),
                 "p246k_result_retained_unchanged": True,
                 "p246k_nonsemantic_location_sanitized": True,
                 "p246k_static_narrative_caveat": (
@@ -445,6 +609,7 @@ def build_results_document(
                     "selected_row_stream_sha256": population.provenance[
                         "selected_row_stream_sha256"
                     ],
+                    "oldest_selected_row": population.provenance["oldest_selected_row"],
                     "newest_selected_row": population.provenance["newest_selected_row"],
                 },
                 "cadence_policy": {
@@ -453,7 +618,11 @@ def build_results_document(
                     "trigger": "whichever_occurs_first",
                     "timestamp_only_re_attestation_is_gating": False,
                 },
-                "orchestration_additions_only": ["provenance", "cadence"],
+                "orchestration_additions_only": [
+                    "provenance",
+                    "cadence",
+                    "publication_containment",
+                ],
                 "new_statistical_procedure_introduced": False,
                 "combined_p238b_p246k_verdict": False,
                 "db_write_performed": False,
@@ -476,6 +645,10 @@ def render_summary(document: Mapping[str, Any], legacy_summary: str) -> str:
     sources = current["implementation_sources"]
     anchor = current["cadence_anchor"]
     policy = current["cadence_policy"]
+    containment = current["p246k_existing_logic_payload_metadata"]
+    limitations = containment["scientific_limitations"]
+    conclusion = current["current_authoritative_conclusion"]
+    date_conflict = current["historical_date_conflict"]
     lines = [
         "# Lottery Randomness Audit Report — Current Executable Path",
         "",
@@ -483,7 +656,11 @@ def render_summary(document: Mapping[str, Any], legacy_summary: str) -> str:
         f"**Task:** `{current['task_id']}`",
         "**Type:** existing-logic migration; not historical 44-test reproduction",
         "**Current scope:** canonical BIG_LOTTO only; P246K controls statistical behavior",
-        f"**Current classification:** `{p246k_result['classification']}`",
+        (
+            "**Unchanged nested P246K diagnostic status (non-authoritative):** "
+            f"`{summary['overall_status']}`"
+        ),
+        f"**Current bounded publication status:** `{conclusion['status']}`",
         "**New statistical procedure introduced:** NO",
         "**Database write performed:** NO",
         "",
@@ -502,6 +679,7 @@ def render_summary(document: Mapping[str, Any], legacy_summary: str) -> str:
             f"**{summary['yellow']} YELLOW**. This is a randomness diagnostic, not a "
             "prediction, strategy, or betting recommendation."
         ),
+        conclusion["statement"],
         "",
         "## Canonical Input Provenance",
         "",
@@ -541,6 +719,32 @@ def render_summary(document: Mapping[str, Any], legacy_summary: str) -> str:
     lines.extend(
         [
             "",
+            "## Non-Authoritative P246K Source Payload",
+            "",
+            f"- Status: `{containment['status']}`",
+            "- The nested payload is retained unchanged as a source diagnostic payload.",
+            "- It is non-authoritative for proving randomness.",
+            "- It is not equivalent to the historical 44-test audit.",
+            "- It is not evidence of no exploitable edge and does not validate another lottery.",
+            "- It authorizes neither prediction nor betting.",
+            "",
+            "## Scientific Limitations",
+            "",
+        ]
+    )
+    for index, limitation in enumerate(limitations, start=1):
+        lines.append(f"{index}. {limitation['statement']}")
+    lines.extend(
+        [
+            "",
+            "## Historical Date-Conflict Disclosure",
+            "",
+            date_conflict["disclosure"],
+        ]
+    )
+    lines.extend(
+        [
+            "",
             "## Cadence",
             "",
             (
@@ -570,6 +774,123 @@ def render_summary(document: Mapping[str, Any], legacy_summary: str) -> str:
     return current_text + legacy_summary + LEGACY_SUMMARY_END + "\n"
 
 
+def _render_wiki_audit_section(document: Mapping[str, Any]) -> str:
+    current = document["current_executable_audit"]
+    provenance = current["input_provenance"]
+    containment = current["p246k_existing_logic_payload_metadata"]
+    conclusion = current["current_authoritative_conclusion"]
+    date_conflict = current["historical_date_conflict"]
+    limitations = containment["scientific_limitations"]
+    lines = [
+        WIKI_AUDIT_BEGIN,
+        "## 3. Randomness Audit Result",
+        "",
+        f"**Latest real executable audit:** {current['executed_at_utc']}",
+        "**Audit script:** `scripts/randomness_audit.py`  ",
+        "**Audit outputs:** `outputs/randomness_audit/`  ",
+        f"**Current bounded publication status:** `{conclusion['status']}`",
+        "",
+        conclusion["statement"],
+        "",
+        "### Canonical input and execution provenance",
+        "",
+        "- Scope: canonical BIG_LOTTO `CANONICAL_MAIN_DRAW` only.",
+        (
+            f"- Population: {provenance['selected_row_count']} rows from draw "
+            f"`{provenance['oldest_selected_row']['draw']}` through "
+            f"`{provenance['newest_selected_row']['draw']}`."
+        ),
+        f"- Logical store: `{provenance['db_identity']}`.",
+        (
+            "- SQLite contract: URI `mode=ro&immutable=1&cache=private`; "
+            "`PRAGMA query_only=ON`; nonempty WAL fails closed."
+        ),
+        f"- Selected-row stream SHA-256: `{provenance['selected_row_stream_sha256']}`.",
+        f"- P246K semantic output SHA-256: `{current['p246k_semantic_output_sha256']}`.",
+        "- No statistic, p-value, threshold, correction, simulation, seed, or verdict value changed.",
+        "- P238B contributes only its unchanged population-independent `_connect_ro` helper.",
+        "",
+        "### Non-authoritative P246K source payload",
+        "",
+        f"- Status: `{containment['status']}`.",
+        "- The nested P246K payload is an unchanged source diagnostic payload.",
+        "- It is non-authoritative for proving randomness and is not equivalent to the historical 44-test audit.",
+        "- It is not evidence of no exploitable edge, does not validate another lottery, and authorizes neither prediction nor betting.",
+        "",
+        "### Scientific limitations",
+        "",
+    ]
+    for index, limitation in enumerate(limitations, start=1):
+        lines.append(f"{index}. {limitation['statement']}")
+    lines.extend(
+        [
+            "",
+            "### Historical date-conflict disclosure",
+            "",
+            date_conflict["disclosure"],
+            "The historical 44-test evidence remains unreproducible from committed source.",
+            "",
+            "### What this means for research",
+            "",
+            "- The current publication reports the outcomes of five existing P246K diagnostics only.",
+            "- It supplies no prediction signal, strategy authorization, betting recommendation, or cross-lottery validation.",
+            "- BIG_LOTTO predictive research remains blocked under its existing governance.",
+            WIKI_AUDIT_END,
+        ]
+    )
+    return "\n".join(lines) + "\n"
+
+
+def render_wiki(document: Mapping[str, Any], existing_wiki: str) -> str:
+    """Replace only the governed current-audit section using document evidence."""
+    if not isinstance(existing_wiki, str) or not existing_wiki.strip():
+        raise AuditProvenanceError("wiki source is empty or malformed")
+    section = _render_wiki_audit_section(document)
+    if existing_wiki.count(WIKI_AUDIT_BEGIN) == existing_wiki.count(WIKI_AUDIT_END) == 1:
+        start = existing_wiki.index(WIKI_AUDIT_BEGIN)
+        end = existing_wiki.index(WIKI_AUDIT_END, start) + len(WIKI_AUDIT_END)
+        if existing_wiki.startswith("\n", end):
+            end += 1
+        rendered = existing_wiki[:start] + section + existing_wiki[end:]
+    else:
+        heading = "## 3. Randomness Audit Result"
+        next_section = "\n---\n\n## 4. Edge Discovery Path — Open Under Governance"
+        if existing_wiki.count(heading) != 1 or next_section not in existing_wiki:
+            raise AuditProvenanceError("wiki current-audit section markers are malformed")
+        start = existing_wiki.index(heading)
+        end = existing_wiki.index(next_section, start)
+        rendered = existing_wiki[:start] + section + existing_wiki[end:]
+
+    old_summary = (
+        "| Are canonical BIG_LOTTO draws compatible with randomness under the current "
+        "executable audit? | **YES — with qualification** (P246K existing logic: 5/5 "
+        "checks GREEN; this is not an exploitable-edge claim) |"
+    )
+    bounded_summary = (
+        "| What did the current canonical BIG_LOTTO audit observe? | **P246K diagnostic: "
+        "5/5 GREEN — not proof of randomness and not an exploitable-edge claim** |"
+    )
+    rendered = rendered.replace(old_summary, bounded_summary)
+    rendered = rendered.replace("**Version:** 1.2", "**Version:** 1.3", 1)
+    rendered = rendered.replace(
+        "--now-utc 2026-07-18T08:43:47Z",
+        "--now-utc <evaluation-utc>",
+    )
+    version_12 = (
+        "| 1.2 | 2026-07-18 | Added the existing-logic P246K executable path, separated "
+        "immutable/unreproducible legacy 44-test evidence, and anchored cadence to real "
+        "execution plus independent canonical draw counts. |"
+    )
+    version_13 = (
+        "| 1.3 | 2026-07-18 | Added strict duplicate-key rejection, complete fail-closed "
+        "provenance, bounded P246K containment, six scientific limitations, historical-date "
+        "disclosure, and one-timestamp JSON/Markdown/wiki publication. |"
+    )
+    if version_13 not in rendered:
+        rendered = rendered.replace(version_12, version_12 + "\n" + version_13)
+    return rendered
+
+
 def _is_positive_int(value: Any) -> bool:
     return isinstance(value, int) and not isinstance(value, bool) and value > 0
 
@@ -578,10 +899,27 @@ def _is_sha256(value: Any) -> bool:
     return isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) is not None
 
 
+def _is_number(value: Any) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool)
+
+
+def _required_boundary(value: Any, *, field_name: str) -> Mapping[str, Any]:
+    if not isinstance(value, Mapping) or not value:
+        raise AuditProvenanceError(f"{field_name} is missing")
+    if not all(
+        isinstance(value.get(key), str) and bool(value.get(key).strip())
+        for key in ("draw", "date")
+    ):
+        raise AuditProvenanceError(f"{field_name} is malformed")
+    return value
+
+
 def _validate_executable_audit_document(
     document: Mapping[str, Any],
 ) -> tuple[Mapping[str, Any], Mapping[str, Any], Mapping[str, Any], datetime]:
     """Validate the exact completed P246K audit contract used by cadence."""
+    if not isinstance(document, Mapping) or not document:
+        raise AuditProvenanceError("audit document must be a non-empty mapping")
     if document.get("artifact_schema_version") != SCHEMA_VERSION:
         raise AuditProvenanceError("artifact schema is incompatible with executable cadence")
 
@@ -608,6 +946,15 @@ def _validate_executable_audit_document(
         raise AuditProvenanceError("P246K result-retention proof is missing")
     if current.get("p246k_nonsemantic_location_sanitized") is not True:
         raise AuditProvenanceError("P246K location-sanitization proof is missing")
+    caveat = current.get("p246k_static_narrative_caveat")
+    if not isinstance(caveat, str) or not caveat.strip():
+        raise AuditProvenanceError("P246K static-narrative caveat is missing")
+    if current.get("orchestration_additions_only") != [
+        "provenance",
+        "cadence",
+        "publication_containment",
+    ]:
+        raise AuditProvenanceError("orchestration addition identity is incompatible")
 
     executed_raw = current.get("executed_at_utc")
     executed = _parse_utc_timestamp(executed_raw, field_name="executed_at_utc")
@@ -655,6 +1002,10 @@ def _validate_executable_audit_document(
         raise AuditProvenanceError("canonical population SQL provenance is incompatible")
     if sql.get("raw_population_count") != RAW_POPULATION_COUNT_SQL:
         raise AuditProvenanceError("raw population SQL provenance is incompatible")
+    if sql.get("raw_population_count_params") != list(RAW_POPULATION_COUNT_PARAMS):
+        raise AuditProvenanceError("raw population SQL parameters are missing or incompatible")
+    if provenance.get("selected_row_stream_serialization") != ROW_STREAM_SERIALIZATION:
+        raise AuditProvenanceError("selected-row serialization provenance is incompatible")
 
     canonical_count = provenance.get("selected_row_count")
     raw_count = provenance.get("raw_population_count")
@@ -662,11 +1013,18 @@ def _validate_executable_audit_document(
         raise AuditProvenanceError("selected_row_count is malformed")
     if not _is_positive_int(raw_count) or raw_count < canonical_count:
         raise AuditProvenanceError("raw_population_count is malformed")
-    newest = provenance.get("newest_selected_row")
-    if not isinstance(newest, Mapping):
-        raise AuditProvenanceError("newest selected-row boundary is missing")
-    if not all(isinstance(newest.get(key), str) and newest.get(key) for key in ("draw", "date")):
-        raise AuditProvenanceError("newest selected-row boundary is malformed")
+    oldest = _required_boundary(
+        provenance.get("oldest_selected_row"),
+        field_name="oldest selected-row boundary",
+    )
+    newest = _required_boundary(
+        provenance.get("newest_selected_row"),
+        field_name="newest selected-row boundary",
+    )
+    if provenance.get("selected_date_min") != oldest["date"]:
+        raise AuditProvenanceError("selected-date minimum does not match oldest boundary")
+    if provenance.get("selected_date_max") != newest["date"]:
+        raise AuditProvenanceError("selected-date maximum does not match newest boundary")
     row_hash = provenance.get("selected_row_stream_sha256")
     if not _is_sha256(row_hash):
         raise AuditProvenanceError("selected-row-stream hash is missing or malformed")
@@ -688,11 +1046,47 @@ def _validate_executable_audit_document(
         raise AuditProvenanceError("P246K canonical count does not match provenance")
     if p246k_result.get("raw_population_count") != raw_count:
         raise AuditProvenanceError("P246K raw count does not match provenance")
+    if p246k_result.get("excluded_add_on_count") != raw_count - canonical_count:
+        raise AuditProvenanceError("P246K exclusion count is inconsistent")
+
+    exclusions = p246k_result.get("exclusion_rules_verified")
+    if not isinstance(exclusions, Mapping) or not exclusions:
+        raise AuditProvenanceError("P246K exclusion proof is empty or missing")
+    expected_exclusions = {
+        "canonical_count": canonical_count,
+        "raw_count": raw_count,
+        "excluded_count": raw_count - canonical_count,
+        "hyphen_in_canonical": 0,
+        "date_format_in_canonical": 0,
+        "small_pool_in_canonical": 0,
+        "all_exclusions_verified": True,
+        "max_num_all_above_25": True,
+        "num_range_valid": True,
+    }
+    if any(exclusions.get(key) != value for key, value in expected_exclusions.items()):
+        raise AuditProvenanceError("P246K exclusion proof is incomplete or incompatible")
+
+    audit_methods = p246k_result.get("audit_methods")
+    if audit_methods != P246K_REQUIRED_AUDIT_METHODS:
+        raise AuditProvenanceError("P246K audit method provenance is incomplete or incompatible")
 
     audit_results = p246k_result.get("audit_results")
-    if not isinstance(audit_results, Mapping):
+    if not isinstance(audit_results, Mapping) or not audit_results:
         raise AuditProvenanceError("P246K five-check result is incomplete")
     statuses: list[str] = []
+    required_check_fields = {
+        ("draw_sum_distribution",): ("n", "ks_stat", "ks_p", "status"),
+        ("number_frequency_uniformity",): (
+            "n_draws",
+            "n_numbers",
+            "chi2_stat",
+            "chi2_p",
+            "status",
+        ),
+        ("serial_randomness", "runs_test"): ("z_stat", "p_value", "status"),
+        ("serial_randomness", "ljung_box_lag10"): ("stat", "p_value", "status"),
+        ("entropy",): ("normalized_entropy", "status"),
+    }
     for path in P246K_CHECK_PATHS:
         check: Any = audit_results
         for key in path:
@@ -702,7 +1096,24 @@ def _validate_executable_audit_document(
             check = check.get(key)
         if not isinstance(check, Mapping) or check.get("status") not in {"GREEN", "YELLOW"}:
             raise AuditProvenanceError(f"P246K check is missing or incomplete: {'.'.join(path)}")
+        for field in required_check_fields[path]:
+            if field not in check or check[field] is None:
+                raise AuditProvenanceError(
+                    f"P246K check outcome is incomplete: {'.'.join(path)}.{field}"
+                )
+            if field != "status" and not _is_number(check[field]):
+                raise AuditProvenanceError(
+                    f"P246K check outcome is malformed: {'.'.join(path)}.{field}"
+                )
         statuses.append(check["status"])
+    if not isinstance(audit_results.get("per_position"), Mapping) or not audit_results[
+        "per_position"
+    ]:
+        raise AuditProvenanceError("P246K per-position diagnostic provenance is empty")
+    if not isinstance(audit_results.get("era_stability"), Mapping) or not audit_results[
+        "era_stability"
+    ]:
+        raise AuditProvenanceError("P246K era-stability diagnostic provenance is empty")
     summary = audit_results.get("summary")
     if not isinstance(summary, Mapping):
         raise AuditProvenanceError("P246K five-check summary is missing")
@@ -732,6 +1143,19 @@ def _validate_executable_audit_document(
     if semantic_hash != actual_semantic_hash:
         raise AuditProvenanceError("P246K semantic hash does not match completed result")
 
+    containment = current.get("p246k_existing_logic_payload_metadata")
+    if containment != _p246k_payload_metadata(p246k_result):
+        raise AuditProvenanceError("P246K non-authoritative payload containment is incomplete")
+    limitations = containment.get("scientific_limitations")
+    if not isinstance(limitations, list) or len(limitations) != 6:
+        raise AuditProvenanceError("six machine-readable scientific limitations are required")
+    if current.get("current_authoritative_conclusion") != _bounded_current_conclusion(
+        p246k_result
+    ):
+        raise AuditProvenanceError("bounded current publication conclusion is incompatible")
+    if current.get("historical_date_conflict") != HISTORICAL_DATE_CONFLICT:
+        raise AuditProvenanceError("historical date-conflict disclosure is incomplete")
+
     policy = current.get("cadence_policy")
     expected_policy = {
         "max_calendar_days": CADENCE_MAX_CALENDAR_DAYS,
@@ -753,6 +1177,8 @@ def _validate_executable_audit_document(
         raise AuditProvenanceError("cadence anchor hash does not match completed execution")
     if anchor.get("newest_selected_row") != newest:
         raise AuditProvenanceError("cadence anchor boundary does not match completed execution")
+    if anchor.get("oldest_selected_row") != oldest:
+        raise AuditProvenanceError("cadence anchor oldest boundary does not match execution")
     return current, anchor, provenance, executed
 
 
@@ -837,10 +1263,7 @@ def _reject_machine_specific_text(text: str, *, artifact_name: str) -> None:
 
 
 def _validate_rendered_pair(results_text: str, summary_text: str) -> None:
-    try:
-        document = json.loads(results_text)
-    except json.JSONDecodeError as exc:
-        raise AuditProvenanceError("generated JSON artifact is malformed") from exc
+    document = strict_json_loads(results_text, source="generated JSON artifact")
     if not isinstance(document, Mapping):
         raise AuditProvenanceError("generated JSON artifact must be an object")
     _validate_executable_audit_document(document)
@@ -849,6 +1272,40 @@ def _validate_rendered_pair(results_text: str, summary_text: str) -> None:
         raise AuditProvenanceError("generated JSON and Markdown artifacts disagree")
     _reject_machine_specific_text(results_text, artifact_name="JSON artifact")
     _reject_machine_specific_text(summary_text, artifact_name="Markdown artifact")
+
+
+def _validate_rendered_artifacts(
+    results_text: str,
+    summary_text: str,
+    wiki_text: str,
+) -> None:
+    _validate_rendered_pair(results_text, summary_text)
+    document = strict_json_loads(results_text, source="generated JSON artifact")
+    if render_wiki(document, wiki_text) != wiki_text:
+        raise AuditProvenanceError("generated JSON and wiki artifacts disagree")
+    current = document["current_executable_audit"]
+    timestamp = current["executed_at_utc"]
+    if summary_text.count(
+        f"**Current executable audit timestamp (UTC):** {timestamp}"
+    ) != 1:
+        raise AuditProvenanceError("JSON and Markdown execution timestamps disagree")
+    if wiki_text.count(f"**Latest real executable audit:** {timestamp}") != 1:
+        raise AuditProvenanceError("JSON and wiki execution timestamps disagree")
+    limitations = current["p246k_existing_logic_payload_metadata"][
+        "scientific_limitations"
+    ]
+    if len(limitations) != 6:
+        raise AuditProvenanceError("publication requires exactly six scientific limitations")
+    for limitation in limitations:
+        statement = limitation["statement"]
+        if statement not in summary_text or statement not in wiki_text:
+            raise AuditProvenanceError(
+                f"scientific limitation publication disagrees: {limitation['id']}"
+            )
+    disclosure = current["historical_date_conflict"]["disclosure"]
+    if disclosure not in summary_text or disclosure not in wiki_text:
+        raise AuditProvenanceError("historical date-conflict publication disagrees")
+    _reject_machine_specific_text(wiki_text, artifact_name="wiki artifact")
 
 
 def _stage_bytes(target: Path, payload: bytes, *, suffix: str) -> Path:
@@ -887,61 +1344,45 @@ def _restore_path(
     _replace_file(restore_stage, target)
 
 
-def _publish_artifact_pair(
-    *,
-    results_text: str,
-    summary_text: str,
-    results_out: Path,
-    summary_out: Path,
-) -> None:
-    """Publish Markdown then cadence JSON, restoring the original pair on failure."""
-    if results_out.resolve() == summary_out.resolve():
-        raise AuditProvenanceError("JSON and Markdown outputs must be distinct files")
-
-    original_results = results_out.read_bytes() if results_out.exists() else None
-    original_summary = summary_out.read_bytes() if summary_out.exists() else None
+def _publish_artifacts(artifacts: Sequence[tuple[Path, str]]) -> None:
+    """Publish an ordered artifact set and restore every published target on failure."""
+    resolved_targets = [target.resolve() for target, _ in artifacts]
+    if len(resolved_targets) != len(set(resolved_targets)):
+        raise AuditProvenanceError("publication artifact targets must be distinct")
+    originals = {
+        target: target.read_bytes() if target.exists() else None
+        for target, _ in artifacts
+    }
     cleanup_paths: list[Path] = []
-    summary_published = False
+    staged: list[tuple[Path, Path]] = []
+    published: list[Path] = []
     try:
-        results_stage = _stage_bytes(
-            results_out,
-            results_text.encode("utf-8"),
-            suffix=".stage",
-        )
-        cleanup_paths.append(results_stage)
-        summary_stage = _stage_bytes(
-            summary_out,
-            summary_text.encode("utf-8"),
-            suffix=".stage",
-        )
-        cleanup_paths.append(summary_stage)
-
+        for target, text in artifacts:
+            stage = _stage_bytes(target, text.encode("utf-8"), suffix=".stage")
+            cleanup_paths.append(stage)
+            staged.append((stage, target))
         try:
-            _replace_file(summary_stage, summary_out)
-            summary_published = True
-            _replace_file(results_stage, results_out)
+            for stage, target in staged:
+                _replace_file(stage, target)
+                published.append(target)
         except Exception as publication_error:
             rollback_errors: list[str] = []
-            if summary_published:
-                for target, original in (
-                    (summary_out, original_summary),
-                    (results_out, original_results),
-                ):
-                    try:
-                        _restore_path(target, original, cleanup_paths)
-                    except Exception as rollback_error:
-                        rollback_errors.append(f"{target}: {rollback_error}")
+            for target in reversed(published):
+                try:
+                    _restore_path(target, originals[target], cleanup_paths)
+                except Exception as rollback_error:
+                    rollback_errors.append(f"{target}: {rollback_error}")
             if rollback_errors:
                 raise AuditProvenanceError(
                     "artifact publication failed and rollback was incomplete: "
                     + "; ".join(rollback_errors)
                 ) from publication_error
-            if summary_published:
+            if published:
                 raise AuditProvenanceError(
-                    "artifact publication failed; the original pair was restored"
+                    "artifact publication failed; the original artifact set was restored"
                 ) from publication_error
             raise AuditProvenanceError(
-                "artifact publication failed before either final file changed"
+                "artifact publication failed before any final file changed"
             ) from publication_error
     finally:
         cleanup_failures: list[str] = []
@@ -956,19 +1397,59 @@ def _publish_artifact_pair(
             )
 
 
+def _publish_artifact_pair(
+    *,
+    results_text: str,
+    summary_text: str,
+    results_out: Path,
+    summary_out: Path,
+) -> None:
+    _publish_artifacts(
+        (
+            (summary_out, summary_text),
+            (results_out, results_text),
+        )
+    )
+
+
+def _publish_artifact_triplet(
+    *,
+    results_text: str,
+    summary_text: str,
+    wiki_text: str,
+    results_out: Path,
+    summary_out: Path,
+    wiki_out: Path,
+) -> None:
+    # Publish human-readable surfaces first and cadence-bearing JSON last.
+    _publish_artifacts(
+        (
+            (summary_out, summary_text),
+            (wiki_out, wiki_text),
+            (results_out, results_text),
+        )
+    )
+
+
 def generate(
     *,
     db_path: Path,
     executed_at_utc: datetime,
     legacy_results_path: Path = DEFAULT_RESULTS_PATH,
     legacy_summary_path: Path = DEFAULT_SUMMARY_PATH,
+    wiki_source_path: Path = DEFAULT_WIKI_PATH,
     results_out: Path = DEFAULT_RESULTS_PATH,
     summary_out: Path = DEFAULT_SUMMARY_PATH,
+    wiki_out: Path = DEFAULT_WIKI_PATH,
 ) -> dict[str, Any]:
     existing_results_bytes = legacy_results_path.read_bytes()
-    existing_results = json.loads(existing_results_bytes)
+    existing_results = strict_json_loads(
+        existing_results_bytes,
+        source=str(legacy_results_path),
+    )
     summary_text = legacy_summary_path.read_text(encoding="utf-8")
     legacy_summary = extract_legacy_summary(summary_text)
+    wiki_source = wiki_source_path.read_text(encoding="utf-8")
     population = load_canonical_big_lotto_population(db_path)
     p246k_result = run_p246k_existing_logic(population, db_path)
     document = build_results_document(
@@ -984,21 +1465,25 @@ def generate(
     # rewriting the immutable historical evidence.
     results_text = json.dumps(document, ensure_ascii=False, indent=2)
     summary_output = render_summary(document, legacy_summary)
-    _validate_rendered_pair(results_text, summary_output)
-    _publish_artifact_pair(
+    wiki_output = render_wiki(document, wiki_source)
+    _validate_rendered_artifacts(results_text, summary_output, wiki_output)
+    _publish_artifact_triplet(
         results_text=results_text,
         summary_text=summary_output,
+        wiki_text=wiki_output,
         results_out=results_out,
         summary_out=summary_out,
+        wiki_out=wiki_out,
     )
     return document
 
 
 def _load_results(path: Path) -> dict[str, Any]:
     try:
-        value = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
+        payload = path.read_bytes()
+    except OSError as exc:
         raise AuditProvenanceError(f"unable to load audit results: {path}") from exc
+    value = strict_json_loads(payload, source=str(path))
     if not isinstance(value, dict):
         raise AuditProvenanceError("audit results must be a JSON object")
     return value
@@ -1013,8 +1498,10 @@ def _build_parser() -> argparse.ArgumentParser:
     run_parser.add_argument("--executed-at-utc", required=True)
     run_parser.add_argument("--legacy-results", type=Path, default=DEFAULT_RESULTS_PATH)
     run_parser.add_argument("--legacy-summary", type=Path, default=DEFAULT_SUMMARY_PATH)
+    run_parser.add_argument("--wiki-source", type=Path, default=DEFAULT_WIKI_PATH)
     run_parser.add_argument("--results-out", type=Path, default=DEFAULT_RESULTS_PATH)
     run_parser.add_argument("--summary-out", type=Path, default=DEFAULT_SUMMARY_PATH)
+    run_parser.add_argument("--wiki-out", type=Path, default=DEFAULT_WIKI_PATH)
 
     cadence_parser = subparsers.add_parser("cadence", help="evaluate cadence from the canonical DB")
     cadence_parser.add_argument("--db", type=Path, required=True)
@@ -1037,8 +1524,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 executed_at_utc=executed,
                 legacy_results_path=args.legacy_results,
                 legacy_summary_path=args.legacy_summary,
+                wiki_source_path=args.wiki_source,
                 results_out=args.results_out,
                 summary_out=args.summary_out,
+                wiki_out=args.wiki_out,
             )
             print(
                 json.dumps(
@@ -1048,6 +1537,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                         "executed_at_utc": document["current_executable_audit"]["executed_at_utc"],
                         "results": str(args.results_out),
                         "summary": str(args.summary_out),
+                        "wiki": str(args.wiki_out),
                     },
                     sort_keys=True,
                 )

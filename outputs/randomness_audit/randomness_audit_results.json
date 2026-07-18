@@ -1124,7 +1124,7 @@
     "task_id": "P691_RANDOMNESS_EXISTING_LOGIC_TRANSFER_R1",
     "audit_type": "EXISTING_LOGIC_MIGRATION",
     "historical_44_test_reproduction": false,
-    "executed_at_utc": "2026-07-18T10:35:40Z",
+    "executed_at_utc": "2026-07-18T13:37:50Z",
     "scope": {
       "lottery_type": "BIG_LOTTO",
       "population": "CANONICAL_MAIN_DRAW",
@@ -1194,6 +1194,42 @@
       "selected_date_max": "2026/07/14",
       "selected_row_stream_serialization": "UTF-8 JSON Lines; each row has draw/date/numbers/special; keys sorted; compact separators; SQL result order",
       "selected_row_stream_sha256": "7d48306f31746ec3ea8976b4d0b88f2577decd52191391ee5c059f2fd4588a09"
+    },
+    "p246k_existing_logic_payload_metadata": {
+      "status": "UNCHANGED_SOURCE_DIAGNOSTIC_PAYLOAD",
+      "statistical_payload_unchanged": true,
+      "authoritative_for_proving_randomness": false,
+      "equivalent_to_historical_44_test_audit": false,
+      "evidence_of_no_exploitable_edge": false,
+      "validates_another_lottery": false,
+      "authorizes_prediction": false,
+      "authorizes_betting": false,
+      "scientific_limitations": [
+        {
+          "id": "fitted_normal_ks_discrete_sum_calibration",
+          "statement": "The fitted-normal KS diagnostic is applied to a discrete draw-sum distribution and is not a fully calibrated goodness-of-fit proof."
+        },
+        {
+          "id": "entropy_threshold_not_p_value",
+          "statement": "The entropy threshold is not a p-value."
+        },
+        {
+          "id": "five_diagnostics_no_multiplicity_correction",
+          "statement": "The five P246K diagnostics have no multiplicity correction."
+        },
+        {
+          "id": "power_and_mde_not_established",
+          "statement": "Statistical power and minimum-detectable-effect have not been established for the published five-test diagnostic."
+        },
+        {
+          "id": "p246k_green_not_randomness_proof",
+          "statement": "P246K GREEN does not prove randomness."
+        },
+        {
+          "id": "historical_frequency_extrema_conflict",
+          "statement": "Earlier JSON and Markdown frequency-extrema values were inconsistent (JSON max/min 285/221; Markdown max/min 284/243). The current migration preserves both as conflicting historical evidence, selects neither historical value, and reports the separately recomputed current canonical extrema 286/222 only as part of the unchanged P246K source diagnostic payload."
+        }
+      ]
     },
     "p246k_existing_logic_result": {
       "schema_version": "1.0",
@@ -1374,13 +1410,35 @@
       "db_identity": "canonical_big_lotto_store"
     },
     "p246k_semantic_output_sha256": "48f72f61764e09de20702a853d124930eb3275ce49eb7e9b4b9e26e84f5d9dd1",
+    "current_authoritative_conclusion": {
+      "status": "DIAGNOSTIC_ONLY",
+      "p246k_overall_status": "GREEN",
+      "total_checks": 5,
+      "green_checks": 5,
+      "yellow_checks": 0,
+      "statement": "The unchanged P246K source diagnostics report 5 GREEN and 0 YELLOW outcomes across 5 checks for the current canonical BIG_LOTTO population. This bounded diagnostic result does not prove randomness, establish absence of an exploitable edge, validate another lottery, or authorize prediction or betting."
+    },
+    "historical_date_conflict": {
+      "wiki_historical_date": "2026-05-01",
+      "preserved_historical_artifact_date": "2026-06-02",
+      "protected_historical_producer_status": "ABSENT",
+      "wiki_date_is_currently_reproducible": false,
+      "artifact_date_is_currently_reproducible": false,
+      "current_existing_logic_migration_is_separate": true,
+      "continuity_or_direct_comparability_claimed": false,
+      "disclosure": "The wiki historically cited 2026-05-01, while the preserved historical artifact timestamp is 2026-06-02. The protected historical producer is absent, so neither historical date represents a currently reproducible audit. The current executable existing-logic migration is separate; no continuity or direct comparability is claimed."
+    },
     "p246k_result_retained_unchanged": true,
     "p246k_nonsemantic_location_sanitized": true,
     "p246k_static_narrative_caveat": "The unchanged P246K payload contains historical raw-access prose referencing 22,238 rows and the legacy aggregate field name excluded_add_on_count. They are retained for exact equivalence and are not current row-family provenance. Current raw and canonical counts are the exact SQL results recorded above: 3150 and 2125.",
     "cadence_anchor": {
-      "real_executable_audit_timestamp_utc": "2026-07-18T10:35:40Z",
+      "real_executable_audit_timestamp_utc": "2026-07-18T13:37:50Z",
       "canonical_draw_count": 2125,
       "selected_row_stream_sha256": "7d48306f31746ec3ea8976b4d0b88f2577decd52191391ee5c059f2fd4588a09",
+      "oldest_selected_row": {
+        "draw": "96000001",
+        "date": "2007/01/02"
+      },
       "newest_selected_row": {
         "draw": "115000070",
         "date": "2026/07/14"
@@ -1394,7 +1452,8 @@
     },
     "orchestration_additions_only": [
       "provenance",
-      "cadence"
+      "cadence",
+      "publication_containment"
     ],
     "new_statistical_procedure_introduced": false,
     "combined_p238b_p246k_verdict": false,

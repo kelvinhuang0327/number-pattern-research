@@ -6,7 +6,6 @@ metadata and resets neither the 14-day nor the 50-new-draw trigger.
 """
 from __future__ import annotations
 
-import json
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -55,6 +54,7 @@ def _population(draws: list[dict], *, raw_count: int = None) -> audit.Population
         "raw_population_count": raw_count,
         "selected_row_count": len(draws),
         "selected_row_stream_sha256": stream_hash,
+        "selected_row_stream_serialization": audit.ROW_STREAM_SERIALIZATION,
         "oldest_selected_row": {
             "draw": draws[-1]["draw"],
             "date": draws[-1]["date"],
@@ -63,6 +63,8 @@ def _population(draws: list[dict], *, raw_count: int = None) -> audit.Population
             "draw": draws[0]["draw"],
             "date": draws[0]["date"],
         },
+        "selected_date_min": draws[-1]["date"],
+        "selected_date_max": draws[0]["date"],
     }
     return audit.PopulationLoad(draws=draws, raw_count=raw_count, provenance=provenance)
 
@@ -82,18 +84,45 @@ def _document(audit_time: datetime, baseline: audit.PopulationLoad) -> dict:
         "raw_population_count": baseline.raw_count,
         "canonical_population_count": len(baseline.draws),
         "excluded_add_on_count": baseline.raw_count - len(baseline.draws),
-        "exclusion_rules_verified": {"all_exclusions_verified": True},
-        "audit_methods": {"existing": "unchanged"},
+        "exclusion_rules_verified": {
+            "canonical_count": len(baseline.draws),
+            "raw_count": baseline.raw_count,
+            "excluded_count": baseline.raw_count - len(baseline.draws),
+            "hyphen_in_canonical": 0,
+            "date_format_in_canonical": 0,
+            "small_pool_in_canonical": 0,
+            "all_exclusions_verified": True,
+            "max_num_all_above_25": True,
+            "num_range_valid": True,
+        },
+        "audit_methods": dict(audit.P246K_REQUIRED_AUDIT_METHODS),
         "audit_results": {
-            "draw_sum_distribution": {"status": "GREEN"},
-            "number_frequency_uniformity": {"status": "GREEN"},
-            "serial_randomness": {
-                "runs_test": {"status": "GREEN"},
-                "ljung_box_lag10": {"status": "GREEN"},
+            "draw_sum_distribution": {
+                "n": len(baseline.draws),
+                "ks_stat": 0.01,
+                "ks_p": 0.5,
+                "status": "GREEN",
             },
-            "entropy": {"status": "GREEN"},
-            "per_position": {},
-            "era_stability": {},
+            "number_frequency_uniformity": {
+                "n_draws": len(baseline.draws),
+                "n_numbers": len(baseline.draws) * 6,
+                "max_frequency": len(baseline.draws),
+                "min_frequency": max(1, len(baseline.draws) - 1),
+                "chi2_stat": 1.0,
+                "chi2_p": 0.5,
+                "status": "GREEN",
+            },
+            "serial_randomness": {
+                "runs_test": {"z_stat": 0.0, "p_value": 0.5, "status": "GREEN"},
+                "ljung_box_lag10": {
+                    "stat": 1.0,
+                    "p_value": 0.5,
+                    "status": "GREEN",
+                },
+            },
+            "entropy": {"normalized_entropy": 0.999, "status": "GREEN"},
+            "per_position": {"pos_1": {"mean": 1.0}},
+            "era_stability": {"2026": {"n": len(baseline.draws), "mean": 100.0}},
             "summary": {
                 "total_tests": 5,
                 "green": 5,
@@ -121,16 +150,25 @@ def _document(audit_time: datetime, baseline: audit.PopulationLoad) -> dict:
             },
             "implementation_sources": audit._source_implementations(),
             "input_provenance": baseline.provenance,
+            "p246k_existing_logic_payload_metadata": audit._p246k_payload_metadata(
+                p246k_result
+            ),
             "p246k_existing_logic_result": p246k_result,
             "p246k_semantic_output_sha256": semantic_hash,
+            "current_authoritative_conclusion": audit._bounded_current_conclusion(
+                p246k_result
+            ),
+            "historical_date_conflict": dict(audit.HISTORICAL_DATE_CONFLICT),
             "p246k_result_retained_unchanged": True,
             "p246k_nonsemantic_location_sanitized": True,
+            "p246k_static_narrative_caveat": "unchanged nested source prose is non-authoritative",
             "cadence_anchor": {
                 "real_executable_audit_timestamp_utc": executed,
                 "canonical_draw_count": len(baseline.draws),
                 "selected_row_stream_sha256": baseline.provenance[
                     "selected_row_stream_sha256"
                 ],
+                "oldest_selected_row": baseline.provenance["oldest_selected_row"],
                 "newest_selected_row": baseline.provenance["newest_selected_row"],
             },
             "cadence_policy": {
@@ -139,12 +177,25 @@ def _document(audit_time: datetime, baseline: audit.PopulationLoad) -> dict:
                 "trigger": "whichever_occurs_first",
                 "timestamp_only_re_attestation_is_gating": False,
             },
-            "orchestration_additions_only": ["provenance", "cadence"],
+            "orchestration_additions_only": [
+                "provenance",
+                "cadence",
+                "publication_containment",
+            ],
             "new_statistical_procedure_introduced": False,
             "combined_p238b_p246k_verdict": False,
             "db_write_performed": False,
         },
     }
+
+
+def _rehash_p246k_semantic(document: dict) -> None:
+    current = document["current_executable_audit"]
+    current["p246k_semantic_output_sha256"] = audit._sha256_bytes(
+        audit._canonical_json_bytes(
+            audit._p246k_semantic_payload(current["p246k_existing_logic_result"])
+        )
+    )
 
 
 @pytest.fixture
@@ -333,6 +384,92 @@ def test_missing_or_malformed_provenance_fails_closed(baseline, mutation):
 
 
 @pytest.mark.parametrize(
+    ("r3_mutant", "mutation"),
+    [
+        (
+            "empty exclusion_rules_verified",
+            lambda document: document["current_executable_audit"][
+                "p246k_existing_logic_result"
+            ].update({"exclusion_rules_verified": {}}),
+        ),
+        (
+            "empty audit_methods",
+            lambda document: document["current_executable_audit"][
+                "p246k_existing_logic_result"
+            ].update({"audit_methods": {}}),
+        ),
+        (
+            "missing oldest_selected_row",
+            lambda document: document["current_executable_audit"][
+                "input_provenance"
+            ].pop("oldest_selected_row"),
+        ),
+        (
+            "missing raw_population_count_params",
+            lambda document: document["current_executable_audit"]["input_provenance"][
+                "sql"
+            ].pop("raw_population_count_params"),
+        ),
+    ],
+)
+def test_exact_r3_incomplete_green_mutants_fail_closed(
+    baseline,
+    r3_mutant,
+    mutation,
+):
+    audit_time = datetime(2026, 7, 1, tzinfo=timezone.utc)
+    document = _document(audit_time, baseline)
+    mutation(document)
+    _rehash_p246k_semantic(document)
+    assert r3_mutant in {
+        "empty exclusion_rules_verified",
+        "empty audit_methods",
+        "missing oldest_selected_row",
+        "missing raw_population_count_params",
+    }
+    with pytest.raises(audit.AuditProvenanceError):
+        audit.evaluate_cadence(document, baseline, audit_time + timedelta(days=1))
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        lambda document: document["current_executable_audit"].update(
+            {"executed_at_utc": ""}
+        ),
+        lambda document: document["current_executable_audit"].update(
+            {"implementation_sources": []}
+        ),
+        lambda document: document["current_executable_audit"].update({"scope": {}}),
+        lambda document: document["current_executable_audit"][
+            "p246k_existing_logic_payload_metadata"
+        ].update({"scientific_limitations": []}),
+        lambda document: document["current_executable_audit"].update(
+            {"current_authoritative_conclusion": {}}
+        ),
+        lambda document: document["current_executable_audit"].update(
+            {"historical_date_conflict": {}}
+        ),
+        lambda document: document["current_executable_audit"]["input_provenance"][
+            "sql"
+        ].update({"raw_population_count_params": []}),
+        lambda document: document["current_executable_audit"]["input_provenance"].update(
+            {"oldest_selected_row": None}
+        ),
+    ],
+)
+def test_null_empty_or_contentless_required_provenance_fails_closed(
+    baseline,
+    mutation,
+):
+    audit_time = datetime(2026, 7, 1, tzinfo=timezone.utc)
+    document = _document(audit_time, baseline)
+    mutation(document)
+    with pytest.raises(audit.AuditProvenanceError):
+        audit.evaluate_cadence(document, baseline, audit_time + timedelta(days=1))
+
+
+@pytest.mark.parametrize(
     ("case", "mutation"),
     [
         ("wrong schema", lambda document: document.update({"artifact_schema_version": "1.0"})),
@@ -475,7 +612,7 @@ def test_equal_or_past_real_audit_timestamp_remains_valid(baseline, historical_d
 
 
 def test_committed_artifact_anchors_to_real_executable_audit():
-    document = json.loads(RESULTS_PATH.read_text(encoding="utf-8"))
+    document = audit.strict_json_loads(RESULTS_PATH.read_bytes(), source=str(RESULTS_PATH))
     audit._validate_executable_audit_document(document)
     current = document["current_executable_audit"]
     anchor = current["cadence_anchor"]
@@ -492,7 +629,7 @@ def test_committed_artifact_anchors_to_real_executable_audit():
 
 
 def test_committed_real_audit_calendar_gate_is_current():
-    document = json.loads(RESULTS_PATH.read_text(encoding="utf-8"))
+    document = audit.strict_json_loads(RESULTS_PATH.read_bytes(), source=str(RESULTS_PATH))
     timestamp = document["current_executable_audit"]["cadence_anchor"][
         "real_executable_audit_timestamp_utc"
     ]
@@ -507,7 +644,7 @@ def test_committed_real_audit_calendar_gate_is_current():
 
 
 def test_summary_timestamp_matches_committed_cadence_anchor():
-    document = json.loads(RESULTS_PATH.read_text(encoding="utf-8"))
+    document = audit.strict_json_loads(RESULTS_PATH.read_bytes(), source=str(RESULTS_PATH))
     summary = SUMMARY_PATH.read_text(encoding="utf-8")
     expected = document["current_executable_audit"]["executed_at_utc"]
     assert f"**Current executable audit timestamp (UTC):** {expected}" in summary

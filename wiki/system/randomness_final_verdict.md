@@ -1,6 +1,6 @@
 # Randomness Final Verdict — Minimal Version
 
-**Version:** 1.2
+**Version:** 1.3
 **Effective:** 2026-07-18
 **Authority:** wiki/system/governance.md  
 **Status:** ACTIVE — Source-of-Truth for research position  
@@ -15,7 +15,7 @@
 
 | Question | Answer |
 |----------|--------|
-| Are canonical BIG_LOTTO draws compatible with randomness under the current executable audit? | **YES — with qualification** (P246K existing logic: 5/5 checks GREEN; this is not an exploitable-edge claim) |
+| What did the current canonical BIG_LOTTO audit observe? | **P246K diagnostic: 5/5 GREEN — not proof of randomness and not an exploitable-edge claim** |
 | Is there a validated, exploitable predictive edge? | **NO** |
 | Is there a monetizable lottery betting strategy? | **NO** |
 | Is H6 signal real? | **YES — but non-monetizable** (see §2) |
@@ -39,33 +39,54 @@ This classification does not mean "research failed." It means: "We found the beg
 
 ---
 
+<!-- P692_CURRENT_EXECUTABLE_AUDIT_BEGIN -->
 ## 3. Randomness Audit Result
 
-**Latest real executable audit:** 2026-07-18T08:43:47Z
+**Latest real executable audit:** 2026-07-18T13:37:50Z
 **Audit script:** `scripts/randomness_audit.py`  
 **Audit outputs:** `outputs/randomness_audit/`  
+**Current bounded publication status:** `DIAGNOSTIC_ONLY`
 
-**Current executable classification:** `P246K_CANONICAL_BIG_LOTTO_RANDOMNESS_AUDIT_GREEN_RANDOM_COMPATIBLE`
+The unchanged P246K source diagnostics report 5 GREEN and 0 YELLOW outcomes across 5 checks for the current canonical BIG_LOTTO population. This bounded diagnostic result does not prove randomness, establish absence of an exploitable edge, validate another lottery, or authorize prediction or betting.
 
-Interpretation:
-- P246K controls the canonical BIG_LOTTO population and existing BIG_LOTTO statistical behavior.
-- The current audit selected 2,125 `CANONICAL_MAIN_DRAW` rows through draw `115000070` from logical store `canonical_big_lotto_store` using SQLite URI `mode=ro&immutable=1&cache=private` plus `PRAGMA query_only=ON`; a nonempty WAL fails closed and no runtime path is published.
-- P246K's five existing checks are GREEN. No statistic, p-value rule, threshold, correction, simulation, seed, or verdict rule was added or changed.
-- P238B's raw BIG_LOTTO population and all P238B statistical/correction/verdict helpers are excluded. Only its committed, population-independent `_connect_ro` helper is reused.
-- This is an existing-logic migration, not a reproduction or substitute for the historical 44-test audit.
+### Canonical input and execution provenance
 
-### Historical 44-test evidence
+- Scope: canonical BIG_LOTTO `CANONICAL_MAIN_DRAW` only.
+- Population: 2125 rows from draw `96000001` through `115000070`.
+- Logical store: `canonical_big_lotto_store`.
+- SQLite contract: URI `mode=ro&immutable=1&cache=private`; `PRAGMA query_only=ON`; nonempty WAL fails closed.
+- Selected-row stream SHA-256: `7d48306f31746ec3ea8976b4d0b88f2577decd52191391ee5c059f2fd4588a09`.
+- P246K semantic output SHA-256: `48f72f61764e09de20702a853d124930eb3275ce49eb7e9b4b9e26e84f5d9dd1`.
+- No statistic, p-value, threshold, correction, simulation, seed, or verdict value changed.
+- P238B contributes only its unchanged population-independent `_connect_ro` helper.
 
-The historical 44-test JSON and Markdown values remain immutable legacy evidence in
-`outputs/randomness_audit/`. They are **unreproducible from committed source** because
-their producing implementation was not committed. Their historical verdict remains
-`WEAK_DEVIATIONS_NOT_SIGNIFICANT_AFTER_CORRECTION`; it is kept separate from the
-current P246K executable result, with no equivalence claim.
+### Non-authoritative P246K source payload
 
-**What this means for research:**
-- Canonical BIG_LOTTO is compatible with the existing P246K randomness checks.
-- GREEN randomness is not a prediction signal, strategy authorization, or betting recommendation.
-- BIG_LOTTO predictive research remains blocked under its existing governance; no strategy or production implication changes here.
+- Status: `UNCHANGED_SOURCE_DIAGNOSTIC_PAYLOAD`.
+- The nested P246K payload is an unchanged source diagnostic payload.
+- It is non-authoritative for proving randomness and is not equivalent to the historical 44-test audit.
+- It is not evidence of no exploitable edge, does not validate another lottery, and authorizes neither prediction nor betting.
+
+### Scientific limitations
+
+1. The fitted-normal KS diagnostic is applied to a discrete draw-sum distribution and is not a fully calibrated goodness-of-fit proof.
+2. The entropy threshold is not a p-value.
+3. The five P246K diagnostics have no multiplicity correction.
+4. Statistical power and minimum-detectable-effect have not been established for the published five-test diagnostic.
+5. P246K GREEN does not prove randomness.
+6. Earlier JSON and Markdown frequency-extrema values were inconsistent (JSON max/min 285/221; Markdown max/min 284/243). The current migration preserves both as conflicting historical evidence, selects neither historical value, and reports the separately recomputed current canonical extrema 286/222 only as part of the unchanged P246K source diagnostic payload.
+
+### Historical date-conflict disclosure
+
+The wiki historically cited 2026-05-01, while the preserved historical artifact timestamp is 2026-06-02. The protected historical producer is absent, so neither historical date represents a currently reproducible audit. The current executable existing-logic migration is separate; no continuity or direct comparability is claimed.
+The historical 44-test evidence remains unreproducible from committed source.
+
+### What this means for research
+
+- The current publication reports the outcomes of five existing P246K diagnostics only.
+- It supplies no prediction signal, strategy authorization, betting recommendation, or cross-lottery validation.
+- BIG_LOTTO predictive research remains blocked under its existing governance.
+<!-- P692_CURRENT_EXECUTABLE_AUDIT_END -->
 
 ---
 
@@ -191,7 +212,7 @@ Operational cadence evaluation requires an explicit canonical DB path and UTC ti
 ```bash
 python scripts/randomness_audit.py cadence \
   --db <runtime-canonical-db-path> \
-  --now-utc 2026-07-18T08:43:47Z
+  --now-utc <evaluation-utc>
 ```
 
 ---
@@ -203,3 +224,4 @@ python scripts/randomness_audit.py cadence \
 | 1.0 (Minimal) | 2026-05-06 | Initial creation as part of P1-Rank1 Governance Lock-in. Establishes minimal trusted verdict; full audit cadence to be defined in future governance tasks. |
 | 1.1 | 2026-05-08 | Added §9 Audit Cadence Policy (policy v0.1): 14 calendar days / 50 draws, whichever comes first. CI gate added: tests/test_randomness_audit_cadence.py. |
 | 1.2 | 2026-07-18 | Added the existing-logic P246K executable path, separated immutable/unreproducible legacy 44-test evidence, and anchored cadence to real execution plus independent canonical draw counts. |
+| 1.3 | 2026-07-18 | Added strict duplicate-key rejection, complete fail-closed provenance, bounded P246K containment, six scientific limitations, historical-date disclosure, and one-timestamp JSON/Markdown/wiki publication. |

@@ -1,0 +1,246 @@
+{
+  "checks": {
+    "canonical_data_quality": {
+      "details": {
+        "big_lotto_replay_distinct_targets": 1552,
+        "big_lotto_replay_ticket_rows": 24140,
+        "canonical_dataset_sha256": "cd56bcca2fd61152f1812bc9c524dcbff3070f06d1c457e81a64bb4d441dd93f",
+        "canonical_main_rows": 2125,
+        "common_window_rows": 2025,
+        "database_sha256": "bf608f13d05e8ceae59e457c0b72a2eb30329eeb6415a09930bb8fde6971fd77",
+        "date_format_counts": {
+          "YYYY/MM/DD": 2125
+        },
+        "duplicate_dates": 0,
+        "duplicate_draw_ids": 0,
+        "duplicate_main_number_rows": 0,
+        "excluded_noncanonical_rows": 1025,
+        "first_date": "2007/01/02",
+        "first_draw": "96000001",
+        "invalid_json_rows": 0,
+        "invalid_or_overlapping_special_rows": 0,
+        "last_date": "2026/07/14",
+        "last_draw": "115000070",
+        "negative_financial_rows": 0,
+        "null_numbers_positional_rows": 2125,
+        "out_of_range_rows": 0,
+        "outside_selected_window_rows": 0,
+        "raw_big_lotto_rows": 3150,
+        "replay_noncausal_cutoff_rows": 0,
+        "replay_rows_missing_from_canonical_view": 336,
+        "replay_targets_missing_from_canonical_view": 21,
+        "sample_first_rows": [
+          {
+            "date": "2007/01/02",
+            "draw": "96000001",
+            "numbers": [
+              13,
+              21,
+              23,
+              27,
+              31,
+              49
+            ],
+            "special": 19
+          },
+          {
+            "date": "2007/01/05",
+            "draw": "96000002",
+            "numbers": [
+              12,
+              19,
+              23,
+              42,
+              44,
+              48
+            ],
+            "special": 33
+          },
+          {
+            "date": "2007/01/09",
+            "draw": "96000003",
+            "numbers": [
+              26,
+              28,
+              35,
+              39,
+              44,
+              45
+            ],
+            "special": 18
+          },
+          {
+            "date": "2007/01/12",
+            "draw": "96000004",
+            "numbers": [
+              10,
+              16,
+              26,
+              28,
+              31,
+              33
+            ],
+            "special": 44
+          },
+          {
+            "date": "2007/01/16",
+            "draw": "96000005",
+            "numbers": [
+              13,
+              28,
+              33,
+              38,
+              43,
+              48
+            ],
+            "special": 4
+          }
+        ],
+        "sample_last_rows": [
+          {
+            "date": "2026/06/30",
+            "draw": "115000066",
+            "numbers": [
+              4,
+              10,
+              16,
+              29,
+              36,
+              45
+            ],
+            "special": 14
+          },
+          {
+            "date": "2026/07/03",
+            "draw": "115000067",
+            "numbers": [
+              11,
+              16,
+              19,
+              23,
+              39,
+              47
+            ],
+            "special": 15
+          },
+          {
+            "date": "2026/07/07",
+            "draw": "115000068",
+            "numbers": [
+              8,
+              13,
+              15,
+              18,
+              19,
+              42
+            ],
+            "special": 37
+          },
+          {
+            "date": "2026/07/10",
+            "draw": "115000069",
+            "numbers": [
+              3,
+              4,
+              15,
+              18,
+              29,
+              49
+            ],
+            "special": 13
+          },
+          {
+            "date": "2026/07/14",
+            "draw": "115000070",
+            "numbers": [
+              10,
+              25,
+              34,
+              36,
+              45,
+              46
+            ],
+            "special": 7
+          }
+        ],
+        "wrong_main_number_count_rows": 0
+      },
+      "pass": true
+    },
+    "canonical_git_status_unchanged": {
+      "details": {
+        "expected": "f3fac7010402c9fbf13829c10d567aadec48c763085f3cd30928170bbf5971f5",
+        "sha256_after": "f3fac7010402c9fbf13829c10d567aadec48c763085f3cd30928170bbf5971f5",
+        "sha256_before": "f3fac7010402c9fbf13829c10d567aadec48c763085f3cd30928170bbf5971f5"
+      },
+      "pass": true
+    },
+    "constructor_reproducibility": {
+      "details": {
+        "mismatch_count": 0,
+        "mismatched_strategy_ids": [],
+        "sample_count": 14
+      },
+      "pass": true
+    },
+    "database_unchanged": {
+      "details": {
+        "sha256_after": "bf608f13d05e8ceae59e457c0b72a2eb30329eeb6415a09930bb8fde6971fd77",
+        "sha256_before": "bf608f13d05e8ceae59e457c0b72a2eb30329eeb6415a09930bb8fde6971fd77"
+      },
+      "pass": true
+    },
+    "focused_tests": {
+      "details": {
+        "command": "python -m pytest -q -p no:cacheprovider tests/test_strategy_preserving_20_ticket.py tests/test_p20c_strategy_preserving_backtest.py tests/test_replay_strategy_lifecycle_registry.py tests/test_replay_strategy_lifecycle_exposure.py tests/test_replay_strategy_registry_online_candidates.py",
+        "counts": {
+          "failed": 0,
+          "passed": 146,
+          "skipped": 0,
+          "xfailed": 0,
+          "xpassed": 0
+        },
+        "output": "146 passed; 0 failed; 0 skipped",
+        "returncode": 0,
+        "status": "PASS"
+      },
+      "pass": true
+    },
+    "formerly_partial_completion": {
+      "details": {
+        "attempted": 12,
+        "completed_at_99pct": 12
+      },
+      "pass": true
+    },
+    "identity_and_ranking_separation": {
+      "details": {
+        "adapter_rows": 12,
+        "native_rows": 2
+      },
+      "pass": true
+    },
+    "independent_detail_recomputation": {
+      "details": {
+        "aggregate_recomputation_mismatches": 0,
+        "constructor_metadata_mismatches": 0,
+        "detail_rows_recounted": 107385,
+        "history_cutoff_failures": 0,
+        "hit_recomputation_mismatches": 0,
+        "native_preservation_failures": 0,
+        "portfolio_hash_mismatches": 0,
+        "portfolio_uniqueness_failures": 0,
+        "row_count_matches": true,
+        "ticket_legality_failures": 0
+      },
+      "pass": true
+    },
+    "known_leakage_invalid_excluded": {
+      "details": {
+        "identity": "history::tools/big_lotto_exhaustive_audit.py"
+      },
+      "pass": true
+    }
+  },
+  "status": "PASS"
+}

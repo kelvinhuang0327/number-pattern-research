@@ -14,6 +14,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 TEST_ARGS = [
+    "tests/test_randomness_audit.py",
     "tests/test_randomness_audit_cadence.py",
     "tests/test_strategy_replay_history_cutoff_integrity.py",
     "tests/test_replay_browser_smoke.py",

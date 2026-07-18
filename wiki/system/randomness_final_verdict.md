@@ -1,7 +1,7 @@
 # Randomness Final Verdict — Minimal Version
 
-**Version:** 1.0 (Minimal)  
-**Effective:** 2026-05-06  
+**Version:** 1.2
+**Effective:** 2026-07-18
 **Authority:** wiki/system/governance.md  
 **Status:** ACTIVE — Source-of-Truth for research position  
 
@@ -15,7 +15,7 @@
 
 | Question | Answer |
 |----------|--------|
-| Are lottery draws verifiably random (pass all audit tests)? | **YES — with qualification** (weak deviations not significant after Bonferroni + BH-FDR correction) |
+| Are canonical BIG_LOTTO draws compatible with randomness under the current executable audit? | **YES — with qualification** (P246K existing logic: 5/5 checks GREEN; this is not an exploitable-edge claim) |
 | Is there a validated, exploitable predictive edge? | **NO** |
 | Is there a monetizable lottery betting strategy? | **NO** |
 | Is H6 signal real? | **YES — but non-monetizable** (see §2) |
@@ -41,22 +41,31 @@ This classification does not mean "research failed." It means: "We found the beg
 
 ## 3. Randomness Audit Result
 
-**Last audit run:** 2026-05-01T23:39:17  
+**Latest real executable audit:** 2026-07-18T08:43:47Z
 **Audit script:** `scripts/randomness_audit.py`  
 **Audit outputs:** `outputs/randomness_audit/`  
 
-**Verdict:** `WEAK_DEVIATIONS_NOT_SIGNIFICANT_AFTER_CORRECTION`
+**Current executable classification:** `P246K_CANONICAL_BIG_LOTTO_RANDOMNESS_AUDIT_GREEN_RANDOM_COMPATIBLE`
 
 Interpretation:
-- Some raw p-values showed marginal deviations
-- After Bonferroni correction for multiple hypotheses: **none passed threshold**
-- After BH-FDR correction: **none passed threshold**
-- No ball-level or draw-machine bias confirmed
+- P246K controls the canonical BIG_LOTTO population and existing BIG_LOTTO statistical behavior.
+- The current audit selected 2,125 `CANONICAL_MAIN_DRAW` rows through draw `115000070` using SQLite URI `mode=ro` plus `PRAGMA query_only=ON`.
+- P246K's five existing checks are GREEN. No statistic, p-value rule, threshold, correction, simulation, seed, or verdict rule was added or changed.
+- P238B's raw BIG_LOTTO population and all P238B statistical/correction/verdict helpers are excluded. Only its committed, population-independent `_connect_ro` helper is reused.
+- This is an existing-logic migration, not a reproduction or substitute for the historical 44-test audit.
+
+### Historical 44-test evidence
+
+The historical 44-test JSON and Markdown values remain immutable legacy evidence in
+`outputs/randomness_audit/`. They are **unreproducible from committed source** because
+their producing implementation was not committed. Their historical verdict remains
+`WEAK_DEVIATIONS_NOT_SIGNIFICANT_AFTER_CORRECTION`; it is kept separate from the
+current P246K executable result, with no equivalence claim.
 
 **What this means for research:**
-- The deviations observed are consistent with random fluctuation
-- No confirmed structural exploitable bias
-- Physical-bias monitoring should continue; if future audit shows Bonferroni + BH-FDR significant deviation, Trigger T4 is activated (see wiki/system/controlled_edge_discovery.md §3)
+- Canonical BIG_LOTTO is compatible with the existing P246K randomness checks.
+- GREEN randomness is not a prediction signal, strategy authorization, or betting recommendation.
+- BIG_LOTTO predictive research remains blocked under its existing governance; no strategy or production implication changes here.
 
 ---
 
@@ -118,7 +127,7 @@ The transition to wiki/system/ as Source-of-Truth was made because:
 ### How to read outputs/ safely
 
 - `outputs/prediction_hit_analysis/INVALID.md` → confirmed circular-match bias; do not use any hit analysis from that directory
-- `outputs/randomness_audit/` → raw audit data; verdict is THIS document §3
+- `outputs/randomness_audit/` → current P246K executable result plus hash-locked legacy 44-test evidence; verdict is THIS document §3
 - `outputs/research_review/` → research inputs to forming this verdict; do NOT treat as the verdict itself
 - Any `outputs/` file labeled `SUPERSEDED`, `DEPRECATED`, `ARCHIVED` → do not use
 
@@ -150,26 +159,37 @@ No shortcuts. No "just a quick check." All gates are mandatory.
 
 ---
 
-## 9. Audit Cadence Policy (policy v0.1)
+## 9. Audit Cadence Policy (policy v0.2 — executable-anchor clarification)
 
-**Effective:** 2026-05-08  
-**Status:** policy v0.1 — first formal definition  
+**Effective:** 2026-07-18
+**Status:** ACTIVE
 
 | Parameter | Value | Rationale |
 |-----------|-------|-----------|
-| Max calendar days between audits | **14 days** | Ensures draws from the past two weeks are sampled |
-| Max new draws since last audit | **50 draws** | Whichever threshold is hit first triggers a re-run |
+| Max calendar days between real executable audits | **14 calendar days** | Anchored to execution, never re-attestation |
+| Max new draws since last audit | **50 new canonical BIG_LOTTO draws** | Current draws come from an independent canonical DB query |
 | Stale threshold | Either condition above | Both checked independently; either triggers failure |
 
 **Enforcement:**
-- `tests/test_randomness_audit_cadence.py` CI gate enforces this policy (P0-1, 2026-05-08)
-- Summary file: `outputs/randomness_audit/randomness_audit_summary.md` — `Run timestamp:` line is parsed
-- Gate fails if summary is absent, unreadable, or timestamp is stale per policy
+- The two triggers are 14 calendar days and 50 new canonical draws, **whichever occurs first**.
+- Calendar cadence reads `current_executable_audit.cadence_anchor.real_executable_audit_timestamp_utc` from the JSON artifact.
+- Draw cadence queries `draws_big_lotto_canonical_main` independently from generated audit outputs and verifies that the prior audited row-stream hash is still a suffix of canonical history.
+- Timestamp-only re-attestation is non-gating and resets neither trigger.
+- UTC offsets are explicit. Missing or malformed provenance, a changed historical row stream, a shrinking population, or a missing canonical view fails closed.
+- `tests/test_randomness_audit_cadence.py` enforces boundaries including 49 versus 50 new draws.
 
 **Routing:**  
 → cadence test: `tests/test_randomness_audit_cadence.py`  
 → audit script: `scripts/randomness_audit.py`  
 → raw outputs: `outputs/randomness_audit/`
+
+Operational cadence evaluation requires an explicit canonical DB path and UTC time:
+
+```bash
+python scripts/randomness_audit.py cadence \
+  --db /absolute/path/to/lottery_api/data/lottery_v2.db \
+  --now-utc 2026-07-18T08:43:47Z
+```
 
 ---
 
@@ -179,3 +199,4 @@ No shortcuts. No "just a quick check." All gates are mandatory.
 |---------|------|--------|
 | 1.0 (Minimal) | 2026-05-06 | Initial creation as part of P1-Rank1 Governance Lock-in. Establishes minimal trusted verdict; full audit cadence to be defined in future governance tasks. |
 | 1.1 | 2026-05-08 | Added §9 Audit Cadence Policy (policy v0.1): 14 calendar days / 50 draws, whichever comes first. CI gate added: tests/test_randomness_audit_cadence.py. |
+| 1.2 | 2026-07-18 | Added the existing-logic P246K executable path, separated immutable/unreproducible legacy 44-test evidence, and anchored cadence to real execution plus independent canonical draw counts. |

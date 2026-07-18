@@ -1092,5 +1092,308 @@
     ]
   },
   "final_verdict": "WEAK_DEVIATIONS_NOT_SIGNIFICANT_AFTER_CORRECTION",
-  "strategy_implication": "NO_EXPLOITABLE_EDGE_FROM_DRAW_PROCESS"
+  "strategy_implication": "NO_EXPLOITABLE_EDGE_FROM_DRAW_PROCESS",
+  "artifact_schema_version": "2.0",
+  "legacy_44_test_evidence": {
+    "status": "IMMUTABLE_LEGACY_EVIDENCE",
+    "reproducible_from_committed_source": false,
+    "historical_confirmatory_test_count": 44,
+    "producer_source_status": "scripts/randomness_audit.py was absent for the historical run",
+    "immutable_top_level_keys": [
+      "run_timestamp",
+      "re_attestation_timestamp",
+      "reanalysis_performed",
+      "new_draws_analyzed",
+      "re_attestation_type",
+      "re_attestation_basis",
+      "simulations",
+      "seed",
+      "alpha",
+      "games",
+      "tests",
+      "multiple_testing",
+      "final_verdict",
+      "strategy_implication"
+    ],
+    "canonical_payload_sha256": "24283ecaae136c17ab3447f2b9b49555e87aaff44c9fc58bee909108eee51b90",
+    "original_artifact_file_sha256": "7d5f95b84bd5214d6f9bcb07dd17113cea47deca96189d43fb40d977b93693cf",
+    "original_summary_file_sha256": "f1f5aa1631c4250428742138fa5429c6c799bc6e0b350dccc41d94e2bc4489ea",
+    "statistical_values_mutated": false
+  },
+  "current_executable_audit": {
+    "task_id": "P691_RANDOMNESS_EXISTING_LOGIC_TRANSFER_R1",
+    "audit_type": "EXISTING_LOGIC_MIGRATION",
+    "historical_44_test_reproduction": false,
+    "executed_at_utc": "2026-07-18T08:43:47Z",
+    "scope": {
+      "lottery_type": "BIG_LOTTO",
+      "population": "CANONICAL_MAIN_DRAW",
+      "statistical_controller": "P246K"
+    },
+    "implementation_sources": [
+      {
+        "implementation_id": "P246K",
+        "role": "canonical BIG_LOTTO statistical controller",
+        "source_path": "analysis/p246k_canonical_big_lotto_nist_reaudit.py",
+        "source_sha256": "3ddd1453ae562c0ac6bec1ada0bc6c2ca3339012ec8a2a26dc233bc1fac83157",
+        "entry_symbol": "run_canonical_nist_reaudit",
+        "transitive_statistical_symbols": [
+          "verify_exclusions",
+          "draw_sum_analysis",
+          "number_frequency_analysis",
+          "serial_randomness_tests",
+          "entropy_analysis",
+          "per_position_analysis",
+          "era_stability"
+        ],
+        "reuse_mode": "unchanged_through_read_only_population_adapter"
+      },
+      {
+        "implementation_id": "P238B",
+        "role": "population-independent SQLite read-only connection helper only",
+        "source_path": "scripts/p238b_nist_randomness_audit_artifact_build.py",
+        "source_sha256": "6eee50f61101b016737863eb426da6a0e893bc2d3f38387aa232ac1b4b86dcd8",
+        "entry_symbol": "_connect_ro",
+        "reuse_mode": "unchanged",
+        "excluded": [
+          "raw BIG_LOTTO population",
+          "all P238B statistical helpers",
+          "multiple-testing corrections",
+          "classification and verdict logic",
+          "artifact rendering"
+        ]
+      }
+    ],
+    "input_provenance": {
+      "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+      "db_open_mode": "sqlite_uri_mode_ro",
+      "pragma_query_only": true,
+      "selected_population": "BIG_LOTTO/CANONICAL_MAIN_DRAW",
+      "canonical_view": "draws_big_lotto_canonical_main",
+      "sql": {
+        "canonical_population": "SELECT draw, date, numbers, special\nFROM draws_big_lotto_canonical_main\nORDER BY CAST(draw AS INTEGER) DESC, draw DESC",
+        "raw_population_count": "SELECT COUNT(*) FROM draws WHERE lottery_type = ?",
+        "raw_population_count_params": [
+          "BIG_LOTTO"
+        ]
+      },
+      "raw_population_count": 3150,
+      "selected_row_count": 2125,
+      "oldest_selected_row": {
+        "draw": "96000001",
+        "date": "2007/01/02"
+      },
+      "newest_selected_row": {
+        "draw": "115000070",
+        "date": "2026/07/14"
+      },
+      "selected_date_min": "2007/01/02",
+      "selected_date_max": "2026/07/14",
+      "selected_row_stream_serialization": "UTF-8 JSON Lines; each row has draw/date/numbers/special; keys sorted; compact separators; SQL result order",
+      "selected_row_stream_sha256": "7d48306f31746ec3ea8976b4d0b88f2577decd52191391ee5c059f2fd4588a09"
+    },
+    "p246k_existing_logic_result": {
+      "schema_version": "1.0",
+      "task_id": "P246K",
+      "classification": "P246K_CANONICAL_BIG_LOTTO_RANDOMNESS_AUDIT_GREEN_RANDOM_COMPATIBLE",
+      "p246j_merged_pr": "PR #325 merged 2026-06-06T02:42:45Z",
+      "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+      "db_read": true,
+      "db_read_only": true,
+      "db_write_performed": false,
+      "input_population": "CANONICAL_MAIN_DRAW",
+      "raw_population_count": 3150,
+      "canonical_population_count": 2125,
+      "excluded_add_on_count": 1025,
+      "exclusion_rules_verified": {
+        "canonical_count": 2125,
+        "raw_count": 3150,
+        "excluded_count": 1025,
+        "hyphen_in_canonical": 0,
+        "date_format_in_canonical": 0,
+        "small_pool_in_canonical": 0,
+        "all_exclusions_verified": true,
+        "max_num_all_above_25": true,
+        "num_range_valid": true
+      },
+      "p238b_comparison": {
+        "artifact_found": true,
+        "classification": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+        "test_count": 37,
+        "is_corrected_significant": false,
+        "note": "P238B ran on raw mixed 22,238-row BIG_LOTTO population including ADD_ON_PRIZE_EXCLUDED, DATE_FORMAT_ALIEN, SMALL_POOL_ALIEN. P246K runs on canonical 2,113-row population only."
+      },
+      "audit_methods": {
+        "draw_sum_ks_test": "KS test vs normal distribution",
+        "number_frequency_chi2": "Chi-square uniformity test (pool_size=49, k=6)",
+        "runs_test": "Runs test on above/below-mean draw sums",
+        "ljung_box_lag10": "Ljung-Box autocorrelation test (lag=10)",
+        "shannon_entropy": "Normalized Shannon entropy of number frequencies",
+        "per_position_analysis": "Mean/range of sorted-position numbers",
+        "era_stability": "Per-year sum mean — temporal stability check"
+      },
+      "audit_results": {
+        "draw_sum_distribution": {
+          "n": 2125,
+          "mean": 151.0,
+          "sd": 32.17,
+          "min": 59,
+          "max": 246,
+          "theoretical_mean_6of49": 150.0,
+          "mean_deviation_from_theoretical": 1.0,
+          "ks_stat": 0.022,
+          "ks_p": 0.2504,
+          "ks_interpretation": "consistent with normal",
+          "status": "GREEN"
+        },
+        "number_frequency_uniformity": {
+          "n_draws": 2125,
+          "n_numbers": 12750,
+          "expected_per_number": 260.2,
+          "max_frequency": 286,
+          "min_frequency": 222,
+          "chi2_stat": 40.03,
+          "chi2_p": 0.7865,
+          "df": 48,
+          "chi2_interpretation": "uniform distribution compatible",
+          "status": "GREEN"
+        },
+        "serial_randomness": {
+          "runs_test": {
+            "runs": 1063,
+            "n1_above": 1046,
+            "n2_below": 1079,
+            "z_stat": -0.0106,
+            "p_value": 0.9916,
+            "interpretation": "no serial pattern",
+            "status": "GREEN"
+          },
+          "ljung_box_lag10": {
+            "stat": 9.5168,
+            "p_value": 0.4839,
+            "interpretation": "no autocorrelation",
+            "status": "GREEN"
+          }
+        },
+        "entropy": {
+          "shannon_entropy": 5.612411,
+          "max_entropy_uniform": 5.61471,
+          "normalized_entropy": 0.999591,
+          "interpretation": "near-maximum entropy — consistent with uniform distribution",
+          "status": "GREEN"
+        },
+        "per_position": {
+          "pos_1": {
+            "mean": 7.05,
+            "min": 1,
+            "max": 32
+          },
+          "pos_2": {
+            "mean": 14.52,
+            "min": 2,
+            "max": 40
+          },
+          "pos_3": {
+            "mean": 21.78,
+            "min": 4,
+            "max": 46
+          },
+          "pos_4": {
+            "mean": 28.75,
+            "min": 7,
+            "max": 47
+          },
+          "pos_5": {
+            "mean": 35.89,
+            "min": 11,
+            "max": 48
+          },
+          "pos_6": {
+            "mean": 42.99,
+            "min": 26,
+            "max": 49
+          }
+        },
+        "era_stability": {
+          "2021": {
+            "n": 113,
+            "mean": 148.5
+          },
+          "2022": {
+            "n": 111,
+            "mean": 153.6
+          },
+          "2023": {
+            "n": 114,
+            "mean": 151.0
+          },
+          "2024": {
+            "n": 118,
+            "mean": 154.6
+          },
+          "2025": {
+            "n": 114,
+            "mean": 149.3
+          },
+          "2026": {
+            "n": 69,
+            "mean": 150.9
+          }
+        },
+        "summary": {
+          "total_tests": 5,
+          "green": 5,
+          "yellow": 0,
+          "overall_status": "GREEN"
+        }
+      },
+      "gate_implication": "CANONICAL BIG_LOTTO draws are consistent with a fair random 6/49 process. P238B YELLOW was driven by mixed-population contamination (DATE_FORMAT_ALIEN + SMALL_POOL_ALIEN). RANDOMNESS_AUDIT_YELLOW is NOT confirmed on the canonical population. NOTE: This GREEN result confirms randomness — it does NOT unlock BIG_LOTTO predictive research. BIG_LOTTO signal space was exhausted (L91: 6 randomness tests pass, MI=0.006 bits, zero signals at p<0.05). Gate remains GATE_RED for predictive/bias research. DB-level canonical separation (P247 Type D) is still recommended.",
+      "no_prediction_claim": true,
+      "no_betting_advice": true,
+      "no_strategy_promotion": true,
+      "anomaly_is_not_predictor": true,
+      "add_on_records_preserved": true,
+      "raw_access_preserved": "get_all_draws('BIG_LOTTO') still returns 22,238 rows",
+      "forbidden_actions_confirmed": [
+        "DB_write",
+        "DB_migration_apply",
+        "CREATE_VIEW",
+        "CREATE_TABLE",
+        "row_deletion",
+        "registry_mutation",
+        "production_recommendation_change",
+        "strategy_promotion",
+        "betting_advice",
+        "Type_D_apply",
+        "prediction_claim",
+        "GATE_OPEN_for_BIG_LOTTO_predictive_research"
+      ],
+      "final_decision": "P246K canonical BIG_LOTTO randomness audit complete on 2125 draws. All 5 tests: 5 GREEN / 0 YELLOW. P238B YELLOW (raw population) is NOT confirmed on canonical population. Canonical BIG_LOTTO draws are consistent with a fair random 6/49 process. This GREEN result supersedes P238B YELLOW for canonical randomness gating. NOTE: GREEN randomness ≠ exploitable signal. BIG_LOTTO predictive research remains blocked per L91 (zero signals pass p<0.05 even on canonical data). No DB write. No deletion. ADD_ON_PRIZE_EXCLUDED preserved. DB-level canonical separation (P247 Type D) still recommended."
+    },
+    "p246k_semantic_output_sha256": "48f72f61764e09de20702a853d124930eb3275ce49eb7e9b4b9e26e84f5d9dd1",
+    "p246k_result_retained_unchanged": true,
+    "p246k_static_narrative_caveat": "The unchanged P246K payload contains historical raw-access prose referencing 22,238 rows and the legacy aggregate field name excluded_add_on_count. They are retained for exact equivalence and are not current row-family provenance. Current raw and canonical counts are the exact SQL results recorded above: 3150 and 2125.",
+    "cadence_anchor": {
+      "real_executable_audit_timestamp_utc": "2026-07-18T08:43:47Z",
+      "canonical_draw_count": 2125,
+      "selected_row_stream_sha256": "7d48306f31746ec3ea8976b4d0b88f2577decd52191391ee5c059f2fd4588a09",
+      "newest_selected_row": {
+        "draw": "115000070",
+        "date": "2026/07/14"
+      }
+    },
+    "cadence_policy": {
+      "max_calendar_days": 14,
+      "max_new_canonical_draws": 50,
+      "trigger": "whichever_occurs_first",
+      "timestamp_only_re_attestation_is_gating": false
+    },
+    "orchestration_additions_only": [
+      "provenance",
+      "cadence"
+    ],
+    "new_statistical_procedure_introduced": false,
+    "combined_p238b_p246k_verdict": false,
+    "db_write_performed": false
+  }
 }

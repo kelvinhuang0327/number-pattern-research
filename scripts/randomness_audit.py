@@ -13,9 +13,12 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import os
 import re
+import socket
 import sqlite3
 import sys
+import tempfile
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -33,9 +36,10 @@ from scripts import p238b_nist_randomness_audit_artifact_build as p238b  # noqa:
 
 TASK_ID = "P691_RANDOMNESS_EXISTING_LOGIC_TRANSFER_R1"
 SCHEMA_VERSION = "2.0"
+AUDIT_TYPE = "EXISTING_LOGIC_MIGRATION"
+LOGICAL_DB_IDENTITY = "canonical_big_lotto_store"
 CADENCE_MAX_CALENDAR_DAYS = 14
 CADENCE_MAX_NEW_DRAWS = 50
-CADENCE_MAX_FUTURE_SKEW_HOURS = 24
 
 P238B_SOURCE = REPO_ROOT / "scripts" / "p238b_nist_randomness_audit_artifact_build.py"
 P246K_SOURCE = REPO_ROOT / "analysis" / "p246k_canonical_big_lotto_nist_reaudit.py"
@@ -80,6 +84,14 @@ P246K_SEMANTIC_KEYS = (
     "exclusion_rules_verified",
     "audit_methods",
     "audit_results",
+)
+
+P246K_CHECK_PATHS = (
+    ("draw_sum_distribution",),
+    ("number_frequency_uniformity",),
+    ("serial_randomness", "runs_test"),
+    ("serial_randomness", "ljung_box_lag10"),
+    ("entropy",),
 )
 
 LEGACY_SUMMARY_BEGIN = "<!-- P691_LEGACY_44_TEST_SUMMARY_BEGIN -->"
@@ -187,8 +199,25 @@ def _source_implementations() -> list[dict[str, Any]]:
 
 
 def _read_only_connection(db_path: Path) -> sqlite3.Connection:
-    """Use P238B's covered helper and add the task's query-only enforcement."""
-    conn = p238b._connect_ro(db_path)
+    """Use P238B's covered helper without participating in WAL shared memory."""
+    wal_path = Path(f"{db_path}-wal")
+    if wal_path.exists() and wal_path.stat().st_size != 0:
+        raise AuditProvenanceError(
+            "immutable canonical DB read requires an empty or absent WAL sidecar"
+        )
+
+    native_connect = sqlite3.connect
+
+    def immutable_connect(database: Any, *args: Any, **kwargs: Any) -> sqlite3.Connection:
+        if kwargs.get("uri") is not True:
+            raise AuditProvenanceError("P238B read-only helper did not request URI mode")
+        uri = str(database)
+        if "?mode=ro" not in uri:
+            raise AuditProvenanceError("P238B read-only helper did not request mode=ro")
+        return native_connect(f"{uri}&immutable=1&cache=private", *args, **kwargs)
+
+    with patch.object(sqlite3, "connect", side_effect=immutable_connect):
+        conn = p238b._connect_ro(db_path)
     try:
         conn.execute("PRAGMA query_only=ON")
         enabled = int(conn.execute("PRAGMA query_only").fetchone()[0])
@@ -245,8 +274,11 @@ def load_canonical_big_lotto_population(db_path: Path) -> PopulationLoad:
     oldest = draws[-1]
     stream_hash = _sha256_bytes(_row_stream_bytes(draws))
     provenance = {
-        "db_path": str(resolved),
+        "db_identity": LOGICAL_DB_IDENTITY,
         "db_open_mode": "sqlite_uri_mode_ro",
+        "sqlite_immutable": True,
+        "sqlite_cache": "private",
+        "wal_precondition": "empty_or_absent",
         "pragma_query_only": True,
         "selected_population": "BIG_LOTTO/CANONICAL_MAIN_DRAW",
         "canonical_view": CANONICAL_VIEW_NAME,
@@ -304,6 +336,14 @@ def _p246k_semantic_payload(result: Mapping[str, Any]) -> dict[str, Any]:
     return {key: result[key] for key in P246K_SEMANTIC_KEYS}
 
 
+def _published_p246k_result(result: Mapping[str, Any]) -> dict[str, Any]:
+    """Remove runtime location while retaining every statistical field unchanged."""
+    published = dict(result)
+    published.pop("db_path", None)
+    published["db_identity"] = LOGICAL_DB_IDENTITY
+    return published
+
+
 def _extract_legacy_payload(existing: Mapping[str, Any]) -> dict[str, Any]:
     missing = [key for key in LEGACY_TOP_LEVEL_KEYS if key not in existing]
     if missing:
@@ -358,6 +398,7 @@ def build_results_document(
 
     semantic_payload = _p246k_semantic_payload(p246k_result)
     semantic_hash = _sha256_bytes(_canonical_json_bytes(semantic_payload))
+    published_p246k = _published_p246k_result(p246k_result)
     executed = _format_utc(executed_at_utc)
     result: dict[str, Any] = dict(legacy_payload)
     result.update(
@@ -376,7 +417,7 @@ def build_results_document(
             },
             "current_executable_audit": {
                 "task_id": TASK_ID,
-                "audit_type": "EXISTING_LOGIC_MIGRATION",
+                "audit_type": AUDIT_TYPE,
                 "historical_44_test_reproduction": False,
                 "executed_at_utc": executed,
                 "scope": {
@@ -386,9 +427,10 @@ def build_results_document(
                 },
                 "implementation_sources": _source_implementations(),
                 "input_provenance": population.provenance,
-                "p246k_existing_logic_result": dict(p246k_result),
+                "p246k_existing_logic_result": published_p246k,
                 "p246k_semantic_output_sha256": semantic_hash,
                 "p246k_result_retained_unchanged": True,
+                "p246k_nonsemantic_location_sanitized": True,
                 "p246k_static_narrative_caveat": (
                     "The unchanged P246K payload contains historical raw-access prose "
                     "referencing 22,238 rows and the legacy aggregate field name "
@@ -432,6 +474,8 @@ def render_summary(document: Mapping[str, Any], legacy_summary: str) -> str:
     audit_results = p246k_result["audit_results"]
     summary = audit_results["summary"]
     sources = current["implementation_sources"]
+    anchor = current["cadence_anchor"]
+    policy = current["cadence_policy"]
     lines = [
         "# Lottery Randomness Audit Report — Current Executable Path",
         "",
@@ -461,8 +505,11 @@ def render_summary(document: Mapping[str, Any], legacy_summary: str) -> str:
         "",
         "## Canonical Input Provenance",
         "",
-        f"- DB path: `{provenance['db_path']}`",
-        "- SQLite mode: URI `mode=ro`; `PRAGMA query_only=ON` verified",
+        f"- Logical DB identity: `{provenance['db_identity']}`",
+        (
+            "- SQLite mode: URI `mode=ro&immutable=1&cache=private`; "
+            "`PRAGMA query_only=ON` verified; WAL empty/absent precondition enforced"
+        ),
         f"- Selected population: `{provenance['selected_population']}`",
         f"- Canonical rows: `{provenance['selected_row_count']}`",
         f"- Raw BIG_LOTTO rows observed: `{provenance['raw_population_count']}`",
@@ -476,6 +523,7 @@ def render_summary(document: Mapping[str, Any], legacy_summary: str) -> str:
             f"`{provenance['newest_selected_row']['draw']}`"
         ),
         f"- Selected-row stream SHA-256: `{provenance['selected_row_stream_sha256']}`",
+        f"- P246K semantic output SHA-256: `{current['p246k_semantic_output_sha256']}`",
         "- Exact canonical SQL:",
         "",
         "```sql",
@@ -501,6 +549,10 @@ def render_summary(document: Mapping[str, Any], legacy_summary: str) -> str:
                 "draws**, whichever occurs first. Timestamp-only re-attestation is "
                 "non-gating and resets neither trigger."
             ),
+            f"- Executable anchor timestamp: `{anchor['real_executable_audit_timestamp_utc']}`",
+            f"- Executable anchor canonical rows: `{anchor['canonical_draw_count']}`",
+            f"- Cadence policy identity: `{policy['trigger']}`",
+            "- Every future or incompatible executable anchor fails closed.",
             "",
             "## Historical 44-Test Evidence",
             "",
@@ -518,46 +570,211 @@ def render_summary(document: Mapping[str, Any], legacy_summary: str) -> str:
     return current_text + legacy_summary + LEGACY_SUMMARY_END + "\n"
 
 
+def _is_positive_int(value: Any) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool) and value > 0
+
+
+def _is_sha256(value: Any) -> bool:
+    return isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) is not None
+
+
+def _validate_executable_audit_document(
+    document: Mapping[str, Any],
+) -> tuple[Mapping[str, Any], Mapping[str, Any], Mapping[str, Any], datetime]:
+    """Validate the exact completed P246K audit contract used by cadence."""
+    if document.get("artifact_schema_version") != SCHEMA_VERSION:
+        raise AuditProvenanceError("artifact schema is incompatible with executable cadence")
+
+    current = document.get("current_executable_audit")
+    if not isinstance(current, Mapping):
+        raise AuditProvenanceError("current_executable_audit provenance is missing")
+    if current.get("task_id") != TASK_ID or current.get("audit_type") != AUDIT_TYPE:
+        raise AuditProvenanceError("current executable audit identity is incompatible")
+    if current.get("historical_44_test_reproduction") is not False:
+        raise AuditProvenanceError("legacy evidence cannot serve as the executable anchor")
+    if current.get("scope") != {
+        "lottery_type": "BIG_LOTTO",
+        "population": "CANONICAL_MAIN_DRAW",
+        "statistical_controller": "P246K",
+    }:
+        raise AuditProvenanceError("current executable audit scope is incompatible")
+    if current.get("new_statistical_procedure_introduced") is not False:
+        raise AuditProvenanceError("current executable audit statistical identity is incompatible")
+    if current.get("combined_p238b_p246k_verdict") is not False:
+        raise AuditProvenanceError("combined donor verdict cannot serve as the cadence anchor")
+    if current.get("db_write_performed") is not False:
+        raise AuditProvenanceError("write-capable execution cannot serve as the cadence anchor")
+    if current.get("p246k_result_retained_unchanged") is not True:
+        raise AuditProvenanceError("P246K result-retention proof is missing")
+    if current.get("p246k_nonsemantic_location_sanitized") is not True:
+        raise AuditProvenanceError("P246K location-sanitization proof is missing")
+
+    executed_raw = current.get("executed_at_utc")
+    executed = _parse_utc_timestamp(executed_raw, field_name="executed_at_utc")
+    if executed_raw != _format_utc(executed):
+        raise AuditProvenanceError("executed_at_utc must use canonical UTC formatting")
+
+    sources = current.get("implementation_sources")
+    if not isinstance(sources, list) or len(sources) != 2:
+        raise AuditProvenanceError("implementation source provenance is incomplete")
+    if not all(isinstance(source, Mapping) for source in sources):
+        raise AuditProvenanceError("implementation source provenance is malformed")
+    source_by_id = {source.get("implementation_id"): source for source in sources}
+    if set(source_by_id) != {"P246K", "P238B"}:
+        raise AuditProvenanceError("implementation source identity is incompatible")
+    if sources != _source_implementations():
+        raise AuditProvenanceError("implementation source provenance is incompatible")
+    if source_by_id["P246K"].get("entry_symbol") != "run_canonical_nist_reaudit":
+        raise AuditProvenanceError("P246K executable entry symbol is incompatible")
+    if source_by_id["P238B"].get("entry_symbol") != "_connect_ro":
+        raise AuditProvenanceError("P238B donor boundary is incompatible")
+    if not all(_is_sha256(source.get("source_sha256")) for source in sources):
+        raise AuditProvenanceError("implementation source hash is missing or malformed")
+
+    provenance = current.get("input_provenance")
+    if not isinstance(provenance, Mapping):
+        raise AuditProvenanceError("audit input provenance is missing")
+    if provenance.get("db_identity") != LOGICAL_DB_IDENTITY:
+        raise AuditProvenanceError("logical DB identity is incompatible")
+    if provenance.get("db_open_mode") != "sqlite_uri_mode_ro":
+        raise AuditProvenanceError("read-only DB provenance is missing")
+    if provenance.get("sqlite_immutable") is not True:
+        raise AuditProvenanceError("immutable DB provenance is missing")
+    if provenance.get("sqlite_cache") != "private":
+        raise AuditProvenanceError("private SQLite cache provenance is missing")
+    if provenance.get("wal_precondition") != "empty_or_absent":
+        raise AuditProvenanceError("WAL precondition provenance is missing")
+    if provenance.get("pragma_query_only") is not True:
+        raise AuditProvenanceError("query-only DB provenance is missing")
+    if provenance.get("selected_population") != "BIG_LOTTO/CANONICAL_MAIN_DRAW":
+        raise AuditProvenanceError("selected population provenance is incompatible")
+    if provenance.get("canonical_view") != CANONICAL_VIEW_NAME:
+        raise AuditProvenanceError("canonical view provenance is incompatible")
+    sql = provenance.get("sql")
+    if not isinstance(sql, Mapping) or sql.get("canonical_population") != CANONICAL_POPULATION_SQL:
+        raise AuditProvenanceError("canonical population SQL provenance is incompatible")
+    if sql.get("raw_population_count") != RAW_POPULATION_COUNT_SQL:
+        raise AuditProvenanceError("raw population SQL provenance is incompatible")
+
+    canonical_count = provenance.get("selected_row_count")
+    raw_count = provenance.get("raw_population_count")
+    if not _is_positive_int(canonical_count):
+        raise AuditProvenanceError("selected_row_count is malformed")
+    if not _is_positive_int(raw_count) or raw_count < canonical_count:
+        raise AuditProvenanceError("raw_population_count is malformed")
+    newest = provenance.get("newest_selected_row")
+    if not isinstance(newest, Mapping):
+        raise AuditProvenanceError("newest selected-row boundary is missing")
+    if not all(isinstance(newest.get(key), str) and newest.get(key) for key in ("draw", "date")):
+        raise AuditProvenanceError("newest selected-row boundary is malformed")
+    row_hash = provenance.get("selected_row_stream_sha256")
+    if not _is_sha256(row_hash):
+        raise AuditProvenanceError("selected-row-stream hash is missing or malformed")
+
+    p246k_result = current.get("p246k_existing_logic_result")
+    if not isinstance(p246k_result, Mapping):
+        raise AuditProvenanceError("completed P246K result is missing")
+    if p246k_result.get("schema_version") != "1.0" or p246k_result.get("task_id") != "P246K":
+        raise AuditProvenanceError("P246K result identity is incompatible")
+    if p246k_result.get("db_identity") != LOGICAL_DB_IDENTITY or "db_path" in p246k_result:
+        raise AuditProvenanceError("P246K published DB identity is incompatible")
+    if p246k_result.get("db_read") is not True or p246k_result.get("db_read_only") is not True:
+        raise AuditProvenanceError("P246K execution did not complete through read-only input")
+    if p246k_result.get("db_write_performed") is not False or "error" in p246k_result:
+        raise AuditProvenanceError("P246K execution was not successful and read-only")
+    if p246k_result.get("input_population") != "CANONICAL_MAIN_DRAW":
+        raise AuditProvenanceError("P246K result population is incompatible")
+    if p246k_result.get("canonical_population_count") != canonical_count:
+        raise AuditProvenanceError("P246K canonical count does not match provenance")
+    if p246k_result.get("raw_population_count") != raw_count:
+        raise AuditProvenanceError("P246K raw count does not match provenance")
+
+    audit_results = p246k_result.get("audit_results")
+    if not isinstance(audit_results, Mapping):
+        raise AuditProvenanceError("P246K five-check result is incomplete")
+    statuses: list[str] = []
+    for path in P246K_CHECK_PATHS:
+        check: Any = audit_results
+        for key in path:
+            if not isinstance(check, Mapping):
+                check = None
+                break
+            check = check.get(key)
+        if not isinstance(check, Mapping) or check.get("status") not in {"GREEN", "YELLOW"}:
+            raise AuditProvenanceError(f"P246K check is missing or incomplete: {'.'.join(path)}")
+        statuses.append(check["status"])
+    summary = audit_results.get("summary")
+    if not isinstance(summary, Mapping):
+        raise AuditProvenanceError("P246K five-check summary is missing")
+    green_count = statuses.count("GREEN")
+    yellow_count = statuses.count("YELLOW")
+    expected_overall = "GREEN" if yellow_count == 0 else "YELLOW"
+    if summary.get("total_tests") != len(P246K_CHECK_PATHS):
+        raise AuditProvenanceError("P246K five-check total is incompatible")
+    if summary.get("green") != green_count or summary.get("yellow") != yellow_count:
+        raise AuditProvenanceError("P246K five-check summary is inconsistent")
+    if summary.get("overall_status") != expected_overall:
+        raise AuditProvenanceError("P246K overall status is inconsistent")
+    expected_classification = (
+        "P246K_CANONICAL_BIG_LOTTO_RANDOMNESS_AUDIT_GREEN_RANDOM_COMPATIBLE"
+        if expected_overall == "GREEN"
+        else "P246K_CANONICAL_BIG_LOTTO_RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY"
+    )
+    if p246k_result.get("classification") != expected_classification:
+        raise AuditProvenanceError("P246K classification is inconsistent")
+
+    semantic_hash = current.get("p246k_semantic_output_sha256")
+    if not _is_sha256(semantic_hash):
+        raise AuditProvenanceError("P246K semantic hash is missing or malformed")
+    actual_semantic_hash = _sha256_bytes(
+        _canonical_json_bytes(_p246k_semantic_payload(p246k_result))
+    )
+    if semantic_hash != actual_semantic_hash:
+        raise AuditProvenanceError("P246K semantic hash does not match completed result")
+
+    policy = current.get("cadence_policy")
+    expected_policy = {
+        "max_calendar_days": CADENCE_MAX_CALENDAR_DAYS,
+        "max_new_canonical_draws": CADENCE_MAX_NEW_DRAWS,
+        "trigger": "whichever_occurs_first",
+        "timestamp_only_re_attestation_is_gating": False,
+    }
+    if policy != expected_policy:
+        raise AuditProvenanceError("cadence policy identity is incompatible")
+
+    anchor = current.get("cadence_anchor")
+    if not isinstance(anchor, Mapping):
+        raise AuditProvenanceError("cadence anchor is missing")
+    if anchor.get("real_executable_audit_timestamp_utc") != executed_raw:
+        raise AuditProvenanceError("cadence anchor timestamp does not match completed execution")
+    if anchor.get("canonical_draw_count") != canonical_count:
+        raise AuditProvenanceError("cadence anchor count does not match completed execution")
+    if anchor.get("selected_row_stream_sha256") != row_hash:
+        raise AuditProvenanceError("cadence anchor hash does not match completed execution")
+    if anchor.get("newest_selected_row") != newest:
+        raise AuditProvenanceError("cadence anchor boundary does not match completed execution")
+    return current, anchor, provenance, executed
+
+
 def evaluate_cadence(
     document: Mapping[str, Any],
     current_population: PopulationLoad,
     now_utc: datetime,
 ) -> dict[str, Any]:
     """Evaluate 14-day / 50-new-draw cadence against an independent DB load."""
-    current = document.get("current_executable_audit")
-    if not isinstance(current, Mapping):
-        raise AuditProvenanceError("current_executable_audit provenance is missing")
-    anchor = current.get("cadence_anchor")
-    policy = current.get("cadence_policy")
-    provenance = current.get("input_provenance")
-    if not isinstance(anchor, Mapping) or not isinstance(policy, Mapping):
-        raise AuditProvenanceError("cadence anchor or policy is missing")
-    if not isinstance(provenance, Mapping):
-        raise AuditProvenanceError("audit input provenance is missing")
-    if policy.get("max_calendar_days") != CADENCE_MAX_CALENDAR_DAYS:
-        raise AuditProvenanceError("calendar cadence policy does not match executable policy")
-    if policy.get("max_new_canonical_draws") != CADENCE_MAX_NEW_DRAWS:
-        raise AuditProvenanceError("draw cadence policy does not match executable policy")
-    if policy.get("timestamp_only_re_attestation_is_gating") is not False:
-        raise AuditProvenanceError("timestamp-only re-attestation must be non-gating")
-
-    audit_time = _parse_utc_timestamp(
-        anchor.get("real_executable_audit_timestamp_utc"),
-        field_name="real_executable_audit_timestamp_utc",
-    )
+    _, anchor, provenance, audit_time = _validate_executable_audit_document(document)
     if now_utc.tzinfo is None or now_utc.utcoffset() is None:
         raise AuditProvenanceError("now_utc must be timezone-aware")
     now = now_utc.astimezone(timezone.utc)
-    future = audit_time - now
-    if future > timedelta(hours=CADENCE_MAX_FUTURE_SKEW_HOURS):
-        raise AuditProvenanceError("real executable audit timestamp is implausibly far in the future")
-    elapsed = max(timedelta(0), now - audit_time)
+    if audit_time > now:
+        raise AuditProvenanceError("real executable audit timestamp is in the future")
+    elapsed = now - audit_time
 
     baseline_count = anchor.get("canonical_draw_count")
     baseline_hash = anchor.get("selected_row_stream_sha256")
-    if not isinstance(baseline_count, int) or baseline_count <= 0:
+    if not _is_positive_int(baseline_count):
         raise AuditProvenanceError("canonical_draw_count is malformed")
-    if not isinstance(baseline_hash, str) or not re.fullmatch(r"[0-9a-f]{64}", baseline_hash):
+    if not _is_sha256(baseline_hash):
         raise AuditProvenanceError("selected_row_stream_sha256 is malformed")
     if provenance.get("selected_row_count") != baseline_count:
         raise AuditProvenanceError("cadence count does not match audit input provenance")
@@ -603,6 +820,142 @@ def evaluate_cadence(
     }
 
 
+def _reject_machine_specific_text(text: str, *, artifact_name: str) -> None:
+    patterns = (
+        r"/Users/[^/\s`]+/",
+        r"/home/[^/\s`]+/",
+        r"[A-Za-z]:\\Users\\[^\\\s`]+\\",
+    )
+    if any(re.search(pattern, text) for pattern in patterns):
+        raise AuditProvenanceError(f"{artifact_name} contains a machine-specific path")
+    home = str(Path.home())
+    if home and home in text:
+        raise AuditProvenanceError(f"{artifact_name} contains the runtime home directory")
+    hostname = socket.gethostname()
+    if hostname and hostname in text:
+        raise AuditProvenanceError(f"{artifact_name} contains the runtime hostname")
+
+
+def _validate_rendered_pair(results_text: str, summary_text: str) -> None:
+    try:
+        document = json.loads(results_text)
+    except json.JSONDecodeError as exc:
+        raise AuditProvenanceError("generated JSON artifact is malformed") from exc
+    if not isinstance(document, Mapping):
+        raise AuditProvenanceError("generated JSON artifact must be an object")
+    _validate_executable_audit_document(document)
+    legacy_summary = extract_legacy_summary(summary_text)
+    if render_summary(document, legacy_summary) != summary_text:
+        raise AuditProvenanceError("generated JSON and Markdown artifacts disagree")
+    _reject_machine_specific_text(results_text, artifact_name="JSON artifact")
+    _reject_machine_specific_text(summary_text, artifact_name="Markdown artifact")
+
+
+def _stage_bytes(target: Path, payload: bytes, *, suffix: str) -> Path:
+    target.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, raw_path = tempfile.mkstemp(
+        dir=str(target.parent),
+        prefix=f".{target.name}.",
+        suffix=suffix,
+    )
+    os.close(descriptor)
+    staged = Path(raw_path)
+    try:
+        staged.write_bytes(payload)
+        if staged.read_bytes() != payload:
+            raise AuditProvenanceError(f"staged artifact bytes do not match: {target}")
+        return staged
+    except Exception:
+        staged.unlink(missing_ok=True)
+        raise
+
+
+def _replace_file(source: Path, target: Path) -> None:
+    source.replace(target)
+
+
+def _restore_path(
+    target: Path,
+    original: Optional[bytes],
+    cleanup_paths: list[Path],
+) -> None:
+    if original is None:
+        target.unlink(missing_ok=True)
+        return
+    restore_stage = _stage_bytes(target, original, suffix=".rollback")
+    cleanup_paths.append(restore_stage)
+    _replace_file(restore_stage, target)
+
+
+def _publish_artifact_pair(
+    *,
+    results_text: str,
+    summary_text: str,
+    results_out: Path,
+    summary_out: Path,
+) -> None:
+    """Publish Markdown then cadence JSON, restoring the original pair on failure."""
+    if results_out.resolve() == summary_out.resolve():
+        raise AuditProvenanceError("JSON and Markdown outputs must be distinct files")
+
+    original_results = results_out.read_bytes() if results_out.exists() else None
+    original_summary = summary_out.read_bytes() if summary_out.exists() else None
+    cleanup_paths: list[Path] = []
+    summary_published = False
+    try:
+        results_stage = _stage_bytes(
+            results_out,
+            results_text.encode("utf-8"),
+            suffix=".stage",
+        )
+        cleanup_paths.append(results_stage)
+        summary_stage = _stage_bytes(
+            summary_out,
+            summary_text.encode("utf-8"),
+            suffix=".stage",
+        )
+        cleanup_paths.append(summary_stage)
+
+        try:
+            _replace_file(summary_stage, summary_out)
+            summary_published = True
+            _replace_file(results_stage, results_out)
+        except Exception as publication_error:
+            rollback_errors: list[str] = []
+            if summary_published:
+                for target, original in (
+                    (summary_out, original_summary),
+                    (results_out, original_results),
+                ):
+                    try:
+                        _restore_path(target, original, cleanup_paths)
+                    except Exception as rollback_error:
+                        rollback_errors.append(f"{target}: {rollback_error}")
+            if rollback_errors:
+                raise AuditProvenanceError(
+                    "artifact publication failed and rollback was incomplete: "
+                    + "; ".join(rollback_errors)
+                ) from publication_error
+            if summary_published:
+                raise AuditProvenanceError(
+                    "artifact publication failed; the original pair was restored"
+                ) from publication_error
+            raise AuditProvenanceError(
+                "artifact publication failed before either final file changed"
+            ) from publication_error
+    finally:
+        cleanup_failures: list[str] = []
+        for path in cleanup_paths:
+            try:
+                path.unlink(missing_ok=True)
+            except OSError as exc:
+                cleanup_failures.append(f"{path}: {exc}")
+        if cleanup_failures and sys.exc_info()[0] is None:
+            raise AuditProvenanceError(
+                "artifact staging cleanup failed: " + "; ".join(cleanup_failures)
+            )
+
+
 def generate(
     *,
     db_path: Path,
@@ -631,8 +984,13 @@ def generate(
     # rewriting the immutable historical evidence.
     results_text = json.dumps(document, ensure_ascii=False, indent=2)
     summary_output = render_summary(document, legacy_summary)
-    results_out.write_text(results_text, encoding="utf-8")
-    summary_out.write_text(summary_output, encoding="utf-8")
+    _validate_rendered_pair(results_text, summary_output)
+    _publish_artifact_pair(
+        results_text=results_text,
+        summary_text=summary_output,
+        results_out=results_out,
+        summary_out=summary_out,
+    )
     return document
 
 

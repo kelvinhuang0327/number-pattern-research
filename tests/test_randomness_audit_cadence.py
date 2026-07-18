@@ -34,25 +34,99 @@ def _draws(count: int) -> list[dict]:
     ]
 
 
-def _population(draws: list[dict]) -> audit.PopulationLoad:
+def _population(draws: list[dict], *, raw_count: int = None) -> audit.PopulationLoad:
+    if raw_count is None:
+        raw_count = len(draws)
     stream_hash = audit._sha256_bytes(audit._row_stream_bytes(draws))
     provenance = {
+        "db_identity": audit.LOGICAL_DB_IDENTITY,
+        "db_open_mode": "sqlite_uri_mode_ro",
+        "sqlite_immutable": True,
+        "sqlite_cache": "private",
+        "wal_precondition": "empty_or_absent",
+        "pragma_query_only": True,
+        "selected_population": "BIG_LOTTO/CANONICAL_MAIN_DRAW",
+        "canonical_view": audit.CANONICAL_VIEW_NAME,
+        "sql": {
+            "canonical_population": audit.CANONICAL_POPULATION_SQL,
+            "raw_population_count": audit.RAW_POPULATION_COUNT_SQL,
+            "raw_population_count_params": list(audit.RAW_POPULATION_COUNT_PARAMS),
+        },
+        "raw_population_count": raw_count,
         "selected_row_count": len(draws),
         "selected_row_stream_sha256": stream_hash,
+        "oldest_selected_row": {
+            "draw": draws[-1]["draw"],
+            "date": draws[-1]["date"],
+        },
         "newest_selected_row": {
             "draw": draws[0]["draw"],
             "date": draws[0]["date"],
         },
     }
-    return audit.PopulationLoad(draws=draws, raw_count=len(draws), provenance=provenance)
+    return audit.PopulationLoad(draws=draws, raw_count=raw_count, provenance=provenance)
 
 
 def _document(audit_time: datetime, baseline: audit.PopulationLoad) -> dict:
+    p246k_result = {
+        "schema_version": "1.0",
+        "task_id": "P246K",
+        "classification": (
+            "P246K_CANONICAL_BIG_LOTTO_RANDOMNESS_AUDIT_GREEN_RANDOM_COMPATIBLE"
+        ),
+        "db_identity": audit.LOGICAL_DB_IDENTITY,
+        "db_read": True,
+        "db_read_only": True,
+        "db_write_performed": False,
+        "input_population": "CANONICAL_MAIN_DRAW",
+        "raw_population_count": baseline.raw_count,
+        "canonical_population_count": len(baseline.draws),
+        "excluded_add_on_count": baseline.raw_count - len(baseline.draws),
+        "exclusion_rules_verified": {"all_exclusions_verified": True},
+        "audit_methods": {"existing": "unchanged"},
+        "audit_results": {
+            "draw_sum_distribution": {"status": "GREEN"},
+            "number_frequency_uniformity": {"status": "GREEN"},
+            "serial_randomness": {
+                "runs_test": {"status": "GREEN"},
+                "ljung_box_lag10": {"status": "GREEN"},
+            },
+            "entropy": {"status": "GREEN"},
+            "per_position": {},
+            "era_stability": {},
+            "summary": {
+                "total_tests": 5,
+                "green": 5,
+                "yellow": 0,
+                "overall_status": "GREEN",
+            },
+        },
+    }
+    semantic_hash = audit._sha256_bytes(
+        audit._canonical_json_bytes(audit._p246k_semantic_payload(p246k_result))
+    )
+    executed = audit._format_utc(audit_time)
     return {
+        "artifact_schema_version": audit.SCHEMA_VERSION,
         "re_attestation_timestamp": "2099-01-01T00:00:00Z",
         "current_executable_audit": {
+            "task_id": audit.TASK_ID,
+            "audit_type": audit.AUDIT_TYPE,
+            "historical_44_test_reproduction": False,
+            "executed_at_utc": executed,
+            "scope": {
+                "lottery_type": "BIG_LOTTO",
+                "population": "CANONICAL_MAIN_DRAW",
+                "statistical_controller": "P246K",
+            },
+            "implementation_sources": audit._source_implementations(),
+            "input_provenance": baseline.provenance,
+            "p246k_existing_logic_result": p246k_result,
+            "p246k_semantic_output_sha256": semantic_hash,
+            "p246k_result_retained_unchanged": True,
+            "p246k_nonsemantic_location_sanitized": True,
             "cadence_anchor": {
-                "real_executable_audit_timestamp_utc": audit._format_utc(audit_time),
+                "real_executable_audit_timestamp_utc": executed,
                 "canonical_draw_count": len(baseline.draws),
                 "selected_row_stream_sha256": baseline.provenance[
                     "selected_row_stream_sha256"
@@ -65,7 +139,10 @@ def _document(audit_time: datetime, baseline: audit.PopulationLoad) -> dict:
                 "trigger": "whichever_occurs_first",
                 "timestamp_only_re_attestation_is_gating": False,
             },
-            "input_provenance": baseline.provenance,
+            "orchestration_additions_only": ["provenance", "cadence"],
+            "new_statistical_procedure_introduced": False,
+            "combined_p238b_p246k_verdict": False,
+            "db_write_performed": False,
         },
     }
 
@@ -129,6 +206,32 @@ def test_draw_trigger_not_due_at_49_new_canonical_draws(baseline):
         audit_time + timedelta(days=1),
     )
     assert result["status"] == "CURRENT"
+    assert result["new_canonical_draws"] == 49
+    assert result["draw_due"] is False
+
+
+def test_raw_growth_alone_cannot_satisfy_draw_trigger():
+    audit_time = datetime(2026, 7, 1, tzinfo=timezone.utc)
+    baseline = _population(_draws(100), raw_count=1000)
+    current = _population(_draws(100), raw_count=1050)
+    result = audit.evaluate_cadence(
+        _document(audit_time, baseline),
+        current,
+        audit_time + timedelta(days=1),
+    )
+    assert result["new_canonical_draws"] == 0
+    assert result["draw_due"] is False
+
+
+def test_raw_count_cannot_replace_canonical_count_in_49_draw_boundary():
+    audit_time = datetime(2026, 7, 1, tzinfo=timezone.utc)
+    baseline = _population(_draws(100), raw_count=1000)
+    current = _population(_draws(149), raw_count=9999)
+    result = audit.evaluate_cadence(
+        _document(audit_time, baseline),
+        current,
+        audit_time + timedelta(days=1),
+    )
     assert result["new_canonical_draws"] == 49
     assert result["draw_due"] is False
 
@@ -229,6 +332,105 @@ def test_missing_or_malformed_provenance_fails_closed(baseline, mutation):
         audit.evaluate_cadence(document, baseline, audit_time + timedelta(days=1))
 
 
+@pytest.mark.parametrize(
+    ("case", "mutation"),
+    [
+        ("wrong schema", lambda document: document.update({"artifact_schema_version": "1.0"})),
+        (
+            "wrong task",
+            lambda document: document["current_executable_audit"].update(
+                {"task_id": "P246K"}
+            ),
+        ),
+        (
+            "wrong type",
+            lambda document: document["current_executable_audit"].update(
+                {"audit_type": "HUMAN_RE_ATTESTATION"}
+            ),
+        ),
+        (
+            "wrong lottery",
+            lambda document: document["current_executable_audit"]["scope"].update(
+                {"lottery_type": "POWER_LOTTO"}
+            ),
+        ),
+        (
+            "noncanonical scope",
+            lambda document: document["current_executable_audit"]["scope"].update(
+                {"population": "RAW_MIXED"}
+            ),
+        ),
+        (
+            "incomplete result",
+            lambda document: document["current_executable_audit"].pop(
+                "p246k_existing_logic_result"
+            ),
+        ),
+        (
+            "missing check",
+            lambda document: document["current_executable_audit"][
+                "p246k_existing_logic_result"
+            ]["audit_results"].pop("entropy"),
+        ),
+        (
+            "non-success execution",
+            lambda document: document["current_executable_audit"][
+                "p246k_existing_logic_result"
+            ].update({"db_read": False}),
+        ),
+        (
+            "timestamp mismatch",
+            lambda document: document["current_executable_audit"]["cadence_anchor"].update(
+                {"real_executable_audit_timestamp_utc": "2026-07-01T00:00:01Z"}
+            ),
+        ),
+        (
+            "missing semantic hash",
+            lambda document: document["current_executable_audit"].pop(
+                "p246k_semantic_output_sha256"
+            ),
+        ),
+        (
+            "wrong implementation source hash",
+            lambda document: document["current_executable_audit"][
+                "implementation_sources"
+            ][0].update({"source_sha256": "0" * 64}),
+        ),
+        (
+            "missing row-stream hash",
+            lambda document: document["current_executable_audit"]["input_provenance"].pop(
+                "selected_row_stream_sha256"
+            ),
+        ),
+        (
+            "legacy substitution",
+            lambda document: document.update(
+                {"current_executable_audit": {"run_timestamp": document["re_attestation_timestamp"]}}
+            ),
+        ),
+        (
+            "reattestation substitution",
+            lambda document: document["current_executable_audit"].update(
+                {
+                    "cadence_anchor": {
+                        "real_executable_audit_timestamp_utc": document[
+                            "re_attestation_timestamp"
+                        ]
+                    }
+                }
+            ),
+        ),
+    ],
+)
+def test_incompatible_executable_audit_anchor_fails_closed(baseline, case, mutation):
+    audit_time = datetime(2026, 7, 1, tzinfo=timezone.utc)
+    document = _document(audit_time, baseline)
+    mutation(document)
+    assert case
+    with pytest.raises(audit.AuditProvenanceError):
+        audit.evaluate_cadence(document, baseline, audit_time + timedelta(days=1))
+
+
 def test_changed_historical_row_stream_fails_closed(baseline):
     audit_time = datetime(2026, 7, 1, tzinfo=timezone.utc)
     changed_draws = deepcopy(baseline.draws)
@@ -252,15 +454,29 @@ def test_smaller_current_population_fails_closed(baseline):
         )
 
 
-def test_implausibly_future_real_audit_timestamp_fails_closed(baseline):
+@pytest.mark.parametrize(
+    "future_delta",
+    [timedelta(microseconds=1), timedelta(seconds=1), timedelta(hours=25)],
+)
+def test_every_future_real_audit_timestamp_fails_closed(baseline, future_delta):
     now = datetime(2026, 7, 1, tzinfo=timezone.utc)
-    document = _document(now + timedelta(hours=25), baseline)
+    document = _document(now + future_delta, baseline)
     with pytest.raises(audit.AuditProvenanceError, match="future"):
         audit.evaluate_cadence(document, baseline, now)
 
 
+@pytest.mark.parametrize("historical_delta", [timedelta(0), timedelta(seconds=1)])
+def test_equal_or_past_real_audit_timestamp_remains_valid(baseline, historical_delta):
+    now = datetime(2026, 7, 1, tzinfo=timezone.utc)
+    document = _document(now - historical_delta, baseline)
+    result = audit.evaluate_cadence(document, baseline, now)
+    assert result["status"] == "CURRENT"
+    assert result["elapsed_seconds"] == historical_delta.total_seconds()
+
+
 def test_committed_artifact_anchors_to_real_executable_audit():
     document = json.loads(RESULTS_PATH.read_text(encoding="utf-8"))
+    audit._validate_executable_audit_document(document)
     current = document["current_executable_audit"]
     anchor = current["cadence_anchor"]
     provenance = current["input_provenance"]
@@ -304,5 +520,8 @@ def test_wiki_policy_routes_to_real_execution_and_both_triggers():
     assert "50 new canonical" in lowered
     assert "whichever occurs first" in lowered
     assert "timestamp-only re-attestation" in lowered
+    assert "every future timestamp fails closed" in lowered
+    assert "incompatible schema" in lowered
+    assert audit.LOGICAL_DB_IDENTITY in wiki
     assert "scripts/randomness_audit.py" in wiki
     assert "P246K" in wiki

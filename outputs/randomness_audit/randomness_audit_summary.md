@@ -1,6 +1,6 @@
 # Lottery Randomness Audit Report — Current Executable Path
 
-**Current executable audit timestamp (UTC):** 2026-07-18T08:43:47Z
+**Current executable audit timestamp (UTC):** 2026-07-18T10:35:40Z
 **Task:** `P691_RANDOMNESS_EXISTING_LOGIC_TRANSFER_R1`
 **Type:** existing-logic migration; not historical 44-test reproduction
 **Current scope:** canonical BIG_LOTTO only; P246K controls statistical behavior
@@ -22,14 +22,15 @@ P246K summary: **5/5 GREEN**, **0 YELLOW**. This is a randomness diagnostic, not
 
 ## Canonical Input Provenance
 
-- DB path: `/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db`
-- SQLite mode: URI `mode=ro`; `PRAGMA query_only=ON` verified
+- Logical DB identity: `canonical_big_lotto_store`
+- SQLite mode: URI `mode=ro&immutable=1&cache=private`; `PRAGMA query_only=ON` verified; WAL empty/absent precondition enforced
 - Selected population: `BIG_LOTTO/CANONICAL_MAIN_DRAW`
 - Canonical rows: `2125`
 - Raw BIG_LOTTO rows observed: `3150`
 - P246K compatibility note: its unchanged nested payload retains a historical 22,238-row raw-access sentence and legacy aggregate exclusion field name; the SQL-derived counts above are the current provenance values.
 - Boundary: `96000001` through `115000070`
 - Selected-row stream SHA-256: `7d48306f31746ec3ea8976b4d0b88f2577decd52191391ee5c059f2fd4588a09`
+- P246K semantic output SHA-256: `48f72f61764e09de20702a853d124930eb3275ce49eb7e9b4b9e26e84f5d9dd1`
 - Exact canonical SQL:
 
 ```sql
@@ -46,6 +47,10 @@ ORDER BY CAST(draw AS INTEGER) DESC, draw DESC
 ## Cadence
 
 The next real executable audit is due at **14 calendar days** or **50 new canonical BIG_LOTTO draws**, whichever occurs first. Timestamp-only re-attestation is non-gating and resets neither trigger.
+- Executable anchor timestamp: `2026-07-18T10:35:40Z`
+- Executable anchor canonical rows: `2125`
+- Cadence policy identity: `whichever_occurs_first`
+- Every future or incompatible executable anchor fails closed.
 
 ## Historical 44-Test Evidence
 

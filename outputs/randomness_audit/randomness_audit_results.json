@@ -1124,7 +1124,7 @@
     "task_id": "P691_RANDOMNESS_EXISTING_LOGIC_TRANSFER_R1",
     "audit_type": "EXISTING_LOGIC_MIGRATION",
     "historical_44_test_reproduction": false,
-    "executed_at_utc": "2026-07-18T08:43:47Z",
+    "executed_at_utc": "2026-07-18T10:35:40Z",
     "scope": {
       "lottery_type": "BIG_LOTTO",
       "population": "CANONICAL_MAIN_DRAW",
@@ -1165,8 +1165,11 @@
       }
     ],
     "input_provenance": {
-      "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+      "db_identity": "canonical_big_lotto_store",
       "db_open_mode": "sqlite_uri_mode_ro",
+      "sqlite_immutable": true,
+      "sqlite_cache": "private",
+      "wal_precondition": "empty_or_absent",
       "pragma_query_only": true,
       "selected_population": "BIG_LOTTO/CANONICAL_MAIN_DRAW",
       "canonical_view": "draws_big_lotto_canonical_main",
@@ -1197,7 +1200,6 @@
       "task_id": "P246K",
       "classification": "P246K_CANONICAL_BIG_LOTTO_RANDOMNESS_AUDIT_GREEN_RANDOM_COMPATIBLE",
       "p246j_merged_pr": "PR #325 merged 2026-06-06T02:42:45Z",
-      "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
       "db_read": true,
       "db_read_only": true,
       "db_write_performed": false,
@@ -1368,13 +1370,15 @@
         "prediction_claim",
         "GATE_OPEN_for_BIG_LOTTO_predictive_research"
       ],
-      "final_decision": "P246K canonical BIG_LOTTO randomness audit complete on 2125 draws. All 5 tests: 5 GREEN / 0 YELLOW. P238B YELLOW (raw population) is NOT confirmed on canonical population. Canonical BIG_LOTTO draws are consistent with a fair random 6/49 process. This GREEN result supersedes P238B YELLOW for canonical randomness gating. NOTE: GREEN randomness ≠ exploitable signal. BIG_LOTTO predictive research remains blocked per L91 (zero signals pass p<0.05 even on canonical data). No DB write. No deletion. ADD_ON_PRIZE_EXCLUDED preserved. DB-level canonical separation (P247 Type D) still recommended."
+      "final_decision": "P246K canonical BIG_LOTTO randomness audit complete on 2125 draws. All 5 tests: 5 GREEN / 0 YELLOW. P238B YELLOW (raw population) is NOT confirmed on canonical population. Canonical BIG_LOTTO draws are consistent with a fair random 6/49 process. This GREEN result supersedes P238B YELLOW for canonical randomness gating. NOTE: GREEN randomness ≠ exploitable signal. BIG_LOTTO predictive research remains blocked per L91 (zero signals pass p<0.05 even on canonical data). No DB write. No deletion. ADD_ON_PRIZE_EXCLUDED preserved. DB-level canonical separation (P247 Type D) still recommended.",
+      "db_identity": "canonical_big_lotto_store"
     },
     "p246k_semantic_output_sha256": "48f72f61764e09de20702a853d124930eb3275ce49eb7e9b4b9e26e84f5d9dd1",
     "p246k_result_retained_unchanged": true,
+    "p246k_nonsemantic_location_sanitized": true,
     "p246k_static_narrative_caveat": "The unchanged P246K payload contains historical raw-access prose referencing 22,238 rows and the legacy aggregate field name excluded_add_on_count. They are retained for exact equivalence and are not current row-family provenance. Current raw and canonical counts are the exact SQL results recorded above: 3150 and 2125.",
     "cadence_anchor": {
-      "real_executable_audit_timestamp_utc": "2026-07-18T08:43:47Z",
+      "real_executable_audit_timestamp_utc": "2026-07-18T10:35:40Z",
       "canonical_draw_count": 2125,
       "selected_row_stream_sha256": "7d48306f31746ec3ea8976b4d0b88f2577decd52191391ee5c059f2fd4588a09",
       "newest_selected_row": {

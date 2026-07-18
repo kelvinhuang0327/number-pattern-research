@@ -49,7 +49,7 @@ This classification does not mean "research failed." It means: "We found the beg
 
 Interpretation:
 - P246K controls the canonical BIG_LOTTO population and existing BIG_LOTTO statistical behavior.
-- The current audit selected 2,125 `CANONICAL_MAIN_DRAW` rows through draw `115000070` using SQLite URI `mode=ro` plus `PRAGMA query_only=ON`.
+- The current audit selected 2,125 `CANONICAL_MAIN_DRAW` rows through draw `115000070` from logical store `canonical_big_lotto_store` using SQLite URI `mode=ro&immutable=1&cache=private` plus `PRAGMA query_only=ON`; a nonempty WAL fails closed and no runtime path is published.
 - P246K's five existing checks are GREEN. No statistic, p-value rule, threshold, correction, simulation, seed, or verdict rule was added or changed.
 - P238B's raw BIG_LOTTO population and all P238B statistical/correction/verdict helpers are excluded. Only its committed, population-independent `_connect_ro` helper is reused.
 - This is an existing-logic migration, not a reproduction or substitute for the historical 44-test audit.
@@ -175,7 +175,10 @@ No shortcuts. No "just a quick check." All gates are mandatory.
 - Calendar cadence reads `current_executable_audit.cadence_anchor.real_executable_audit_timestamp_utc` from the JSON artifact.
 - Draw cadence queries `draws_big_lotto_canonical_main` independently from generated audit outputs and verifies that the prior audited row-stream hash is still a suffix of canonical history.
 - Timestamp-only re-attestation is non-gating and resets neither trigger.
-- UTC offsets are explicit. Missing or malformed provenance, a changed historical row stream, a shrinking population, or a missing canonical view fails closed.
+- UTC offsets are explicit. Every future timestamp fails closed, including the smallest supported positive offset; equal-to-now remains valid.
+- Cadence accepts only the completed P246K canonical BIG_LOTTO executable-audit contract. Missing or incompatible schema, identity, scope, result, boundary, semantic hash, selected-row hash, or anchor/execution timestamp agreement fails closed. Legacy 44-test and human re-attestation objects cannot anchor cadence.
+- A generated Markdown/JSON pair is validated before publication, publishes Markdown first and cadence-bearing JSON last, and restores the previous pair on supported replacement failures.
+- Missing or malformed provenance, a changed historical row stream, a shrinking population, or a missing canonical view fails closed.
 - `tests/test_randomness_audit_cadence.py` enforces boundaries including 49 versus 50 new draws.
 
 **Routing:**  
@@ -187,7 +190,7 @@ Operational cadence evaluation requires an explicit canonical DB path and UTC ti
 
 ```bash
 python scripts/randomness_audit.py cadence \
-  --db /absolute/path/to/lottery_api/data/lottery_v2.db \
+  --db <runtime-canonical-db-path> \
   --now-utc 2026-07-18T08:43:47Z
 ```
 

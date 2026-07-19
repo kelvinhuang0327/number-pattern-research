@@ -453,6 +453,44 @@ def test_random_baseline_is_outside_governed_universe() -> None:
     assert "baseline::uniform_random_20" not in universe["excluded_ids"]
 
 
+def test_native_metric_series_excludes_constructor_fallback_rows() -> None:
+    entry = fake_entry()
+    native_row = {
+        "target_draw": "1",
+        "replicate_id": 0,
+        "effective_strategy_id": "fake_strategy",
+        "m4plus": 1,
+    }
+    fallback_row = {
+        "target_draw": "2",
+        "replicate_id": 0,
+        "effective_strategy_id": f"fake_strategy@{p20c.SHORT_IDENTIFIER}",
+        "m4plus": 0,
+    }
+    series = {
+        "counts": {
+            count: [dict(native_row), dict(fallback_row)]
+            for count in p20u.TICKET_COUNTS
+        },
+        "marginals": {
+            transition: [dict(native_row), dict(fallback_row)]
+            for transition in p20u.MARGINAL_TRANSITIONS
+        },
+        "effective_ids": {
+            "fake_strategy",
+            f"fake_strategy@{p20c.SHORT_IDENTIFIER}",
+        },
+    }
+    filtered = p20u.metric_eligible_series(entry, series)
+    assert all(len(rows) == 1 for rows in filtered["counts"].values())
+    assert all(len(rows) == 1 for rows in filtered["marginals"].values())
+    assert all(
+        row["effective_strategy_id"] == "fake_strategy"
+        for rows in filtered["counts"].values()
+        for row in rows
+    )
+
+
 def test_all_completed_strategies_are_independent_representatives() -> None:
     universe = p20u.load_frozen_universe()
     algorithms = {row["independent_algorithm_id"] for row in universe["completed"]}

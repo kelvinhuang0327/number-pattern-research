@@ -625,6 +625,13 @@ def _construct_portfolio(
     return portfolio
 
 
+def allowed_effective_strategy_ids(entry: ExecutionIdentity) -> set[str]:
+    allowed = {entry.expected_effective_strategy_id}
+    if entry.spec.ranking_group == "native":
+        allowed.add(f"{entry.spec.strategy_id}@{p20c.SHORT_IDENTIFIER}")
+    return allowed
+
+
 def _detail_row(
     *,
     entry: ExecutionIdentity,
@@ -651,10 +658,10 @@ def _detail_row(
         metadata_record = metadata.to_dict()
         constructor_name = metadata.constructor_name
         constructor_version = metadata.constructor_version
-    if effective != entry.expected_effective_strategy_id:
+    if effective not in allowed_effective_strategy_ids(entry):
         raise ContractError(
             f"effective identity drift for {entry.strategy_id}: "
-            f"{effective} != {entry.expected_effective_strategy_id}"
+            f"{effective} not in {sorted(allowed_effective_strategy_ids(entry))}"
         )
     scores = score_nested_portfolio(tickets, target["numbers"])
     hashes = {
@@ -1052,6 +1059,7 @@ def load_scalar_series(path: Path) -> dict[str, Any]:
                 {
                     "target_draw": row["target_draw"],
                     "replicate_id": int(row["replicate_id"]),
+                    "effective_strategy_id": row["effective_strategy_id"],
                     "m4plus": int(row[f"m4plus_{ticket_count}"]),
                 }
             )
@@ -1061,6 +1069,7 @@ def load_scalar_series(path: Path) -> dict[str, Any]:
                 {
                     "target_draw": row["target_draw"],
                     "replicate_id": int(row["replicate_id"]),
+                    "effective_strategy_id": row["effective_strategy_id"],
                     "m4plus": int(row[f"incremental_{start}_to_{end}"]),
                 }
             )
@@ -1070,6 +1079,36 @@ def load_scalar_series(path: Path) -> dict[str, Any]:
         "native_counts": native_counts,
         "constructed_counts": constructed_counts,
         "effective_ids": effective_ids,
+    }
+
+
+def metric_eligible_series(
+    entry: ExecutionIdentity, series: Mapping[str, Any]
+) -> dict[str, Any]:
+    allowed = allowed_effective_strategy_ids(entry)
+    unexpected = set(series["effective_ids"]) - allowed
+    if unexpected:
+        raise ContractError(
+            f"effective identity drift in detail for {entry.strategy_id}: "
+            f"unexpected={sorted(unexpected)} allowed={sorted(allowed)}"
+        )
+    if entry.spec.ranking_group != "native":
+        return dict(series)
+    expected = entry.expected_effective_strategy_id
+    return {
+        **series,
+        "counts": {
+            ticket_count: [
+                row for row in rows if row["effective_strategy_id"] == expected
+            ]
+            for ticket_count, rows in series["counts"].items()
+        },
+        "marginals": {
+            transition: [
+                row for row in rows if row["effective_strategy_id"] == expected
+            ]
+            for transition, rows in series["marginals"].items()
+        },
     }
 
 
@@ -1199,9 +1238,17 @@ def aggregate_metrics(
         if entry.spec.ranking_group == "baseline":
             continue
         run = run_by_id[strategy_id]
-        series = load_scalar_series(Path(str(run["detail_path"])))
-        if series["effective_ids"] != {entry.expected_effective_strategy_id}:
-            raise ContractError(f"effective identity drift in detail for {strategy_id}")
+        series = metric_eligible_series(
+            entry, load_scalar_series(Path(str(run["detail_path"])))
+        )
+        expected_portfolios = EXPECTED_COMMON_DRAWS * entry.spec.replicates
+        complete_portfolios = len(series["counts"][20])
+        completion_rate = complete_portfolios / expected_portfolios
+        if completion_rate < p20c.COMPLETENESS_THRESHOLD:
+            raise ContractError(
+                f"eligible completion below threshold for {strategy_id}: "
+                f"{completion_rate} < {p20c.COMPLETENESS_THRESHOLD}"
+            )
         for ticket_count in TICKET_COUNTS:
             rows = series["counts"][ticket_count]
             baseline_rows = baseline["counts"][ticket_count]
@@ -1232,7 +1279,7 @@ def aggregate_metrics(
                 "common_window_draws": EXPECTED_COMMON_DRAWS,
                 "strategy_replicates": entry.spec.replicates,
                 "complete_portfolios": len(rows),
-                "completion_rate": 1.0,
+                "completion_rate": completion_rate,
                 "m4plus_hits": hits,
                 "m4plus_rate": hits / len(rows),
                 "m4plus_confidence_interval_95": interval_text(low, high),
@@ -1478,7 +1525,12 @@ def independent_aggregate_recompute(
         hits = Counter()
         marginal_hits = Counter()
         draws = set()
+        expected_effective = str(
+            expected_metrics[(strategy_id, TICKET_COUNTS[-1])]["effective_strategy_id"]
+        )
         for row in iter_detail(Path(str(run["detail_path"]))):
+            if row["effective_strategy_id"] != expected_effective:
+                continue
             rows_checked += 1
             draws.add(row["target_draw"])
             for ticket_count in TICKET_COUNTS:
@@ -2430,10 +2482,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         resume=not args.no_resume,
     )
     if failures or len(runs) != len(entries):
+        resource_bound = bool(failures) and all(
+            row["failure_class"] == "TimeoutError" for row in failures
+        )
         print(
             json.dumps(
                 {
-                    "status": "PARTIALLY_COMPLETED_RESOURCE_BOUND",
+                    "status": (
+                        "PARTIALLY_COMPLETED_RESOURCE_BOUND"
+                        if resource_bound
+                        else "BLOCKED_EXECUTION_FAILURE"
+                    ),
                     "completed": len(runs),
                     "failures": failures,
                     "checkpoint_dir": str(checkpoint_dir),

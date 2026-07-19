@@ -1141,9 +1141,23 @@ def _write_pair(results_text: str, summary_text: str, results_path: Path, summar
             path.unlink(missing_ok=True)
 
 
+def _decode_strict_json_object(pairs: Sequence[tuple[str, Any]]) -> dict[str, Any]:
+    value: dict[str, Any] = {}
+    for key, item in pairs:
+        if key in value:
+            raise AuditContractError(f"duplicate JSON object key {key!r}")
+        value[key] = item
+    return value
+
+
 def _load_json(path: Path) -> dict[str, Any]:
     try:
-        value = json.loads(path.read_text(encoding="utf-8"))
+        value = json.loads(
+            path.read_text(encoding="utf-8"),
+            object_pairs_hook=_decode_strict_json_object,
+        )
+    except AuditContractError as exc:
+        raise AuditContractError(f"unable to load JSON artifact: {path}: {exc}") from exc
     except (OSError, json.JSONDecodeError) as exc:
         raise AuditContractError(f"unable to load JSON artifact: {path}") from exc
     if not isinstance(value, dict):

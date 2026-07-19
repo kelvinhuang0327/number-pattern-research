@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from collections import Counter
 
 import pytest
@@ -43,6 +44,14 @@ def test_target_set_is_exact_stable_and_reconciles_p20s():
     }
     assert set(p20t.RECOVERIES) | set(p20t.TERMINAL_DECISIONS) == set(p20t.TARGET_IDS)
     assert set(p20t.RECOVERIES).isdisjoint(p20t.TERMINAL_DECISIONS)
+    assert not any("random" in strategy_id for strategy_id in p20t.TARGET_IDS)
+    ledger = p20t.read_csv(p20t.P20S_DIR / "strategy_resolution_ledger.csv")
+    non_backlog = {
+        row["strategy_id"]
+        for row in ledger
+        if row["terminal_disposition"] not in p20t.TARGET_DISPOSITIONS
+    }
+    assert set(p20t.TARGET_IDS).isdisjoint(non_backlog)
 
 
 def test_three_prior_partials_are_exact_recoveries_and_zonal_is_terminal():
@@ -60,6 +69,84 @@ def test_constructor_reproducibility_uses_the_p20c_mismatch_contract():
     assert p20t.constructor_reproducibility_pass(
         {"sample_count": 12, "mismatch_count": 0, "mismatched_strategy_ids": []}
     )
+
+
+@pytest.mark.parametrize("value", [20, "20"])
+def test_ticket_count_parameter_accepts_positive_integer_20(value):
+    assert p20t.validate_target_ticket_count(value) == 20
+
+
+@pytest.mark.parametrize("value", [True, False, 0, -1, 1.5, "15.0", "abc", None])
+def test_ticket_count_parameter_rejects_non_positive_or_non_integer_values(value):
+    with pytest.raises(ValueError, match="positive integer"):
+        p20t.validate_target_ticket_count(value)
+
+
+def test_p20t_historical_executor_refuses_10_and_15_ticket_runs():
+    for ticket_count in p20t.NOT_RUN_TICKET_COUNTS:
+        with pytest.raises(ValueError, match="only at 20 tickets"):
+            p20t.build_strategy_specs(target_ticket_count=ticket_count)
+
+
+def test_nested_prefix_interface_is_order_preserving_and_count_aware():
+    history = synthetic_draws(500)
+    raw = p20t.RECOVERIES["acb_hot_fourier_3bet_biglotto"]["function"](history)
+    result = p20c.prepare_portfolio(
+        strategy_id="acb_hot_fourier_3bet_biglotto",
+        draw_id="fixture-target",
+        replicate_id=0,
+        cutoff_identity=history[-1]["draw"],
+        raw_tickets=raw,
+        actual_numbers=[1, 2, 3, 4, 5, 6],
+        constructor_mode=p20c.TICKET_CONSTRUCTOR_V1,
+    )
+    ordered = result["tickets"]
+    prefix_10 = p20t.ordered_portfolio_prefix(ordered, 10)
+    prefix_15 = p20t.ordered_portfolio_prefix(ordered, 15)
+    prefix_20 = p20t.ordered_portfolio_prefix(ordered, 20)
+    assert prefix_10 == prefix_15[:10]
+    assert prefix_15 == prefix_20[:15]
+    assert prefix_20 == tuple(ordered)
+    fixture = p20t.nested_prefix_fixture(ordered)
+    assert fixture["pass"] is True
+    assert fixture["historical_status"] == {
+        "10": "NOT_RUN",
+        "15": "NOT_RUN",
+        "20": "RUN",
+    }
+    assert len(set(fixture["portfolio_hashes"].values())) == 3
+
+
+def test_checkpoint_compatibility_binding_changes_with_ticket_count(tmp_path):
+    base = {
+        "source_head": "a" * 40,
+        "dataset_sha256": "b" * 64,
+        "runner_sha256": "c" * 64,
+    }
+    key_20 = p20t.checkpoint_compatibility_key(**base, target_ticket_count=20)
+    key_15 = p20t.checkpoint_compatibility_key(**base, target_ticket_count=15)
+    assert key_20["ticket_count"] == 20
+    assert key_15["ticket_count"] == 15
+    assert p20t.checkpoint_runner_sha256(key_20) != p20t.checkpoint_runner_sha256(
+        key_15
+    )
+
+    metadata = tmp_path / "checkpoint.json"
+    metadata.write_text(
+        json.dumps({"runner_sha256": p20t.checkpoint_runner_sha256(key_20)}),
+        encoding="utf-8",
+    )
+    assert (
+        p20t.annotate_checkpoint_metadata(
+            tmp_path,
+            compatibility_key=key_20,
+            bound_runner_sha256=p20t.checkpoint_runner_sha256(key_20),
+        )
+        == 1
+    )
+    annotated = json.loads(metadata.read_text(encoding="utf-8"))
+    assert annotated["ticket_count"] == 20
+    assert annotated["p20t_checkpoint_compatibility_key"] == key_20
     assert not p20t.constructor_reproducibility_pass(
         {
             "sample_count": 12,
@@ -201,9 +288,7 @@ def test_regime_adapter_fixtures_cover_historical_neutral_high_and_low_paths():
     high = base[:-5] + [
         {**draw, "numbers": [39, 41, 43, 45, 47, 49]} for draw in base[-5:]
     ]
-    low = base[:-5] + [
-        {**draw, "numbers": [1, 2, 3, 4, 5, 6]} for draw in base[-5:]
-    ]
+    low = base[:-5] + [{**draw, "numbers": [1, 2, 3, 4, 5, 6]} for draw in base[-5:]]
     assert recovered.adapt_predict_biglotto_regime_3bet(base) == [
         [5, 10, 14, 24, 36, 44],
         [6, 7, 18, 30, 39, 49],
@@ -267,7 +352,66 @@ def test_terminal_exclusions_are_conclusive_and_do_not_invent_logic():
 
 
 def test_output_contract_is_complete_and_has_no_raw_detail_artifact():
-    assert len(p20t.REQUIRED_OUTPUTS) == 15
+    assert len(p20t.REQUIRED_OUTPUTS) == 17
     assert "final_39_resolution_ledger.csv" in p20t.REQUIRED_OUTPUTS
+    assert "ticket_count_capability.csv" in p20t.REQUIRED_OUTPUTS
+    assert "nested_portfolio_capability.csv" in p20t.REQUIRED_OUTPUTS
     assert "run_manifest.json" in p20t.REQUIRED_OUTPUTS
     assert not any("detail" in name for name in p20t.REQUIRED_OUTPUTS)
+
+
+def test_metric_and_capability_schemas_are_ticket_count_aware():
+    assert {
+        "ticket_count",
+        "common_window_draws",
+        "random_m4plus_rate_same_ticket_count",
+        "random_baseline_ticket_count",
+        "nested_prefix_supported",
+        "nested_prefix_failure_reason",
+    } <= set(p20t.METRIC_FIELDS)
+    assert set(p20t.TICKET_COUNT_CAPABILITY_FIELDS) == {
+        "strategy_id",
+        "ticket_count_10_supported_by_interface",
+        "ticket_count_15_supported_by_interface",
+        "ticket_count_20_supported",
+        "nested_prefix_supported",
+        "nested_prefix_failure_reason",
+        "current_authoritative_ticket_count",
+        "historical_10_status",
+        "historical_15_status",
+        "historical_20_status",
+    }
+    assert {"external_state_dependency", "historical_cutoff_support"} <= set(
+        p20t.SEARCH_FIELDS
+    )
+    assert {
+        "ticket_count",
+        "prior_failure_classification",
+        "reproduced_cause",
+        "repair_classification",
+        "nested_prefix_supported",
+    } <= set(p20t.PARTIAL_FIELDS)
+
+
+def test_all_39_identities_receive_explicit_ticket_capability():
+    final_inventory = p20t.read_csv(
+        p20t.DEFAULT_OUTPUT_DIR / "final_39_resolution_ledger.csv"
+    )
+    integrated_metrics = p20t.read_csv(
+        p20t.DEFAULT_OUTPUT_DIR / "final_39_completed_strategy_metrics.csv"
+    )
+    ticket_rows = p20t.build_ticket_count_capability_rows(
+        final_inventory, integrated_metrics
+    )
+    nested_rows = p20t.build_nested_portfolio_capability_rows(
+        final_inventory, integrated_metrics
+    )
+    assert len(ticket_rows) == len(nested_rows) == 39
+    assert {row["strategy_id"] for row in ticket_rows} == set(p20t.TARGET_IDS) | {
+        row["strategy_id"]
+        for row in final_inventory
+        if row["strategy_id"] not in p20t.TARGET_IDS
+    }
+    assert all(row["historical_10_status"] == "NOT_RUN" for row in ticket_rows)
+    assert all(row["historical_15_status"] == "NOT_RUN" for row in ticket_rows)
+    assert sum(bool(row["nested_prefix_supported"]) for row in nested_rows) == 30

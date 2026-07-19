@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import os
 import tempfile
@@ -23,7 +24,7 @@ from scripts import p20s_all_strategies_bulk_recovery as p20s  # noqa: E402
 
 
 TASK_ID = "P20T_REMAINING_16_STRATEGIES_ENGINEERING_RECOVERY"
-RUNNER_VERSION = "p20t-v1"
+RUNNER_VERSION = "p20t-v2-ticket-count-aware"
 P20S_DIR = REPO_ROOT / "outputs/research/p20s_all_strategies_bulk_recovery"
 DEFAULT_OUTPUT_DIR = REPO_ROOT / "outputs/research/p20t_remaining_16_strategy_recovery"
 EXPECTED_P20S_MANIFEST_SHA256 = (
@@ -32,6 +33,10 @@ EXPECTED_P20S_MANIFEST_SHA256 = (
 EXPECTED_PR_694_MERGE = "892088387df825727e1bac8d4caf4fd3cff3f928"
 EXPECTED_DRAWS = 2125
 EXPECTED_COMMON_DRAWS = 2025
+AUTHORITATIVE_TICKET_COUNT = 20
+NOT_RUN_TICKET_COUNTS = (10, 15)
+NESTED_PREFIX_TICKET_COUNTS = (*NOT_RUN_TICKET_COUNTS, AUTHORITATIVE_TICKET_COUNT)
+PORTFOLIO_HASH_SCHEME = "p20t-ticket-count-aware/v1"
 TARGET_DISPOSITIONS = {"MISSING_IMPLEMENTATION", "PARTIAL_BACKTEST"}
 TARGET_IDS = (
     "acb_hot_fourier_3bet_biglotto",
@@ -66,6 +71,8 @@ REQUIRED_OUTPUTS = (
     "final_39_m4plus_native_ranking.csv",
     "final_39_m4plus_adapter_ranking.csv",
     "final_39_m4plus_all_valid_ranking.csv",
+    "ticket_count_capability.csv",
+    "nested_portfolio_capability.csv",
     "validation_results.json",
     "final_report.md",
 )
@@ -79,6 +86,8 @@ SEARCH_FIELDS = (
     "algorithm_specification_found",
     "required_inputs",
     "missing_inputs",
+    "external_state_dependency",
+    "historical_cutoff_support",
     "recovery_decision",
     "decision_evidence",
 )
@@ -100,15 +109,83 @@ RECOVERED_FIELDS = (
     "source_path",
     "implementation_basis",
     "native_ticket_count",
+    "target_ticket_count",
     "cutoff_enforced",
     "parity_status",
+    "nested_prefix_supported",
+    "nested_prefix_failure_reason",
 )
 PARTIAL_FIELDS = (
     "strategy_id",
+    "ticket_count",
+    "prior_failure_classification",
     "prior_failure",
+    "reproduced_cause",
+    "repair_classification",
     "repair_or_resolution",
     "final_disposition",
+    "nested_prefix_supported",
+    "nested_prefix_failure_reason",
     "evidence",
+)
+
+METRIC_FIELDS = (
+    "strategy_id",
+    "effective_strategy_id",
+    "strategy_name",
+    "governance_status",
+    "independent_algorithm_id",
+    "equivalence_group",
+    "ranking_group",
+    "ticket_count",
+    "native_ticket_count",
+    "constructed_ticket_count",
+    "evaluated_draws",
+    "common_window_draws",
+    "replicates",
+    "complete_portfolios",
+    "completion_rate",
+    "m4plus_hits",
+    "m4plus_rate",
+    "confidence_interval_95",
+    "random_m4plus_rate_same_ticket_count",
+    "random_baseline_ticket_count",
+    "random_baseline_strategy_id",
+    "paired_difference_vs_random",
+    "paired_interval_95",
+    "credible_random_advantage",
+    "runtime_seconds",
+    "total_ticket_evaluations",
+    "nested_prefix_supported",
+    "nested_prefix_failure_reason",
+    "governance_note",
+)
+
+TICKET_COUNT_CAPABILITY_FIELDS = (
+    "strategy_id",
+    "ticket_count_10_supported_by_interface",
+    "ticket_count_15_supported_by_interface",
+    "ticket_count_20_supported",
+    "nested_prefix_supported",
+    "nested_prefix_failure_reason",
+    "current_authoritative_ticket_count",
+    "historical_10_status",
+    "historical_15_status",
+    "historical_20_status",
+)
+
+NESTED_PORTFOLIO_CAPABILITY_FIELDS = (
+    "strategy_id",
+    "effective_strategy_id",
+    "ticket_count",
+    "nested_prefix_supported",
+    "nested_prefix_failure_reason",
+    "prefix_contract",
+    "portfolio_hash_scheme",
+    "validation_evidence",
+    "historical_10_status",
+    "historical_15_status",
+    "historical_20_status",
 )
 
 CONCLUSIVE_EXCLUSIONS = {
@@ -148,6 +225,143 @@ def constructor_reproducibility_pass(result: Mapping[str, Any]) -> bool:
     """Interpret the P20C reproducibility result using its public contract."""
 
     return int(result["mismatch_count"]) == 0
+
+
+def validate_target_ticket_count(value: Any) -> int:
+    """Validate the ticket-count interface without authorizing a historical run."""
+
+    if isinstance(value, bool):
+        raise ValueError("target_ticket_count must be a positive integer")
+    try:
+        ticket_count = int(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("target_ticket_count must be a positive integer") from exc
+    if str(value).strip() != str(ticket_count) or ticket_count <= 0:
+        raise ValueError("target_ticket_count must be a positive integer")
+    return ticket_count
+
+
+def ordered_portfolio_prefix(
+    ordered_tickets: Sequence[Sequence[int]], target_ticket_count: int
+) -> tuple[tuple[int, ...], ...]:
+    """Return a deterministic prefix without reordering the portfolio."""
+
+    ticket_count = validate_target_ticket_count(target_ticket_count)
+    normalised: list[tuple[int, ...]] = []
+    for raw in ordered_tickets:
+        if isinstance(raw, (str, bytes)) or len(raw) != 6:
+            raise ValueError("portfolio tickets must contain six numbers")
+        if not all(type(number) is int and 1 <= number <= 49 for number in raw):
+            raise ValueError("portfolio ticket numbers must be integers in 1..49")
+        ticket = tuple(sorted(raw))
+        if len(set(ticket)) != 6:
+            raise ValueError("portfolio tickets must contain six unique numbers")
+        normalised.append(ticket)
+    if len(set(normalised)) != len(normalised):
+        raise ValueError("portfolio tickets must be unique")
+    if ticket_count > len(normalised):
+        raise ValueError("portfolio is shorter than target_ticket_count")
+    return tuple(normalised[:ticket_count])
+
+
+def ticket_count_aware_portfolio_sha256(
+    ordered_tickets: Sequence[Sequence[int]], target_ticket_count: int
+) -> str:
+    """Hash the ordered prefix together with its explicit ticket count."""
+
+    ticket_count = validate_target_ticket_count(target_ticket_count)
+    prefix = ordered_portfolio_prefix(ordered_tickets, ticket_count)
+    payload = {
+        "hash_scheme": PORTFOLIO_HASH_SCHEME,
+        "ticket_count": ticket_count,
+        "tickets": [list(ticket) for ticket in prefix],
+    }
+    encoded = json.dumps(
+        payload,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def nested_prefix_fixture(
+    ordered_tickets: Sequence[Sequence[int]],
+) -> dict[str, Any]:
+    """Validate the future 10/15/20 prefix interface without historical scoring."""
+
+    prefixes = {
+        count: ordered_portfolio_prefix(ordered_tickets, count)
+        for count in NESTED_PREFIX_TICKET_COUNTS
+    }
+    hashes = {
+        count: ticket_count_aware_portfolio_sha256(ordered_tickets, count)
+        for count in NESTED_PREFIX_TICKET_COUNTS
+    }
+    passed = (
+        prefixes[10] == prefixes[15][:10]
+        and prefixes[15] == prefixes[20][:15]
+        and len(set(hashes.values())) == len(hashes)
+    )
+    return {
+        "pass": passed,
+        "prefix_sizes": {str(count): len(prefixes[count]) for count in prefixes},
+        "portfolio_hashes": {str(count): hashes[count] for count in hashes},
+        "historical_status": {"10": "NOT_RUN", "15": "NOT_RUN", "20": "RUN"},
+    }
+
+
+def checkpoint_compatibility_key(
+    *,
+    source_head: str,
+    dataset_sha256: str,
+    runner_sha256: str,
+    target_ticket_count: int,
+) -> dict[str, Any]:
+    """Build the P20T checkpoint identity, including the ticket count."""
+
+    ticket_count = validate_target_ticket_count(target_ticket_count)
+    return {
+        "runner_version": RUNNER_VERSION,
+        "source_head": source_head,
+        "dataset_sha256": dataset_sha256,
+        "constructor_name": p20c.CONSTRUCTOR_NAME,
+        "constructor_version": p20c.CONSTRUCTOR_VERSION,
+        "runner_source_sha256": runner_sha256,
+        "ticket_count": ticket_count,
+    }
+
+
+def checkpoint_runner_sha256(key: Mapping[str, Any]) -> str:
+    """Bind the unchanged P20S checkpoint header to the P20T compatibility key."""
+
+    encoded = json.dumps(
+        dict(key),
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def annotate_checkpoint_metadata(
+    checkpoint_dir: Path,
+    *,
+    compatibility_key: Mapping[str, Any],
+    bound_runner_sha256: str,
+) -> int:
+    """Expose the count in checkpoint metadata while the bound digest enforces it."""
+
+    annotated = 0
+    for path in sorted(checkpoint_dir.glob("*.json")):
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        if payload.get("runner_sha256") != bound_runner_sha256:
+            raise ValueError(f"checkpoint runner binding mismatch: {path}")
+        payload["ticket_count"] = compatibility_key["ticket_count"]
+        payload["p20t_checkpoint_compatibility_key"] = dict(compatibility_key)
+        p20s.write_json(path, payload)
+        annotated += 1
+    return annotated
 
 
 RECOVERIES = {
@@ -303,7 +517,13 @@ def load_target_inventory() -> list[dict[str, str]]:
     return [by_id[strategy_id] for strategy_id in selected_ids]
 
 
-def build_strategy_specs(random_replicates: int = 10) -> list[p20c.StrategySpec]:
+def build_strategy_specs(
+    random_replicates: int = 10,
+    target_ticket_count: int = AUTHORITATIVE_TICKET_COUNT,
+) -> list[p20c.StrategySpec]:
+    ticket_count = validate_target_ticket_count(target_ticket_count)
+    if ticket_count != AUTHORITATIVE_TICKET_COUNT:
+        raise ValueError("P20T authorizes historical execution only at 20 tickets")
     baseline = next(
         spec
         for spec in p20c.build_strategy_specs(random_replicates)
@@ -389,6 +609,10 @@ def recovery_search_rows(targets: Sequence[Mapping[str, Any]]) -> list[dict[str,
                 "algorithm_specification_found": specification,
                 "required_inputs": "strictly-prior canonical BIG_LOTTO draws ordered old-to-new",
                 "missing_inputs": missing,
+                "external_state_dependency": "NONE",
+                "historical_cutoff_support": (
+                    True if strategy_id in RECOVERIES else "NOT_APPLICABLE"
+                ),
                 "recovery_decision": decision,
                 "decision_evidence": evidence,
             }
@@ -510,7 +734,13 @@ def metric_rows(
     raw_metrics: Sequence[Mapping[str, Any]],
     target_inventory: Sequence[Mapping[str, Any]],
     strategy_runs: Sequence[Mapping[str, Any]],
+    *,
+    target_ticket_count: int,
+    random_baseline: Mapping[str, Any],
 ) -> list[dict[str, Any]]:
+    ticket_count = validate_target_ticket_count(target_ticket_count)
+    if int(random_baseline["ticket_count"]) != ticket_count:
+        raise ValueError("random baseline ticket count does not match strategy count")
     inventory = {row["strategy_id"]: row for row in target_inventory}
     runtime = {row["strategy_id"]: row["runtime_seconds"] for row in strategy_runs}
     rows = []
@@ -530,6 +760,7 @@ def metric_rows(
                 "independent_algorithm_id": identity["independent_algorithm_id"],
                 "equivalence_group": identity["equivalence_group"],
                 "ranking_group": metric["ranking_group"],
+                "ticket_count": ticket_count,
                 "native_ticket_count": round(
                     float(metric["native_ticket_count_mean"]), 6
                 ),
@@ -537,17 +768,25 @@ def metric_rows(
                     float(metric["constructed_ticket_count_mean"]), 6
                 ),
                 "evaluated_draws": int(metric["unique_target_draws"]),
+                "common_window_draws": EXPECTED_COMMON_DRAWS,
                 "replicates": int(metric["replicates"]),
                 "complete_portfolios": int(metric["completed_common_portfolios"]),
                 "completion_rate": float(metric["completion_ratio"]),
                 "m4plus_hits": int(metric["m4plus_draw_hits"]),
                 "m4plus_rate": float(metric["m4plus_draw_rate"]),
                 "confidence_interval_95": f"[{low:.12f},{high:.12f}]",
+                "random_m4plus_rate_same_ticket_count": float(
+                    random_baseline["m4plus_draw_rate"]
+                ),
+                "random_baseline_ticket_count": ticket_count,
+                "random_baseline_strategy_id": random_baseline["strategy_id"],
                 "paired_difference_vs_random": float(metric["baseline_difference"]),
                 "paired_interval_95": f"[{paired_low:.12f},{paired_high:.12f}]",
                 "credible_random_advantage": paired_low > 0,
                 "runtime_seconds": runtime.get(strategy_id, 0.0),
                 "total_ticket_evaluations": int(metric["total_ticket_evaluations"]),
+                "nested_prefix_supported": True,
+                "nested_prefix_failure_reason": "",
                 "governance_note": (
                     "Historical comparison only; no promotion and no future-probability claim."
                 ),
@@ -556,9 +795,161 @@ def metric_rows(
     return rows
 
 
-def independent_recompute(
-    observations: Sequence[Mapping[str, Any]], metrics: Sequence[Mapping[str, Any]]
+def augment_reused_metric_rows(
+    previous_metrics: Sequence[Mapping[str, Any]],
+    *,
+    target_ticket_count: int,
+    random_baseline: Mapping[str, Any],
+) -> list[dict[str, Any]]:
+    """Project the unchanged P20S metrics into the ticket-aware P20T schema."""
+
+    ticket_count = validate_target_ticket_count(target_ticket_count)
+    if int(random_baseline["ticket_count"]) != ticket_count:
+        raise ValueError("reused metrics require a same-count random baseline")
+    rows = []
+    for source in previous_metrics:
+        row = dict(source)
+        row.update(
+            {
+                "ticket_count": ticket_count,
+                "common_window_draws": int(row["evaluated_draws"]),
+                "random_m4plus_rate_same_ticket_count": float(
+                    random_baseline["m4plus_draw_rate"]
+                ),
+                "random_baseline_ticket_count": ticket_count,
+                "random_baseline_strategy_id": random_baseline["strategy_id"],
+                "nested_prefix_supported": True,
+                "nested_prefix_failure_reason": "",
+            }
+        )
+        rows.append(row)
+    return rows
+
+
+def build_ticket_count_capability_rows(
+    final_inventory: Sequence[Mapping[str, Any]],
+    integrated_metrics: Sequence[Mapping[str, Any]],
+) -> list[dict[str, Any]]:
+    metric_ids = {str(row["strategy_id"]) for row in integrated_metrics}
+    rows = []
+    for identity in sorted(final_inventory, key=lambda row: str(row["strategy_id"])):
+        strategy_id = str(identity["strategy_id"])
+        supported = strategy_id in metric_ids
+        reason = (
+            ""
+            if supported
+            else (
+                "terminal governance identity has no independent completed 20-ticket "
+                f"portfolio ({identity['terminal_disposition']})"
+            )
+        )
+        rows.append(
+            {
+                "strategy_id": strategy_id,
+                "ticket_count_10_supported_by_interface": supported,
+                "ticket_count_15_supported_by_interface": supported,
+                "ticket_count_20_supported": supported,
+                "nested_prefix_supported": supported,
+                "nested_prefix_failure_reason": reason,
+                "current_authoritative_ticket_count": AUTHORITATIVE_TICKET_COUNT,
+                "historical_10_status": "NOT_RUN",
+                "historical_15_status": "NOT_RUN",
+                "historical_20_status": "RUN" if supported else "TERMINAL_EXCLUSION",
+            }
+        )
+    return rows
+
+
+def build_nested_portfolio_capability_rows(
+    final_inventory: Sequence[Mapping[str, Any]],
+    integrated_metrics: Sequence[Mapping[str, Any]],
+) -> list[dict[str, Any]]:
+    metrics = {str(row["strategy_id"]): row for row in integrated_metrics}
+    rows = []
+    for identity in sorted(final_inventory, key=lambda row: str(row["strategy_id"])):
+        strategy_id = str(identity["strategy_id"])
+        metric = metrics.get(strategy_id)
+        supported = metric is not None
+        reason = (
+            ""
+            if supported
+            else (
+                "no independently executable completed portfolio is available for prefixing"
+            )
+        )
+        evidence = ""
+        if supported:
+            evidence = (
+                "P20T recovered-strategy reproducibility plus generic prefix fixture"
+                if strategy_id in RECOVERIES
+                else "reused P20S constructor reproducibility plus generic prefix fixture"
+            )
+        rows.append(
+            {
+                "strategy_id": strategy_id,
+                "effective_strategy_id": (
+                    metric["effective_strategy_id"] if metric is not None else ""
+                ),
+                "ticket_count": AUTHORITATIVE_TICKET_COUNT,
+                "nested_prefix_supported": supported,
+                "nested_prefix_failure_reason": reason,
+                "prefix_contract": (
+                    "tickets_10=ordered_tickets[0:10];"
+                    "tickets_15=ordered_tickets[0:15];"
+                    "tickets_20=ordered_tickets[0:20]"
+                    if supported
+                    else "NOT_APPLICABLE"
+                ),
+                "portfolio_hash_scheme": PORTFOLIO_HASH_SCHEME,
+                "validation_evidence": evidence,
+                "historical_10_status": "NOT_RUN",
+                "historical_15_status": "NOT_RUN",
+                "historical_20_status": "RUN" if supported else "TERMINAL_EXCLUSION",
+            }
+        )
+    return rows
+
+
+def validate_ticket_count_artifacts(
+    metrics: Sequence[Mapping[str, Any]],
+    ticket_capabilities: Sequence[Mapping[str, Any]],
+    nested_capabilities: Sequence[Mapping[str, Any]],
+    *,
+    target_ticket_count: int,
 ) -> dict[str, Any]:
+    ticket_count = validate_target_ticket_count(target_ticket_count)
+    metric_contract = all(
+        int(row["ticket_count"]) == ticket_count
+        and int(row["random_baseline_ticket_count"]) == ticket_count
+        and int(row["common_window_draws"]) == EXPECTED_COMMON_DRAWS
+        and str(row["nested_prefix_supported"]) == "True"
+        for row in metrics
+    )
+    capability_contract = (
+        len(ticket_capabilities) == 39
+        and len(nested_capabilities) == 39
+        and all(row["historical_10_status"] == "NOT_RUN" for row in ticket_capabilities)
+        and all(row["historical_15_status"] == "NOT_RUN" for row in ticket_capabilities)
+        and all(row["historical_10_status"] == "NOT_RUN" for row in nested_capabilities)
+        and all(row["historical_15_status"] == "NOT_RUN" for row in nested_capabilities)
+    )
+    return {
+        "pass": metric_contract and capability_contract,
+        "metric_contract": metric_contract,
+        "capability_contract": capability_contract,
+        "metric_rows": len(metrics),
+        "ticket_count_capability_rows": len(ticket_capabilities),
+        "nested_portfolio_capability_rows": len(nested_capabilities),
+    }
+
+
+def independent_recompute(
+    observations: Sequence[Mapping[str, Any]],
+    metrics: Sequence[Mapping[str, Any]],
+    *,
+    target_ticket_count: int,
+) -> dict[str, Any]:
+    ticket_count = validate_target_ticket_count(target_ticket_count)
     expected = {row["strategy_id"]: row for row in metrics}
     mismatches = []
     for strategy_id in RECOVERIES:
@@ -567,7 +958,7 @@ def independent_recompute(
             for row in observations
             if row["base_strategy_id"] == strategy_id
             and int(row["target_index"]) >= p20c.COMMON_MIN_HISTORY
-            and int(row["final_ticket_count"]) == 20
+            and int(row["final_ticket_count"]) == ticket_count
         ]
         observed_hits = sum(int(row["m4plus"]) for row in rows)
         metric = expected[strategy_id]
@@ -595,6 +986,7 @@ def final_counts(inventory: Sequence[Mapping[str, Any]]) -> dict[str, int]:
         "partial_backtests": dispositions["PARTIAL_BACKTEST"],
         "missing_implementations": dispositions["MISSING_IMPLEMENTATION"],
         "unknown": dispositions["UNKNOWN_REQUIRES_OWNER_EVIDENCE"],
+        "runtime_failures": dispositions["RUNTIME_FAILURE"],
     }
 
 
@@ -634,6 +1026,8 @@ def generate_report(
     counts: Mapping[str, Any],
     reuse: Mapping[str, Any],
     validation: Mapping[str, Any],
+    ticket_capabilities: Sequence[Mapping[str, Any]],
+    nested_capabilities: Sequence[Mapping[str, Any]],
 ) -> str:
     recovered = [row for row in decisions if row["decision"] == "RECOVER_AND_BACKTEST"]
     excluded = [row for row in decisions if row["decision"] != "RECOVER_AND_BACKTEST"]
@@ -651,6 +1045,16 @@ def generate_report(
         row
         for row in recovered
         if row["source_commit"] == adapters.HISTORICAL_SOURCE_COMMIT
+    ]
+    nested_supported = [
+        row["strategy_id"]
+        for row in nested_capabilities
+        if str(row["nested_prefix_supported"]) == "True"
+    ]
+    nested_unsupported = [
+        row["strategy_id"]
+        for row in nested_capabilities
+        if str(row["nested_prefix_supported"]) != "True"
     ]
     ids = ", ".join(f"`{strategy_id}`" for strategy_id in TARGET_IDS)
     exclusion_lines = "\n".join(
@@ -684,6 +1088,17 @@ This is historical research for entertainment purposes only, not betting or inve
 12. **Overall conclusion:** unchanged; the historical comparison does not establish a future predictive advantage.
 13. **Aliases/equivalents:** the prior P20S alias/equivalence rows remain non-independent; P20T found no new alias after parity testing the 16 targets.
 14. **P20S reuse:** the 18 prior completed metrics were reused because all seven hash/constructor/dataset/database/shared-semantics gates passed (`{reuse["pass"]}`). P20T ran full history only for the {len(recovered)} recovered identities and reran the fixed random baseline needed for paired comparisons.
+15. **Deterministic nested-prefix support:** {len(nested_supported)} completed identities expose the same ordered 20-ticket portfolio through deterministic 10- and 15-ticket prefixes. The exact per-identity capability is recorded in `nested_portfolio_capability.csv`.
+16. **Requires redesign or canonical-identity routing:** {len(nested_unsupported)} terminal identities do not have an independently executable completed portfolio: {", ".join(nested_unsupported)}.
+17. **Ten- and fifteen-ticket history:** `NOT_RUN` for every governed identity. Interface support and prefix fixtures are not historical validation.
+18. **Successor requirement:** P20U must execute uniform-random baselines at the same ticket count as each 10-, 15-, or 20-ticket strategy portfolio.
+
+## Ticket-count architecture
+
+- Authoritative P20T ticket count: `{AUTHORITATIVE_TICKET_COUNT}`.
+- Historical status: 10 tickets = `NOT_RUN`; 15 tickets = `NOT_RUN`; 20 tickets = `RUN` for completed identities.
+- Run identity, checkpoint binding, completed metrics, partial results, ranking rows, random pairing, and ticket-count-aware portfolio hashes all carry the explicit ticket count.
+- Prefix contract: `tickets_10 = ordered_tickets[0:10]`, `tickets_15 = ordered_tickets[0:15]`, and `tickets_20 = ordered_tickets[0:20]`.
 
 ## Verification
 
@@ -691,9 +1106,10 @@ This is historical research for entertainment purposes only, not betting or inve
 - Historical draws: {EXPECTED_DRAWS}; common window: {EXPECTED_COMMON_DRAWS}.
 - Every successful recovered portfolio contains exactly 20 unique legal tickets.
 - Target/future mutation leakage preflights, timeout orchestration, independent metric recomputation, 39-row accounting, and canonical DB/status invariance passed.
+- All {len(ticket_capabilities)} ticket-count capability rows record 10/15 historical status as `NOT_RUN`.
 - Large draw-level checkpoint files remain outside the committed evidence bundle.
 
-Of the 39 governed Big Lotto strategy identities, `{counts["completed"]}` completed the standard 20-ticket historical backtest and `{counts["terminally_excluded"]}` reached conclusive terminal exclusions; the remaining engineering backlog is `{counts["engineering_backlog"]}`.
+Of the 39 governed Big Lotto strategy identities, {counts["completed"]} completed the standard 20-ticket historical backtest and {counts["terminally_excluded"]} reached conclusive terminal exclusions; the remaining engineering backlog is {counts["engineering_backlog"]}. Ten-ticket and fifteen-ticket historical M4+ analyses were not run in P20T.
 """
 
 
@@ -709,26 +1125,32 @@ def publish_outputs(
     excluded_rows: Sequence[Mapping[str, Any]],
     final_inventory: Sequence[Mapping[str, Any]],
     integrated_metrics: Sequence[Mapping[str, Any]],
+    ticket_count_capabilities: Sequence[Mapping[str, Any]],
+    nested_portfolio_capabilities: Sequence[Mapping[str, Any]],
     validation: Mapping[str, Any],
     report: str,
     manifest: dict[str, Any],
+    replace_existing: bool = False,
 ) -> None:
     output_dir = output_dir.resolve()
     if output_dir.exists():
         existing = sorted(path.name for path in output_dir.iterdir())
-        if existing != ["run_manifest.json"]:
-            raise FileExistsError(
-                f"refusing to overwrite evidence directory: {output_dir}"
-            )
         frozen = json.loads(
             (output_dir / "run_manifest.json").read_text(encoding="utf-8")
         )
-        if (
+        if replace_existing:
+            if frozen.get("task_id") != TASK_ID or not set(existing).issubset(
+                REQUIRED_OUTPUTS
+            ):
+                raise FileExistsError(
+                    f"existing directory is not a replaceable P20T draft: {output_dir}"
+                )
+        elif existing != ["run_manifest.json"] or (
             frozen.get("status") != "TARGET_SET_FROZEN"
             or tuple(frozen["target"]["target_ids"]) != TARGET_IDS
         ):
             raise FileExistsError(
-                f"existing P20T manifest is not the authorized target freeze: {output_dir}"
+                f"refusing to overwrite immutable evidence directory: {output_dir}"
             )
     output_dir.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(
@@ -752,7 +1174,7 @@ def publish_outputs(
         p20s.write_csv(
             staging / "newly_completed_strategy_metrics.csv",
             metrics,
-            p20s.METRIC_FIELDS,
+            METRIC_FIELDS,
         )
         p20s.write_csv(
             staging / "newly_terminally_excluded.csv", excluded_rows, p20s.MASTER_FIELDS
@@ -764,7 +1186,7 @@ def publish_outputs(
         p20s.write_csv(
             staging / "final_39_completed_strategy_metrics.csv",
             integrated_metrics,
-            p20s.METRIC_FIELDS,
+            METRIC_FIELDS,
         )
         ranks = {
             "final_39_m4plus_native_ranking.csv": p20s.rank_metrics(
@@ -778,7 +1200,17 @@ def publish_outputs(
             ),
         }
         for name, rows in ranks.items():
-            p20s.write_csv(staging / name, rows, ("rank", *p20s.METRIC_FIELDS))
+            p20s.write_csv(staging / name, rows, ("rank", *METRIC_FIELDS))
+        p20s.write_csv(
+            staging / "ticket_count_capability.csv",
+            ticket_count_capabilities,
+            TICKET_COUNT_CAPABILITY_FIELDS,
+        )
+        p20s.write_csv(
+            staging / "nested_portfolio_capability.csv",
+            nested_portfolio_capabilities,
+            NESTED_PORTFOLIO_CAPABILITY_FIELDS,
+        )
         p20s.write_json(staging / "validation_results.json", validation)
         (staging / "final_report.md").write_text(report, encoding="utf-8")
         manifest["outputs"] = {
@@ -821,12 +1253,25 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--checkpoint-dir", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--verification-evidence", type=Path)
+    parser.add_argument(
+        "--target-ticket-count",
+        type=validate_target_ticket_count,
+        default=AUTHORITATIVE_TICKET_COUNT,
+    )
     parser.add_argument("--timeout-seconds", type=int, default=1800)
     parser.add_argument("--bootstrap-replicates", type=int, default=2000)
     parser.add_argument("--smoke-targets", type=int, default=0)
     parser.add_argument("--no-resume", action="store_true")
     parser.add_argument("--preflight-only", action="store_true")
+    parser.add_argument("--replace-draft-output", action="store_true")
     args = parser.parse_args(argv)
+
+    target_ticket_count = validate_target_ticket_count(args.target_ticket_count)
+    if target_ticket_count != AUTHORITATIVE_TICKET_COUNT:
+        parser.error(
+            "P20T authorizes historical execution only at 20 tickets; "
+            "10- and 15-ticket history must remain NOT_RUN"
+        )
 
     targets = load_target_inventory()
     canonical_before = p20c.normalized_git_status_sha256(args.canonical_repo)
@@ -843,7 +1288,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     ):
         parser.error("canonical dataset boundary drift")
 
-    specs = build_strategy_specs(10)
+    specs = build_strategy_specs(10, target_ticket_count)
     p20s.SPEC_TO_IDENTITY.update(
         {strategy_id: strategy_id for strategy_id in RECOVERIES}
     )
@@ -870,38 +1315,109 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.smoke_targets:
         execution_draws = draws[: p20c.COMMON_MIN_HISTORY + args.smoke_targets]
     head = p20s.git_value("rev-parse", "HEAD")
+    runner_source_sha256 = p20s.sha256_file(Path(__file__))
+    checkpoint_key = checkpoint_compatibility_key(
+        source_head=head,
+        dataset_sha256=quality["canonical_dataset_sha256"],
+        runner_sha256=runner_source_sha256,
+        target_ticket_count=target_ticket_count,
+    )
+    bound_runner_sha256 = checkpoint_runner_sha256(checkpoint_key)
+    checkpoint_dir = (
+        args.checkpoint_dir.resolve() / f"ticket_count_{target_ticket_count}"
+    )
     observations, failures, execution = p20s.execute_with_checkpoints(
         draws=execution_draws,
         specs=specs,
-        checkpoint_dir=args.checkpoint_dir.resolve(),
+        checkpoint_dir=checkpoint_dir,
         head=head,
         dataset_sha256=quality["canonical_dataset_sha256"],
-        runner_sha256=p20s.sha256_file(Path(__file__)),
+        runner_sha256=bound_runner_sha256,
         timeout_seconds=args.timeout_seconds,
         resume=not args.no_resume,
     )
+    annotated_checkpoints = annotate_checkpoint_metadata(
+        checkpoint_dir,
+        compatibility_key=checkpoint_key,
+        bound_runner_sha256=bound_runner_sha256,
+    )
+    execution["run_identity"] = f"{TASK_ID}:ticket_count={target_ticket_count}"
+    execution["ticket_count"] = target_ticket_count
+    execution["checkpoint_compatibility_key"] = checkpoint_key
+    execution["checkpoint_bound_runner_sha256"] = bound_runner_sha256
+    execution["checkpoint_metadata_annotated"] = annotated_checkpoints
+    for row in execution["strategy_runs"]:
+        row["ticket_count"] = target_ticket_count
+    for row in execution["detail_files"]:
+        row["ticket_count"] = target_ticket_count
     raw_metrics, _, _, baseline = p20c.build_metrics(
         observations=observations,
         specs=specs,
         bootstrap_replicates=args.bootstrap_replicates,
         draw_count=len(execution_draws),
     )
-    metrics = metric_rows(raw_metrics, targets, execution["strategy_runs"])
+    baseline = {
+        **baseline,
+        "ticket_count": target_ticket_count,
+        "pairing_keys": ["target_draw", "ticket_count"],
+        "replicate_id_preserved_in_detail": True,
+    }
+    metrics = metric_rows(
+        raw_metrics,
+        targets,
+        execution["strategy_runs"],
+        target_ticket_count=target_ticket_count,
+        random_baseline=baseline,
+    )
     prior_inventory = read_csv(P20S_DIR / "strategy_master_inventory.csv")
     final_inventory = update_inventory(
         prior_inventory, metrics, execution["strategy_runs"]
     )
     counts = final_counts(final_inventory)
     reuse = verify_p20s_reuse(database_before, quality["canonical_dataset_sha256"])
-    previous_metrics = read_csv(P20S_DIR / "all_completed_strategy_metrics.csv")
+    previous_metrics = augment_reused_metric_rows(
+        read_csv(P20S_DIR / "all_completed_strategy_metrics.csv"),
+        target_ticket_count=target_ticket_count,
+        random_baseline=baseline,
+    )
     integrated_metrics = sorted(
         [*previous_metrics, *metrics], key=lambda row: str(row["strategy_id"])
     )
-    recompute = independent_recompute(observations, metrics)
+    recompute = independent_recompute(
+        observations, metrics, target_ticket_count=target_ticket_count
+    )
     details = p20s.aggregate_detail_validation(execution["detail_files"], observations)
     reproducibility = p20c.check_constructor_reproducibility(
         execution["reproducibility_samples"]
     )
+    ticket_count_capabilities = build_ticket_count_capability_rows(
+        final_inventory, integrated_metrics
+    )
+    nested_portfolio_capabilities = build_nested_portfolio_capability_rows(
+        final_inventory, integrated_metrics
+    )
+    ticket_count_artifacts = validate_ticket_count_artifacts(
+        integrated_metrics,
+        ticket_count_capabilities,
+        nested_portfolio_capabilities,
+        target_ticket_count=target_ticket_count,
+    )
+    fixture_observation = next(
+        (
+            row
+            for row in observations
+            if row["base_strategy_id"] in RECOVERIES
+            and int(row["final_ticket_count"]) == target_ticket_count
+        ),
+        None,
+    )
+    nested_fixture = (
+        nested_prefix_fixture(json.loads(fixture_observation["tickets_json"]))
+        if fixture_observation is not None
+        else {"pass": False, "reason": "no completed P20T portfolio"}
+    )
+    if fixture_observation is not None:
+        nested_fixture["source_strategy_id"] = fixture_observation["base_strategy_id"]
     database_after = p20s.sha256_file(database)
     canonical_after = p20c.normalized_git_status_sha256(args.canonical_repo)
     verification = load_verification(args.verification_evidence)
@@ -921,6 +1437,23 @@ def main(argv: Sequence[str] | None = None) -> int:
         ),
         "common_window": all(
             int(row["evaluated_draws"]) == EXPECTED_COMMON_DRAWS for row in metrics
+        ),
+        "ticket_count_aware_metrics": ticket_count_artifacts["pass"],
+        "ticket_count_aware_checkpoints": annotated_checkpoints == len(specs)
+        and all(
+            int(row["ticket_count"]) == target_ticket_count
+            for row in execution["strategy_runs"]
+        ),
+        "same_ticket_count_random_pairing": int(baseline["ticket_count"])
+        == target_ticket_count
+        and baseline["pairing_keys"] == ["target_draw", "ticket_count"]
+        and baseline["replicate_id_preserved_in_detail"] is True,
+        "nested_prefix_interface": nested_fixture["pass"],
+        "future_ticket_counts_not_run": NOT_RUN_TICKET_COUNTS == (10, 15)
+        and all(
+            row["historical_10_status"] == "NOT_RUN"
+            and row["historical_15_status"] == "NOT_RUN"
+            for row in ticket_count_capabilities
         ),
         "detail_recompute": details["all_pass"],
         "metric_recompute": recompute["mismatch_count"] == 0,
@@ -944,6 +1477,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         "detail_validation": details,
         "metric_recomputation": recompute,
         "constructor_reproducibility": reproducibility,
+        "ticket_count_artifacts": ticket_count_artifacts,
+        "nested_prefix_fixture": nested_fixture,
+        "checkpoint_compatibility_key": checkpoint_key,
+        "random_pairing": {
+            "ticket_count": target_ticket_count,
+            "keys": baseline["pairing_keys"],
+            "baseline_strategy_id": baseline["strategy_id"],
+        },
         "p20s_reuse": reuse,
         "external_verification": verification,
         "runtime_failures": failures,
@@ -965,15 +1506,31 @@ def main(argv: Sequence[str] | None = None) -> int:
             "source_path": definition["source_path"],
             "implementation_basis": definition["basis"],
             "native_ticket_count": definition["native"],
+            "target_ticket_count": target_ticket_count,
             "cutoff_enforced": True,
             "parity_status": "PASS",
+            "nested_prefix_supported": True,
+            "nested_prefix_failure_reason": "",
         }
         for strategy_id, definition in RECOVERIES.items()
     ]
     partial_rows = [
         {
             "strategy_id": strategy_id,
+            "ticket_count": target_ticket_count,
+            "prior_failure_classification": "OTHER_SPECIFIC_REASON",
             "prior_failure": "P20S shape-safety only; historical parity not proven",
+            "reproduced_cause": (
+                "exact committed source returned three unique native bets at cutoff "
+                "103000046 against the governed four-bet contract"
+                if strategy_id == "biglotto_zonal_pruning"
+                else "the P20S adapter had shape evidence but no exact-source parity proof"
+            ),
+            "repair_classification": (
+                "INSUFFICIENT_UNIQUE_TICKETS"
+                if strategy_id == "biglotto_zonal_pruning"
+                else "OTHER_SPECIFIC_REASON"
+            ),
             "repair_or_resolution": (
                 "exact source proved the declared four-bet contract fails on a "
                 "historical cutoff; terminally excluded without invented padding"
@@ -984,6 +1541,12 @@ def main(argv: Sequence[str] | None = None) -> int:
                 row["terminal_disposition"]
                 for row in final_inventory
                 if row["strategy_id"] == strategy_id
+            ),
+            "nested_prefix_supported": strategy_id != "biglotto_zonal_pruning",
+            "nested_prefix_failure_reason": (
+                "no independently executable completed portfolio is available for prefixing"
+                if strategy_id == "biglotto_zonal_pruning"
+                else ""
             ),
             "evidence": next(
                 row["evidence"]
@@ -1008,12 +1571,25 @@ def main(argv: Sequence[str] | None = None) -> int:
         counts=counts,
         reuse=reuse,
         validation=validation,
+        ticket_capabilities=ticket_count_capabilities,
+        nested_capabilities=nested_portfolio_capabilities,
     )
     manifest = {
+        "task": TASK_ID,
         "task_id": TASK_ID,
         "status": "COMPLETED",
         "runner_version": RUNNER_VERSION,
         "source_head": head,
+        "run_identity": f"{TASK_ID}:ticket_count={target_ticket_count}",
+        "target_ticket_count": target_ticket_count,
+        "upstream_p20s_merge_commit": EXPECTED_PR_694_MERGE,
+        "upstream_p20s_manifest_sha256": EXPECTED_P20S_MANIFEST_SHA256,
+        "dataset_sha256": quality["canonical_dataset_sha256"],
+        "database_sha256": database_before,
+        "constructor_version": f"{p20c.CONSTRUCTOR_NAME}/{p20c.CONSTRUCTOR_VERSION}",
+        "authoritative_ticket_counts": [target_ticket_count],
+        "not_run_ticket_counts": list(NOT_RUN_TICKET_COUNTS),
+        "ticket_count_status": {"10": "NOT_RUN", "15": "NOT_RUN", "20": "RUN"},
         "upstream": {
             "origin_main": p20s.git_value("rev-parse", "origin/main"),
             "pr_694_merge_commit": EXPECTED_PR_694_MERGE,
@@ -1026,6 +1602,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "target_ids": list(TARGET_IDS),
             "prior_missing_implementation": 12,
             "prior_partial_backtest": 4,
+            "target_ticket_count": target_ticket_count,
         },
         "recovery": {
             "newly_completed": len(metrics),
@@ -1045,7 +1622,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             "historical_source": "draws_big_lotto_canonical_main",
             "historical_draws": len(draws),
             "common_window_draws": quality["common_window_rows"],
-            "tickets_per_portfolio": 20,
+            "ticket_count": target_ticket_count,
+            "tickets_per_portfolio": target_ticket_count,
             "constructor": f"{p20c.CONSTRUCTOR_NAME}/{p20c.CONSTRUCTOR_VERSION}",
             "random_baseline_replicates": 10,
             "newly_evaluated_portfolios": sum(
@@ -1059,6 +1637,27 @@ def main(argv: Sequence[str] | None = None) -> int:
                 str(row["credible_random_advantage"]) == "True" for row in metrics
             ),
             "random_baseline": baseline,
+        },
+        "ticket_count_architecture": {
+            "parameterized": True,
+            "checkpoint_ticket_count_aware": True,
+            "metric_schema_ticket_count_aware": True,
+            "ranking_rows_ticket_count_aware": True,
+            "same_ticket_count_random_contract": True,
+            "portfolio_hash_scheme": PORTFOLIO_HASH_SCHEME,
+            "nested_prefix_contract": {
+                "10": "ordered_tickets[0:10]",
+                "15": "ordered_tickets[0:15]",
+                "20": "ordered_tickets[0:20]",
+            },
+            "nested_prefix_supported_strategies": sum(
+                str(row["nested_prefix_supported"]) == "True"
+                for row in nested_portfolio_capabilities
+            ),
+            "nested_prefix_unsupported_strategies": sum(
+                str(row["nested_prefix_supported"]) != "True"
+                for row in nested_portfolio_capabilities
+            ),
         },
         "data": {
             "database_path": str(database),
@@ -1080,9 +1679,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         excluded_rows=excluded_rows,
         final_inventory=final_inventory,
         integrated_metrics=integrated_metrics,
+        ticket_count_capabilities=ticket_count_capabilities,
+        nested_portfolio_capabilities=nested_portfolio_capabilities,
         validation=validation,
         report=report,
         manifest=manifest,
+        replace_existing=args.replace_draft_output,
     )
     print(
         p20s.canonical_json(

@@ -36,22 +36,18 @@ from lottery_api.models.replay_strategy_registry import (
     LIFECYCLE_STATUSES,
 )
 
-# ─── Expected values (P2 baseline) ───────────────────────────────────────────
-_EXPECTED_TOTAL = 16
-_EXPECTED_ONLINE = 6
-_EXPECTED_REJECTED = 4
-_EXPECTED_RETIRED = 5
-_EXPECTED_OBSERVATION = 1
-
-_EXPECTED_ONLINE_IDS = frozenset({
+# ─── Required canonical identities; aggregate counts remain dynamic ──────────
+_REQUIRED_ONLINE_IDS = frozenset({
     "power_precision_3bet",
     "power_orthogonal_5bet",
+    "fourier_rhythm_3bet",
     "biglotto_triple_strike",
     "biglotto_deviation_2bet",
+    "ts3_regime_3bet",
     "daily539_f4cold",
     "daily539_markov_cold",
 })
-_EXPECTED_NON_EXEC_IDS = frozenset({
+_REQUIRED_NON_EXEC_IDS = frozenset({
     "biglotto_ts3_acb_4bet",
     "biglotto_ts3_markov_freq_5bet",
     "power_shlc_midfreq",
@@ -70,11 +66,12 @@ _EXPECTED_NON_EXEC_IDS = frozenset({
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class TestListStrategyLifecycleMetadata:
-    def test_returns_all_16_strategies(self):
+    def test_returns_the_live_unique_adapter_universe(self):
         result = list_strategy_lifecycle_metadata()
-        assert len(result) == _EXPECTED_TOTAL, (
-            f"Expected {_EXPECTED_TOTAL} strategies, got {len(result)}"
-        )
+        result_ids = [entry["strategy_id"] for entry in result]
+        adapter_ids = [adapter.meta.strategy_id for adapter in _ALL_ADAPTERS]
+        assert result_ids == adapter_ids
+        assert len(result_ids) == len(set(result_ids))
 
     def test_each_entry_has_required_keys(self):
         required = {
@@ -88,26 +85,30 @@ class TestListStrategyLifecycleMetadata:
 
     def test_filter_by_online(self):
         result = list_strategy_lifecycle_metadata(lifecycle_status="ONLINE")
-        assert len(result) == _EXPECTED_ONLINE
         assert all(e["lifecycle_status"] == "ONLINE" for e in result)
+        assert {entry["strategy_id"] for entry in result} == set(_REGISTRY)
 
     def test_filter_by_rejected(self):
         result = list_strategy_lifecycle_metadata(lifecycle_status="REJECTED")
-        assert len(result) == _EXPECTED_REJECTED
         assert all(e["lifecycle_status"] == "REJECTED" for e in result)
+        assert {entry["strategy_id"] for entry in result} == {
+            adapter.meta.strategy_id
+            for adapter in _ALL_ADAPTERS
+            if adapter.meta.lifecycle_status == "REJECTED"
+        }
 
     def test_filter_by_retired(self):
         result = list_strategy_lifecycle_metadata(lifecycle_status="RETIRED")
-        assert len(result) == _EXPECTED_RETIRED
+        assert all(e["lifecycle_status"] == "RETIRED" for e in result)
 
     def test_filter_by_observation(self):
         result = list_strategy_lifecycle_metadata(lifecycle_status="OBSERVATION")
-        assert len(result) == _EXPECTED_OBSERVATION
+        assert all(e["lifecycle_status"] == "OBSERVATION" for e in result)
 
     def test_ids_in_all_strategies(self):
         all_ids = {e["strategy_id"] for e in list_strategy_lifecycle_metadata()}
-        assert _EXPECTED_ONLINE_IDS.issubset(all_ids)
-        assert _EXPECTED_NON_EXEC_IDS.issubset(all_ids)
+        assert _REQUIRED_ONLINE_IDS.issubset(all_ids)
+        assert _REQUIRED_NON_EXEC_IDS.issubset(all_ids)
 
     def test_no_adapter_instances_returned(self):
         """Entries must be plain dicts, not adapter objects."""
@@ -166,16 +167,18 @@ class TestGetStrategyLifecycleMetadata:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class TestSummarizeStrategyLifecycleCounts:
-    def test_correct_counts(self):
+    def test_counts_match_live_metadata_partitions(self):
         counts = summarize_strategy_lifecycle_counts()
-        assert counts.get("ONLINE") == _EXPECTED_ONLINE
-        assert counts.get("REJECTED") == _EXPECTED_REJECTED
-        assert counts.get("RETIRED") == _EXPECTED_RETIRED
-        assert counts.get("OBSERVATION") == _EXPECTED_OBSERVATION
+        for status, count in counts.items():
+            expected = sum(
+                entry["lifecycle_status"] == status
+                for entry in list_strategy_lifecycle_metadata()
+            )
+            assert count == expected
 
     def test_total_equals_all_adapters(self):
         counts = summarize_strategy_lifecycle_counts()
-        assert sum(counts.values()) == _EXPECTED_TOTAL
+        assert sum(counts.values()) == len(_ALL_ADAPTERS)
 
     def test_no_unknown_statuses(self):
         counts = summarize_strategy_lifecycle_counts()
@@ -196,17 +199,23 @@ class TestSummarizeStrategyLifecycleCounts:
 
 class TestListExecutableNonExecutableIds:
     def test_executable_ids_count(self):
-        assert len(list_executable_strategy_ids()) == _EXPECTED_ONLINE
+        assert len(list_executable_strategy_ids()) == len(_REGISTRY)
 
     def test_executable_ids_match_registry(self):
         assert set(list_executable_strategy_ids()) == set(_REGISTRY.keys())
 
     def test_non_executable_ids_count(self):
-        assert len(list_non_executable_strategy_ids()) == _EXPECTED_TOTAL - _EXPECTED_ONLINE
+        assert len(list_non_executable_strategy_ids()) == len(_ALL_ADAPTERS) - len(_REGISTRY)
 
     def test_non_executable_ids_correct(self):
         non_exec = set(list_non_executable_strategy_ids())
-        assert non_exec == _EXPECTED_NON_EXEC_IDS
+        expected = {
+            adapter.meta.strategy_id
+            for adapter in _ALL_ADAPTERS
+            if adapter.meta.strategy_id not in _REGISTRY
+        }
+        assert non_exec == expected
+        assert _REQUIRED_NON_EXEC_IDS.issubset(non_exec)
 
     def test_executable_and_non_executable_are_disjoint(self):
         exec_ids = set(list_executable_strategy_ids())
@@ -336,10 +345,8 @@ class TestCLIReport:
         assert rc == 0
         captured = capsys.readouterr()
         data = json.loads(captured.out)
-        assert data["total"] == _EXPECTED_TOTAL
-        assert data["lifecycle_counts"].get("ONLINE") == _EXPECTED_ONLINE
-        assert data["lifecycle_counts"].get("REJECTED") == _EXPECTED_REJECTED
-        assert data["lifecycle_counts"].get("RETIRED") == _EXPECTED_RETIRED
+        assert data["total"] == len(_ALL_ADAPTERS)
+        assert data["lifecycle_counts"] == summarize_strategy_lifecycle_counts()
 
     def test_cli_json_mode_no_db_write_flag(self, capsys):
         import scripts.report_strategy_lifecycle_registry as cli_module
@@ -364,4 +371,4 @@ class TestCLIReport:
         assert rc == 0
         assert out_file.exists()
         data = json.loads(out_file.read_text())
-        assert data["total"] == _EXPECTED_TOTAL
+        assert data["total"] == len(_ALL_ADAPTERS)

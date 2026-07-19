@@ -1,0 +1,339 @@
+{
+  "constructor": {
+    "algorithm_constants_locked_before_historical_results": true,
+    "mode": "strategy-preserving-v1",
+    "name": "strategy_preserving_20_ticket",
+    "objective_constants": {
+      "candidate_pool_size": 80,
+      "constructor_identifier": "strategy_preserving_20_ticket/v1",
+      "max_candidate_attempts": 4096,
+      "max_overlap_penalty": 12.0,
+      "number_concentration_penalty": 2.0,
+      "parity_portfolio_sha256": "8f756025c8818987101b2b61f7c296d0341d7fea52ffa95f7272ca121c9b30d6",
+      "signal_score_weight": 100.0
+    },
+    "version": "v1"
+  },
+  "data": {
+    "big_lotto_replay_distinct_targets": 1552,
+    "big_lotto_replay_ticket_rows": 24140,
+    "canonical_dataset_sha256": "cd56bcca2fd61152f1812bc9c524dcbff3070f06d1c457e81a64bb4d441dd93f",
+    "canonical_main_rows": 2125,
+    "common_window_rows": 2025,
+    "database_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+    "database_sha256": "bf608f13d05e8ceae59e457c0b72a2eb30329eeb6415a09930bb8fde6971fd77",
+    "database_sha256_after": "bf608f13d05e8ceae59e457c0b72a2eb30329eeb6415a09930bb8fde6971fd77",
+    "database_sha256_before": "bf608f13d05e8ceae59e457c0b72a2eb30329eeb6415a09930bb8fde6971fd77",
+    "date_format_counts": {
+      "YYYY/MM/DD": 2125
+    },
+    "duplicate_dates": 0,
+    "duplicate_draw_ids": 0,
+    "duplicate_main_number_rows": 0,
+    "excluded_noncanonical_rows": 1025,
+    "first_date": "2007/01/02",
+    "first_draw": "96000001",
+    "historical_draws": 2125,
+    "invalid_json_rows": 0,
+    "invalid_or_overlapping_special_rows": 0,
+    "last_date": "2026/07/14",
+    "last_draw": "115000070",
+    "negative_financial_rows": 0,
+    "null_numbers_positional_rows": 2125,
+    "out_of_range_rows": 0,
+    "outside_selected_window_rows": 0,
+    "raw_big_lotto_rows": 3150,
+    "replay_noncausal_cutoff_rows": 0,
+    "replay_rows_missing_from_canonical_view": 336,
+    "replay_targets_missing_from_canonical_view": 21,
+    "sample_first_rows": [
+      {
+        "date": "2007/01/02",
+        "draw": "96000001",
+        "numbers": [
+          13,
+          21,
+          23,
+          27,
+          31,
+          49
+        ],
+        "special": 19
+      },
+      {
+        "date": "2007/01/05",
+        "draw": "96000002",
+        "numbers": [
+          12,
+          19,
+          23,
+          42,
+          44,
+          48
+        ],
+        "special": 33
+      },
+      {
+        "date": "2007/01/09",
+        "draw": "96000003",
+        "numbers": [
+          26,
+          28,
+          35,
+          39,
+          44,
+          45
+        ],
+        "special": 18
+      },
+      {
+        "date": "2007/01/12",
+        "draw": "96000004",
+        "numbers": [
+          10,
+          16,
+          26,
+          28,
+          31,
+          33
+        ],
+        "special": 44
+      },
+      {
+        "date": "2007/01/16",
+        "draw": "96000005",
+        "numbers": [
+          13,
+          28,
+          33,
+          38,
+          43,
+          48
+        ],
+        "special": 4
+      }
+    ],
+    "sample_last_rows": [
+      {
+        "date": "2026/06/30",
+        "draw": "115000066",
+        "numbers": [
+          4,
+          10,
+          16,
+          29,
+          36,
+          45
+        ],
+        "special": 14
+      },
+      {
+        "date": "2026/07/03",
+        "draw": "115000067",
+        "numbers": [
+          11,
+          16,
+          19,
+          23,
+          39,
+          47
+        ],
+        "special": 15
+      },
+      {
+        "date": "2026/07/07",
+        "draw": "115000068",
+        "numbers": [
+          8,
+          13,
+          15,
+          18,
+          19,
+          42
+        ],
+        "special": 37
+      },
+      {
+        "date": "2026/07/10",
+        "draw": "115000069",
+        "numbers": [
+          3,
+          4,
+          15,
+          18,
+          29,
+          49
+        ],
+        "special": 13
+      },
+      {
+        "date": "2026/07/14",
+        "draw": "115000070",
+        "numbers": [
+          10,
+          25,
+          34,
+          36,
+          45,
+          46
+        ],
+        "special": 7
+      }
+    ],
+    "wrong_main_number_count_rows": 0
+  },
+  "detail": {
+    "cleanup": "task-owned TemporaryDirectory removed after compact evidence publication",
+    "file_sha256": "3c7ef5b8e1c05b1eccc52c8524034092b1cc9cea95f521ea8ad4a0d130b976e0",
+    "retained": false,
+    "row_count": 107385,
+    "stream_sha256": "db6c323c2cd75b338264b51e7e4d2976e25a781fb8fa103fbeb078dfb2b363b6"
+  },
+  "historical_run": {
+    "adapter_eligible_identities": 12,
+    "constructor_attempted": 12,
+    "constructor_completed": 12,
+    "native_eligible_identities": 2,
+    "prior_partial_identities": 12,
+    "runtime_failure_rows": 0,
+    "still_incomplete": 0,
+    "total_ticket_evaluations": 2147700
+  },
+  "inventory": {
+    "confirmed_historical_method_surfaces": 221,
+    "current_confirmed_strategy_identities": 262,
+    "current_governed_strategy_identities": 40,
+    "current_registry_entries": 40,
+    "formerly_partial_identities": 12,
+    "inventory_identity_rows": 621,
+    "p541b_records": 580,
+    "prior_confirmed_strategy_identities": 247,
+    "random_baseline_identities": 1,
+    "runnable_strategy_identities": 14
+  },
+  "limitations": [
+    "Historical rates are not future winning probabilities.",
+    "Multiple comparisons and historical reuse remain substantial.",
+    "Native partial rates use unequal ticket budgets and are not ranked with 20-ticket portfolios.",
+    "Null positional fields prevent positional-order strategy validation."
+  ],
+  "outputs": {
+    "constructor_metrics.csv": "2f8eea5f5542d08c0588d3af9d0e5a633ec742f0531a1637cf4150780ce7e2d1",
+    "failed_strategies.csv": "9fa1b1ea1d5b884591b26b9e652a9c56a48054c36dc89339f048d676203cc0d0",
+    "final_report.md": "4200b5088a6362384df264f8ee31a227971f27ef04a482b764301336387dd9ac",
+    "m4plus_adapter_ranking.csv": "145acd17754245f283d4c55ec2703f250290375bc111e7062c3e15b565e920c2",
+    "m4plus_native_ranking.csv": "a9977c29ede60b99d206ef0bdb8e4215b57821e39a63b1af0d1e02149ed14322",
+    "validation_results.json": "c527e1dfb5686b1594def1cf59f8d9d2930f9f7acaa36f274728d921282ecb91"
+  },
+  "parameters": {
+    "bootstrap_replicates": 2000,
+    "common_min_history": 100,
+    "common_window_draws": 2025,
+    "completion_threshold": 0.99,
+    "m4plus_definition": "Per draw/replicate, at least one of 20 unique tickets matches four or more main numbers; special is separate.",
+    "random_replicates": 10,
+    "tickets_per_draw": 20
+  },
+  "prior_uncommitted_reference_sources": [
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/all_strategy_20ticket_m4plus_backtest/audit_runner.py",
+      "sha256": "ad7bb6652ecc7ff69694d3a51021319ae15159928147ce68b701406fa5444899",
+      "status": "READ_ONLY_REFERENCE"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/all_strategy_20ticket_m4plus_backtest/run_manifest.json",
+      "sha256": "33abf8671cd68123b2812e4c20a32dfd41af49df31227fcc7f20b3a36be9ed34",
+      "status": "READ_ONLY_REFERENCE"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/all_strategy_20ticket_m4plus_backtest/environment_manifest.json",
+      "sha256": "da7e3f6bb7f7688aa9e84ff437baedab214f49aed935068d72d9e83d210ede53",
+      "status": "READ_ONLY_REFERENCE"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/all_strategy_20ticket_m4plus_backtest/reproducibility_manifest.json",
+      "sha256": "cd1ce090bfc81274a4d7206af3222141de6fa6124cbeef5a635f8cdf773037bb",
+      "status": "READ_ONLY_REFERENCE"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/all_strategy_20ticket_m4plus_backtest/final_report.md",
+      "sha256": "c2798e4154f473b70a33ef687e3167a8f63cd1e2abdedd4bf79a7cc29579b516",
+      "status": "READ_ONLY_REFERENCE"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/all_strategy_20ticket_m4plus_backtest/validation_results.json",
+      "sha256": "1d717622effd26b41d6d6fa1d09a53738ec8a3ebc8d05fb744cda81ee0b4e183",
+      "status": "READ_ONLY_REFERENCE"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/all_strategy_20ticket_m4plus_backtest/strategy_inventory.csv",
+      "sha256": "4d0ee1496d98c86840c749b87f1c3aecf3fe5088eaa038f35e7a8696a3cc1b8c",
+      "status": "READ_ONLY_REFERENCE"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/all_strategy_20ticket_m4plus_backtest/strategy_preflight.csv",
+      "sha256": "a64f08f642cc18d5ea11b4d64b1dadb950359f9c7c775946d6dcd7cc9f36b055",
+      "status": "READ_ONLY_REFERENCE"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/all_strategy_20ticket_m4plus_backtest/skipped_and_failed_strategies.csv",
+      "sha256": "c3dc957fc4c68fd18fa191bd887e17a1931862d39697665fc401e1146d648543",
+      "status": "READ_ONLY_REFERENCE"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/all_strategy_20ticket_m4plus_backtest/draw_level_results.csv",
+      "sha256": "a4e377196bdf16b1eeb3dba65e63ae48fc56299e1fc42813cb8b7948437eefd3",
+      "status": "READ_ONLY_REFERENCE"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/all_strategy_20ticket_m4plus_backtest/ticket_level_results.csv.gz",
+      "sha256": "b180e41d25e86066c8a64e212586c0ca6cc54fefc02ed6efe702646a4b53f3ee",
+      "status": "READ_ONLY_REFERENCE"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/all_strategy_20ticket_m4plus_backtest/random_baseline_metrics.csv",
+      "sha256": "e1ac40511c50d89b0c6f7dd62d5cb12cb5965a715b4fedf79ba388051f711985",
+      "status": "READ_ONLY_REFERENCE"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/all_strategy_20ticket_m4plus_backtest/strategy_metrics.csv",
+      "sha256": "d9f8f23270b644b8025a1d0280f4b3be7959e45ff846b90e406ed5dd483902b3",
+      "status": "READ_ONLY_REFERENCE"
+    }
+  ],
+  "random_baseline": {
+    "confidence_method": "draw-cluster bootstrap percentile",
+    "evaluated_portfolios": 20250,
+    "m4plus_ci95_high": 0.022320987654321143,
+    "m4plus_ci95_low": 0.018469135802469235,
+    "m4plus_draw_hits": 412,
+    "m4plus_draw_rate": 0.02034567901234568,
+    "replicates": 10,
+    "strategy_id": "baseline::uniform_random_20",
+    "total_ticket_evaluations": 405000,
+    "unique_target_draws": 2025
+  },
+  "repo": {
+    "base_commit": "520c3922a7c8f47e5b6196fb4b0d54716fa5fd9f",
+    "branch": "codex/p20c-v1-strategy-preserving-constructor",
+    "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "canonical_status_sha256_after": "f3fac7010402c9fbf13829c10d567aadec48c763085f3cd30928170bbf5971f5",
+    "canonical_status_sha256_before": "f3fac7010402c9fbf13829c10d567aadec48c763085f3cd30928170bbf5971f5",
+    "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-agent"
+  },
+  "status": "COMPLETED",
+  "task_id": "P20C_V1_STRATEGY_PRESERVING_20_TICKET_CONSTRUCTOR",
+  "tests": {
+    "command": "python -m pytest -q -p no:cacheprovider tests/test_strategy_preserving_20_ticket.py tests/test_p20c_strategy_preserving_backtest.py tests/test_replay_strategy_lifecycle_registry.py tests/test_replay_strategy_lifecycle_exposure.py tests/test_replay_strategy_registry_online_candidates.py",
+    "counts": {
+      "failed": 0,
+      "passed": 146,
+      "skipped": 0,
+      "xfailed": 0,
+      "xpassed": 0
+    },
+    "output": "146 passed; 0 failed; 0 skipped",
+    "returncode": 0,
+    "status": "PASS"
+  }
+}

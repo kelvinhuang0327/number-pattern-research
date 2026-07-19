@@ -1,257 +1,106 @@
 # Lottery Randomness Audit Report
 
-**Run timestamp:** 2026-06-02T06:57:02.982982
-**Re-attestation timestamp:** 2026-06-30T13:42:02.321987
-**Simulations:** 2,000 (seed=42)
+**Run timestamp:** 2026-07-18T13:35:18.685255Z
+**Audit version:** 2.0.0-p20r
+**Audit commit:** `precommit:0586c611cf23a9b30225c9f43273c2325e5972e9:2cb535a4814d89064fc94a48f849a8c74a0ba7a8372779ac21332480642b98ec`
+**Simulations:** 2,000
+**Seed:** 42
 **Alpha:** 0.05
 **Total confirmatory tests:** 44
-**Bonferroni threshold:** 1.1364e-03
+**Exploratory sorted-position diagnostics:** 17
+**Cadence anchor:** `run_timestamp` (UTC)
+**Reanalysis performed:** YES
+**New draws analyzed:** YES
 
----
-### Re-attestation Disclosure (P275E-A, 2026-06-16)
-
-This document is a **human re-attestation** of unchanged committed statistical evidence.
-It is **not** a new statistical analysis or a new audit run.
-
-| Field | Value |
-|---|---|
-| Original audit run | 2026-06-02T06:57:02.982982 (Run timestamp above) |
-| Re-attestation performed | 2026-06-30T13:42:02.321987 (Re-attestation timestamp above) |
-| Reanalysis performed | **NO** — statistical values were not recomputed |
-| New draws analyzed | **NO** — data through 2026-04-29 only |
-| Audit script status | `scripts/randomness_audit.py` is absent from this repository (never existed) |
-| Re-attestation basis | Human review confirmed the committed statistical evidence remains the current committed state. Precedent: P203 commit `d119ea6`. |
-
-**Limitation:** This re-attestation does not establish that the prior verdict
-(`WEAK_DEVIATIONS_NOT_SIGNIFICANT_AFTER_CORRECTION`) holds for draws added after
-the original audit date (through 2026-04-29). Draws ingested since that date have
-not been statistically tested.
-
----
 ## FINAL VERDICT
 
-**🔶 WEAK_DEVIATIONS_NOT_SIGNIFICANT_AFTER_CORRECTION**
+**WEAK_DEVIATIONS_NOT_SIGNIFICANT_AFTER_CORRECTION**
 
 > Strategy implication: NO_EXPLOITABLE_EDGE_FROM_DRAW_PROCESS
 
----
-## Phase 1 — Data Validation
+## Canonical Data Binding
 
-| Game | Rows | Date Min | Date Max | Dup IDs | Missing | Dup Draws | OOR Balls | Status |
-|------|------|----------|----------|---------|---------|-----------|-----------|--------|
-| power_lotto | 1906 | 2008-01-24 | 2026-04-27 | 0 | 0 | 0 | 0 | WARN |
-| big_lotto | 2130 | 2007-01-02 | 2026-04-28 | 0 | 0 | 0 | 0 | WARN |
-| daily_539 | 5849 | 2007-01-01 | 2026-04-29 | 0 | 0 | 33 | 0 | WARN |
+| Game | Source | Rows | Date min | Date max | Excluded | SHA-256 |
+|---|---|---:|---|---|---:|---|
+| power_lotto | `draws WHERE lottery_type='POWER_LOTTO'` | 1929 | 2008-01-24 | 2026-07-16 | 0 | `fe5a3fff685d5fdfdd023f6ea69eca9b05b8da8a74f5fbe9793255e5a16a12f3` |
+| big_lotto | `draws_big_lotto_canonical_main` | 2125 | 2007-01-02 | 2026-07-14 | 1025 | `d04e44247626f3264744db39019ce680788acf7dd864c6400f7d417490f2a5cb` |
+| daily_539 | `draws WHERE lottery_type='DAILY_539'` | 5916 | 2007-01-01 | 2026-07-16 | 0 | `965f2aafd08c4a08eb10fd0819c85daf43ea2c9b46b81a9f728c35d020f892dd` |
 
-**power_lotto issues:** 316 draws where special ball appears in main balls
-**big_lotto issues:** 243 draws with special out of range [1..43]
-**daily_539 issues:** 33 duplicated ball combinations
+## Data Quality Classification
 
----
-## Phase 2 — Uniformity Tests
+- **power_lotto**: duplicate draw IDs 0; duplicate full records 0; repeated main combinations on different draw IDs 0; invalid repeated numbers inside a draw 0.
+- **big_lotto**: duplicate draw IDs 0; duplicate full records 0; repeated main combinations on different draw IDs 0; invalid repeated numbers inside a draw 0.
+- **daily_539**: duplicate draw IDs 0; duplicate full records 0; repeated main combinations on different draw IDs 34; invalid repeated numbers inside a draw 0.
 
-> **Note:** Per-position tests are labeled [SORTED-ORDER-ARTIFACT] because draws are stored in sorted order, making positional frequency non-uniform by construction.
+Repeated winning combinations across distinct draw IDs are possible outcomes, not duplicate database rows.
 
-| Label | chi2 | df | p_raw | p_bonferroni | q_bh_fdr | Verdict |
-|-------|------|-----|-------|-------------|----------|---------|
-| power_lotto overall_frequency | 32.264 | 37 | 0.6906 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto position_1 [SORTED-ORDER-ARTIFACT] | 4904.693 | 37 | 0.0000 | 0.0000 | 0.0000 | SIGNIFICANT_DEVIATION_REQUIRES_REVIEW |
-| power_lotto position_2 [SORTED-ORDER-ARTIFACT] | 1945.438 | 37 | 0.0000 | 0.0000 | 0.0000 | SIGNIFICANT_DEVIATION_REQUIRES_REVIEW |
-| power_lotto position_3 [SORTED-ORDER-ARTIFACT] | 1400.558 | 37 | 0.0000 | 0.0000 | 0.0000 | SIGNIFICANT_DEVIATION_REQUIRES_REVIEW |
-| power_lotto position_4 [SORTED-ORDER-ARTIFACT] | 1389.114 | 37 | 0.0000 | 0.0000 | 0.0000 | SIGNIFICANT_DEVIATION_REQUIRES_REVIEW |
-| power_lotto position_5 [SORTED-ORDER-ARTIFACT] | 1875.658 | 37 | 0.0000 | 0.0000 | 0.0000 | SIGNIFICANT_DEVIATION_REQUIRES_REVIEW |
-| power_lotto position_6 [SORTED-ORDER-ARTIFACT] | 4875.465 | 37 | 0.0000 | 0.0000 | 0.0000 | SIGNIFICANT_DEVIATION_REQUIRES_REVIEW |
-| power_lotto special_ball | 9.333 | 7 | 0.2296 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto overall_frequency | 35.172 | 48 | 0.9160 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto position_1 [SORTED-ORDER-ARTIFACT] | 5412.779 | 48 | 0.0000 | 0.0000 | 0.0000 | SIGNIFICANT_DEVIATION_REQUIRES_REVIEW |
-| big_lotto position_2 [SORTED-ORDER-ARTIFACT] | 1919.562 | 48 | 0.0000 | 0.0000 | 0.0000 | SIGNIFICANT_DEVIATION_REQUIRES_REVIEW |
-| big_lotto position_3 [SORTED-ORDER-ARTIFACT] | 1454.039 | 48 | 0.0000 | 0.0000 | 0.0000 | SIGNIFICANT_DEVIATION_REQUIRES_REVIEW |
-| big_lotto position_4 [SORTED-ORDER-ARTIFACT] | 1407.294 | 48 | 0.0000 | 0.0000 | 0.0000 | SIGNIFICANT_DEVIATION_REQUIRES_REVIEW |
-| big_lotto position_5 [SORTED-ORDER-ARTIFACT] | 2006.152 | 48 | 0.0000 | 0.0000 | 0.0000 | SIGNIFICANT_DEVIATION_REQUIRES_REVIEW |
-| big_lotto position_6 [SORTED-ORDER-ARTIFACT] | 5072.908 | 48 | 0.0000 | 0.0000 | 0.0000 | SIGNIFICANT_DEVIATION_REQUIRES_REVIEW |
-| big_lotto special_ball | 56.933 | 42 | 0.0619 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539 overall_frequency | 32.657 | 38 | 0.7146 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539 position_1 [SORTED-ORDER-ARTIFACT] | 11554.248 | 38 | 0.0000 | 0.0000 | 0.0000 | SIGNIFICANT_DEVIATION_REQUIRES_REVIEW |
-| daily_539 position_2 [SORTED-ORDER-ARTIFACT] | 4021.254 | 38 | 0.0000 | 0.0000 | 0.0000 | SIGNIFICANT_DEVIATION_REQUIRES_REVIEW |
-| daily_539 position_3 [SORTED-ORDER-ARTIFACT] | 2995.385 | 38 | 0.0000 | 0.0000 | 0.0000 | SIGNIFICANT_DEVIATION_REQUIRES_REVIEW |
-| daily_539 position_4 [SORTED-ORDER-ARTIFACT] | 3881.790 | 38 | 0.0000 | 0.0000 | 0.0000 | SIGNIFICANT_DEVIATION_REQUIRES_REVIEW |
-| daily_539 position_5 [SORTED-ORDER-ARTIFACT] | 11459.259 | 38 | 0.0000 | 0.0000 | 0.0000 | SIGNIFICANT_DEVIATION_REQUIRES_REVIEW |
+## Confirmatory Results
 
----
-## Phase 3 — Structural Pattern Tests
+| Test ID | Statistic | p raw | Bonferroni p | BH-FDR q | Verdict |
+|---|---:|---:|---:|---:|---|
+| `power_lotto_overall_frequency` | 33.342 | 0.382309 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `power_lotto_special_uniformity` | 9.06947 | 0.247707 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `power_lotto_pattern_consecutive_count` | 0.757387 | 0.073963 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `power_lotto_pattern_same_tail_count` | 1.14515 | 0.752624 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `power_lotto_pattern_odd_count` | 2.98963 | 0.695652 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `power_lotto_pattern_low_count` | 3.01244 | 0.635182 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `power_lotto_pattern_sum` | 116.745 | 0.670165 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `power_lotto_pattern_span` | 27.9114 | 0.65967 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `power_lotto_pattern_repeat_from_prev` | 0.934129 | 0.501749 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `power_lotto_pattern_pair_cooccurrence_gini` | 0.0857202 | 0.738631 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `power_lotto_pattern_gap_distribution` | 5.58227 | 0.65967 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `power_lotto_ljungbox_sum` | 16.5382 | 0.682726 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `power_lotto_runs_odd` | -0.0532787 | 0.95751 | 1 | 0.999585 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `power_lotto_runs_repeat` | 1.21163 | 0.225655 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `power_lotto_drift_halves` | 38.8053 | 0.189405 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `big_lotto_overall_frequency` | 40.03 | 0.603198 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `big_lotto_special_uniformity` | 65.6574 | 0.0459634 | 1 | 0.872616 | WEAK_DEVIATION_NOT_SIGNIFICANT_AFTER_CORRECTION |
+| `big_lotto_pattern_consecutive_count` | 0.618353 | 0.724138 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `big_lotto_pattern_same_tail_count` | 1.22494 | 0.981009 | 1 | 0.999585 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `big_lotto_pattern_odd_count` | 3.09176 | 0.238881 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `big_lotto_pattern_low_count` | 2.89506 | 0.089955 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `big_lotto_pattern_sum` | 151 | 0.165417 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `big_lotto_pattern_span` | 35.9393 | 0.167916 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `big_lotto_pattern_repeat_from_prev` | 0.738701 | 0.789605 | 1 | 0.890837 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `big_lotto_pattern_pair_cooccurrence_gini` | 0.104828 | 0.355322 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `big_lotto_pattern_gap_distribution` | 7.18786 | 0.167916 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `big_lotto_ljungbox_sum` | 19.1622 | 0.511309 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `big_lotto_runs_odd` | -0.485122 | 0.62759 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `big_lotto_runs_repeat` | 0.122533 | 0.902477 | 1 | 0.992725 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `big_lotto_drift_halves` | 37.3065 | 0.713643 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `daily_539_overall_frequency` | 34.2558 | 0.43928 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `daily_539_pattern_consecutive_count` | 0.508283 | 0.624188 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `daily_539_pattern_same_tail_count` | 0.782116 | 0.21989 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `daily_539_pattern_odd_count` | 2.57015 | 0.652174 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `daily_539_pattern_low_count` | 2.44067 | 0.753623 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `daily_539_pattern_sum` | 99.8879 | 0.723638 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `daily_539_pattern_span` | 26.7449 | 0.385807 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `daily_539_pattern_repeat_from_prev` | 0.645647 | 0.614193 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `daily_539_pattern_pair_cooccurrence_gini` | 0.0606757 | 0.350325 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `daily_539_pattern_gap_distribution` | 6.68623 | 0.385807 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `daily_539_ljungbox_sum` | 9.82246 | 0.971278 | 1 | 0.999585 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `daily_539_runs_odd` | -0.000519739 | 0.999585 | 1 | 0.999585 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `daily_539_runs_repeat` | 0.483882 | 0.628469 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
+| `daily_539_drift_halves` | 33.224 | 0.492254 | 1 | 0.872616 | CONSISTENT_WITH_RANDOM_DRAW_MODEL |
 
-| Game | Pattern | Obs Mean | Exp Mean | Exp SD | z_score | p_raw | p_bonferroni | q_bh_fdr | Verdict |
-|------|---------|----------|----------|--------|---------|-------|-------------|----------|---------|
-| power_lotto | consecutive_count | 0.7592 | 0.7897 | 0.0183 | -1.670 | 0.0950 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto | same_tail_count | 1.1469 | 1.1529 | 0.0210 | -0.284 | 0.7764 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto | odd_count | 2.9874 | 2.9995 | 0.0262 | -0.462 | 0.6443 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto | low_count | 3.0163 | 3.0000 | 0.0265 | 0.616 | 0.5380 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto | sum | 116.6653 | 117.0079 | 0.5791 | -0.592 | 0.5541 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto | span | 27.9213 | 27.8596 | 0.1292 | 0.477 | 0.6331 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto | repeat_from_prev | 0.9328 | 0.9462 | 0.0190 | -0.705 | 0.4811 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto | pair_cooccurrence_gini | 0.0858 | 0.0877 | 0.0029 | -0.654 | 0.5134 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto | gap_distribution | 5.5843 | 5.5719 | 0.0258 | 0.477 | 0.6331 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto | consecutive_count | 0.6263 | 0.6132 | 0.0153 | 0.856 | 0.3922 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto | same_tail_count | 1.2225 | 1.2249 | 0.0211 | -0.112 | 0.9108 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto | odd_count | 3.0915 | 3.0614 | 0.0248 | 1.214 | 0.2249 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto | low_count | 2.9324 | 2.9381 | 0.0249 | -0.230 | 0.8184 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto | sum | 150.0728 | 150.0094 | 0.7066 | 0.090 | 0.9286 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto | span | 35.7169 | 35.7139 | 0.1599 | 0.019 | 0.9852 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto | repeat_from_prev | 0.7357 | 0.7342 | 0.0167 | 0.086 | 0.9317 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto | pair_cooccurrence_gini | 0.1034 | 0.1072 | 0.0028 | -1.361 | 0.1735 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto | gap_distribution | 7.1434 | 7.1428 | 0.0320 | 0.019 | 0.9852 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539 | consecutive_count | 0.5076 | 0.5134 | 0.0084 | -0.693 | 0.4883 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539 | same_tail_count | 0.7817 | 0.7694 | 0.0102 | 1.198 | 0.2310 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539 | odd_count | 2.5716 | 2.5643 | 0.0144 | 0.504 | 0.6141 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539 | low_count | 2.4401 | 2.4358 | 0.0139 | 0.305 | 0.7602 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539 | sum | 99.9195 | 100.0009 | 0.3109 | -0.262 | 0.7935 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539 | span | 26.7326 | 26.6659 | 0.0844 | 0.790 | 0.4298 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539 | repeat_from_prev | 0.6459 | 0.6405 | 0.0093 | 0.581 | 0.5612 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539 | pair_cooccurrence_gini | 0.0607 | 0.0634 | 0.0019 | -1.424 | 0.1543 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539 | gap_distribution | 6.6832 | 6.6665 | 0.0211 | 0.790 | 0.4298 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
+## Exploratory Sorted-Position Diagnostics
 
----
-## Phase 4 — Serial Dependence Tests
+All 17 position tests compare sorted values with an intentionally inapplicable marginal-uniform reference. They are retained only to expose the sorted-order artifact and are excluded from Bonferroni and BH-FDR.
 
-| Game | Test | Lag/Window | Statistic | p_raw | p_bonferroni | q_bh_fdr | Verdict |
-|------|------|------------|-----------|-------|-------------|----------|---------|
-| power_lotto | sum_autocorrelation_ljungbox | 20 | 14.9447 | 0.7796 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto | odd_count_runs_test | N/A | 0.4261 | 0.6701 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto | repeat_overlap_runs_test | N/A | 1.2066 | 0.2276 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto | rolling_window_drift | first_half_953_vs_second_half_953 | 27.3679 | 0.8761 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto | sum_autocorrelation_ljungbox | 20 | 12.9020 | 0.8815 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto | odd_count_runs_test | N/A | 2.7717 | 0.0056 | 0.2454 | 0.2454 | WEAK_DEVIATION_NOT_SIGNIFICANT_AFTER_CORRECTION |
-| big_lotto | repeat_overlap_runs_test | N/A | 0.3524 | 0.7246 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto | rolling_window_drift | first_half_1065_vs_second_half_1065 | 41.2658 | 0.7433 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539 | sum_autocorrelation_ljungbox | 20 | 10.2750 | 0.9629 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539 | odd_count_runs_test | N/A | -0.0058 | 0.9954 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539 | repeat_overlap_runs_test | N/A | 0.4216 | 0.6733 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539 | rolling_window_drift | first_half_2924_vs_second_half_2925 | 34.7540 | 0.6203 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
+## Cadence
 
----
-## Phase 5 — Physical Bias Candidate Detection
+A new executable audit is required after more than 14 calendar days or after 50 new canonical draws, whichever occurs first. Re-attestation of unchanged evidence resets neither trigger.
 
-> ⚠️  **EXPLORATORY ONLY** — Not included in multiple testing correction for confirmatory tests. These are hypothesis-generating observations only. No trading or prediction decision should be made based solely on this section.
+## Provenance and Limitations
 
-### power_lotto
+- Implementation: **RECONSTRUCTED** from the committed 44-test registry; historical parity is not claimed.
+- Big Lotto special-number marginal null: uniform over **1..49**, matching the sequential 6+special draw mechanism.
+- Big Lotto source: `draws_big_lotto_canonical_main`; the older 2,130-row artifact matched legacy `49_LOTTO`.
+- Statistical compatibility does not prove physical randomness.
+- The confirmatory family contains correlated tests; Bonferroni is the conservative family-wise gate.
+- Monte Carlo p-values have finite resolution determined by simulations + 1.
+- Sorted-position diagnostics are exploratory artifacts and are excluded from correction.
+- The Big Lotto source is the canonical-main view; the historical artifact used a legacy 49_LOTTO population.
+- No result is a prediction, strategy promotion, or betting recommendation.
 
-**Top 5 Overrepresented:**
-| Number | Observed | Expected | Residual | Std Residual | p_binom | q_bh_fdr | Verdict |
-|--------|----------|----------|----------|-------------|---------|----------|---------|
-| 24 | 332 | 300.9 | 31.1 | 1.951 | 0.0573 | 0.7426 | NO_PHYSICAL_BIAS_SIGNAL |
-| 3 | 328 | 300.9 | 27.1 | 1.699 | 0.0978 | 0.7426 | NO_PHYSICAL_BIAS_SIGNAL |
-| 38 | 326 | 300.9 | 25.1 | 1.574 | 0.1253 | 0.7426 | NO_PHYSICAL_BIAS_SIGNAL |
-| 14 | 322 | 300.9 | 21.1 | 1.322 | 0.1983 | 0.8371 | NO_PHYSICAL_BIAS_SIGNAL |
-| 4 | 319 | 300.9 | 18.1 | 1.134 | 0.2708 | 0.9053 | NO_PHYSICAL_BIAS_SIGNAL |
-
-**Top 5 Underrepresented:**
-| Number | Observed | Expected | Residual | Std Residual | p_binom | q_bh_fdr | Verdict |
-|--------|----------|----------|----------|-------------|---------|----------|---------|
-| 9 | 261 | 300.9 | -39.9 | -2.509 | 0.0118 | 0.4494 | NO_PHYSICAL_BIAS_SIGNAL |
-| 5 | 273 | 300.9 | -27.9 | -1.756 | 0.0820 | 0.7426 | NO_PHYSICAL_BIAS_SIGNAL |
-| 32 | 276 | 300.9 | -24.9 | -1.567 | 0.1221 | 0.7426 | NO_PHYSICAL_BIAS_SIGNAL |
-| 2 | 277 | 300.9 | -23.9 | -1.504 | 0.1384 | 0.7426 | NO_PHYSICAL_BIAS_SIGNAL |
-| 34 | 278 | 300.9 | -22.9 | -1.441 | 0.1563 | 0.7426 | NO_PHYSICAL_BIAS_SIGNAL |
-
-### big_lotto
-
-**Top 5 Overrepresented:**
-| Number | Observed | Expected | Residual | Std Residual | p_binom | q_bh_fdr | Verdict |
-|--------|----------|----------|----------|-------------|---------|----------|---------|
-| 8 | 290 | 260.8 | 29.2 | 1.929 | 0.0607 | 0.9164 | NO_PHYSICAL_BIAS_SIGNAL |
-| 2 | 283 | 260.8 | 22.2 | 1.466 | 0.1542 | 0.9164 | NO_PHYSICAL_BIAS_SIGNAL |
-| 15 | 283 | 260.8 | 22.2 | 1.466 | 0.1542 | 0.9164 | NO_PHYSICAL_BIAS_SIGNAL |
-| 41 | 281 | 260.8 | 20.2 | 1.334 | 0.1951 | 0.9164 | NO_PHYSICAL_BIAS_SIGNAL |
-| 1 | 280 | 260.8 | 19.2 | 1.268 | 0.2184 | 0.9164 | NO_PHYSICAL_BIAS_SIGNAL |
-
-**Top 5 Underrepresented:**
-| Number | Observed | Expected | Residual | Std Residual | p_binom | q_bh_fdr | Verdict |
-|--------|----------|----------|----------|-------------|---------|----------|---------|
-| 4 | 229 | 260.8 | -31.8 | -2.103 | 0.0358 | 0.9164 | NO_PHYSICAL_BIAS_SIGNAL |
-| 6 | 230 | 260.8 | -30.8 | -2.037 | 0.0423 | 0.9164 | NO_PHYSICAL_BIAS_SIGNAL |
-| 9 | 234 | 260.8 | -26.8 | -1.773 | 0.0789 | 0.9164 | NO_PHYSICAL_BIAS_SIGNAL |
-| 17 | 237 | 260.8 | -23.8 | -1.574 | 0.1204 | 0.9164 | NO_PHYSICAL_BIAS_SIGNAL |
-| 24 | 240 | 260.8 | -20.8 | -1.376 | 0.1770 | 0.9164 | NO_PHYSICAL_BIAS_SIGNAL |
-
-### daily_539
-
-**Top 5 Overrepresented:**
-| Number | Observed | Expected | Residual | Std Residual | p_binom | q_bh_fdr | Verdict |
-|--------|----------|----------|----------|-------------|---------|----------|---------|
-| 37 | 809 | 749.9 | 59.1 | 2.313 | 0.0230 | 0.6254 | NO_PHYSICAL_BIAS_SIGNAL |
-| 5 | 798 | 749.9 | 48.1 | 1.882 | 0.0641 | 0.6254 | NO_PHYSICAL_BIAS_SIGNAL |
-| 17 | 790 | 749.9 | 40.1 | 1.569 | 0.1228 | 0.8283 | NO_PHYSICAL_BIAS_SIGNAL |
-| 34 | 784 | 749.9 | 34.1 | 1.335 | 0.1896 | 0.8283 | NO_PHYSICAL_BIAS_SIGNAL |
-| 1 | 782 | 749.9 | 32.1 | 1.257 | 0.2170 | 0.8283 | NO_PHYSICAL_BIAS_SIGNAL |
-
-**Top 5 Underrepresented:**
-| Number | Observed | Expected | Residual | Std Residual | p_binom | q_bh_fdr | Verdict |
-|--------|----------|----------|----------|-------------|---------|----------|---------|
-| 30 | 701 | 749.9 | -48.9 | -1.911 | 0.0568 | 0.6254 | NO_PHYSICAL_BIAS_SIGNAL |
-| 33 | 702 | 749.9 | -47.9 | -1.872 | 0.0622 | 0.6254 | NO_PHYSICAL_BIAS_SIGNAL |
-| 3 | 720 | 749.9 | -29.9 | -1.168 | 0.2500 | 0.8283 | NO_PHYSICAL_BIAS_SIGNAL |
-| 29 | 720 | 749.9 | -29.9 | -1.168 | 0.2500 | 0.8283 | NO_PHYSICAL_BIAS_SIGNAL |
-| 13 | 724 | 749.9 | -25.9 | -1.012 | 0.3211 | 0.8283 | NO_PHYSICAL_BIAS_SIGNAL |
-
----
-## Phase 6 — Formal Test Registry
-
-Total confirmatory tests: **44**  |  Bonferroni threshold: **1.1364e-03**
-
-| Test ID | Game | p_raw | p_bonferroni | q_bh_fdr | Verdict |
-|---------|------|-------|-------------|----------|---------|
-| power_lotto_overall_frequency | power_lotto | 0.6906 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto_special_uniformity | power_lotto | 0.2296 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto_pattern_consecutive_count | power_lotto | 0.0950 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto_pattern_same_tail_count | power_lotto | 0.7764 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto_pattern_odd_count | power_lotto | 0.6443 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto_pattern_low_count | power_lotto | 0.5380 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto_pattern_sum | power_lotto | 0.5541 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto_pattern_span | power_lotto | 0.6331 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto_pattern_repeat_from_prev | power_lotto | 0.4811 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto_pattern_pair_cooccurrence_gini | power_lotto | 0.5134 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto_pattern_gap_distribution | power_lotto | 0.6331 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto_ljungbox_sum | power_lotto | 0.7796 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto_runs_odd | power_lotto | 0.6701 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto_runs_repeat | power_lotto | 0.2276 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| power_lotto_drift_halves | power_lotto | 0.8761 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto_overall_frequency | big_lotto | 0.9160 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto_special_uniformity | big_lotto | 0.0619 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto_pattern_consecutive_count | big_lotto | 0.3922 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto_pattern_same_tail_count | big_lotto | 0.9108 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto_pattern_odd_count | big_lotto | 0.2249 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto_pattern_low_count | big_lotto | 0.8184 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto_pattern_sum | big_lotto | 0.9286 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto_pattern_span | big_lotto | 0.9852 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto_pattern_repeat_from_prev | big_lotto | 0.9317 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto_pattern_pair_cooccurrence_gini | big_lotto | 0.1735 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto_pattern_gap_distribution | big_lotto | 0.9852 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto_ljungbox_sum | big_lotto | 0.8815 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto_runs_odd | big_lotto | 0.0056 | 0.2454 | 0.2454 | WEAK_DEVIATION_NOT_SIGNIFICANT_AFTER_CORRECTION |
-| big_lotto_runs_repeat | big_lotto | 0.7246 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| big_lotto_drift_halves | big_lotto | 0.7433 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539_overall_frequency | daily_539 | 0.7146 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539_pattern_consecutive_count | daily_539 | 0.4883 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539_pattern_same_tail_count | daily_539 | 0.2310 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539_pattern_odd_count | daily_539 | 0.6141 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539_pattern_low_count | daily_539 | 0.7602 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539_pattern_sum | daily_539 | 0.7935 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539_pattern_span | daily_539 | 0.4298 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539_pattern_repeat_from_prev | daily_539 | 0.5612 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539_pattern_pair_cooccurrence_gini | daily_539 | 0.1543 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539_pattern_gap_distribution | daily_539 | 0.4298 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539_ljungbox_sum | daily_539 | 0.9629 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539_runs_odd | daily_539 | 0.9954 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539_runs_repeat | daily_539 | 0.6733 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-| daily_539_drift_halves | daily_539 | 0.6203 | 1.0000 | 0.9954 | CONSISTENT_WITH_UNIFORM |
-
----
-## Phase 7 — Output Files
-
-- `outputs/randomness_audit/randomness_audit_summary.md` (this file)
-- `outputs/randomness_audit/randomness_audit_results.json`
-
----
-## Phase 8 — Memory/Wiki Update
-
-✅ lessons.md and wiki/README.md updated.
+Research and entertainment only; not betting advice.

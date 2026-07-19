@@ -1,4 +1,7 @@
 {
+  "authoritative_ticket_counts": [
+    20
+  ],
   "backtest": {
     "common_window_draws": 2025,
     "constructor": "strategy_preserving_20_ticket/v1",
@@ -15,100 +18,134 @@
       "m4plus_ci95_low": 0.018469135802469235,
       "m4plus_draw_hits": 412,
       "m4plus_draw_rate": 0.02034567901234568,
+      "pairing_keys": [
+        "target_draw",
+        "ticket_count"
+      ],
+      "replicate_id_preserved_in_detail": true,
       "replicates": 10,
       "strategy_id": "baseline::uniform_random_20",
+      "ticket_count": 20,
       "total_ticket_evaluations": 405000,
       "unique_target_draws": 2025
     },
     "random_baseline_replicates": 10,
+    "ticket_count": 20,
     "tickets_per_portfolio": 20,
     "total_integrated_completed_strategies": 30
   },
+  "constructor_version": "strategy_preserving_20_ticket/v1",
   "data": {
     "database_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
     "database_sha256_after": "bf608f13d05e8ceae59e457c0b72a2eb30329eeb6415a09930bb8fde6971fd77",
     "database_sha256_before": "bf608f13d05e8ceae59e457c0b72a2eb30329eeb6415a09930bb8fde6971fd77",
     "dataset_sha256": "cd56bcca2fd61152f1812bc9c524dcbff3070f06d1c457e81a64bb4d441dd93f"
   },
+  "database_sha256": "bf608f13d05e8ceae59e457c0b72a2eb30329eeb6415a09930bb8fde6971fd77",
+  "dataset_sha256": "cd56bcca2fd61152f1812bc9c524dcbff3070f06d1c457e81a64bb4d441dd93f",
   "execution": {
+    "checkpoint_bound_runner_sha256": "d470029289ff2f9bbf263b33f94a90e2a2143793ca15018294299ffbb621b476",
+    "checkpoint_compatibility_key": {
+      "constructor_name": "strategy_preserving_20_ticket",
+      "constructor_version": "v1",
+      "dataset_sha256": "cd56bcca2fd61152f1812bc9c524dcbff3070f06d1c457e81a64bb4d441dd93f",
+      "runner_source_sha256": "f2f96fe86652202a1186e132a3d4ed1d6764ea794d8ae50e4081ef12c220580e",
+      "runner_version": "p20t-v2-ticket-count-aware",
+      "source_head": "c3542a7d5922c568b0f5c04ebe0192bc01167673",
+      "ticket_count": 20
+    },
+    "checkpoint_metadata_annotated": 13,
     "detail_files": [
       {
-        "path": "/private/tmp/p20t_remaining_16_checkpoints/a7742236f05f3eda33d3.csv.gz",
+        "path": "/private/tmp/p20t_remaining_16_checkpoints_c3542a7d/ticket_count_20/a7742236f05f3eda33d3.csv.gz",
         "rows": 21250,
         "sha256": "f6fa924a754801a33661d65c26cb8a5345333a1347faa146efe3219b26a654ac",
-        "strategy_id": "baseline::uniform_random_20"
+        "strategy_id": "baseline::uniform_random_20",
+        "ticket_count": 20
       },
       {
-        "path": "/private/tmp/p20t_remaining_16_checkpoints/bc0803b9f29fc393eea5.csv.gz",
+        "path": "/private/tmp/p20t_remaining_16_checkpoints_c3542a7d/ticket_count_20/bc0803b9f29fc393eea5.csv.gz",
         "rows": 2025,
         "sha256": "1ecfe731d9fdfb4757abbb81667094382960ca757e9df90ed323122917db6ac3",
-        "strategy_id": "acb_hot_fourier_3bet_biglotto"
+        "strategy_id": "acb_hot_fourier_3bet_biglotto",
+        "ticket_count": 20
       },
       {
-        "path": "/private/tmp/p20t_remaining_16_checkpoints/d35dd317244b10cb9ece.csv.gz",
+        "path": "/private/tmp/p20t_remaining_16_checkpoints_c3542a7d/ticket_count_20/d35dd317244b10cb9ece.csv.gz",
         "rows": 2025,
         "sha256": "69483b9ced069dcda2cbd35a030b331cbe168f281d8eb76d7569d18bbd36bbd3",
-        "strategy_id": "apriori_3bet_biglotto"
+        "strategy_id": "apriori_3bet_biglotto",
+        "ticket_count": 20
       },
       {
-        "path": "/private/tmp/p20t_remaining_16_checkpoints/5302346ce19421390428.csv.gz",
+        "path": "/private/tmp/p20t_remaining_16_checkpoints_c3542a7d/ticket_count_20/5302346ce19421390428.csv.gz",
         "rows": 2025,
         "sha256": "682ad78e09dcea4dd7044c8cbfeeb9a8eded78e4a1181740858cecec3ed6804c",
-        "strategy_id": "biglotto_10bet_combined"
+        "strategy_id": "biglotto_10bet_combined",
+        "ticket_count": 20
       },
       {
-        "path": "/private/tmp/p20t_remaining_16_checkpoints/c597a6ee8b51adc97eae.csv.gz",
+        "path": "/private/tmp/p20t_remaining_16_checkpoints_c3542a7d/ticket_count_20/c597a6ee8b51adc97eae.csv.gz",
         "rows": 2025,
         "sha256": "06bed17fba6d663074742251ebefea5c058e3dc251682ea926b6e8336a242fed",
-        "strategy_id": "biglotto_5bet_orthogonal"
+        "strategy_id": "biglotto_5bet_orthogonal",
+        "ticket_count": 20
       },
       {
-        "path": "/private/tmp/p20t_remaining_16_checkpoints/098f902587b4def75a5b.csv.gz",
+        "path": "/private/tmp/p20t_remaining_16_checkpoints_c3542a7d/ticket_count_20/098f902587b4def75a5b.csv.gz",
         "rows": 2025,
         "sha256": "2412c20e057f1e6c9ae24d43de75cc0264ff4b9979d80776d8bf24da92caf110",
-        "strategy_id": "biglotto_ts3_acb_4bet"
+        "strategy_id": "biglotto_ts3_acb_4bet",
+        "ticket_count": 20
       },
       {
-        "path": "/private/tmp/p20t_remaining_16_checkpoints/9cfca5863d249c5fdab3.csv.gz",
+        "path": "/private/tmp/p20t_remaining_16_checkpoints_c3542a7d/ticket_count_20/9cfca5863d249c5fdab3.csv.gz",
         "rows": 2025,
         "sha256": "94733ce566411780398c4cfc18c3206a1d3ab2b469e7c4443cc747e1eb480b3b",
-        "strategy_id": "biglotto_ts3_markov_freq_5bet"
+        "strategy_id": "biglotto_ts3_markov_freq_5bet",
+        "ticket_count": 20
       },
       {
-        "path": "/private/tmp/p20t_remaining_16_checkpoints/a777804e855ca79914b9.csv.gz",
+        "path": "/private/tmp/p20t_remaining_16_checkpoints_c3542a7d/ticket_count_20/a777804e855ca79914b9.csv.gz",
         "rows": 2025,
         "sha256": "60ab5992de5d0042652174d4dc07cc56798c8723b22a62e511aecfd09b506095",
-        "strategy_id": "cluster_pivot_biglotto"
+        "strategy_id": "cluster_pivot_biglotto",
+        "ticket_count": 20
       },
       {
-        "path": "/private/tmp/p20t_remaining_16_checkpoints/8098e1a2e34f5b4bc9e0.csv.gz",
+        "path": "/private/tmp/p20t_remaining_16_checkpoints_c3542a7d/ticket_count_20/8098e1a2e34f5b4bc9e0.csv.gz",
         "rows": 2025,
         "sha256": "7f0268f55a938c3aa4d9cd4ccb1e0408eaac7cae67cc72aa53f046dec6ce256d",
-        "strategy_id": "gap_dynamic_threshold_biglotto"
+        "strategy_id": "gap_dynamic_threshold_biglotto",
+        "ticket_count": 20
       },
       {
-        "path": "/private/tmp/p20t_remaining_16_checkpoints/f68f155b452ab1e28e23.csv.gz",
+        "path": "/private/tmp/p20t_remaining_16_checkpoints_c3542a7d/ticket_count_20/f68f155b452ab1e28e23.csv.gz",
         "rows": 2025,
         "sha256": "ab5c7b0dbc34cd13c1fb39dc2939add0b03f83170a4b8b439d0a48216c898f2c",
-        "strategy_id": "hot_stop_rebound_biglotto"
+        "strategy_id": "hot_stop_rebound_biglotto",
+        "ticket_count": 20
       },
       {
-        "path": "/private/tmp/p20t_remaining_16_checkpoints/f053aca3a8e5212b1c9d.csv.gz",
+        "path": "/private/tmp/p20t_remaining_16_checkpoints_c3542a7d/ticket_count_20/f053aca3a8e5212b1c9d.csv.gz",
         "rows": 2025,
         "sha256": "5039129369ba51325f9e121917475e47899eb5fdd55b6b0983d8740725aa5b0d",
-        "strategy_id": "markov_repeat_exception_biglotto"
+        "strategy_id": "markov_repeat_exception_biglotto",
+        "ticket_count": 20
       },
       {
-        "path": "/private/tmp/p20t_remaining_16_checkpoints/37b1f26b9a8539ff1c0c.csv.gz",
+        "path": "/private/tmp/p20t_remaining_16_checkpoints_c3542a7d/ticket_count_20/37b1f26b9a8539ff1c0c.csv.gz",
         "rows": 2025,
         "sha256": "ec50a6717e07cc9f046d536284318d7dced48ea8f2bcccd9bdc15c63bc08a46e",
-        "strategy_id": "neighbor_injection_biglotto"
+        "strategy_id": "neighbor_injection_biglotto",
+        "ticket_count": 20
       },
       {
-        "path": "/private/tmp/p20t_remaining_16_checkpoints/f85baa564a2f7795ca53.csv.gz",
+        "path": "/private/tmp/p20t_remaining_16_checkpoints_c3542a7d/ticket_count_20/f85baa564a2f7795ca53.csv.gz",
         "rows": 2025,
         "sha256": "5af42d89d2119638c901b14366a3ff6504be3bccff4484d33afbd104a71d5ca7",
-        "strategy_id": "predict_biglotto_regime"
+        "strategy_id": "predict_biglotto_regime",
+        "ticket_count": 20
       }
     ],
     "reproducibility_samples": {
@@ -593,112 +630,114 @@
         "replicate_id": 0
       }
     },
+    "run_identity": "P20T_REMAINING_16_STRATEGIES_ENGINEERING_RECOVERY:ticket_count=20",
     "strategy_runs": [
       {
-        "checkpoint_reused": true,
         "detail_rows": 21250,
         "identity_id": "baseline::uniform_random_20",
         "run_status": "COMPLETE",
-        "runtime_seconds": 3.447116,
-        "strategy_id": "baseline::uniform_random_20"
+        "runtime_seconds": 3.402303,
+        "strategy_id": "baseline::uniform_random_20",
+        "ticket_count": 20
       },
       {
-        "checkpoint_reused": true,
         "detail_rows": 2025,
         "identity_id": "acb_hot_fourier_3bet_biglotto",
         "run_status": "COMPLETE",
-        "runtime_seconds": 24.101067,
-        "strategy_id": "acb_hot_fourier_3bet_biglotto"
+        "runtime_seconds": 23.535938,
+        "strategy_id": "acb_hot_fourier_3bet_biglotto",
+        "ticket_count": 20
       },
       {
-        "checkpoint_reused": true,
         "detail_rows": 2025,
         "identity_id": "apriori_3bet_biglotto",
         "run_status": "COMPLETE",
-        "runtime_seconds": 21.325334,
-        "strategy_id": "apriori_3bet_biglotto"
+        "runtime_seconds": 20.403335,
+        "strategy_id": "apriori_3bet_biglotto",
+        "ticket_count": 20
       },
       {
-        "checkpoint_reused": true,
         "detail_rows": 2025,
         "identity_id": "biglotto_10bet_combined",
         "run_status": "COMPLETE",
-        "runtime_seconds": 29.887944,
-        "strategy_id": "biglotto_10bet_combined"
+        "runtime_seconds": 29.246216,
+        "strategy_id": "biglotto_10bet_combined",
+        "ticket_count": 20
       },
       {
-        "checkpoint_reused": true,
         "detail_rows": 2025,
         "identity_id": "biglotto_5bet_orthogonal",
         "run_status": "COMPLETE",
-        "runtime_seconds": 20.458448,
-        "strategy_id": "biglotto_5bet_orthogonal"
+        "runtime_seconds": 20.009096,
+        "strategy_id": "biglotto_5bet_orthogonal",
+        "ticket_count": 20
       },
       {
-        "checkpoint_reused": true,
         "detail_rows": 2025,
         "identity_id": "biglotto_ts3_acb_4bet",
         "run_status": "COMPLETE",
-        "runtime_seconds": 23.629895,
-        "strategy_id": "biglotto_ts3_acb_4bet"
+        "runtime_seconds": 21.435964,
+        "strategy_id": "biglotto_ts3_acb_4bet",
+        "ticket_count": 20
       },
       {
-        "checkpoint_reused": true,
         "detail_rows": 2025,
         "identity_id": "biglotto_ts3_markov_freq_5bet",
         "run_status": "COMPLETE",
-        "runtime_seconds": 21.641748,
-        "strategy_id": "biglotto_ts3_markov_freq_5bet"
+        "runtime_seconds": 24.675715,
+        "strategy_id": "biglotto_ts3_markov_freq_5bet",
+        "ticket_count": 20
       },
       {
-        "checkpoint_reused": true,
         "detail_rows": 2025,
         "identity_id": "cluster_pivot_biglotto",
         "run_status": "COMPLETE",
-        "runtime_seconds": 23.241291,
-        "strategy_id": "cluster_pivot_biglotto"
+        "runtime_seconds": 25.596787,
+        "strategy_id": "cluster_pivot_biglotto",
+        "ticket_count": 20
       },
       {
-        "checkpoint_reused": true,
         "detail_rows": 2025,
         "identity_id": "gap_dynamic_threshold_biglotto",
         "run_status": "COMPLETE",
-        "runtime_seconds": 22.292362,
-        "strategy_id": "gap_dynamic_threshold_biglotto"
+        "runtime_seconds": 28.680503,
+        "strategy_id": "gap_dynamic_threshold_biglotto",
+        "ticket_count": 20
       },
       {
-        "checkpoint_reused": true,
         "detail_rows": 2025,
         "identity_id": "hot_stop_rebound_biglotto",
         "run_status": "COMPLETE",
-        "runtime_seconds": 19.863488,
-        "strategy_id": "hot_stop_rebound_biglotto"
+        "runtime_seconds": 22.146808,
+        "strategy_id": "hot_stop_rebound_biglotto",
+        "ticket_count": 20
       },
       {
-        "checkpoint_reused": true,
         "detail_rows": 2025,
         "identity_id": "markov_repeat_exception_biglotto",
         "run_status": "COMPLETE",
-        "runtime_seconds": 21.940261,
-        "strategy_id": "markov_repeat_exception_biglotto"
+        "runtime_seconds": 24.43516,
+        "strategy_id": "markov_repeat_exception_biglotto",
+        "ticket_count": 20
       },
       {
-        "checkpoint_reused": true,
         "detail_rows": 2025,
         "identity_id": "neighbor_injection_biglotto",
         "run_status": "COMPLETE",
-        "runtime_seconds": 28.804293,
-        "strategy_id": "neighbor_injection_biglotto"
+        "runtime_seconds": 31.891729,
+        "strategy_id": "neighbor_injection_biglotto",
+        "ticket_count": 20
       },
       {
-        "checkpoint_reused": true,
         "detail_rows": 2025,
         "identity_id": "predict_biglotto_regime",
         "run_status": "COMPLETE",
-        "runtime_seconds": 23.04233,
-        "strategy_id": "predict_biglotto_regime"
+        "runtime_seconds": 24.219603,
+        "strategy_id": "predict_biglotto_regime",
+        "ticket_count": 20
       }
-    ]
+    ],
+    "ticket_count": 20
   },
   "final_accounting": {
     "completed": 30,
@@ -706,24 +745,31 @@
     "governed_identities": 39,
     "missing_implementations": 0,
     "partial_backtests": 0,
+    "runtime_failures": 0,
     "terminally_excluded": 9,
     "unknown": 0
   },
+  "not_run_ticket_counts": [
+    10,
+    15
+  ],
   "outputs": {
-    "final_39_completed_strategy_metrics.csv": "148e8575298c806afe92d353a6451313ffb8226e19601239413a8038f90eaf13",
-    "final_39_m4plus_adapter_ranking.csv": "0165f5a969f1d644400c19dee180890de1bba5e54bdade606707374ce5f657e3",
-    "final_39_m4plus_all_valid_ranking.csv": "5f493ca9627daa1c24f5b9f82747e56f33bd58132261abb7bc81c46db17659ad",
-    "final_39_m4plus_native_ranking.csv": "2a467f65c614f23679de00179c73f6a8c3d1158374fa8830e17f8af5e951c517",
+    "final_39_completed_strategy_metrics.csv": "497e174fba388e190cf4d1f59408e23fc838e88eb64b68617c696fe1bc51e26e",
+    "final_39_m4plus_adapter_ranking.csv": "7c9a138005aacf8efb8a57447f6812975102add5487f8e3ed2df024395f8c74c",
+    "final_39_m4plus_all_valid_ranking.csv": "3a5a2f498e1fa95b2f8f4028e464e0de4842d89b0a26a94687eab191365954a9",
+    "final_39_m4plus_native_ranking.csv": "46d392f7cfe405f6525fea701ee0760b15a6e5e3c46e8c04933051ca2f4c034f",
     "final_39_resolution_ledger.csv": "1ca86e590a0aeee487ec8bf8f2ae906e10d96601d5767756934d8eea7fa46ace",
-    "final_report.md": "50ca02ca76c14ac1038f51e84bb2b5eb368418b2bd490c7b70c6a9b3c2eda6fb",
-    "newly_completed_strategy_metrics.csv": "2477db9495a697d25c102021f7275bb052ce0184493ff865c9e72a0abfe95649",
+    "final_report.md": "4982c5433bf6f17511b9df03ff30affa80c010f7d24485612ed7fb447cad7c16",
+    "nested_portfolio_capability.csv": "c949b823d260754a399401b0435a0a0f02cd0cfbfbfc860ff6ac8043ac86485e",
+    "newly_completed_strategy_metrics.csv": "0d4f7d29ad82f4c5a49db47a933caa6c8ad979d067ddb88f7ed4df2bbdbf824a",
     "newly_terminally_excluded.csv": "8d650967b8759110a563348e3366d64a933ac09ef11d7f177da063df935f751a",
-    "partial_repair_results.csv": "77837ef1f7c6f5ddedfafc9c606c2883b29518edb22809186d2070aebae442a2",
-    "recovered_implementations.csv": "aee848d5d2fcfb7c66c5a623d718c1651c39cc903b5245ea2ab980b64f3f5e39",
+    "partial_repair_results.csv": "659a604520ce40776083ada911003da19b0e04d740c4e1caacc15b163e93eed6",
+    "recovered_implementations.csv": "f75ae5525763ea1a61e95f1ff7119b92ba15a48bea8da1018b7a3e940b4877a6",
     "recovery_decisions.csv": "5d347912f26c306bc7ccb575e5f77fe8e3621a0465b7849e2cd3eadb66d9a12b",
-    "recovery_search_ledger.csv": "46ff782c7ae7350f54ddb55d9af9ae2e4deb3ebe0e38fc11f24604d10ff946aa",
+    "recovery_search_ledger.csv": "d627f1e5c0211971bfa88445bac7cac3a6d7c59c48434042af06064afb4c044c",
     "target_16_inventory.csv": "6435724743088007dfc4fe595e1b7e7d5afd489a1b7a7604468d90f4927bb663",
-    "validation_results.json": "aba908fae35e2b3611a736afb9812fe16212ffb02bafcd28af49561f95d75961"
+    "ticket_count_capability.csv": "77408c7a065bca13ea613d963346ddb24103450a0211ca7332fc80fb26771475",
+    "validation_results.json": "440162c23814e3d12caabde087dafcd078d272fff946c27e24423946352b20d4"
   },
   "recovery": {
     "aliases_or_equivalents_reclassified": 0,
@@ -734,8 +780,9 @@
     "partial_to_complete": 3,
     "remaining_engineering_backlog": 0
   },
-  "runner_version": "p20t-v1",
-  "source_head": "d29294f091fe4420f70f234f2a18bfb22d568b64",
+  "run_identity": "P20T_REMAINING_16_STRATEGIES_ENGINEERING_RECOVERY:ticket_count=20",
+  "runner_version": "p20t-v2-ticket-count-aware",
+  "source_head": "c3542a7d5922c568b0f5c04ebe0192bc01167673",
   "status": "COMPLETED",
   "target": {
     "prior_missing_implementation": 12,
@@ -758,9 +805,32 @@
       "multiwindow_fourier_biglotto",
       "neighbor_injection_biglotto",
       "predict_biglotto_regime"
-    ]
+    ],
+    "target_ticket_count": 20
   },
+  "target_ticket_count": 20,
+  "task": "P20T_REMAINING_16_STRATEGIES_ENGINEERING_RECOVERY",
   "task_id": "P20T_REMAINING_16_STRATEGIES_ENGINEERING_RECOVERY",
+  "ticket_count_architecture": {
+    "checkpoint_ticket_count_aware": true,
+    "metric_schema_ticket_count_aware": true,
+    "nested_prefix_contract": {
+      "10": "ordered_tickets[0:10]",
+      "15": "ordered_tickets[0:15]",
+      "20": "ordered_tickets[0:20]"
+    },
+    "nested_prefix_supported_strategies": 30,
+    "nested_prefix_unsupported_strategies": 9,
+    "parameterized": true,
+    "portfolio_hash_scheme": "p20t-ticket-count-aware/v1",
+    "ranking_rows_ticket_count_aware": true,
+    "same_ticket_count_random_contract": true
+  },
+  "ticket_count_status": {
+    "10": "NOT_RUN",
+    "15": "NOT_RUN",
+    "20": "RUN"
+  },
   "upstream": {
     "origin_main": "e0f6c26f2c15d8b1e75ae1eb8df5b5aa97977a65",
     "p20s_manifest": "outputs/research/p20s_all_strategies_bulk_recovery/run_manifest.json",
@@ -780,29 +850,23 @@
     },
     "pr_694_merge_commit": "892088387df825727e1bac8d4caf4fd3cff3f928"
   },
+  "upstream_p20s_manifest_sha256": "29daa04cfe07e6d0853c82494722aeb25a8dcaceb5c1b11bc4564a308ece2b52",
+  "upstream_p20s_merge_commit": "892088387df825727e1bac8d4caf4fd3cff3f928",
   "verification": {
-    "code_commit": "d29294f091fe4420f70f234f2a18bfb22d568b64",
+    "code_commit": "c3542a7d5922c568b0f5c04ebe0192bc01167673",
     "commands": [
       "/usr/bin/python3 -m py_compile recovered_strategies/biglotto/p20t_recovery_adapters.py scripts/p20t_remaining_16_strategy_recovery.py scripts/p20s_all_strategies_bulk_recovery.py scripts/p20c_strategy_preserving_20_ticket_backtest.py tests/test_p20t_remaining_16_strategy_recovery.py",
       "/usr/bin/python3 -m ruff check recovered_strategies/biglotto/p20t_recovery_adapters.py scripts/p20t_remaining_16_strategy_recovery.py tests/test_p20t_remaining_16_strategy_recovery.py",
       "/usr/bin/python3 -m pytest -q tests/test_p20t_remaining_16_strategy_recovery.py tests/test_p20s_all_strategies_bulk_recovery.py tests/test_p20c_strategy_preserving_backtest.py tests/test_p358a_biglotto_recovered_adapters.py tests/test_p359_biglotto_no_db_replay_readiness_harness.py tests/test_replay_strategy_lifecycle_registry.py tests/test_replay_strategy_registry_online_candidates.py tests/test_p246f_research_caller_canonicalization_sweep.py tests/test_p246g_remaining_big_lotto_caller_canonicalization.py",
-      "/usr/bin/python3 scripts/p20t_remaining_16_strategy_recovery.py --database /Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db --canonical-repo /Users/kelvin/Kelvin-WorkSpace/LotteryNew --expected-canonical-status-sha256 f3fac7010402c9fbf13829c10d567aadec48c763085f3cd30928170bbf5971f5 --checkpoint-dir /tmp/p20t_remaining_16_checkpoints --preflight-only"
+      "/usr/bin/python3 scripts/p20t_remaining_16_strategy_recovery.py --database /Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db --canonical-repo /Users/kelvin/Kelvin-WorkSpace/LotteryNew --expected-canonical-status-sha256 f3fac7010402c9fbf13829c10d567aadec48c763085f3cd30928170bbf5971f5 --checkpoint-dir /tmp/p20t_remaining_16_checkpoints_c3542a7d --target-ticket-count 20 --preflight-only"
     ],
     "deselected": 0,
-    "diagnostic_attempt": {
-      "command": "/usr/bin/python3 -m pytest -q tests/test_p20t_remaining_16_strategy_recovery.py tests/test_p20s_all_strategies_bulk_recovery.py tests/test_p20c_strategy_preserving_backtest.py tests/test_p358a_biglotto_recovered_adapters.py tests/test_p359_biglotto_no_db_replay_readiness_harness.py tests/test_replay_strategy_lifecycle_registry.py tests/test_replay_strategy_registry_online_candidates.py tests/test_p246e_canonical_draw_helper_isolation.py tests/test_p246f_research_caller_canonicalization_sweep.py tests/test_p246g_remaining_big_lotto_caller_canonicalization.py",
-      "deselected": 0,
-      "failed": 8,
-      "passed": 255,
-      "resolution": "Four P20S failures were fixed by restoring its temporary identity-map mutation in the P20T test. Four canonical DB failures were environmental because legacy tests bind to the reusable worktree's intentional empty DB placeholder; the explicit canonical-path P20T preflight passed against the authorized read-only DB.",
-      "skipped": 0
-    },
     "failed": 0,
-    "passed": 233,
+    "passed": 249,
     "preflight_checks_passed": 1,
-    "scoped_regression_seconds": 228.49,
+    "scoped_regression_seconds": 225.3,
     "skipped": 0,
     "status": "PASS",
-    "test_cases_passed": 232
+    "test_cases_passed": 248
   }
 }

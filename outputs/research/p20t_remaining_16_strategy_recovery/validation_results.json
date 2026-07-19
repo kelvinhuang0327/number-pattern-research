@@ -1,4 +1,13 @@
 {
+  "checkpoint_compatibility_key": {
+    "constructor_name": "strategy_preserving_20_ticket",
+    "constructor_version": "v1",
+    "dataset_sha256": "cd56bcca2fd61152f1812bc9c524dcbff3070f06d1c457e81a64bb4d441dd93f",
+    "runner_source_sha256": "f2f96fe86652202a1186e132a3d4ed1d6764ea794d8ae50e4081ef12c220580e",
+    "runner_version": "p20t-v2-ticket-count-aware",
+    "source_head": "c3542a7d5922c568b0f5c04ebe0192bc01167673",
+    "ticket_count": 20
+  },
   "checks": {
     "accounting": true,
     "canonical_status_unchanged": true,
@@ -7,13 +16,18 @@
     "constructor_reproducibility": true,
     "database_unchanged": true,
     "detail_recompute": true,
+    "future_ticket_counts_not_run": true,
     "integrated_metrics": true,
     "metric_recompute": true,
+    "nested_prefix_interface": true,
     "p20s_reuse": true,
     "preflight": true,
     "recovery_partition": true,
     "runtime_failures": true,
+    "same_ticket_count_random_pairing": true,
     "target_set": true,
+    "ticket_count_aware_checkpoints": true,
+    "ticket_count_aware_metrics": true,
     "verification_evidence": true
   },
   "constructor_reproducibility": {
@@ -210,29 +224,21 @@
     "rows_validated": 45550
   },
   "external_verification": {
-    "code_commit": "d29294f091fe4420f70f234f2a18bfb22d568b64",
+    "code_commit": "c3542a7d5922c568b0f5c04ebe0192bc01167673",
     "commands": [
       "/usr/bin/python3 -m py_compile recovered_strategies/biglotto/p20t_recovery_adapters.py scripts/p20t_remaining_16_strategy_recovery.py scripts/p20s_all_strategies_bulk_recovery.py scripts/p20c_strategy_preserving_20_ticket_backtest.py tests/test_p20t_remaining_16_strategy_recovery.py",
       "/usr/bin/python3 -m ruff check recovered_strategies/biglotto/p20t_recovery_adapters.py scripts/p20t_remaining_16_strategy_recovery.py tests/test_p20t_remaining_16_strategy_recovery.py",
       "/usr/bin/python3 -m pytest -q tests/test_p20t_remaining_16_strategy_recovery.py tests/test_p20s_all_strategies_bulk_recovery.py tests/test_p20c_strategy_preserving_backtest.py tests/test_p358a_biglotto_recovered_adapters.py tests/test_p359_biglotto_no_db_replay_readiness_harness.py tests/test_replay_strategy_lifecycle_registry.py tests/test_replay_strategy_registry_online_candidates.py tests/test_p246f_research_caller_canonicalization_sweep.py tests/test_p246g_remaining_big_lotto_caller_canonicalization.py",
-      "/usr/bin/python3 scripts/p20t_remaining_16_strategy_recovery.py --database /Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db --canonical-repo /Users/kelvin/Kelvin-WorkSpace/LotteryNew --expected-canonical-status-sha256 f3fac7010402c9fbf13829c10d567aadec48c763085f3cd30928170bbf5971f5 --checkpoint-dir /tmp/p20t_remaining_16_checkpoints --preflight-only"
+      "/usr/bin/python3 scripts/p20t_remaining_16_strategy_recovery.py --database /Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db --canonical-repo /Users/kelvin/Kelvin-WorkSpace/LotteryNew --expected-canonical-status-sha256 f3fac7010402c9fbf13829c10d567aadec48c763085f3cd30928170bbf5971f5 --checkpoint-dir /tmp/p20t_remaining_16_checkpoints_c3542a7d --target-ticket-count 20 --preflight-only"
     ],
     "deselected": 0,
-    "diagnostic_attempt": {
-      "command": "/usr/bin/python3 -m pytest -q tests/test_p20t_remaining_16_strategy_recovery.py tests/test_p20s_all_strategies_bulk_recovery.py tests/test_p20c_strategy_preserving_backtest.py tests/test_p358a_biglotto_recovered_adapters.py tests/test_p359_biglotto_no_db_replay_readiness_harness.py tests/test_replay_strategy_lifecycle_registry.py tests/test_replay_strategy_registry_online_candidates.py tests/test_p246e_canonical_draw_helper_isolation.py tests/test_p246f_research_caller_canonicalization_sweep.py tests/test_p246g_remaining_big_lotto_caller_canonicalization.py",
-      "deselected": 0,
-      "failed": 8,
-      "passed": 255,
-      "resolution": "Four P20S failures were fixed by restoring its temporary identity-map mutation in the P20T test. Four canonical DB failures were environmental because legacy tests bind to the reusable worktree's intentional empty DB placeholder; the explicit canonical-path P20T preflight passed against the authorized read-only DB.",
-      "skipped": 0
-    },
     "failed": 0,
-    "passed": 233,
+    "passed": 249,
     "preflight_checks_passed": 1,
-    "scoped_regression_seconds": 228.49,
+    "scoped_regression_seconds": 225.3,
     "skipped": 0,
     "status": "PASS",
-    "test_cases_passed": 232
+    "test_cases_passed": 248
   },
   "final_accounting": {
     "completed": 30,
@@ -240,6 +246,7 @@
     "governed_identities": 39,
     "missing_implementations": 0,
     "partial_backtests": 0,
+    "runtime_failures": 0,
     "terminally_excluded": 9,
     "unknown": 0
   },
@@ -247,6 +254,25 @@
     "mismatch_count": 0,
     "mismatched_strategy_ids": [],
     "strategies_recomputed": 12
+  },
+  "nested_prefix_fixture": {
+    "historical_status": {
+      "10": "NOT_RUN",
+      "15": "NOT_RUN",
+      "20": "RUN"
+    },
+    "pass": true,
+    "portfolio_hashes": {
+      "10": "4e2ba1b3e7c7f6a09171d47cf55a35c4e3931ec77714b3c26163b789ff61d9e0",
+      "15": "48eaf78089c4c46fac9dcdf983f820fbaa384c5657eb2a99b22024006b4b438c",
+      "20": "7d518cb5aabe4d98b1c167114693d64df67b1a1554cd002f6c31a253af626774"
+    },
+    "prefix_sizes": {
+      "10": 10,
+      "15": 15,
+      "20": 20
+    },
+    "source_strategy_id": "acb_hot_fourier_3bet_biglotto"
   },
   "p20s_reuse": {
     "checks": {
@@ -419,7 +445,23 @@
       "target_mutation_invariant": true
     }
   ],
+  "random_pairing": {
+    "baseline_strategy_id": "baseline::uniform_random_20",
+    "keys": [
+      "target_draw",
+      "ticket_count"
+    ],
+    "ticket_count": 20
+  },
   "runtime_failures": [],
   "status": "PASS",
-  "task_id": "P20T_REMAINING_16_STRATEGIES_ENGINEERING_RECOVERY"
+  "task_id": "P20T_REMAINING_16_STRATEGIES_ENGINEERING_RECOVERY",
+  "ticket_count_artifacts": {
+    "capability_contract": true,
+    "metric_contract": true,
+    "metric_rows": 30,
+    "nested_portfolio_capability_rows": 39,
+    "pass": true,
+    "ticket_count_capability_rows": 39
+  }
 }

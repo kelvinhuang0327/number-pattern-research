@@ -28,6 +28,17 @@ This is historical research for entertainment purposes only, not betting or inve
 12. **Overall conclusion:** unchanged; the historical comparison does not establish a future predictive advantage.
 13. **Aliases/equivalents:** the prior P20S alias/equivalence rows remain non-independent; P20T found no new alias after parity testing the 16 targets.
 14. **P20S reuse:** the 18 prior completed metrics were reused because all seven hash/constructor/dataset/database/shared-semantics gates passed (`True`). P20T ran full history only for the 12 recovered identities and reran the fixed random baseline needed for paired comparisons.
+15. **Deterministic nested-prefix support:** 30 completed identities expose the same ordered 20-ticket portfolio through deterministic 10- and 15-ticket prefixes. The exact per-identity capability is recorded in `nested_portfolio_capability.csv`.
+16. **Requires redesign or canonical-identity routing:** 9 terminal identities do not have an independently executable completed portfolio: bet2_fourier_expansion_biglotto@rejected_json_historical, biglotto_social_wisdom_anti_popularity, biglotto_zonal_pruning, biglotto_zone_split_3bet_bet1, core_satellite_biglotto, hot_gap_return_biglotto, multiwindow_fourier_biglotto, ts3_acb_4bet_biglotto, ts3_markov_freq_5bet_biglotto.
+17. **Ten- and fifteen-ticket history:** `NOT_RUN` for every governed identity. Interface support and prefix fixtures are not historical validation.
+18. **Successor requirement:** P20U must execute uniform-random baselines at the same ticket count as each 10-, 15-, or 20-ticket strategy portfolio.
+
+## Ticket-count architecture
+
+- Authoritative P20T ticket count: `20`.
+- Historical status: 10 tickets = `NOT_RUN`; 15 tickets = `NOT_RUN`; 20 tickets = `RUN` for completed identities.
+- Run identity, checkpoint binding, completed metrics, partial results, ranking rows, random pairing, and ticket-count-aware portfolio hashes all carry the explicit ticket count.
+- Prefix contract: `tickets_10 = ordered_tickets[0:10]`, `tickets_15 = ordered_tickets[0:15]`, and `tickets_20 = ordered_tickets[0:20]`.
 
 ## Verification
 
@@ -35,6 +46,7 @@ This is historical research for entertainment purposes only, not betting or inve
 - Historical draws: 2125; common window: 2025.
 - Every successful recovered portfolio contains exactly 20 unique legal tickets.
 - Target/future mutation leakage preflights, timeout orchestration, independent metric recomputation, 39-row accounting, and canonical DB/status invariance passed.
+- All 39 ticket-count capability rows record 10/15 historical status as `NOT_RUN`.
 - Large draw-level checkpoint files remain outside the committed evidence bundle.
 
-Of the 39 governed Big Lotto strategy identities, `30` completed the standard 20-ticket historical backtest and `9` reached conclusive terminal exclusions; the remaining engineering backlog is `0`.
+Of the 39 governed Big Lotto strategy identities, 30 completed the standard 20-ticket historical backtest and 9 reached conclusive terminal exclusions; the remaining engineering backlog is 0. Ten-ticket and fifteen-ticket historical M4+ analyses were not run in P20T.

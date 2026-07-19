@@ -36,9 +36,8 @@ from scripts import p20c_strategy_preserving_20_ticket_backtest as p20c  # noqa:
 
 
 TASK_ID = "P20S_ALL_STRATEGIES_BULK_RECOVERY_BACKTEST"
-RUNNER_VERSION = "p20s-v2"
+RUNNER_VERSION = "p20s-v3"
 EXPECTED_IDENTITY_COUNT = 39
-EXPECTED_EVIDENCE_RECORDS = 607
 EXPECTED_RANDOM_BASELINES = 1
 EXPECTED_DRAWS = 2125
 EXPECTED_COMMON_DRAWS = 2025
@@ -106,17 +105,42 @@ MASTER_FIELDS = (
 )
 
 LEDGER_FIELDS = (
-    "evidence_record_id",
-    "evidence_kind",
-    "source_identity",
-    "source_path",
-    "source_commit",
+    "strategy_id",
+    "strategy_name",
     "governance_status",
-    "resolution_class",
-    "resolved_strategy_id",
-    "is_strategy_claim",
-    "reason",
+    "independent_algorithm_id",
+    "alias_of",
+    "equivalence_group",
+    "implementation_kind",
+    "entrypoint",
+    "supports_historical_cutoff",
+    "strategy_signal_available",
+    "recovery_status",
+    "terminal_disposition",
+    "evidence",
 )
+
+COMPLETE_DISPOSITIONS = {"COMPLETE_NATIVE_20", "COMPLETE_ADAPTER_20"}
+TERMINALLY_EXCLUDED_DISPOSITIONS = {
+    "DUPLICATE_ALIAS",
+    "EQUIVALENT_IMPLEMENTATION",
+    "DOCUMENT_ONLY",
+    "NO_VALID_STRATEGY_SIGNAL",
+    "DATA_LEAKAGE_EXCLUDED",
+    "UNSAFE_METHOD_EXCLUDED",
+}
+ENGINEERING_BACKLOG_DISPOSITIONS = {
+    "PARTIAL_BACKTEST",
+    "MISSING_IMPLEMENTATION",
+    "MISSING_ENTRYPOINT",
+    "MISSING_ARTIFACT",
+    "MISSING_DEPENDENCY",
+    "EXTERNAL_STATE_NOT_REPRODUCIBLE",
+    "INVALID_OUTPUT",
+    "RESOURCE_LIMIT_REACHED",
+    "RUNTIME_FAILURE",
+    "UNKNOWN_REQUIRES_OWNER_EVIDENCE",
+}
 
 PREFLIGHT_FIELDS = (
     "strategy_id",
@@ -586,85 +610,58 @@ def build_master_inventory() -> list[dict[str, Any]]:
     return rows
 
 
-def build_resolution_ledger() -> list[dict[str, Any]]:
-    p541b = json.loads(P541B_EVIDENCE.read_text(encoding="utf-8"))
-    ledger: list[dict[str, Any]] = []
-    for record in p541b["method_classification_records"]:
-        historical = record.get("historical_p541b_classification", {})
-        actual = historical.get("is_actual_prediction_method", "unknown")
-        duplicate = historical.get("duplicate_of_existing_strategy")
-        resolution = "SOURCE_EVIDENCE_ONLY"
-        resolved = ""
-        reason = (
-            "Source-file method surface is evidence, not a governed strategy ID; "
-            "preserved for provenance without denominator inflation."
-        )
-        source_path = record["source_path"]
-        for strategy_id, _, path in HISTORICAL_IDENTITIES:
-            if source_path == path:
-                resolution = "GOVERNED_HISTORICAL_IDENTITY"
-                resolved = strategy_id
-                reason = "P20C established a reviewed executable identity for this source."
-        if duplicate:
-            resolution = "DUPLICATE_SOURCE_EVIDENCE"
-            resolved = str(duplicate)
-            reason = "P541B records an explicit duplicate_of relationship."
-        ledger.append(
-            {
-                "evidence_record_id": f"p541b::{record['method_id']}",
-                "evidence_kind": "historical_source_surface",
-                "source_identity": record["method_id"],
-                "source_path": source_path,
-                "source_commit": record["source_identity"].get("source_commit", ""),
-                "governance_status": "UNGoverned_SOURCE_EVIDENCE",
-                "resolution_class": resolution,
-                "resolved_strategy_id": resolved,
-                "is_strategy_claim": str(actual).lower(),
-                "reason": reason,
-            }
-        )
+def build_resolution_ledger(
+    inventory: Sequence[Mapping[str, Any]] | None = None,
+) -> list[dict[str, Any]]:
+    """Project exactly one terminal resolution row per governed identity."""
 
-    registry = _registry_rows()
-    p24 = _p24_rows()
-    for strategy_id in sorted(set(registry) | set(p24)):
-        current = registry.get(strategy_id, {})
-        historical = p24.get(strategy_id, {})
-        resolved = strategy_id
-        resolution = "GOVERNED_STRATEGY_IDENTITY"
-        if strategy_id == "bet2_fourier_expansion_biglotto":
-            resolved = (
-                "bet2_fourier_expansion_biglotto@p42_p280_frozen_code;"
-                "bet2_fourier_expansion_biglotto@rejected_json_historical"
-            )
-            resolution = "CONFIRMED_ID_REUSE_SPLIT"
-        elif strategy_id in ALIAS_OF:
-            resolution = "GOVERNED_DUPLICATE_ALIAS"
-        elif strategy_id in EQUIVALENT_TO:
-            resolution = "GOVERNED_EQUIVALENT_IMPLEMENTATION"
-        ledger.append(
-            {
-                "evidence_record_id": f"governed::{strategy_id}",
-                "evidence_kind": "governance_record",
-                "source_identity": strategy_id,
-                "source_path": current.get("source_path", "")
-                or historical.get("source_artifact", "")
-                or "lottery_api/models/replay_strategy_registry.py",
-                "source_commit": git_value("rev-parse", "HEAD"),
-                "governance_status": current.get(
-                    "lifecycle_status", historical.get("lifecycle_state", "REJECTED")
-                ),
-                "resolution_class": resolution,
-                "resolved_strategy_id": resolved,
-                "is_strategy_claim": "true",
-                "reason": "Current registry/P24 governed record; aliases and ID reuse remain explicit.",
-            }
-        )
-    ledger.sort(key=lambda row: row["evidence_record_id"])
-    if len(ledger) != EXPECTED_EVIDENCE_RECORDS:
-        raise AssertionError(
-            f"evidence denominator drift: {len(ledger)} != {EXPECTED_EVIDENCE_RECORDS}"
-        )
+    source_rows = build_master_inventory() if inventory is None else inventory
+    ledger = [
+        {field: row.get(field, "") for field in LEDGER_FIELDS}
+        for row in sorted(source_rows, key=lambda item: str(item["strategy_id"]))
+    ]
+    master_ids = [str(row["strategy_id"]) for row in source_rows]
+    resolution_ids = [str(row["strategy_id"]) for row in ledger]
+    if len(master_ids) != EXPECTED_IDENTITY_COUNT or len(set(master_ids)) != EXPECTED_IDENTITY_COUNT:
+        raise AssertionError("master inventory must contain exactly 39 unique governed identities")
+    if resolution_ids != sorted(resolution_ids) or len(set(resolution_ids)) != EXPECTED_IDENTITY_COUNT:
+        raise AssertionError("resolution ledger must contain 39 unique identities in stable order")
+    if set(master_ids) != set(resolution_ids):
+        raise AssertionError("master inventory and resolution ledger identity sets differ")
+    if "baseline::uniform_random_20" in resolution_ids:
+        raise AssertionError("random baseline must remain outside the governed resolution ledger")
+    if any(row["terminal_disposition"] not in TERMINAL_DISPOSITIONS for row in ledger):
+        raise AssertionError("resolution ledger contains an invalid terminal disposition")
     return ledger
+
+
+def resolution_partition(
+    inventory: Sequence[Mapping[str, Any]],
+) -> dict[str, list[str]]:
+    """Return the mutually exclusive terminal accounting for all governed identities."""
+
+    groups = {
+        "completed": COMPLETE_DISPOSITIONS,
+        "terminally_excluded": TERMINALLY_EXCLUDED_DISPOSITIONS,
+        "engineering_backlog": ENGINEERING_BACKLOG_DISPOSITIONS,
+    }
+    partition = {name: [] for name in groups}
+    for row in inventory:
+        matches = [
+            name
+            for name, dispositions in groups.items()
+            if row["terminal_disposition"] in dispositions
+        ]
+        if len(matches) != 1:
+            raise AssertionError(
+                f"identity {row['strategy_id']} does not have one terminal accounting category"
+            )
+        partition[matches[0]].append(str(row["strategy_id"]))
+    for values in partition.values():
+        values.sort()
+    if sum(len(values) for values in partition.values()) != EXPECTED_IDENTITY_COUNT:
+        raise AssertionError("terminal accounting does not reconcile to all 39 identities")
+    return partition
 
 
 def build_strategy_specs(random_replicates: int = 10) -> list[p20c.StrategySpec]:
@@ -1094,14 +1091,25 @@ def rank_metrics(rows: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
 
 
 def finalize_inventory(
-    inventory: Sequence[Mapping[str, Any]], metrics: Sequence[Mapping[str, Any]]
+    inventory: Sequence[Mapping[str, Any]],
+    metrics: Sequence[Mapping[str, Any]],
+    strategy_runs: Sequence[Mapping[str, Any]] = (),
 ) -> list[dict[str, Any]]:
     metric_by_id = {row["strategy_id"]: row for row in metrics}
+    run_by_id = {
+        row["identity_id"]: row
+        for row in strategy_runs
+        if row["identity_id"] != "baseline::uniform_random_20"
+    }
     result: list[dict[str, Any]] = []
     for source in inventory:
         row = dict(source)
         metric = metric_by_id.get(row["strategy_id"])
-        if metric:
+        run = run_by_id.get(row["strategy_id"])
+        if run and run["run_status"] == "RESOURCE_LIMIT_REACHED":
+            row["terminal_disposition"] = "RESOURCE_LIMIT_REACHED"
+            row["recovery_status"] = "BACKTEST_RESOURCE_LIMIT"
+        elif metric:
             completed = float(metric["completion_rate"]) >= p20c.COMPLETENESS_THRESHOLD
             if completed:
                 row["terminal_disposition"] = (
@@ -1118,6 +1126,51 @@ def finalize_inventory(
     if any(row["terminal_disposition"] not in TERMINAL_DISPOSITIONS for row in result):
         raise AssertionError("terminal disposition lost during finalization")
     return sorted(result, key=lambda row: row["strategy_id"])
+
+
+def artifact_identity_groups(
+    inventory: Sequence[Mapping[str, Any]], metrics: Sequence[Mapping[str, Any]]
+) -> dict[str, list[dict[str, Any]]]:
+    """Build and reconcile the four disjoint durable evidence groups."""
+
+    complete = [
+        dict(row)
+        for row in metrics
+        if float(row["completion_rate"]) >= p20c.COMPLETENESS_THRESHOLD
+    ]
+    partial = [
+        dict(row) for row in inventory if row["terminal_disposition"] == "PARTIAL_BACKTEST"
+    ]
+    excluded = [
+        dict(row)
+        for row in inventory
+        if row["terminal_disposition"] in TERMINALLY_EXCLUDED_DISPOSITIONS
+    ]
+    failed = [
+        dict(row)
+        for row in inventory
+        if row["terminal_disposition"] in ENGINEERING_BACKLOG_DISPOSITIONS
+        and row["terminal_disposition"] != "PARTIAL_BACKTEST"
+    ]
+    groups = {"completed": complete, "partial": partial, "excluded": excluded, "failed": failed}
+    ids = {
+        name: {str(row["strategy_id"]) for row in rows}
+        for name, rows in groups.items()
+    }
+    completed_inventory = {
+        str(row["strategy_id"])
+        for row in inventory
+        if row["terminal_disposition"] in COMPLETE_DISPOSITIONS
+    }
+    if ids["completed"] != completed_inventory:
+        raise AssertionError("completed metrics do not match completed resolution identities")
+    all_ids = set().union(*ids.values())
+    if sum(len(values) for values in ids.values()) != len(all_ids):
+        raise AssertionError("durable evidence identity groups overlap")
+    inventory_ids = {str(row["strategy_id"]) for row in inventory}
+    if all_ids != inventory_ids:
+        raise AssertionError("durable evidence identity groups do not reconcile to inventory")
+    return groups
 
 
 def independent_recompute(
@@ -1218,6 +1271,7 @@ def inventory_counts(inventory: Sequence[Mapping[str, Any]]) -> dict[str, int]:
         "missing_implementation": dispositions["MISSING_IMPLEMENTATION"],
         "external_state_not_reproducible": dispositions["EXTERNAL_STATE_NOT_REPRODUCIBLE"],
         "remaining_engineering_backlog": sum(dispositions[name] for name in backlog_dispositions),
+        "resource_limit_reached": dispositions["RESOURCE_LIMIT_REACHED"],
         "failed": dispositions["RUNTIME_FAILURE"] + dispositions["RESOURCE_LIMIT_REACHED"],
         "remaining_unknown": dispositions["UNKNOWN_REQUIRES_OWNER_EVIDENCE"],
     }
@@ -1265,16 +1319,15 @@ def generate_report(
         "## Exact denominator",
         "",
         f"- Unique governed Big Lotto strategy identities: {counts['unique_strategy_identities']}",
-        f"- Non-baseline evidence records: {EXPECTED_EVIDENCE_RECORDS}",
+        f"- Resolution-ledger rows: {counts['unique_strategy_identities']}",
         f"- Random comparison baselines: {EXPECTED_RANDOM_BASELINES}",
         f"- Aliases: {counts['aliases']}",
         f"- Equivalent implementations: {counts['equivalent_implementations']}",
         f"- Independent algorithms after alias/equivalence collapse: {counts['independent_algorithms']}",
         "",
         "The denominator rule admits current registry/P24 governed IDs, a proven ID-reuse split, "
-        "reviewed P20C historical identities, and explicit P357/P358 recovery identities. Source files, "
-        "helper functions, fixtures, composite DB scopes, publication runners, and evidence gaps remain "
-        "in the resolution ledger but do not inflate the strategy count.",
+        "reviewed P20C historical identities, and explicit P357/P358 recovery identities. The resolution "
+        "ledger contains each governed identity exactly once; source provenance remains attached as row evidence.",
         "",
         "## Execution outcome",
         "",
@@ -1314,7 +1367,11 @@ def generate_report(
         "",
         *([f"- {strategy_id}" for strategy_id in backlog] or ["- None"]),
         "",
-        "No resource boundary was reached; next unprocessed strategy: null.",
+        (
+            "No resource boundary was reached; next unprocessed strategy: null."
+            if counts["resource_limit_reached"] == 0
+            else f"Resource limit reached for {counts['resource_limit_reached']} governed identities."
+        ),
         "",
         "## Data quality and verification",
         "",
@@ -1376,37 +1433,15 @@ def publish_outputs(
             }
             for strategy_id, definition in sorted(RECOVERY_IDENTITIES.items())
         ]
-        complete = [row for row in metrics if float(row["completion_rate"]) >= p20c.COMPLETENESS_THRESHOLD]
+        artifact_groups = artifact_identity_groups(inventory, metrics)
+        complete = artifact_groups["completed"]
         newly = [row for row in complete if row["strategy_id"] in RECOVERY_IDENTITIES]
         native = rank_metrics([row for row in complete if row["ranking_group"] == "native"])
         adapter = rank_metrics([row for row in complete if row["ranking_group"] == "adapter"])
         all_valid = rank_metrics(complete)
-        partial = [row for row in inventory if row["terminal_disposition"] == "PARTIAL_BACKTEST"]
-        conclusive = {
-            "DUPLICATE_ALIAS",
-            "EQUIVALENT_IMPLEMENTATION",
-            "DOCUMENT_ONLY",
-            "NO_VALID_STRATEGY_SIGNAL",
-            "DATA_LEAKAGE_EXCLUDED",
-            "UNSAFE_METHOD_EXCLUDED",
-        }
-        excluded = [row for row in inventory if row["terminal_disposition"] in conclusive]
-        failed = [
-            row
-            for row in inventory
-            if row["terminal_disposition"]
-            in {
-                "MISSING_IMPLEMENTATION",
-                "MISSING_ENTRYPOINT",
-                "MISSING_ARTIFACT",
-                "MISSING_DEPENDENCY",
-                "EXTERNAL_STATE_NOT_REPRODUCIBLE",
-                "INVALID_OUTPUT",
-                "RESOURCE_LIMIT_REACHED",
-                "RUNTIME_FAILURE",
-                "UNKNOWN_REQUIRES_OWNER_EVIDENCE",
-            }
-        ]
+        partial = artifact_groups["partial"]
+        excluded = artifact_groups["excluded"]
+        failed = artifact_groups["failed"]
 
         write_csv(staging / "strategy_master_inventory.csv", inventory, MASTER_FIELDS)
         write_csv(staging / "strategy_resolution_ledger.csv", ledger, LEDGER_FIELDS)
@@ -1492,7 +1527,6 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"canonical dataset boundary drift: draws={len(draws)} common={quality['common_window_rows']}"
         )
     inventory = build_master_inventory()
-    ledger = build_resolution_ledger()
     specs = build_strategy_specs(10)
     executable_preflight = preflight_executable_specs(draws, specs)
     preflight = full_preflight(inventory, executable_preflight)
@@ -1534,7 +1568,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         inventory=inventory,
         strategy_runs=execution["strategy_runs"],
     )
-    inventory = finalize_inventory(inventory, metrics)
+    inventory = finalize_inventory(inventory, metrics, execution["strategy_runs"])
+    ledger = build_resolution_ledger(inventory)
     detail_validation = aggregate_detail_validation(execution["detail_files"], observations)
     recompute = independent_recompute(observations, metrics)
     reproducibility = p20c.check_constructor_reproducibility(execution["reproducibility_samples"])
@@ -1550,9 +1585,17 @@ def main(argv: Sequence[str] | None = None) -> int:
             and all(row["terminal_disposition"] in TERMINAL_DISPOSITIONS for row in inventory),
             "details": counts,
         },
-        "evidence_separation": {
-            "pass": len(ledger) == EXPECTED_EVIDENCE_RECORDS,
-            "details": {"evidence_records": len(ledger), "random_baselines": 1},
+        "resolution_ledger_contract": {
+            "pass": len(ledger) == EXPECTED_IDENTITY_COUNT
+            and len({row["strategy_id"] for row in ledger}) == EXPECTED_IDENTITY_COUNT
+            and {row["strategy_id"] for row in inventory}
+            == {row["strategy_id"] for row in ledger}
+            and not any(row["strategy_id"] == "baseline::uniform_random_20" for row in ledger),
+            "details": {
+                "resolution_ledger_rows": len(ledger),
+                "unique_resolution_ids": len({row["strategy_id"] for row in ledger}),
+                "random_baselines": 1,
+            },
         },
         "full_preflight": {
             "pass": len(preflight) == EXPECTED_IDENTITY_COUNT
@@ -1605,6 +1648,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     manifest = {
         "task_id": TASK_ID,
         "runner_version": RUNNER_VERSION,
+        "source_head": head,
+        "constructor_version": f"{p20c.CONSTRUCTOR_NAME}/{p20c.CONSTRUCTOR_VERSION}",
+        "dataset_sha256": quality["canonical_dataset_sha256"],
+        "database_sha256": database_sha_before,
         "status": "COMPLETED" if validation_pass else "PARTIALLY_COMPLETED",
         "repo": {
             "task_base_commit": head,
@@ -1613,7 +1660,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "runner_sha256": runner_sha,
         },
         "inventory": {
-            "evidence_records": len(ledger),
+            "resolution_ledger_rows": len(ledger),
             "random_baselines": 1,
             **counts,
             "denominator_rule": (

@@ -42,16 +42,50 @@ def test_governed_denominator_is_unique_and_baseline_is_separate():
     assert all(row["terminal_disposition"] in p20s.TERMINAL_DISPOSITIONS for row in inventory)
 
 
-def test_evidence_records_do_not_inflate_strategy_denominator():
-    inventory = p20s.build_master_inventory()
-    ledger = p20s.build_resolution_ledger()
+FORMERLY_MISSING_RESOLUTION_IDS = {
+    "biglotto_10bet_combined",
+    "biglotto_5bet_orthogonal",
+    "biglotto_p0_2bet",
+    "biglotto_zonal_pruning",
+    "predict_biglotto_echo_2bet",
+    "predict_biglotto_echo_phase2",
+    "predict_biglotto_mixed_3bet",
+    "predict_biglotto_regime",
+}
 
-    assert len(ledger) == p20s.EXPECTED_EVIDENCE_RECORDS == 607
-    assert len(inventory) == 39
-    assert any(row["source_identity"] == "tools/advanced_methods_benchmark.py" for row in ledger)
-    assert not any(row["strategy_id"] == "history::tools/advanced_methods_benchmark.py" for row in inventory)
-    assert sum(row["evidence_kind"] == "historical_source_surface" for row in ledger) == 580
-    assert sum(row["evidence_kind"] == "governance_record" for row in ledger) == 27
+
+def test_resolution_ledger_matches_all_governed_identities_exactly_once():
+    inventory = p20s.build_master_inventory()
+    ledger = p20s.build_resolution_ledger(inventory)
+    master_ids = [row["strategy_id"] for row in inventory]
+    resolution_ids = [row["strategy_id"] for row in ledger]
+
+    assert set(master_ids) == set(resolution_ids)
+    assert len(master_ids) == len(set(master_ids)) == 39
+    assert len(resolution_ids) == len(set(resolution_ids)) == 39
+    assert resolution_ids == sorted(resolution_ids)
+    assert FORMERLY_MISSING_RESOLUTION_IDS <= set(resolution_ids)
+    assert "baseline::uniform_random_20" not in resolution_ids
+    assert tuple(ledger[0]) == p20s.LEDGER_FIELDS
+
+
+def test_resolution_ledger_generation_is_byte_identical(tmp_path: Path):
+    first = tmp_path / "first.csv"
+    second = tmp_path / "second.csv"
+    p20s.write_csv(first, p20s.build_resolution_ledger(), p20s.LEDGER_FIELDS)
+    p20s.write_csv(second, p20s.build_resolution_ledger(), p20s.LEDGER_FIELDS)
+
+    assert first.read_bytes() == second.read_bytes()
+
+
+def test_resolution_ledger_terminal_partition_reconciles_all_39_identities():
+    partition = p20s.resolution_partition(p20s.build_resolution_ledger())
+    sets = [set(values) for values in partition.values()]
+
+    assert [len(values) for values in sets] == [18, 5, 16]
+    assert sum(len(values) for values in sets) == 39
+    assert not any(left & right for index, left in enumerate(sets) for right in sets[index + 1 :])
+    assert len(set().union(*sets)) == 39
 
 
 def test_aliases_equivalents_and_id_reuse_are_explicit():
@@ -389,6 +423,54 @@ def test_finalization_keeps_aliases_out_of_complete_counts():
     assert counts["adapter_20_ticket"] == 16
     assert counts["aliases"] == 2
     assert counts["equivalent_implementations"] == 3
+
+
+def test_durable_artifact_groups_reconcile_to_resolution_ledger():
+    inventory = p20s.build_master_inventory()
+    metrics = []
+    for spec_id, identity_id in p20s.SPEC_TO_IDENTITY.items():
+        metrics.append(
+            {
+                "strategy_id": identity_id,
+                "completion_rate": 1.0,
+                "ranking_group": "native"
+                if spec_id
+                in {
+                    "history::lottery_api/models/core_satellite.py",
+                    "history::lottery_api/models/zone_split.py",
+                }
+                else "adapter",
+                "native_ticket_count": 20 if "history::" in spec_id else 3,
+            }
+        )
+    final = p20s.finalize_inventory(inventory, metrics)
+    ledger = p20s.build_resolution_ledger(final)
+    groups = p20s.artifact_identity_groups(final, metrics)
+    group_ids = {
+        name: {row["strategy_id"] for row in rows}
+        for name, rows in groups.items()
+    }
+
+    assert {name: len(ids) for name, ids in group_ids.items()} == {
+        "completed": 18,
+        "partial": 4,
+        "excluded": 5,
+        "failed": 12,
+    }
+    assert set().union(*group_ids.values()) == {row["strategy_id"] for row in ledger}
+
+
+def test_resource_limit_becomes_terminal_resolution_not_complete():
+    row = p20s._base_master_row("slow", "slow")
+    row["terminal_disposition"] = "COMPLETE_ADAPTER_20"
+    final = p20s.finalize_inventory(
+        [row],
+        [],
+        [{"identity_id": "slow", "run_status": "RESOURCE_LIMIT_REACHED"}],
+    )
+
+    assert final[0]["terminal_disposition"] == "RESOURCE_LIMIT_REACHED"
+    assert final[0]["recovery_status"] == "BACKTEST_RESOURCE_LIMIT"
 
 
 def test_verification_evidence_fails_closed_on_missing_fields(tmp_path: Path):

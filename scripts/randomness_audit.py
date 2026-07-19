@@ -3,9 +3,10 @@
 
 This module does not define a statistical methodology.  It supplies the
 canonical BIG_LOTTO population through an enforced SQLite read-only path and
-then calls P246K's committed audit runner unchanged.  The historical 44-test
-artifact remains immutable legacy evidence because its producing source is not
-committed in this repository.
+then calls P246K's committed audit runner unchanged.  Its P238B comparison
+artifact is strictly decoded once and supplied through the donor's comparison
+loader seam.  The historical 44-test artifact remains immutable legacy evidence
+because its producing source is not committed in this repository.
 """
 from __future__ import annotations
 
@@ -19,6 +20,8 @@ import socket
 import sqlite3
 import sys
 import tempfile
+from contextlib import ExitStack
+from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -43,6 +46,12 @@ CADENCE_MAX_NEW_DRAWS = 50
 
 P238B_SOURCE = REPO_ROOT / "scripts" / "p238b_nist_randomness_audit_artifact_build.py"
 P246K_SOURCE = REPO_ROOT / "analysis" / "p246k_canonical_big_lotto_nist_reaudit.py"
+P238B_COMPARISON_ARTIFACT = (
+    REPO_ROOT
+    / "outputs"
+    / "research"
+    / "p238b_nist_randomness_audit_artifact_20260604.json"
+)
 DEFAULT_RESULTS_PATH = REPO_ROOT / "outputs" / "randomness_audit" / "randomness_audit_results.json"
 DEFAULT_SUMMARY_PATH = REPO_ROOT / "outputs" / "randomness_audit" / "randomness_audit_summary.md"
 DEFAULT_WIKI_PATH = REPO_ROOT / "wiki" / "system" / "randomness_final_verdict.md"
@@ -366,19 +375,56 @@ def _load_p246k_module() -> ModuleType:
     return module
 
 
+def _load_strict_p238b_comparison(path: Path) -> dict[str, Any]:
+    """Read P238B once and reproduce the donor's non-statistical comparison view."""
+    try:
+        payload = path.read_bytes()
+    except FileNotFoundError:
+        return {"artifact_found": False}
+    document = strict_json_loads(payload, source=str(path))
+    if not isinstance(document, Mapping):
+        raise AuditProvenanceError("P238B comparison artifact must be a JSON object")
+    return {
+        "artifact_found": True,
+        "classification": document.get("classification", "N/A"),
+        "test_count": len(document.get("test_results", [])),
+        "is_corrected_significant": document.get("is_corrected_significant", False),
+        "note": (
+            "P238B ran on raw mixed 22,238-row BIG_LOTTO population including "
+            "ADD_ON_PRIZE_EXCLUDED, DATE_FORMAT_ALIEN, SMALL_POOL_ALIEN. "
+            "P246K runs on canonical 2,113-row population only."
+        ),
+    }
+
+
 def run_p246k_existing_logic(
     population: PopulationLoad,
     db_path: Path,
     *,
     module: Optional[ModuleType] = None,
 ) -> dict[str, Any]:
-    """Call P246K unchanged while replacing only its write-capable loader seam."""
+    """Call P246K unchanged behind bounded population and comparison seams."""
     p246k = module or _load_p246k_module()
-    with patch.object(
-        p246k,
-        "load_canonical_draws",
-        return_value=(population.draws, population.raw_count),
-    ):
+    strict_comparison = None
+    if hasattr(p246k, "load_p238b_comparison"):
+        strict_comparison = _load_strict_p238b_comparison(P238B_COMPARISON_ARTIFACT)
+
+    with ExitStack() as overrides:
+        overrides.enter_context(
+            patch.object(
+                p246k,
+                "load_canonical_draws",
+                return_value=(population.draws, population.raw_count),
+            )
+        )
+        if strict_comparison is not None:
+            overrides.enter_context(
+                patch.object(
+                    p246k,
+                    "load_p238b_comparison",
+                    side_effect=lambda: deepcopy(strict_comparison),
+                )
+            )
         result = p246k.run_canonical_nist_reaudit(_validate_db_path(db_path))
     if not isinstance(result, dict) or "audit_results" not in result:
         raise AuditProvenanceError("P246K did not return a complete audit result")

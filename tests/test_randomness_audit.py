@@ -26,6 +26,13 @@ EXPECTED_P238B_SOURCE_SHA256 = "6eee50f61101b016737863eb426da6a0e893bc2d3f38387a
 EXPECTED_P246K_SOURCE_SHA256 = "3ddd1453ae562c0ac6bec1ada0bc6c2ca3339012ec8a2a26dc233bc1fac83157"
 EXPECTED_CURRENT_INPUT_SHA256 = "7d48306f31746ec3ea8976b4d0b88f2577decd52191391ee5c059f2fd4588a09"
 EXPECTED_CURRENT_P246K_SEMANTIC_SHA256 = "48f72f61764e09de20702a853d124930eb3275ce49eb7e9b4b9e26e84f5d9dd1"
+EXPECTED_RESULTS_SHA256 = "c1436cf5804f457c0f53f37278fb57351150f793137355a4d55656c3ebe4e4fb"
+EXPECTED_SUMMARY_SHA256 = "a2766ecb0d6ce0d8747c96cd0da40c6f3d1c8371e14f3c547cec7d1b52f8cbc0"
+EXPECTED_WIKI_SHA256 = "8e221783f6fc82c9fb5bfd0381d5b712672a170ddd298b81855946067a6f27a4"
+R5_DUPLICATE_CLASSIFICATION_FIXTURE = (
+    '{"classification":"FIRST_VALUE","classification":"LAST_VALUE",'
+    '"test_results":[],"is_corrected_significant":false}'
+)
 
 
 @pytest.mark.parametrize(
@@ -106,6 +113,84 @@ def test_generation_rejects_duplicate_legacy_json_before_db_or_hash_evaluation(
                 summary_out=tmp_path / "summary.md",
                 wiki_out=tmp_path / "wiki.md",
             )
+
+
+def test_p238b_duplicate_classification_rejected_before_donor_and_publication(
+    monkeypatch, tmp_path: Path
+):
+    db_path = tmp_path / "canonical.db"
+    _create_canonical_db(db_path, count=3)
+    duplicate_path = tmp_path / "p238b-duplicate-classification.json"
+    duplicate_path.write_text(R5_DUPLICATE_CLASSIFICATION_FIXTURE, encoding="utf-8")
+
+    outputs = {
+        tmp_path / "results.json": b"unchanged results",
+        tmp_path / "summary.md": b"unchanged summary",
+        tmp_path / "wiki.md": b"unchanged wiki",
+    }
+    for path, payload in outputs.items():
+        path.write_bytes(payload)
+
+    module = audit._load_p246k_module()
+
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("downstream execution must not run")
+
+    module.load_p238b_comparison = forbidden
+    module.run_canonical_nist_reaudit = forbidden
+    monkeypatch.setattr(audit, "_load_p246k_module", lambda: module)
+    monkeypatch.setattr(audit, "P238B_COMPARISON_ARTIFACT", duplicate_path)
+    for name in (
+        "_p246k_semantic_payload",
+        "build_results_document",
+        "render_summary",
+        "render_wiki",
+        "evaluate_cadence",
+        "_publish_artifact_triplet",
+    ):
+        monkeypatch.setattr(audit, name, forbidden)
+
+    original_read_bytes = Path.read_bytes
+    comparison_reads = 0
+
+    def tracking_read_bytes(path: Path) -> bytes:
+        nonlocal comparison_reads
+        if path == duplicate_path:
+            comparison_reads += 1
+        return original_read_bytes(path)
+
+    monkeypatch.setattr(Path, "read_bytes", tracking_read_bytes)
+    before_db = (
+        original_read_bytes(db_path),
+        db_path.stat().st_size,
+        db_path.stat().st_mtime_ns,
+        db_path.stat().st_ino,
+    )
+
+    with pytest.raises(audit.AuditProvenanceError, match="duplicate JSON object key.*classification"):
+        audit.generate(
+            db_path=db_path.resolve(),
+            executed_at_utc=datetime(2026, 7, 18, 13, 37, 50, tzinfo=timezone.utc),
+            legacy_results_path=RESULTS_PATH,
+            legacy_summary_path=SUMMARY_PATH,
+            wiki_source_path=WIKI_PATH,
+            results_out=tmp_path / "results.json",
+            summary_out=tmp_path / "summary.md",
+            wiki_out=tmp_path / "wiki.md",
+        )
+
+    assert comparison_reads == 1
+    assert module.load_p238b_comparison is forbidden
+    assert module.run_canonical_nist_reaudit is forbidden
+    assert original_read_bytes(duplicate_path).decode("utf-8") == R5_DUPLICATE_CLASSIFICATION_FIXTURE
+    assert (
+        original_read_bytes(db_path),
+        db_path.stat().st_size,
+        db_path.stat().st_mtime_ns,
+        db_path.stat().st_ino,
+    ) == before_db
+    for path, payload in outputs.items():
+        assert original_read_bytes(path) == payload
 
 
 def _create_canonical_db(path: Path, *, count: int = 80) -> None:
@@ -450,6 +535,87 @@ def test_migrated_p246k_path_has_exact_semantic_equivalence(tmp_path: Path):
         expected = module.run_canonical_nist_reaudit(db_path)
     actual = audit.run_p246k_existing_logic(population, db_path, module=module)
     assert audit._p246k_semantic_payload(actual) == audit._p246k_semantic_payload(expected)
+
+
+def test_strict_p238b_clean_input_preserves_semantics_hash_and_artifact_bytes(
+    monkeypatch, tmp_path: Path
+):
+    committed = audit.strict_json_loads(RESULTS_PATH.read_bytes(), source=str(RESULTS_PATH))
+    current = committed["current_executable_audit"]
+    expected_result = deepcopy(current["p246k_existing_logic_result"])
+    expected_comparison = deepcopy(expected_result["p238b_comparison"])
+    population_count = expected_result["canonical_population_count"]
+    population = audit.PopulationLoad(
+        draws=[{}] * population_count,
+        raw_count=expected_result["raw_population_count"],
+        provenance=deepcopy(current["input_provenance"]),
+    )
+
+    db_path = tmp_path / "canonical.db"
+    db_path.write_bytes(b"not opened because the canonical population is injected")
+    module = audit._load_p246k_module()
+    original_population_loader = module.load_canonical_draws
+    original_comparison_loader = module.load_p238b_comparison
+    ordinary_loader_calls = 0
+
+    def tracking_ordinary_loader():
+        nonlocal ordinary_loader_calls
+        ordinary_loader_calls += 1
+        return original_comparison_loader()
+
+    def clean_runner(path: Path):
+        draws, raw_count = module.load_canonical_draws(path)
+        assert len(draws) == population_count
+        assert raw_count == population.raw_count
+        result = deepcopy(expected_result)
+        result["p238b_comparison"] = module.load_p238b_comparison()
+        return result
+
+    module.load_p238b_comparison = tracking_ordinary_loader
+    module.run_canonical_nist_reaudit = clean_runner
+    monkeypatch.setattr(audit, "_load_p246k_module", lambda: module)
+    monkeypatch.setattr(audit, "load_canonical_big_lotto_population", lambda _path: population)
+
+    original_read_bytes = Path.read_bytes
+    comparison_reads = 0
+
+    def tracking_read_bytes(path: Path) -> bytes:
+        nonlocal comparison_reads
+        if path == audit.P238B_COMPARISON_ARTIFACT:
+            comparison_reads += 1
+        return original_read_bytes(path)
+
+    monkeypatch.setattr(Path, "read_bytes", tracking_read_bytes)
+    results_out = tmp_path / "generated-results.json"
+    summary_out = tmp_path / "generated-summary.md"
+    wiki_out = tmp_path / "generated-wiki.md"
+    generated = audit.generate(
+        db_path=db_path.resolve(),
+        executed_at_utc=datetime(2026, 7, 18, 13, 37, 50, tzinfo=timezone.utc),
+        legacy_results_path=RESULTS_PATH,
+        legacy_summary_path=SUMMARY_PATH,
+        wiki_source_path=WIKI_PATH,
+        results_out=results_out,
+        summary_out=summary_out,
+        wiki_out=wiki_out,
+    )
+
+    generated_result = generated["current_executable_audit"]["p246k_existing_logic_result"]
+    semantic_sha256 = audit._sha256_bytes(
+        audit._canonical_json_bytes(audit._p246k_semantic_payload(generated_result))
+    )
+    assert generated_result["p238b_comparison"] == expected_comparison
+    assert semantic_sha256 == EXPECTED_CURRENT_P246K_SEMANTIC_SHA256
+    assert comparison_reads == 1
+    assert ordinary_loader_calls == 0
+    assert module.load_p238b_comparison is tracking_ordinary_loader
+    assert module.load_canonical_draws is original_population_loader
+    assert original_read_bytes(results_out) == original_read_bytes(RESULTS_PATH)
+    assert original_read_bytes(summary_out) == original_read_bytes(SUMMARY_PATH)
+    assert original_read_bytes(wiki_out) == original_read_bytes(WIKI_PATH)
+    assert audit._sha256_bytes(original_read_bytes(results_out)) == EXPECTED_RESULTS_SHA256
+    assert audit._sha256_bytes(original_read_bytes(summary_out)) == EXPECTED_SUMMARY_SHA256
+    assert audit._sha256_bytes(original_read_bytes(wiki_out)) == EXPECTED_WIKI_SHA256
 
 
 def test_legacy_json_payload_is_immutable_and_unreproducible():

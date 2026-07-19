@@ -33,7 +33,7 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from statistics import fmean, pstdev
-from typing import Any, Callable, Iterable, Mapping, Sequence
+from typing import Any, Callable, Mapping, Sequence
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -842,6 +842,10 @@ def execute_backtest(
                                         actual_numbers=target["numbers"],
                                         constructor_mode=constructor_mode,
                                     )
+                            except TimeoutError:
+                                # P20S owns per-strategy timeout enforcement and
+                                # maps expiry at its orchestration boundary.
+                                raise
                             except Exception as exc:
                                 portfolio = {
                                     "ok": False,

@@ -147,6 +147,23 @@ def test_checkpoint_compatibility_binding_changes_with_ticket_count(tmp_path):
     annotated = json.loads(metadata.read_text(encoding="utf-8"))
     assert annotated["ticket_count"] == 20
     assert annotated["p20t_checkpoint_compatibility_key"] == key_20
+
+
+def test_immutable_execution_record_omits_checkpoint_transport_state():
+    execution = {
+        "strategy_runs": [
+            {
+                "strategy_id": "example",
+                "checkpoint_reused": True,
+                "runtime_seconds": 1.25,
+            }
+        ],
+        "detail_files": [],
+    }
+    stable = p20t.stable_execution_record(execution)
+    assert "checkpoint_reused" not in stable["strategy_runs"][0]
+    assert stable["strategy_runs"][0]["runtime_seconds"] == 1.25
+    assert execution["strategy_runs"][0]["checkpoint_reused"] is True
     assert not p20t.constructor_reproducibility_pass(
         {
             "sample_count": 12,

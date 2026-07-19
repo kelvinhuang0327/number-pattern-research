@@ -364,6 +364,15 @@ def annotate_checkpoint_metadata(
     return annotated
 
 
+def stable_execution_record(execution: Mapping[str, Any]) -> dict[str, Any]:
+    """Remove transport-only checkpoint state from immutable evidence."""
+
+    stable = json.loads(json.dumps(execution))
+    for row in stable.get("strategy_runs", []):
+        row.pop("checkpoint_reused", None)
+    return stable
+
+
 RECOVERIES = {
     "acb_hot_fourier_3bet_biglotto": _definition(
         adapters.adapt_acb_hot_fourier_3bet,
@@ -1336,6 +1345,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         timeout_seconds=args.timeout_seconds,
         resume=not args.no_resume,
     )
+    execution = stable_execution_record(execution)
     annotated_checkpoints = annotate_checkpoint_metadata(
         checkpoint_dir,
         compatibility_key=checkpoint_key,

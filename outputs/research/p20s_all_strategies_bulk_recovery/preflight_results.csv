@@ -1,0 +1,40 @@
+strategy_id,preflight_status,entrypoint,import_ok,cutoff_contract_ok,target_mutation_invariant,future_mutation_invariant,native_output_valid,final_ticket_count,constructor_metadata_ok,reason
+acb_hot_fourier_3bet_biglotto,TERMINAL_RESOLUTION,,False,False,NOT_RANKED,NOT_RANKED,NOT_ATTEMPTED,0,NOT_APPLICABLE,rejected/acb_hot_fourier_3bet_biglotto.json
+apriori_3bet_biglotto,TERMINAL_RESOLUTION,,False,False,NOT_RANKED,NOT_RANKED,NOT_ATTEMPTED,0,NOT_APPLICABLE,rejected/apriori_3bet_biglotto.json
+bet2_fourier_expansion_biglotto@p42_p280_frozen_code,PASS,existing_p42_compatibility_adapter_bet1_only,True,True,True,True,True,20,True,
+bet2_fourier_expansion_biglotto@rejected_json_historical,TERMINAL_RESOLUTION,,False,False,NOT_RANKED,NOT_RANKED,NOT_ATTEMPTED,0,NOT_APPLICABLE,current replay lifecycle registry; rejected/bet2_fourier_expansion_biglotto.json; P358B confirmed distinct historical lineage
+biglotto_10bet_combined,PARTIAL_EVIDENCE_ONLY,recovered_strategies.biglotto.historical_adapters.adapt_biglotto_10bet_combined,True,True,NOT_RANKED,NOT_RANKED,SHAPE_ONLY,0,NOT_APPLICABLE,P357B-HIST-010; P358/P359 shape-safety only
+biglotto_5bet_orthogonal,PARTIAL_EVIDENCE_ONLY,recovered_strategies.biglotto.historical_adapters.adapt_biglotto_5bet_orthogonal,True,True,NOT_RANKED,NOT_RANKED,SHAPE_ONLY,0,NOT_APPLICABLE,P358/P359 shape-safety only; historical parity not proven
+biglotto_deviation_2bet,PASS,direct_original_generator,True,True,True,True,True,20,True,
+biglotto_echo_aware_3bet,PASS,existing_p93_compatibility_adapter,True,True,True,True,True,20,True,
+biglotto_p0_2bet,PASS,p358_parity_adapter,True,True,True,True,True,20,True,
+biglotto_social_wisdom_anti_popularity,TERMINAL_RESOLUTION,,False,False,NOT_RANKED,NOT_RANKED,NOT_ATTEMPTED,0,NOT_APPLICABLE,current replay lifecycle registry
+biglotto_triple_strike,PASS,direct_original_generator,True,True,True,True,True,20,True,
+biglotto_ts3_acb_4bet,TERMINAL_RESOLUTION,,False,False,NOT_RANKED,NOT_RANKED,NOT_ATTEMPTED,0,NOT_APPLICABLE,current replay lifecycle registry
+biglotto_ts3_markov_4bet_w30,PASS,existing_p93_compatibility_adapter,True,True,True,True,True,20,True,
+biglotto_ts3_markov_freq_5bet,TERMINAL_RESOLUTION,,False,False,NOT_RANKED,NOT_RANKED,NOT_ATTEMPTED,0,NOT_APPLICABLE,current replay lifecycle registry
+biglotto_zonal_pruning,PARTIAL_EVIDENCE_ONLY,recovered_strategies.biglotto.historical_adapters.adapt_biglotto_zonal_pruning,True,True,NOT_RANKED,NOT_RANKED,SHAPE_ONLY,0,NOT_APPLICABLE,P358/P359 shape-safety only; local cluster-pivot replica is not parity proof
+biglotto_zone_split_3bet_bet1,TERMINAL_RESOLUTION,,False,False,NOT_RANKED,NOT_RANKED,NOT_ATTEMPTED,0,NOT_APPLICABLE,current replay lifecycle registry
+cluster_pivot_biglotto,TERMINAL_RESOLUTION,,False,False,NOT_RANKED,NOT_RANKED,NOT_ATTEMPTED,0,NOT_APPLICABLE,rejected/cluster_pivot_biglotto.json
+cold_complement_biglotto,PASS,existing_p42_compatibility_adapter_bet1_only,True,True,True,True,True,20,True,
+coldpool15_biglotto,PASS,existing_p42_compatibility_adapter,True,True,True,True,True,20,True,
+core_satellite_biglotto,TERMINAL_RESOLUTION,,False,False,NOT_RANKED,NOT_RANKED,NOT_ATTEMPTED,0,NOT_APPLICABLE,rejected/core_satellite_biglotto.json
+fourier30_markov30_biglotto,PASS,existing_p42_compatibility_adapter_bet1_only,True,True,True,True,True,20,True,
+gap_dynamic_threshold_biglotto,TERMINAL_RESOLUTION,,False,False,NOT_RANKED,NOT_RANKED,NOT_ATTEMPTED,0,NOT_APPLICABLE,rejected/gap_dynamic_threshold_biglotto.json
+history::lottery_api/models/core_satellite.py,PASS,direct_original_seeded_by_caller,True,True,True,True,True,20,True,
+history::lottery_api/models/social_wisdom_predictor.py,PASS,direct_original_8bet_seeded_by_caller,True,True,True,True,True,20,True,
+history::lottery_api/models/zone_split.py,PASS,direct_original_seeded_by_caller,True,True,True,True,True,20,True,
+hot_gap_return_biglotto,TERMINAL_RESOLUTION,,False,False,NOT_RANKED,NOT_RANKED,NOT_ATTEMPTED,0,NOT_APPLICABLE,rejected/hot_gap_return_biglotto.json
+hot_stop_rebound_biglotto,TERMINAL_RESOLUTION,,False,False,NOT_RANKED,NOT_RANKED,NOT_ATTEMPTED,0,NOT_APPLICABLE,rejected/hot_stop_rebound_biglotto.json
+markov_2bet_biglotto,PASS,existing_p42_compatibility_adapter_bet1_only,True,True,True,True,True,20,True,
+markov_repeat_exception_biglotto,TERMINAL_RESOLUTION,,False,False,NOT_RANKED,NOT_RANKED,NOT_ATTEMPTED,0,NOT_APPLICABLE,rejected/markov_repeat_exception_biglotto.json
+markov_single_biglotto,PASS,existing_p42_compatibility_adapter,True,True,True,True,True,20,True,
+multiwindow_fourier_biglotto,TERMINAL_RESOLUTION,,False,False,NOT_RANKED,NOT_RANKED,NOT_ATTEMPTED,0,NOT_APPLICABLE,rejected/multiwindow_fourier_biglotto.json
+neighbor_injection_biglotto,TERMINAL_RESOLUTION,,False,False,NOT_RANKED,NOT_RANKED,NOT_ATTEMPTED,0,NOT_APPLICABLE,rejected/neighbor_injection_biglotto.json
+predict_biglotto_echo_2bet,PASS,p358_parity_adapter,True,True,True,True,True,20,True,
+predict_biglotto_echo_phase2,PASS,p358_versioned_parity_adapter_3bet,True,True,True,True,True,20,True,
+predict_biglotto_mixed_3bet,PASS,current_pure_deterministic_callable,True,True,True,True,True,20,True,
+predict_biglotto_regime,PARTIAL_EVIDENCE_ONLY,recovered_strategies.biglotto.historical_adapters.adapt_predict_biglotto_regime_3bet,True,True,NOT_RANKED,NOT_RANKED,SHAPE_ONLY,0,NOT_APPLICABLE,P357B-HIST-011; P358/P359 shape-safety only
+ts3_acb_4bet_biglotto,TERMINAL_RESOLUTION,,False,False,NOT_RANKED,NOT_RANKED,NOT_ATTEMPTED,0,NOT_APPLICABLE,rejected/ts3_acb_4bet_biglotto.json
+ts3_markov_freq_5bet_biglotto,TERMINAL_RESOLUTION,,False,False,NOT_RANKED,NOT_RANKED,NOT_ATTEMPTED,0,NOT_APPLICABLE,rejected/ts3_markov_freq_5bet_biglotto.json
+ts3_regime_3bet,PASS,existing_registry_compatibility_reconstruction,True,True,True,True,True,20,True,

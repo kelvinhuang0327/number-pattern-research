@@ -1,0 +1,382 @@
+{
+  "checks": {
+    "aggregate_recomputation": {
+      "details": {
+        "mismatch_count": 0,
+        "mismatched_strategy_ids": [],
+        "strategies_recomputed": 18
+      },
+      "pass": true
+    },
+    "canonical_checkout_unchanged": {
+      "details": {
+        "expected": "f3fac7010402c9fbf13829c10d567aadec48c763085f3cd30928170bbf5971f5",
+        "sha256_after": "f3fac7010402c9fbf13829c10d567aadec48c763085f3cd30928170bbf5971f5",
+        "sha256_before": "f3fac7010402c9fbf13829c10d567aadec48c763085f3cd30928170bbf5971f5"
+      },
+      "pass": true
+    },
+    "completed_strategy_contract": {
+      "details": {
+        "actual": 18,
+        "expected": 18,
+        "runtime_failure_rows": 0
+      },
+      "pass": true
+    },
+    "constructor_reproducibility": {
+      "details": {
+        "mismatch_count": 0,
+        "mismatched_strategy_ids": [],
+        "sample_count": 18
+      },
+      "pass": true
+    },
+    "database_unchanged": {
+      "details": {
+        "sha256_after": "bf608f13d05e8ceae59e457c0b72a2eb30329eeb6415a09930bb8fde6971fd77",
+        "sha256_before": "bf608f13d05e8ceae59e457c0b72a2eb30329eeb6415a09930bb8fde6971fd77"
+      },
+      "pass": true
+    },
+    "detail_recomputation": {
+      "details": {
+        "all_pass": true,
+        "failure_totals": {
+          "aggregate_recomputation_mismatches": 0,
+          "constructor_metadata_mismatches": 0,
+          "history_cutoff_failures": 0,
+          "hit_recomputation_mismatches": 0,
+          "native_preservation_failures": 0,
+          "portfolio_hash_mismatches": 0,
+          "portfolio_uniqueness_failures": 0,
+          "ticket_legality_failures": 0
+        },
+        "files_validated": 19,
+        "observation_rows": 115715,
+        "per_strategy": [
+          {
+            "aggregate_recomputation_mismatches": 0,
+            "constructor_metadata_mismatches": 0,
+            "detail_rows_recounted": 21250,
+            "history_cutoff_failures": 0,
+            "hit_recomputation_mismatches": 0,
+            "native_preservation_failures": 0,
+            "portfolio_hash_mismatches": 0,
+            "portfolio_uniqueness_failures": 0,
+            "row_count_matches": true,
+            "strategy_id": "baseline::uniform_random_20",
+            "ticket_legality_failures": 0
+          },
+          {
+            "aggregate_recomputation_mismatches": 0,
+            "constructor_metadata_mismatches": 0,
+            "detail_rows_recounted": 2075,
+            "history_cutoff_failures": 0,
+            "hit_recomputation_mismatches": 0,
+            "native_preservation_failures": 0,
+            "portfolio_hash_mismatches": 0,
+            "portfolio_uniqueness_failures": 0,
+            "row_count_matches": true,
+            "strategy_id": "biglotto_p0_2bet",
+            "ticket_legality_failures": 0
+          },
+          {
+            "aggregate_recomputation_mismatches": 0,
+            "constructor_metadata_mismatches": 0,
+            "detail_rows_recounted": 21250,
+            "history_cutoff_failures": 0,
+            "hit_recomputation_mismatches": 0,
+            "native_preservation_failures": 0,
+            "portfolio_hash_mismatches": 0,
+            "portfolio_uniqueness_failures": 0,
+            "row_count_matches": true,
+            "strategy_id": "history::lottery_api/models/core_satellite.py",
+            "ticket_legality_failures": 0
+          },
+          {
+            "aggregate_recomputation_mismatches": 0,
+            "constructor_metadata_mismatches": 0,
+            "detail_rows_recounted": 21240,
+            "history_cutoff_failures": 0,
+            "hit_recomputation_mismatches": 0,
+            "native_preservation_failures": 0,
+            "portfolio_hash_mismatches": 0,
+            "portfolio_uniqueness_failures": 0,
+            "row_count_matches": true,
+            "strategy_id": "history::lottery_api/models/social_wisdom_predictor.py",
+            "ticket_legality_failures": 0
+          },
+          {
+            "aggregate_recomputation_mismatches": 0,
+            "constructor_metadata_mismatches": 0,
+            "detail_rows_recounted": 21250,
+            "history_cutoff_failures": 0,
+            "hit_recomputation_mismatches": 0,
+            "native_preservation_failures": 0,
+            "portfolio_hash_mismatches": 0,
+            "portfolio_uniqueness_failures": 0,
+            "row_count_matches": true,
+            "strategy_id": "history::lottery_api/models/zone_split.py",
+            "ticket_legality_failures": 0
+          },
+          {
+            "aggregate_recomputation_mismatches": 0,
+            "constructor_metadata_mismatches": 0,
+            "detail_rows_recounted": 2115,
+            "history_cutoff_failures": 0,
+            "hit_recomputation_mismatches": 0,
+            "native_preservation_failures": 0,
+            "portfolio_hash_mismatches": 0,
+            "portfolio_uniqueness_failures": 0,
+            "row_count_matches": true,
+            "strategy_id": "predict_biglotto_echo_2bet",
+            "ticket_legality_failures": 0
+          },
+          {
+            "aggregate_recomputation_mismatches": 0,
+            "constructor_metadata_mismatches": 0,
+            "detail_rows_recounted": 2065,
+            "history_cutoff_failures": 0,
+            "hit_recomputation_mismatches": 0,
+            "native_preservation_failures": 0,
+            "portfolio_hash_mismatches": 0,
+            "portfolio_uniqueness_failures": 0,
+            "row_count_matches": true,
+            "strategy_id": "predict_biglotto_echo_phase2",
+            "ticket_legality_failures": 0
+          },
+          {
+            "aggregate_recomputation_mismatches": 0,
+            "constructor_metadata_mismatches": 0,
+            "detail_rows_recounted": 2075,
+            "history_cutoff_failures": 0,
+            "hit_recomputation_mismatches": 0,
+            "native_preservation_failures": 0,
+            "portfolio_hash_mismatches": 0,
+            "portfolio_uniqueness_failures": 0,
+            "row_count_matches": true,
+            "strategy_id": "predict_biglotto_mixed_3bet",
+            "ticket_legality_failures": 0
+          },
+          {
+            "aggregate_recomputation_mismatches": 0,
+            "constructor_metadata_mismatches": 0,
+            "detail_rows_recounted": 2075,
+            "history_cutoff_failures": 0,
+            "hit_recomputation_mismatches": 0,
+            "native_preservation_failures": 0,
+            "portfolio_hash_mismatches": 0,
+            "portfolio_uniqueness_failures": 0,
+            "row_count_matches": true,
+            "strategy_id": "registry::bet2_fourier_expansion_biglotto",
+            "ticket_legality_failures": 0
+          },
+          {
+            "aggregate_recomputation_mismatches": 0,
+            "constructor_metadata_mismatches": 0,
+            "detail_rows_recounted": 2025,
+            "history_cutoff_failures": 0,
+            "hit_recomputation_mismatches": 0,
+            "native_preservation_failures": 0,
+            "portfolio_hash_mismatches": 0,
+            "portfolio_uniqueness_failures": 0,
+            "row_count_matches": true,
+            "strategy_id": "registry::biglotto_deviation_2bet",
+            "ticket_legality_failures": 0
+          },
+          {
+            "aggregate_recomputation_mismatches": 0,
+            "constructor_metadata_mismatches": 0,
+            "detail_rows_recounted": 2025,
+            "history_cutoff_failures": 0,
+            "hit_recomputation_mismatches": 0,
+            "native_preservation_failures": 0,
+            "portfolio_hash_mismatches": 0,
+            "portfolio_uniqueness_failures": 0,
+            "row_count_matches": true,
+            "strategy_id": "registry::biglotto_echo_aware_3bet",
+            "ticket_legality_failures": 0
+          },
+          {
+            "aggregate_recomputation_mismatches": 0,
+            "constructor_metadata_mismatches": 0,
+            "detail_rows_recounted": 2025,
+            "history_cutoff_failures": 0,
+            "hit_recomputation_mismatches": 0,
+            "native_preservation_failures": 0,
+            "portfolio_hash_mismatches": 0,
+            "portfolio_uniqueness_failures": 0,
+            "row_count_matches": true,
+            "strategy_id": "registry::biglotto_triple_strike",
+            "ticket_legality_failures": 0
+          },
+          {
+            "aggregate_recomputation_mismatches": 0,
+            "constructor_metadata_mismatches": 0,
+            "detail_rows_recounted": 2025,
+            "history_cutoff_failures": 0,
+            "hit_recomputation_mismatches": 0,
+            "native_preservation_failures": 0,
+            "portfolio_hash_mismatches": 0,
+            "portfolio_uniqueness_failures": 0,
+            "row_count_matches": true,
+            "strategy_id": "registry::biglotto_ts3_markov_4bet_w30",
+            "ticket_legality_failures": 0
+          },
+          {
+            "aggregate_recomputation_mismatches": 0,
+            "constructor_metadata_mismatches": 0,
+            "detail_rows_recounted": 2025,
+            "history_cutoff_failures": 0,
+            "hit_recomputation_mismatches": 0,
+            "native_preservation_failures": 0,
+            "portfolio_hash_mismatches": 0,
+            "portfolio_uniqueness_failures": 0,
+            "row_count_matches": true,
+            "strategy_id": "registry::cold_complement_biglotto",
+            "ticket_legality_failures": 0
+          },
+          {
+            "aggregate_recomputation_mismatches": 0,
+            "constructor_metadata_mismatches": 0,
+            "detail_rows_recounted": 2025,
+            "history_cutoff_failures": 0,
+            "hit_recomputation_mismatches": 0,
+            "native_preservation_failures": 0,
+            "portfolio_hash_mismatches": 0,
+            "portfolio_uniqueness_failures": 0,
+            "row_count_matches": true,
+            "strategy_id": "registry::coldpool15_biglotto",
+            "ticket_legality_failures": 0
+          },
+          {
+            "aggregate_recomputation_mismatches": 0,
+            "constructor_metadata_mismatches": 0,
+            "detail_rows_recounted": 2095,
+            "history_cutoff_failures": 0,
+            "hit_recomputation_mismatches": 0,
+            "native_preservation_failures": 0,
+            "portfolio_hash_mismatches": 0,
+            "portfolio_uniqueness_failures": 0,
+            "row_count_matches": true,
+            "strategy_id": "registry::fourier30_markov30_biglotto",
+            "ticket_legality_failures": 0
+          },
+          {
+            "aggregate_recomputation_mismatches": 0,
+            "constructor_metadata_mismatches": 0,
+            "detail_rows_recounted": 2025,
+            "history_cutoff_failures": 0,
+            "hit_recomputation_mismatches": 0,
+            "native_preservation_failures": 0,
+            "portfolio_hash_mismatches": 0,
+            "portfolio_uniqueness_failures": 0,
+            "row_count_matches": true,
+            "strategy_id": "registry::markov_2bet_biglotto",
+            "ticket_legality_failures": 0
+          },
+          {
+            "aggregate_recomputation_mismatches": 0,
+            "constructor_metadata_mismatches": 0,
+            "detail_rows_recounted": 2025,
+            "history_cutoff_failures": 0,
+            "hit_recomputation_mismatches": 0,
+            "native_preservation_failures": 0,
+            "portfolio_hash_mismatches": 0,
+            "portfolio_uniqueness_failures": 0,
+            "row_count_matches": true,
+            "strategy_id": "registry::markov_single_biglotto",
+            "ticket_legality_failures": 0
+          },
+          {
+            "aggregate_recomputation_mismatches": 0,
+            "constructor_metadata_mismatches": 0,
+            "detail_rows_recounted": 2025,
+            "history_cutoff_failures": 0,
+            "hit_recomputation_mismatches": 0,
+            "native_preservation_failures": 0,
+            "portfolio_hash_mismatches": 0,
+            "portfolio_uniqueness_failures": 0,
+            "row_count_matches": true,
+            "strategy_id": "registry::ts3_regime_3bet",
+            "ticket_legality_failures": 0
+          }
+        ],
+        "row_count_matches": true,
+        "rows_validated": 115715
+      },
+      "pass": true
+    },
+    "evidence_separation": {
+      "details": {
+        "evidence_records": 607,
+        "random_baselines": 1
+      },
+      "pass": true
+    },
+    "external_verification": {
+      "details": {
+        "artifact_reproduction": {
+          "csv_line_endings": "LF",
+          "file_count": 16,
+          "first_tree_sha256": "7d703ba0ec35a4ef02a94fbf6e5b58b2f41c97f7d5e6b2675891876d8e133ad0",
+          "identical": true,
+          "second_tree_sha256": "7d703ba0ec35a4ef02a94fbf6e5b58b2f41c97f7d5e6b2675891876d8e133ad0"
+        },
+        "commands": [
+          "/usr/bin/python3 -m py_compile scripts/p20s_all_strategies_bulk_recovery.py tests/test_p20s_all_strategies_bulk_recovery.py",
+          "/usr/bin/python3 -m ruff check scripts/p20s_all_strategies_bulk_recovery.py tests/test_p20s_all_strategies_bulk_recovery.py",
+          "/usr/bin/python3 -m pytest -q tests/test_p20s_all_strategies_bulk_recovery.py",
+          "LOTTERY_CANONICAL_DB_PATH=/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db /usr/bin/python3 -m pytest -q tests/test_strategy_preserving_20_ticket.py tests/test_p20c_strategy_preserving_backtest.py tests/test_p358a_biglotto_recovered_adapters.py tests/test_randomness_audit.py tests/test_randomness_audit_cadence.py tests/test_replay_strategy_lifecycle_registry.py tests/test_replay_strategy_registry_online_candidates.py tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py",
+          "/usr/bin/python3 -m pytest -q tests/test_p233b_lifecycle_unresolved_non_executable_stub_update.py -k 'not p232a and not db_rows_unchanged'",
+          "/usr/bin/python3 scripts/p20s_all_strategies_bulk_recovery.py --database /Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db --output-dir /tmp/p20s-full-clean-initial-20260719 --checkpoint-dir /tmp/p20s-full-checkpoints-clean-20260719 --canonical-repo /Users/kelvin/Kelvin-WorkSpace/LotteryNew --expected-canonical-status-sha256 f3fac7010402c9fbf13829c10d567aadec48c763085f3cd30928170bbf5971f5 --bootstrap-replicates 2000",
+          "two checkpoint-resumed static-clean LF publications with identical verification evidence; diff -rq returned no differences; normalized 16-file tree SHA-256 matched",
+          "git diff --cached --check",
+          "shasum -a 256 /Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+          "git -C /Users/kelvin/Kelvin-WorkSpace/LotteryNew status --porcelain=v1 -uall | LC_ALL=C sort | shasum -a 256"
+        ],
+        "diagnostic_caveats": [
+          "A combined diagnostic run produced 202 passes and five non-product failures: four selected the reusable worktree's small tracked fixture DB, and one compared a pre-reload exception class with a post-reload registry class.",
+          "The DB-bound P233B assertions hard-code the older 41-pair/94924-row snapshot. Read-only current-canonical audit found 43 pairs, 95452 rows, and zero unresolved lifecycle entries after the two newer Big Lotto registry identities."
+        ],
+        "failed": 0,
+        "passed": 220,
+        "skipped": 3,
+        "status": "PASS"
+      },
+      "pass": true
+    },
+    "full_preflight": {
+      "details": {
+        "PARTIAL_EVIDENCE_ONLY": 4,
+        "PASS": 18,
+        "TERMINAL_RESOLUTION": 17
+      },
+      "pass": true
+    },
+    "inventory_contract": {
+      "details": {
+        "adapter_20_ticket": 16,
+        "aliases": 2,
+        "document_only": 0,
+        "equivalence_groups": 5,
+        "equivalent_implementations": 3,
+        "external_state_not_reproducible": 0,
+        "failed": 0,
+        "independent_algorithms": 34,
+        "missing_implementation": 12,
+        "native_20_ticket": 2,
+        "partial": 4,
+        "remaining_engineering_backlog": 16,
+        "remaining_unknown": 0,
+        "terminally_excluded": 5,
+        "total_complete": 18,
+        "unique_strategy_identities": 39
+      },
+      "pass": true
+    }
+  },
+  "status": "PASS",
+  "task_id": "P20S_ALL_STRATEGIES_BULK_RECOVERY_BACKTEST"
+}

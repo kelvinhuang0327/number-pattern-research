@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import signal
+import time
 from pathlib import Path
 
 import pytest
@@ -204,6 +206,164 @@ def test_one_strategy_failure_does_not_stop_checkpoint_batch(tmp_path: Path):
     assert good_rows
     assert all(row["final_ticket_count"] == 20 for row in good_rows)
     assert len(execution["strategy_runs"]) == 2
+
+
+def test_timeout_is_enforced_and_batch_continues_without_state_leak(tmp_path: Path):
+    draws = synthetic_draws(3)
+    calls = {"fast-before": 0, "slow": 0, "fast-after": 0}
+
+    def fast_before(history, target, replicate, seed):
+        del history, target, replicate, seed
+        calls["fast-before"] += 1
+        return [[1, 2, 3, 4, 5, 6]]
+
+    def slow(history, target, replicate, seed):
+        del history, target, replicate, seed
+        calls["slow"] += 1
+        time.sleep(3)
+        return [[1, 2, 3, 4, 5, 6]]
+
+    def fast_after(history, target, replicate, seed):
+        del history, target, replicate, seed
+        calls["fast-after"] += 1
+        return [[1, 2, 3, 4, 5, 6]]
+
+    specs = [
+        p20c.StrategySpec(
+            "fast-before", "fast-before", "candidate", 1, 1, "fixture", "adapter", True, fast_before
+        ),
+        p20c.StrategySpec("slow", "slow", "candidate", 1, 1, "fixture", "adapter", True, slow),
+        p20c.StrategySpec(
+            "fast-after", "fast-after", "candidate", 1, 1, "fixture", "adapter", True, fast_after
+        ),
+    ]
+    checkpoint_dir = tmp_path / "checkpoints"
+    original_identities = dict(p20s.SPEC_TO_IDENTITY)
+    prior_handler = signal.getsignal(signal.SIGALRM)
+    prior_timer = signal.getitimer(signal.ITIMER_REAL)
+    p20s.SPEC_TO_IDENTITY.update({spec.strategy_id: spec.strategy_id for spec in specs})
+    started = time.monotonic()
+    try:
+        observations, failures, execution = p20s.execute_with_checkpoints(
+            draws=draws,
+            specs=specs,
+            checkpoint_dir=checkpoint_dir,
+            head="head",
+            dataset_sha256="dataset",
+            runner_sha256="runner",
+            timeout_seconds=1,
+            resume=False,
+        )
+    finally:
+        p20s.SPEC_TO_IDENTITY.clear()
+        p20s.SPEC_TO_IDENTITY.update(original_identities)
+    elapsed = time.monotonic() - started
+    runs = execution["strategy_runs"]
+
+    assert elapsed < 1 + p20s.TIMEOUT_TERMINATION_GRACE_SECONDS + 1, (
+        elapsed,
+        runs,
+        failures,
+    )
+    assert [row["strategy_id"] for row in runs] == ["fast-before", "slow", "fast-after"]
+    assert [row["run_status"] for row in runs] == [
+        "COMPLETE",
+        "RESOURCE_LIMIT_REACHED",
+        "COMPLETE",
+    ]
+    assert calls == {"fast-before": 2, "slow": 1, "fast-after": 2}
+    assert {row["base_strategy_id"] for row in observations} == {"fast-before", "fast-after"}
+    assert len(failures) == 1
+    assert failures[0]["failure_stage"] == "STRATEGY_TIMEOUT"
+    assert failures[0]["reason_code"] == "RESOURCE_LIMIT_REACHED"
+    assert "GENERATOR_FAILURE" not in {row["failure_stage"] for row in failures}
+    assert signal.getsignal(signal.SIGALRM) == prior_handler
+    assert signal.getitimer(signal.ITIMER_REAL) == prior_timer
+
+    timeout_metadata = json.loads(
+        (checkpoint_dir / f"{p20s._checkpoint_stem('slow')}.json").read_text(encoding="utf-8")
+    )
+    assert timeout_metadata["run_status"] == "RESOURCE_LIMIT_REACHED"
+    assert timeout_metadata["detail_rows"] == 0
+
+    calls_before_resume = dict(calls)
+    p20s.SPEC_TO_IDENTITY.update({spec.strategy_id: spec.strategy_id for spec in specs})
+    try:
+        resumed_observations, resumed_failures, resumed_execution = p20s.execute_with_checkpoints(
+            draws=draws,
+            specs=specs,
+            checkpoint_dir=checkpoint_dir,
+            head="head",
+            dataset_sha256="dataset",
+            runner_sha256="runner",
+            timeout_seconds=1,
+            resume=True,
+        )
+    finally:
+        p20s.SPEC_TO_IDENTITY.clear()
+        p20s.SPEC_TO_IDENTITY.update(original_identities)
+
+    assert calls == calls_before_resume
+    assert [row["run_status"] for row in resumed_execution["strategy_runs"]] == [
+        "COMPLETE",
+        "RESOURCE_LIMIT_REACHED",
+        "COMPLETE",
+    ]
+    assert all(row["checkpoint_reused"] for row in resumed_execution["strategy_runs"])
+    assert len(resumed_observations) == len(observations)
+    assert [row["base_strategy_id"] for row in resumed_observations] == [
+        row["base_strategy_id"] for row in observations
+    ]
+    assert resumed_failures == failures
+
+
+def test_timeout_error_is_distinct_from_normal_generator_failure(tmp_path: Path):
+    draws = synthetic_draws(2)
+
+    def times_out(history, target, replicate, seed):
+        del history, target, replicate, seed
+        raise TimeoutError("fixture timeout")
+
+    timeout_spec = p20c.StrategySpec(
+        "timeout", "timeout", "candidate", 1, 1, "fixture", "adapter", True, times_out
+    )
+    with pytest.raises(TimeoutError, match="fixture timeout"):
+        p20c.execute_backtest(
+            draws=draws,
+            specs=[timeout_spec],
+            constructor_mode=p20c.TICKET_CONSTRUCTOR_V1,
+            detail_path=tmp_path / "timeout.csv.gz",
+        )
+
+    def fails(history, target, replicate, seed):
+        del history, target, replicate, seed
+        raise RuntimeError("ordinary failure")
+
+    failure_spec = p20c.StrategySpec(
+        "failure", "failure", "candidate", 1, 1, "fixture", "adapter", True, fails
+    )
+    observations, failures, _ = p20c.execute_backtest(
+        draws=draws,
+        specs=[failure_spec],
+        constructor_mode=p20c.TICKET_CONSTRUCTOR_V1,
+        detail_path=tmp_path / "failure.csv.gz",
+    )
+    assert observations[0]["status"] == "GENERATOR_FAILURE"
+    assert failures[0]["failure_stage"] == "GENERATOR_FAILURE"
+    assert failures[0]["reason_code"] == "RuntimeError: ordinary failure"
+
+
+@pytest.mark.parametrize("timeout_seconds", [0, -1, 1.5, "1", True, None])
+def test_invalid_timeout_configuration_fails_closed(timeout_seconds):
+    with pytest.raises((TypeError, ValueError), match="timeout"):
+        with p20s.strategy_timeout(timeout_seconds):
+            pass
+
+
+def test_missing_timeout_configuration_uses_positive_default():
+    assert isinstance(p20s.DEFAULT_TIMEOUT_SECONDS, int)
+    assert not isinstance(p20s.DEFAULT_TIMEOUT_SECONDS, bool)
+    assert p20s.DEFAULT_TIMEOUT_SECONDS > 0
 
 
 def test_finalization_keeps_aliases_out_of_complete_counts():

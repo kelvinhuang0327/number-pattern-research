@@ -21,6 +21,7 @@ import signal
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 from collections import Counter
 from pathlib import Path
@@ -35,13 +36,16 @@ from scripts import p20c_strategy_preserving_20_ticket_backtest as p20c  # noqa:
 
 
 TASK_ID = "P20S_ALL_STRATEGIES_BULK_RECOVERY_BACKTEST"
-RUNNER_VERSION = "p20s-v1"
+RUNNER_VERSION = "p20s-v2"
 EXPECTED_IDENTITY_COUNT = 39
 EXPECTED_EVIDENCE_RECORDS = 607
 EXPECTED_RANDOM_BASELINES = 1
 EXPECTED_DRAWS = 2125
 EXPECTED_COMMON_DRAWS = 2025
 DEFAULT_TIMEOUT_SECONDS = 1800
+# SIGALRM interrupts Python strategy code immediately.  This allowance bounds
+# synchronous context-manager and checkpoint cleanup after the interrupt.
+TIMEOUT_TERMINATION_GRACE_SECONDS = 0.5
 DEFAULT_OUTPUT_DIR = (
     REPO_ROOT / "outputs" / "research" / "p20s_all_strategies_bulk_recovery"
 )
@@ -854,23 +858,42 @@ def full_preflight(
     return sorted(results, key=lambda row: row["strategy_id"])
 
 
+def validate_timeout_seconds(seconds: Any) -> int:
+    if isinstance(seconds, bool) or not isinstance(seconds, int):
+        raise TypeError("timeout seconds must be a positive integer")
+    if seconds <= 0:
+        raise ValueError("timeout seconds must be a positive integer")
+    return seconds
+
+
 @contextlib.contextmanager
 def strategy_timeout(seconds: int):
-    if seconds <= 0 or not hasattr(signal, "SIGALRM"):
-        yield
-        return
+    """Enforce the P20S-owned in-process timeout and restore signal state."""
+
+    seconds = validate_timeout_seconds(seconds)
+    if not hasattr(signal, "SIGALRM") or not hasattr(signal, "ITIMER_REAL"):
+        raise RuntimeError("strategy timeout requires SIGALRM and ITIMER_REAL support")
+    if threading.current_thread() is not threading.main_thread():
+        raise RuntimeError("strategy timeout must run in the main thread")
+
+    prior_timer = signal.getitimer(signal.ITIMER_REAL)
+    if prior_timer != (0.0, 0.0):
+        raise RuntimeError("strategy timeout boundary requires an unused real-time timer")
 
     def handler(signum, frame):
         del signum, frame
         raise TimeoutError(f"strategy exceeded {seconds} seconds")
 
-    prior = signal.signal(signal.SIGALRM, handler)
-    signal.setitimer(signal.ITIMER_REAL, seconds)
+    prior_handler = signal.getsignal(signal.SIGALRM)
+    signal.signal(signal.SIGALRM, handler)
     try:
-        yield
+        signal.setitimer(signal.ITIMER_REAL, seconds)
+        try:
+            yield
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
     finally:
-        signal.setitimer(signal.ITIMER_REAL, 0)
-        signal.signal(signal.SIGALRM, prior)
+        signal.signal(signal.SIGALRM, prior_handler)
 
 
 def checkpoint_header(
@@ -911,6 +934,7 @@ def execute_with_checkpoints(
     timeout_seconds: int,
     resume: bool,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    validate_timeout_seconds(timeout_seconds)
     checkpoint_dir.mkdir(parents=True, exist_ok=True)
     all_observations: list[dict[str, Any]] = []
     all_failures: list[dict[str, Any]] = []

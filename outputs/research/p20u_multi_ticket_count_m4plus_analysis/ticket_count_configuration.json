@@ -1,0 +1,21 @@
+{
+  "accepted_ticket_counts_exact": true,
+  "common_window_draws": 2025,
+  "confirmatory_family_definition": "unique independent_algorithm_id x ticket_count across the frozen 30-strategy universe and ticket counts 10,15,20; one-sided exact draw-cluster sign-flip p-values; credible adjusted advantage requires paired CI lower bound > 0 and Bonferroni-adjusted p < 0.05; BH-FDR is reported as a secondary adjustment",
+  "confirmatory_family_size": 90,
+  "constructor_version": "strategy_preserving_20_ticket/v1",
+  "portfolio_contract": "nested_prefix_from_single_ordered_20",
+  "portfolio_hash_scheme": "p20u-nested-ticket-count-aware/v1",
+  "prefixes": {
+    "10": "ordered_portfolio_20[0:10]",
+    "15": "ordered_portfolio_20[0:15]",
+    "20": "ordered_portfolio_20[0:20]"
+  },
+  "random_portfolio_contract": "nested_prefix_from_single_ordered_20",
+  "random_replicates": 10,
+  "ticket_counts": [
+    10,
+    15,
+    20
+  ]
+}

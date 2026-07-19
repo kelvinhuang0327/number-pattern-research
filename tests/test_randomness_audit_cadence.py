@@ -12,6 +12,8 @@ from typing import Any, Mapping
 
 import pytest
 
+from scripts.randomness_audit import AuditContractError, _load_json
+
 
 REPO = Path(__file__).resolve().parent.parent
 RESULTS_FILE = REPO / "outputs" / "randomness_audit" / "randomness_audit_results.json"
@@ -34,9 +36,21 @@ def _sha256(value: bytes) -> str:
 
 
 def _load_results(path: Path = RESULTS_FILE) -> dict[str, Any]:
-    value = json.loads(path.read_text(encoding="utf-8"))
-    assert isinstance(value, dict)
-    return value
+    return _load_json(path)
+
+
+def test_ambiguous_results_fail_before_cadence_callback(tmp_path):
+    source = tmp_path / "ambiguous-cadence-results.json"
+    source.write_text('{"cadence":{"anchor":"run_timestamp","anchor":"other"}}', encoding="utf-8")
+    callbacks = []
+
+    def evaluate_cadence(data):
+        callbacks.append(data)
+
+    with pytest.raises(AuditContractError, match="duplicate JSON object key 'anchor'"):
+        evaluate_cadence(_load_results(source))
+
+    assert callbacks == []
 
 
 def _parse_run_timestamp(value: Any) -> datetime:

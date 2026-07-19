@@ -11,6 +11,7 @@ import subprocess
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -115,6 +116,146 @@ def _compute(db: Path, *, seed: int = 42, simulations: int = 24):
         existing_results=_legacy(),
         run_timestamp=datetime(2026, 7, 18, 12, 0, tzinfo=timezone.utc),
     )
+
+
+def test_strict_json_rejects_duplicate_top_level_key_with_source(tmp_path):
+    source = tmp_path / "duplicate-top-level.json"
+    source.write_text('{"seed":42,"seed":43}', encoding="utf-8")
+
+    with pytest.raises(audit.AuditContractError) as raised:
+        audit._load_json(source)
+
+    assert str(source) in str(raised.value)
+    assert "duplicate JSON object key 'seed'" in str(raised.value)
+
+
+@pytest.mark.parametrize(
+    ("case", "payload", "duplicate_key"),
+    (
+        (
+            "provenance",
+            '{"provenance":{"implementation":{},"implementation":{}}}',
+            "implementation",
+        ),
+        (
+            "historical-evidence",
+            '{"provenance":{"historical_evidence":{"actual_run_provenance":"a",'
+            '"actual_run_provenance":"b"}}}',
+            "actual_run_provenance",
+        ),
+        (
+            "dataset-binding",
+            '{"validation_results":{"dataset_binding":{"status":"PASS"},'
+            '"dataset_binding":{"status":"FAIL"}}}',
+            "dataset_binding",
+        ),
+    ),
+)
+def test_strict_json_rejects_duplicate_nested_governing_keys(
+    tmp_path, case, payload, duplicate_key
+):
+    source = tmp_path / f"duplicate-{case}.json"
+    source.write_text(payload, encoding="utf-8")
+
+    with pytest.raises(audit.AuditContractError) as raised:
+        audit._load_json(source)
+
+    assert str(source) in str(raised.value)
+    assert f"duplicate JSON object key {duplicate_key!r}" in str(raised.value)
+
+
+def test_strict_json_preserves_clean_values_types_and_order(tmp_path):
+    source = tmp_path / "clean.json"
+    text = '{"z":0,"nested":{"b":true,"a":null},"items":[1,2.5,"three"]}'
+    source.write_text(text, encoding="utf-8")
+
+    strict = audit._load_json(source)
+    standard = json.loads(text)
+
+    assert strict == standard
+    assert list(strict) == list(standard)
+    assert list(strict["nested"]) == list(standard["nested"])
+    assert [type(value) for value in strict["items"]] == [
+        type(value) for value in standard["items"]
+    ]
+
+
+def test_committed_artifact_strict_load_and_normalized_result_are_identical():
+    source = REPO / "outputs" / "randomness_audit" / "randomness_audit_results.json"
+    strict = audit._load_json(source)
+    standard = json.loads(source.read_text(encoding="utf-8"))
+
+    assert strict == standard
+    assert audit.normalized_result_digest(strict) == audit.normalized_result_digest(standard)
+    assert (
+        audit.normalized_result_digest(strict)
+        == "ca097c324970ce06acb1fee29efccb48576b48cb9c34317fc24d341042338616"
+    )
+
+
+def test_ambiguous_run_input_fails_before_compute_db_open_and_publication_callbacks(
+    tmp_path, monkeypatch
+):
+    source = tmp_path / "ambiguous-results.json"
+    source.write_text('{"provenance":{},"provenance":{}}', encoding="utf-8")
+    callbacks = []
+
+    def forbidden(name):
+        def callback(*args, **kwargs):
+            callbacks.append(name)
+            raise AssertionError(f"{name} callback must not run")
+
+        return callback
+
+    monkeypatch.setattr(audit, "compute_audit", forbidden("compute"))
+    monkeypatch.setattr(audit, "load_canonical_data", forbidden("DB load"))
+    monkeypatch.setattr(audit, "_connect_read_only", forbidden("DB open"))
+    monkeypatch.setattr(audit, "_write_pair", forbidden("publication"))
+    args = SimpleNamespace(
+        results_out=source,
+        summary_out=tmp_path / "summary.md",
+        db=tmp_path / "forbidden.db",
+        seed=42,
+        simulations=2000,
+        alpha=0.05,
+    )
+
+    with pytest.raises(audit.AuditContractError, match="duplicate JSON object key 'provenance'"):
+        audit.run_and_publish(args)
+
+    assert callbacks == []
+
+
+def test_ambiguous_verify_input_fails_before_artifact_verification_callbacks(
+    tmp_path, monkeypatch
+):
+    source = tmp_path / "ambiguous-results.json"
+    source.write_text('{"dataset_identity":{},"dataset_identity":{}}', encoding="utf-8")
+    callbacks = []
+
+    def forbidden(name):
+        def callback(*args, **kwargs):
+            callbacks.append(name)
+            raise AssertionError(f"{name} callback must not run")
+
+        return callback
+
+    monkeypatch.setattr(audit, "_parse_utc", forbidden("timestamp verification"))
+    monkeypatch.setattr(audit, "compute_audit", forbidden("artifact recomputation"))
+    monkeypatch.setattr(audit, "render_summary", forbidden("artifact summary verification"))
+    args = SimpleNamespace(
+        results=source,
+        summary=tmp_path / "summary.md",
+        db=tmp_path / "forbidden.db",
+        seed=42,
+        simulations=2000,
+        alpha=0.05,
+    )
+
+    with pytest.raises(audit.AuditContractError, match="duplicate JSON object key 'dataset_identity'"):
+        audit.verify_artifacts(args)
+
+    assert callbacks == []
 
 
 def test_confirmatory_registry_is_frozen_and_complete():

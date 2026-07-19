@@ -1,0 +1,4 @@
+strategy_id,ticket_count,evaluated_draws,random_replicates,complete_portfolios,m4plus_hits,m4plus_rate,m4plus_confidence_interval_95,confidence_method,total_ticket_evaluations
+baseline::uniform_random_20,10,2025,10,20250,210,0.01037037037037037,"[0.008938271605,0.011703703704]",draw-cluster bootstrap percentile,202500
+baseline::uniform_random_20,15,2025,10,20250,310,0.015308641975308642,"[0.013629629630,0.016938271605]",draw-cluster bootstrap percentile,303750
+baseline::uniform_random_20,20,2025,10,20250,412,0.02034567901234568,"[0.018469135802,0.022320987654]",draw-cluster bootstrap percentile,405000

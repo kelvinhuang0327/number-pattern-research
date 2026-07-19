@@ -6522,7 +6522,9 @@ def _definition_execution_reachability(
     aliases = collect_aliases(tree)
     states: dict[tuple[int, int], str] = {}
     incomplete = False
-    target_key = lambda item: (item[0] or "", item[1])
+    def target_key(item: tuple[str | None, str]) -> tuple[str, str]:
+        return (item[0] or "", item[1])
+
     targets = [
         (target, "reached")
         for target in sorted(reached_definitions, key=target_key)
@@ -6716,7 +6718,7 @@ def one_hop_transitive_evidence(
     try:
         content = raw.decode("utf-8")
         tree = ast.parse(content, filename=source_path)
-    except (UnicodeDecodeError, SyntaxError) as exc:
+    except (UnicodeDecodeError, SyntaxError):
         return _evidence(
             "unknown",
             scope="transitive",
@@ -6823,7 +6825,7 @@ def one_hop_transitive_evidence(
                 imported_tree = ast.parse(
                     imported_raw.decode("utf-8"), filename=resolved_path
                 )
-            except (UnicodeDecodeError, SyntaxError) as exc:
+            except (UnicodeDecodeError, SyntaxError):
                 unknown_reasons.append(_failure_reason("imported_scan_incomplete"))
             else:
                 definition_targets, target_incomplete = _invoked_definition_targets(

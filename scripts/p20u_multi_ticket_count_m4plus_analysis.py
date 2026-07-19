@@ -282,11 +282,6 @@ def interval_text(low: float, high: float) -> str:
     return f"[{low:.12f},{high:.12f}]"
 
 
-def parse_interval(value: str) -> tuple[float, float]:
-    raw = json.loads(value)
-    return float(raw[0]), float(raw[1])
-
-
 def validate_ticket_counts(values: Sequence[Any]) -> tuple[int, ...]:
     if not values:
         raise ValueError("ticket counts must not be empty")
@@ -1567,6 +1562,18 @@ def _close_float(left: Any, right: Any, *, tolerance: float = 1e-15) -> bool:
     return math.isclose(float(left), float(right), rel_tol=0.0, abs_tol=tolerance)
 
 
+def random_metric_matches_upstream(
+    current: Mapping[str, Any], upstream: Mapping[str, Any]
+) -> bool:
+    return (
+        int(current["complete_portfolios"]) == int(upstream["evaluated_portfolios"])
+        and int(current["m4plus_hits"]) == int(upstream["m4plus_draw_hits"])
+        and _close_float(current["m4plus_rate"], upstream["m4plus_draw_rate"])
+        and _close_float(current["_ci_low"], upstream["m4plus_ci95_low"])
+        and _close_float(current["_ci_high"], upstream["m4plus_ci95_high"])
+    )
+
+
 def build_p20t_parity(
     *,
     metrics: Sequence[Mapping[str, Any]],
@@ -1711,33 +1718,10 @@ def build_p20t_parity(
             key=lambda row: int(row["rank"]),
         )
     ]
-    current_ranking = [
-        row["strategy_id"]
-        for row in sorted(
-            current_20.values(),
-            key=lambda row: (
-                -float(row["m4plus_rate"]),
-                -int(row["m4plus_hits"]),
-                str(row["effective_strategy_id"]),
-            ),
-        )
-    ]
+    current_ranking = [row["strategy_id"] for row in ranked_metric_rows(metrics, 20)]
     random_20 = next(row for row in random_rows if int(row["ticket_count"]) == 20)
     upstream_random = manifest["backtest"]["random_baseline"]
-    random_metric_pass = (
-        int(random_20["complete_portfolios"])
-        == int(upstream_random["evaluated_portfolios"])
-        and int(random_20["m4plus_hits"]) == int(upstream_random["m4plus_draw_hits"])
-        and _close_float(random_20["m4plus_rate"], upstream_random["m4plus_draw_rate"])
-        and _close_float(
-            parse_interval(random_20["m4plus_confidence_interval_95"])[0],
-            upstream_random["m4plus_ci95_low"],
-        )
-        and _close_float(
-            parse_interval(random_20["m4plus_confidence_interval_95"])[1],
-            upstream_random["m4plus_ci95_high"],
-        )
-    )
+    random_metric_pass = random_metric_matches_upstream(random_20, upstream_random)
     summary = {
         "strategy_identity_set": set(current_20) == set(upstream_metrics),
         "effective_identity_set": {
@@ -1827,7 +1811,7 @@ def ranked_metric_rows(
         key=lambda row: (
             -float(row["m4plus_rate"]),
             -int(row["m4plus_hits"]),
-            str(row["effective_strategy_id"]),
+            str(row["strategy_id"]),
         )
     )
     for rank, row in enumerate(rows, 1):

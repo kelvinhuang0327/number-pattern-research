@@ -408,7 +408,7 @@ def test_zero_increment_efficiency_has_explicit_status() -> None:
     assert marginal["extra_tickets_per_additional_m4plus_success"] == "NOT_APPLICABLE"
 
 
-def test_ranking_is_stable_on_effective_identity() -> None:
+def test_ranking_matches_p20t_governed_identity_tie_break() -> None:
     rows = [
         {
             "strategy_id": "z",
@@ -426,7 +426,37 @@ def test_ranking_is_stable_on_effective_identity() -> None:
         },
     ]
     ranked = p20u.ranked_metric_rows(rows, 20)
-    assert [row["strategy_id"] for row in ranked] == ["z", "a"]
+    assert [row["strategy_id"] for row in ranked] == ["a", "z"]
+
+
+def test_random_parity_uses_unrounded_interval_bounds() -> None:
+    current = {
+        "complete_portfolios": 20250,
+        "m4plus_hits": 412,
+        "m4plus_rate": 0.02034567901234568,
+        "m4plus_confidence_interval_95": "[0.018469135802,0.022320987654]",
+        "_ci_low": 0.018469135802469235,
+        "_ci_high": 0.022320987654321143,
+    }
+    upstream = {
+        "evaluated_portfolios": 20250,
+        "m4plus_draw_hits": 412,
+        "m4plus_draw_rate": 0.02034567901234568,
+        "m4plus_ci95_low": 0.018469135802469235,
+        "m4plus_ci95_high": 0.022320987654321143,
+    }
+    assert p20u.random_metric_matches_upstream(current, upstream)
+
+
+def test_ranked_20_ticket_slice_reproduces_p20t_ranking() -> None:
+    metrics = p20u.read_csv(p20u.P20T_DIR / "final_39_completed_strategy_metrics.csv")
+    upstream = sorted(
+        p20u.read_csv(p20u.P20T_DIR / "final_39_m4plus_all_valid_ranking.csv"),
+        key=lambda row: int(row["rank"]),
+    )
+    assert [row["strategy_id"] for row in p20u.ranked_metric_rows(metrics, 20)] == [
+        row["strategy_id"] for row in upstream
+    ]
 
 
 def test_frozen_universe_is_exactly_30_plus_9() -> None:

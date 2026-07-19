@@ -7,13 +7,13 @@ This is a historical empirical research result for entertainment and audit use. 
 ## Exact denominator
 
 - Unique governed Big Lotto strategy identities: 39
-- Non-baseline evidence records: 607
+- Resolution-ledger rows: 39
 - Random comparison baselines: 1
 - Aliases: 2
 - Equivalent implementations: 3
 - Independent algorithms after alias/equivalence collapse: 34
 
-The denominator rule admits current registry/P24 governed IDs, a proven ID-reuse split, reviewed P20C historical identities, and explicit P357/P358 recovery identities. Source files, helper functions, fixtures, composite DB scopes, publication runners, and evidence gaps remain in the resolution ledger but do not inflate the strategy count.
+The denominator rule admits current registry/P24 governed IDs, a proven ID-reuse split, reviewed P20C historical identities, and explicit P357/P358 recovery identities. The resolution ledger contains each governed identity exactly once; source provenance remains attached as row evidence.
 
 ## Execution outcome
 

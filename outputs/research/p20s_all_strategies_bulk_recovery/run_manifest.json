@@ -23,6 +23,7 @@
     "total_portfolios": 111360,
     "total_ticket_evaluations": 2227200
   },
+  "constructor_version": "strategy_preserving_20_ticket/v1",
   "data": {
     "big_lotto_replay_distinct_targets": 1552,
     "big_lotto_replay_ticket_rows": 24140,
@@ -191,12 +192,14 @@
     ],
     "wrong_main_number_count_rows": 0
   },
+  "database_sha256": "bf608f13d05e8ceae59e457c0b72a2eb30329eeb6415a09930bb8fde6971fd77",
+  "dataset_sha256": "cd56bcca2fd61152f1812bc9c524dcbff3070f06d1c457e81a64bb4d441dd93f",
   "execution": {
     "checkpoint_contract": {
       "constructor_version": "v1",
       "dataset_sha256": "cd56bcca2fd61152f1812bc9c524dcbff3070f06d1c457e81a64bb4d441dd93f",
-      "runner_version": "p20s-v1",
-      "source_head": "59bde7ea0dad3128a1142adbe78d2c048ff117a3"
+      "runner_version": "p20s-v3",
+      "source_head": "a60e57405bb932ec8b5a6ead89d0fbaf38ad3ff3"
     },
     "newly_recovered_strategies": 4,
     "next_unprocessed_strategy": null,
@@ -207,7 +210,7 @@
         "detail_rows": 21250,
         "identity_id": "baseline::uniform_random_20",
         "run_status": "COMPLETE",
-        "runtime_seconds": 3.240194,
+        "runtime_seconds": 4.392299,
         "strategy_id": "baseline::uniform_random_20"
       },
       {
@@ -215,7 +218,7 @@
         "detail_rows": 2075,
         "identity_id": "biglotto_p0_2bet",
         "run_status": "COMPLETE",
-        "runtime_seconds": 18.325536,
+        "runtime_seconds": 22.294739,
         "strategy_id": "biglotto_p0_2bet"
       },
       {
@@ -223,7 +226,7 @@
         "detail_rows": 21250,
         "identity_id": "history::lottery_api/models/core_satellite.py",
         "run_status": "COMPLETE",
-        "runtime_seconds": 4.721482,
+        "runtime_seconds": 6.662659,
         "strategy_id": "history::lottery_api/models/core_satellite.py"
       },
       {
@@ -231,7 +234,7 @@
         "detail_rows": 21240,
         "identity_id": "history::lottery_api/models/social_wisdom_predictor.py",
         "run_status": "COMPLETE",
-        "runtime_seconds": 129.140422,
+        "runtime_seconds": 167.25384,
         "strategy_id": "history::lottery_api/models/social_wisdom_predictor.py"
       },
       {
@@ -239,7 +242,7 @@
         "detail_rows": 21250,
         "identity_id": "history::lottery_api/models/zone_split.py",
         "run_status": "COMPLETE",
-        "runtime_seconds": 4.679965,
+        "runtime_seconds": 5.414104,
         "strategy_id": "history::lottery_api/models/zone_split.py"
       },
       {
@@ -247,7 +250,7 @@
         "detail_rows": 2115,
         "identity_id": "predict_biglotto_echo_2bet",
         "run_status": "COMPLETE",
-        "runtime_seconds": 18.916905,
+        "runtime_seconds": 25.303056,
         "strategy_id": "predict_biglotto_echo_2bet"
       },
       {
@@ -255,7 +258,7 @@
         "detail_rows": 2065,
         "identity_id": "predict_biglotto_echo_phase2",
         "run_status": "COMPLETE",
-        "runtime_seconds": 24.96939,
+        "runtime_seconds": 29.027903,
         "strategy_id": "predict_biglotto_echo_phase2"
       },
       {
@@ -263,7 +266,7 @@
         "detail_rows": 2075,
         "identity_id": "predict_biglotto_mixed_3bet",
         "run_status": "COMPLETE",
-        "runtime_seconds": 16.960584,
+        "runtime_seconds": 18.820941,
         "strategy_id": "predict_biglotto_mixed_3bet"
       },
       {
@@ -271,7 +274,7 @@
         "detail_rows": 2075,
         "identity_id": "bet2_fourier_expansion_biglotto@p42_p280_frozen_code",
         "run_status": "COMPLETE",
-        "runtime_seconds": 20.707404,
+        "runtime_seconds": 22.786403,
         "strategy_id": "registry::bet2_fourier_expansion_biglotto"
       },
       {
@@ -279,7 +282,7 @@
         "detail_rows": 2025,
         "identity_id": "biglotto_deviation_2bet",
         "run_status": "COMPLETE",
-        "runtime_seconds": 15.417034,
+        "runtime_seconds": 20.061715,
         "strategy_id": "registry::biglotto_deviation_2bet"
       },
       {
@@ -287,7 +290,7 @@
         "detail_rows": 2025,
         "identity_id": "biglotto_echo_aware_3bet",
         "run_status": "COMPLETE",
-        "runtime_seconds": 18.889814,
+        "runtime_seconds": 22.446338,
         "strategy_id": "registry::biglotto_echo_aware_3bet"
       },
       {
@@ -295,7 +298,7 @@
         "detail_rows": 2025,
         "identity_id": "biglotto_triple_strike",
         "run_status": "COMPLETE",
-        "runtime_seconds": 18.661796,
+        "runtime_seconds": 21.063057,
         "strategy_id": "registry::biglotto_triple_strike"
       },
       {
@@ -303,7 +306,7 @@
         "detail_rows": 2025,
         "identity_id": "biglotto_ts3_markov_4bet_w30",
         "run_status": "COMPLETE",
-        "runtime_seconds": 18.437088,
+        "runtime_seconds": 21.690354,
         "strategy_id": "registry::biglotto_ts3_markov_4bet_w30"
       },
       {
@@ -311,7 +314,7 @@
         "detail_rows": 2025,
         "identity_id": "cold_complement_biglotto",
         "run_status": "COMPLETE",
-        "runtime_seconds": 16.279883,
+        "runtime_seconds": 22.123037,
         "strategy_id": "registry::cold_complement_biglotto"
       },
       {
@@ -319,7 +322,7 @@
         "detail_rows": 2025,
         "identity_id": "coldpool15_biglotto",
         "run_status": "COMPLETE",
-        "runtime_seconds": 16.242981,
+        "runtime_seconds": 19.043827,
         "strategy_id": "registry::coldpool15_biglotto"
       },
       {
@@ -327,7 +330,7 @@
         "detail_rows": 2095,
         "identity_id": "fourier30_markov30_biglotto",
         "run_status": "COMPLETE",
-        "runtime_seconds": 16.740961,
+        "runtime_seconds": 20.025516,
         "strategy_id": "registry::fourier30_markov30_biglotto"
       },
       {
@@ -335,7 +338,7 @@
         "detail_rows": 2025,
         "identity_id": "markov_2bet_biglotto",
         "run_status": "COMPLETE",
-        "runtime_seconds": 17.496661,
+        "runtime_seconds": 21.30325,
         "strategy_id": "registry::markov_2bet_biglotto"
       },
       {
@@ -343,7 +346,7 @@
         "detail_rows": 2025,
         "identity_id": "markov_single_biglotto",
         "run_status": "COMPLETE",
-        "runtime_seconds": 17.606168,
+        "runtime_seconds": 22.92376,
         "strategy_id": "registry::markov_single_biglotto"
       },
       {
@@ -351,7 +354,7 @@
         "detail_rows": 2025,
         "identity_id": "ts3_regime_3bet",
         "run_status": "COMPLETE",
-        "runtime_seconds": 18.172707,
+        "runtime_seconds": 24.602645,
         "strategy_id": "registry::ts3_regime_3bet"
       }
     ],
@@ -364,7 +367,6 @@
     "document_only": 0,
     "equivalence_groups": 5,
     "equivalent_implementations": 3,
-    "evidence_records": 607,
     "external_state_not_reproducible": 0,
     "failed": 0,
     "independent_algorithms": 34,
@@ -374,6 +376,8 @@
     "random_baselines": 1,
     "remaining_engineering_backlog": 16,
     "remaining_unknown": 0,
+    "resolution_ledger_rows": 39,
+    "resource_limit_reached": 0,
     "terminally_excluded": 5,
     "total_complete": 18,
     "unique_strategy_identities": 39
@@ -385,58 +389,48 @@
     "Four partial adapters have shape-safety evidence but no historical parity proof."
   ],
   "outputs": {
-    "all_completed_strategy_metrics.csv": "41f2717fa6fe566535efe199ab65875a6a36ba3c45c4426d4abfd0a3c19db761",
+    "all_completed_strategy_metrics.csv": "60bac4bfd25f16eabe90476d1225f0f2b1e8211c9cc4bfacbb7b50d7c681d3ce",
     "excluded_strategies.csv": "a6fb4ea6a6233e227c2d1d6c4107340d72b0a5329750b898f271662ee0262527",
     "failed_strategies.csv": "6323833c1e38551fa46b94ee1436716bbb8dc596778421e715b8f74d7a3c334e",
-    "final_report.md": "9b9f3864f928b068d6f5a51d69b7d2cb464fc4b02b29cff0815a169ab98d85d1",
-    "m4plus_adapter_ranking.csv": "342b6aa0970298039021ab77de59feec99170f7ea33566ca7875902b1b6bf4ac",
-    "m4plus_all_valid_ranking.csv": "a9cb63a192ba7129a7a7b37a80940e62a704358bfc5c3e2727aee0b6cbe5cc4f",
-    "m4plus_native_ranking.csv": "8f123cbb634d0ecb83b98de09a481d4c6526004eeed8f8e8d6835fd3c2763494",
-    "newly_recovered_strategy_metrics.csv": "b3bcf4fc621d686611ad2cb07af936621d6b3b6ee0dd7d18ebc37fd64d2291a3",
+    "final_report.md": "33d12b5cd0e112a5996d16712267d2d0d03e46e2ff48c95bba0632a3d5cd5600",
+    "m4plus_adapter_ranking.csv": "01987857399416679718f2cf118eb2877f7e748d0bf08852eecfe396eb5ab0a0",
+    "m4plus_all_valid_ranking.csv": "1d96c06add71756f0d59f9c16eaa42c89570e04f37742157f76078d4085d9008",
+    "m4plus_native_ranking.csv": "2a467f65c614f23679de00179c73f6a8c3d1158374fa8830e17f8af5e951c517",
+    "newly_recovered_strategy_metrics.csv": "c1a5a4a06f0241e351749440437d53242c4a805e1dcbf27f3b6708129608f729",
     "partial_results.csv": "e9275de538ac0269bbc41cad5bb4b5a0d3edde45cc9a3ff8b8ae1fd19bf762a4",
     "preflight_results.csv": "8e6d511c85fb4ab51e8952aa22a590023d32795c027bc1ed9476f962fda4d795",
     "recovered_entrypoints.csv": "548d77e91ebe070857106ffd5087ba492a4e448884db812eab902d0630eec483",
     "strategy_equivalence_groups.csv": "9f9bd4481d6c1b4fab3fa5dc4c5fc2c06a51a47cccd6033eda140486114753b7",
     "strategy_master_inventory.csv": "aed410b4758c1af27a523bd8041310a5a0416423aaa5a01821c20ff4bbc30c8d",
-    "strategy_resolution_ledger.csv": "b50c4c18c2b9eb03f931a4708f14075c2ffa496fe0a2b7a6bbb41cdfd1db0404",
-    "validation_results.json": "7eb5802b7ffa937b91fc2d5e19e6fa470b1cf26e5f0a1d895a21d467cebf4ef4"
+    "strategy_resolution_ledger.csv": "ecf44c814f989ed5e742f929b2be8ea77174a2e1c91cf39c2ae7273733530df7",
+    "validation_results.json": "c7aec49be2da8b0b84315e73212e28125989b3bcd3e0a504d1c28ddd00f904ba"
   },
   "repo": {
     "branch": "codex/p20s-all-strategies-bulk-recovery",
     "pr_693_merge_commit": "59bde7ea0dad3128a1142adbe78d2c048ff117a3",
-    "runner_sha256": "bd7a20fc144b445c4ccd4a4c4d9b0aef37361d5d3a0843bc42f719aab8e1c636",
-    "task_base_commit": "59bde7ea0dad3128a1142adbe78d2c048ff117a3"
+    "runner_sha256": "3fa5dfe6d710d22170f327dc515dfefb6a0b0b6f8947713ea0c23a254eed55ee",
+    "task_base_commit": "a60e57405bb932ec8b5a6ead89d0fbaf38ad3ff3"
   },
-  "runner_version": "p20s-v1",
+  "runner_version": "p20s-v3",
+  "source_head": "a60e57405bb932ec8b5a6ead89d0fbaf38ad3ff3",
   "status": "COMPLETED",
   "task_id": "P20S_ALL_STRATEGIES_BULK_RECOVERY_BACKTEST",
   "verification": {
     "artifact_reproduction": {
       "csv_line_endings": "LF",
       "file_count": 16,
-      "first_tree_sha256": "7d703ba0ec35a4ef02a94fbf6e5b58b2f41c97f7d5e6b2675891876d8e133ad0",
+      "first_tree_sha256": "12b13ade1cf6c8bd4bdc94a706da451a2214b61fba7285cb3d8bd506d4f7e6ce",
       "identical": true,
-      "second_tree_sha256": "7d703ba0ec35a4ef02a94fbf6e5b58b2f41c97f7d5e6b2675891876d8e133ad0"
+      "second_tree_sha256": "12b13ade1cf6c8bd4bdc94a706da451a2214b61fba7285cb3d8bd506d4f7e6ce"
     },
     "commands": [
-      "/usr/bin/python3 -m py_compile scripts/p20s_all_strategies_bulk_recovery.py tests/test_p20s_all_strategies_bulk_recovery.py",
-      "/usr/bin/python3 -m ruff check scripts/p20s_all_strategies_bulk_recovery.py tests/test_p20s_all_strategies_bulk_recovery.py",
-      "/usr/bin/python3 -m pytest -q tests/test_p20s_all_strategies_bulk_recovery.py",
-      "LOTTERY_CANONICAL_DB_PATH=/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db /usr/bin/python3 -m pytest -q tests/test_strategy_preserving_20_ticket.py tests/test_p20c_strategy_preserving_backtest.py tests/test_p358a_biglotto_recovered_adapters.py tests/test_randomness_audit.py tests/test_randomness_audit_cadence.py tests/test_replay_strategy_lifecycle_registry.py tests/test_replay_strategy_registry_online_candidates.py tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py",
-      "/usr/bin/python3 -m pytest -q tests/test_p233b_lifecycle_unresolved_non_executable_stub_update.py -k 'not p232a and not db_rows_unchanged'",
-      "/usr/bin/python3 scripts/p20s_all_strategies_bulk_recovery.py --database /Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db --output-dir /tmp/p20s-full-clean-initial-20260719 --checkpoint-dir /tmp/p20s-full-checkpoints-clean-20260719 --canonical-repo /Users/kelvin/Kelvin-WorkSpace/LotteryNew --expected-canonical-status-sha256 f3fac7010402c9fbf13829c10d567aadec48c763085f3cd30928170bbf5971f5 --bootstrap-replicates 2000",
-      "two checkpoint-resumed static-clean LF publications with identical verification evidence; diff -rq returned no differences; normalized 16-file tree SHA-256 matched",
-      "git diff --cached --check",
-      "shasum -a 256 /Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
-      "git -C /Users/kelvin/Kelvin-WorkSpace/LotteryNew status --porcelain=v1 -uall | LC_ALL=C sort | shasum -a 256"
-    ],
-    "diagnostic_caveats": [
-      "A combined diagnostic run produced 202 passes and five non-product failures: four selected the reusable worktree's small tracked fixture DB, and one compared a pre-reload exception class with a post-reload registry class.",
-      "The DB-bound P233B assertions hard-code the older 41-pair/94924-row snapshot. Read-only current-canonical audit found 43 pairs, 95452 rows, and zero unresolved lifecycle entries after the two newer Big Lotto registry identities."
+      "/usr/bin/python3 -m py_compile scripts/p20s_all_strategies_bulk_recovery.py scripts/p20c_strategy_preserving_20_ticket_backtest.py tests/test_p20s_all_strategies_bulk_recovery.py",
+      "/usr/bin/python3 -m ruff check scripts/p20s_all_strategies_bulk_recovery.py scripts/p20c_strategy_preserving_20_ticket_backtest.py tests/test_p20s_all_strategies_bulk_recovery.py",
+      "/usr/bin/python3 -m pytest -q tests/test_p20s_all_strategies_bulk_recovery.py"
     ],
     "failed": 0,
-    "passed": 220,
-    "skipped": 3,
+    "passed": 29,
+    "skipped": 0,
     "status": "PASS"
   }
 }

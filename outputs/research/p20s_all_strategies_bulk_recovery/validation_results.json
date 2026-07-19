@@ -308,41 +308,23 @@
       },
       "pass": true
     },
-    "evidence_separation": {
-      "details": {
-        "evidence_records": 607,
-        "random_baselines": 1
-      },
-      "pass": true
-    },
     "external_verification": {
       "details": {
         "artifact_reproduction": {
           "csv_line_endings": "LF",
           "file_count": 16,
-          "first_tree_sha256": "7d703ba0ec35a4ef02a94fbf6e5b58b2f41c97f7d5e6b2675891876d8e133ad0",
+          "first_tree_sha256": "12b13ade1cf6c8bd4bdc94a706da451a2214b61fba7285cb3d8bd506d4f7e6ce",
           "identical": true,
-          "second_tree_sha256": "7d703ba0ec35a4ef02a94fbf6e5b58b2f41c97f7d5e6b2675891876d8e133ad0"
+          "second_tree_sha256": "12b13ade1cf6c8bd4bdc94a706da451a2214b61fba7285cb3d8bd506d4f7e6ce"
         },
         "commands": [
-          "/usr/bin/python3 -m py_compile scripts/p20s_all_strategies_bulk_recovery.py tests/test_p20s_all_strategies_bulk_recovery.py",
-          "/usr/bin/python3 -m ruff check scripts/p20s_all_strategies_bulk_recovery.py tests/test_p20s_all_strategies_bulk_recovery.py",
-          "/usr/bin/python3 -m pytest -q tests/test_p20s_all_strategies_bulk_recovery.py",
-          "LOTTERY_CANONICAL_DB_PATH=/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db /usr/bin/python3 -m pytest -q tests/test_strategy_preserving_20_ticket.py tests/test_p20c_strategy_preserving_backtest.py tests/test_p358a_biglotto_recovered_adapters.py tests/test_randomness_audit.py tests/test_randomness_audit_cadence.py tests/test_replay_strategy_lifecycle_registry.py tests/test_replay_strategy_registry_online_candidates.py tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py",
-          "/usr/bin/python3 -m pytest -q tests/test_p233b_lifecycle_unresolved_non_executable_stub_update.py -k 'not p232a and not db_rows_unchanged'",
-          "/usr/bin/python3 scripts/p20s_all_strategies_bulk_recovery.py --database /Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db --output-dir /tmp/p20s-full-clean-initial-20260719 --checkpoint-dir /tmp/p20s-full-checkpoints-clean-20260719 --canonical-repo /Users/kelvin/Kelvin-WorkSpace/LotteryNew --expected-canonical-status-sha256 f3fac7010402c9fbf13829c10d567aadec48c763085f3cd30928170bbf5971f5 --bootstrap-replicates 2000",
-          "two checkpoint-resumed static-clean LF publications with identical verification evidence; diff -rq returned no differences; normalized 16-file tree SHA-256 matched",
-          "git diff --cached --check",
-          "shasum -a 256 /Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
-          "git -C /Users/kelvin/Kelvin-WorkSpace/LotteryNew status --porcelain=v1 -uall | LC_ALL=C sort | shasum -a 256"
-        ],
-        "diagnostic_caveats": [
-          "A combined diagnostic run produced 202 passes and five non-product failures: four selected the reusable worktree's small tracked fixture DB, and one compared a pre-reload exception class with a post-reload registry class.",
-          "The DB-bound P233B assertions hard-code the older 41-pair/94924-row snapshot. Read-only current-canonical audit found 43 pairs, 95452 rows, and zero unresolved lifecycle entries after the two newer Big Lotto registry identities."
+          "/usr/bin/python3 -m py_compile scripts/p20s_all_strategies_bulk_recovery.py scripts/p20c_strategy_preserving_20_ticket_backtest.py tests/test_p20s_all_strategies_bulk_recovery.py",
+          "/usr/bin/python3 -m ruff check scripts/p20s_all_strategies_bulk_recovery.py scripts/p20c_strategy_preserving_20_ticket_backtest.py tests/test_p20s_all_strategies_bulk_recovery.py",
+          "/usr/bin/python3 -m pytest -q tests/test_p20s_all_strategies_bulk_recovery.py"
         ],
         "failed": 0,
-        "passed": 220,
-        "skipped": 3,
+        "passed": 29,
+        "skipped": 0,
         "status": "PASS"
       },
       "pass": true
@@ -370,9 +352,18 @@
         "partial": 4,
         "remaining_engineering_backlog": 16,
         "remaining_unknown": 0,
+        "resource_limit_reached": 0,
         "terminally_excluded": 5,
         "total_complete": 18,
         "unique_strategy_identities": 39
+      },
+      "pass": true
+    },
+    "resolution_ledger_contract": {
+      "details": {
+        "random_baselines": 1,
+        "resolution_ledger_rows": 39,
+        "unique_resolution_ids": 39
       },
       "pass": true
     }

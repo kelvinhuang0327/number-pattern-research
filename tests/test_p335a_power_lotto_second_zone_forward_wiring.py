@@ -32,6 +32,33 @@ from lottery_api.models.power_lotto_second_zone import (  # noqa: E402
     assert_power_lotto_predicted_special,
     second_zone_predict,
 )
+from lottery_api.models import replay_strategy_registry as replay_registry  # noqa: E402
+from lottery_api.models.replay_strategy_registry import (  # noqa: E402
+    InsufficientHistory,
+    get_adapter,
+)
+
+
+POWER_DESCRIPTOR_CASES = (
+    (
+        "power_precision_3bet",
+        "威力彩 Precision 3注",
+        "v0.1",
+        3,
+    ),
+    (
+        "power_orthogonal_5bet",
+        "威力彩 Orthogonal 5注",
+        "v0.1",
+        5,
+    ),
+    (
+        "fourier_rhythm_3bet",
+        "威力彩 Fourier Rhythm 3注",
+        "v0.1",
+        3,
+    ),
+)
 
 
 def _make_history(n: int) -> list:
@@ -171,3 +198,132 @@ class TestForwardWiringPreventsNull:
             assert_power_lotto_predicted_special(
                 {"lottery_type": "POWER_LOTTO", "dry_run": 0, "predicted_special": None}
             )
+
+
+def _native_power_bets(strategy_id: str, history: list) -> list:
+    """Call the descriptor's native generator without its DB/CLI entrypoint."""
+    if strategy_id == "power_precision_3bet":
+        from tools.predict_power_precision_3bet import generate_power_precision_3bet
+
+        return generate_power_precision_3bet(history)
+    if strategy_id == "power_orthogonal_5bet":
+        from tools.predict_power_orthogonal_5bet import generate_orthogonal_5bet
+
+        return generate_orthogonal_5bet(history)
+    if strategy_id == "fourier_rhythm_3bet":
+        from tools.power_fourier_rhythm import fourier_rhythm_predict
+
+        return fourier_rhythm_predict(history, n_bets=3, window=500)
+    raise AssertionError(f"Unhandled Power Lotto strategy: {strategy_id}")
+
+
+class TestReplayAdapterPowerSecondZone:
+    @pytest.mark.parametrize("strategy_id", [case[0] for case in POWER_DESCRIPTOR_CASES])
+    def test_three_online_descriptors_forward_canonical_helper(
+        self,
+        monkeypatch,
+        strategy_id,
+    ):
+        history = _make_history(120)
+        expected_special = second_zone_predict(history)
+        helper_calls = []
+
+        def helper_spy(observed_history):
+            helper_calls.append(observed_history)
+            return second_zone_predict(observed_history)
+
+        monkeypatch.setattr(
+            replay_registry.power_lotto_second_zone,
+            "second_zone_predict",
+            helper_spy,
+        )
+
+        adapter = get_adapter(strategy_id)
+        first_numbers, first_special = adapter.get_one_bet(history, "POWER_LOTTO")
+        repeat_numbers, repeat_special = adapter.get_one_bet(history, "POWER_LOTTO")
+
+        assert helper_calls == [history, history]
+        assert first_special == expected_special == repeat_special
+        assert isinstance(first_special, int)
+        assert SPECIAL_MIN <= first_special <= SPECIAL_MAX
+        assert first_numbers == repeat_numbers == sorted(first_numbers)
+        assert len(first_numbers) == 6
+        assert len(set(first_numbers)) == 6
+        assert all(1 <= number <= 38 for number in first_numbers)
+
+    @pytest.mark.parametrize("strategy_id", [case[0] for case in POWER_DESCRIPTOR_CASES])
+    def test_helper_fail_closed_exception_is_not_replaced_with_none(
+        self, monkeypatch, strategy_id
+    ):
+        history = _make_history(120)
+
+        def fail_closed(_history):
+            raise InsufficientHistoryError("canonical helper rejected history")
+
+        monkeypatch.setattr(
+            replay_registry.power_lotto_second_zone,
+            "second_zone_predict",
+            fail_closed,
+        )
+
+        with pytest.raises(InsufficientHistoryError, match="canonical helper rejected"):
+            get_adapter(strategy_id).get_one_bet(history, "POWER_LOTTO")
+
+    @pytest.mark.parametrize("strategy_id", [case[0] for case in POWER_DESCRIPTOR_CASES])
+    def test_adapter_short_history_remains_fail_closed(self, strategy_id):
+        with pytest.raises(InsufficientHistory):
+            get_adapter(strategy_id).get_one_bet(
+                _make_history(MIN_HISTORY - 1), "POWER_LOTTO"
+            )
+
+
+class TestReplayAdapterNonPowerRegression:
+    @pytest.mark.parametrize(
+        ("strategy_id", "lottery_type", "pick", "pool"),
+        (
+            ("biglotto_triple_strike", "BIG_LOTTO", 6, 49),
+            ("daily539_f4cold", "DAILY_539", 5, 39),
+        ),
+    )
+    def test_non_power_special_and_main_numbers_are_unchanged(
+        self, monkeypatch, strategy_id, lottery_type, pick, pool
+    ):
+        history = _make_history(120)
+        adapter = get_adapter(strategy_id)
+        expected_numbers = sorted(adapter._call_strategy(history, lottery_type))
+
+        def unexpected_power_helper(_history):
+            raise AssertionError("Power Lotto helper called for non-Power adapter")
+
+        monkeypatch.setattr(
+            replay_registry.power_lotto_second_zone,
+            "second_zone_predict",
+            unexpected_power_helper,
+        )
+
+        numbers, special = adapter.get_one_bet(history, lottery_type)
+
+        assert numbers == expected_numbers
+        assert len(numbers) == pick
+        assert len(set(numbers)) == pick
+        assert all(1 <= number <= pool for number in numbers)
+        assert special is None
+
+
+class TestRegistryMetadataInvariance:
+    @pytest.mark.parametrize(
+        ("strategy_id", "display_name", "version", "native_bet_count"),
+        POWER_DESCRIPTOR_CASES,
+    )
+    def test_power_descriptor_metadata_and_native_bet_count_are_unchanged(
+        self, strategy_id, display_name, version, native_bet_count
+    ):
+        adapter = get_adapter(strategy_id)
+        assert adapter.meta.strategy_id == strategy_id
+        assert adapter.meta.strategy_name == display_name
+        assert adapter.meta.strategy_version == version
+        assert adapter.meta.lifecycle_status == "ONLINE"
+        assert adapter.meta.supported_lottery_types == ["POWER_LOTTO"]
+
+        native_bets = _native_power_bets(strategy_id, _make_history(120))
+        assert len(native_bets) == native_bet_count

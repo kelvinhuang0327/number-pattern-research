@@ -13,7 +13,7 @@
 ## Evidence Schema and Fail-Closed Rules
 
 - Schema: `p541b-r2-evidence-v1`
-- Detector: `p541b-r2-detector-v4`
+- Detector: `p541b-r2-detector-v10`
 - Canonical generation runtime: `CPython==3.9.6` — verification **PASS**.
 - Every evidence family publishes `state`, `scope`, `detector_id`, and deterministic `findings`.
 - Every finding publishes separate `resolved_api` and `resolved_syntax` fields plus `imported_module_path`; exactly one resolved field is populated.
@@ -42,16 +42,16 @@
 | Frozen source records | 580 |
 | Complete scans | 544 |
 | Unknown scans | 36 |
-| Direct findings | 3545 |
+| Direct findings | 3548 |
 | Transitive findings | 11484 |
 | Scan `complete` | 544 |
 | Scan `syntax_error` | 1 |
 | Scan `unreadable` | 0 |
 | Scan `unsupported` | 35 |
-| Risk `high` | 110 |
-| Risk `low` | 22 |
+| Risk `high` | 71 |
+| Risk `low` | 24 |
 | Risk `medium` | 4 |
-| Risk `unknown` | 444 |
+| Risk `unknown` | 481 |
 
 ## Tri-State Evidence
 
@@ -62,13 +62,13 @@
 | `network_io` | 17 | 527 | 36 |
 | `process_execution` | 12 | 532 | 36 |
 | `other_external_effect` | 57 | 512 | 11 |
-| `transitive_external_state` | 0 | 137 | 443 |
+| `transitive_external_state` | 0 | 100 | 480 |
 | `import_time_execution` | 12 | 536 | 32 |
 | `hardcoded_absolute_path` | 56 | 489 | 35 |
 | `hardcoded_draw_or_date` | 42 | 503 | 35 |
 | `database_like_path` | 390 | 174 | 16 |
 | `external_service_url` | 22 | 523 | 35 |
-| `filesystem_read` | 166 | 385 | 29 |
+| `filesystem_read` | 169 | 382 | 29 |
 | `valid_main_guard` | 539 | 30 | 11 |
 | `malformed_main_guard` | 1 | 543 | 36 |
 
@@ -80,7 +80,7 @@
 
 ## Frozen Provenance
 
-- Generator SHA-256: `0afccd775dfdee114e709e6648248d4c8f277247ed00bb4246e5e25648d4c7c8`
+- Generator SHA-256: `2cf179406ff155b481e2a7c47941651ceae2c56a7e0cdb0613a89ec50b6b22db`
 - Historical P541B JSON blob: `12f1595c96e3f9deddc7a7d2d9549c03144635f0` — verification **PASS**
 - Historical P541B Markdown blob: `3b28e39bfe747c5f196b9aec6610284709466cf8` — verification **PASS**
 - Historical P541A JSON blob: `7557f364160dc09c91a19c07b370cb4b231c0194` — verification **PASS**

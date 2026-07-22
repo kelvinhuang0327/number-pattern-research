@@ -32,10 +32,11 @@ Backward compatibility:
 from __future__ import annotations
 
 import sys
-import json
 import logging
 from pathlib import Path
-from typing import Optional, List, Tuple, Callable
+from typing import Optional, List, Tuple
+
+from . import power_lotto_second_zone
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -205,7 +206,11 @@ class ReplayStrategyAdapter:
             )
         numbers = self._call_strategy(history, lottery_type)
         validated = _validate_numbers(numbers, lottery_type, self.meta.strategy_id)
-        special = None if lottery_type in _NO_SPECIAL_TYPES else None  # always None in replay v0.1
+        special = (
+            power_lotto_second_zone.second_zone_predict(history)
+            if lottery_type == "POWER_LOTTO"
+            else None
+        )
         return validated, special
 
     def _call_strategy(self, history: List[dict], lottery_type: str) -> List[int]:

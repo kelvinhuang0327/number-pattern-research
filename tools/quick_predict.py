@@ -3,11 +3,14 @@
 快速預測腳本 - 供 /predict 命令使用
 用法: python3 tools/quick_predict.py [彩票類型] [注數]
 
-策略對照 (2026-02-24 更新):
+策略對照 (2026-07-24 legacy continuity 更新):
   大樂透 2注: 偏差互補+回聲 P0 (Edge +1.21%, 確定性)
   大樂透 3注: Triple Strike (Edge +0.98%, 1500期 STABLE)
-  大樂透 4注: TS3+Markov(w=30) (Edge +1.23%, 1500期)
-  大樂透 5注: TS3+Markov+FreqOrt (Edge +1.77%, 1500期 z=2.40 ★最佳)
+  大樂透 4注: TS3+Markov(w=30) — biglotto_5bet_orthogonal 前4注同一 implementation family；
+    evidence_status=HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED
+  大樂透 5注: TS3+Markov+FreqOrt — evidence_status=HISTORICAL_RESEARCH_ONLY,
+    current_significance=NOT_ESTABLISHED（2026-07-24 獨立重驗：原始 P3 claim 不可重現，詳見
+    rejected/ts3_markov_freq_5bet_biglotto.json :: retest_2026_07_24）
   威力彩 2注: Fourier Rhythm (Edge +1.91%)
   威力彩 3注: Power Precision (Edge +2.23%, 1500期 STABLE, z=2.74)
   威力彩 特別號: V3 (Edge +2.20%)
@@ -20,7 +23,6 @@ import random
 import argparse
 import datetime as dt
 import json
-import sqlite3
 import numpy as np
 from numpy.fft import fft, fftfreq
 from collections import Counter
@@ -30,43 +32,6 @@ sys.path.insert(0, project_root)
 sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
 from database import DatabaseManager
-
-from pathlib import Path
-
-
-def _p291u_repo_root():
-    current = Path(__file__)
-    if not current.is_absolute():
-        raise FileNotFoundError(f"Source file path is not absolute: {current}")
-    for parent in (current.parent, *current.parents):
-        if (parent / "lottery_api").is_dir():
-            return parent
-    raise FileNotFoundError(f"Unable to locate repository root from source file: {current}")
-
-
-def _p291u_default_db_path():
-    db_path = _p291u_repo_root() / "lottery_api" / "data" / "lottery_v2.db"
-    if not db_path.is_file():
-        raise FileNotFoundError(f"Default lottery DB path is missing or non-regular: {db_path}")
-    return db_path
-
-
-def _p291u_resolve_db_path(db_path=None):
-    if db_path is None:
-        return _p291u_default_db_path()
-    path = Path(db_path)
-    if not path.is_absolute():
-        raise ValueError(f"Explicit DB path must be absolute: {db_path}")
-    if not path.is_file():
-        raise FileNotFoundError(f"Explicit DB path is missing or non-regular: {path}")
-    return path
-
-
-def _p291u_connect_resolved(db_path, *, uri=False):
-    if uri:
-        return sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
-    return sqlite3.connect(str(db_path))
-
 
 DB_PATH = os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db')
 
@@ -90,13 +55,34 @@ DEFAULT_CONFIG = {
     'DAILY_539': {'bets': 3, 'cost': 150},
 }
 
-# 各注數 Edge 和策略名稱 (2026-02-23 驗證)
+# 各注數 Edge 和策略名稱 (2026-02-23 驗證; BIG_LOTTO 4/5注 evidence metadata
+# 於 2026-07-24 legacy-continuity-stabilization 訂正 — 見下方 NOT_ESTABLISHED_WARNING)
+NOT_ESTABLISHED_WARNING = 'No reliable predictive advantage is currently established.'
+
 STRATEGY_INFO = {
     'BIG_LOTTO': {
-        2: {'strategy': '偏差互補+回聲 P0', 'edge': '+1.21%', 'verified': '1000期+10種子'},
-        3: {'strategy': 'Triple Strike', 'edge': '+0.98%', 'verified': '1500期 STABLE'},
-        4: {'strategy': 'TS3+Markov(w=30)', 'edge': '+1.23%', 'verified': '1500期 z=1.85'},
-        5: {'strategy': 'TS3+Markov+FreqOrt', 'edge': '+1.77%', 'verified': '1500期 z=2.40 P3 p=0.030'},
+        2: {
+            'strategy': '偏差互補+回聲 P0', 'edge': '+1.21%', 'verified': '1000期+10種子',
+            'implementation_id': 'biglotto_p0_2bet',
+        },
+        3: {
+            'strategy': 'Triple Strike', 'edge': '+0.98%', 'verified': '1500期 STABLE',
+            'implementation_id': 'biglotto_triple_strike',
+        },
+        4: {
+            'strategy': 'TS3+Markov(w=30)', 'edge': '+1.23%', 'verified': '',
+            'implementation_id': 'biglotto_5bet_orthogonal.slice4',
+            'evidence_status': 'HISTORICAL_RESEARCH_ONLY',
+            'current_significance': 'NOT_ESTABLISHED',
+            'warning': NOT_ESTABLISHED_WARNING,
+        },
+        5: {
+            'strategy': 'TS3+Markov+FreqOrt', 'edge': '+1.77%', 'verified': '',
+            'implementation_id': 'biglotto_5bet_orthogonal.full5',
+            'evidence_status': 'HISTORICAL_RESEARCH_ONLY',
+            'current_significance': 'NOT_ESTABLISHED',
+            'warning': NOT_ESTABLISHED_WARNING,
+        },
     },
     'POWER_LOTTO': {
         2: {'strategy': 'Fourier Rhythm', 'edge': '+1.91%', 'verified': '1000期'},
@@ -152,63 +138,23 @@ def resolve_cli_value(flag_value, positional_value, default_value=None):
     return default_value
 
 
-def get_related_lottery_types_safe(lottery_type):
-    try:
-        from .common import get_related_lottery_types
-    except ImportError:
-        from common import get_related_lottery_types
-    return get_related_lottery_types(lottery_type)
-
-
-def load_history_readonly(lottery_type):
-    _p291u_db_path = _p291u_resolve_db_path()
-    conn = _p291u_connect_resolved(_p291u_db_path, uri=True)
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    try:
-        if lottery_type:
-            related_types = get_related_lottery_types_safe(lottery_type)
-            placeholders = ','.join('?' * len(related_types))
-            query = f"""
-                SELECT draw, date, lottery_type, numbers, special, jackpot_amount
-                FROM draws
-                WHERE lottery_type IN ({placeholders})
-                ORDER BY CAST(draw AS INTEGER) DESC
-            """
-            cursor.execute(query, related_types)
-        else:
-            cursor.execute("""
-                SELECT draw, date, lottery_type, numbers, special, jackpot_amount
-                FROM draws
-                ORDER BY CAST(draw AS INTEGER) DESC
-            """)
-
-        rows = cursor.fetchall()
-        history = []
-        for row in rows:
-            history.append({
-                'draw': row['draw'],
-                'date': row['date'],
-                'lotteryType': row['lottery_type'],
-                'numbers': json.loads(row['numbers']),
-                'special': row['special'],
-                'jackpot_amount': row['jackpot_amount'],
-            })
-        return sorted(history, key=lambda x: (x['date'], x['draw']))
-    finally:
-        conn.close()
-
-
 def load_history(lottery_type, dry_run=False):
-    if dry_run:
-        return load_history_readonly(lottery_type)
+    """Single canonical, truly read-only history loader shared by both the
+    normal prediction path and --dry-run.
 
-    db = DatabaseManager(db_path=DB_PATH)
-    # Use canonical helper for research/strategy callers.
-    # BIG_LOTTO: excludes ADD_ON_PRIZE_EXCLUDED (add-on/special prize records),
-    # DATE_FORMAT_ALIEN, and SMALL_POOL_ALIEN — these are out-of-scope for
-    # canonical 6/49 main-draw research.  Raw records remain in the DB and
-    # are accessible via get_all_draws() for display/history purposes.
+    Both paths open DatabaseManager(read_only=True): the SQLite connection
+    uses URI mode=ro with PRAGMA query_only=ON, and schema initialization is
+    never invoked (no CREATE TABLE/INDEX/VIEW statement is issued). Both
+    paths therefore see the exact same canonical-filtered history — same DB
+    path, same canonical filter (excludes ADD_ON_PRIZE_EXCLUDED,
+    DATE_FORMAT_ALIEN, and SMALL_POOL_ALIEN for BIG_LOTTO), same ordering,
+    same draw identities. `dry_run` is retained as a parameter purely for
+    call-site symmetry with the CLI's --dry-run flag; it no longer changes
+    which data is read (legacy-continuity-stabilization, 2026-07-24). Raw,
+    unfiltered records remain queryable via get_all_draws() for other
+    display/history callers outside prediction generation.
+    """
+    db = DatabaseManager(db_path=DB_PATH, read_only=True)
     history = db.get_canonical_draws(lottery_type=lottery_type)
     return sorted(history, key=lambda x: (x['date'], x['draw']))
 
@@ -343,7 +289,11 @@ def biglotto_triple_strike(history):
 
 
 def biglotto_5bet_orthogonal(history):
-    """大樂透 5注正交: TS3+Markov(w=30)+FreqOrt (Edge +1.77%, 1500期 z=2.40 ★最佳)"""
+    """大樂透 5注正交: TS3+Markov(w=30)+FreqOrt (implementation_id:
+    biglotto_5bet_orthogonal.full5; evidence_status=HISTORICAL_RESEARCH_ONLY,
+    current_significance=NOT_ESTABLISHED — 2026-07-24 獨立重驗：原始文件宣稱的
+    P3顯著性數字不可重現，訂正前後數字詳見 STRATEGY_INFO 與
+    rejected/ts3_markov_freq_5bet_biglotto.json :: retest_2026_07_24)"""
     from tools.backtest_biglotto_markov_4bet import (
         fourier_rhythm_bet, cold_numbers_bet, tail_balance_bet, markov_orthogonal_bet
     )
@@ -569,7 +519,15 @@ def print_prediction(lottery_type, bets, strategy, history, num_bets):
 
     print('-' * 60)
     print(f'  策略: {strategy}')
-    if info:
+    if info.get('implementation_id'):
+        print(f'  Implementation: {info["implementation_id"]}')
+    if info.get('evidence_status'):
+        print(f'  Evidence: {info["evidence_status"]} | Significance: '
+              f'{info.get("current_significance", "NOT_ESTABLISHED")} | Edge(historical): '
+              f'{info.get("edge", "")}')
+        if info.get('warning'):
+            print(f'  ⚠ {info["warning"]}')
+    elif info:
         print(f'  驗證: {info.get("verified", "")} | Edge: {info.get("edge", "")}')
     if baseline > 0:
         print(f'  隨機基準: {baseline:.2f}% ({num_bets}注)')

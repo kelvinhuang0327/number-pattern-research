@@ -40,7 +40,7 @@ def _normalize_special_for_output(lottery_type: Optional[str], special):
 class DatabaseManager:
     """SQLite 數據庫管理器"""
     
-    def __init__(self, db_path: Optional[str] = None):
+    def __init__(self, db_path: Optional[str] = None, read_only: bool = False):
         """
         初始化數據庫管理器（惰性）
 
@@ -54,24 +54,52 @@ class DatabaseManager:
 
         Args:
             db_path: 絕對數據庫文件路徑；None 使用 canonical 路徑
+            read_only: True 時所有連線一律以 SQLite URI `mode=ro` 開啟並設定
+                `PRAGMA query_only=ON`，且首次使用時完全跳過 schema
+                initialization（不執行任何 CREATE TABLE/INDEX/VIEW）。DB 檔案
+                不存在時 fail closed（不建立檔案）。write 方法在執行任何 SQL
+                前即拒絕。預設 False，既有呼叫者行為不變。
         """
         self._db_path_arg = db_path
         self.db_path: Optional[str] = None
         self._initialized = False
+        self._read_only = read_only
 
     def _ensure_ready(self):
-        """Resolve the DB path and initialize schema on first real use."""
+        """Resolve the DB path and initialize schema on first real use.
+
+        Read-only managers resolve the path and fail closed if the DB file
+        doesn't exist, but never call _init_database() — no CREATE TABLE,
+        INDEX, or VIEW statement is ever issued on a read-only connection.
+        """
         if self._initialized:
             return
         if self.db_path is None:
             self.db_path = resolve_db_path(self._db_path_arg)
+        if self._read_only:
+            self._initialized = True
+            logger.info(f"✅ Database (read-only) resolved at {self.db_path}")
+            return
         self._init_database()
         self._initialized = True
         logger.info(f"✅ Database initialized at {self.db_path}")
 
+    def _reject_if_read_only(self, operation: str):
+        """Fail closed before any SQL runs, if this manager is read-only."""
+        if self._read_only:
+            raise PermissionError(
+                f"DatabaseManager(read_only=True) cannot perform '{operation}': "
+                "this connection is read-only (SQLite mode=ro, PRAGMA query_only=ON)."
+            )
+
     def _get_connection(self) -> sqlite3.Connection:
         """獲取數據庫連接"""
         self._ensure_ready()
+        if self._read_only:
+            conn = sqlite3.connect(f"file:{self.db_path}?mode=ro", uri=True)
+            conn.row_factory = sqlite3.Row
+            conn.execute("PRAGMA query_only = ON")
+            return conn
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row  # 使用字典式訪問
         return conn
@@ -469,10 +497,11 @@ class DatabaseManager:
         """
         if not draws:
             return (0, 0)
-            
+
+        self._reject_if_read_only("insert_draws")
         conn = self._get_connection()
         cursor = conn.cursor()
-        
+
         inserted = 0
         duplicates = 0
         
@@ -948,9 +977,10 @@ class DatabaseManager:
         Returns:
             是否刪除成功
         """
+        self._reject_if_read_only("delete_draw")
         conn = self._get_connection()
         cursor = conn.cursor()
-        
+
         try:
             cursor.execute("DELETE FROM draws WHERE id = ?", (draw_id,))
             conn.commit()
@@ -975,9 +1005,10 @@ class DatabaseManager:
         Returns:
             刪除的記錄數
         """
+        self._reject_if_read_only("clear_all_data")
         conn = self._get_connection()
         cursor = conn.cursor()
-        
+
         try:
             cursor.execute("SELECT COUNT(*) FROM draws")
             count = cursor.fetchone()[0]
@@ -1006,6 +1037,7 @@ class DatabaseManager:
     
     def vacuum(self):
         """優化數據庫（回收空間）"""
+        self._reject_if_read_only("vacuum")
         conn = self._get_connection()
         try:
             conn.execute("VACUUM")

@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import json
 import random
+import shutil
+import sqlite3
 import sys
 from pathlib import Path
 from unittest.mock import patch
@@ -13,6 +16,7 @@ sys.path.insert(0, str(REPO_ROOT / "lottery_api"))
 sys.path.insert(0, str(REPO_ROOT / "tools"))
 
 import quick_predict  # noqa: E402
+from quick_predict import ColdWalReadOnlyError  # noqa: E402
 
 REAL_DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
 RULES = {'pickCount': 6, 'minNumber': 1, 'maxNumber': 49, 'specialMaxNumber': 49}
@@ -199,3 +203,98 @@ def test_build_prediction_summary_carries_conservative_metadata():
     assert info['current_significance'] == 'NOT_ESTABLISHED'
     for forbidden in FORBIDDEN_SUBSTRINGS:
         assert forbidden not in str(summary)
+
+
+# ---------------------------------------------------------------------------
+# Cold-WAL fail-closed CLI boundary (LOTTERYNEW_COLD_WAL_ACTIONABLE_FAIL_CLOSED_R1)
+# ---------------------------------------------------------------------------
+
+_WAL_FIXTURE_ROWS = [
+    {"draw": "115000001", "date": "2026/01/01", "lottery_type": "BIG_LOTTO", "numbers": [1, 2, 3, 4, 5, 44]},
+    {"draw": "115000002", "date": "2026/01/08", "lottery_type": "BIG_LOTTO", "numbers": [7, 8, 9, 10, 11, 49]},
+]
+
+
+def _build_wal_connection(path: Path, rows) -> sqlite3.Connection:
+    conn = sqlite3.connect(str(path))
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.execute(
+        """
+        CREATE TABLE draws (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            draw TEXT NOT NULL,
+            date TEXT NOT NULL,
+            lottery_type TEXT NOT NULL,
+            numbers TEXT NOT NULL,
+            special INTEGER DEFAULT 0,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            jackpot_amount REAL DEFAULT NULL,
+            sell_amount REAL DEFAULT NULL,
+            total_amount REAL DEFAULT NULL,
+            numbers_positional TEXT DEFAULT NULL,
+            UNIQUE(draw, lottery_type)
+        )
+        """
+    )
+    for row in rows:
+        conn.execute(
+            "INSERT INTO draws (draw, date, lottery_type, numbers, special) VALUES (?, ?, ?, ?, ?)",
+            (row["draw"], row["date"], row["lottery_type"], json.dumps(row["numbers"]), row.get("special", 0)),
+        )
+    conn.commit()
+    return conn
+
+
+def _make_cold_wal_dbonly_fixture(tmp_path: Path, rows) -> Path:
+    """WAL-mode DB, fully checkpointed (TRUNCATE) and closed, then only the
+    main db file bytes copied to a fresh path with no -wal/-shm sidecars."""
+    source = tmp_path / "_source.db"
+    conn = _build_wal_connection(source, rows)
+    conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+    conn.close()
+
+    cold_path = tmp_path / "cold.db"
+    shutil.copyfile(source, cold_path)
+    assert not Path(str(cold_path) + "-wal").exists()
+    assert not Path(str(cold_path) + "-shm").exists()
+    return cold_path
+
+
+def test_normal_and_dry_run_raise_same_library_exception_on_cold_wal(tmp_path):
+    """load_history() must raise ColdWalReadOnlyError to programmatic
+    callers identically regardless of the dry_run flag -- both paths share
+    one canonical read-only loader."""
+    cold_path = _make_cold_wal_dbonly_fixture(tmp_path, _WAL_FIXTURE_ROWS)
+    with patch.object(quick_predict, 'DB_PATH', str(cold_path)):
+        with pytest.raises(ColdWalReadOnlyError):
+            quick_predict.load_history('BIG_LOTTO', dry_run=False)
+        with pytest.raises(ColdWalReadOnlyError):
+            quick_predict.load_history('BIG_LOTTO', dry_run=True)
+
+
+@pytest.mark.parametrize("dry_run", [False, True])
+def test_cli_reports_controlled_error_and_stable_exit_code(tmp_path, capsys, dry_run):
+    """The CLI boundary must catch only ColdWalReadOnlyError, print one
+    controlled line to stderr, exit with a stable non-zero code, and never
+    print a traceback -- identically for normal and --dry-run."""
+    cold_path = _make_cold_wal_dbonly_fixture(tmp_path, _WAL_FIXTURE_ROWS)
+    argv = ['quick_predict.py', '--lottery', 'BIG_LOTTO']
+    if dry_run:
+        argv.append('--dry-run')
+    with patch.object(quick_predict, 'DB_PATH', str(cold_path)):
+        with patch.object(sys, 'argv', argv):
+            with pytest.raises(SystemExit) as exc_info:
+                quick_predict.main()
+    assert exc_info.value.code == quick_predict.EXIT_COLD_WAL_READ_ONLY
+
+    captured = capsys.readouterr()
+    assert 'ERROR:' in captured.err
+    assert 'cold' in captured.err.lower() or 'wal' in captured.err.lower()
+    assert 'Traceback' not in captured.err
+    assert 'Traceback' not in captured.out
+
+
+def test_cli_cold_wal_exit_code_is_distinct_from_argparse_usage_error():
+    """The dedicated cold-WAL exit code must not collide with argparse's
+    own usage-error exit code (2), so callers can distinguish the two."""
+    assert quick_predict.EXIT_COLD_WAL_READ_ONLY not in (0, 1, 2)

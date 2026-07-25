@@ -26,6 +26,46 @@ def _describe_sidecar(path: str) -> str:
     return f"{path} (present)"
 
 
+_SQLITE_HEADER_SIZE = 100
+_SQLITE_HEADER_MAGIC = b"SQLite format 3\x00"
+
+
+def _read_sqlite_header(path: str) -> Optional[bytes]:
+    """Read the fixed 100-byte SQLite header, or None if the file can't be
+    opened, is shorter than a full header, or isn't a SQLite database.
+
+    None means "inconclusive" -- callers must not treat that as cold WAL.
+    """
+    try:
+        with open(path, "rb") as handle:
+            header = handle.read(_SQLITE_HEADER_SIZE)
+    except OSError:
+        return None
+    if len(header) < _SQLITE_HEADER_SIZE or not header.startswith(_SQLITE_HEADER_MAGIC):
+        return None
+    return header
+
+
+def _header_indicates_wal(header: bytes) -> bool:
+    """Bytes 18/19 are SQLite's file-format write/read version; both read 2
+    only for WAL mode (1 = legacy rollback journal). Require both bytes to
+    agree, matching SQLite's own interpretation, so a corrupt/ambiguous
+    header never gets misclassified as WAL.
+    """
+    return header[18] == 2 and header[19] == 2
+
+
+def _sidecar_openable(path: str) -> bool:
+    """True only if the sidecar can actually be opened for reading right
+    now -- an existence check alone can be stale or lie on some filesystems.
+    """
+    try:
+        with open(path, "rb"):
+            return True
+    except OSError:
+        return False
+
+
 class ColdWalReadOnlyError(sqlite3.OperationalError):
     """Strict read-only WAL-mode SQLite database could not be read because
     its -wal/-shm sidecars are missing or unreadable ("cold WAL").
@@ -134,19 +174,40 @@ class DatabaseManager:
                 "this connection is read-only (SQLite mode=ro, PRAGMA query_only=ON)."
             )
 
+    @staticmethod
+    def _raise_if_cold_wal(db_path: str) -> None:
+        """Pre-connect guard: if db_path's own file header conclusively
+        indicates WAL mode and either -wal/-shm sidecar is missing or
+        unreadable, raise ColdWalReadOnlyError before sqlite3.connect() is
+        ever called.
+
+        This is deterministic across SQLite/Python versions and never
+        depends on a particular sqlite3.OperationalError message string.
+        Inconclusive headers (short/non-SQLite files, or a rollback-journal
+        header) fall through to the normal connect path unchanged.
+        """
+        header = _read_sqlite_header(db_path)
+        if header is None or not _header_indicates_wal(header):
+            return
+        wal_path = db_path + "-wal"
+        shm_path = db_path + "-shm"
+        if not _sidecar_openable(wal_path) or not _sidecar_openable(shm_path):
+            raise ColdWalReadOnlyError(db_path)
+
     def _get_connection(self) -> sqlite3.Connection:
         """獲取數據庫連接"""
         self._ensure_ready()
         if self._read_only:
+            self._raise_if_cold_wal(self.db_path)
             conn = sqlite3.connect(f"file:{self.db_path}?mode=ro", uri=True)
             conn.row_factory = sqlite3.Row
             conn.execute("PRAGMA query_only = ON")
-            # Probe with a real read now (first real read for this
-            # connection) so a cold-WAL database — one whose journal mode
-            # is WAL but whose -wal/-shm sidecars are missing or unreadable
-            # — fails closed here with an actionable error, rather than
-            # surfacing a bare sqlite3.OperationalError deep inside an
-            # arbitrary caller's query.
+            # Fallback probe: the pre-connect header check above catches the
+            # deterministic cold-WAL case. This first real read stays as a
+            # safety net for any other way SQLite might fail to open the
+            # database file, so callers still get an actionable error
+            # instead of a bare sqlite3.OperationalError from deep inside an
+            # arbitrary query.
             try:
                 conn.execute("SELECT 1 FROM sqlite_master LIMIT 1")
             except sqlite3.OperationalError as exc:

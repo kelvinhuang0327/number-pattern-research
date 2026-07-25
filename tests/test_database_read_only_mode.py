@@ -4,6 +4,7 @@ import json
 import os
 import shutil
 import sqlite3
+import subprocess
 import sys
 from pathlib import Path
 from unittest.mock import patch
@@ -345,15 +346,20 @@ def test_cold_wal_error_contains_paths_and_recovery_guidance(tmp_path):
     assert "immutable" not in message.lower()
 
 
-def test_cold_wal_error_retains_original_exception_as_cause(tmp_path):
+def test_cold_wal_precheck_error_has_no_spurious_cause(tmp_path):
+    """The deterministic pre-connect guard raises ColdWalReadOnlyError
+    directly from the header/sidecar check, before sqlite3.connect() is
+    ever called -- there is no underlying sqlite3.OperationalError to chain
+    as __cause__ for this (now primary) detection path. The post-connect
+    probe further down _get_connection() still chains a real cause in the
+    unreachable-by-header-alone fallback case; this test covers the path
+    every real cold-WAL fixture actually takes.
+    """
     cold_path = _make_cold_wal_dbonly_fixture(tmp_path, _WAL_FIXTURE_ROWS)
     manager = DatabaseManager(db_path=str(cold_path), read_only=True)
     with pytest.raises(ColdWalReadOnlyError) as exc_info:
         manager.get_canonical_draws(lottery_type="BIG_LOTTO")
-    cause = exc_info.value.__cause__
-    assert isinstance(cause, sqlite3.OperationalError)
-    assert not isinstance(cause, ColdWalReadOnlyError)
-    assert "unable to open database file" in str(cause)
+    assert exc_info.value.__cause__ is None
 
 
 def test_cold_wal_missing_sidecars_characterized(tmp_path):
@@ -448,3 +454,177 @@ def test_cold_wal_never_retries_writable(tmp_path):
     assert before_bytes == after_bytes
     assert not Path(str(cold_path) + "-wal").exists()
     assert not Path(str(cold_path) + "-shm").exists()
+
+
+# ---------------------------------------------------------------------------
+# Pre-connect header guard (PR700 correction): deterministic cold-WAL
+# detection must not depend on SQLite version, Python interpreter, a
+# particular sqlite3.OperationalError message, or SQLite deciding whether it
+# may create missing sidecars -- it must raise before sqlite3.connect() ever
+# runs.
+# ---------------------------------------------------------------------------
+
+def test_cold_wal_precheck_raises_before_sqlite_connect_is_called(tmp_path):
+    cold_path = _make_cold_wal_dbonly_fixture(tmp_path, _WAL_FIXTURE_ROWS)
+    manager = DatabaseManager(db_path=str(cold_path), read_only=True)
+    with patch("lottery_api.database.sqlite3.connect") as mocked_connect:
+        with pytest.raises(ColdWalReadOnlyError):
+            manager.get_canonical_draws(lottery_type="BIG_LOTTO")
+        mocked_connect.assert_not_called()
+    assert not Path(str(cold_path) + "-wal").exists()
+    assert not Path(str(cold_path) + "-shm").exists()
+
+
+def test_short_file_not_misclassified_as_cold_wal(tmp_path):
+    """A file too short to contain a full SQLite header must not be
+    classified as cold WAL -- it must fail with SQLite's own error
+    (DatabaseError: file is not a database), not ColdWalReadOnlyError."""
+    short_path = tmp_path / "short.db"
+    short_path.write_bytes(b"not a real sqlite file")
+    manager = DatabaseManager(db_path=str(short_path), read_only=True)
+    with pytest.raises(sqlite3.DatabaseError) as exc_info:
+        manager.get_canonical_draws(lottery_type="BIG_LOTTO")
+    assert not isinstance(exc_info.value, ColdWalReadOnlyError)
+
+
+def test_non_sqlite_file_not_misclassified_as_cold_wal(tmp_path):
+    """A regular file long enough to hold a header but lacking the SQLite
+    magic bytes must not be classified as cold WAL."""
+    fake_path = tmp_path / "fake.db"
+    fake_path.write_bytes(b"x" * 200)
+    manager = DatabaseManager(db_path=str(fake_path), read_only=True)
+    with pytest.raises(sqlite3.DatabaseError) as exc_info:
+        manager.get_canonical_draws(lottery_type="BIG_LOTTO")
+    assert not isinstance(exc_info.value, ColdWalReadOnlyError)
+
+
+def _local_candidate_interpreters():
+    """Repository .venv, ambient system, and Homebrew/PATH python3 -- each
+    that actually exists on this machine, de-duplicated by resolved path."""
+    candidates = []
+    venv_python = REPO_ROOT / ".venv" / "bin" / "python3"
+    if venv_python.exists():
+        candidates.append(str(venv_python))
+    system_python = Path("/usr/bin/python3")
+    if system_python.exists():
+        candidates.append(str(system_python))
+    ambient = shutil.which("python3")
+    if ambient:
+        candidates.append(ambient)
+    seen = set()
+    unique = []
+    for candidate in candidates:
+        key = str(Path(candidate).resolve())
+        if key not in seen:
+            seen.add(key)
+            unique.append(candidate)
+    return unique
+
+
+_MATRIX_PROBE_TEMPLATE = """
+import json
+import sqlite3
+import sys
+
+sys.path.insert(0, {repo_root!r})
+sys.path.insert(0, {lottery_api_dir!r})
+from database import ColdWalReadOnlyError, DatabaseManager
+
+orig_connect = sqlite3.connect
+calls = {{"n": 0}}
+
+
+def _counting_connect(*args, **kwargs):
+    calls["n"] += 1
+    return orig_connect(*args, **kwargs)
+
+
+sqlite3.connect = _counting_connect
+
+manager = DatabaseManager(db_path={db_path!r}, read_only=True)
+result = {{
+    "python_version": sys.version,
+    "sqlite_version": sqlite3.sqlite_version,
+}}
+try:
+    draws = manager.get_canonical_draws(lottery_type="BIG_LOTTO")
+    result["outcome"] = "SUCCESS"
+    result["row_count"] = len(draws)
+except ColdWalReadOnlyError:
+    result["outcome"] = "COLD_WAL_RAISED"
+except Exception as exc:  # pragma: no cover - diagnostic path only
+    result["outcome"] = "OTHER_EXCEPTION:" + type(exc).__name__
+result["connect_calls"] = calls["n"]
+print(json.dumps(result))
+"""
+
+
+def test_cold_wal_precheck_matrix_across_local_interpreters(tmp_path):
+    """The pre-connect guard must behave identically (raise, zero
+    sqlite3.connect() calls, no sidecar creation) under every local
+    candidate interpreter, and rollback-journal DBs must keep succeeding."""
+    interpreters = _local_candidate_interpreters()
+    if not interpreters:
+        pytest.skip("no local candidate interpreter found")
+
+    cold_dir = tmp_path / "cold_matrix"
+    cold_dir.mkdir()
+    cold_path = _make_cold_wal_dbonly_fixture(cold_dir, _WAL_FIXTURE_ROWS)
+    cold_before_bytes = cold_path.read_bytes()
+
+    control_path = tmp_path / "control.db"
+    _make_isolated_db(control_path, with_canonical_view=False, rows=_WAL_FIXTURE_ROWS)
+
+    lottery_api_dir = str(REPO_ROOT / "lottery_api")
+
+    for interpreter in interpreters:
+        probe_script = tmp_path / f"_matrix_probe_{Path(interpreter).name}_{len(interpreter)}.py"
+        probe_script.write_text(
+            _MATRIX_PROBE_TEMPLATE.format(
+                repo_root=str(REPO_ROOT),
+                lottery_api_dir=lottery_api_dir,
+                db_path=str(cold_path),
+            )
+        )
+        cold_run = subprocess.run(
+            [interpreter, str(probe_script)],
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
+        assert cold_run.returncode == 0, (
+            f"{interpreter} cold-WAL probe crashed: stderr={cold_run.stderr}"
+        )
+        cold_result = json.loads(cold_run.stdout.strip().splitlines()[-1])
+        assert cold_result["outcome"] == "COLD_WAL_RAISED", (
+            f"{interpreter} (py={cold_result['python_version']!r}, "
+            f"sqlite={cold_result['sqlite_version']}) did not raise ColdWalReadOnlyError: {cold_result}"
+        )
+        assert cold_result["connect_calls"] == 0, (
+            f"{interpreter} called sqlite3.connect() before raising cold-WAL: {cold_result}"
+        )
+        assert not Path(str(cold_path) + "-wal").exists()
+        assert not Path(str(cold_path) + "-shm").exists()
+        assert cold_path.read_bytes() == cold_before_bytes
+
+        probe_script.write_text(
+            _MATRIX_PROBE_TEMPLATE.format(
+                repo_root=str(REPO_ROOT),
+                lottery_api_dir=lottery_api_dir,
+                db_path=str(control_path),
+            )
+        )
+        control_run = subprocess.run(
+            [interpreter, str(probe_script)],
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
+        assert control_run.returncode == 0, (
+            f"{interpreter} control probe crashed: stderr={control_run.stderr}"
+        )
+        control_result = json.loads(control_run.stdout.strip().splitlines()[-1])
+        assert control_result["outcome"] == "SUCCESS", (
+            f"{interpreter} rollback-journal control failed: {control_result}"
+        )
+        assert control_result["row_count"] == 2

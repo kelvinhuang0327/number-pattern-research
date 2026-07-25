@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import random
+import re
 import shutil
 import sqlite3
 import sys
@@ -158,12 +159,19 @@ def test_generator_functions_untouched_by_history_loader_change():
 
 FORBIDDEN_SUBSTRINGS = ['z=2.40', 'P3 p=0.030', '★最佳']
 
+# 2026-07-25 legacy-continuity R1: 2-bet/3-bet historical-claim substrings that
+# must no longer appear unqualified in quick_predict.py's own live claim surface
+# (STRATEGY_INFO values and the module/generator docstrings) — distinct from the
+# "deterministic algorithm" (no random component) sense of 確定性, which is a true
+# engineering property and is intentionally left alone elsewhere in the codebase.
+UNQUALIFIED_CERTAINTY_SUBSTRINGS = ['確定性', '1000期+10種子', '1500期 STABLE']
+
 
 def _strategy_info_strings(info):
     return [str(v) for v in info.values()]
 
 
-@pytest.mark.parametrize("num_bets", [4, 5])
+@pytest.mark.parametrize("num_bets", [2, 3, 4, 5])
 def test_metadata_contains_no_unsupported_claims(num_bets):
     info = quick_predict.STRATEGY_INFO['BIG_LOTTO'][num_bets]
     values = _strategy_info_strings(info)
@@ -173,12 +181,31 @@ def test_metadata_contains_no_unsupported_claims(num_bets):
         )
 
 
-@pytest.mark.parametrize("num_bets", [4, 5])
+@pytest.mark.parametrize("num_bets", [2, 3, 4, 5])
 def test_metadata_has_conservative_evidence_status(num_bets):
     info = quick_predict.STRATEGY_INFO['BIG_LOTTO'][num_bets]
     assert info['evidence_status'] == 'HISTORICAL_RESEARCH_ONLY'
     assert info['current_significance'] == 'NOT_ESTABLISHED'
     assert 'No reliable predictive advantage is currently established.' in info['warning']
+
+
+@pytest.mark.parametrize("num_bets", [2, 3])
+def test_2bet_3bet_verified_field_is_empty(num_bets):
+    info = quick_predict.STRATEGY_INFO['BIG_LOTTO'][num_bets]
+    assert info['verified'] == '', (
+        f"{num_bets}-bet 'verified' field must be empty now that it carries no "
+        f"currently-supported claim, matching the existing 4/5-bet contract: {info}"
+    )
+
+
+@pytest.mark.parametrize("num_bets", [2, 3])
+def test_2bet_3bet_edge_retained_only_as_historical_descriptive_value(num_bets):
+    """The historical 'edge' figure may remain (it is not being recomputed,
+    selected, or promoted) but only alongside the conservative evidence_status
+    contract added by this task — never presented alone as current truth."""
+    info = quick_predict.STRATEGY_INFO['BIG_LOTTO'][num_bets]
+    assert isinstance(info.get('edge'), str) and info['edge']
+    assert info['evidence_status'] == 'HISTORICAL_RESEARCH_ONLY'
 
 
 @pytest.mark.parametrize("num_bets", [2, 3, 4, 5])
@@ -195,14 +222,90 @@ def test_4bet_5bet_share_implementation_family():
     )
 
 
-def test_build_prediction_summary_carries_conservative_metadata():
-    bets, strategy = quick_predict.predict_biglotto(FIXTURE_HISTORY, RULES, 5)
-    summary = quick_predict.build_prediction_summary('BIG_LOTTO', bets, strategy, FIXTURE_HISTORY, 5)
+def test_2bet_3bet_implementation_ids_unchanged():
+    assert quick_predict.STRATEGY_INFO['BIG_LOTTO'][2]['implementation_id'] == 'biglotto_p0_2bet'
+    assert quick_predict.STRATEGY_INFO['BIG_LOTTO'][3]['implementation_id'] == 'biglotto_triple_strike'
+
+
+def test_2bet_3bet_strategy_names_unchanged():
+    assert quick_predict.STRATEGY_INFO['BIG_LOTTO'][2]['strategy'] == '偏差互補+回聲 P0'
+    assert quick_predict.STRATEGY_INFO['BIG_LOTTO'][3]['strategy'] == 'Triple Strike'
+
+
+@pytest.mark.parametrize("num_bets", [2, 3, 4, 5])
+def test_build_prediction_summary_carries_conservative_metadata(num_bets):
+    bets, strategy = quick_predict.predict_biglotto(FIXTURE_HISTORY, RULES, num_bets)
+    summary = quick_predict.build_prediction_summary('BIG_LOTTO', bets, strategy, FIXTURE_HISTORY, num_bets)
     info = summary['strategy_info']
     assert info['evidence_status'] == 'HISTORICAL_RESEARCH_ONLY'
     assert info['current_significance'] == 'NOT_ESTABLISHED'
     for forbidden in FORBIDDEN_SUBSTRINGS:
         assert forbidden not in str(summary)
+
+
+def test_quick_predict_module_docstring_has_no_unqualified_certainty_claim():
+    """The module-level strategy comparison table (biglotto_p0_2bet / Triple
+    Strike lines) must not assert unqualified certainty/STABLE wording; the
+    same lines are expected to carry HISTORICAL_RESEARCH_ONLY/NOT_ESTABLISHED
+    instead. POWER_LOTTO/DAILY_539 lines are intentionally out of scope and
+    may still contain these substrings."""
+    doc = quick_predict.__doc__ or ''
+    biglotto_lines = [
+        line for line in doc.splitlines()
+        if '大樂透' in line and ('2注' in line or '3注' in line)
+    ]
+    assert biglotto_lines, "expected to find BIG_LOTTO 2-bet/3-bet lines in the module docstring"
+    for line in biglotto_lines:
+        for forbidden in UNQUALIFIED_CERTAINTY_SUBSTRINGS:
+            assert forbidden not in line, f"unqualified claim '{forbidden}' still present: {line!r}"
+
+
+def test_biglotto_p0_2bet_and_triple_strike_docstrings_have_no_unqualified_certainty_claim():
+    for forbidden in UNQUALIFIED_CERTAINTY_SUBSTRINGS:
+        assert forbidden not in (quick_predict.biglotto_p0_2bet.__doc__ or ''), (
+            f"biglotto_p0_2bet docstring still contains unqualified claim '{forbidden}'"
+        )
+        assert forbidden not in (quick_predict.biglotto_triple_strike.__doc__ or ''), (
+            f"biglotto_triple_strike docstring still contains unqualified claim '{forbidden}'"
+        )
+
+
+BIGLOTTO_2BET_3BET_GENERATOR_SOURCES = [
+    "predict_biglotto_triple_strike.py",
+    "predict_biglotto_echo_2bet.py",
+    "predict_biglotto_echo_3bet.py",
+]
+
+
+@pytest.mark.parametrize("filename", BIGLOTTO_2BET_3BET_GENERATOR_SOURCES)
+def test_2bet_3bet_generator_source_has_no_bare_stability_verdict(filename):
+    """These files previously asserted bare current-truth stability verdicts
+    (ROBUST / STABLE) in docstrings and/or runtime print output — including
+    tools/predict_biglotto_triple_strike.py's two different, mutually
+    contradicting numbers (+1.46% ROBUST in its docstring vs +0.98% STABLE in
+    its runtime print). Neither may remain, anywhere in the file, as a bare
+    current-truth verdict (checked as whole words, since 'NOT_ESTABLISHED'
+    legitimately contains the substring 'ESTABLISHED' but never 'STABLE' or
+    'ROBUST' as their own word). The generator logic itself is untouched —
+    this test only inspects docstrings/print strings, not computation."""
+    source = (REPO_ROOT / "tools" / filename).read_text(encoding="utf-8")
+    for bare_verdict in (r'\bROBUST\b', r'\bSTABLE\b'):
+        assert not re.search(bare_verdict, source), (
+            f"{filename} still asserts a bare current-truth verdict matching {bare_verdict!r}"
+        )
+    assert 'HISTORICAL_RESEARCH_ONLY' in source
+    assert 'NOT_ESTABLISHED' in source
+
+
+def test_power_lotto_and_daily_539_strategy_info_unchanged():
+    """This task must not touch POWER_LOTTO/DAILY_539 metadata at all."""
+    assert quick_predict.STRATEGY_INFO['POWER_LOTTO'] == {
+        2: {'strategy': 'Fourier Rhythm', 'edge': '+1.91%', 'verified': '1000期'},
+        3: {'strategy': 'Power Precision', 'edge': '+2.23%', 'verified': '1500期 STABLE z=2.74'},
+    }
+    assert quick_predict.STRATEGY_INFO['DAILY_539'] == {
+        3: {'strategy': 'SumRange+Bayesian+ZoneBalance', 'edge': 'N/A', 'verified': ''},
+    }
 
 
 # ---------------------------------------------------------------------------

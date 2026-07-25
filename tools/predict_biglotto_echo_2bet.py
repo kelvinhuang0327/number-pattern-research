@@ -7,8 +7,11 @@ Phase 1 改進: 基於 115000011 期檢討會議
 - 連續溫度評分: 取代 binary hot/cold 分類
 - 中溫號覆蓋: 消除 gap=8~15 的盲區
 
-基礎: deviation_complement_2bet (Edge +0.91%, 1000期+10種子確定性)
-改進目標: 保持確定性，提升 echo 覆蓋率
+基礎: deviation_complement_2bet (historical edge +0.91%; evidence_status=
+HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED)
+改進目標: 保持演算法確定性（無隨機成分），提升 echo 覆蓋率
+
+⚠️ No reliable predictive advantage is currently established for this strategy.
 
 使用方式:
     python3 tools/predict_biglotto_echo_2bet.py
@@ -321,8 +324,9 @@ def main():
             print(f"    {n:2d}: echo={echo_all[n]:.3f} {covered}")
 
     print(f"\n{'='*60}")
-    print(f"  基礎: 偏差互補 2注 (Edge +0.91%)")
+    print(f"  基礎: 偏差互補 2注 (historical edge +0.91%) — HISTORICAL_RESEARCH_ONLY")
     print(f"  改進: Echo Detector + 連續溫度 (待回測驗證)")
+    print(f"  警告: No reliable predictive advantage is currently established.")
     print()
 
 

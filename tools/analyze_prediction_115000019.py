@@ -10,8 +10,10 @@ CRITICAL: No data leakage - only use draws BEFORE 115000019 (up to 115000018).
 Actual Result: [16, 35, 36, 37, 39, 49]
 
 Strategies tested:
-  1. 2-bet P0 (Deviation + Echo) - Edge +1.21%
-  2. 3-bet Triple Strike (Fourier + Cold + Tail) - Edge +0.98%
+  1. 2-bet P0 (Deviation + Echo) - historical edge +1.21%
+     (evidence_status=HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED)
+  2. 3-bet Triple Strike (Fourier + Cold + Tail) - historical edge +0.98%
+     (evidence_status=HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED)
   3. 4-bet TS3+Markov(w=30) - Edge +1.23%
   4. 5-bet TS3+Markov+FreqOrtho - Edge +1.77% (BEST, P3 VERIFIED)
   5. 5-bet Orthogonal (from backtest_big_lotto_orthogonal_5bet.py)
@@ -154,7 +156,8 @@ def load_history():
 # Strategy 1: P0 2-bet (Deviation + Echo)
 # ============================================================
 def biglotto_p0_2bet(history, window=50, echo_boost=1.5):
-    """2-bet P0: Hot+Echo + Cold (Edge +1.21%, deterministic)"""
+    """2-bet P0: Hot+Echo + Cold (historical edge +1.21%; evidence_status=
+    HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED)"""
     recent = history[-window:] if len(history) > window else history
     expected = len(recent) * PICK / MAX_NUM
 

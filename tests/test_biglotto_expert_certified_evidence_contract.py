@@ -1,5 +1,7 @@
 """Focused evidence-contract tests for the BIG_LOTTO 5-bet "expert-certified"
-route/producer legacy-continuity correction (2026-07-25).
+route/producer legacy-continuity correction (2026-07-25), plus the BIG_LOTTO
+4-bet active-claim prose correction (2026-07-25 follow-up: lottery_api/CLAUDE.md
+and .claude/commands/predict.md only -- no producer/route code changed).
 
 No canonical DB, no app boot at collection time: producer tests import only
 models.multi_bet_optimizer (constructor bypassed via __new__); the one
@@ -23,7 +25,14 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 LOTTERY_API = REPO_ROOT / "lottery_api"
 PREDICTION_ROUTE_PATH = LOTTERY_API / "routes" / "prediction.py"
 OPTIMIZER_PATH = LOTTERY_API / "models" / "multi_bet_optimizer.py"
+CLAUDE_MD_PATH = LOTTERY_API / "CLAUDE.md"
 BASE_REF = "edf04c1b58e98ae81f616ae2ad9f7b4a35cb83d4"
+BASE_REF_4BET_PROSE = "b5b15bbc9fe8149a1910caca103c0d6cf228a669"
+ALLOWLIST_4BET_PROSE = {
+    "lottery_api/CLAUDE.md",
+    ".claude/commands/predict.md",
+    "tests/test_biglotto_expert_certified_evidence_contract.py",
+}
 
 EXPECTED_SOURCES = [
     "Fourier_Rhythm", "Cold_Numbers", "Tail_Balance", "Markov_Order1", "Freq_Orthogonal",
@@ -195,17 +204,17 @@ def test_diff_scope_confined_to_expert_certified_function():
         )
 
 
-# Contract item 13 (predict.md half) + item 15: 4-bet/Power/Daily539 rows and
-# the existing dated 2/3-bet blockquote are untouched; only the 5-bet rows
-# and a new dated blockquote were added
-def test_operator_command_only_touches_5bet_expert_row():
+# Contract item 13 (predict.md half) + item 15: Power/Daily539 rows and the
+# existing dated 2/3-bet blockquote are untouched; the 5-bet rows (prior
+# task) and the 4-bet rows + a new dated blockquote (this task) were qualified
+def test_operator_command_only_touches_5bet_and_4bet_prose_rows():
     predict_md = (REPO_ROOT / ".claude/commands/predict.md").read_text(encoding="utf-8")
 
-    assert "| 大樂透 4注 | BIG_LOTTO | 4 | TS3+Markov(w=30) | +1.23% |" in predict_md
+    assert "| 大樂透 4注 | BIG_LOTTO | 4 | TS3+Markov(w=30) | +1.23% (historical, NOT_ESTABLISHED) |" in predict_md
     assert "| 威力彩 / power | POWER_LOTTO | 2 | Fourier Rhythm + V3特別號 | +1.91% |" in predict_md
     assert "| 威力彩 3注 | POWER_LOTTO | 3 | Power Precision + V3特別號 | +2.30% |" in predict_md
     assert "| 今彩539 / 539 | DAILY_539 | 3 | SumRange+Bayesian+ZoneBalance | N/A |" in predict_md
-    assert "| 大樂透 | 4注 | TS3+Markov(w=30) | 8.47% | 7.25% | +1.23% |" in predict_md
+    assert "| 大樂透 | 4注 | TS3+Markov(w=30) | 8.47% | 7.25% | +1.23% (historical, NOT_ESTABLISHED) |" in predict_md
     assert "| 威力彩 | 3注 | Power Precision | 13.47% | 11.17% | +2.30% |" in predict_md
     assert "| 威力彩 | 2注 | Fourier Rhythm | 9.50% | 7.59% | +1.91% |" in predict_md
     assert "| 威力彩 | 特別號 | V3 MAB | 14.70% | 12.50% | +2.20% |" in predict_md
@@ -215,6 +224,13 @@ def test_operator_command_only_touches_5bet_expert_row():
         "current_significance=NOT_ESTABLISHED。\n"
         "> No reliable predictive advantage is currently established. "
         "Edge 數值僅為歷史回測描述性紀錄。"
+    ) in predict_md
+
+    assert (
+        "> ⚠️ **大樂透 4注**：evidence_status=HISTORICAL_RESEARCH_ONLY, "
+        "current_significance=NOT_ESTABLISHED（2026-07-25 legacy-continuity 訂正）。\n"
+        "> No reliable predictive advantage is currently established. "
+        "+1.23% 僅為歷史回測描述性紀錄。"
     ) in predict_md
 
     assert "+1.77% (historical)" in predict_md
@@ -284,3 +300,70 @@ def test_route_returns_same_five_tickets_from_mocked_producer_no_db_access(tmp_p
     assert stability_report["current_significance"] == "NOT_ESTABLISHED"
     assert stability_report["warning"] == WARNING_TEXT
     assert stability_report["method_chain"] == EXPECTED_SOURCES
+
+
+# BIG_LOTTO 4-bet active-claim prose correction (2026-07-25 follow-up).
+# lottery_api/CLAUDE.md current-guidance sections (各注數最佳策略排名,
+# 策略切換邏輯, 經驗證有效的方法, 官方預測報表, 2026-07-25 correction note)
+# must match the current producer identity (STRATEGY_INFO['BIG_LOTTO'][4] in
+# tools/quick_predict.py) and must no longer present the superseded
+# P1+偏差互補 +2.17% ROBUST claim as current truth.
+def test_claude_md_4bet_current_guidance_matches_implementation_identity():
+    claude_md = CLAUDE_MD_PATH.read_text(encoding="utf-8")
+
+    assert (
+        "| **4注** | TS3+Markov(w=30) | 8.47% | 7.25% | +1.23% (historical, NOT_ESTABLISHED) | "
+        "歷史回測紀錄, HISTORICAL_RESEARCH_ONLY | `tools/quick_predict.py :: STRATEGY_INFO['BIG_LOTTO'][4]` |"
+    ) in claude_md
+    assert (
+        "| **4注** | TS3+Markov(w=30) | +1.23% (historical) | "
+        "⚠️ HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED |"
+    ) in claude_md
+    assert (
+        "| TS3+Markov(w=30) | 4注 | +1.23% (historical) | HISTORICAL_RESEARCH_ONLY | "
+        "current_significance=NOT_ESTABLISHED (2026-07-25 訂正) |"
+    ) in claude_md
+    assert (
+        "| 大樂透 | 4注 | TS3+Markov(w=30) | +1.23% (historical, NOT_ESTABLISHED) | "
+        "HISTORICAL_RESEARCH_ONLY (2026-07-25 訂正) |"
+    ) in claude_md
+    assert "STRATEGY_INFO['BIG_LOTTO'][2]`、`[3]` 與 `[4]`" in claude_md
+
+    # No historical Edge remains promoted as current 4-bet truth, and the dead
+    # producer citation (script no longer exists in the repo) is gone.
+    assert "**P1+偏差互補** | **4注**" not in claude_md
+    assert "**4注** | **P1+偏差互補**" not in claude_md
+    assert "tools/backtest_p1_deviation_4bet.py" not in claude_md
+    assert "4/5注既有訂正見下方 SUPERSEDED 區塊" not in claude_md
+
+
+def test_claude_md_dated_historical_4bet_records_preserved():
+    claude_md = CLAUDE_MD_PATH.read_text(encoding="utf-8")
+
+    # Dated P3 shuffle-permutation record: untouched.
+    assert "| BL 4-bet TS3+M4 | +1.70% | +0.14% | 0.055 | 1.75 | MARGINAL (Sum-Constraint v2 更新) |" in claude_md
+
+    # Dated 2026-02-25/26 and 2026-03-03 changelog narrative: these describe a
+    # past decision, not current guidance, and are out of this correction's
+    # scope (the packet names 5 specific current-guidance headings only) --
+    # preserved unchanged, same as the P3 table above.
+    assert "3注: +1.46% z=2.48 | 4注: +2.17% z=3.24 p=0.010 | 5注: **+2.71%** ROBUST 三窗口全正。" in claude_md
+    assert (
+        "最後更新：2026-03-03 (大樂透5注升級為P1+偏差互補+Sum均值約束 Edge +2.71%; "
+        "舊版TS3+Markov+頻率正交 SUPERSEDED歸檔; 4注改為P1+偏差互補 +2.17%; 2注改為P1鄰號+冷號v2 +1.41%)"
+    ) in claude_md
+
+
+def test_repository_diff_confined_to_three_allowlisted_paths():
+    proc = subprocess.run(
+        ["git", "diff", "--name-only", BASE_REF_4BET_PROSE, "--"],
+        cwd=REPO_ROOT, capture_output=True, text=True, check=True,
+    )
+    changed = {line.strip() for line in proc.stdout.splitlines() if line.strip()}
+
+    assert changed, "expected at least one changed path for the 4-bet prose correction"
+    assert changed <= ALLOWLIST_4BET_PROSE, f"unexpected paths outside allowlist: {changed - ALLOWLIST_4BET_PROSE}"
+
+    forbidden_prefixes = ("strategies/big_lotto/4bet_ts3_markov_w30/", "rejected/", "outputs/", "artifacts/")
+    for path in changed:
+        assert not path.startswith(forbidden_prefixes), f"unexpected write under structured/historical path: {path}"

@@ -12,7 +12,8 @@ Grid Search:
   gap_threshold = [10, 12, 15, 18]
   gap_weight    = [0.5, 1.0, 1.5, 2.0]
 
-對比基準: Triple Strike 原版 (1500p Edge +0.98%)
+對比基準: Triple Strike 原版 (歷史回測紀錄 1500p Edge +0.98%; evidence_status=
+HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED)
 
 用法:
     python3 tools/backtest_gap_dynamic_1500.py

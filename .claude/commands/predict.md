@@ -40,17 +40,20 @@ python3 tools/quick_predict.py [彩票] [注數]
 python3 tools/quick_predict.py $ARGUMENTS
 ```
 
-## 策略對照 (2026-02-23 更新)
+## 策略對照 (2026-07-25 legacy continuity 訂正)
 
 | 用戶輸入 | lottery_type | 默認注數 | 策略 | Edge |
 |---------|--------------|---------|------|------|
 | 大樂透 / biglotto | BIG_LOTTO | **5** | TS3+Markov+FreqOrt | **+1.77%** |
-| 大樂透 2注 | BIG_LOTTO | 2 | 偏差互補+回聲 P0 | +1.21% |
-| 大樂透 3注 | BIG_LOTTO | 3 | Triple Strike | +0.98% |
+| 大樂透 2注 | BIG_LOTTO | 2 | 偏差互補+回聲 P0 | +1.21% (historical) |
+| 大樂透 3注 | BIG_LOTTO | 3 | Triple Strike | +0.98% (historical) |
 | 大樂透 4注 | BIG_LOTTO | 4 | TS3+Markov(w=30) | +1.23% |
 | 威力彩 / power | POWER_LOTTO | 2 | Fourier Rhythm + V3特別號 | +1.91% |
 | 威力彩 3注 | POWER_LOTTO | 3 | Power Precision + V3特別號 | +2.30% |
 | 今彩539 / 539 | DAILY_539 | 3 | SumRange+Bayesian+ZoneBalance | N/A |
+
+> ⚠️ **大樂透 2注／3注**：evidence_status=HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED。
+> No reliable predictive advantage is currently established. Edge 數值僅為歷史回測描述性紀錄。
 
 ## 預期成功率
 
@@ -58,8 +61,8 @@ python3 tools/quick_predict.py $ARGUMENTS
 |------|-----|------|--------|---------|------|
 | 大樂透 | **5注** | **TS3+Markov+FreqOrt** | **10.73%** | **8.96%** | **+1.77%** |
 | 大樂透 | 4注 | TS3+Markov(w=30) | 8.47% | 7.25% | +1.23% |
-| 大樂透 | 3注 | Triple Strike | 6.36% | 5.49% | +0.98% |
-| 大樂透 | 2注 | P0 回聲 | 4.90% | 3.69% | +1.21% |
+| 大樂透 | 3注 | Triple Strike | 6.36% | 5.49% | +0.98% (historical, NOT_ESTABLISHED) |
+| 大樂透 | 2注 | P0 回聲 | 4.90% | 3.69% | +1.21% (historical, NOT_ESTABLISHED) |
 | 威力彩 | 3注 | Power Precision | 13.47% | 11.17% | +2.30% |
 | 威力彩 | 2注 | Fourier Rhythm | 9.50% | 7.59% | +1.91% |
 | 威力彩 | 特別號 | V3 MAB | 14.70% | 12.50% | +2.20% |

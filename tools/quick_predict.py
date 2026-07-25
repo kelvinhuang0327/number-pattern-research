@@ -3,9 +3,11 @@
 快速預測腳本 - 供 /predict 命令使用
 用法: python3 tools/quick_predict.py [彩票類型] [注數]
 
-策略對照 (2026-07-24 legacy continuity 更新):
-  大樂透 2注: 偏差互補+回聲 P0 (Edge +1.21%, 確定性)
-  大樂透 3注: Triple Strike (Edge +0.98%, 1500期 STABLE)
+策略對照 (2026-07-25 legacy continuity 更新):
+  大樂透 2注: 偏差互補+回聲 P0 (historical edge +1.21%) —
+    evidence_status=HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED
+  大樂透 3注: Triple Strike (historical edge +0.98%) —
+    evidence_status=HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED
   大樂透 4注: TS3+Markov(w=30) — biglotto_5bet_orthogonal 前4注同一 implementation family；
     evidence_status=HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED
   大樂透 5注: TS3+Markov+FreqOrt — evidence_status=HISTORICAL_RESEARCH_ONLY,
@@ -57,19 +59,26 @@ DEFAULT_CONFIG = {
     'DAILY_539': {'bets': 3, 'cost': 150},
 }
 
-# 各注數 Edge 和策略名稱 (2026-02-23 驗證; BIG_LOTTO 4/5注 evidence metadata
-# 於 2026-07-24 legacy-continuity-stabilization 訂正 — 見下方 NOT_ESTABLISHED_WARNING)
+# 各注數 Edge 和策略名稱 (2026-02-23 驗證; BIG_LOTTO 2/3/4/5注 evidence metadata
+# 於 2026-07-25 legacy-continuity-stabilization 訂正 — 見下方 NOT_ESTABLISHED_WARNING.
+# 'edge' 數值為歷史回測描述性紀錄，不代表目前已驗證的預測優勢。)
 NOT_ESTABLISHED_WARNING = 'No reliable predictive advantage is currently established.'
 
 STRATEGY_INFO = {
     'BIG_LOTTO': {
         2: {
-            'strategy': '偏差互補+回聲 P0', 'edge': '+1.21%', 'verified': '1000期+10種子',
+            'strategy': '偏差互補+回聲 P0', 'edge': '+1.21%', 'verified': '',
             'implementation_id': 'biglotto_p0_2bet',
+            'evidence_status': 'HISTORICAL_RESEARCH_ONLY',
+            'current_significance': 'NOT_ESTABLISHED',
+            'warning': NOT_ESTABLISHED_WARNING,
         },
         3: {
-            'strategy': 'Triple Strike', 'edge': '+0.98%', 'verified': '1500期 STABLE',
+            'strategy': 'Triple Strike', 'edge': '+0.98%', 'verified': '',
             'implementation_id': 'biglotto_triple_strike',
+            'evidence_status': 'HISTORICAL_RESEARCH_ONLY',
+            'current_significance': 'NOT_ESTABLISHED',
+            'warning': NOT_ESTABLISHED_WARNING,
         },
         4: {
             'strategy': 'TS3+Markov(w=30)', 'edge': '+1.23%', 'verified': '',
@@ -233,7 +242,8 @@ def build_dry_run_payload(predictions, warnings):
 # ========== 大樂透策略 ==========
 
 def biglotto_p0_2bet(history, window=50, echo_boost=1.5):
-    """大樂透 2注: 偏差互補+回聲 P0 (Edge +1.21%, 確定性)"""
+    """大樂透 2注: 偏差互補+回聲 P0 (historical edge +1.21%; evidence_status=
+    HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED)"""
     MAX_NUM, PICK = 49, 6
     recent = history[-window:] if len(history) > window else history
     expected = len(recent) * PICK / MAX_NUM
@@ -284,7 +294,8 @@ def biglotto_p0_2bet(history, window=50, echo_boost=1.5):
 
 
 def biglotto_triple_strike(history):
-    """大樂透 3注: Triple Strike (Edge +0.98%, 1500期 STABLE)"""
+    """大樂透 3注: Triple Strike (historical edge +0.98%; evidence_status=
+    HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED)"""
     from tools.predict_biglotto_triple_strike import generate_triple_strike
     bets_raw = generate_triple_strike(history)
     return [{'numbers': b} for b in bets_raw]

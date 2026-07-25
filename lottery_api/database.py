@@ -2,6 +2,7 @@
 SQLite 數據庫管理模組
 負責所有彩票數據的持久化存儲
 """
+import os
 import sqlite3
 import json
 import logging
@@ -14,6 +15,47 @@ except ImportError:  # top-level import context
     from canonical_db_path import resolve_db_path
 
 logger = logging.getLogger(__name__)
+
+
+def _describe_sidecar(path: str) -> str:
+    """Classify a WAL sidecar path as missing, unreadable, or present."""
+    if not os.path.exists(path):
+        return f"{path} (missing)"
+    if not os.access(path, os.R_OK):
+        return f"{path} (unreadable)"
+    return f"{path} (present)"
+
+
+class ColdWalReadOnlyError(sqlite3.OperationalError):
+    """Strict read-only WAL-mode SQLite database could not be read because
+    its -wal/-shm sidecars are missing or unreadable ("cold WAL").
+
+    Raised only for this confirmed condition, on first real read (never
+    during DatabaseManager construction). Strict read-only mode never
+    creates or repairs sidecars, never retries with a writable connection,
+    and never modifies journal mode -- this failure is fail-closed by
+    design. Restore managed WAL state by starting the authorized
+    backend/runtime against this database, or use a separately approved
+    frozen snapshot instead.
+    """
+
+    def __init__(self, db_path: str):
+        self.db_path = db_path
+        self.wal_path = db_path + "-wal"
+        self.shm_path = db_path + "-shm"
+        message = (
+            f"Cannot read {db_path}: WAL-mode SQLite database is 'cold' "
+            "(its -wal/-shm sidecars are missing or unreadable). "
+            f"Sidecar {_describe_sidecar(self.wal_path)}; "
+            f"sidecar {_describe_sidecar(self.shm_path)}. "
+            "Strict read-only mode (SQLite mode=ro, PRAGMA query_only=ON) "
+            "does not create or repair sidecars and will not retry with a "
+            "writable connection. Restore managed WAL state by starting the "
+            "authorized backend/runtime against this database, or use a "
+            "separately approved frozen snapshot instead."
+        )
+        super().__init__(message)
+
 
 # 不含特別號的彩種。DB 內可能用 0 當佔位值，但 API 輸出應正規化成 None。
 _NO_SPECIAL_TYPES = {
@@ -99,6 +141,19 @@ class DatabaseManager:
             conn = sqlite3.connect(f"file:{self.db_path}?mode=ro", uri=True)
             conn.row_factory = sqlite3.Row
             conn.execute("PRAGMA query_only = ON")
+            # Probe with a real read now (first real read for this
+            # connection) so a cold-WAL database — one whose journal mode
+            # is WAL but whose -wal/-shm sidecars are missing or unreadable
+            # — fails closed here with an actionable error, rather than
+            # surfacing a bare sqlite3.OperationalError deep inside an
+            # arbitrary caller's query.
+            try:
+                conn.execute("SELECT 1 FROM sqlite_master LIMIT 1")
+            except sqlite3.OperationalError as exc:
+                conn.close()
+                if "unable to open database file" in str(exc):
+                    raise ColdWalReadOnlyError(self.db_path) from exc
+                raise
             return conn
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row  # 使用字典式訪問

@@ -31,7 +31,9 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
-from database import DatabaseManager
+from database import DatabaseManager, ColdWalReadOnlyError
+
+EXIT_COLD_WAL_READ_ONLY = 3
 
 DB_PATH = os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db')
 
@@ -606,6 +608,9 @@ def main():
                 predictions.append(summary)
                 warnings.extend(summary.get('warnings', []))
 
+        except ColdWalReadOnlyError as e:
+            print(f'ERROR: {e}', file=sys.stderr)
+            sys.exit(EXIT_COLD_WAL_READ_ONLY)
         except Exception as e:
             print(f'  {lottery_type} 預測失敗: {e}')
             import traceback

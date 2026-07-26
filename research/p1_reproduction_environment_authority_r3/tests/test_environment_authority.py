@@ -40,6 +40,11 @@ def canonical_bytes(value: object) -> bytes:
     ).encode("utf-8")
 
 
+def assert_schema_required_properties(instance: dict, schema: dict) -> None:
+    missing = [field for field in schema["required"] if field not in instance]
+    assert not missing, f"missing required properties: {missing}"
+
+
 def record_hash(payload: bytes) -> str:
     encoded = base64.urlsafe_b64encode(hashlib.sha256(payload).digest())
     return "sha256=" + encoded.rstrip(b"=").decode("ascii")
@@ -120,6 +125,10 @@ def make_launcher_bytes(interpreter: str, rest: bytes) -> bytes:
         + BUILDER.TRAMPOLINE_SUFFIX
         + rest
     )
+
+
+def make_python_shebang_launcher_bytes(interpreter: str, rest: bytes) -> bytes:
+    return b"#!" + interpreter.encode("utf-8") + b"\n" + rest
 
 
 DEFAULT_REST = b"# -*- coding: utf-8 -*-\nimport sys\nfrom demo import main\nsys.exit(main())\n"
@@ -213,11 +222,69 @@ def test_runtime_v3_required_fields_and_sets() -> None:
     for row in runtime["console_script_semantic_set"]:
         assert SHA256_RE.fullmatch(row["normalized_launcher_sha256"])
         assert row["executable_mode"] == "755"
+        assert row["launcher_type"] == "uv_console_script"
     diagnostics = load_json("launcher_raw_diagnostics.json")
     assert len(diagnostics) == 7
     for row in diagnostics:
+        assert row["raw_launcher_type"]["diagnostic_only"] is True
+        assert set(row["raw_launcher_type"]["observations"].values()) == {
+            "python_shebang",
+            "shell_trampoline",
+        }
         assert row["raw_launcher_sha256"]["diagnostic_only"] is True
         assert len(row["raw_launcher_sha256"]["observations"]) == 3
+
+
+def test_schema_accepts_current_semantic_console_script_rows() -> None:
+    runtime = load_json("runtime_fingerprint.json")
+    item_schema = load_json("runtime_fingerprint.schema.json")["properties"][
+        "console_script_semantic_set"
+    ]["items"]
+    assert "raw_launcher_type" not in item_schema["required"]
+    assert "raw_launcher_sha256" not in item_schema["required"]
+    assert "raw_launcher_size" not in item_schema["required"]
+    assert item_schema["properties"]["launcher_type"]["const"] == "uv_console_script"
+    for row in runtime["console_script_semantic_set"]:
+        assert_schema_required_properties(row, item_schema)
+
+
+def test_schema_rejects_a_missing_semantic_console_script_field() -> None:
+    runtime = load_json("runtime_fingerprint.json")
+    item_schema = load_json("runtime_fingerprint.schema.json")["properties"][
+        "console_script_semantic_set"
+    ]["items"]
+    incomplete = dict(runtime["console_script_semantic_set"][0])
+    incomplete.pop("target_callable")
+    with pytest.raises(AssertionError, match="target_callable"):
+        assert_schema_required_properties(incomplete, item_schema)
+
+
+def test_recipe_defines_non_skipping_regeneration_acceptance() -> None:
+    recipe = load_json("installation_recipe.json")
+    acceptance = recipe[
+        "mandatory_regeneration_acceptance"
+    ]
+    command = acceptance["command_form"]
+    assert acceptance["runtime_root_must_be_explicit"] is True
+    assert acceptance["skip_allowed"] is False
+    assert command[0] == "${RUNTIME_ROOT}/venv/bin/python"
+    assert command[-3:] == ["--runtime-root", "${RUNTIME_ROOT}", "--check"]
+    assert recipe["approved_console_script_raw_template_types"] == [
+        "python_shebang",
+        "shell_trampoline",
+    ]
+    assert recipe["semantic_console_script_launcher_type"] == "uv_console_script"
+
+
+def test_launcher_policy_v2_defines_cross_template_equivalence() -> None:
+    policy = load_json("launcher_normalization_policy.json")
+    normalization = policy["normalization"]
+    assert policy["schema_version"] == "LauncherNormalizationPolicyV2"
+    assert normalization["semantic_launcher_type"] == "uv_console_script"
+    assert {
+        row["raw_launcher_type"] for row in normalization["recognized_templates"]
+    } == {"python_shebang", "shell_trampoline"}
+    assert normalization["non_bootstrap_byte_differences_are_acceptance_critical"] is True
 
 
 def test_three_installs_have_identical_v3_fingerprints() -> None:
@@ -345,7 +412,7 @@ def test_entry_point_target_change_invalidates() -> None:
         "entry_point_name": "demo",
         "target_module": "demo",
         "target_callable": "main",
-        "launcher_type": "shell_trampoline",
+        "launcher_type": "uv_console_script",
         "source_wheel_filename": "demo-1.0-py3-none-any.whl",
         "source_wheel_sha256": "a" * 64,
         "normalized_launcher_sha256": "b" * 64,
@@ -370,7 +437,7 @@ def test_executable_mode_change_invalidates() -> None:
         "entry_point_name": "demo",
         "target_module": "demo",
         "target_callable": "main",
-        "launcher_type": "shell_trampoline",
+        "launcher_type": "uv_console_script",
         "source_wheel_filename": "demo-1.0-py3-none-any.whl",
         "source_wheel_sha256": "a" * 64,
         "normalized_launcher_sha256": "b" * 64,
@@ -586,7 +653,7 @@ def test_wrong_source_wheel_hash_invalidates() -> None:
         "entry_point_name": "demo",
         "target_module": "demo",
         "target_callable": "main",
-        "launcher_type": "shell_trampoline",
+        "launcher_type": "uv_console_script",
         "source_wheel_filename": "demo-1.0-py3-none-any.whl",
         "source_wheel_sha256": "a" * 64,
         "normalized_launcher_sha256": "b" * 64,
@@ -611,7 +678,7 @@ def test_wrong_distribution_identity_invalidates() -> None:
         "entry_point_name": "demo",
         "target_module": "demo",
         "target_callable": "main",
-        "launcher_type": "shell_trampoline",
+        "launcher_type": "uv_console_script",
         "source_wheel_filename": "demo-1.0-py3-none-any.whl",
         "source_wheel_sha256": "a" * 64,
         "normalized_launcher_sha256": "b" * 64,
@@ -643,21 +710,225 @@ def test_interpreter_path_only_mutation_leaves_normalized_identity_unchanged() -
     assert hashlib.sha256(short).hexdigest() != hashlib.sha256(long).hexdigest()
 
 
+def test_approved_raw_templates_share_one_semantic_launcher_identity() -> None:
+    interpreter = "/Users/kelvin/runtime/bin/python3.12"
+    shebang = make_python_shebang_launcher_bytes(interpreter, DEFAULT_REST)
+    trampoline = make_launcher_bytes(interpreter, DEFAULT_REST)
+    shebang_type, normalized_shebang = BUILDER.classify_and_normalize_launcher(
+        shebang, interpreter
+    )
+    trampoline_type, normalized_trampoline = BUILDER.classify_and_normalize_launcher(
+        trampoline, interpreter
+    )
+    assert {shebang_type, trampoline_type} == {
+        "python_shebang",
+        "shell_trampoline",
+    }
+    assert normalized_shebang == normalized_trampoline
+    assert normalized_shebang.startswith(
+        BUILDER.CANONICAL_UV_CONSOLE_SCRIPT_PREFIX
+    )
+
+
+def test_cross_template_non_bootstrap_payload_change_invalidates() -> None:
+    interpreter = "/Users/kelvin/runtime/bin/python3.12"
+    shebang = make_python_shebang_launcher_bytes(interpreter, DEFAULT_REST)
+    trampoline = make_launcher_bytes(
+        interpreter, DEFAULT_REST.replace(b"main", b"other")
+    )
+    _, normalized_shebang = BUILDER.classify_and_normalize_launcher(
+        shebang, interpreter
+    )
+    _, normalized_trampoline = BUILDER.classify_and_normalize_launcher(
+        trampoline, interpreter
+    )
+    assert normalized_shebang != normalized_trampoline
+
+
 # ---------------------------------------------------------------------------
 # Negative test 14: two different absolute install roots produce identical
-# V3 fingerprints (already proven end-to-end; asserted here against sealed
-# committed evidence)
+# canonical receipts and V3 fingerprints through production builder functions
 # ---------------------------------------------------------------------------
 
 
-def test_two_absolute_install_roots_produce_identical_v3_fingerprint() -> None:
-    authority = load_json("environment_authority.json")
-    fingerprints = authority["per_install_v3_fingerprint"]
-    assert (
-        fingerprints["install-short"]
-        == fingerprints["install-long-path-for-normalization-proof"]
-        == fingerprints["verification-install"]
+def create_production_builder_fixture(
+    project_root: Path,
+    runtime_root: Path,
+    *,
+    wheel_name: str,
+    wheel_bytes: bytes,
+) -> None:
+    project_root.mkdir(parents=True, exist_ok=True)
+    wheel_sha256 = hashlib.sha256(wheel_bytes).hexdigest()
+    (project_root / "approved_artifacts.json").write_bytes(
+        canonical_bytes(
+            {
+                "artifacts": [
+                    {
+                        "filename": wheel_name,
+                        "normalized_name": "demo",
+                        "platform_tags": ["py3-none-any"],
+                        "sha256": wheel_sha256,
+                        "version": "1.0",
+                    }
+                ]
+            }
+        )
     )
+    (project_root / "expected_distributions.json").write_bytes(
+        canonical_bytes(
+            {
+                "distributions": [{"normalized_name": "demo", "version": "1.0"}]
+            }
+        )
+    )
+    (project_root / "approved_platform_fingerprint.json").write_bytes(
+        (PROJECT_ROOT / "approved_platform_fingerprint.json").read_bytes()
+    )
+    (project_root / "uv.lock").write_bytes((PROJECT_ROOT / "uv.lock").read_bytes())
+
+    wheelhouse = runtime_root / "wheelhouse"
+    wheelhouse.mkdir(parents=True)
+    (wheelhouse / wheel_name).write_bytes(wheel_bytes)
+    for target_identity, _wheelhouse_identity in BUILDER.TARGETS:
+        target_root = runtime_root / target_identity
+        site = target_root / "lib" / "python3.12" / "site-packages"
+        site.mkdir(parents=True)
+        bin_dir = target_root / "bin"
+        bin_dir.mkdir(parents=True)
+        (bin_dir / "python3.12").write_bytes(b"stub-interpreter")
+
+        package = site / "demo" / "__init__.py"
+        package.parent.mkdir()
+        package.write_bytes(b"VALUE = 1\n")
+        dist_info = site / "demo-1.0.dist-info"
+        dist_info.mkdir()
+        metadata = dist_info / "METADATA"
+        metadata.write_bytes(b"Metadata-Version: 2.4\nName: demo\nVersion: 1.0\n")
+        uv_cache = dist_info / "uv_cache.json"
+        uv_cache.write_bytes(
+            b'{"timestamp":{"secs_since_epoch":1,"nanos_since_epoch":2}}'
+        )
+        (dist_info / "entry_points.txt").write_text(
+            "[console_scripts]\ndemo = demo:main\n", encoding="utf-8"
+        )
+        launcher = bin_dir / "demo"
+        interpreter = str(bin_dir / "python3.12")
+        if target_identity == "install-short":
+            launcher_bytes = make_python_shebang_launcher_bytes(
+                interpreter, DEFAULT_REST
+            )
+        else:
+            launcher_bytes = make_launcher_bytes(interpreter, DEFAULT_REST)
+        launcher.write_bytes(launcher_bytes)
+        launcher.chmod(0o755)
+        write_record(
+            dist_info / "RECORD",
+            [
+                [
+                    "demo/__init__.py",
+                    record_hash(package.read_bytes()),
+                    str(package.stat().st_size),
+                ],
+                [
+                    "demo-1.0.dist-info/METADATA",
+                    record_hash(metadata.read_bytes()),
+                    str(metadata.stat().st_size),
+                ],
+                [
+                    "demo-1.0.dist-info/uv_cache.json",
+                    record_hash(uv_cache.read_bytes()),
+                    str(uv_cache.stat().st_size),
+                ],
+                [
+                    "../../../bin/demo",
+                    record_hash(launcher.read_bytes()),
+                    str(launcher.stat().st_size),
+                ],
+                ["demo-1.0.dist-info/RECORD", "", ""],
+            ],
+        )
+
+
+def test_two_absolute_install_roots_produce_identical_v3_fingerprint(
+    tmp_path: Path,
+) -> None:
+    project_root = tmp_path / "project"
+    short_runtime = tmp_path / "r"
+    long_runtime = (
+        tmp_path
+        / "materially"
+        / "different"
+        / "absolute"
+        / "parent"
+        / "installation"
+        / "root"
+    )
+    wheel_name = "demo-1.0-py3-none-any.whl"
+    wheel_bytes = b"production-builder cross-root fixture wheel"
+    create_production_builder_fixture(
+        project_root,
+        short_runtime,
+        wheel_name=wheel_name,
+        wheel_bytes=wheel_bytes,
+    )
+    create_production_builder_fixture(
+        project_root,
+        long_runtime,
+        wheel_name=wheel_name,
+        wheel_bytes=wheel_bytes,
+    )
+
+    short_receipt = BUILDER.installation_receipt_document(
+        project_root, short_runtime, require_empty_targets=False
+    )
+    long_receipt = BUILDER.installation_receipt_document(
+        project_root, long_runtime, require_empty_targets=False
+    )
+    assert canonical_bytes(short_receipt) == canonical_bytes(long_receipt)
+
+    observations = [
+        BUILDER.inventory_installation(
+            project_root, short_runtime, "install-short", "wheelhouse", short_receipt
+        ),
+        BUILDER.inventory_installation(
+            project_root,
+            long_runtime,
+            "install-long-path-for-normalization-proof",
+            "wheelhouse",
+            long_receipt,
+        ),
+        BUILDER.inventory_installation(
+            project_root,
+            short_runtime,
+            "verification-install",
+            "wheelhouse",
+            short_receipt,
+        ),
+    ]
+    launcher_rows = [observation["console_script_rows"][0] for observation in observations]
+    assert len({row["raw_launcher_sha256"] for row in launcher_rows}) == 3
+    assert {row["raw_launcher_type"] for row in launcher_rows} == {
+        "python_shebang",
+        "shell_trampoline",
+    }
+    assert {row["launcher_type"] for row in launcher_rows} == {"uv_console_script"}
+    assert len(
+        {
+            canonical_bytes(BUILDER.console_script_acceptance_row(row))
+            for row in launcher_rows
+        }
+    ) == 1
+
+    receipt_sha256 = hashlib.sha256(canonical_bytes(short_receipt)).hexdigest()
+    launcher_policy_sha256 = hashlib.sha256(
+        canonical_bytes(BUILDER.launcher_normalization_policy_document())
+    ).hexdigest()
+    runtime, _diagnostics = BUILDER.aggregate_runtime_document(
+        project_root, observations, receipt_sha256, launcher_policy_sha256
+    )
+    assert runtime["installation_receipt_sha256"] == receipt_sha256
+    assert len(set(runtime["per_install_environment_fingerprint_sha256"].values())) == 1
 
 
 # ---------------------------------------------------------------------------

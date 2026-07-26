@@ -26,8 +26,8 @@ from typing import Any, Iterable
 SCHEMA_VERSION = "RuntimeFingerprintV3"
 SEMANTIC_RECORD_ALGORITHM_VERSION = "SemanticRecordV1"
 INSTALLER_METADATA_POLICY_VERSION = "InstallerMetadataPolicyV1"
-LAUNCHER_NORMALIZATION_POLICY_VERSION = "LauncherNormalizationPolicyV1"
-CONSOLE_SCRIPT_SEMANTIC_VERSION = "ConsoleScriptSemanticV1"
+LAUNCHER_NORMALIZATION_POLICY_VERSION = "LauncherNormalizationPolicyV2"
+CONSOLE_SCRIPT_SEMANTIC_VERSION = "ConsoleScriptSemanticV2"
 PROJECT_RELATIVE_ROOT = "research/p1_reproduction_environment_authority_r3"
 R2_RELATIVE_ROOT = "research/p1_reproduction_environment_authority_r2"
 R2_MERGE_COMMIT = "8bfb4acce43e45a7920799699d9f946b442a3ec6"
@@ -42,6 +42,8 @@ R2_SHA256SUMS_SHA256 = "36e4e4a1ff0f4499a9c2302bb683fec82beed5c2f58688671b39aa3f
 R2_INSTALLER_METADATA_POLICY_SHA256 = (
     "1521210a24785ca69e16d6c41a1536fbe8921463e06cb72044e7d505f23ac32b"
 )
+PRIOR_REFUTED_HEAD = "063293ae157a3d392235292cfb754faf535394c8"
+PRIOR_REFUTED_TREE = "d8528c0ee6e6e7f1f29973aa7fa109cfbb99dd9b"
 PYTHON_ARTIFACT_SHA256 = (
     "194997bc8cc08f1ed19a7e6a72544d8ce6688ef5e8969d61de2848aeb68fbf6c"
 )
@@ -78,6 +80,10 @@ AFFECTED_LAUNCHERS = [
     "bin/py.test",
 ]
 PYTHON_INTERPRETER_TOKEN = "${PYTHON_INTERPRETER}"
+UV_CONSOLE_SCRIPT_LAUNCHER_TYPE = "uv_console_script"
+CANONICAL_UV_CONSOLE_SCRIPT_PREFIX = (
+    b"#!" + PYTHON_INTERPRETER_TOKEN.encode("utf-8") + b"\n"
+)
 TRAMPOLINE_PREFIX = b"#!/bin/sh\n'''exec' '"
 TRAMPOLINE_SUFFIX = b"' \"$0\" \"$@\"\n' '''\n"
 ABS_PATH_RE = re.compile(rb"/[^\s'\"]+")
@@ -108,7 +114,7 @@ class RecordValidationError(RuntimeError):
 
 
 class LauncherValidationError(RuntimeError):
-    """An installed console-script launcher violates LauncherNormalizationPolicyV1."""
+    """An installed console-script launcher violates LauncherNormalizationPolicyV2."""
 
 
 def canonical_bytes(value: Any) -> bytes:
@@ -326,11 +332,24 @@ def supersedes_document() -> dict[str, Any]:
             "RuntimeFingerprintV2 record_semantic_sha256 computed over raw "
             "console-script launcher bytes as ordinary package payload"
         ),
-        "diagnostic_fields_retained": ["raw_launcher_sha256", "raw_launcher_size"],
+        "diagnostic_fields_retained": [
+            "raw_launcher_type",
+            "raw_launcher_sha256",
+            "raw_launcher_size",
+        ],
         "replacement_acceptance_field": (
             "console_script_semantic_set_sha256 "
             "(normalized_launcher_sha256 per declared console script)"
         ),
+        "launcher_policy_v2_correction": {
+            "prior_policy_version": "LauncherNormalizationPolicyV1",
+            "approved_raw_templates": ["python_shebang", "shell_trampoline"],
+            "semantic_launcher_type": UV_CONSOLE_SCRIPT_LAUNCHER_TYPE,
+            "equivalence_boundary": (
+                "same declared entry point and byte-identical non-bootstrap "
+                "Python payload"
+            ),
+        },
         "r3_effective_schema_version": SCHEMA_VERSION,
         "r3_launcher_normalization_policy_version": LAUNCHER_NORMALIZATION_POLICY_VERSION,
         "r3_console_script_semantic_version": CONSOLE_SCRIPT_SEMANTIC_VERSION,
@@ -352,32 +371,44 @@ def launcher_normalization_policy_document() -> dict[str, Any]:
             "venv_scaffolding_excluded": sorted(VENV_SCAFFOLDING_BASENAMES),
         },
         "normalization": {
-            "preserved_bytes": "all launcher bytes except the exact interpreter-location segment",
-            "replacement_token": PYTHON_INTERPRETER_TOKEN,
+            "semantic_launcher_type": UV_CONSOLE_SCRIPT_LAUNCHER_TYPE,
+            "preserved_bytes": (
+                "all non-bootstrap Python payload bytes after the exact approved "
+                "raw-template header"
+            ),
+            "canonical_semantic_prefix": (
+                "#!${PYTHON_INTERPRETER}\\n"
+            ),
             "recognized_templates": [
                 {
-                    "launcher_type": "python_shebang",
+                    "raw_launcher_type": "python_shebang",
                     "description": "first line is '#!' followed by the resolved interpreter path",
-                    "normalized_span": "first line only",
+                    "bootstrap_span": "first line only",
                 },
                 {
-                    "launcher_type": "shell_trampoline",
+                    "raw_launcher_type": "shell_trampoline",
                     "description": (
                         "#!/bin/sh trampoline embedding the resolved interpreter path "
                         "once, in single quotes, on the second line"
                     ),
-                    "normalized_span": "the single quoted interpreter path on the second line",
+                    "bootstrap_span": "first three lines",
                 },
             ],
+            "cross_template_equivalence": (
+                "approved raw templates are semantically identical only when their "
+                "declared console-script entry point and complete non-bootstrap "
+                "Python payload bytes are identical"
+            ),
             "any_other_absolute_path_is_invalid": True,
             "any_unrecognized_template_is_invalid": True,
             "executable_mode_is_acceptance_critical": True,
-            "non_path_byte_differences_are_acceptance_critical": True,
+            "non_bootstrap_byte_differences_are_acceptance_critical": True,
         },
         "fingerprint_exclusion": (
             "bin/** is never wholesale excluded from RuntimeFingerprintV3; only the "
             "declared console-script launcher rows move from raw semantic RECORD "
-            "content into ConsoleScriptSemanticV1, retaining raw hashes as diagnostics"
+            "content into ConsoleScriptSemanticV2, retaining raw template type, "
+            "hash, and size as diagnostics"
         ),
     }
 
@@ -407,8 +438,6 @@ def runtime_fingerprint_schema_document() -> dict[str, Any]:
         "source_wheel_filename",
         "source_wheel_sha256",
         "normalized_launcher_sha256",
-        "raw_launcher_sha256",
-        "raw_launcher_size",
     ]
     return {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -476,6 +505,11 @@ def runtime_fingerprint_schema_document() -> dict[str, Any]:
                 "items": {
                     "type": "object",
                     "required": required_console_script_fields,
+                    "properties": {
+                        "launcher_type": {
+                            "const": UV_CONSOLE_SCRIPT_LAUNCHER_TYPE
+                        }
+                    },
                 },
             },
             "console_script_semantic_set_sha256": {
@@ -556,15 +590,14 @@ def declared_console_scripts(dist_info: Path) -> dict[str, str]:
 def classify_and_normalize_launcher(
     data: bytes, expected_interpreter_path: str
 ) -> tuple[str, bytes]:
-    """Recognize exactly one approved launcher template and normalize its path.
+    """Return the raw template type and canonical semantic launcher bytes.
 
-    The template's own fixed boilerplate (e.g. the trampoline's ``#!/bin/sh``
-    line) is not itself scanned for "absolute paths" — only the bytes after
-    the approved interpreter-path position are checked, so a stray extra
-    absolute path anywhere in the launcher still invalidates it.
+    The two uv bootstraps are transport details. Both collapse to one canonical
+    prefix while every byte of their shared non-bootstrap Python payload remains
+    acceptance-critical. A stray absolute path in that payload still invalidates
+    the launcher.
     """
     expected_bytes = expected_interpreter_path.encode("utf-8")
-    token = PYTHON_INTERPRETER_TOKEN.encode("utf-8")
 
     if data.startswith(TRAMPOLINE_PREFIX):
         remainder = data[len(TRAMPOLINE_PREFIX) :]
@@ -576,7 +609,7 @@ def classify_and_normalize_launcher(
             raise LauncherValidationError(
                 "unexpected absolute path outside the approved trampoline position"
             )
-        normalized = TRAMPOLINE_PREFIX + token + TRAMPOLINE_SUFFIX + rest
+        normalized = CANONICAL_UV_CONSOLE_SCRIPT_PREFIX + rest
         return "shell_trampoline", normalized
 
     shebang_prefix = b"#!" + expected_bytes + b"\n"
@@ -586,7 +619,7 @@ def classify_and_normalize_launcher(
             raise LauncherValidationError(
                 "unexpected absolute path outside the shebang line"
             )
-        normalized = b"#!" + token + b"\n" + rest
+        normalized = CANONICAL_UV_CONSOLE_SCRIPT_PREFIX + rest
         return "python_shebang", normalized
 
     raise LauncherValidationError("unrecognized launcher template")
@@ -861,7 +894,7 @@ def inventory_installation(
             name = launcher_row["entry_point_name"]
             target = declared[name]
             target_module, _, target_callable = target.partition(":")
-            launcher_type, normalized_bytes = classify_and_normalize_launcher(
+            raw_launcher_type, normalized_bytes = classify_and_normalize_launcher(
                 launcher_row["raw_bytes"], expected_interpreter_path
             )
             console_script_rows.append(
@@ -874,10 +907,11 @@ def inventory_installation(
                     "entry_point_name": name,
                     "target_module": target_module,
                     "target_callable": target_callable,
-                    "launcher_type": launcher_type,
+                    "launcher_type": UV_CONSOLE_SCRIPT_LAUNCHER_TYPE,
                     "source_wheel_filename": receipt_row["approved_wheel_filename"],
                     "source_wheel_sha256": receipt_row["approved_wheel_sha256"],
                     "normalized_launcher_sha256": sha256_bytes(normalized_bytes),
+                    "raw_launcher_type": raw_launcher_type,
                     "raw_launcher_sha256": sha256_bytes(launcher_row["raw_bytes"]),
                     "raw_launcher_size": len(launcher_row["raw_bytes"]),
                 }
@@ -1054,7 +1088,7 @@ def aggregate_runtime_document(
         )
     if len(set(per_install_console_sha256.values())) != 1:
         raise RuntimeError(
-            f"ConsoleScriptSemanticV1 set mismatch across installs: {per_install_console_sha256}"
+            f"ConsoleScriptSemanticV2 set mismatch across installs: {per_install_console_sha256}"
         )
 
     observation_by_target = {
@@ -1090,6 +1124,7 @@ def aggregate_runtime_document(
     ]
     raw_launcher_diagnostics = []
     for row_a in reference_console:
+        type_by_target = {}
         raw_by_target = {}
         size_by_target = {}
         for target, _wheelhouse in TARGETS:
@@ -1098,11 +1133,16 @@ def aggregate_runtime_document(
                 for r in observation_by_target[target]["console_script_rows"]
                 if r["relative_posix_path"] == row_a["relative_posix_path"]
             )
+            type_by_target[target] = match["raw_launcher_type"]
             raw_by_target[target] = match["raw_launcher_sha256"]
             size_by_target[target] = match["raw_launcher_size"]
         raw_launcher_diagnostics.append(
             {
                 "relative_posix_path": row_a["relative_posix_path"],
+                "raw_launcher_type": {
+                    "diagnostic_only": True,
+                    "observations": type_by_target,
+                },
                 "raw_launcher_sha256": {"diagnostic_only": True, "observations": raw_by_target},
                 "raw_launcher_size": {"diagnostic_only": True, "observations": size_by_target},
             }
@@ -1196,8 +1236,9 @@ def environment_authority_document(
                 "R2 hashed every installed file including launchers as ordinary RECORD payload",
                 "three installs at materially different absolute path lengths therefore "
                 "produce different raw launcher bytes with no package payload difference",
-                "LauncherNormalizationPolicyV1 replaces only that interpreter-path segment "
-                "with a canonical token before hashing, restoring location independence",
+                "LauncherNormalizationPolicyV2 collapses both approved uv bootstrap "
+                "templates to one canonical uv_console_script prefix while preserving "
+                "the complete non-bootstrap Python payload, restoring location independence",
             ],
         },
         "raw_vs_normalized_launcher_comparison": diagnostic["raw_launcher_diagnostics"],
@@ -1279,6 +1320,7 @@ def installation_recipe_document(launcher_policy_sha256: str) -> dict[str, Any]:
         "editable_vcs_or_local_dependencies_allowed": False,
         "cache_and_runtime_redirections": {
             "UV_CACHE_DIR": "${RUNTIME_ROOT}/uv-cache",
+            "UV_PROJECT_ENVIRONMENT": "${RUNTIME_ROOT}/venv",
             "UV_PYTHON_INSTALL_DIR": "${RUNTIME_ROOT}/python",
             "TMPDIR": "${RUNTIME_ROOT}/tmp",
             "PYTHONDONTWRITEBYTECODE": "1",
@@ -1286,7 +1328,25 @@ def installation_recipe_document(launcher_policy_sha256: str) -> dict[str, Any]:
             "TZ": "UTC",
             "LC_ALL": "C",
         },
-        "approved_console_script_launcher_types": ["python_shebang", "shell_trampoline"],
+        "mandatory_regeneration_acceptance": {
+            "working_directory": PROJECT_RELATIVE_ROOT,
+            "command_form": [
+                "${RUNTIME_ROOT}/venv/bin/python",
+                "tools/build_environment_authority.py",
+                "--project-root",
+                ".",
+                "--runtime-root",
+                "${RUNTIME_ROOT}",
+                "--check",
+            ],
+            "runtime_root_must_be_explicit": True,
+            "skip_allowed": False,
+        },
+        "approved_console_script_raw_template_types": [
+            "python_shebang",
+            "shell_trampoline",
+        ],
+        "semantic_console_script_launcher_type": UV_CONSOLE_SCRIPT_LAUNCHER_TYPE,
         "launcher_normalization_policy": {
             "version": LAUNCHER_NORMALIZATION_POLICY_VERSION,
             "sha256": launcher_policy_sha256,
@@ -1308,18 +1368,28 @@ embeds the resolved absolute installation-root interpreter path. R2 hashed
 those launcher bytes as ordinary RECORD payload, so its RuntimeFingerprintV2
 was location-dependent for any distribution declaring a console script.
 
-`LauncherNormalizationPolicyV1` discovers launchers only from each
+`LauncherNormalizationPolicyV2` discovers launchers only from each
 distribution's own declared `console_scripts` entry points, requires an exact
-one-to-one mapping between declared entries and installed launchers, and
-replaces only the resolved interpreter-path segment with a canonical token
-before hashing. `ConsoleScriptSemanticV1` records the normalized identity of
-every affected launcher; raw launcher hashes are retained diagnostically.
+one-to-one mapping between declared entries and installed launchers, and maps
+the approved uv Python-shebang and shell-trampoline bootstraps to one canonical
+semantic prefix before hashing. `ConsoleScriptSemanticV2` records
+`launcher_type: uv_console_script` while preserving every non-bootstrap Python
+payload byte. Raw template type, hash, and size are retained diagnostically.
 
 `RuntimeFingerprintV3` retains every R2 acceptance-critical field for
 non-launcher content and adds the launcher-normalization policy identity and
 the console-script semantic set identity. Three fresh offline installs at
 materially different absolute path lengths produce different raw launcher
 bytes and byte-identical RuntimeFingerprintV3 documents.
+
+`runtime_fingerprint.schema.json` validates only semantic console-script
+fields. Raw launcher hash and size observations remain diagnostic-only in
+`launcher_raw_diagnostics.json`.
+
+The mandatory regeneration acceptance command is recorded in
+`installation_recipe.json`; it supplies the runtime root directly and cannot
+silently skip. General Replay Governance CI does not replace this focused R3
+acceptance.
 
 The committed package contains no database, wheel, virtual environment,
 cache, interpreter, production change, or strategy result.
@@ -1342,7 +1412,8 @@ independent Judge and evidence seal pending.
 
 R1 and R2 remain immutable. R3 supersedes only path-dependent raw
 console-script launcher acceptance and replaces it with
-`ConsoleScriptSemanticV1`, while retaining raw launcher hashes diagnostically.
+`ConsoleScriptSemanticV2`, while retaining raw launcher template types, hashes,
+and sizes diagnostically.
 
 ## Preserved authority
 
@@ -1365,9 +1436,9 @@ whenever the absolute root differs.
 
 ## RuntimeFingerprintV3
 
-`LauncherNormalizationPolicyV1` replaces only the resolved interpreter-path
-segment of each declared console-script launcher with `${{PYTHON_INTERPRETER}}`
-before hashing.
+`LauncherNormalizationPolicyV2` maps both approved uv raw bootstraps to the
+canonical `#!${{PYTHON_INTERPRETER}}` semantic prefix while preserving the
+complete non-bootstrap Python payload before hashing.
 
 Per-install RuntimeFingerprintV3 identities:
 
@@ -1378,13 +1449,26 @@ Per-install RuntimeFingerprintV3 identities:
 All are byte-identical at `{runtime_document["environment_fingerprint_sha256"]}`.
 `{len(diag)}` launchers were compared; every raw hash differed across the two
 differently-rooted installs, and every normalized hash and
-`ConsoleScriptSemanticV1` row matched.
+`ConsoleScriptSemanticV2` row matched with
+`launcher_type: uv_console_script`.
 
 ## Safety boundary
 
 No database was opened, read, hashed, copied, or snapshotted. No P1 backtest
 ran. No production, deployment, registry, strategy status, or rejection state
 was changed.
+
+## Acceptance provenance
+
+The mandatory non-skipping regeneration command is defined in
+`installation_recipe.json`. Focused test counts and skip counts are execution
+provenance recorded with the PR and handoff; they are not MANIFEST fields.
+General Replay Governance CI does not replace focused R3 acceptance.
+
+The prior fixed head `{PRIOR_REFUTED_HEAD}` and tree `{PRIOR_REFUTED_TREE}`
+were REFUTED and are superseded by the corrected PR head. Final sealed-tree
+Judge identity belongs in PR and handoff execution provenance rather than in
+this non-recursive sealed package.
 """
 
 
@@ -1409,15 +1493,16 @@ def finalized_report_text(
 
 ## Verification and Judge
 
-- Focused tests: see FOCUSED_TEST_COUNT in the sealed MANIFEST
+- Focused test counts/skips: PR and handoff execution provenance, not MANIFEST
 - Negative integrity cases: `PASS`
 - Canonical authority regeneration: `PASS`
 - `uv lock --check --offline`: `PASS`
 - `git diff --check`: `PASS`
-- Judge provider/depth: `FABLE_JUDGE_SKILL / BOUNDED`
-- Judge input HEAD: `{judge_input_head}`
-- Judge input tree: `{judge_input_tree}`
-- Final Judge verdict: `VERIFIED`
+- Pre-seal Judge provider/depth: `FABLE_JUDGE_SKILL / BOUNDED`
+- Pre-seal Judge input HEAD: `{judge_input_head}`
+- Pre-seal Judge input tree: `{judge_input_tree}`
+- Pre-seal Judge verdict: `VERIFIED`
+- Final sealed-tree Judge: PR and handoff execution provenance; not recursively embedded
 """
     )
 
@@ -1529,12 +1614,22 @@ def seal_outputs(
             "git_diff_check": "PASS",
             "database_access_result": "NO_ACCESS",
         },
-        "judge": {
+        "prior_refuted_candidate": {
+            "head": PRIOR_REFUTED_HEAD,
+            "tree": PRIOR_REFUTED_TREE,
+            "verdict": "REFUTED",
+        },
+        "preseal_judge": {
             "provider": "FABLE_JUDGE_SKILL",
             "depth": "BOUNDED",
+            "scope": "NON_RECURSIVE_PRESEAL_SOURCE_TREE",
             "input_head": judge_input_head,
             "input_tree": judge_input_tree,
             "verdict": judge_verdict,
+        },
+        "final_sealed_tree_judge": {
+            "embedded": False,
+            "provenance_location": "PR and handoff execution evidence",
         },
         "seal_design": {
             "manifest_hashes_itself": False,

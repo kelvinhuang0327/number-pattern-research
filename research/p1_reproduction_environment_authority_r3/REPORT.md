@@ -1,7 +1,6 @@
 # LOTTERYNEW_P1_REPRODUCTION_ENVIRONMENT_AUTHORITY_CONSOLE_SCRIPT_NORMALIZATION_R3
 
-Status: implementation and deterministic runtime evidence complete; final
-independent Judge and evidence seal pending.
+Status: VERIFIED, sealed, and ready for Draft PR publication.
 
 ## Outcome
 
@@ -64,3 +63,17 @@ The prior fixed head `063293ae157a3d392235292cfb754faf535394c8` and tree `d8528c
 were REFUTED and are superseded by the corrected PR head. Final sealed-tree
 Judge identity belongs in PR and handoff execution provenance rather than in
 this non-recursive sealed package.
+
+
+## Verification and Judge
+
+- Focused test counts/skips: PR and handoff execution provenance, not MANIFEST
+- Negative integrity cases: `PASS`
+- Canonical authority regeneration: `PASS`
+- `uv lock --check --offline`: `PASS`
+- `git diff --check`: `PASS`
+- Pre-seal Judge provider/depth: `FABLE_JUDGE_SKILL / DELTA`
+- Pre-seal Judge input HEAD: `0ecf3ef61d974b6ac194912a9fbd34227312184d`
+- Pre-seal Judge input tree: `ea2fb4872584ec212691c5249b20a3c1b983ca29`
+- Pre-seal Judge verdict: `VERIFIED`
+- Final sealed-tree Judge: PR and handoff execution provenance; not recursively embedded

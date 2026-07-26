@@ -28,6 +28,7 @@ SEMANTIC_RECORD_ALGORITHM_VERSION = "SemanticRecordV1"
 INSTALLER_METADATA_POLICY_VERSION = "InstallerMetadataPolicyV1"
 LAUNCHER_NORMALIZATION_POLICY_VERSION = "LauncherNormalizationPolicyV2"
 CONSOLE_SCRIPT_SEMANTIC_VERSION = "ConsoleScriptSemanticV2"
+PRESEAL_JUDGE_DEPTH = "DELTA"
 PROJECT_RELATIVE_ROOT = "research/p1_reproduction_environment_authority_r3"
 R2_RELATIVE_ROOT = "research/p1_reproduction_environment_authority_r2"
 R2_MERGE_COMMIT = "8bfb4acce43e45a7920799699d9f946b442a3ec6"
@@ -1498,7 +1499,7 @@ def finalized_report_text(
 - Canonical authority regeneration: `PASS`
 - `uv lock --check --offline`: `PASS`
 - `git diff --check`: `PASS`
-- Pre-seal Judge provider/depth: `FABLE_JUDGE_SKILL / BOUNDED`
+- Pre-seal Judge provider/depth: `FABLE_JUDGE_SKILL / {PRESEAL_JUDGE_DEPTH}`
 - Pre-seal Judge input HEAD: `{judge_input_head}`
 - Pre-seal Judge input tree: `{judge_input_tree}`
 - Pre-seal Judge verdict: `VERIFIED`
@@ -1621,7 +1622,7 @@ def seal_outputs(
         },
         "preseal_judge": {
             "provider": "FABLE_JUDGE_SKILL",
-            "depth": "BOUNDED",
+            "depth": PRESEAL_JUDGE_DEPTH,
             "scope": "NON_RECURSIVE_PRESEAL_SOURCE_TREE",
             "input_head": judge_input_head,
             "input_tree": judge_input_tree,

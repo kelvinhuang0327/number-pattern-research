@@ -287,6 +287,20 @@ def test_launcher_policy_v2_defines_cross_template_equivalence() -> None:
     assert normalization["non_bootstrap_byte_differences_are_acceptance_critical"] is True
 
 
+def test_evidence_seal_records_the_required_preseal_delta_depth() -> None:
+    runtime = load_json("runtime_fingerprint.json")
+    authority = load_json("environment_authority.json")
+    report = BUILDER.finalized_report_text(
+        PROJECT_ROOT,
+        runtime,
+        authority,
+        judge_input_head="a" * 40,
+        judge_input_tree="b" * 40,
+    )
+    assert BUILDER.PRESEAL_JUDGE_DEPTH == "DELTA"
+    assert "FABLE_JUDGE_SKILL / DELTA" in report
+
+
 def test_three_installs_have_identical_v3_fingerprints() -> None:
     authority = load_json("environment_authority.json")
     assert authority["v3_fingerprint_byte_identity"] is True

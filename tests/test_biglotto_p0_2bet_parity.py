@@ -16,6 +16,7 @@ import importlib
 import json
 import random
 import sqlite3
+import subprocess
 import sys
 from pathlib import Path
 
@@ -27,6 +28,31 @@ REPO_ROOT = Path(__file__).parent.parent
 
 ORIGINAL_MODULE = "tools.quick_predict"
 RECOVERED_MODULE = "recovered_strategies.biglotto.historical_adapters"
+FORBIDDEN_IMPORT_PREFIXES = (
+    "lottery_api.models.replay_strategy_registry",
+    "lottery_api.routes",
+    "scripts.p14d_biglotto_production_apply",
+)
+BLOCKED_IMPORT_SENTINEL = "PR712_FORBIDDEN_IMPORT_BLOCKED"
+
+_HERMETIC_IMPORT_BLOCKER_SOURCE = f"""
+import importlib
+import importlib.abc
+import sys
+
+FORBIDDEN_PREFIXES = {FORBIDDEN_IMPORT_PREFIXES!r}
+BLOCKED_IMPORT_SENTINEL = {BLOCKED_IMPORT_SENTINEL!r}
+
+
+class _ForbiddenImportBlocker(importlib.abc.MetaPathFinder):
+    def find_spec(self, fullname, path, target=None):
+        if any(fullname == prefix or fullname.startswith(prefix + ".") for prefix in FORBIDDEN_PREFIXES):
+            raise ImportError(f"{{BLOCKED_IMPORT_SENTINEL}}:{{fullname}}")
+        return None
+
+
+sys.meta_path.insert(0, _ForbiddenImportBlocker())
+"""
 
 
 def _git_blob_sha1(path: Path) -> str:
@@ -53,6 +79,22 @@ def _fresh_reimport(*module_names: str):
 
 def _normalize_original(result):
     return [d["numbers"] for d in result]
+
+
+def _run_hermetic_import_child(probe_source: str) -> subprocess.CompletedProcess[str]:
+    """Run an import probe in a fresh interpreter with no repository bytecode."""
+    return subprocess.run(
+        [
+            sys.executable,
+            "-B",
+            "-c",
+            f"{_HERMETIC_IMPORT_BLOCKER_SOURCE}\n{probe_source}",
+        ],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
 
 
 # --- 1. Fixture parses -------------------------------------------------
@@ -367,30 +409,38 @@ def test_malformed_history_validation_boundary():
 # --- 22. No registry, route or producer import is required --------------
 
 def test_no_registry_route_or_producer_import_required():
-    forbidden_prefixes = (
-        "lottery_api.models.replay_strategy_registry",
-        "lottery_api.routes",
+    result = _run_hermetic_import_child(
+        f"""
+for module_name in {(ORIGINAL_MODULE, RECOVERED_MODULE)!r}:
+    importlib.import_module(module_name)
+"""
+    )
+    assert result.returncode == 0, (
+        "fresh-interpreter import gate rejected a parity callable import:\n"
+        f"{result.stderr}"
     )
 
-    def _forbidden_present() -> set[str]:
-        return {
-            name
-            for name in sys.modules
-            if any(name == p or name.startswith(p + ".") for p in forbidden_prefixes)
-        }
 
-    # Measure a before/after delta rather than asserting absolute absence:
-    # an unrelated test module executed earlier in the same pytest session
-    # may have already imported one of these prefixes for its own reasons,
-    # and that pre-existing pollution must not be misattributed to this
-    # task's callables.
-    before = _forbidden_present()
-
-    _fresh_reimport(ORIGINAL_MODULE, "database")
-    _fresh_reimport(RECOVERED_MODULE)
-
-    after = _forbidden_present()
-    newly_imported = after - before
-    assert not newly_imported, (
-        f"importing the parity callables pulled in {newly_imported}, which is out of scope for this task"
+def test_forbidden_import_blocker_negative_control():
+    forbidden_module = FORBIDDEN_IMPORT_PREFIXES[0]
+    expected_sentinel = f"{BLOCKED_IMPORT_SENTINEL}:{forbidden_module}"
+    result = _run_hermetic_import_child(
+        f"""
+expected_sentinel = {expected_sentinel!r}
+try:
+    importlib.import_module({forbidden_module!r})
+except ImportError as exc:
+    if str(exc) != expected_sentinel:
+        print(f"unexpected blocker error: {{exc}}", file=sys.stderr)
+        raise SystemExit(2)
+    print(str(exc))
+else:
+    print("forbidden import unexpectedly reached its loader", file=sys.stderr)
+    raise SystemExit(3)
+"""
     )
+    assert result.returncode == 0, (
+        "negative-control child did not prove blocker detection:\n"
+        f"{result.stderr}"
+    )
+    assert result.stdout.strip() == expected_sentinel

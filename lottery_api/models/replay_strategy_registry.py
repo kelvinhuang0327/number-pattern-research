@@ -471,6 +471,17 @@ class _BigLottoTs3Regime3BetAdapter(ReplayStrategyAdapter):
         return first
 
 
+from .biglotto_zone_split_adapter import build_zone_split_adapters  # noqa: E402
+
+
+_BIGLOTTO_ZONE_SPLIT_ADAPTERS = build_zone_split_adapters(
+    adapter_base=ReplayStrategyAdapter,
+    meta_type=_StrategyMeta,
+    invalid_output=InvalidOutput,
+    unsupported_lottery_type=UnsupportedLotteryType,
+)
+
+
 # ─── Non-Executable Lifecycle Stubs ─────────────────────────────────────────
 # Registered in _ALL_ADAPTERS for governance visibility.
 # NOT added to _REGISTRY. MUST NOT be executed.
@@ -699,14 +710,6 @@ _NON_EXECUTABLE_STUBS: List[_LifecycleStub] = [
         min_history=1,
         status="OBSERVATION",
     ),
-    _LifecycleStub(
-        strategy_id="biglotto_zone_split_3bet_bet1",
-        strategy_name="大樂透 Zone Split 3注（Replay Bet 1）",
-        strategy_version="v0.1",
-        supported_lottery_types=["BIG_LOTTO"],
-        min_history=1,
-        status="OBSERVATION",
-    ),
 ]
 
 
@@ -722,6 +725,7 @@ _ALL_ADAPTERS: List[ReplayStrategyAdapter] = [
     # P1.3: ts3_regime_3bet — live BIG_LOTTO production strategy (2026-05-15)
     # P1.4: adapter binding RESOLVED (SAFE_RECONSTRUCTION, 2026-05-15)
     _BigLottoTs3Regime3BetAdapter(),
+    *_BIGLOTTO_ZONE_SPLIT_ADAPTERS,
     _Daily539F4ColdAdapter(),
     _Daily539MarkovColdAdapter(),
     *_NON_EXECUTABLE_STUBS,

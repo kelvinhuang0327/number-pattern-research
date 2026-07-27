@@ -371,15 +371,26 @@ def test_no_registry_route_or_producer_import_required():
         "lottery_api.models.replay_strategy_registry",
         "lottery_api.routes",
     )
-    for name in list(sys.modules):
-        assert not any(name == p or name.startswith(p + ".") for p in forbidden_prefixes), (
-            f"unexpected pre-existing import of {name} before fresh reimport"
-        )
+
+    def _forbidden_present() -> set[str]:
+        return {
+            name
+            for name in sys.modules
+            if any(name == p or name.startswith(p + ".") for p in forbidden_prefixes)
+        }
+
+    # Measure a before/after delta rather than asserting absolute absence:
+    # an unrelated test module executed earlier in the same pytest session
+    # may have already imported one of these prefixes for its own reasons,
+    # and that pre-existing pollution must not be misattributed to this
+    # task's callables.
+    before = _forbidden_present()
 
     _fresh_reimport(ORIGINAL_MODULE, "database")
     _fresh_reimport(RECOVERED_MODULE)
 
-    for name in list(sys.modules):
-        assert not any(name == p or name.startswith(p + ".") for p in forbidden_prefixes), (
-            f"importing the parity callables pulled in {name}, which is out of scope for this task"
-        )
+    after = _forbidden_present()
+    newly_imported = after - before
+    assert not newly_imported, (
+        f"importing the parity callables pulled in {newly_imported}, which is out of scope for this task"
+    )

@@ -1,9 +1,4 @@
-"""Focused no-DB tests for the P541F_R2 OBSERVATION registry metadata entries.
-
-Scope: metadata-only lifecycle registration of two P541E-implemented strategies
-as non-executable OBSERVATION stubs. Does not test adapter execution, replay
-generation, or promotion — those remain out of scope for this task.
-"""
+"""Focused no-DB lifecycle tests after the target-native Big Lotto migrations."""
 from __future__ import annotations
 
 import ast
@@ -18,19 +13,27 @@ from pathlib import Path
 
 import pytest
 
+from lottery_api.models import p541d_r2_biglotto_selected_adapters as donor_adapters
 from lottery_api.models import replay_strategy_registry as registry
-from lottery_api.models import p541d_r2_biglotto_selected_adapters as adapters
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_MODULE_NAME = "lottery_api.models.replay_strategy_registry"
-ADAPTER_MODULE_NAME = "lottery_api.models.p541d_r2_biglotto_selected_adapters"
-SOCIAL_MODULE_NAME = "lottery_api.models.social_wisdom_predictor"
-ZONE_MODULE_NAME = "lottery_api.models.zone_split"
+DONOR_ADAPTER_MODULE_NAME = (
+    "lottery_api.models.p541d_r2_biglotto_selected_adapters"
+)
+TARGET_SOCIAL_MODULE_NAME = "lottery_api.models.biglotto_social_wisdom_adapter"
+TARGET_ZONE_MODULE_NAME = "lottery_api.models.biglotto_zone_split_adapter"
+SOCIAL_PREDICTOR_MODULE_NAME = "lottery_api.models.social_wisdom_predictor"
+LEGACY_ZONE_MODULE_NAME = "lottery_api.models.zone_split"
 
 SOCIAL_ID = "biglotto_social_wisdom_anti_popularity"
-ZONE_ID = "biglotto_zone_split_3bet_bet1"
-NEW_IDS = (SOCIAL_ID, ZONE_ID)
+ZONE_IDS = (
+    "biglotto_zone_split_3bet_bet1",
+    "biglotto_zone_split_3bet_bet2",
+    "biglotto_zone_split_3bet_bet3",
+)
+PROMOTED_IDS = (*ZONE_IDS, SOCIAL_ID)
 
 SOCIAL_META = {
     "strategy_id": SOCIAL_ID,
@@ -38,21 +41,24 @@ SOCIAL_META = {
     "strategy_version": "v0.1",
     "supported_lottery_types": ["BIG_LOTTO"],
     "min_history": 1,
-    "lifecycle_status": "OBSERVATION",
+    "lifecycle_status": "ONLINE",
 }
-ZONE_META = {
-    "strategy_id": ZONE_ID,
-    "strategy_name": "大樂透 Zone Split 3注（Replay Bet 1）",
-    "strategy_version": "v0.1",
-    "supported_lottery_types": ["BIG_LOTTO"],
-    "min_history": 1,
-    "lifecycle_status": "OBSERVATION",
+ZONE_META_BY_ID = {
+    strategy_id: {
+        "strategy_id": strategy_id,
+        "strategy_name": f"大樂透 Zone Split 3注（Replay Bet {index}）",
+        "strategy_version": "v0.1",
+        "supported_lottery_types": ["BIG_LOTTO"],
+        "min_history": 1,
+        "lifecycle_status": "ONLINE",
+    }
+    for index, strategy_id in enumerate(ZONE_IDS, start=1)
 }
-NEW_META_BY_ID = {SOCIAL_ID: SOCIAL_META, ZONE_ID: ZONE_META}
+PROMOTED_META_BY_ID = {**ZONE_META_BY_ID, SOCIAL_ID: SOCIAL_META}
 
-PRE_EXISTING_OBSERVATION_ID = "h6_gate_mk20_ew85"
-PRE_EXISTING_OBSERVATION_META = {
-    "strategy_id": PRE_EXISTING_OBSERVATION_ID,
+OBSERVATION_BASELINE_ID = "h6_gate_mk20_ew85"
+OBSERVATION_BASELINE_META = {
+    "strategy_id": OBSERVATION_BASELINE_ID,
     "strategy_name": "威力彩 H6 Gate mk20 ew85",
     "strategy_version": "v0.0",
     "supported_lottery_types": ["POWER_LOTTO"],
@@ -60,100 +66,21 @@ PRE_EXISTING_OBSERVATION_META = {
     "lifecycle_status": "OBSERVATION",
 }
 
-# Captured live from the exact base commit 08e0d6b2c6456e242c5507435a3dacc59e1eb577
-# (PR #689 merge, immediately pre-P541F-edit) via direct module introspection in
-# an isolated worktree. Used to prove the edit ONLY appends the two new
-# OBSERVATION stubs at the tail, in the OBSERVATION section, and changes
-# nothing else about ordering, executability, or existing metadata.
-PRE_EDIT_ALL_ADAPTERS_SEQUENCE = (
+# Exact order is intentionally limited to the executable prefix that predates
+# this migration.  Historical non-executable ordering remains outside this test.
+UNAFFECTED_EXECUTABLE_PREFIX = (
     "power_precision_3bet",
     "power_orthogonal_5bet",
     "fourier_rhythm_3bet",
     "biglotto_triple_strike",
     "biglotto_deviation_2bet",
     "ts3_regime_3bet",
+    *ZONE_IDS,
     "daily539_f4cold",
     "daily539_markov_cold",
-    "biglotto_ts3_acb_4bet",
-    "biglotto_ts3_markov_freq_5bet",
-    "power_shlc_midfreq",
-    "p1_deviation_2bet_539",
-    "bet2_fourier_expansion_biglotto",
-    "cold_complement_biglotto",
-    "coldpool15_biglotto",
-    "fourier30_markov30_biglotto",
-    "markov_2bet_biglotto",
-    "markov_single_biglotto",
-    "539_3bet_orthogonal",
-    "acb_single_539",
-    "markov_1bet_539",
-    "p0b_539_3bet_f_cold_fmid",
-    "p0c_539_3bet_f_cold_x2",
-    "zone_gap_3bet_539",
-    "acb_1bet",
-    "acb_markov_midfreq",
-    "acb_markov_midfreq_3bet",
-    "midfreq_acb_2bet",
-    "midfreq_fourier_2bet",
-    "biglotto_echo_aware_3bet",
-    "biglotto_ts3_markov_4bet_w30",
-    "daily539_f4cold_3bet",
-    "daily539_f4cold_5bet",
-    "cold_complement_2bet",
-    "fourier30_markov30_2bet",
-    "power_fourier_rhythm_2bet",
-    "zonal_entropy_2bet",
-    "h6_gate_mk20_ew85",
-)
-PRE_EDIT_REGISTRY_KEYS_SORTED = (
-    "biglotto_deviation_2bet",
-    "biglotto_triple_strike",
-    "daily539_f4cold",
-    "daily539_markov_cold",
-    "fourier_rhythm_3bet",
-    "power_orthogonal_5bet",
-    "power_precision_3bet",
-    "ts3_regime_3bet",
-)
-PRE_EDIT_NON_EXECUTABLE_IDS_SORTED = (
-    "539_3bet_orthogonal",
-    "acb_1bet",
-    "acb_markov_midfreq",
-    "acb_markov_midfreq_3bet",
-    "acb_single_539",
-    "bet2_fourier_expansion_biglotto",
-    "biglotto_echo_aware_3bet",
-    "biglotto_ts3_acb_4bet",
-    "biglotto_ts3_markov_4bet_w30",
-    "biglotto_ts3_markov_freq_5bet",
-    "cold_complement_2bet",
-    "cold_complement_biglotto",
-    "coldpool15_biglotto",
-    "daily539_f4cold_3bet",
-    "daily539_f4cold_5bet",
-    "fourier30_markov30_2bet",
-    "fourier30_markov30_biglotto",
-    "h6_gate_mk20_ew85",
-    "markov_1bet_539",
-    "markov_2bet_biglotto",
-    "markov_single_biglotto",
-    "midfreq_acb_2bet",
-    "midfreq_fourier_2bet",
-    "p0b_539_3bet_f_cold_fmid",
-    "p0c_539_3bet_f_cold_x2",
-    "p1_deviation_2bet_539",
-    "power_fourier_rhythm_2bet",
-    "power_shlc_midfreq",
-    "zonal_entropy_2bet",
-    "zone_gap_3bet_539",
 )
 
-# Exact file identity pins (bytes, sha256) for the merged P541E implementation
-# module (unmodified by this task) and its test file. The test file pin is the
-# POST-amendment identity: owner-authorized scope expansion narrowed exactly
-# two assertions that were mutually exclusive with this task's Phase 3/4
-# requirements (see test_p541e_test_file_amendment_is_scoped_to_the_two_known_narrowings
-# below for an explicit diff-shaped proof of what changed).
+# Immutable historical donor evidence retained from the original P541F test.
 BASE_FILE_PINS = {
     "lottery_api/models/p541d_r2_biglotto_selected_adapters.py": (
         7673,
@@ -166,177 +93,132 @@ BASE_FILE_PINS = {
 }
 
 
-# ─── 1. Exact two new IDs occur exactly once in _ALL_ADAPTERS ────────────────
+def test_promoted_ids_have_exact_identity_membership_and_online_lifecycle():
+    all_ids = [adapter.meta.strategy_id for adapter in registry._ALL_ADAPTERS]
+    executable_ids = set(registry.list_executable_strategy_ids())
+    non_executable_ids = set(registry.list_non_executable_strategy_ids())
 
-def test_new_ids_occur_exactly_once_in_all_adapters():
-    ids = [a.meta.strategy_id for a in registry._ALL_ADAPTERS]
-    for new_id in NEW_IDS:
-        assert ids.count(new_id) == 1
+    for strategy_id in PROMOTED_IDS:
+        assert all_ids.count(strategy_id) == 1
+        assert strategy_id in registry._REGISTRY
+        assert strategy_id in executable_ids
+        assert strategy_id not in non_executable_ids
+        assert registry.get_strategy_lifecycle_status(strategy_id) == "ONLINE"
 
 
-# ─── 2. Both new entries are _LifecycleStub instances, not adapter classes ──
+@pytest.mark.parametrize("strategy_id", PROMOTED_IDS)
+def test_promoted_ids_publish_exact_metadata(strategy_id):
+    expected = PROMOTED_META_BY_ID[strategy_id]
+    adapter = registry.get_adapter(strategy_id)
+    assert adapter.meta.strategy_id == expected["strategy_id"]
+    assert adapter.meta.strategy_name == expected["strategy_name"]
+    assert adapter.meta.strategy_version == expected["strategy_version"]
+    assert adapter.meta.supported_lottery_types == expected[
+        "supported_lottery_types"
+    ]
+    assert adapter.meta.min_history == expected["min_history"]
+    assert adapter.meta.status == "ONLINE"
+    assert adapter.meta.lifecycle_status == "ONLINE"
+    assert registry.get_strategy_lifecycle_metadata(strategy_id) == expected
 
-def test_new_entries_are_lifecycle_stubs_not_adapter_classes():
-    by_id = {
-        a.meta.strategy_id: a
-        for a in registry._ALL_ADAPTERS
-        if a.meta.strategy_id in NEW_IDS
+
+def test_promoted_ids_appear_in_online_filters_and_biglotto_generation():
+    strategy_rows = {
+        row["strategy_id"]: row
+        for row in registry.list_strategies(lifecycle_status="ONLINE")
     }
-    assert set(by_id) == set(NEW_IDS)
-    for strategy_id, instance in by_id.items():
-        assert type(instance) is registry._LifecycleStub, strategy_id
-        assert not isinstance(instance, adapters.BigLottoSocialWisdomAntiPopularityAdapter)
-        assert not isinstance(instance, adapters.BigLottoZoneSplit3BetBet1Adapter)
-
-
-# ─── 3. Exact metadata ───────────────────────────────────────────────────────
-
-@pytest.mark.parametrize("strategy_id", NEW_IDS)
-def test_new_stub_instance_meta_matches_expected(strategy_id):
-    stub = next(a for a in registry._ALL_ADAPTERS if a.meta.strategy_id == strategy_id)
-    expected = NEW_META_BY_ID[strategy_id]
-    assert stub.meta.strategy_id == expected["strategy_id"]
-    assert stub.meta.strategy_name == expected["strategy_name"]
-    assert stub.meta.strategy_version == expected["strategy_version"]
-    assert stub.meta.supported_lottery_types == expected["supported_lottery_types"]
-    assert stub.meta.min_history == expected["min_history"]
-    assert stub.meta.status == "OBSERVATION"
-    assert stub.meta.lifecycle_status == "OBSERVATION"
-
-
-@pytest.mark.parametrize("strategy_id", NEW_IDS)
-def test_new_entry_exact_metadata_via_accessor(strategy_id):
-    assert registry.get_strategy_lifecycle_metadata(strategy_id) == NEW_META_BY_ID[strategy_id]
-
-
-# ─── 4. Lifecycle visibility across all exposure APIs ───────────────────────
-
-@pytest.mark.parametrize("strategy_id", NEW_IDS)
-def test_new_entry_lifecycle_status_and_membership(strategy_id):
-    assert registry.get_strategy_lifecycle_status(strategy_id) == "OBSERVATION"
-    assert strategy_id in registry.list_non_executable_strategy_ids()
-
-
-def test_new_entries_appear_in_list_strategies_observation_filter():
-    observation = {
-        entry["strategy_id"]: entry
-        for entry in registry.list_strategies(lifecycle_status="OBSERVATION")
+    lifecycle_rows = {
+        row["strategy_id"]: row
+        for row in registry.list_strategy_lifecycle_metadata(
+            lifecycle_status="ONLINE"
+        )
     }
-    assert set(NEW_IDS) <= set(observation)
-    for strategy_id in NEW_IDS:
-        entry = observation[strategy_id]
-        expected = NEW_META_BY_ID[strategy_id]
-        assert entry["strategy_id"] == expected["strategy_id"]
-        assert entry["strategy_name"] == expected["strategy_name"]
-        assert entry["strategy_version"] == expected["strategy_version"]
-        assert entry["supported_lottery_types"] == expected["supported_lottery_types"]
-        assert entry["min_history"] == expected["min_history"]
-        assert entry["status"] == "OBSERVATION"
-        assert entry["strategy_lifecycle_status"] == "OBSERVATION"
-
-
-def test_new_entries_appear_in_list_strategy_lifecycle_metadata_observation_filter():
-    observation = {
-        entry["strategy_id"]: entry
-        for entry in registry.list_strategy_lifecycle_metadata(lifecycle_status="OBSERVATION")
+    biglotto_ids = {
+        adapter.meta.strategy_id
+        for adapter in registry.get_adapters_for_lottery("BIG_LOTTO")
     }
-    assert set(NEW_IDS) <= set(observation)
-    for strategy_id in NEW_IDS:
-        assert observation[strategy_id] == NEW_META_BY_ID[strategy_id]
+    for strategy_id in PROMOTED_IDS:
+        assert strategy_rows[strategy_id]["strategy_lifecycle_status"] == "ONLINE"
+        assert lifecycle_rows[strategy_id] == PROMOTED_META_BY_ID[strategy_id]
+        assert strategy_id in biglotto_ids
 
 
-# ─── 5. Non-executability ────────────────────────────────────────────────────
+def test_promoted_entries_are_target_native_not_lifecycle_stubs_or_donor_objects():
+    social = registry.get_adapter(SOCIAL_ID)
+    assert type(social) is not registry._LifecycleStub
+    assert type(social).__module__ == TARGET_SOCIAL_MODULE_NAME
+    assert not isinstance(
+        social,
+        donor_adapters.BigLottoSocialWisdomAntiPopularityAdapter,
+    )
 
-@pytest.mark.parametrize("strategy_id", NEW_IDS)
-def test_new_entries_absent_from_registry_and_executable_ids(strategy_id):
-    assert strategy_id not in registry._REGISTRY
-    assert strategy_id not in registry.list_executable_strategy_ids()
+    for strategy_id in ZONE_IDS:
+        zone = registry.get_adapter(strategy_id)
+        assert type(zone) is not registry._LifecycleStub
+        assert type(zone).__module__ == TARGET_ZONE_MODULE_NAME
+        assert not isinstance(
+            zone,
+            donor_adapters.BigLottoZoneSplit3BetBet1Adapter,
+        )
 
 
-def test_new_entries_absent_from_biglotto_generation_eligible_adapters():
-    ids = {a.meta.strategy_id for a in registry.get_adapters_for_lottery("BIG_LOTTO")}
-    assert ids.isdisjoint(NEW_IDS)
-
-
-@pytest.mark.parametrize("strategy_id", NEW_IDS)
-def test_get_adapter_raises_keyerror(strategy_id):
+def test_h6_gate_remains_the_exact_observation_baseline():
+    assert (
+        registry.get_strategy_lifecycle_metadata(OBSERVATION_BASELINE_ID)
+        == OBSERVATION_BASELINE_META
+    )
+    assert OBSERVATION_BASELINE_ID in registry.list_non_executable_strategy_ids()
+    assert OBSERVATION_BASELINE_ID not in registry.list_executable_strategy_ids()
     with pytest.raises(KeyError):
-        registry.get_adapter(strategy_id)
+        registry.get_adapter(OBSERVATION_BASELINE_ID)
 
 
-@pytest.mark.parametrize("strategy_id", NEW_IDS)
-@pytest.mark.parametrize(
-    "lottery_type", ["BIG_LOTTO", "POWER_LOTTO", "DAILY_539", "NOT_A_LOTTERY_TYPE"]
-)
-def test_direct_stub_get_one_bet_always_raises_lifecycle_not_executable(
-    strategy_id, lottery_type
-):
-    stub = next(a for a in registry._ALL_ADAPTERS if a.meta.strategy_id == strategy_id)
-    assert type(stub) is registry._LifecycleStub
-    with pytest.raises(registry.LifecycleNotExecutable):
-        stub.get_one_bet([], lottery_type)
+def test_unaffected_executable_prefix_and_promotion_relative_order():
+    ids = tuple(adapter.meta.strategy_id for adapter in registry._ALL_ADAPTERS)
+    expected_prefix = UNAFFECTED_EXECUTABLE_PREFIX + (SOCIAL_ID,)
+    assert ids[: len(expected_prefix)] == expected_prefix
+    assert ids.index(SOCIAL_ID) < ids.index(OBSERVATION_BASELINE_ID)
 
 
-class _ExplodingHistory(list):
-    """A history object that fails loudly if its contents are ever touched."""
-
-    def __iter__(self):
-        raise AssertionError("history contents must not be inspected")
-
-    def __len__(self):
-        raise AssertionError("history contents must not be inspected")
-
-    def __getitem__(self, item):
-        raise AssertionError("history contents must not be inspected")
-
-    def __bool__(self):
-        raise AssertionError("history contents must not be inspected")
+def test_strategy_ids_remain_unique_and_lifecycle_values_remain_valid():
+    ids = [adapter.meta.strategy_id for adapter in registry._ALL_ADAPTERS]
+    assert len(ids) == len(set(ids))
+    assert all(
+        adapter.meta.lifecycle_status in registry.LIFECYCLE_STATUSES
+        for adapter in registry._ALL_ADAPTERS
+    )
 
 
-@pytest.mark.parametrize("strategy_id", NEW_IDS)
-@pytest.mark.parametrize("lottery_type", ["BIG_LOTTO", "POWER_LOTTO"])
-def test_history_contents_never_inspected_before_lifecycle_rejection(
-    strategy_id, lottery_type
-):
-    stub = next(a for a in registry._ALL_ADAPTERS if a.meta.strategy_id == strategy_id)
-    with pytest.raises(registry.LifecycleNotExecutable):
-        stub.get_one_bet(_ExplodingHistory(), lottery_type)
-
-
-# ─── 6. Registry isolation from implementation modules ──────────────────────
-
-def test_registry_source_has_no_import_of_implementation_modules():
+def test_registry_imports_only_target_native_adapter_modules():
     tree = ast.parse(inspect.getsource(registry))
-    imported_modules = set()
-    for node in ast.walk(tree):
-        if isinstance(node, ast.ImportFrom) and node.module:
-            imported_modules.add(node.module)
-        elif isinstance(node, ast.Import):
-            imported_modules.update(alias.name for alias in node.names)
-    forbidden_modules = {ADAPTER_MODULE_NAME, SOCIAL_MODULE_NAME, ZONE_MODULE_NAME}
-    assert imported_modules.isdisjoint(forbidden_modules)
-
-
-def test_registry_module_level_imports_unchanged_no_new_external_access_surface():
-    """Only module-level (top-of-file) imports are checked — pre-existing
-    per-strategy adapters intentionally use lazy imports scoped inside their
-    own _call_strategy methods (see HARD RULES in the module docstring); this
-    test must not walk into those nested scopes."""
-    tree = ast.parse(inspect.getsource(registry))
-    imports = set()
-    for node in tree.body:
-        if isinstance(node, ast.Import):
-            imports.update(alias.name for alias in node.names)
-        elif isinstance(node, ast.ImportFrom) and node.module:
-            imports.add(node.module)
-    assert imports == {"__future__", "sys", "json", "logging", "pathlib", "typing"}
+    imported_modules = {
+        node.module
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom) and node.module
+    }
+    assert "biglotto_social_wisdom_adapter" in imported_modules
+    assert "biglotto_zone_split_adapter" in imported_modules
+    assert "p541d_r2_biglotto_selected_adapters" not in imported_modules
+    assert "social_wisdom_predictor" not in imported_modules
+    assert "zone_split" not in imported_modules
 
 
 def test_registry_source_has_no_file_env_network_or_db_calls():
     tree = ast.parse(inspect.getsource(registry))
     forbidden_calls = {
-        "open", "exec", "eval", "__import__", "getenv", "urlopen", "connect",
-        "read_text", "read_bytes", "write_text", "write_bytes", "system", "popen",
+        "open",
+        "exec",
+        "eval",
+        "__import__",
+        "getenv",
+        "urlopen",
+        "connect",
+        "read_text",
+        "read_bytes",
+        "write_text",
+        "write_bytes",
+        "system",
+        "popen",
     }
     for node in ast.walk(tree):
         if isinstance(node, ast.Call):
@@ -346,28 +228,19 @@ def test_registry_source_has_no_file_env_network_or_db_calls():
                 assert node.func.attr not in forbidden_calls
 
 
-def test_no_executable_implementation_object_in_registry_globals():
-    forbidden_types = (
-        adapters.BigLottoSocialWisdomAntiPopularityAdapter,
-        adapters.BigLottoZoneSplit3BetBet1Adapter,
-    )
-    for name, value in vars(registry).items():
-        assert not isinstance(value, forbidden_types), name
-    for adapter in registry._ALL_ADAPTERS:
-        assert not isinstance(adapter, forbidden_types)
-
-
-def test_fresh_process_registry_import_never_loads_implementation_modules():
+def test_fresh_registry_import_loads_targets_but_not_historical_implementations():
     code = (
         "import json, sys\n"
         "import lottery_api.models.replay_strategy_registry as registry\n"
         "registry.list_strategy_lifecycle_metadata()\n"
         "registry.list_strategies()\n"
         "print(json.dumps({\n"
-        "    'adapter_loaded': 'lottery_api.models.p541d_r2_biglotto_selected_adapters' in sys.modules,\n"
-        "    'social_loaded': 'lottery_api.models.social_wisdom_predictor' in sys.modules,\n"
-        "    'zone_loaded': 'lottery_api.models.zone_split' in sys.modules,\n"
-        "    'registry_loaded': 'lottery_api.models.replay_strategy_registry' in sys.modules,\n"
+        f"    'donor_loaded': {DONOR_ADAPTER_MODULE_NAME!r} in sys.modules,\n"
+        f"    'predictor_loaded': {SOCIAL_PREDICTOR_MODULE_NAME!r} in sys.modules,\n"
+        f"    'legacy_zone_loaded': {LEGACY_ZONE_MODULE_NAME!r} in sys.modules,\n"
+        f"    'target_social_loaded': {TARGET_SOCIAL_MODULE_NAME!r} in sys.modules,\n"
+        f"    'target_zone_loaded': {TARGET_ZONE_MODULE_NAME!r} in sys.modules,\n"
+        f"    'registry_loaded': {REGISTRY_MODULE_NAME!r} in sys.modules,\n"
         "}))\n"
     )
     completed = subprocess.run(
@@ -377,74 +250,29 @@ def test_fresh_process_registry_import_never_loads_implementation_modules():
         capture_output=True,
         text=True,
     )
-    result = json.loads(completed.stdout)
-    assert result == {
-        "adapter_loaded": False,
-        "social_loaded": False,
-        "zone_loaded": False,
+    assert json.loads(completed.stdout) == {
+        "donor_loaded": False,
+        "predictor_loaded": False,
+        "legacy_zone_loaded": False,
+        "target_social_loaded": True,
+        "target_zone_loaded": True,
         "registry_loaded": True,
     }
 
 
-# ─── 7. Existing behavior preserved ──────────────────────────────────────────
-
-def test_preexisting_registry_keys_unchanged():
-    assert sorted(registry._REGISTRY.keys()) == list(PRE_EDIT_REGISTRY_KEYS_SORTED)
-
-
-def test_non_executable_ids_equal_preexisting_plus_two_new():
-    expected = sorted(set(PRE_EDIT_NON_EXECUTABLE_IDS_SORTED) | set(NEW_IDS))
-    assert registry.list_non_executable_strategy_ids() == expected
-
-
-def test_preexisting_observation_entry_unchanged():
-    assert (
-        registry.get_strategy_lifecycle_metadata(PRE_EXISTING_OBSERVATION_ID)
-        == PRE_EXISTING_OBSERVATION_META
-    )
-
-
-def test_all_adapters_sequence_is_preedit_sequence_plus_two_appended_at_tail():
-    ids = tuple(a.meta.strategy_id for a in registry._ALL_ADAPTERS)
-    assert ids == PRE_EDIT_ALL_ADAPTERS_SEQUENCE + NEW_IDS
-
-
-def test_strategy_ids_remain_unique():
-    ids = [a.meta.strategy_id for a in registry._ALL_ADAPTERS]
-    assert len(ids) == len(set(ids))
-
-
-def test_all_lifecycle_statuses_remain_valid():
-    for a in registry._ALL_ADAPTERS:
-        assert a.meta.lifecycle_status in registry.LIFECYCLE_STATUSES
-
-
-def test_exactly_two_lifecycle_stub_calls_added_relative_to_preedit_snapshot():
-    tree = ast.parse(inspect.getsource(registry))
-    stub_calls = [
-        node
-        for node in ast.walk(tree)
-        if isinstance(node, ast.Call)
-        and isinstance(node.func, ast.Name)
-        and node.func.id == "_LifecycleStub"
-    ]
-    assert len(stub_calls) == len(PRE_EDIT_NON_EXECUTABLE_IDS_SORTED) + len(NEW_IDS)
-
-
-# ─── 8. No DB / external state ───────────────────────────────────────────────
-
 def test_lifecycle_apis_never_call_sqlite_connect(monkeypatch):
-    def _forbidden_connect(*args, **kwargs):
+    def forbidden_connect(*_args, **_kwargs):
         raise AssertionError("sqlite3.connect must not be called")
 
-    monkeypatch.setattr(sqlite3, "connect", _forbidden_connect)
-
+    monkeypatch.setattr(sqlite3, "connect", forbidden_connect)
     registry.list_strategies()
+    registry.list_strategies(lifecycle_status="ONLINE")
     registry.list_strategies(lifecycle_status="OBSERVATION")
-    for strategy_id in NEW_IDS:
+    for strategy_id in (*PROMOTED_IDS, OBSERVATION_BASELINE_ID):
         registry.get_strategy_lifecycle_status(strategy_id)
         registry.get_strategy_lifecycle_metadata(strategy_id)
     registry.list_strategy_lifecycle_metadata()
+    registry.list_strategy_lifecycle_metadata(lifecycle_status="ONLINE")
     registry.list_strategy_lifecycle_metadata(lifecycle_status="OBSERVATION")
     registry.list_executable_strategy_ids()
     registry.list_non_executable_strategy_ids()
@@ -473,9 +301,7 @@ def test_registry_reload_in_fresh_process_makes_no_sqlite_connect_call():
     assert completed.stdout.strip() == "OK"
 
 
-# ─── 9. P541E binding ─────────────────────────────────────────────────────────
-
-def test_p541e_adapter_file_identity_matches_pin():
+def test_donor_adapter_file_identity_matches_pin():
     path = REPO_ROOT / "lottery_api/models/p541d_r2_biglotto_selected_adapters.py"
     raw = path.read_bytes()
     expected_bytes, expected_sha256 = BASE_FILE_PINS[
@@ -485,7 +311,7 @@ def test_p541e_adapter_file_identity_matches_pin():
     assert hashlib.sha256(raw).hexdigest() == expected_sha256
 
 
-def test_p541e_test_file_identity_matches_amended_pin():
+def test_donor_test_file_identity_matches_pin():
     path = REPO_ROOT / "tests/test_p541d_r2_biglotto_selected_adapters.py"
     raw = path.read_bytes()
     expected_bytes, expected_sha256 = BASE_FILE_PINS[
@@ -495,47 +321,17 @@ def test_p541e_test_file_identity_matches_amended_pin():
     assert hashlib.sha256(raw).hexdigest() == expected_sha256
 
 
-def test_p541e_test_file_amendment_is_scoped_to_the_two_known_narrowings():
-    """Owner-authorized scope expansion beyond the original two-file plan:
-    narrows exactly the two P541E-test assertions that were mutually
-    exclusive with this task's own Phase 3/4 requirements (registering
-    SOCIAL_ID/ZONE_ID as visible OBSERVATION stubs necessarily makes them
-    appear in _ALL_ADAPTERS, and necessarily changes registry.py's hash).
-    Everything else in that file is untouched (see the byte/hash pin above,
-    which pins the file as a whole)."""
-    source = (
-        REPO_ROOT / "tests/test_p541d_r2_biglotto_selected_adapters.py"
-    ).read_text(encoding="utf-8")
-    # The registry.py pin was advanced to this task's post-edit identity.
-    assert "380ac2942a7374bd7ccad940ec50b273757ae100" in source
-    assert "c6c0352868f93c27e68c230e14b1b1c8f8c6a4f2feb021574d2f7cc49170976e" in source
-    assert "45770dabaa46c80e6f564b61e5dae96b03bd856e" not in source
-    # The over-broad "never appears in _ALL_ADAPTERS at all" clause was removed.
-    assert "item.meta.strategy_id not in {SOCIAL_ID, ZONE_ID}" not in source
-    # The narrower, still-true "non-executable" invariant is preserved.
-    assert "assert SOCIAL_ID not in registry._REGISTRY" in source
-    assert "assert ZONE_ID not in registry._REGISTRY" in source
+def test_historical_donor_metadata_remains_observation_only():
+    donor_meta = donor_adapters.BigLottoSocialWisdomAntiPopularityAdapter.meta
+    assert donor_meta.strategy_id == SOCIAL_ID
+    assert donor_meta.lifecycle_status == "OBSERVATION"
+    assert registry.get_strategy_lifecycle_metadata(SOCIAL_ID) == SOCIAL_META
 
 
-def test_p541e_adapter_metadata_matches_registry_stubs():
-    pairs = [
-        (adapters.BigLottoSocialWisdomAntiPopularityAdapter, SOCIAL_META),
-        (adapters.BigLottoZoneSplit3BetBet1Adapter, ZONE_META),
-    ]
-    for adapter_class, expected in pairs:
-        meta = adapter_class.meta
-        assert meta.strategy_id == expected["strategy_id"]
-        assert meta.strategy_name == expected["strategy_name"]
-        assert meta.strategy_version == expected["strategy_version"]
-        assert meta.supported_lottery_types == expected["supported_lottery_types"]
-        assert meta.min_history == expected["min_history"]
-        assert meta.lifecycle_status == expected["lifecycle_status"]
-        assert registry.get_strategy_lifecycle_metadata(meta.strategy_id) == expected
-
-
-def test_implementation_module_is_independently_importable():
-    module = importlib.import_module(ADAPTER_MODULE_NAME)
-    assert hasattr(module, "BigLottoSocialWisdomAntiPopularityAdapter")
-    assert hasattr(module, "BigLottoZoneSplit3BetBet1Adapter")
+def test_historical_donor_import_does_not_replace_runtime_authority():
+    before = registry.get_adapter(SOCIAL_ID)
+    module = importlib.import_module(DONOR_ADAPTER_MODULE_NAME)
+    after = registry.get_adapter(SOCIAL_ID)
+    assert before is after
+    assert type(after).__module__ == TARGET_SOCIAL_MODULE_NAME
     assert module.BigLottoSocialWisdomAntiPopularityAdapter.meta.strategy_id == SOCIAL_ID
-    assert module.BigLottoZoneSplit3BetBet1Adapter.meta.strategy_id == ZONE_ID

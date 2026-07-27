@@ -472,9 +472,19 @@ class _BigLottoTs3Regime3BetAdapter(ReplayStrategyAdapter):
 
 
 from .biglotto_zone_split_adapter import build_zone_split_adapters  # noqa: E402
+from .biglotto_social_wisdom_adapter import (  # noqa: E402
+    build_social_wisdom_adapter,
+)
 
 
 _BIGLOTTO_ZONE_SPLIT_ADAPTERS = build_zone_split_adapters(
+    adapter_base=ReplayStrategyAdapter,
+    meta_type=_StrategyMeta,
+    invalid_output=InvalidOutput,
+    unsupported_lottery_type=UnsupportedLotteryType,
+)
+
+_BIGLOTTO_SOCIAL_WISDOM_ADAPTER = build_social_wisdom_adapter(
     adapter_base=ReplayStrategyAdapter,
     meta_type=_StrategyMeta,
     invalid_output=InvalidOutput,
@@ -702,14 +712,6 @@ _NON_EXECUTABLE_STUBS: List[_LifecycleStub] = [
         supported_lottery_types=["POWER_LOTTO"],
         status="OBSERVATION",
     ),
-    _LifecycleStub(
-        strategy_id="biglotto_social_wisdom_anti_popularity",
-        strategy_name="大樂透 Social Wisdom Anti-Popularity",
-        strategy_version="v0.1",
-        supported_lottery_types=["BIG_LOTTO"],
-        min_history=1,
-        status="OBSERVATION",
-    ),
 ]
 
 
@@ -728,6 +730,7 @@ _ALL_ADAPTERS: List[ReplayStrategyAdapter] = [
     *_BIGLOTTO_ZONE_SPLIT_ADAPTERS,
     _Daily539F4ColdAdapter(),
     _Daily539MarkovColdAdapter(),
+    _BIGLOTTO_SOCIAL_WISDOM_ADAPTER,
     *_NON_EXECUTABLE_STUBS,
 ]
 

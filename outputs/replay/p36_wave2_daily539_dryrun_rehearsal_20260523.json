@@ -1,0 +1,66 @@
+{
+  "p36_version": "20260523",
+  "wave": 2,
+  "lottery_type": "DAILY_539",
+  "total_dryrun_rows": 9000,
+  "strategies": [
+    {
+      "strategy_id": "markov_1bet_539",
+      "row_count": 1500,
+      "lifecycle": "DRY_RUN"
+    },
+    {
+      "strategy_id": "acb_single_539",
+      "row_count": 1500,
+      "lifecycle": "DRY_RUN"
+    },
+    {
+      "strategy_id": "zone_gap_3bet_539",
+      "row_count": 1500,
+      "lifecycle": "DRY_RUN"
+    },
+    {
+      "strategy_id": "539_3bet_orthogonal",
+      "row_count": 1500,
+      "lifecycle": "DRY_RUN"
+    },
+    {
+      "strategy_id": "p0b_539_3bet_f_cold_fmid",
+      "row_count": 1500,
+      "lifecycle": "DRY_RUN"
+    },
+    {
+      "strategy_id": "p0c_539_3bet_f_cold_x2",
+      "row_count": 1500,
+      "lifecycle": "DRY_RUN"
+    }
+  ],
+  "temp_rehearsal": {
+    "R1_insert_count": 9000,
+    "R2_duplicate_count": 0,
+    "R3_rollback": "PASS"
+  },
+  "production_rows_before": 19960,
+  "production_rows_after": 19960,
+  "schema_validation": {
+    "valid": true,
+    "error_count": 0
+  },
+  "all_rehearsals_pass": true,
+  "classification": "P36_WAVE2_DAILY539_DRYRUN_REHEARSAL_READY",
+  "lifecycle_semantics": {
+    "all_rows_lifecycle": "DRY_RUN",
+    "online_rows": 0,
+    "retired_rows": 0,
+    "note": "P36 is dry-run only. Production apply requires P37 authorization."
+  },
+  "production_apply_readiness": {
+    "ready": true,
+    "requires_p37_authorization": true,
+    "p37_authorization_phrase": "YES apply P37 production wave2 daily539",
+    "blockers": []
+  },
+  "run_id": "p36_wave2_dryrun_20260523",
+  "started_at": "2026-05-23T09:27:27.134425+00:00",
+  "finished_at": "2026-05-23T09:27:35.207063+00:00"
+}

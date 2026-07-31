@@ -1,0 +1,378 @@
+{
+  "task_id": "P224",
+  "title": "DAILY_539 Survivor Deeper Validation",
+  "date": "2026-06-03",
+  "status": "COMPLETE / READ-ONLY",
+  "classification": "P224_SURVIVOR_NEEDS_MORE_OOS",
+  "authorized_by": "User explicit task prompt 2026-06-03",
+  "governance": {
+    "db_write": false,
+    "registry_write": false,
+    "production_write": false,
+    "recommendation_logic_change": false,
+    "strategy_promotion": false,
+    "controlled_apply": false,
+    "p225_started": false,
+    "historical_replay_evidence_only": true,
+    "not_betting_advice": true,
+    "null_accepted_as_success": true
+  },
+  "phase_0": {
+    "repo_root": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "git_dir": ".git",
+    "head": "848d354b7978356ffb7dad9ade680747c9054646",
+    "origin_main": "848d354b7978356ffb7dad9ade680747c9054646",
+    "staged_files": [],
+    "db_counts": {
+      "total": 94924,
+      "daily_539": 34680,
+      "bet_index_nulls": 0,
+      "duplicate_keys": 0,
+      "integrity_check": "ok"
+    },
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "p223b_artifacts_tracked": [
+      "outputs/research/p223b_candidate_oos_cross_year_validation_20260603.md",
+      "outputs/research/p223b_candidate_oos_cross_year_validation_20260603.json"
+    ],
+    "status": {
+      "repo_root_ok": true,
+      "branch_ok": true,
+      "git_dir_ok": true,
+      "head_matches_origin_main": true,
+      "staged_empty": true,
+      "rows_ok": true,
+      "daily_ok": true,
+      "bet_nulls_ok": true,
+      "dup_ok": true,
+      "integrity_ok": true,
+      "drift_ok": true,
+      "p223b_tracked": true
+    }
+  },
+  "validation_scope": {
+    "candidate": {
+      "strategy_id": "midfreq_fourier_2bet",
+      "lottery_type": "DAILY_539",
+      "kind": "strategy",
+      "unit_label": "strategy-level (row grain)",
+      "rows": 1500,
+      "distinct_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "replay_run_id": "p31b_wave1_prod_20260523",
+      "source": "P31B_WAVE1_PRODUCTION_APPLY",
+      "truth_level": "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED"
+    },
+    "scope_notes": [
+      "Single survivor only; no new feature families, no new windows, and no universe expansion.",
+      "Read-only historical replay evidence only.",
+      "P225 is explicitly not started."
+    ]
+  },
+  "leakage_checks": {
+    "target_draw_duplicates": 0,
+    "history_cutoff_draw_ge_target_draw": 0,
+    "prediction_cutoff_date_ge_target_date": 0,
+    "rows_equal_distinct_draws": true,
+    "sample_cutoff_relation": "history_cutoff_draw = target_draw - 1"
+  },
+  "baselines": {
+    "baseline_used": 0.6410256410256411,
+    "all_history_reference": 0.6251612903225806,
+    "w100": 0.6096774193548387,
+    "w500": 0.6470967741935484,
+    "consensus": 0.68,
+    "best_competing_non_candidate": {
+      "label": "daily539_f4cold",
+      "mean_hit_count": 0.678616
+    }
+  },
+  "overall_result": {
+    "mean_hit_count": 0.6693333333333333,
+    "mean_hit_count_ci": [
+      0.6322371303354622,
+      0.7064295363312044
+    ],
+    "raw_p_value_vs_baseline": 0.0673719479414372,
+    "hit_count_distribution": {
+      "0": 714,
+      "1": 587,
+      "2": 180,
+      "3": 19
+    },
+    "derived_rates": {
+      "m1_plus": 0.524,
+      "m2_plus": 0.13266666666666665,
+      "m3_plus": 0.012666666666666666,
+      "max_hit_count": 3
+    },
+    "conclusion": "Promising but not stable enough for confirmation"
+  },
+  "tail_oos": {
+    "150": {
+      "n": 150,
+      "mean_hit_count": 0.76,
+      "mean_hit_count_ci": [
+        0.6378703464892057,
+        0.8821296535107943
+      ],
+      "p_value_vs_baseline": 0.028107691921502198,
+      "direction": "above"
+    },
+    "300": {
+      "n": 300,
+      "mean_hit_count": 0.7566666666666667,
+      "mean_hit_count_ci": [
+        0.6721775892222573,
+        0.8411557441110761
+      ],
+      "p_value_vs_baseline": 0.0036518385054046254,
+      "direction": "above"
+    },
+    "500": {
+      "n": 500,
+      "mean_hit_count": 0.71,
+      "mean_hit_count_ci": [
+        0.6457131951330601,
+        0.7742868048669398
+      ],
+      "p_value_vs_baseline": 0.017736561200837442,
+      "direction": "above"
+    }
+  },
+  "cross_year": {
+    "2021": {
+      "n": 124,
+      "mean_hit_count": 0.6451612903225806,
+      "mean_hit_count_ci": [
+        0.5163730455033222,
+        0.7739495351418391
+      ],
+      "p_value_vs_baseline": 0.47490732525583934,
+      "direction": "above"
+    },
+    "2022": {
+      "n": 313,
+      "mean_hit_count": 0.6741214057507987,
+      "mean_hit_count_ci": [
+        0.5908675797062201,
+        0.7573752317953774
+      ],
+      "p_value_vs_baseline": 0.2179439807837047,
+      "direction": "above"
+    },
+    "2023": {
+      "n": 312,
+      "mean_hit_count": 0.6506410256410257,
+      "mean_hit_count_ci": [
+        0.5709505688410532,
+        0.7303314824409981
+      ],
+      "p_value_vs_baseline": 0.4065254652598016,
+      "direction": "above"
+    },
+    "2024": {
+      "n": 314,
+      "mean_hit_count": 0.6146496815286624,
+      "mean_hit_count_ci": [
+        0.5351101898686255,
+        0.6941891731886993
+      ],
+      "p_value_vs_baseline": 0.7421385037564241,
+      "direction": "below"
+    },
+    "2025": {
+      "n": 316,
+      "mean_hit_count": 0.7246835443037974,
+      "mean_hit_count_ci": [
+        0.64309078623749,
+        0.8062763023701048
+      ],
+      "p_value_vs_baseline": 0.022236326771580828,
+      "direction": "above"
+    },
+    "2026": {
+      "n": 121,
+      "mean_hit_count": 0.7272727272727273,
+      "mean_hit_count_ci": [
+        0.5976859504132231,
+        0.8568595041322314
+      ],
+      "p_value_vs_baseline": 0.0960337639739347,
+      "direction": "above"
+    }
+  },
+  "block_stability": {
+    "block_size": 150,
+    "blocks": [
+      {
+        "block": 1,
+        "n": 150,
+        "mean_hit_count": 0.68,
+        "mean_hit_count_ci": [
+          0.5612154473192935,
+          0.7987845526807066
+        ],
+        "p_value_vs_baseline": 0.2600812520546333,
+        "direction": "above"
+      },
+      {
+        "block": 2,
+        "n": 150,
+        "mean_hit_count": 0.5866666666666667,
+        "mean_hit_count_ci": [
+          0.46807391865279574,
+          0.7052594146805375
+        ],
+        "p_value_vs_baseline": 0.8155135282616355,
+        "direction": "below"
+      },
+      {
+        "block": 3,
+        "n": 150,
+        "mean_hit_count": 0.74,
+        "mean_hit_count_ci": [
+          0.6225016735816585,
+          0.8574983264183414
+        ],
+        "p_value_vs_baseline": 0.0493692816499508,
+        "direction": "above"
+      },
+      {
+        "block": 4,
+        "n": 150,
+        "mean_hit_count": 0.6333333333333333,
+        "mean_hit_count_ci": [
+          0.5173168338681791,
+          0.7493498327984875
+        ],
+        "p_value_vs_baseline": 0.5516989814700819,
+        "direction": "below"
+      },
+      {
+        "block": 5,
+        "n": 150,
+        "mean_hit_count": 0.66,
+        "mean_hit_count_ci": [
+          0.5448501158393018,
+          0.7751498841606983
+        ],
+        "p_value_vs_baseline": 0.3733596864135489,
+        "direction": "above"
+      },
+      {
+        "block": 6,
+        "n": 150,
+        "mean_hit_count": 0.62,
+        "mean_hit_count_ci": [
+          0.4992905887863106,
+          0.7407094112136894
+        ],
+        "p_value_vs_baseline": 0.6335989601901163,
+        "direction": "below"
+      },
+      {
+        "block": 7,
+        "n": 150,
+        "mean_hit_count": 0.6066666666666667,
+        "mean_hit_count_ci": [
+          0.49750459158087035,
+          0.715828741752463
+        ],
+        "p_value_vs_baseline": 0.7313542055681072,
+        "direction": "below"
+      },
+      {
+        "block": 8,
+        "n": 150,
+        "mean_hit_count": 0.6533333333333333,
+        "mean_hit_count_ci": [
+          0.5394407606883022,
+          0.7672259059783645
+        ],
+        "p_value_vs_baseline": 0.4161293763209941,
+        "direction": "above"
+      },
+      {
+        "block": 9,
+        "n": 150,
+        "mean_hit_count": 0.7533333333333333,
+        "mean_hit_count_ci": [
+          0.6365540738861308,
+          0.8701125927805358
+        ],
+        "p_value_vs_baseline": 0.029718287488115336,
+        "direction": "above"
+      },
+      {
+        "block": 10,
+        "n": 150,
+        "mean_hit_count": 0.76,
+        "mean_hit_count_ci": [
+          0.6378703464892057,
+          0.8821296535107943
+        ],
+        "p_value_vs_baseline": 0.028107691921502198,
+        "direction": "above"
+      }
+    ],
+    "summary": {
+      "mean_of_block_means": 0.6693333333333333,
+      "block_mean_sd": 0.05934456822471436,
+      "blocks_above_baseline": 6,
+      "blocks_total": 10,
+      "worst_block": 2,
+      "best_block": 10
+    }
+  },
+  "robustness": {
+    "exclude_2025": {
+      "n": 1184,
+      "mean_hit_count": 0.6545608108108109,
+      "mean_hit_count_ci": [
+        0.6129539364591399,
+        0.6961676851624818
+      ],
+      "p_value_vs_baseline": 0.26186399862506193,
+      "direction": "below"
+    },
+    "exclude_2026": {
+      "n": 1379,
+      "mean_hit_count": 0.6642494561276288,
+      "mean_hit_count_ci": [
+        0.6255449712109247,
+        0.7029539410443328
+      ],
+      "p_value_vs_baseline": 0.11978606422050297,
+      "direction": "below"
+    },
+    "exclude_2024": {
+      "n": 1186,
+      "mean_hit_count": 0.6838111298482293,
+      "mean_hit_count_ci": [
+        0.6419236714340605,
+        0.7256985882623982
+      ],
+      "p_value_vs_baseline": 0.022641253565449437,
+      "direction": "above"
+    },
+    "exclude_hit_count_3": {
+      "n": 1481,
+      "mean_hit_count": 0.6394328156650911,
+      "p_value_vs_baseline": 0.5354861435202416,
+      "direction": "below"
+    }
+  },
+  "interpretation": {
+    "clean_leakage": true,
+    "positive_tail_windows": true,
+    "cross_year_support_mixed": true,
+    "overall_significance_weak": true,
+    "sensitive_to_hit_count_3_rows": true,
+    "conclusion": "Real survivor, but not confirmed enough for P225 or any promotion"
+  },
+  "final_classification": "P224_SURVIVOR_NEEDS_MORE_OOS"
+}

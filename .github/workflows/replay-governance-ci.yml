@@ -57,7 +57,7 @@ jobs:
 
       - name: Run lifecycle browser E2E validation
         run: |
-          python -m pytest tests/test_replay_lifecycle_browser_e2e.py -q
+          python -m pytest tests/test_replay_browser_smoke.py -q
 
   replay-dedicated-db-validation:
     name: replay-dedicated-db-validation

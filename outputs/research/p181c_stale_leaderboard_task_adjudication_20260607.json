@@ -1,0 +1,151 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P181C",
+  "classification": "SUPERSEDED_BY_LATER_ARTIFACTS",
+  "generated_at": "2026-06-07T16:12:54.157196",
+  "phase0_summary": {
+    "toplevel": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "p181c-stale-leaderboard-task-adjudication",
+    "head": "a3e342028c8ab5b24fdcaf92c83044c0b009bedc",
+    "origin_main": "a3e342028c8ab5b24fdcaf92c83044c0b009bedc",
+    "head_eq_origin_main": true,
+    "canonical_repo_confirmed": true,
+    "dirty_items": "backend.pid, frontend.pid, claude-code-showcase, data/lottery_v2.db (metadata-only) — all tolerated runtime",
+    "stop_triggered": false
+  },
+  "referenced_commits": {
+    "local_head_at_block": "0f99d00",
+    "origin_main_at_block": "93fbd3d",
+    "expected_ahead_count": 2,
+    "claimed_branch": "main",
+    "claimed_test_count": 56,
+    "source": "P181B prompt critical context",
+    "p181b_context": "Prior P181B blocked because direct push to main rejected by GH006 branch protection"
+  },
+  "refs_search_result": {
+    "commit_0f99d00": {
+      "hash": "0f99d00",
+      "exists": false,
+      "cat_file_output": "fatal: Not a valid object name 0f99d00",
+      "branches_containing": "(not applicable — object does not exist)",
+      "log_grep": "(none)"
+    },
+    "commit_93fbd3d": {
+      "hash": "93fbd3d",
+      "exists": false,
+      "cat_file_output": "fatal: Not a valid object name 93fbd3d",
+      "branches_containing": "(not applicable — object does not exist)",
+      "log_grep": "(none)"
+    },
+    "content_grep": {
+      "grep_terms": [
+        "P179",
+        "P180",
+        "P181",
+        "leaderboard"
+      ],
+      "results": "ce7c10f merge: verify-gemini-2bet → main\ne04b16d fix: 修正 strategy_leaderboard.py 大樂透 baseline 錯誤\na3672bb verify: Gemini 威力彩策略全面驗證 + 採用冷號互補策略"
+    },
+    "conclusion": "Both referenced commits do not exist as valid git objects. They were on the stale `claude/zen-gates-ff6802` worktree branch, now archived at `/Users/kelvin/Kelvin-WorkSpace/_archive/lottery_stale_repos_20260602_162329/`. No P179/P180/P181 leaderboard commits exist on any current branch or ref."
+  },
+  "artifact_overlap_analysis": {
+    "original_p179": {
+      "found": true,
+      "path": "outputs/research/power_lotto/p179_replay_product_governance_backlog_decision_gate_20260601.json",
+      "task": "P179_REPLAY_PRODUCT_GOVERNANCE_BACKLOG_DECISION_GATE",
+      "final_classification": "P179_REPLAY_PRODUCT_GOVERNANCE_BACKLOG_DECISION_GATE_READY",
+      "date": "2026-06-01",
+      "branch": "claude/zen-gates-ff6802",
+      "next_task": "AWAITING_CEO_AUTHORIZATION_FOR_P180"
+    },
+    "original_p180": {
+      "found": true,
+      "path": "outputs/research/power_lotto/p180_combined_reconciliation_and_replay_backlog_plan_20260601.json",
+      "task": "P180_COMBINED_MAIN_ZEN_GATES_RECONCILIATION_AND_REPLAY_BACKLOG_PLAN_ONLY",
+      "final_classification": "P180_COMBINED_RECONCILIATION_AND_REPLAY_BACKLOG_PLAN_READY",
+      "date": "2026-06-01",
+      "branch": "claude/zen-gates-ff6802",
+      "next_task": "AWAITING_CEO_AUTHORIZATION_FOR_P181"
+    },
+    "original_p181": {
+      "found": true,
+      "path": "outputs/research/power_lotto/p181_code_docs_tests_parity_plan_20260601.json",
+      "task": "P181_CODE_DOCS_TESTS_PARITY_PLAN_ONLY",
+      "final_classification": "P181_CODE_DOCS_TESTS_PARITY_PLAN_READY",
+      "date": "2026-06-01",
+      "branch": "claude/zen-gates-ff6802",
+      "next_task": "AWAITING_CEO_AUTHORIZATION_FOR_P182"
+    },
+    "p232a_scoreboard": {
+      "found": true,
+      "path": "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json",
+      "phase": "P232A_ALL_CATALOG_STRATEGY_HISTORICAL_REPLAY_SCOREBOARD",
+      "execution_status": "SCOREBOARD_EXECUTED_OK",
+      "total_catalog_strategy_count": 21,
+      "total_replay_strategy_count": 36,
+      "db_rows_before": 94924,
+      "final_classification": "P232A_ALL_CATALOG_STRATEGY_HISTORICAL_REPLAY_SCOREBOARD_COMPLETE"
+    },
+    "p250a_inventory": {
+      "found": true,
+      "path": "outputs/research/p250a_cross_lottery_strategy_replay_inventory_20260607.json",
+      "classification": "CROSS_LOTTERY_STRATEGY_REPLAY_INVENTORY",
+      "inventory_counts": {
+        "current_registry_entries": 38,
+        "historical_inventory_entries": 41,
+        "artifact_only_entries": 3,
+        "current_registry_lifecycle_counts": {
+          "OBSERVATION": 1,
+          "ONLINE": 8,
+          "REJECTED": 16,
+          "RETIRED": 13
+        }
+      }
+    },
+    "p251b_dashboard": {
+      "found": true,
+      "path": "outputs/research/p251b_cross_lottery_evidence_dashboard_data_20260606.json",
+      "classification": "CROSS_LOTTERY_EVIDENCE_DASHBOARD_DATA_ARTIFACT"
+    },
+    "p252b_coverage_audit": {
+      "found": true,
+      "path": "outputs/research/p252b_unified_external_method_coverage_audit_20260607.json",
+      "classification": "UNIFIED_EXTERNAL_METHOD_COVERAGE_AUDIT",
+      "method_count": 8,
+      "final_decision": "P252B audit complete. External methods (M1-M8) coverage: CONFIRMED_PARTIAL for 7, PARTIAL for 1 (M8). No deployable prediction edge found — all research arcs NULL/REJECTED/UNDERPOWERED. GREEN randomness (P246K) does not imply prediction edge. Consolidation plan: P0 (M3/M4/M5/M6) — SSOT baseline, permutation, correction gate, window constants. P1 (M1/M7/M8) — parser SSOT, stability vocab, feature bottleneck report. P2 (M2) — position frequency BLOCKED. Recommended next: P252C — implement M4 baseline_calculator.py SSOT (Type C, highest risk gap)."
+    }
+  },
+  "supersession_analysis": {
+    "p179_original_branch": "claude/zen-gates-ff6802",
+    "p179_original_intent": "Govern reconciliation of zen-gates/main DB split: 54,462→94,924 rows + bet_index migration",
+    "db_reconciliation_achieved_via": "P188-P205 migration / PR #249 (confirmed in CURRENT_STATE.md)",
+    "db_reconciliation_done": true,
+    "p180_intent": "Combined reconciliation and replay backlog plan (plan-only artifact)",
+    "p180_superseded_by": "P188-P205 execution completed the planned migration",
+    "p181_intent": "Code/docs/tests parity plan — next: P182 authorization for backport. Final state: AWAITING_CEO_AUTHORIZATION_FOR_P182",
+    "p181_parity_superseded_by": "P206-P209 repo archive cleanup; canonical repo established on main",
+    "strategy_leaderboard_intent": "strategy_leaderboard.py baseline fix (commit e04b16d) and strategy catalog concept",
+    "scoreboard_superseded_by_p232a": true,
+    "inventory_superseded_by_p250a": true,
+    "parity_plan_superseded": true,
+    "overall_supersession": "FULLY_SUPERSEDED",
+    "overall_reasoning": "All three objectives of P179/P180/P181 have been addressed: (1) DB reconciliation → P188-P205 completed 54,462→94,924 row migration with bet_index; (2) zen-gates code parity → P206-P209 canonical repo established on main; (3) strategy catalog/leaderboard → P232A scoreboard, P250A inventory, P251B evidence dashboard all supersede the concept. The referenced commits (0f99d00, 93fbd3d) were on the stale `claude/zen-gates-ff6802` worktree branch which is now archived."
+  },
+  "recommendation": {
+    "action": "OBSOLETE_CLOSE",
+    "rationale": "P179/P180/P181 objectives are fully superseded by later completed work: DB migration (P188-P205), repo cleanup (P206-P209), strategy scoreboard (P232A), inventory (P250A), dashboard (P251B). No uncommitted work remains to publish. No fresh implementation is needed unless a new leaderboard feature is explicitly authorized by the user.",
+    "required_user_decision": "User may optionally authorize a NEW strategy leaderboard task scoped to current main (a3e3420 or later). P181 as originally scoped can be closed.",
+    "do_not_do": [
+      "Do not force-push or rebase to inject missing commits",
+      "Do not recreate P179/P180 zen-gates work",
+      "Do not publish nonexistent commits",
+      "Do not modify DB, registry, strategy logic, or production recommendations",
+      "Do not open a release branch for commits that don't exist"
+    ]
+  },
+  "no_db_write_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_strategy_promotion_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "final_decision": "P181C adjudication complete. Classification: SUPERSEDED_BY_LATER_ARTIFACTS. Referenced commits (0f99d00, 93fbd3d) confirmed absent from all refs. P179/P180/P181 zen-gates reconciliation work is fully superseded: DB migration done via P188-P205, code parity via P206-P209, strategy catalog concept superseded by P232A/P250A/P251B. Recommendation: OBSOLETE_CLOSE. No further action required from Claude. User decision needed only if a new scoped leaderboard task is desired."
+}

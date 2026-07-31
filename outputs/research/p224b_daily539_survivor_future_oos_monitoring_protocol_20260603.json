@@ -1,0 +1,82 @@
+{
+  "task_id": "P224B",
+  "title": "DAILY_539 Survivor Future OOS Monitoring Protocol",
+  "date": "2026-06-03",
+  "status": "COMPLETE / READ-ONLY",
+  "classification": "P224B_FUTURE_OOS_MONITORING_PROTOCOL_READY",
+  "authorized_by": "User explicit task prompt 2026-06-03",
+  "scope": {
+    "candidate": {
+      "strategy_id": "midfreq_fourier_2bet",
+      "lottery_type": "DAILY_539"
+    },
+    "purpose": "Define objective reopen criteria for P225 after enough new DAILY_539 draws accumulate",
+    "exclusions": [
+      "no new feature families",
+      "no universe expansion",
+      "no new validation scan in this task"
+    ]
+  },
+  "governance": {
+    "db_write": false,
+    "registry_write": false,
+    "production_write": false,
+    "recommendation_logic_change": false,
+    "controlled_apply": false,
+    "strategy_promotion": false,
+    "p225_started": false,
+    "not_betting_advice": true
+  },
+  "entry_conditions": {
+    "minimum_recheck_draws": 300,
+    "preferred_recheck_draws": 500,
+    "recheck_mode": "read-only historical replay comparison only",
+    "recheck_grain": "same candidate grain only"
+  },
+  "required_recheck_metrics": [
+    "mean hit_count",
+    "M1+",
+    "M2+",
+    "M3+",
+    "CI for mean lift",
+    "one-sided p-value vs baseline",
+    "daily539_f4cold comparison",
+    "consensus baseline comparison"
+  ],
+  "stability_gate": {
+    "block_size_options": [
+      100,
+      150
+    ],
+    "majority_blocks_above_baseline_required": true,
+    "no_catastrophic_below_baseline_block_required": true
+  },
+  "robustness_gate": {
+    "exclude_hit_count_3_rows_must_remain_at_or_above_baseline": true,
+    "exclude_strongest_block_must_remain_near_or_above_baseline": true
+  },
+  "promotion_gate": {
+    "mean_above_baseline_required": true,
+    "ci_lower_bound_at_or_above_baseline_or_predeclared_threshold_required": true,
+    "p_value_survives_correction_required": true,
+    "block_stability_positive_required": true,
+    "robustness_positive_required": true,
+    "competition_check_required": [
+      "daily539_f4cold",
+      "consensus baseline"
+    ]
+  },
+  "failure_gate": {
+    "new_300_500_draw_oos_below_baseline_or_robustness_fails": "classify as historical artifact rather than promotion candidate"
+  },
+  "monitoring_cadence": {
+    "first_recheck_after_new_draws": 300,
+    "strong_confirmation_recheck_after_new_draws": 500,
+    "if_300_draw_recheck_is_mixed": "wait for 500-draw gate before reopening P225"
+  },
+  "decision_summary": {
+    "current_state": "promising but not confirmed enough for promotion today",
+    "future_use": "criteria for revisiting P225 authorization"
+  },
+  "final_classification": "P224B_FUTURE_OOS_MONITORING_PROTOCOL_READY"
+}

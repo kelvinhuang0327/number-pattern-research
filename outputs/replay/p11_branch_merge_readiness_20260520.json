@@ -1,0 +1,87 @@
+{
+  "phase": "P11_BRANCH_MERGE_READINESS",
+  "generated_at": "2026-05-20T00:00:00Z",
+  "dry_run_only": true,
+  "production_rows": 460,
+  "apply_authorized": false,
+  "required_phrase": "YES apply P7 controlled replay rows",
+  "test_total_before_p11": 303,
+  "drift_guard": "PASS",
+  "latest_commit": "22a25ae",
+  "branch": "feat/p0-single-repo-stabilization-p1-catalog-plan-20260519",
+  "merge_target": "main",
+  "contains_db_change": false,
+  "contains_production_apply": false,
+  "contains_retired_apply": false,
+  "contains_ui_large_redesign": false,
+  "p7_online_apply_status": "BLOCKED_AWAITING_CEO_PHRASE",
+  "p10_operations_ready": true,
+  "diff_scope": {
+    "files_changed": 71,
+    "insertions": 61911,
+    "deletions": 43,
+    "db_files_changed": 0,
+    "pid_files_in_diff": 0,
+    "backup_files_in_diff": 0,
+    "runtime_files_in_diff": 0,
+    "script_files_changed": 14,
+    "test_files_changed": 11,
+    "api_files_changed": 1,
+    "doc_files_changed": 27,
+    "output_json_files_changed": 18
+  },
+  "api_change_summary": {
+    "file": "lottery_api/routes/replay.py",
+    "type": "ADDITIVE_ONLY",
+    "description": "Added 4 fields to GET /api/replay/history record response (visibility_state, display_status, should_count_as_success, source_trace). Non-breaking.",
+    "breaking_change": false,
+    "api_contract_tests": "44/44 PASS"
+  },
+  "commit_chain": [
+    {"hash": "22a25ae", "subject": "P10: replay operations readiness runbook and monitoring plan (Path B)"},
+    {"hash": "01abd8b", "subject": "P9: source-of-truth hardening + replay launch readiness lock"},
+    {"hash": "d9afe19", "subject": "P7: apply gate review (Path B, blocked) + P8: reconstructible backfill dry-run"},
+    {"hash": "fb6aad1", "subject": "P5: API verification + minimal patch + P6: catalog apply plan v1"},
+    {"hash": "5c62bfa", "subject": "P3: per-draw all-strategy coverage matrix + P4 apply readiness review"},
+    {"hash": "0a722dc", "subject": "P0/P1: P7 actual apply gate hardening + readiness clean commit + registry reconciliation"},
+    {"hash": "4047d24", "subject": "P7: prepare controlled replay row apply dry-run"},
+    {"hash": "9b895eb", "subject": "P6: rebuild source promotion policy and repair P25 catalog regression"},
+    {"hash": "f7467c7", "subject": "docs(replay): record UI visibility closure and P6 gap for 2026-05-20"},
+    {"hash": "a89a7ca", "subject": "fix(replay): hide internal catalog states from public replay UI"},
+    {"hash": "8b4ffc8", "subject": "P0+P1: single-repo schema stabilization and catalog visibility dry-run plan"}
+  ],
+  "merge_gate": {
+    "all_tests_green": true,
+    "drift_guard_pass": true,
+    "production_rows_460": true,
+    "no_db_change": true,
+    "no_production_apply": true,
+    "no_retired_apply": true,
+    "api_contract_pass": true,
+    "fake_success_count_zero": true
+  },
+  "blocked_items_post_merge": [
+    "P7 ONLINE apply (28 rows, 460→488) — requires CEO phrase: YES apply P7 controlled replay rows",
+    "P7 RETIRED apply (93 rows) — requires separate human review + authorization",
+    "ARTIFACT_ONLY governance (41 strategies) — requires registry registration first"
+  ],
+  "legal_next_actions": [
+    "OPEN_PR_FOR_REVIEW",
+    "CEO_AUTHORIZE_P7_ONLINE_APPLY_28_ROWS"
+  ],
+  "illegal_next_actions": [
+    "MERGE_WITH_DB_FILES",
+    "APPLY_WITHOUT_EXACT_PHRASE",
+    "APPLY_RETIRED_ROWS_WITHOUT_SEPARATE_AUTH",
+    "COUNT_NO_DATA_AS_SUCCESS",
+    "FABRICATE_REPLAY_ROWS",
+    "MARK_ARTIFACT_ONLY_AS_ONLINE"
+  ],
+  "fake_success_count": 0,
+  "safety_flags": {
+    "unauthorized_apply_performed": false,
+    "db_write_performed": false,
+    "strategy_executed": false,
+    "data_fabricated": false
+  }
+}

@@ -1,0 +1,1512 @@
+{
+  "phase": "P13_BACKFILL_ENGINE_DRY_RUN",
+  "generated_at": "2026-05-20T07:59:08.545802+00:00",
+  "dry_run_only": true,
+  "production_rows_before": 460,
+  "production_rows_after": 460,
+  "no_db_write": true,
+  "target_draw_window": 1500,
+  "target_strategy_count": 2,
+  "estimated_target_candidates": 3000,
+  "generated_candidates": 3000,
+  "ready_candidates": 3000,
+  "blocked_candidates": 0,
+  "fake_success_count": 0,
+  "selected_strategies": [
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "min_history": 100
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "min_history": 100
+    }
+  ],
+  "by_strategy": {
+    "daily539_f4cold": {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "total": 1500,
+      "ready": 1500,
+      "blocked": 0,
+      "by_status": {
+        "READY": 1500
+      },
+      "avg_hit_count": 0.6727,
+      "special_hits": 0,
+      "fake_success": 0
+    },
+    "power_precision_3bet": {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "total": 1500,
+      "ready": 1500,
+      "blocked": 0,
+      "by_status": {
+        "READY": 1500
+      },
+      "avg_hit_count": 0.9967,
+      "special_hits": 0,
+      "fake_success": 0
+    }
+  },
+  "by_status": {
+    "READY": 3000
+  },
+  "block_reasons": {},
+  "candidates_sample": [
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000190",
+      "draw_date": "2021/08/10",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        7,
+        10,
+        25,
+        29,
+        34
+      ],
+      "actual_numbers": [
+        8,
+        22,
+        23,
+        29,
+        31
+      ],
+      "hit_numbers": [
+        29
+      ],
+      "hit_count": 1,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000189",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "22227530a700e0f50e47c0bd3dfa3bdc776f5f61c358468831e433b46534d0c2",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000191",
+      "draw_date": "2021/08/11",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        6,
+        7,
+        12,
+        25,
+        35
+      ],
+      "actual_numbers": [
+        17,
+        20,
+        28,
+        30,
+        38
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000190",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "398a3094004c55dff1bb1df88c1d85246acedb0545d70f8ad8a1f14b1ad5a660",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000192",
+      "draw_date": "2021/08/12",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        6,
+        7,
+        9,
+        12,
+        35
+      ],
+      "actual_numbers": [
+        1,
+        3,
+        7,
+        19,
+        30
+      ],
+      "hit_numbers": [
+        7
+      ],
+      "hit_count": 1,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000191",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "f1914d8bc384b6a434adbbd7b7ab80825e7418b257a0f1319edd11ea0b416591",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000193",
+      "draw_date": "2021/08/13",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        4,
+        9,
+        11,
+        29,
+        35
+      ],
+      "actual_numbers": [
+        5,
+        25,
+        27,
+        35,
+        37
+      ],
+      "hit_numbers": [
+        35
+      ],
+      "hit_count": 1,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000192",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "b9ec3ce7c13ea3faa4805d62fbb4941a082d3895d5cca27a719aea355272fd5b",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000194",
+      "draw_date": "2021/08/14",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        4,
+        8,
+        11,
+        23,
+        34
+      ],
+      "actual_numbers": [
+        3,
+        8,
+        18,
+        30,
+        37
+      ],
+      "hit_numbers": [
+        8
+      ],
+      "hit_count": 1,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000193",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "2f2fe88b056e5ad3441d13b21e47ed2bd61951d4ba273b72c072a2832d4c9d2d",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000195",
+      "draw_date": "2021/08/16",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        1,
+        2,
+        7,
+        31,
+        34
+      ],
+      "actual_numbers": [
+        7,
+        10,
+        16,
+        24,
+        34
+      ],
+      "hit_numbers": [
+        7,
+        34
+      ],
+      "hit_count": 2,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000194",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "7b1b87df01b53843ceaeda0b5fb34f9e46cbbdbfb17f8db9973686bd23cd5a08",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000196",
+      "draw_date": "2021/08/17",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        1,
+        2,
+        19,
+        25,
+        39
+      ],
+      "actual_numbers": [
+        3,
+        17,
+        19,
+        35,
+        37
+      ],
+      "hit_numbers": [
+        19
+      ],
+      "hit_count": 1,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000195",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "7495daded707007b0b178ce60697886f03161380b95dda965701a94c385e473d",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000197",
+      "draw_date": "2021/08/18",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        1,
+        8,
+        25,
+        30,
+        39
+      ],
+      "actual_numbers": [
+        10,
+        11,
+        15,
+        16,
+        36
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000196",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "81f01395d417bff16ff011279b5bae76c28c2327deebefa40dd95a599db033de",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000198",
+      "draw_date": "2021/08/19",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        7,
+        8,
+        24,
+        30,
+        39
+      ],
+      "actual_numbers": [
+        8,
+        12,
+        19,
+        26,
+        38
+      ],
+      "hit_numbers": [
+        8
+      ],
+      "hit_count": 1,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000197",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "2776c4b14bd2d408068b3c6d1026765f612ae377c4298a7205d61d137e9d3303",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000199",
+      "draw_date": "2021/08/20",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        3,
+        7,
+        24,
+        36,
+        37
+      ],
+      "actual_numbers": [
+        1,
+        5,
+        10,
+        31,
+        38
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000198",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "ad7f243454a7711ae3d81f5885c3dd92160e7119db3e9da23794503c8f618d9f",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000200",
+      "draw_date": "2021/08/21",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        3,
+        18,
+        20,
+        36,
+        37
+      ],
+      "actual_numbers": [
+        18,
+        24,
+        29,
+        31,
+        33
+      ],
+      "hit_numbers": [
+        18
+      ],
+      "hit_count": 1,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000199",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "4ad3bd1ce68b3c610974fcedf71ddd8005ee7c3d3b08f025f0b81e0fc12e0c7f",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000201",
+      "draw_date": "2021/08/23",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        8,
+        12,
+        20,
+        26,
+        36
+      ],
+      "actual_numbers": [
+        6,
+        11,
+        24,
+        29,
+        37
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000200",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "a321f43efb73b555d8a43bacdf9ddab55642d7c494fea36c563ec4cb6b930fa5",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000202",
+      "draw_date": "2021/08/24",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        8,
+        15,
+        17,
+        19,
+        28
+      ],
+      "actual_numbers": [
+        8,
+        17,
+        20,
+        24,
+        27
+      ],
+      "hit_numbers": [
+        8,
+        17
+      ],
+      "hit_count": 2,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000201",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "766e8358b30b0ccbb597b615fc8939b6831dde2aa3c3f20f407403d48c3966d1",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000203",
+      "draw_date": "2021/08/25",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        1,
+        15,
+        19,
+        28,
+        38
+      ],
+      "actual_numbers": [
+        14,
+        15,
+        26,
+        31,
+        34
+      ],
+      "hit_numbers": [
+        15
+      ],
+      "hit_count": 1,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000202",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "647abc4225a8fa4e29638cfdd6637a8f4dc9bf4f5909db5175a16eadb6209dd3",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000204",
+      "draw_date": "2021/08/26",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        1,
+        17,
+        33,
+        37,
+        38
+      ],
+      "actual_numbers": [
+        3,
+        11,
+        32,
+        36,
+        39
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000203",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "6ee3ee89477b631a02463a28efbf82d101775d3a8a0539c66e17cb99c314af1b",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000205",
+      "draw_date": "2021/08/27",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        8,
+        17,
+        29,
+        33,
+        37
+      ],
+      "actual_numbers": [
+        3,
+        18,
+        23,
+        32,
+        33
+      ],
+      "hit_numbers": [
+        33
+      ],
+      "hit_count": 1,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000204",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "777a84c89255c1680f57c3daafd346eceea70a4193793560327140342aa53a76",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000206",
+      "draw_date": "2021/08/28",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        6,
+        8,
+        24,
+        26,
+        35
+      ],
+      "actual_numbers": [
+        2,
+        5,
+        12,
+        32,
+        37
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000205",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "0de45d446277ee68bb11d3423dd97d4f5c28ccbba546181c07817b962ce7fa23",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000207",
+      "draw_date": "2021/08/30",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        6,
+        14,
+        22,
+        35,
+        36
+      ],
+      "actual_numbers": [
+        2,
+        14,
+        24,
+        36,
+        39
+      ],
+      "hit_numbers": [
+        14,
+        36
+      ],
+      "hit_count": 2,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000206",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "c44224e60208b88dfe8abad3fce571efc1a398fb15083e9d091a2848d4053932",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000208",
+      "draw_date": "2021/08/31",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        1,
+        3,
+        22,
+        31,
+        33
+      ],
+      "actual_numbers": [
+        4,
+        15,
+        28,
+        29,
+        35
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000207",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "a2714b131f500a2e83883aa7c0ac8e2850e500fa9a62e3cc80b32f2f9e2b7a25",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "\u4eca\u5f69539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "draw_number": "110000209",
+      "draw_date": "2021/09/01",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        3,
+        11,
+        12,
+        31,
+        33
+      ],
+      "actual_numbers": [
+        7,
+        12,
+        18,
+        19,
+        39
+      ],
+      "hit_numbers": [
+        12
+      ],
+      "hit_count": 1,
+      "special_hit": 0,
+      "history_cutoff_draw": "110000208",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "dabcbd08f53d3dbfdb06ddc559e6e51ae32bc74050fcbc4e9ef7997ed3d1e7b7",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000002",
+      "draw_date": "2012/01/05",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        3,
+        16,
+        19,
+        24,
+        25,
+        35
+      ],
+      "actual_numbers": [
+        10,
+        15,
+        18,
+        28,
+        31,
+        32
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000001",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "4bb10cd77ad8b824db08bbc361d13765dd6c9e21d8c6d31a9056c7bfa5f861d0",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000003",
+      "draw_date": "2012/01/09",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        3,
+        7,
+        16,
+        19,
+        20,
+        35
+      ],
+      "actual_numbers": [
+        2,
+        9,
+        25,
+        27,
+        30,
+        34
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000002",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "cd43932095841e4b87ddf02d4964c8ddee9f6ca68bec8bc092f726f8e4aff43c",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000004",
+      "draw_date": "2012/01/12",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        3,
+        6,
+        7,
+        20,
+        32,
+        35
+      ],
+      "actual_numbers": [
+        3,
+        15,
+        21,
+        23,
+        30,
+        32
+      ],
+      "hit_numbers": [
+        3,
+        32
+      ],
+      "hit_count": 2,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000003",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "7c25fb8605c9cf1393552a9114de3c9927a81087167549c70638b01a231b1fa3",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000005",
+      "draw_date": "2012/01/16",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        1,
+        7,
+        17,
+        18,
+        31,
+        37
+      ],
+      "actual_numbers": [
+        7,
+        11,
+        18,
+        33,
+        36,
+        37
+      ],
+      "hit_numbers": [
+        7,
+        18,
+        37
+      ],
+      "hit_count": 3,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000004",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "9cb909682e833e397b7be5847433f0b337fc00b2caf497b10679739218d31dce",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000006",
+      "draw_date": "2012/01/19",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        3,
+        6,
+        27,
+        31,
+        32,
+        38
+      ],
+      "actual_numbers": [
+        3,
+        7,
+        8,
+        11,
+        13,
+        18
+      ],
+      "hit_numbers": [
+        3
+      ],
+      "hit_count": 1,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000005",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "71e55ba0f299c78c2b891d4b53518fd84eebf1528bd994ecf087b39496229d35",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000007",
+      "draw_date": "2012/01/23",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        4,
+        10,
+        15,
+        17,
+        25,
+        34
+      ],
+      "actual_numbers": [
+        6,
+        8,
+        23,
+        24,
+        29,
+        36
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000006",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "c4f98ee80bd17e7c83a0d1ad2563142972d4dc8898fd065ecf0b6607436482d2",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000008",
+      "draw_date": "2012/01/26",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        3,
+        15,
+        17,
+        18,
+        25,
+        27
+      ],
+      "actual_numbers": [
+        2,
+        4,
+        9,
+        16,
+        19,
+        38
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000007",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "60ae82ad00709aa90e7892c82b27bd486d5e5e38bde1968298cd5bc39f67bc04",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000009",
+      "draw_date": "2012/01/30",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        3,
+        7,
+        17,
+        26,
+        33,
+        34
+      ],
+      "actual_numbers": [
+        11,
+        17,
+        18,
+        20,
+        27,
+        38
+      ],
+      "hit_numbers": [
+        17
+      ],
+      "hit_count": 1,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000008",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "e9e562e5c4d54e565e4dae16437d8cde74c448b2cc457b54387beaf7a53643fb",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000010",
+      "draw_date": "2012/02/02",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        3,
+        7,
+        19,
+        24,
+        29,
+        34
+      ],
+      "actual_numbers": [
+        1,
+        3,
+        4,
+        8,
+        14,
+        29
+      ],
+      "hit_numbers": [
+        3,
+        29
+      ],
+      "hit_count": 2,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000009",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "551f15422730a4f7634f93c353e5738d7100a8bb8a2e10fa15ab78a659e40bd7",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000011",
+      "draw_date": "2012/02/06",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        7,
+        15,
+        24,
+        33,
+        36,
+        38
+      ],
+      "actual_numbers": [
+        4,
+        7,
+        14,
+        20,
+        23,
+        38
+      ],
+      "hit_numbers": [
+        7,
+        38
+      ],
+      "hit_count": 2,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000010",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "f458718394508a22d6d4b178528d673c2f1fb272d43033f249e11c3858b1c6a2",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000012",
+      "draw_date": "2012/02/09",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        9,
+        15,
+        18,
+        19,
+        30,
+        36
+      ],
+      "actual_numbers": [
+        6,
+        12,
+        20,
+        25,
+        28,
+        37
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000011",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "f8a1dded1a24894b463ccd960e81ab2b7efc0252f2e67148ebc0d6a72b4be2a2",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000013",
+      "draw_date": "2012/02/13",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        3,
+        18,
+        19,
+        24,
+        29,
+        30
+      ],
+      "actual_numbers": [
+        4,
+        9,
+        15,
+        24,
+        29,
+        35
+      ],
+      "hit_numbers": [
+        24,
+        29
+      ],
+      "hit_count": 2,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000012",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "2f80b021e6a2ef64ceee51d381e5967809a4cefc6e8168268acedb61cc04ba75",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000014",
+      "draw_date": "2012/02/16",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        1,
+        7,
+        8,
+        18,
+        36,
+        38
+      ],
+      "actual_numbers": [
+        7,
+        16,
+        23,
+        24,
+        29,
+        34
+      ],
+      "hit_numbers": [
+        7
+      ],
+      "hit_count": 1,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000013",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "565ee5711f35778a5ad50a4ac8d297066f773e63029874542f9144507b01b0f0",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000015",
+      "draw_date": "2012/02/20",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        1,
+        4,
+        6,
+        8,
+        36,
+        38
+      ],
+      "actual_numbers": [
+        1,
+        2,
+        9,
+        12,
+        14,
+        22
+      ],
+      "hit_numbers": [
+        1
+      ],
+      "hit_count": 1,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000014",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "d148fd6e396c3fe1d2a8f1724af46eae9cd2fc5b971e81c68022b236306da017",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000016",
+      "draw_date": "2012/02/23",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        4,
+        8,
+        11,
+        15,
+        20,
+        35
+      ],
+      "actual_numbers": [
+        8,
+        13,
+        19,
+        30,
+        35,
+        37
+      ],
+      "hit_numbers": [
+        8,
+        35
+      ],
+      "hit_count": 2,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000015",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "c553b826240d65f4990f8ca8c129d972133639a30b41fdfba802183c33963677",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000017",
+      "draw_date": "2012/02/27",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        7,
+        15,
+        20,
+        21,
+        24,
+        25
+      ],
+      "actual_numbers": [
+        3,
+        4,
+        10,
+        12,
+        20,
+        23
+      ],
+      "hit_numbers": [
+        20
+      ],
+      "hit_count": 1,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000016",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "dc71bbbfb1953595afc5a3856d0077a9774ff3df688071b31eaaaa61ebf33b27",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000018",
+      "draw_date": "2012/03/01",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        7,
+        21,
+        24,
+        27,
+        29,
+        34
+      ],
+      "actual_numbers": [
+        1,
+        4,
+        7,
+        9,
+        15,
+        16
+      ],
+      "hit_numbers": [
+        7
+      ],
+      "hit_count": 1,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000017",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "c915f17357721db371a09139f3af1aff7fd1da20bb834b3a35114fdc283e1bfd",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000019",
+      "draw_date": "2012/03/05",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        3,
+        17,
+        19,
+        27,
+        34,
+        35
+      ],
+      "actual_numbers": [
+        6,
+        11,
+        15,
+        21,
+        26,
+        27
+      ],
+      "hit_numbers": [
+        27
+      ],
+      "hit_count": 1,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000018",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "24b39335f221417143a88a28a57738714753568e899c0ee84f75dfddf01dac10",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000020",
+      "draw_date": "2012/03/08",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        3,
+        8,
+        12,
+        20,
+        34,
+        35
+      ],
+      "actual_numbers": [
+        9,
+        11,
+        12,
+        23,
+        28,
+        37
+      ],
+      "hit_numbers": [
+        12
+      ],
+      "hit_count": 1,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000019",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "043264d79d053c471546dc51fd0723929c83e8c1552cee12b0312c80a5c1d8a8",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "\u5a01\u529b\u5f69 Precision 3\u6ce8",
+      "lottery_type": "POWER_LOTTO",
+      "draw_number": "101000021",
+      "draw_date": "2012/03/12",
+      "prediction_status": "READY",
+      "predicted_numbers": [
+        4,
+        7,
+        8,
+        10,
+        24,
+        34
+      ],
+      "actual_numbers": [
+        3,
+        9,
+        13,
+        22,
+        23,
+        37
+      ],
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": 0,
+      "history_cutoff_draw": "101000020",
+      "block_reason": null,
+      "source_trace": "P13_BACKFILL_ENGINE_DRY_RUN",
+      "provenance_hash": "bae3894db455201054eba75fef589d3142163b1e0a5ee269c07ac0dcbc6683ff",
+      "truth_level": "CAUSAL_REPLAY_GENERATED",
+      "dry_run_only": true,
+      "would_insert": false,
+      "counts_as_success": false
+    }
+  ],
+  "safety_flags": {
+    "no_db_write": true,
+    "no_strategy_fabrication": true,
+    "no_fake_rows": true,
+    "no_artifact_as_executable": true,
+    "no_no_data_as_success": true,
+    "no_p7_apply": true,
+    "no_retired_apply": true,
+    "counts_as_success_locked_false": true
+  },
+  "p14_apply_gate_recommendation": {
+    "note": "Apply gate requires explicit CEO authorization phrase. Script: scripts/p14_backfill_apply_gate.py --dry-run-json outputs/replay/p13_backfill_engine_dry_run_20260520.json --authorization 'YES apply P13 Phase 1 backfill rows'",
+    "authorization_phrase_required": "YES apply P13 Phase 1 backfill rows",
+    "pre_apply_checks": [
+      "fake_success_count == 0",
+      "no READY candidate with fabricated predicted_numbers",
+      "all provenance_hash values unique",
+      "production_rows_before matches current DB count",
+      "CEO explicit sign-off on ready_candidates count"
+    ],
+    "rollback_key": "controlled_apply_id = 'P13_PHASE1_APPLY_<timestamp>'",
+    "estimated_net_new_rows": 3000
+  }
+}

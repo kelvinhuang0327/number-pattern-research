@@ -1,0 +1,15 @@
+{
+  "phase": "P19B_POWERLOTTO_TEMPDB_REHEARSAL",
+  "mode": "apply",
+  "temp_db_only": false,
+  "production_apply": true,
+  "controlled_apply_id": "P19B_POWERLOTTO_FOURIER_1500_PROD_20260520",
+  "expected_rows_before": 4960,
+  "rows_before": 4960,
+  "planned_insert_count": 1500,
+  "inserted_count": 1500,
+  "duplicate_count": 0,
+  "error_count": 0,
+  "rows_after_apply": 6460,
+  "fake_success_count": 0
+}

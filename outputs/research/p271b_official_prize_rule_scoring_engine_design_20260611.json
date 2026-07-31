@@ -1,0 +1,424 @@
+{
+  "task_id": "P271B",
+  "generated_at": "2026-06-11T14:20:32Z",
+  "repo_head": "ed7afe308d1770a5eda491163bbadac5635c34e9",
+  "branch": "task/p271b-official-prize-rule-scoring-engine-design",
+  "mode": "official_prize_rule_scoring_engine_design",
+
+  "official_sources": [
+    "https://www.taiwanlottery.com/lotto/info/super_lotto638",
+    "https://www.taiwanlottery.com/lotto/info/lotto649",
+    "https://www.taiwanlottery.com/lotto/info/daily_cash"
+  ],
+
+  "source_verification_method": {
+    "attempted": ["WebFetch", "Chrome_MCP_browser"],
+    "result": "Both methods failed to retrieve prize table content. Official Taiwan Lottery pages are JavaScript single-page applications (SPAs). WebFetch returns navigation shell only — no prize tables rendered. Chrome MCP was unavailable (not connected). All three pages confirmed as MANUAL_VERIFICATION_REQUIRED.",
+    "fallback_source": "Internal repo documentation: lottery_api/CLAUDE.md (calc_prize docstrings at lines 976-1023) and lottery_api/calculate_win_probability.py (DAILY_539 prize tiers at lines 65-70). These documents the same prize tier logic embedded in the production calc_prize function."
+  },
+
+  "source_status_by_lottery": {
+    "POWER_LOTTO": {
+      "official_url": "https://www.taiwanlottery.com/lotto/info/super_lotto638",
+      "status": "MANUAL_VERIFICATION_REQUIRED",
+      "internal_source": "lottery_api/CLAUDE.md lines 1011-1023 (calc_prize docstring)",
+      "note": "Official page is a JavaScript SPA; prize table not machine-readable. Internal source documents the calc_prize function used in production."
+    },
+    "BIG_LOTTO": {
+      "official_url": "https://www.taiwanlottery.com/lotto/info/lotto649",
+      "status": "MANUAL_VERIFICATION_REQUIRED",
+      "internal_source": "lottery_api/CLAUDE.md lines 976-1009 (calc_prize docstring)",
+      "note": "Official page is a JavaScript SPA; prize table not machine-readable. Internal source documents the calc_prize function used in production."
+    },
+    "DAILY_539": {
+      "official_url": "https://www.taiwanlottery.com/lotto/info/daily_cash",
+      "status": "MANUAL_VERIFICATION_REQUIRED",
+      "internal_source": "lottery_api/calculate_win_probability.py lines 65-70 (match_levels list)",
+      "note": "Official page is a JavaScript SPA; prize table not machine-readable. Internal source documents the prize structure used in the repo probability calculator."
+    }
+  },
+
+  "verified_prize_rule_summary_by_lottery": {
+    "POWER_LOTTO": {
+      "game_name_zh": "威力彩",
+      "game_code": "super_lotto638",
+      "pool_structure": "First zone: pick 6 from 1-38. Second zone (特別號/special): pick 1 from 1-8.",
+      "special_hit_logic": "special_hit = (predicted_special == actual_special) — exact match of predicted second-zone number against actual second-zone draw",
+      "schema_limitation": "predicted_special is only populated for ~25% of POWER_LOTTO replay rows (approx 9,000 of 36,104). Second-zone-dependent tiers cannot be fully evaluated on the remaining ~75% of rows.",
+      "prize_tiers": [
+        {"tier_zh": "頭獎", "rank": 1, "hit_count": 6, "special_hit": 1, "description": "6 main + special"},
+        {"tier_zh": "貳獎", "rank": 2, "hit_count": 6, "special_hit": 0, "description": "6 main only"},
+        {"tier_zh": "參獎", "rank": 3, "hit_count": 5, "special_hit": 1, "description": "5 main + special"},
+        {"tier_zh": "肆獎", "rank": 4, "hit_count": 5, "special_hit": 0, "description": "5 main only"},
+        {"tier_zh": "伍獎", "rank": 5, "hit_count": 4, "special_hit": 1, "description": "4 main + special"},
+        {"tier_zh": "陸獎", "rank": 6, "hit_count": 4, "special_hit": 0, "description": "4 main only"},
+        {"tier_zh": "柒獎", "rank": 7, "hit_count": 3, "special_hit": 1, "description": "3 main + special"},
+        {"tier_zh": "捌獎", "rank": 8, "hit_count": 2, "special_hit": 1, "description": "2 main + special"},
+        {"tier_zh": "玖獎", "rank": 9, "hit_count": 3, "special_hit": 0, "description": "3 main only"},
+        {"tier_zh": "普獎", "rank": 10, "hit_count": 1, "special_hit": 1, "description": "1 main + special"}
+      ],
+      "total_tiers": 10
+    },
+    "BIG_LOTTO": {
+      "game_name_zh": "大樂透",
+      "game_code": "lotto649",
+      "pool_structure": "Pick 6 main numbers from 1-49. Special number drawn from remaining 43 numbers.",
+      "special_hit_logic": "special_hit = (actual_special IN predicted_numbers) — the actual special number appears among the 6 predicted main numbers",
+      "schema_limitation": "actual_special is 100% populated for BIG_LOTTO (24,140 rows). special_hit is always computable.",
+      "prize_tiers": [
+        {"tier_zh": "頭獎", "rank": 1, "hit_count": 6, "special_hit": "N/A", "description": "6 main numbers (special irrelevant)"},
+        {"tier_zh": "貳獎", "rank": 2, "hit_count": 5, "special_hit": 1, "description": "5 main + special"},
+        {"tier_zh": "參獎", "rank": 3, "hit_count": 5, "special_hit": 0, "description": "5 main only"},
+        {"tier_zh": "肆獎", "rank": 4, "hit_count": 4, "special_hit": 1, "description": "4 main + special"},
+        {"tier_zh": "伍獎", "rank": 5, "hit_count": 4, "special_hit": 0, "description": "4 main only"},
+        {"tier_zh": "陸獎", "rank": 6, "hit_count": 3, "special_hit": 1, "description": "3 main + special"},
+        {"tier_zh": "柒獎", "rank": 7, "hit_count": 3, "special_hit": 0, "description": "3 main only"},
+        {"tier_zh": "普獎", "rank": 8, "hit_count": 2, "special_hit": 1, "description": "2 main + special"}
+      ],
+      "total_tiers": 8
+    },
+    "DAILY_539": {
+      "game_name_zh": "今彩539",
+      "game_code": "daily_cash",
+      "pool_structure": "Pick 5 main numbers from 1-39. No special number.",
+      "special_hit_logic": "No special number exists. special_hit is always 0 for DAILY_539.",
+      "schema_limitation": "actual_special is 0 for all DAILY_539 rows (confirmed). No second-zone logic applicable.",
+      "prize_tiers": [
+        {"tier_zh": "頭獎", "rank": 1, "hit_count": 5, "special_hit": 0, "description": "5 main numbers (all 5)"},
+        {"tier_zh": "貳獎", "rank": 2, "hit_count": 4, "special_hit": 0, "description": "4 main numbers"},
+        {"tier_zh": "參獎", "rank": 3, "hit_count": 3, "special_hit": 0, "description": "3 main numbers"},
+        {"tier_zh": "肆獎", "rank": 4, "hit_count": 2, "special_hit": 0, "description": "2 main numbers"}
+      ],
+      "total_tiers": 4
+    }
+  },
+
+  "p271a_alignment_check": {
+    "status": "PASS",
+    "checked_endpoints": [
+      {
+        "endpoint": "POWER_ANY_PRIZE_AWARE_WIN",
+        "p271a_condition": "hit_count >= 3 OR (hit_count >= 1 AND special_hit = 1)",
+        "verified_coverage": "Covers all 10 POWER_LOTTO prize tiers: tiers with hit_count>=3 (貳/肆/陸/柒/玖/參/伍/頭 if special) plus hit_count>=1 AND special_hit=1 (普獎 1+1, 捌獎 2+1, and all higher special tiers)",
+        "alignment": "ALIGNED",
+        "notes": "Endpoint correctly captures all prize-winning conditions. No over-inclusion (non-prize rows excluded). Schema limitation on predicted_special applies to ~75% of rows — those rows cannot evaluate special_hit-dependent tiers."
+      },
+      {
+        "endpoint": "BIG_ANY_PRIZE_AWARE_WIN",
+        "p271a_condition": "hit_count >= 3 OR (hit_count = 2 AND special_hit = 1)",
+        "verified_coverage": "Covers all 8 BIG_LOTTO prize tiers: tiers with hit_count>=3 (all 7 upper tiers) plus 普獎(2+1)",
+        "alignment": "ALIGNED",
+        "notes": "Endpoint is exact. 100% of BIG_LOTTO rows can evaluate special_hit since actual_special is fully populated."
+      },
+      {
+        "endpoint": "D539_ANY_PRIZE_AWARE_WIN",
+        "p271a_condition": "hit_count >= 2",
+        "verified_coverage": "Covers all 4 DAILY_539 prize tiers: 肆獎(2), 參獎(3), 貳獎(4), 頭獎(5)",
+        "alignment": "ALIGNED",
+        "notes": "Simple main-number-only condition. No special number dimension. Exact match with verified prize structure."
+      }
+    ]
+  },
+
+  "mismatches_with_p271a": [],
+
+  "tier_mapping_by_lottery": {
+    "POWER_LOTTO": {
+      "first_area_tiers": [
+        {"tier_class": "POWER_SECOND_PRIZE", "hit_count": 6, "special_hit": 0, "condition": "hit_count = 6 AND special_hit = 0"},
+        {"tier_class": "POWER_FOURTH_PRIZE", "hit_count": 5, "special_hit": 0, "condition": "hit_count = 5 AND special_hit = 0"},
+        {"tier_class": "POWER_SIXTH_PRIZE", "hit_count": 4, "special_hit": 0, "condition": "hit_count = 4 AND special_hit = 0"},
+        {"tier_class": "POWER_NINTH_PRIZE", "hit_count": 3, "special_hit": 0, "condition": "hit_count = 3 AND special_hit = 0"}
+      ],
+      "second_area_dependent_tiers": [
+        {"tier_class": "POWER_FIRST_PRIZE", "hit_count": 6, "special_hit": 1, "condition": "hit_count = 6 AND special_hit = 1"},
+        {"tier_class": "POWER_THIRD_PRIZE", "hit_count": 5, "special_hit": 1, "condition": "hit_count = 5 AND special_hit = 1"},
+        {"tier_class": "POWER_FIFTH_PRIZE", "hit_count": 4, "special_hit": 1, "condition": "hit_count = 4 AND special_hit = 1"},
+        {"tier_class": "POWER_SEVENTH_PRIZE", "hit_count": 3, "special_hit": 1, "condition": "hit_count = 3 AND special_hit = 1"},
+        {"tier_class": "POWER_EIGHTH_PRIZE", "hit_count": 2, "special_hit": 1, "condition": "hit_count = 2 AND special_hit = 1"},
+        {"tier_class": "POWER_CONSOLATION_PRIZE", "hit_count": 1, "special_hit": 1, "condition": "hit_count = 1 AND special_hit = 1"}
+      ],
+      "no_prize": {"tier_class": "POWER_NO_PRIZE", "condition": "all other combinations"},
+      "any_prize_aware_win_endpoint": "hit_count >= 3 OR (hit_count >= 1 AND special_hit = 1)"
+    },
+    "BIG_LOTTO": {
+      "main_number_tiers": [
+        {"tier_class": "BIG_FIRST_PRIZE", "hit_count": 6, "special_hit": "N/A", "condition": "hit_count = 6"},
+        {"tier_class": "BIG_THIRD_PRIZE", "hit_count": 5, "special_hit": 0, "condition": "hit_count = 5 AND special_hit = 0"},
+        {"tier_class": "BIG_FIFTH_PRIZE", "hit_count": 4, "special_hit": 0, "condition": "hit_count = 4 AND special_hit = 0"},
+        {"tier_class": "BIG_SEVENTH_PRIZE", "hit_count": 3, "special_hit": 0, "condition": "hit_count = 3 AND special_hit = 0"}
+      ],
+      "special_number_dependent_tiers": [
+        {"tier_class": "BIG_SECOND_PRIZE", "hit_count": 5, "special_hit": 1, "condition": "hit_count = 5 AND special_hit = 1"},
+        {"tier_class": "BIG_FOURTH_PRIZE", "hit_count": 4, "special_hit": 1, "condition": "hit_count = 4 AND special_hit = 1"},
+        {"tier_class": "BIG_SIXTH_PRIZE", "hit_count": 3, "special_hit": 1, "condition": "hit_count = 3 AND special_hit = 1"},
+        {"tier_class": "BIG_CONSOLATION_PRIZE", "hit_count": 2, "special_hit": 1, "condition": "hit_count = 2 AND special_hit = 1"}
+      ],
+      "no_prize": {"tier_class": "BIG_NO_PRIZE", "condition": "all other combinations"},
+      "any_prize_aware_win_endpoint": "hit_count >= 3 OR (hit_count = 2 AND special_hit = 1)"
+    },
+    "DAILY_539": {
+      "main_number_only_tiers": [
+        {"tier_class": "D539_FIRST_PRIZE", "hit_count": 5, "special_hit": 0, "condition": "hit_count = 5"},
+        {"tier_class": "D539_SECOND_PRIZE", "hit_count": 4, "special_hit": 0, "condition": "hit_count = 4"},
+        {"tier_class": "D539_THIRD_PRIZE", "hit_count": 3, "special_hit": 0, "condition": "hit_count = 3"},
+        {"tier_class": "D539_FOURTH_PRIZE", "hit_count": 2, "special_hit": 0, "condition": "hit_count = 2"}
+      ],
+      "no_prize": {"tier_class": "D539_NO_PRIZE", "condition": "hit_count < 2"},
+      "any_prize_aware_win_endpoint": "hit_count >= 2"
+    }
+  },
+
+  "endpoint_mapping_by_lottery": {
+    "POWER_LOTTO": {
+      "POWER_ANY_PRIZE_AWARE_WIN": "hit_count >= 3 OR (hit_count >= 1 AND special_hit = 1)",
+      "POWER_MAIN_M3_PLUS_DIAGNOSTIC": "hit_count >= 3 (existing P265A SSOT — backward-compatible, is_prize_aware=false)",
+      "POWER_FIRST_PRIZE_EXACT": "hit_count = 6 AND special_hit = 1",
+      "POWER_SECOND_PRIZE_EXACT": "hit_count = 6 AND special_hit = 0",
+      "POWER_M3_PLUS_SECOND_ZONE": "hit_count >= 3 AND special_hit = 1",
+      "POWER_CONSOLATION_INCLUSIVE": "hit_count >= 1 AND special_hit = 1",
+      "note": "POWER_MAIN_M3_PLUS_DIAGNOSTIC misses 捌獎 (2+1) and 普獎 (1+1). ANY_PRIZE_AWARE_WIN adds those."
+    },
+    "BIG_LOTTO": {
+      "BIG_ANY_PRIZE_AWARE_WIN": "hit_count >= 3 OR (hit_count = 2 AND special_hit = 1)",
+      "BIG_MAIN_M3_PLUS_DIAGNOSTIC": "hit_count >= 3 (existing P265A SSOT — backward-compatible, is_prize_aware=false)",
+      "BIG_FIRST_PRIZE_EXACT": "hit_count = 6",
+      "BIG_CONSOLATION_PRIZE_EXACT": "hit_count = 2 AND special_hit = 1",
+      "BIG_M3_PLUS_WITH_SPECIAL": "hit_count >= 3 AND special_hit = 1",
+      "note": "BIG_MAIN_M3_PLUS_DIAGNOSTIC misses 普獎 (2+1). ANY_PRIZE_AWARE_WIN adds that tier."
+    },
+    "DAILY_539": {
+      "D539_ANY_PRIZE_AWARE_WIN": "hit_count >= 2",
+      "D539_M3_PLUS_DIAGNOSTIC": "hit_count >= 3 (existing P265A SSOT — backward-compatible, is_prize_aware=false)",
+      "D539_FOURTH_PRIZE_EXACT": "hit_count = 2",
+      "note": "D539_M3_PLUS_DIAGNOSTIC misses 肆獎 (hit_count=2). ANY_PRIZE_AWARE_WIN adds that tier."
+    }
+  },
+
+  "scoring_engine_design": {
+    "module_name": "lottery_api/research/prize_aware_scoring/prize_aware_scorer.py",
+    "package_path": "lottery_api/research/prize_aware_scoring/",
+    "design_principles": [
+      "Pure functions only — no DB access, no global state, no mutation",
+      "Stateless — same inputs always produce same outputs",
+      "No dependency on replay pipeline or M3+ scoring",
+      "No production API integration in this skeleton phase",
+      "Read-only evaluation tool — never writes results to DB",
+      "Parallel track — does not replace, override, or change M3+ scoring"
+    ],
+    "proposed_functions": [
+      {
+        "name": "classify_power_lotto_tier",
+        "signature": "classify_power_lotto_tier(hit_count: int, special_hit: int) -> str",
+        "returns": "tier_class string (e.g. POWER_FIRST_PRIZE, POWER_NO_PRIZE)",
+        "note": "Raises ValueError if inputs are out of valid range"
+      },
+      {
+        "name": "classify_big_lotto_tier",
+        "signature": "classify_big_lotto_tier(hit_count: int, special_hit: int) -> str",
+        "returns": "tier_class string (e.g. BIG_FIRST_PRIZE, BIG_NO_PRIZE)"
+      },
+      {
+        "name": "classify_daily_539_tier",
+        "signature": "classify_daily_539_tier(hit_count: int) -> str",
+        "returns": "tier_class string (e.g. D539_FIRST_PRIZE, D539_NO_PRIZE)"
+      },
+      {
+        "name": "classify_tier",
+        "signature": "classify_tier(lottery_type: str, hit_count: int, special_hit: int) -> str",
+        "returns": "tier_class string, dispatches to game-specific classifier",
+        "note": "Primary entry point. Raises ValueError for unknown lottery_type."
+      },
+      {
+        "name": "is_any_prize_aware_win",
+        "signature": "is_any_prize_aware_win(lottery_type: str, hit_count: int, special_hit: int) -> bool",
+        "returns": "True if tier_class is not NO_PRIZE, False otherwise"
+      },
+      {
+        "name": "score_replay_row",
+        "signature": "score_replay_row(lottery_type: str, hit_count: int, special_hit: int) -> dict",
+        "returns": "{tier_class: str, is_prize_aware_win: bool, is_m3_plus: bool, endpoint_flags: dict}",
+        "note": "Returns both prize-aware and M3+ evaluation for the same row. M3+ is included as a parallel diagnostic, not replaced."
+      }
+    ],
+    "forbidden_imports": [
+      "lottery_api.routes",
+      "lottery_api.engine",
+      "lottery_api.data",
+      "Any DB connection module",
+      "Any replay pipeline module",
+      "Any registry module"
+    ],
+    "future_phase_boundary": "P271C may implement this skeleton. Connecting it to replay evaluation (batch scoring) requires separate P271C authorization."
+  },
+
+  "input_contract": {
+    "function": "score_replay_row",
+    "inputs": {
+      "lottery_type": {
+        "type": "str",
+        "allowed_values": ["POWER_LOTTO", "BIG_LOTTO", "DAILY_539"],
+        "validation": "Raise ValueError on unknown lottery_type"
+      },
+      "hit_count": {
+        "type": "int",
+        "range": "0 to max_pick_count (5 for DAILY_539, 6 for BIG_LOTTO/POWER_LOTTO)",
+        "validation": "Raise ValueError if < 0 or > max_pick_count"
+      },
+      "special_hit": {
+        "type": "int",
+        "allowed_values": [0, 1],
+        "validation": "Raise ValueError if not 0 or 1. For DAILY_539, must always be 0.",
+        "note": "For POWER_LOTTO rows where predicted_special is NULL, special_hit is 0. Caller must handle NULL → 0 mapping upstream."
+      }
+    },
+    "schema_limitation_note": "POWER_LOTTO predicted_special is only populated for ~25% of rows. Caller is responsible for signaling this limitation. score_replay_row does NOT access DB to resolve NULL values."
+  },
+
+  "output_contract": {
+    "function": "score_replay_row",
+    "outputs": {
+      "tier_class": {
+        "type": "str",
+        "example_values": ["POWER_FIRST_PRIZE", "BIG_CONSOLATION_PRIZE", "D539_FOURTH_PRIZE", "BIG_NO_PRIZE"]
+      },
+      "is_prize_aware_win": {
+        "type": "bool",
+        "semantics": "True if tier_class is not NO_PRIZE"
+      },
+      "is_m3_plus": {
+        "type": "bool",
+        "semantics": "True if hit_count >= 3. Parallel diagnostic — P265A SSOT definition, special_hit excluded."
+      },
+      "endpoint_flags": {
+        "type": "dict",
+        "keys": ["any_prize_aware_win", "m3_plus_diagnostic", "consolation_or_above"],
+        "note": "Computed boolean flags per endpoint definition from P271A"
+      }
+    },
+    "coexistence_guarantee": "is_m3_plus is ALWAYS included in output alongside is_prize_aware_win. The two metrics are parallel and independent. Neither replaces the other."
+  },
+
+  "unit_test_fixture_matrix": {
+    "POWER_LOTTO": [
+      {"hit_count": 6, "special_hit": 1, "expected_tier": "POWER_FIRST_PRIZE", "expected_win": true, "expected_m3_plus": true},
+      {"hit_count": 6, "special_hit": 0, "expected_tier": "POWER_SECOND_PRIZE", "expected_win": true, "expected_m3_plus": true},
+      {"hit_count": 5, "special_hit": 1, "expected_tier": "POWER_THIRD_PRIZE", "expected_win": true, "expected_m3_plus": true},
+      {"hit_count": 5, "special_hit": 0, "expected_tier": "POWER_FOURTH_PRIZE", "expected_win": true, "expected_m3_plus": true},
+      {"hit_count": 4, "special_hit": 1, "expected_tier": "POWER_FIFTH_PRIZE", "expected_win": true, "expected_m3_plus": true},
+      {"hit_count": 4, "special_hit": 0, "expected_tier": "POWER_SIXTH_PRIZE", "expected_win": true, "expected_m3_plus": true},
+      {"hit_count": 3, "special_hit": 1, "expected_tier": "POWER_SEVENTH_PRIZE", "expected_win": true, "expected_m3_plus": true},
+      {"hit_count": 2, "special_hit": 1, "expected_tier": "POWER_EIGHTH_PRIZE", "expected_win": true, "expected_m3_plus": false, "note": "M3+ misses this tier"},
+      {"hit_count": 3, "special_hit": 0, "expected_tier": "POWER_NINTH_PRIZE", "expected_win": true, "expected_m3_plus": true},
+      {"hit_count": 1, "special_hit": 1, "expected_tier": "POWER_CONSOLATION_PRIZE", "expected_win": true, "expected_m3_plus": false, "note": "M3+ misses this tier"},
+      {"hit_count": 2, "special_hit": 0, "expected_tier": "POWER_NO_PRIZE", "expected_win": false, "expected_m3_plus": false},
+      {"hit_count": 1, "special_hit": 0, "expected_tier": "POWER_NO_PRIZE", "expected_win": false, "expected_m3_plus": false},
+      {"hit_count": 0, "special_hit": 1, "expected_tier": "POWER_NO_PRIZE", "expected_win": false, "expected_m3_plus": false, "note": "0 main hits is never a prize even with special"},
+      {"hit_count": 0, "special_hit": 0, "expected_tier": "POWER_NO_PRIZE", "expected_win": false, "expected_m3_plus": false}
+    ],
+    "BIG_LOTTO": [
+      {"hit_count": 6, "special_hit": 0, "expected_tier": "BIG_FIRST_PRIZE", "expected_win": true, "expected_m3_plus": true},
+      {"hit_count": 6, "special_hit": 1, "expected_tier": "BIG_FIRST_PRIZE", "expected_win": true, "expected_m3_plus": true, "note": "頭獎: special irrelevant when hit_count=6"},
+      {"hit_count": 5, "special_hit": 1, "expected_tier": "BIG_SECOND_PRIZE", "expected_win": true, "expected_m3_plus": true},
+      {"hit_count": 5, "special_hit": 0, "expected_tier": "BIG_THIRD_PRIZE", "expected_win": true, "expected_m3_plus": true},
+      {"hit_count": 4, "special_hit": 1, "expected_tier": "BIG_FOURTH_PRIZE", "expected_win": true, "expected_m3_plus": true},
+      {"hit_count": 4, "special_hit": 0, "expected_tier": "BIG_FIFTH_PRIZE", "expected_win": true, "expected_m3_plus": true},
+      {"hit_count": 3, "special_hit": 1, "expected_tier": "BIG_SIXTH_PRIZE", "expected_win": true, "expected_m3_plus": true},
+      {"hit_count": 3, "special_hit": 0, "expected_tier": "BIG_SEVENTH_PRIZE", "expected_win": true, "expected_m3_plus": true},
+      {"hit_count": 2, "special_hit": 1, "expected_tier": "BIG_CONSOLATION_PRIZE", "expected_win": true, "expected_m3_plus": false, "note": "M3+ misses 普獎"},
+      {"hit_count": 2, "special_hit": 0, "expected_tier": "BIG_NO_PRIZE", "expected_win": false, "expected_m3_plus": false},
+      {"hit_count": 1, "special_hit": 1, "expected_tier": "BIG_NO_PRIZE", "expected_win": false, "expected_m3_plus": false},
+      {"hit_count": 1, "special_hit": 0, "expected_tier": "BIG_NO_PRIZE", "expected_win": false, "expected_m3_plus": false},
+      {"hit_count": 0, "special_hit": 0, "expected_tier": "BIG_NO_PRIZE", "expected_win": false, "expected_m3_plus": false}
+    ],
+    "DAILY_539": [
+      {"hit_count": 5, "special_hit": 0, "expected_tier": "D539_FIRST_PRIZE", "expected_win": true, "expected_m3_plus": true},
+      {"hit_count": 4, "special_hit": 0, "expected_tier": "D539_SECOND_PRIZE", "expected_win": true, "expected_m3_plus": true},
+      {"hit_count": 3, "special_hit": 0, "expected_tier": "D539_THIRD_PRIZE", "expected_win": true, "expected_m3_plus": true},
+      {"hit_count": 2, "special_hit": 0, "expected_tier": "D539_FOURTH_PRIZE", "expected_win": true, "expected_m3_plus": false, "note": "M3+ misses 肆獎"},
+      {"hit_count": 1, "special_hit": 0, "expected_tier": "D539_NO_PRIZE", "expected_win": false, "expected_m3_plus": false},
+      {"hit_count": 0, "special_hit": 0, "expected_tier": "D539_NO_PRIZE", "expected_win": false, "expected_m3_plus": false}
+    ]
+  },
+
+  "parallel_feature_design": {
+    "principle": "Prize-aware scoring is a NEW PARALLEL feature track alongside existing M3+/replay scoring. It does NOT replace, deprecate, or modify the existing M3+ endpoint or any replay infrastructure.",
+    "existing_track_preserved": {
+      "endpoint": "M3+ (hit_count >= 3, special_hit excluded)",
+      "standard": "P265A SSOT",
+      "status": "UNCHANGED — all existing tests, API contracts, DB queries, and research pre-registered against M3+ continue to use M3+ without modification",
+      "consumers_protected": [
+        "replay.py history-overview",
+        "replay.py d3-strategy-status-coverage",
+        "P267C revalidation results",
+        "P269C calendar regime H1",
+        "P270B geometry audit",
+        "all pre-registered hypothesis entries using M3+ as endpoint"
+      ]
+    },
+    "new_parallel_track": {
+      "endpoints": [
+        "POWER_ANY_PRIZE_AWARE_WIN",
+        "BIG_ANY_PRIZE_AWARE_WIN",
+        "D539_ANY_PRIZE_AWARE_WIN",
+        "tier_class per-row classification",
+        "Mx_PLUS_SECOND/SPECIAL variants"
+      ],
+      "implementation_mode": "Future pure-function module (P271C). No new columns written to strategy_prediction_replays, no schema change, no existing query modified.",
+      "coexistence_guarantee": "Prize-aware rates are reported as ADDITIONAL metrics alongside M3+ rates, never as substitutes. Any future report that includes prize-aware rates MUST also report the corresponding M3+ rate for the same cell.",
+      "promotion_gate": "Prize-aware endpoints are evaluation tools only. No strategy promotion, registry write, or production deployment is authorized based solely on prize-aware rates."
+    },
+    "no_migration_path": "There is no migration path from M3+ to prize-aware. Both tracks run in perpetuity. Deprecating M3+ requires a separate explicit governance decision with user authorization.",
+    "replacement_migration_authorized": false
+  },
+
+  "p271c_stop_conditions": [
+    "If P271C implementation writes to any DB table — STOP",
+    "If P271C implementation modifies any existing replay query — STOP",
+    "If P271C implementation changes M3+ metric semantics — STOP",
+    "If P271C implementation adds columns to strategy_prediction_replays — STOP",
+    "If P271C implementation is connected to any recommendation or strategy pipeline — STOP",
+    "If P271C implementation claims hit-rate improvement — STOP",
+    "If P271C implementation removes or deprecates existing M3+ endpoint — STOP",
+    "If P271C is started before explicit user authorization — STOP"
+  ],
+
+  "forbidden_actions": [
+    "No backtest was run in P271B",
+    "No replay evaluation was run in P271B",
+    "No DB write happened in P271B",
+    "No hypothesis_registry.jsonl mutation happened in P271B",
+    "No strategy was generated in P271B",
+    "No hit-rate improvement is claimed in P271B",
+    "Existing M3+/replay scoring semantics were not changed",
+    "Replacement/migration of M3+ was not authorized",
+    "P270C was not activated",
+    "P271C was not started",
+    "P271D was not started",
+    "No production/API/frontend scoring runtime code was modified"
+  ],
+
+  "limitations": [
+    "Official Taiwan Lottery pages are JavaScript SPAs — prize tables cannot be machine-read via WebFetch or curl. Source status is MANUAL_VERIFICATION_REQUIRED for all three lotteries.",
+    "Prize amounts (NTD) are not included — official pages required manual browser access which was unavailable in this session.",
+    "POWER_LOTTO predicted_special is only ~25% populated (9,000 of 36,104 rows). Second-zone-dependent tier classification cannot be fully evaluated for the remaining ~75% of rows.",
+    "Prize-aware scoring engine (prize_aware_scorer.py) is a DESIGN ARTIFACT only. No Python module was implemented in P271B. Implementation is deferred to P271C with separate explicit authorization.",
+    "This task is specification/design only. It does not constitute betting advice, a guaranteed win strategy, or an approved prediction method."
+  ],
+
+  "no_backtest_run": true,
+  "replay_evaluation_run": false,
+  "db_write": false,
+  "registry_write": false,
+  "strategy_generated": false,
+  "hit_rate_improvement_claimed": false,
+  "m3_replay_scoring_changed": false,
+  "replacement_migration_authorized": false,
+  "p270c_allowed": false,
+  "p271c_started": false,
+  "p271d_started": false,
+
+  "next_recommended_task": "HOLD / WAITING_FOR_USER_AUTHORIZATION. If user authorizes P271C: implement prize_aware_scorer.py as a pure-function module under lottery_api/research/prize_aware_scoring/ with the unit_test_fixture_matrix defined here. P271C must not modify existing scoring code, must not write to DB, and must include coexistence tests confirming M3+ is unchanged.",
+
+  "final_classification": "P271B_OFFICIAL_PRIZE_RULE_SCORING_ENGINE_DESIGN_COMPLETE"
+}

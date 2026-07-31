@@ -1,0 +1,4 @@
+symbol,absent_from_source_text,absent_from_ast_names,status,notes
+_schedule_after_insert,True,True,PASS,removed dead hook remains absent
+snapshot_scheduler,True,True,PASS,removed dead hook remains absent
+prediction_tracker,True,True,PASS,removed dead hook remains absent

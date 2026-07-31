@@ -1,0 +1,204 @@
+{
+  "artifact_prefix": "P518H_predraw_ledger_verify_acceptance",
+  "canonical_db_refusal_evidence": {
+    "actual_exit": 3,
+    "case_id": "canonical_db_basename_refusal",
+    "case_status": "PASS",
+    "expected_exit": 3,
+    "signal": "REFUSED",
+    "status": "PASS",
+    "transcript_status": "PASS"
+  },
+  "case_summary": {
+    "failed_cases": [],
+    "missing_artifacts": [],
+    "passed_cases": 12,
+    "total_cases": 12
+  },
+  "db_hash_invariant_evidence": [
+    {
+      "canonical_db_exists_after": true,
+      "canonical_db_exists_before": true,
+      "canonical_db_opened": false,
+      "canonical_db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P518F-predraw-ledger-verifier-smoke/data/lottery_v2.db",
+      "canonical_db_written": false,
+      "fixture_scope": "temporary synthetic JSONL files only",
+      "migration_backfill_deploy_run": false,
+      "source": "P518F_smoke",
+      "status": "PASS"
+    },
+    {
+      "canonical_db_exists_after": true,
+      "canonical_db_exists_before": true,
+      "canonical_db_opened": false,
+      "canonical_db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P518G-predraw-ledger-verifier-edge-matrix/data/lottery_v2.db",
+      "canonical_db_written": false,
+      "fixture_scope": "temporary synthetic JSONL files only",
+      "migration_backfill_deploy_run": false,
+      "source": "P518G_edge_matrix",
+      "status": "PASS"
+    },
+    {
+      "canonical_db_exists_after": "not inspected by P518H",
+      "canonical_db_exists_before": "not inspected by P518H",
+      "canonical_db_opened": false,
+      "canonical_db_path": "data/lottery_v2.db",
+      "canonical_db_written": false,
+      "fixture_scope": "committed P518F/P518G artifacts only",
+      "migration_backfill_deploy_run": false,
+      "source": "P518H_acceptance",
+      "status": "PASS"
+    }
+  ],
+  "final_status": "PASS",
+  "notices": [
+    "no canonical DB open/write",
+    "no migration/backfill",
+    "no deploy",
+    "synthetic fixtures only",
+    "not production release approval",
+    "no betting/future prediction claims"
+  ],
+  "scope": "P518H reads committed P518F/P518G artifacts only; no verifier execution, no canonical DB open/write, no migration/backfill, no deploy, synthetic fixtures only, not production release approval, no betting/future prediction claims.",
+  "source_evidence": {
+    "P518F_smoke_status": "PASS",
+    "P518G_edge_matrix_status": "PASS",
+    "source_artifacts": [
+      {
+        "bytes": 5574,
+        "exists": true,
+        "path": "artifacts/P518F_predraw_ledger_verify_smoke_results.json",
+        "sha256": "43eb4a52d27a11e918dbf841f565c0a0ca3905bdacb4b37c153de8a6d8ef0508"
+      },
+      {
+        "bytes": 1489,
+        "exists": true,
+        "path": "artifacts/P518F_predraw_ledger_verify_smoke_cases.csv",
+        "sha256": "402831d92dea8c01b62d00c04e3375997caade90b835f64e26e0098451aa0d10"
+      },
+      {
+        "bytes": 2683,
+        "exists": true,
+        "path": "artifacts/P518F_predraw_ledger_verify_smoke_transcripts.json",
+        "sha256": "d677a2effda41b270c895231661bc295a149c3b71f222452144bd4fd7d4d3021"
+      },
+      {
+        "bytes": 1127,
+        "exists": true,
+        "path": "artifacts/P518F_predraw_ledger_verify_smoke_report.md",
+        "sha256": "b608a2f95fe057c347b90a820de343100dcf1973262449ada2c554bc89c9eb18"
+      },
+      {
+        "bytes": 1455,
+        "exists": true,
+        "path": "artifacts/P518F_predraw_ledger_verify_smoke_manifest.csv",
+        "sha256": "ab57842cc3940b1db7b565a3fb392a355442b9af69db7c62fd2e150a7e604e30"
+      },
+      {
+        "bytes": 14149,
+        "exists": true,
+        "path": "artifacts/P518G_predraw_ledger_verify_edge_matrix_results.json",
+        "sha256": "ab532852e2a5ed1cb4fffb8a2430db74a69276534d5208afab23e3598996d853"
+      },
+      {
+        "bytes": 3176,
+        "exists": true,
+        "path": "artifacts/P518G_predraw_ledger_verify_edge_matrix_cases.csv",
+        "sha256": "8c9588ac0ff2d2ceb523a7faa4405b5b2727d4f03254e6ed6e114a6c8705d026"
+      },
+      {
+        "bytes": 2149,
+        "exists": true,
+        "path": "artifacts/P518G_predraw_ledger_verify_edge_matrix_coverage.csv",
+        "sha256": "5fcf85660909134fcd504db184a4f9635c989e64368ee3c590012af06b5bd118"
+      },
+      {
+        "bytes": 5315,
+        "exists": true,
+        "path": "artifacts/P518G_predraw_ledger_verify_edge_matrix_transcripts.json",
+        "sha256": "215fd3efd4d52318eebf24a89010c71b1c1521c2cff57d54834570c9a6ab9194"
+      },
+      {
+        "bytes": 2292,
+        "exists": true,
+        "path": "artifacts/P518G_predraw_ledger_verify_edge_matrix_report.md",
+        "sha256": "f350fc8ea5b605c45e23e9517bd87127c464f853cff91f7898b0039c07f84c00"
+      },
+      {
+        "bytes": 1779,
+        "exists": true,
+        "path": "artifacts/P518G_predraw_ledger_verify_edge_matrix_manifest.csv",
+        "sha256": "7e0d71558f6d84c9852dfbddd0d6377287d5aabc8843a1334c76b82fe706dbc9"
+      }
+    ],
+    "source_manifest_integrity": [
+      {
+        "checks": [
+          {
+            "artifact_path": "artifacts/P518F_predraw_ledger_verify_smoke_results.json",
+            "notes": "sha256=43eb4a52d27a11e918dbf841f565c0a0ca3905bdacb4b37c153de8a6d8ef0508; bytes=5574",
+            "status": "PASS"
+          },
+          {
+            "artifact_path": "artifacts/P518F_predraw_ledger_verify_smoke_cases.csv",
+            "notes": "sha256=402831d92dea8c01b62d00c04e3375997caade90b835f64e26e0098451aa0d10; bytes=1489",
+            "status": "PASS"
+          },
+          {
+            "artifact_path": "artifacts/P518F_predraw_ledger_verify_smoke_transcripts.json",
+            "notes": "sha256=d677a2effda41b270c895231661bc295a149c3b71f222452144bd4fd7d4d3021; bytes=2683",
+            "status": "PASS"
+          },
+          {
+            "artifact_path": "artifacts/P518F_predraw_ledger_verify_smoke_report.md",
+            "notes": "sha256=b608a2f95fe057c347b90a820de343100dcf1973262449ada2c554bc89c9eb18; bytes=1127",
+            "status": "PASS"
+          },
+          {
+            "artifact_path": "artifacts/P518F_predraw_ledger_verify_smoke_manifest.csv",
+            "notes": "manifest self-hash intentionally omitted",
+            "status": "PASS"
+          }
+        ],
+        "manifest_path": "artifacts/P518F_predraw_ledger_verify_smoke_manifest.csv",
+        "status": "PASS"
+      },
+      {
+        "checks": [
+          {
+            "artifact_path": "artifacts/P518G_predraw_ledger_verify_edge_matrix_results.json",
+            "notes": "sha256=ab532852e2a5ed1cb4fffb8a2430db74a69276534d5208afab23e3598996d853; bytes=14149",
+            "status": "PASS"
+          },
+          {
+            "artifact_path": "artifacts/P518G_predraw_ledger_verify_edge_matrix_cases.csv",
+            "notes": "sha256=8c9588ac0ff2d2ceb523a7faa4405b5b2727d4f03254e6ed6e114a6c8705d026; bytes=3176",
+            "status": "PASS"
+          },
+          {
+            "artifact_path": "artifacts/P518G_predraw_ledger_verify_edge_matrix_transcripts.json",
+            "notes": "sha256=215fd3efd4d52318eebf24a89010c71b1c1521c2cff57d54834570c9a6ab9194; bytes=5315",
+            "status": "PASS"
+          },
+          {
+            "artifact_path": "artifacts/P518G_predraw_ledger_verify_edge_matrix_coverage.csv",
+            "notes": "sha256=5fcf85660909134fcd504db184a4f9635c989e64368ee3c590012af06b5bd118; bytes=2149",
+            "status": "PASS"
+          },
+          {
+            "artifact_path": "artifacts/P518G_predraw_ledger_verify_edge_matrix_report.md",
+            "notes": "sha256=f350fc8ea5b605c45e23e9517bd87127c464f853cff91f7898b0039c07f84c00; bytes=2292",
+            "status": "PASS"
+          },
+          {
+            "artifact_path": "artifacts/P518G_predraw_ledger_verify_edge_matrix_manifest.csv",
+            "notes": "manifest self-hash intentionally omitted",
+            "status": "PASS"
+          }
+        ],
+        "manifest_path": "artifacts/P518G_predraw_ledger_verify_edge_matrix_manifest.csv",
+        "status": "PASS"
+      }
+    ]
+  }
+}

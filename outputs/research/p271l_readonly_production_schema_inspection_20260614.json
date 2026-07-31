@@ -1,0 +1,3630 @@
+{
+  "actual_production_schema_read": true,
+  "actual_schema_blocker_cleared": true,
+  "actual_schema_limitation_resolved": "ACTUAL_PRODUCTION_SCHEMA_NOT_READ_IN_P271L_PREFLIGHT",
+  "approved_sql_functions": [],
+  "authorizer_function_policy": {
+    "case_normalized_matching": true,
+    "default_unapproved_action": "DENY",
+    "hardcoded_queries_require_functions": false,
+    "user_provided_function_names_allowed": false
+  },
+  "authorizer_installed": true,
+  "backup_executed": false,
+  "checkpoint_executed": false,
+  "collision_result": true,
+  "combined_tests": {
+    "collected": 231,
+    "command": "./venv/bin/python -m pytest tests/test_p271j_prospective_capture_ledger_implementation.py tests/test_p271k_prospective_capture_ledger_migration_rehearsal.py tests/test_p271l_controlled_deployment_preflight.py tests/test_p271l_readonly_production_schema_inspection.py -q",
+    "failed": 0,
+    "passed": 231,
+    "status": "PASS"
+  },
+  "connection_params": {
+    "immutable": 1,
+    "isolation_level": null,
+    "mode": "ro",
+    "timeout": 0,
+    "uri": true
+  },
+  "connection_uri": "file:/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db?mode=ro&immutable=1",
+  "connection_uri_contract": "file:<path>?mode=ro&immutable=1",
+  "corrected_classifier_not_used_for_historical_connection": true,
+  "correction_performed_without_production_db_open": true,
+  "correction_task_id": "P271L_PR430_TRUTHFULNESS_AND_CLASSIFIER_HARDENING",
+  "corrective_classification": "P271L_PR430_TRUTHFULNESS_HARDENING_COMPLETE",
+  "data_version_after": 1,
+  "data_version_before": 1,
+  "db_holders_absent": true,
+  "db_sha256_after": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+  "db_sha256_before": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+  "db_sha256_expected_baseline": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+  "db_sha256_matches_baseline": true,
+  "db_stat_after": {
+    "exists": true,
+    "inode": 90843138,
+    "mtime_epoch": 1781145804,
+    "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+    "size_bytes": 99368960
+  },
+  "db_stat_before": {
+    "exists": true,
+    "inode": 90843138,
+    "mtime_epoch": 1781145804,
+    "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+    "size_bytes": 99368960
+  },
+  "deployment_started": false,
+  "final_classification": "P271L_PREFLIGHT_COMPLETE_NOT_READY_FOR_APPLY",
+  "fingerprint_contract": {
+    "historical_fingerprint_preserved": true,
+    "includes_internal_sqlite_sequence": true,
+    "includes_raw_sqlite_schema_objects": true,
+    "internal_objects_excluded_from_categorized_application_totals": true
+  },
+  "focused_tests": {
+    "collected": 72,
+    "command": "./venv/bin/python -m pytest tests/test_p271l_readonly_production_schema_inspection.py -q",
+    "failed": 0,
+    "passed": 72,
+    "status": "PASS"
+  },
+  "full_repo_suite": {
+    "reason": "Governance requires the focused P271L and combined P271J-L suites; full repository suite was not run.",
+    "status": "NOT_RUN"
+  },
+  "generated_at": "2026-06-14",
+  "governance": "HOLD / WAITING_FOR_USER_AUTHORIZATION",
+  "historical_execution_commit": "327554cb249c3c7039b3060a05c1477e8457bbbc",
+  "historical_result_revalidated_from_committed_inventory_only": true,
+  "immutable_gate_passed": true,
+  "inspection_classification": "P271L_READONLY_PRODUCTION_SCHEMA_INSPECTION_COMPLETE",
+  "inspection_only": true,
+  "inspection_time_operational_state": {
+    "scope": "Historical state during and at completion of the production inspection.",
+    "services_stopped": true
+  },
+  "integrity": {
+    "data_version_unchanged": true,
+    "db_hash_unchanged": true,
+    "db_stat_unchanged": true,
+    "integrity_ok": true,
+    "no_new_journal": true,
+    "schema_version_stable": "NOT_PROVEN",
+    "sidecars_unchanged": true
+  },
+  "legacy_source_comparison": {
+    "all_legacy_tables_present": true,
+    "all_source_columns_present": true,
+    "compared_tables": [
+      "draws",
+      "prediction_runs",
+      "prediction_items",
+      "prediction_results",
+      "strategy_replay_runs",
+      "strategy_prediction_replays"
+    ],
+    "comparison_scope": {
+      "column_names": "CHECKED",
+      "defaults": "NOT_FULLY_VERIFIED",
+      "foreign_keys": "NOT_FULLY_VERIFIED",
+      "index_equivalence": "NOT_FULLY_VERIFIED",
+      "nullability": "NOT_FULLY_VERIFIED",
+      "primary_keys": "NOT_FULLY_VERIFIED",
+      "table_existence": "CHECKED",
+      "types": "NOT_FULLY_VERIFIED"
+    },
+    "note": "Table existence and documented source column names were checked. Type, nullability, default, primary-key, foreign-key, and index equivalence were not fully verified; no full-schema-equivalence claim is made.",
+    "per_table": {
+      "draws": {
+        "all_source_columns_present": true,
+        "column_names_status": "CHECKED_PASS",
+        "defaults_status": "NOT_FULLY_VERIFIED",
+        "deployed_columns": [
+          "id",
+          "draw",
+          "date",
+          "lottery_type",
+          "numbers",
+          "special",
+          "created_at",
+          "jackpot_amount",
+          "sell_amount",
+          "total_amount",
+          "numbers_positional"
+        ],
+        "extra_runtime_columns": [
+          "sell_amount",
+          "total_amount"
+        ],
+        "foreign_key_status": "NOT_FULLY_VERIFIED",
+        "index_equivalence_status": "NOT_FULLY_VERIFIED",
+        "missing_source_columns": [],
+        "nullability_status": "NOT_FULLY_VERIFIED",
+        "present": true,
+        "primary_key_status": "NOT_FULLY_VERIFIED",
+        "source_expected_columns": [
+          "id",
+          "draw",
+          "date",
+          "lottery_type",
+          "numbers",
+          "special",
+          "jackpot_amount",
+          "numbers_positional",
+          "created_at"
+        ],
+        "table_existence_status": "CHECKED_PRESENT",
+        "types_status": "NOT_FULLY_VERIFIED"
+      },
+      "prediction_items": {
+        "all_source_columns_present": true,
+        "column_names_status": "CHECKED_PASS",
+        "defaults_status": "NOT_FULLY_VERIFIED",
+        "deployed_columns": [
+          "id",
+          "run_id",
+          "bet_index",
+          "numbers",
+          "special",
+          "status",
+          "created_at",
+          "strategy_name",
+          "num_bets",
+          "zone_coverage"
+        ],
+        "extra_runtime_columns": [],
+        "foreign_key_status": "NOT_FULLY_VERIFIED",
+        "index_equivalence_status": "NOT_FULLY_VERIFIED",
+        "missing_source_columns": [],
+        "nullability_status": "NOT_FULLY_VERIFIED",
+        "present": true,
+        "primary_key_status": "NOT_FULLY_VERIFIED",
+        "source_expected_columns": [
+          "id",
+          "run_id",
+          "bet_index",
+          "numbers",
+          "special",
+          "status",
+          "created_at",
+          "zone_coverage",
+          "strategy_name",
+          "num_bets"
+        ],
+        "table_existence_status": "CHECKED_PRESENT",
+        "types_status": "NOT_FULLY_VERIFIED"
+      },
+      "prediction_results": {
+        "all_source_columns_present": true,
+        "column_names_status": "CHECKED_PASS",
+        "defaults_status": "NOT_FULLY_VERIFIED",
+        "deployed_columns": [
+          "id",
+          "item_id",
+          "actual_draw",
+          "actual_date",
+          "actual_numbers",
+          "actual_special",
+          "hit_count",
+          "matched_numbers",
+          "special_hit",
+          "resolved_at",
+          "researched",
+          "wq_score",
+          "split_risk"
+        ],
+        "extra_runtime_columns": [],
+        "foreign_key_status": "NOT_FULLY_VERIFIED",
+        "index_equivalence_status": "NOT_FULLY_VERIFIED",
+        "missing_source_columns": [],
+        "nullability_status": "NOT_FULLY_VERIFIED",
+        "present": true,
+        "primary_key_status": "NOT_FULLY_VERIFIED",
+        "source_expected_columns": [
+          "id",
+          "item_id",
+          "actual_draw",
+          "actual_date",
+          "actual_numbers",
+          "actual_special",
+          "hit_count",
+          "matched_numbers",
+          "special_hit",
+          "researched",
+          "resolved_at",
+          "wq_score",
+          "split_risk"
+        ],
+        "table_existence_status": "CHECKED_PRESENT",
+        "types_status": "NOT_FULLY_VERIFIED"
+      },
+      "prediction_runs": {
+        "all_source_columns_present": true,
+        "column_names_status": "CHECKED_PASS",
+        "defaults_status": "NOT_FULLY_VERIFIED",
+        "deployed_columns": [
+          "id",
+          "lottery_type",
+          "latest_known_draw",
+          "latest_known_date",
+          "strategy_name",
+          "notes",
+          "created_at",
+          "snapshot_source",
+          "analyzed",
+          "analysis_note",
+          "review_json"
+        ],
+        "extra_runtime_columns": [],
+        "foreign_key_status": "NOT_FULLY_VERIFIED",
+        "index_equivalence_status": "NOT_FULLY_VERIFIED",
+        "missing_source_columns": [],
+        "nullability_status": "NOT_FULLY_VERIFIED",
+        "present": true,
+        "primary_key_status": "NOT_FULLY_VERIFIED",
+        "source_expected_columns": [
+          "id",
+          "lottery_type",
+          "latest_known_draw",
+          "latest_known_date",
+          "strategy_name",
+          "snapshot_source",
+          "notes",
+          "created_at",
+          "analyzed",
+          "analysis_note",
+          "review_json"
+        ],
+        "table_existence_status": "CHECKED_PRESENT",
+        "types_status": "NOT_FULLY_VERIFIED"
+      },
+      "strategy_prediction_replays": {
+        "all_source_columns_present": true,
+        "column_names_status": "CHECKED_PASS",
+        "defaults_status": "NOT_FULLY_VERIFIED",
+        "deployed_columns": [
+          "id",
+          "lottery_type",
+          "target_draw",
+          "target_date",
+          "strategy_id",
+          "strategy_name",
+          "strategy_version",
+          "history_cutoff_draw",
+          "replay_status",
+          "reject_reason",
+          "predicted_numbers",
+          "predicted_special",
+          "actual_numbers",
+          "actual_special",
+          "hit_numbers",
+          "hit_count",
+          "special_hit",
+          "replay_run_id",
+          "generated_at",
+          "truth_level",
+          "controlled_apply_id",
+          "source",
+          "provenance_hash",
+          "provenance_source",
+          "dry_run",
+          "prediction_cutoff_date",
+          "prediction_generated_at",
+          "bet_index"
+        ],
+        "extra_runtime_columns": [
+          "truth_level",
+          "controlled_apply_id",
+          "source",
+          "provenance_hash",
+          "provenance_source",
+          "dry_run",
+          "prediction_cutoff_date",
+          "prediction_generated_at",
+          "bet_index"
+        ],
+        "foreign_key_status": "NOT_FULLY_VERIFIED",
+        "index_equivalence_status": "NOT_FULLY_VERIFIED",
+        "missing_source_columns": [],
+        "nullability_status": "NOT_FULLY_VERIFIED",
+        "present": true,
+        "primary_key_status": "NOT_FULLY_VERIFIED",
+        "source_expected_columns": [
+          "id",
+          "lottery_type",
+          "target_draw",
+          "target_date",
+          "strategy_id",
+          "strategy_name",
+          "strategy_version",
+          "history_cutoff_draw",
+          "replay_status",
+          "reject_reason",
+          "predicted_numbers",
+          "predicted_special",
+          "actual_numbers",
+          "actual_special",
+          "hit_numbers",
+          "hit_count",
+          "special_hit",
+          "replay_run_id",
+          "generated_at"
+        ],
+        "table_existence_status": "CHECKED_PRESENT",
+        "types_status": "NOT_FULLY_VERIFIED"
+      },
+      "strategy_replay_runs": {
+        "all_source_columns_present": true,
+        "column_names_status": "CHECKED_PASS",
+        "defaults_status": "NOT_FULLY_VERIFIED",
+        "deployed_columns": [
+          "id",
+          "lottery_type",
+          "strategy_scope",
+          "started_at",
+          "finished_at",
+          "status",
+          "generator_version",
+          "data_hash",
+          "notes",
+          "created_at"
+        ],
+        "extra_runtime_columns": [],
+        "foreign_key_status": "NOT_FULLY_VERIFIED",
+        "index_equivalence_status": "NOT_FULLY_VERIFIED",
+        "missing_source_columns": [],
+        "nullability_status": "NOT_FULLY_VERIFIED",
+        "present": true,
+        "primary_key_status": "NOT_FULLY_VERIFIED",
+        "source_expected_columns": [
+          "id",
+          "lottery_type",
+          "strategy_scope",
+          "started_at",
+          "finished_at",
+          "status",
+          "generator_version",
+          "data_hash",
+          "notes",
+          "created_at"
+        ],
+        "table_existence_status": "CHECKED_PRESENT",
+        "types_status": "NOT_FULLY_VERIFIED"
+      }
+    }
+  },
+  "maintenance_window_evidence": {
+    "maintenance_window_effective_start": "2026-06-14 12:13:53 CST",
+    "post_close_recheck": {
+      "db": {
+        "exists": true,
+        "inode": 90843138,
+        "mtime": 1781145804,
+        "size": 99368960
+      },
+      "db_holders": "",
+      "db_sha256": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+      "db_sha256_matches_expected": true,
+      "gate_pass": true,
+      "journal": {
+        "exists": false
+      },
+      "lottery_labels_loaded": "",
+      "lottery_processes": [],
+      "phase": "P271L_PHASE6_POST_CLOSE_RECHECK",
+      "pid_1593": "DEAD",
+      "shm": {
+        "exists": true,
+        "inode": 101782512,
+        "mtime": 1781353723,
+        "size": 32768
+      },
+      "wal": {
+        "exists": true,
+        "inode": 101782511,
+        "mtime": 1781239864,
+        "size": 0
+      }
+    },
+    "pre_connection_recheck": {
+      "db_holders": "",
+      "db_sha256": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+      "db_sha256_all_equal": true,
+      "db_sha256_matches_expected": true,
+      "journal_absent": true,
+      "lottery_labels_loaded": "",
+      "lottery_processes": [],
+      "phase": "P271L_PHASE5_PRE_CONNECTION_RECHECK",
+      "phase5_gate_pass": true,
+      "pid_1593": "DEAD",
+      "samples": [
+        {
+          "db": {
+            "exists": true,
+            "inode": 90843138,
+            "mtime": 1781145804,
+            "size": 99368960
+          },
+          "db_sha256": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+          "holders": "",
+          "i": 0,
+          "journal": {
+            "exists": false
+          },
+          "shm": {
+            "exists": true,
+            "inode": 101782512,
+            "mtime": 1781353723,
+            "size": 32768
+          },
+          "wal": {
+            "exists": true,
+            "inode": 101782511,
+            "mtime": 1781239864,
+            "size": 0
+          }
+        },
+        {
+          "db": {
+            "exists": true,
+            "inode": 90843138,
+            "mtime": 1781145804,
+            "size": 99368960
+          },
+          "db_sha256": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+          "holders": "",
+          "i": 1,
+          "journal": {
+            "exists": false
+          },
+          "shm": {
+            "exists": true,
+            "inode": 101782512,
+            "mtime": 1781353723,
+            "size": 32768
+          },
+          "wal": {
+            "exists": true,
+            "inode": 101782511,
+            "mtime": 1781239864,
+            "size": 0
+          }
+        },
+        {
+          "db": {
+            "exists": true,
+            "inode": 90843138,
+            "mtime": 1781145804,
+            "size": 99368960
+          },
+          "db_sha256": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+          "holders": "",
+          "i": 2,
+          "journal": {
+            "exists": false
+          },
+          "shm": {
+            "exists": true,
+            "inode": 101782512,
+            "mtime": 1781353723,
+            "size": 32768
+          },
+          "wal": {
+            "exists": true,
+            "inode": 101782511,
+            "mtime": 1781239864,
+            "size": 0
+          }
+        }
+      ],
+      "wal_absent_or_zero": true
+    },
+    "writer_quiescence_classification_from_prior_task": "P271L_WRITER_QUIESCENCE_VERIFIED"
+  },
+  "mode": "readonly_actual_production_schema_inspection",
+  "object_counts": {
+    "categorized_total": 60,
+    "indexes": 42,
+    "internal_total": 1,
+    "objects": 61,
+    "raw_total": 61,
+    "reconciles": true,
+    "tables": 17,
+    "triggers": 0,
+    "views": 1
+  },
+  "official_source": "MANUAL_VERIFICATION_REQUIRED",
+  "p271_phase_separation": {
+    "p271m_started": false,
+    "p271n_started": false,
+    "production_apply_authorized": false
+  },
+  "p271m_started": false,
+  "p271n_started": false,
+  "post_inspection_operational_state": {
+    "all_eight_lottery_labels_restored": true,
+    "backend_health_http": 200,
+    "backend_ping_http": 200,
+    "backend_port": 8002,
+    "frontend_http": 200,
+    "frontend_port": 8081,
+    "labels": [
+      "com.kelvin.lottery.agent-light-worker",
+      "com.kelvin.lottery.agent-planner",
+      "com.kelvin.lottery.backend",
+      "com.kelvin.lottery.copilot-daemon",
+      "com.kelvin.lottery.agent-worker",
+      "com.kelvin.lottery.dev",
+      "com.kelvin.lottery.frontend",
+      "com.kelvin.lottery.weekly"
+    ],
+    "observed_at": "2026-06-14",
+    "production_reinspection_performed": false,
+    "restoration_changed_repository_files": false,
+    "restoration_outside_inspection_transaction": true,
+    "services_currently_running": true
+  },
+  "pr_merge_readiness": "REQUIRES_FRESH_READ_ONLY_REAUDIT",
+  "prediction_success_claim": null,
+  "process_signaled_or_stopped": false,
+  "process_signaled_stopped_restarted_by_this_task": false,
+  "production_apply": "NOT_READY_FOR_APPLY",
+  "production_db_copied": false,
+  "production_db_opened_readonly": true,
+  "production_db_opened_writable": false,
+  "production_db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+  "production_db_written": false,
+  "production_migration_executed": false,
+  "production_reinspection_performed": false,
+  "prospective_collection_activated": false,
+  "prospective_state": {
+    "complete_expected_namespace": false,
+    "emptiness": {},
+    "expected_indexes": [
+      "idx_ledger_identity",
+      "idx_batch_cluster"
+    ],
+    "expected_object_mismatches": [],
+    "expected_object_namespace": [
+      {
+        "name": "idx_batch_cluster",
+        "tbl_name": "prospective_capture_batches",
+        "type": "index"
+      },
+      {
+        "name": "idx_ledger_identity",
+        "tbl_name": "prospective_prediction_ledger",
+        "type": "index"
+      },
+      {
+        "name": "prospective_activation_registry",
+        "tbl_name": "prospective_activation_registry",
+        "type": "table"
+      },
+      {
+        "name": "prospective_capture_batches",
+        "tbl_name": "prospective_capture_batches",
+        "type": "table"
+      },
+      {
+        "name": "prospective_capture_events",
+        "tbl_name": "prospective_capture_events",
+        "type": "table"
+      },
+      {
+        "name": "prospective_outcome_links",
+        "tbl_name": "prospective_outcome_links",
+        "type": "table"
+      },
+      {
+        "name": "prospective_prediction_ledger",
+        "tbl_name": "prospective_prediction_ledger",
+        "type": "table"
+      },
+      {
+        "name": "prospective_schema_meta",
+        "tbl_name": "prospective_schema_meta",
+        "type": "table"
+      },
+      {
+        "name": "trg_prospective_activation_registry_no_delete",
+        "tbl_name": "prospective_activation_registry",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_activation_registry_no_update",
+        "tbl_name": "prospective_activation_registry",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_capture_batches_no_delete",
+        "tbl_name": "prospective_capture_batches",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_capture_batches_no_update",
+        "tbl_name": "prospective_capture_batches",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_capture_events_no_delete",
+        "tbl_name": "prospective_capture_events",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_capture_events_no_update",
+        "tbl_name": "prospective_capture_events",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_outcome_links_no_delete",
+        "tbl_name": "prospective_outcome_links",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_outcome_links_no_update",
+        "tbl_name": "prospective_outcome_links",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_prediction_ledger_no_delete",
+        "tbl_name": "prospective_prediction_ledger",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_prediction_ledger_no_update",
+        "tbl_name": "prospective_prediction_ledger",
+        "type": "trigger"
+      }
+    ],
+    "expected_prospective_tables": [
+      "prospective_schema_meta",
+      "prospective_activation_registry",
+      "prospective_capture_batches",
+      "prospective_prediction_ledger",
+      "prospective_capture_events",
+      "prospective_outcome_links"
+    ],
+    "expected_schema_version": "p271j_prospective_capture_ledger.v1",
+    "expected_trigger_count": 10,
+    "expected_triggers": [
+      "trg_prospective_activation_registry_no_update",
+      "trg_prospective_activation_registry_no_delete",
+      "trg_prospective_capture_batches_no_update",
+      "trg_prospective_capture_batches_no_delete",
+      "trg_prospective_prediction_ledger_no_update",
+      "trg_prospective_prediction_ledger_no_delete",
+      "trg_prospective_capture_events_no_update",
+      "trg_prospective_capture_events_no_delete",
+      "trg_prospective_outcome_links_no_update",
+      "trg_prospective_outcome_links_no_delete"
+    ],
+    "installed_schema_version": null,
+    "present_expected_indexes": [],
+    "present_expected_objects": [],
+    "present_prospective_tables": [],
+    "present_prospective_triggers": [],
+    "state": "ABSENT_CLEAN",
+    "unexpected_prospective_objects": []
+  },
+  "remaining_apply_blockers": [
+    "fresh_apply_time_production_db_hash_reverification_required",
+    "verified_apply_time_maintenance_window_required",
+    "verified_writer_shutdown_required",
+    "verified_backup_destination_and_integrity_evidence_required",
+    "rollback_authorization_and_restore_procedure_required",
+    "wal_shm_reconciliation_at_apply_time_required"
+  ],
+  "restore_executed": false,
+  "schema_collision": {
+    "collision_details": [],
+    "collision_free_vs_legacy": true,
+    "contract_names_already_present_in_deployed": [],
+    "legacy_name_collisions": [],
+    "note": "Historical committed inventory contains none of the six expected tables, two explicit indexes, ten triggers, or unexpected prospective-prefixed objects. Corrected post-inspection classifier treats any orphan expected name as fail-closed partial/collision.",
+    "prospective_contract_objects": [
+      {
+        "name": "idx_batch_cluster",
+        "tbl_name": "prospective_capture_batches",
+        "type": "index"
+      },
+      {
+        "name": "idx_ledger_identity",
+        "tbl_name": "prospective_prediction_ledger",
+        "type": "index"
+      },
+      {
+        "name": "prospective_activation_registry",
+        "tbl_name": "prospective_activation_registry",
+        "type": "table"
+      },
+      {
+        "name": "prospective_capture_batches",
+        "tbl_name": "prospective_capture_batches",
+        "type": "table"
+      },
+      {
+        "name": "prospective_capture_events",
+        "tbl_name": "prospective_capture_events",
+        "type": "table"
+      },
+      {
+        "name": "prospective_outcome_links",
+        "tbl_name": "prospective_outcome_links",
+        "type": "table"
+      },
+      {
+        "name": "prospective_prediction_ledger",
+        "tbl_name": "prospective_prediction_ledger",
+        "type": "table"
+      },
+      {
+        "name": "prospective_schema_meta",
+        "tbl_name": "prospective_schema_meta",
+        "type": "table"
+      },
+      {
+        "name": "trg_prospective_activation_registry_no_delete",
+        "tbl_name": "prospective_activation_registry",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_activation_registry_no_update",
+        "tbl_name": "prospective_activation_registry",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_capture_batches_no_delete",
+        "tbl_name": "prospective_capture_batches",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_capture_batches_no_update",
+        "tbl_name": "prospective_capture_batches",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_capture_events_no_delete",
+        "tbl_name": "prospective_capture_events",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_capture_events_no_update",
+        "tbl_name": "prospective_capture_events",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_outcome_links_no_delete",
+        "tbl_name": "prospective_outcome_links",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_outcome_links_no_update",
+        "tbl_name": "prospective_outcome_links",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_prediction_ledger_no_delete",
+        "tbl_name": "prospective_prediction_ledger",
+        "type": "trigger"
+      },
+      {
+        "name": "trg_prospective_prediction_ledger_no_update",
+        "tbl_name": "prospective_prediction_ledger",
+        "type": "trigger"
+      }
+    ]
+  },
+  "schema_fingerprint_sha256": "af25321f7d24f3b396f183febffab261eefe3ab55dabeb5189a11ef6a074d04a",
+  "schema_inventory": {
+    "index_names": [
+      "idx_agent_runs_runner",
+      "idx_agent_runs_tick",
+      "idx_agent_tasks_date",
+      "idx_agent_tasks_status",
+      "idx_date",
+      "idx_draw",
+      "idx_lottery_type",
+      "idx_pred_items_run",
+      "idx_pred_items_status",
+      "idx_pred_review_run",
+      "idx_pred_review_session",
+      "idx_pred_review_status",
+      "idx_pred_runs_lottery",
+      "idx_review_actions_priority",
+      "idx_review_actions_session",
+      "idx_review_actions_status",
+      "idx_review_findings_session",
+      "idx_review_hypotheses_session",
+      "idx_review_hypotheses_status",
+      "idx_review_sessions_draw",
+      "idx_review_sessions_game",
+      "idx_review_sessions_status",
+      "idx_schedule_lottery",
+      "idx_shadow_experiments_game",
+      "idx_shadow_experiments_session",
+      "idx_shadow_experiments_status",
+      "idx_spr_bet_index",
+      "idx_spr_draw",
+      "idx_spr_hit",
+      "idx_spr_lottery",
+      "idx_spr_run",
+      "idx_spr_status",
+      "idx_spr_strategy",
+      "idx_srr_lottery",
+      "idx_srr_status",
+      "sqlite_autoindex_agent_locks_1",
+      "sqlite_autoindex_agent_tasks_1",
+      "sqlite_autoindex_draws_1",
+      "sqlite_autoindex_prediction_explanations_1",
+      "sqlite_autoindex_prediction_results_1",
+      "sqlite_autoindex_snapshot_schedule_1",
+      "sqlite_autoindex_strategy_prediction_replays_1"
+    ],
+    "internal_objects": [
+      {
+        "name": "sqlite_sequence",
+        "tbl_name": "sqlite_sequence",
+        "type": "table"
+      }
+    ],
+    "objects": [
+      {
+        "name": "idx_agent_runs_runner",
+        "sql": "CREATE INDEX idx_agent_runs_runner ON agent_task_runs(runner)",
+        "tbl_name": "agent_task_runs",
+        "type": "index"
+      },
+      {
+        "name": "idx_agent_runs_tick",
+        "sql": "CREATE INDEX idx_agent_runs_tick ON agent_task_runs(tick_at)",
+        "tbl_name": "agent_task_runs",
+        "type": "index"
+      },
+      {
+        "name": "idx_agent_tasks_date",
+        "sql": "CREATE INDEX idx_agent_tasks_date ON agent_tasks(date_folder)",
+        "tbl_name": "agent_tasks",
+        "type": "index"
+      },
+      {
+        "name": "idx_agent_tasks_status",
+        "sql": "CREATE INDEX idx_agent_tasks_status ON agent_tasks(status)",
+        "tbl_name": "agent_tasks",
+        "type": "index"
+      },
+      {
+        "name": "idx_date",
+        "sql": "CREATE INDEX idx_date ON draws(date DESC)",
+        "tbl_name": "draws",
+        "type": "index"
+      },
+      {
+        "name": "idx_draw",
+        "sql": "CREATE INDEX idx_draw ON draws(draw)",
+        "tbl_name": "draws",
+        "type": "index"
+      },
+      {
+        "name": "idx_lottery_type",
+        "sql": "CREATE INDEX idx_lottery_type ON draws(lottery_type)",
+        "tbl_name": "draws",
+        "type": "index"
+      },
+      {
+        "name": "idx_pred_items_run",
+        "sql": "CREATE INDEX idx_pred_items_run ON prediction_items(run_id)",
+        "tbl_name": "prediction_items",
+        "type": "index"
+      },
+      {
+        "name": "idx_pred_items_status",
+        "sql": "CREATE INDEX idx_pred_items_status ON prediction_items(status)",
+        "tbl_name": "prediction_items",
+        "type": "index"
+      },
+      {
+        "name": "idx_pred_review_run",
+        "sql": "CREATE INDEX idx_pred_review_run ON prediction_review_status(prediction_run_id)",
+        "tbl_name": "prediction_review_status",
+        "type": "index"
+      },
+      {
+        "name": "idx_pred_review_session",
+        "sql": "CREATE INDEX idx_pred_review_session ON prediction_review_status(review_session_id)",
+        "tbl_name": "prediction_review_status",
+        "type": "index"
+      },
+      {
+        "name": "idx_pred_review_status",
+        "sql": "CREATE INDEX idx_pred_review_status ON prediction_review_status(review_status)",
+        "tbl_name": "prediction_review_status",
+        "type": "index"
+      },
+      {
+        "name": "idx_pred_runs_lottery",
+        "sql": "CREATE INDEX idx_pred_runs_lottery ON prediction_runs(lottery_type)",
+        "tbl_name": "prediction_runs",
+        "type": "index"
+      },
+      {
+        "name": "idx_review_actions_priority",
+        "sql": "CREATE INDEX idx_review_actions_priority ON review_actions(priority)",
+        "tbl_name": "review_actions",
+        "type": "index"
+      },
+      {
+        "name": "idx_review_actions_session",
+        "sql": "CREATE INDEX idx_review_actions_session ON review_actions(session_id)",
+        "tbl_name": "review_actions",
+        "type": "index"
+      },
+      {
+        "name": "idx_review_actions_status",
+        "sql": "CREATE INDEX idx_review_actions_status ON review_actions(status)",
+        "tbl_name": "review_actions",
+        "type": "index"
+      },
+      {
+        "name": "idx_review_findings_session",
+        "sql": "CREATE INDEX idx_review_findings_session ON review_findings(session_id)",
+        "tbl_name": "review_findings",
+        "type": "index"
+      },
+      {
+        "name": "idx_review_hypotheses_session",
+        "sql": "CREATE INDEX idx_review_hypotheses_session ON review_hypotheses(session_id)",
+        "tbl_name": "review_hypotheses",
+        "type": "index"
+      },
+      {
+        "name": "idx_review_hypotheses_status",
+        "sql": "CREATE INDEX idx_review_hypotheses_status ON review_hypotheses(status)",
+        "tbl_name": "review_hypotheses",
+        "type": "index"
+      },
+      {
+        "name": "idx_review_sessions_draw",
+        "sql": "CREATE INDEX idx_review_sessions_draw ON review_sessions(draw)",
+        "tbl_name": "review_sessions",
+        "type": "index"
+      },
+      {
+        "name": "idx_review_sessions_game",
+        "sql": "CREATE INDEX idx_review_sessions_game ON review_sessions(game)",
+        "tbl_name": "review_sessions",
+        "type": "index"
+      },
+      {
+        "name": "idx_review_sessions_status",
+        "sql": "CREATE INDEX idx_review_sessions_status ON review_sessions(status)",
+        "tbl_name": "review_sessions",
+        "type": "index"
+      },
+      {
+        "name": "idx_schedule_lottery",
+        "sql": "CREATE INDEX idx_schedule_lottery ON snapshot_schedule(lottery_type, status)",
+        "tbl_name": "snapshot_schedule",
+        "type": "index"
+      },
+      {
+        "name": "idx_shadow_experiments_game",
+        "sql": "CREATE INDEX idx_shadow_experiments_game ON shadow_experiments(game)",
+        "tbl_name": "shadow_experiments",
+        "type": "index"
+      },
+      {
+        "name": "idx_shadow_experiments_session",
+        "sql": "CREATE INDEX idx_shadow_experiments_session ON shadow_experiments(session_id)",
+        "tbl_name": "shadow_experiments",
+        "type": "index"
+      },
+      {
+        "name": "idx_shadow_experiments_status",
+        "sql": "CREATE INDEX idx_shadow_experiments_status ON shadow_experiments(status)",
+        "tbl_name": "shadow_experiments",
+        "type": "index"
+      },
+      {
+        "name": "idx_spr_bet_index",
+        "sql": "CREATE INDEX idx_spr_bet_index ON strategy_prediction_replays(bet_index)",
+        "tbl_name": "strategy_prediction_replays",
+        "type": "index"
+      },
+      {
+        "name": "idx_spr_draw",
+        "sql": "CREATE INDEX idx_spr_draw ON strategy_prediction_replays(target_draw)",
+        "tbl_name": "strategy_prediction_replays",
+        "type": "index"
+      },
+      {
+        "name": "idx_spr_hit",
+        "sql": "CREATE INDEX idx_spr_hit ON strategy_prediction_replays(hit_count)",
+        "tbl_name": "strategy_prediction_replays",
+        "type": "index"
+      },
+      {
+        "name": "idx_spr_lottery",
+        "sql": "CREATE INDEX idx_spr_lottery ON strategy_prediction_replays(lottery_type)",
+        "tbl_name": "strategy_prediction_replays",
+        "type": "index"
+      },
+      {
+        "name": "idx_spr_run",
+        "sql": "CREATE INDEX idx_spr_run ON strategy_prediction_replays(replay_run_id)",
+        "tbl_name": "strategy_prediction_replays",
+        "type": "index"
+      },
+      {
+        "name": "idx_spr_status",
+        "sql": "CREATE INDEX idx_spr_status ON strategy_prediction_replays(replay_status)",
+        "tbl_name": "strategy_prediction_replays",
+        "type": "index"
+      },
+      {
+        "name": "idx_spr_strategy",
+        "sql": "CREATE INDEX idx_spr_strategy ON strategy_prediction_replays(strategy_id)",
+        "tbl_name": "strategy_prediction_replays",
+        "type": "index"
+      },
+      {
+        "name": "idx_srr_lottery",
+        "sql": "CREATE INDEX idx_srr_lottery ON strategy_replay_runs(lottery_type)",
+        "tbl_name": "strategy_replay_runs",
+        "type": "index"
+      },
+      {
+        "name": "idx_srr_status",
+        "sql": "CREATE INDEX idx_srr_status ON strategy_replay_runs(status)",
+        "tbl_name": "strategy_replay_runs",
+        "type": "index"
+      },
+      {
+        "name": "sqlite_autoindex_agent_locks_1",
+        "sql": null,
+        "tbl_name": "agent_locks",
+        "type": "index"
+      },
+      {
+        "name": "sqlite_autoindex_agent_tasks_1",
+        "sql": null,
+        "tbl_name": "agent_tasks",
+        "type": "index"
+      },
+      {
+        "name": "sqlite_autoindex_draws_1",
+        "sql": null,
+        "tbl_name": "draws",
+        "type": "index"
+      },
+      {
+        "name": "sqlite_autoindex_prediction_explanations_1",
+        "sql": null,
+        "tbl_name": "prediction_explanations",
+        "type": "index"
+      },
+      {
+        "name": "sqlite_autoindex_prediction_results_1",
+        "sql": null,
+        "tbl_name": "prediction_results",
+        "type": "index"
+      },
+      {
+        "name": "sqlite_autoindex_snapshot_schedule_1",
+        "sql": null,
+        "tbl_name": "snapshot_schedule",
+        "type": "index"
+      },
+      {
+        "name": "sqlite_autoindex_strategy_prediction_replays_1",
+        "sql": null,
+        "tbl_name": "strategy_prediction_replays",
+        "type": "index"
+      },
+      {
+        "name": "agent_locks",
+        "sql": "CREATE TABLE agent_locks ( runner TEXT PRIMARY KEY, pid INTEGER, task_id INTEGER, started_at TEXT, heartbeat_at TEXT, FOREIGN KEY (task_id) REFERENCES agent_tasks(id) )",
+        "tbl_name": "agent_locks",
+        "type": "table"
+      },
+      {
+        "name": "agent_task_runs",
+        "sql": "CREATE TABLE agent_task_runs ( id INTEGER PRIMARY KEY AUTOINCREMENT, runner TEXT NOT NULL, tick_at TEXT NOT NULL, outcome TEXT NOT NULL, task_id INTEGER, message TEXT, duration_ms INTEGER, FOREIGN KEY (task_id) REFERENCES agent_tasks(id) )",
+        "tbl_name": "agent_task_runs",
+        "type": "table"
+      },
+      {
+        "name": "agent_tasks",
+        "sql": "CREATE TABLE agent_tasks ( id INTEGER PRIMARY KEY AUTOINCREMENT, slot_key TEXT UNIQUE NOT NULL, date_folder TEXT NOT NULL, title TEXT, slug TEXT, status TEXT NOT NULL DEFAULT 'QUEUED', previous_task_id INTEGER, prompt_file_path TEXT, prompt_text TEXT, completed_file_path TEXT, completed_text TEXT, changed_files_json TEXT, worker_pid INTEGER, started_at TEXT, completed_at TEXT, duration_seconds INTEGER, error_message TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP, updated_at TEXT DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (previous_task_id) REFERENCES agent_tasks(id) )",
+        "tbl_name": "agent_tasks",
+        "type": "table"
+      },
+      {
+        "name": "draws",
+        "sql": "CREATE TABLE draws ( id INTEGER PRIMARY KEY AUTOINCREMENT, draw TEXT NOT NULL, date TEXT NOT NULL, lottery_type TEXT NOT NULL, numbers TEXT NOT NULL, special INTEGER DEFAULT 0, created_at TEXT DEFAULT CURRENT_TIMESTAMP, jackpot_amount REAL DEFAULT NULL, sell_amount REAL DEFAULT NULL, total_amount REAL DEFAULT NULL, numbers_positional TEXT DEFAULT NULL, UNIQUE(draw, lottery_type) )",
+        "tbl_name": "draws",
+        "type": "table"
+      },
+      {
+        "name": "prediction_explanations",
+        "sql": "CREATE TABLE prediction_explanations ( id INTEGER PRIMARY KEY AUTOINCREMENT, prediction_run_id INTEGER, lottery_type TEXT NOT NULL, profile TEXT NOT NULL DEFAULT 'balanced', explanation_json TEXT NOT NULL, created_at TEXT DEFAULT CURRENT_TIMESTAMP, UNIQUE(prediction_run_id) )",
+        "tbl_name": "prediction_explanations",
+        "type": "table"
+      },
+      {
+        "name": "prediction_items",
+        "sql": "CREATE TABLE prediction_items ( id INTEGER PRIMARY KEY AUTOINCREMENT, run_id INTEGER NOT NULL, bet_index INTEGER NOT NULL, numbers TEXT NOT NULL, special INTEGER, status TEXT DEFAULT 'PENDING', created_at TEXT DEFAULT CURRENT_TIMESTAMP, strategy_name TEXT, num_bets INTEGER, zone_coverage TEXT DEFAULT NULL, FOREIGN KEY (run_id) REFERENCES prediction_runs(id) )",
+        "tbl_name": "prediction_items",
+        "type": "table"
+      },
+      {
+        "name": "prediction_results",
+        "sql": "CREATE TABLE prediction_results ( id INTEGER PRIMARY KEY AUTOINCREMENT, item_id INTEGER NOT NULL UNIQUE, actual_draw TEXT NOT NULL, actual_date TEXT, actual_numbers TEXT NOT NULL, actual_special INTEGER, hit_count INTEGER NOT NULL, matched_numbers TEXT NOT NULL, special_hit INTEGER DEFAULT 0, resolved_at TEXT DEFAULT CURRENT_TIMESTAMP, researched TEXT DEFAULT '無', wq_score INTEGER DEFAULT NULL, split_risk TEXT DEFAULT NULL, FOREIGN KEY (item_id) REFERENCES prediction_items(id) )",
+        "tbl_name": "prediction_results",
+        "type": "table"
+      },
+      {
+        "name": "prediction_review_status",
+        "sql": "CREATE TABLE prediction_review_status ( id INTEGER PRIMARY KEY AUTOINCREMENT, prediction_run_id INTEGER, review_session_id INTEGER, review_status TEXT DEFAULT 'UNREVIEWED', resolved_at TEXT, notes TEXT, FOREIGN KEY (prediction_run_id) REFERENCES prediction_runs(id), FOREIGN KEY (review_session_id) REFERENCES review_sessions(id) )",
+        "tbl_name": "prediction_review_status",
+        "type": "table"
+      },
+      {
+        "name": "prediction_runs",
+        "sql": "CREATE TABLE prediction_runs ( id INTEGER PRIMARY KEY AUTOINCREMENT, lottery_type TEXT NOT NULL, latest_known_draw TEXT NOT NULL, latest_known_date TEXT, strategy_name TEXT NOT NULL, notes TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP , snapshot_source TEXT DEFAULT 'VALID', analyzed TEXT DEFAULT '未研究', analysis_note TEXT, review_json TEXT)",
+        "tbl_name": "prediction_runs",
+        "type": "table"
+      },
+      {
+        "name": "review_actions",
+        "sql": "CREATE TABLE review_actions ( id INTEGER PRIMARY KEY AUTOINCREMENT, session_id INTEGER NOT NULL, priority TEXT DEFAULT 'P2', action_title TEXT, action_description TEXT, expected_gain TEXT, cost_level TEXT, risk_level TEXT, validation_method TEXT, stop_condition TEXT, status TEXT DEFAULT 'OPEN', created_at TEXT DEFAULT CURRENT_TIMESTAMP, updated_at TEXT DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (session_id) REFERENCES review_sessions(id) )",
+        "tbl_name": "review_actions",
+        "type": "table"
+      },
+      {
+        "name": "review_findings",
+        "sql": "CREATE TABLE review_findings ( id INTEGER PRIMARY KEY AUTOINCREMENT, session_id INTEGER NOT NULL, section_type TEXT NOT NULL, title TEXT, content TEXT, evidence_type TEXT DEFAULT 'UNSURE', sort_order INTEGER DEFAULT 0, FOREIGN KEY (session_id) REFERENCES review_sessions(id) )",
+        "tbl_name": "review_findings",
+        "type": "table"
+      },
+      {
+        "name": "review_hypotheses",
+        "sql": "CREATE TABLE review_hypotheses ( id INTEGER PRIMARY KEY AUTOINCREMENT, session_id INTEGER NOT NULL, hypothesis_type TEXT DEFAULT 'other', description TEXT, expected_impact TEXT, validation_method TEXT, kill_condition TEXT, status TEXT DEFAULT 'PENDING', created_at TEXT DEFAULT CURRENT_TIMESTAMP, updated_at TEXT DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (session_id) REFERENCES review_sessions(id) )",
+        "tbl_name": "review_hypotheses",
+        "type": "table"
+      },
+      {
+        "name": "review_sessions",
+        "sql": "CREATE TABLE review_sessions ( id INTEGER PRIMARY KEY AUTOINCREMENT, game TEXT NOT NULL, draw TEXT, draw_date TEXT, session_type TEXT NOT NULL DEFAULT 'daily_review', created_at TEXT DEFAULT CURRENT_TIMESTAMP, updated_at TEXT DEFAULT CURRENT_TIMESTAMP, summary TEXT, final_decision TEXT DEFAULT 'NO_ACTION', confidence_level TEXT DEFAULT 'LOW', raw_report_text TEXT, parsed_successfully INTEGER DEFAULT 0, status TEXT DEFAULT 'OPEN' )",
+        "tbl_name": "review_sessions",
+        "type": "table"
+      },
+      {
+        "name": "shadow_experiments",
+        "sql": "CREATE TABLE shadow_experiments ( id INTEGER PRIMARY KEY AUTOINCREMENT, session_id INTEGER, game TEXT NOT NULL, experiment_name TEXT NOT NULL, base_strategy TEXT, experiment_strategy TEXT, experiment_config_json TEXT, status TEXT DEFAULT 'DRAFT', notes TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP, updated_at TEXT DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (session_id) REFERENCES review_sessions(id) )",
+        "tbl_name": "shadow_experiments",
+        "type": "table"
+      },
+      {
+        "name": "snapshot_schedule",
+        "sql": "CREATE TABLE snapshot_schedule ( id INTEGER PRIMARY KEY AUTOINCREMENT, lottery_type TEXT NOT NULL, target_draw TEXT NOT NULL, target_date TEXT, scheduled_at TEXT DEFAULT CURRENT_TIMESTAMP, status TEXT DEFAULT 'SCHEDULED', run_id INTEGER, notes TEXT, UNIQUE(lottery_type, target_draw), FOREIGN KEY (run_id) REFERENCES prediction_runs(id) )",
+        "tbl_name": "snapshot_schedule",
+        "type": "table"
+      },
+      {
+        "name": "sqlite_sequence",
+        "sql": "CREATE TABLE sqlite_sequence(name,seq)",
+        "tbl_name": "sqlite_sequence",
+        "type": "table"
+      },
+      {
+        "name": "strategy_prediction_replays",
+        "sql": "CREATE TABLE \"strategy_prediction_replays\" ( id INTEGER PRIMARY KEY AUTOINCREMENT, lottery_type TEXT NOT NULL, target_draw TEXT NOT NULL, target_date TEXT, strategy_id TEXT NOT NULL, strategy_name TEXT, strategy_version TEXT, history_cutoff_draw TEXT, replay_status TEXT NOT NULL, reject_reason TEXT, predicted_numbers TEXT, predicted_special INTEGER, actual_numbers TEXT, actual_special INTEGER, hit_numbers TEXT, hit_count INTEGER DEFAULT 0, special_hit INTEGER DEFAULT 0, replay_run_id TEXT, generated_at TEXT DEFAULT (datetime('now')), truth_level TEXT DEFAULT NULL, controlled_apply_id TEXT DEFAULT NULL, source TEXT DEFAULT NULL, provenance_hash TEXT DEFAULT NULL, provenance_source TEXT DEFAULT NULL, dry_run INTEGER DEFAULT 0, prediction_cutoff_date TEXT, prediction_generated_at TEXT, bet_index INTEGER NOT NULL DEFAULT 1, UNIQUE(lottery_type, target_draw, strategy_id, bet_index) )",
+        "tbl_name": "strategy_prediction_replays",
+        "type": "table"
+      },
+      {
+        "name": "strategy_replay_runs",
+        "sql": "CREATE TABLE strategy_replay_runs ( id INTEGER PRIMARY KEY AUTOINCREMENT, lottery_type TEXT NOT NULL, strategy_scope TEXT NOT NULL, started_at TEXT NOT NULL, finished_at TEXT, status TEXT NOT NULL DEFAULT 'RUNNING', generator_version TEXT, data_hash TEXT, notes TEXT, created_at TEXT DEFAULT (datetime('now')) )",
+        "tbl_name": "strategy_replay_runs",
+        "type": "table"
+      },
+      {
+        "name": "draws_big_lotto_canonical_main",
+        "sql": "CREATE VIEW draws_big_lotto_canonical_main AS SELECT d.* FROM draws d WHERE d.lottery_type = 'BIG_LOTTO' AND d.draw NOT LIKE '%-%' AND NOT (LENGTH(d.draw) = 8 AND d.draw LIKE '20%') AND ( SELECT MAX(CAST(j.value AS INTEGER)) FROM json_each(d.numbers) j ) > 25",
+        "tbl_name": "draws_big_lotto_canonical_main",
+        "type": "view"
+      }
+    ],
+    "table_names": [
+      "agent_locks",
+      "agent_task_runs",
+      "agent_tasks",
+      "draws",
+      "prediction_explanations",
+      "prediction_items",
+      "prediction_results",
+      "prediction_review_status",
+      "prediction_runs",
+      "review_actions",
+      "review_findings",
+      "review_hypotheses",
+      "review_sessions",
+      "shadow_experiments",
+      "snapshot_schedule",
+      "strategy_prediction_replays",
+      "strategy_replay_runs"
+    ],
+    "tables": {
+      "agent_locks": {
+        "columns": [
+          {
+            "cid": 0,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "runner",
+            "notnull": 0,
+            "pk": 1,
+            "type": "TEXT"
+          },
+          {
+            "cid": 1,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "pid",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 2,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "task_id",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 3,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "started_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 4,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "heartbeat_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          }
+        ],
+        "foreign_keys": [
+          {
+            "from": "task_id",
+            "on_delete": "NO ACTION",
+            "on_update": "NO ACTION",
+            "ref_table": "agent_tasks",
+            "to": "id"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "runner"
+            ],
+            "name": "sqlite_autoindex_agent_locks_1",
+            "origin": "pk",
+            "partial": 0,
+            "unique": 1
+          }
+        ]
+      },
+      "agent_task_runs": {
+        "columns": [
+          {
+            "cid": 0,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "id",
+            "notnull": 0,
+            "pk": 1,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 1,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "runner",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 2,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "tick_at",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 3,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "outcome",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 4,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "task_id",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 5,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "message",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 6,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "duration_ms",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          }
+        ],
+        "foreign_keys": [
+          {
+            "from": "task_id",
+            "on_delete": "NO ACTION",
+            "on_update": "NO ACTION",
+            "ref_table": "agent_tasks",
+            "to": "id"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "tick_at"
+            ],
+            "name": "idx_agent_runs_tick",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "runner"
+            ],
+            "name": "idx_agent_runs_runner",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          }
+        ]
+      },
+      "agent_tasks": {
+        "columns": [
+          {
+            "cid": 0,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "id",
+            "notnull": 0,
+            "pk": 1,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 1,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "slot_key",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 2,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "date_folder",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 3,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "title",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 4,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "slug",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 5,
+            "dflt_value": "'QUEUED'",
+            "hidden": 0,
+            "name": "status",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 6,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "previous_task_id",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 7,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "prompt_file_path",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 8,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "prompt_text",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 9,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "completed_file_path",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 10,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "completed_text",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 11,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "changed_files_json",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 12,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "worker_pid",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 13,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "started_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 14,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "completed_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 15,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "duration_seconds",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 16,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "error_message",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 17,
+            "dflt_value": "CURRENT_TIMESTAMP",
+            "hidden": 0,
+            "name": "created_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 18,
+            "dflt_value": "CURRENT_TIMESTAMP",
+            "hidden": 0,
+            "name": "updated_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          }
+        ],
+        "foreign_keys": [
+          {
+            "from": "previous_task_id",
+            "on_delete": "NO ACTION",
+            "on_update": "NO ACTION",
+            "ref_table": "agent_tasks",
+            "to": "id"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "date_folder"
+            ],
+            "name": "idx_agent_tasks_date",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "status"
+            ],
+            "name": "idx_agent_tasks_status",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "slot_key"
+            ],
+            "name": "sqlite_autoindex_agent_tasks_1",
+            "origin": "u",
+            "partial": 0,
+            "unique": 1
+          }
+        ]
+      },
+      "draws": {
+        "columns": [
+          {
+            "cid": 0,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "id",
+            "notnull": 0,
+            "pk": 1,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 1,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "draw",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 2,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "date",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 3,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "lottery_type",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 4,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "numbers",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 5,
+            "dflt_value": "0",
+            "hidden": 0,
+            "name": "special",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 6,
+            "dflt_value": "CURRENT_TIMESTAMP",
+            "hidden": 0,
+            "name": "created_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 7,
+            "dflt_value": "NULL",
+            "hidden": 0,
+            "name": "jackpot_amount",
+            "notnull": 0,
+            "pk": 0,
+            "type": "REAL"
+          },
+          {
+            "cid": 8,
+            "dflt_value": "NULL",
+            "hidden": 0,
+            "name": "sell_amount",
+            "notnull": 0,
+            "pk": 0,
+            "type": "REAL"
+          },
+          {
+            "cid": 9,
+            "dflt_value": "NULL",
+            "hidden": 0,
+            "name": "total_amount",
+            "notnull": 0,
+            "pk": 0,
+            "type": "REAL"
+          },
+          {
+            "cid": 10,
+            "dflt_value": "NULL",
+            "hidden": 0,
+            "name": "numbers_positional",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          }
+        ],
+        "foreign_keys": [],
+        "indexes": [
+          {
+            "columns": [
+              "draw"
+            ],
+            "name": "idx_draw",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "date"
+            ],
+            "name": "idx_date",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "lottery_type"
+            ],
+            "name": "idx_lottery_type",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "draw",
+              "lottery_type"
+            ],
+            "name": "sqlite_autoindex_draws_1",
+            "origin": "u",
+            "partial": 0,
+            "unique": 1
+          }
+        ]
+      },
+      "prediction_explanations": {
+        "columns": [
+          {
+            "cid": 0,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "id",
+            "notnull": 0,
+            "pk": 1,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 1,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "prediction_run_id",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 2,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "lottery_type",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 3,
+            "dflt_value": "'balanced'",
+            "hidden": 0,
+            "name": "profile",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 4,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "explanation_json",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 5,
+            "dflt_value": "CURRENT_TIMESTAMP",
+            "hidden": 0,
+            "name": "created_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          }
+        ],
+        "foreign_keys": [],
+        "indexes": [
+          {
+            "columns": [
+              "prediction_run_id"
+            ],
+            "name": "sqlite_autoindex_prediction_explanations_1",
+            "origin": "u",
+            "partial": 0,
+            "unique": 1
+          }
+        ]
+      },
+      "prediction_items": {
+        "columns": [
+          {
+            "cid": 0,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "id",
+            "notnull": 0,
+            "pk": 1,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 1,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "run_id",
+            "notnull": 1,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 2,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "bet_index",
+            "notnull": 1,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 3,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "numbers",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 4,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "special",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 5,
+            "dflt_value": "'PENDING'",
+            "hidden": 0,
+            "name": "status",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 6,
+            "dflt_value": "CURRENT_TIMESTAMP",
+            "hidden": 0,
+            "name": "created_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 7,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "strategy_name",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 8,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "num_bets",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 9,
+            "dflt_value": "NULL",
+            "hidden": 0,
+            "name": "zone_coverage",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          }
+        ],
+        "foreign_keys": [
+          {
+            "from": "run_id",
+            "on_delete": "NO ACTION",
+            "on_update": "NO ACTION",
+            "ref_table": "prediction_runs",
+            "to": "id"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "status"
+            ],
+            "name": "idx_pred_items_status",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "run_id"
+            ],
+            "name": "idx_pred_items_run",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          }
+        ]
+      },
+      "prediction_results": {
+        "columns": [
+          {
+            "cid": 0,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "id",
+            "notnull": 0,
+            "pk": 1,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 1,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "item_id",
+            "notnull": 1,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 2,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "actual_draw",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 3,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "actual_date",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 4,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "actual_numbers",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 5,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "actual_special",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 6,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "hit_count",
+            "notnull": 1,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 7,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "matched_numbers",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 8,
+            "dflt_value": "0",
+            "hidden": 0,
+            "name": "special_hit",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 9,
+            "dflt_value": "CURRENT_TIMESTAMP",
+            "hidden": 0,
+            "name": "resolved_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 10,
+            "dflt_value": "'無'",
+            "hidden": 0,
+            "name": "researched",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 11,
+            "dflt_value": "NULL",
+            "hidden": 0,
+            "name": "wq_score",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 12,
+            "dflt_value": "NULL",
+            "hidden": 0,
+            "name": "split_risk",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          }
+        ],
+        "foreign_keys": [
+          {
+            "from": "item_id",
+            "on_delete": "NO ACTION",
+            "on_update": "NO ACTION",
+            "ref_table": "prediction_items",
+            "to": "id"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "item_id"
+            ],
+            "name": "sqlite_autoindex_prediction_results_1",
+            "origin": "u",
+            "partial": 0,
+            "unique": 1
+          }
+        ]
+      },
+      "prediction_review_status": {
+        "columns": [
+          {
+            "cid": 0,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "id",
+            "notnull": 0,
+            "pk": 1,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 1,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "prediction_run_id",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 2,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "review_session_id",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 3,
+            "dflt_value": "'UNREVIEWED'",
+            "hidden": 0,
+            "name": "review_status",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 4,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "resolved_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 5,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "notes",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          }
+        ],
+        "foreign_keys": [
+          {
+            "from": "review_session_id",
+            "on_delete": "NO ACTION",
+            "on_update": "NO ACTION",
+            "ref_table": "review_sessions",
+            "to": "id"
+          },
+          {
+            "from": "prediction_run_id",
+            "on_delete": "NO ACTION",
+            "on_update": "NO ACTION",
+            "ref_table": "prediction_runs",
+            "to": "id"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "review_status"
+            ],
+            "name": "idx_pred_review_status",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "review_session_id"
+            ],
+            "name": "idx_pred_review_session",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "prediction_run_id"
+            ],
+            "name": "idx_pred_review_run",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          }
+        ]
+      },
+      "prediction_runs": {
+        "columns": [
+          {
+            "cid": 0,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "id",
+            "notnull": 0,
+            "pk": 1,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 1,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "lottery_type",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 2,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "latest_known_draw",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 3,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "latest_known_date",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 4,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "strategy_name",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 5,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "notes",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 6,
+            "dflt_value": "CURRENT_TIMESTAMP",
+            "hidden": 0,
+            "name": "created_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 7,
+            "dflt_value": "'VALID'",
+            "hidden": 0,
+            "name": "snapshot_source",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 8,
+            "dflt_value": "'未研究'",
+            "hidden": 0,
+            "name": "analyzed",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 9,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "analysis_note",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 10,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "review_json",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          }
+        ],
+        "foreign_keys": [],
+        "indexes": [
+          {
+            "columns": [
+              "lottery_type"
+            ],
+            "name": "idx_pred_runs_lottery",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          }
+        ]
+      },
+      "review_actions": {
+        "columns": [
+          {
+            "cid": 0,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "id",
+            "notnull": 0,
+            "pk": 1,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 1,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "session_id",
+            "notnull": 1,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 2,
+            "dflt_value": "'P2'",
+            "hidden": 0,
+            "name": "priority",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 3,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "action_title",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 4,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "action_description",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 5,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "expected_gain",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 6,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "cost_level",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 7,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "risk_level",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 8,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "validation_method",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 9,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "stop_condition",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 10,
+            "dflt_value": "'OPEN'",
+            "hidden": 0,
+            "name": "status",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 11,
+            "dflt_value": "CURRENT_TIMESTAMP",
+            "hidden": 0,
+            "name": "created_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 12,
+            "dflt_value": "CURRENT_TIMESTAMP",
+            "hidden": 0,
+            "name": "updated_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          }
+        ],
+        "foreign_keys": [
+          {
+            "from": "session_id",
+            "on_delete": "NO ACTION",
+            "on_update": "NO ACTION",
+            "ref_table": "review_sessions",
+            "to": "id"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "priority"
+            ],
+            "name": "idx_review_actions_priority",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "status"
+            ],
+            "name": "idx_review_actions_status",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "session_id"
+            ],
+            "name": "idx_review_actions_session",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          }
+        ]
+      },
+      "review_findings": {
+        "columns": [
+          {
+            "cid": 0,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "id",
+            "notnull": 0,
+            "pk": 1,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 1,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "session_id",
+            "notnull": 1,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 2,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "section_type",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 3,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "title",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 4,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "content",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 5,
+            "dflt_value": "'UNSURE'",
+            "hidden": 0,
+            "name": "evidence_type",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 6,
+            "dflt_value": "0",
+            "hidden": 0,
+            "name": "sort_order",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          }
+        ],
+        "foreign_keys": [
+          {
+            "from": "session_id",
+            "on_delete": "NO ACTION",
+            "on_update": "NO ACTION",
+            "ref_table": "review_sessions",
+            "to": "id"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "session_id"
+            ],
+            "name": "idx_review_findings_session",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          }
+        ]
+      },
+      "review_hypotheses": {
+        "columns": [
+          {
+            "cid": 0,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "id",
+            "notnull": 0,
+            "pk": 1,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 1,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "session_id",
+            "notnull": 1,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 2,
+            "dflt_value": "'other'",
+            "hidden": 0,
+            "name": "hypothesis_type",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 3,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "description",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 4,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "expected_impact",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 5,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "validation_method",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 6,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "kill_condition",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 7,
+            "dflt_value": "'PENDING'",
+            "hidden": 0,
+            "name": "status",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 8,
+            "dflt_value": "CURRENT_TIMESTAMP",
+            "hidden": 0,
+            "name": "created_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 9,
+            "dflt_value": "CURRENT_TIMESTAMP",
+            "hidden": 0,
+            "name": "updated_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          }
+        ],
+        "foreign_keys": [
+          {
+            "from": "session_id",
+            "on_delete": "NO ACTION",
+            "on_update": "NO ACTION",
+            "ref_table": "review_sessions",
+            "to": "id"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "status"
+            ],
+            "name": "idx_review_hypotheses_status",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "session_id"
+            ],
+            "name": "idx_review_hypotheses_session",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          }
+        ]
+      },
+      "review_sessions": {
+        "columns": [
+          {
+            "cid": 0,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "id",
+            "notnull": 0,
+            "pk": 1,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 1,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "game",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 2,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "draw",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 3,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "draw_date",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 4,
+            "dflt_value": "'daily_review'",
+            "hidden": 0,
+            "name": "session_type",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 5,
+            "dflt_value": "CURRENT_TIMESTAMP",
+            "hidden": 0,
+            "name": "created_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 6,
+            "dflt_value": "CURRENT_TIMESTAMP",
+            "hidden": 0,
+            "name": "updated_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 7,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "summary",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 8,
+            "dflt_value": "'NO_ACTION'",
+            "hidden": 0,
+            "name": "final_decision",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 9,
+            "dflt_value": "'LOW'",
+            "hidden": 0,
+            "name": "confidence_level",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 10,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "raw_report_text",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 11,
+            "dflt_value": "0",
+            "hidden": 0,
+            "name": "parsed_successfully",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 12,
+            "dflt_value": "'OPEN'",
+            "hidden": 0,
+            "name": "status",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          }
+        ],
+        "foreign_keys": [],
+        "indexes": [
+          {
+            "columns": [
+              "status"
+            ],
+            "name": "idx_review_sessions_status",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "draw"
+            ],
+            "name": "idx_review_sessions_draw",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "game"
+            ],
+            "name": "idx_review_sessions_game",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          }
+        ]
+      },
+      "shadow_experiments": {
+        "columns": [
+          {
+            "cid": 0,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "id",
+            "notnull": 0,
+            "pk": 1,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 1,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "session_id",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 2,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "game",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 3,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "experiment_name",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 4,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "base_strategy",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 5,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "experiment_strategy",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 6,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "experiment_config_json",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 7,
+            "dflt_value": "'DRAFT'",
+            "hidden": 0,
+            "name": "status",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 8,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "notes",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 9,
+            "dflt_value": "CURRENT_TIMESTAMP",
+            "hidden": 0,
+            "name": "created_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 10,
+            "dflt_value": "CURRENT_TIMESTAMP",
+            "hidden": 0,
+            "name": "updated_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          }
+        ],
+        "foreign_keys": [
+          {
+            "from": "session_id",
+            "on_delete": "NO ACTION",
+            "on_update": "NO ACTION",
+            "ref_table": "review_sessions",
+            "to": "id"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "status"
+            ],
+            "name": "idx_shadow_experiments_status",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "game"
+            ],
+            "name": "idx_shadow_experiments_game",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "session_id"
+            ],
+            "name": "idx_shadow_experiments_session",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          }
+        ]
+      },
+      "snapshot_schedule": {
+        "columns": [
+          {
+            "cid": 0,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "id",
+            "notnull": 0,
+            "pk": 1,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 1,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "lottery_type",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 2,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "target_draw",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 3,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "target_date",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 4,
+            "dflt_value": "CURRENT_TIMESTAMP",
+            "hidden": 0,
+            "name": "scheduled_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 5,
+            "dflt_value": "'SCHEDULED'",
+            "hidden": 0,
+            "name": "status",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 6,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "run_id",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 7,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "notes",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          }
+        ],
+        "foreign_keys": [
+          {
+            "from": "run_id",
+            "on_delete": "NO ACTION",
+            "on_update": "NO ACTION",
+            "ref_table": "prediction_runs",
+            "to": "id"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "lottery_type",
+              "status"
+            ],
+            "name": "idx_schedule_lottery",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "lottery_type",
+              "target_draw"
+            ],
+            "name": "sqlite_autoindex_snapshot_schedule_1",
+            "origin": "u",
+            "partial": 0,
+            "unique": 1
+          }
+        ]
+      },
+      "strategy_prediction_replays": {
+        "columns": [
+          {
+            "cid": 0,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "id",
+            "notnull": 0,
+            "pk": 1,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 1,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "lottery_type",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 2,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "target_draw",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 3,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "target_date",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 4,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "strategy_id",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 5,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "strategy_name",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 6,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "strategy_version",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 7,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "history_cutoff_draw",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 8,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "replay_status",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 9,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "reject_reason",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 10,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "predicted_numbers",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 11,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "predicted_special",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 12,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "actual_numbers",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 13,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "actual_special",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 14,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "hit_numbers",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 15,
+            "dflt_value": "0",
+            "hidden": 0,
+            "name": "hit_count",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 16,
+            "dflt_value": "0",
+            "hidden": 0,
+            "name": "special_hit",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 17,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "replay_run_id",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 18,
+            "dflt_value": "datetime('now')",
+            "hidden": 0,
+            "name": "generated_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 19,
+            "dflt_value": "NULL",
+            "hidden": 0,
+            "name": "truth_level",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 20,
+            "dflt_value": "NULL",
+            "hidden": 0,
+            "name": "controlled_apply_id",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 21,
+            "dflt_value": "NULL",
+            "hidden": 0,
+            "name": "source",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 22,
+            "dflt_value": "NULL",
+            "hidden": 0,
+            "name": "provenance_hash",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 23,
+            "dflt_value": "NULL",
+            "hidden": 0,
+            "name": "provenance_source",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 24,
+            "dflt_value": "0",
+            "hidden": 0,
+            "name": "dry_run",
+            "notnull": 0,
+            "pk": 0,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 25,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "prediction_cutoff_date",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 26,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "prediction_generated_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 27,
+            "dflt_value": "1",
+            "hidden": 0,
+            "name": "bet_index",
+            "notnull": 1,
+            "pk": 0,
+            "type": "INTEGER"
+          }
+        ],
+        "foreign_keys": [],
+        "indexes": [
+          {
+            "columns": [
+              "hit_count"
+            ],
+            "name": "idx_spr_hit",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "replay_run_id"
+            ],
+            "name": "idx_spr_run",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "replay_status"
+            ],
+            "name": "idx_spr_status",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "target_draw"
+            ],
+            "name": "idx_spr_draw",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "strategy_id"
+            ],
+            "name": "idx_spr_strategy",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "lottery_type"
+            ],
+            "name": "idx_spr_lottery",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "bet_index"
+            ],
+            "name": "idx_spr_bet_index",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "lottery_type",
+              "target_draw",
+              "strategy_id",
+              "bet_index"
+            ],
+            "name": "sqlite_autoindex_strategy_prediction_replays_1",
+            "origin": "u",
+            "partial": 0,
+            "unique": 1
+          }
+        ]
+      },
+      "strategy_replay_runs": {
+        "columns": [
+          {
+            "cid": 0,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "id",
+            "notnull": 0,
+            "pk": 1,
+            "type": "INTEGER"
+          },
+          {
+            "cid": 1,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "lottery_type",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 2,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "strategy_scope",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 3,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "started_at",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 4,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "finished_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 5,
+            "dflt_value": "'RUNNING'",
+            "hidden": 0,
+            "name": "status",
+            "notnull": 1,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 6,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "generator_version",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 7,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "data_hash",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 8,
+            "dflt_value": null,
+            "hidden": 0,
+            "name": "notes",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          },
+          {
+            "cid": 9,
+            "dflt_value": "datetime('now')",
+            "hidden": 0,
+            "name": "created_at",
+            "notnull": 0,
+            "pk": 0,
+            "type": "TEXT"
+          }
+        ],
+        "foreign_keys": [],
+        "indexes": [
+          {
+            "columns": [
+              "status"
+            ],
+            "name": "idx_srr_status",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          },
+          {
+            "columns": [
+              "lottery_type"
+            ],
+            "name": "idx_srr_lottery",
+            "origin": "c",
+            "partial": 0,
+            "unique": 0
+          }
+        ]
+      }
+    },
+    "trigger_names": [],
+    "view_names": [
+      "draws_big_lotto_canonical_main"
+    ]
+  },
+  "schema_meta": {
+    "application_id": 0,
+    "encoding": "UTF-8",
+    "freelist_count": 7040,
+    "journal_mode": "delete",
+    "page_count": 24260,
+    "page_size": 4096,
+    "schema_version": 86,
+    "sqlite_version": "3.53.0",
+    "user_version": 0
+  },
+  "schema_version_after": "NOT_CAPTURED",
+  "schema_version_before": 86,
+  "schema_version_evidence": {
+    "after_value": "NOT_CAPTURED",
+    "historical_value": 86,
+    "stability": "NOT_PROVEN",
+    "status": "EVIDENCE_LIMITATION_SCHEMA_VERSION_SINGLE_READ"
+  },
+  "sidecars_after": {
+    "journal": {
+      "exists": false,
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db-journal"
+    },
+    "shm": {
+      "exists": true,
+      "inode": 101782512,
+      "mtime_epoch": 1781353723,
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db-shm",
+      "size_bytes": 32768
+    },
+    "wal": {
+      "exists": true,
+      "inode": 101782511,
+      "mtime_epoch": 1781239864,
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db-wal",
+      "size_bytes": 0
+    }
+  },
+  "sidecars_before": {
+    "journal": {
+      "exists": false,
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db-journal"
+    },
+    "shm": {
+      "exists": true,
+      "inode": 101782512,
+      "mtime_epoch": 1781353723,
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db-shm",
+      "size_bytes": 32768
+    },
+    "wal": {
+      "exists": true,
+      "inode": 101782511,
+      "mtime_epoch": 1781239864,
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db-wal",
+      "size_bytes": 0
+    }
+  },
+  "single_connection_evidence": {
+    "committed_code_supported_one_bounded_path": true,
+    "connection_close_guaranteed": true,
+    "contradictory_evidence": false,
+    "exact_historical_execution_count_status": "EVIDENCE_LIMITATION",
+    "execution_reported_connection_attempts": 1,
+    "independent_execution_telemetry": false,
+    "retry_path": false,
+    "writable_fallback": false
+  },
+  "source_verification_status": "MANUAL_VERIFICATION_REQUIRED",
+  "synthetic": false,
+  "task_id": "P271L_READONLY_ACTUAL_PRODUCTION_SCHEMA_INSPECTION",
+  "wal_stability_passed": true,
+  "writer_quiescence_verified": true
+}

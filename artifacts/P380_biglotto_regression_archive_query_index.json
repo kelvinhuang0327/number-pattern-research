@@ -1,0 +1,144 @@
+{
+  "available_recipes": [
+    "all_commands",
+    "non_pass_commands",
+    "all_artifacts",
+    "stale_or_missing_artifacts",
+    "all_deltas",
+    "warn_or_fail_deltas",
+    "handoff_digest"
+  ],
+  "counts": {
+    "all_artifacts": 24,
+    "all_commands": 6,
+    "all_deltas": 56,
+    "recipes": 7,
+    "source_artifacts": 24
+  },
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "generated_p380_artifact_paths": {
+    "artifact_results": "artifacts/P380_biglotto_regression_archive_query_artifact_results.csv",
+    "command_results": "artifacts/P380_biglotto_regression_archive_query_command_results.csv",
+    "delta_results": "artifacts/P380_biglotto_regression_archive_query_delta_results.csv",
+    "guide": "artifacts/P380_biglotto_regression_archive_query_guide.md",
+    "index": "artifacts/P380_biglotto_regression_archive_query_index.json",
+    "manifest": "artifacts/P380_biglotto_regression_archive_query_manifest.csv",
+    "recipes": "artifacts/P380_biglotto_regression_archive_query_recipes.json",
+    "transcripts": "artifacts/P380_biglotto_regression_archive_query_transcripts.json"
+  },
+  "no_db_no_adapter_no_scoring_no_deploy_statement": "No DB was opened or written; no adapters were called; no new scoring, scoring cohort, shape-only scoring, blocked-target scoring, or blended leaderboard was created; no production registry import, deploy, or external publication was performed.",
+  "path_warnings": {
+    "p379_previous_worktree": {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p379",
+      "policy": "read-only presence check only; do not use or clean",
+      "status": "PRESENT"
+    },
+    "protected_historical_warning": "P380_WARN_PROTECTED_WORKTREES_ABSENT",
+    "protected_historical_worktrees": {
+      "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P360-fable5-biglotto-success-direction-readonly": "ABSENT",
+      "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P371-biglotto-command-center": "ABSENT",
+      "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P373-biglotto-command-center-operator-console": "ABSENT"
+    }
+  },
+  "scope_lines": [
+    "Historical descriptive evidence only.",
+    "No future prediction guarantee.",
+    "No betting advice.",
+    "No DB open/write.",
+    "No adapter calls.",
+    "No new scoring.",
+    "No new scoring cohort.",
+    "No production registry import.",
+    "No deploy.",
+    "No generated DB rows.",
+    "No strategy status changes.",
+    "No blended leaderboard.",
+    "No force operations.",
+    "No production registry import or production release approval.",
+    "Not production release approval.",
+    "P380 reads only merged P377/P378/P379 regression archive artifacts and writes only P380-prefixed query artifacts."
+  ],
+  "source_baseline": {
+    "query_mode": "read_only_no_db_regression_archive_recipe_runner",
+    "required_origin_main_merge_commit": "e09c8cb6de9d95ff1e381104425bbbcc5c79b781",
+    "source_tasks": [
+      "P377_biglotto_command_center_regression_runner",
+      "P378_biglotto_regression_run_archive",
+      "P379_biglotto_regression_archive_explorer"
+    ]
+  },
+  "source_p377_artifact_paths": {
+    "p377_commands": "artifacts/P377_biglotto_command_center_regression_commands.csv",
+    "p377_failures": "artifacts/P377_biglotto_command_center_regression_failures.csv",
+    "p377_freshness": "artifacts/P377_biglotto_command_center_regression_artifact_freshness.csv",
+    "p377_manifest": "artifacts/P377_biglotto_command_center_regression_manifest.csv",
+    "p377_module": "recovered_strategies/biglotto/no_db_command_center_regression_runner.py",
+    "p377_report": "artifacts/P377_biglotto_command_center_regression_report.html",
+    "p377_results": "artifacts/P377_biglotto_command_center_regression_results.json"
+  },
+  "source_p378_artifact_paths": {
+    "p378_command_delta": "artifacts/P378_biglotto_regression_run_archive_command_delta.csv",
+    "p378_comparison": "artifacts/P378_biglotto_regression_run_archive_comparison.json",
+    "p378_freshness_delta": "artifacts/P378_biglotto_regression_run_archive_freshness_delta.csv",
+    "p378_index": "artifacts/P378_biglotto_regression_run_archive_index.json",
+    "p378_manifest": "artifacts/P378_biglotto_regression_run_archive_manifest.csv",
+    "p378_module": "recovered_strategies/biglotto/no_db_regression_run_archive.py",
+    "p378_report": "artifacts/P378_biglotto_regression_run_archive_report.html",
+    "p378_snapshot": "artifacts/P378_biglotto_regression_run_archive_snapshot.json"
+  },
+  "source_p379_artifact_paths": {
+    "p379_catalog": "artifacts/P379_biglotto_regression_archive_explorer_catalog.csv",
+    "p379_command_view": "artifacts/P379_biglotto_regression_archive_explorer_command_view.csv",
+    "p379_freshness_view": "artifacts/P379_biglotto_regression_archive_explorer_freshness_view.csv",
+    "p379_index": "artifacts/P379_biglotto_regression_archive_explorer_index.json",
+    "p379_manifest": "artifacts/P379_biglotto_regression_archive_explorer_manifest.csv",
+    "p379_module": "recovered_strategies/biglotto/no_db_regression_archive_explorer.py",
+    "p379_query_snapshots": "artifacts/P379_biglotto_regression_archive_explorer_query_snapshots.json",
+    "p379_report": "artifacts/P379_biglotto_regression_archive_explorer_report.html",
+    "p379_snapshot_summary": "artifacts/P379_biglotto_regression_archive_explorer_snapshot_summary.json"
+  },
+  "source_sha256": {
+    "artifacts/P377_biglotto_command_center_regression_artifact_freshness.csv": "1c6784a8046f2cddb7a03435f0321451aca3280ebd9acc9e9570c3ffee40284a",
+    "artifacts/P377_biglotto_command_center_regression_commands.csv": "992143bb909c115bc41ffa758867086ea08c834374b8b8b1ad5b9fd7752b3dcd",
+    "artifacts/P377_biglotto_command_center_regression_failures.csv": "84ce4b84ae641d99518c65b4117fe25a1fdf0db3b9feb9e7a4987bc1967e0e3f",
+    "artifacts/P377_biglotto_command_center_regression_manifest.csv": "43f803c4d4b46542cba9be5891f4b56cdfd5b963bccb8a773de2e118397a862b",
+    "artifacts/P377_biglotto_command_center_regression_report.html": "7e8e8cc7dc1df4f3a010f80e5f35895d152085d2fa6bd01d6721d7cb715bb6c7",
+    "artifacts/P377_biglotto_command_center_regression_results.json": "d942491e194bca420e10e79a41711410e7d20ca5b59ab2621b9dc1ede54c3d5f",
+    "artifacts/P378_biglotto_regression_run_archive_command_delta.csv": "2642a0bf3e967a998401ca18ae4b6da0cf576c1161d0b4d5f5c5e0fe0baeab44",
+    "artifacts/P378_biglotto_regression_run_archive_comparison.json": "385e676bd914a82f8cb84de50429badee7aad0c5c22c4f0e0c976e350771e32b",
+    "artifacts/P378_biglotto_regression_run_archive_freshness_delta.csv": "a4d5689dcffcb20556b5a1d1443457b742bff6389ea37a904619572f0f629b26",
+    "artifacts/P378_biglotto_regression_run_archive_index.json": "fcb5ff754847a9b8c9c9b27acc34ac09852354e5d4036126acabd087bd183ece",
+    "artifacts/P378_biglotto_regression_run_archive_manifest.csv": "2631a28a87fe856bdf79f09c8ece6fd26f03034a162ff91f91149e8bc81ddb72",
+    "artifacts/P378_biglotto_regression_run_archive_report.html": "ba52bbe17d7e51fc5ac313f32bce25154e7901f841eb92c53bc56b87a240e34b",
+    "artifacts/P378_biglotto_regression_run_archive_snapshot.json": "3395e74096b0175a9beeee6479627c82d20dd040d4ef95a8e1480409dd06be27",
+    "artifacts/P379_biglotto_regression_archive_explorer_catalog.csv": "2c95934c5f5e08d62edbe468f4c42dc8c9713c6f89b74a9591520840a16281c3",
+    "artifacts/P379_biglotto_regression_archive_explorer_command_view.csv": "8ec4cdd1c7325f68d5c91a7a724a9c1ea0fb85bb8e9d405ff7ebdf64119acbaa",
+    "artifacts/P379_biglotto_regression_archive_explorer_freshness_view.csv": "f9413230f1c88cb07e88f5406b896782202f28af4e801492b8527ca24057769a",
+    "artifacts/P379_biglotto_regression_archive_explorer_index.json": "e549f39076af8ae5dc10f602353177733017b460c44dabce652236311ebd2bf6",
+    "artifacts/P379_biglotto_regression_archive_explorer_manifest.csv": "a7847ec6456d27d34d245356c74099d8e5bacf7d5b2e92571e8ab9d56ab401b3",
+    "artifacts/P379_biglotto_regression_archive_explorer_query_snapshots.json": "b07c1e73e6fa44193a21dbb8acdc6b26ae396f441097bb919ebfedd242faeb34",
+    "artifacts/P379_biglotto_regression_archive_explorer_report.html": "dfc3a63154c001c29bf4eac39a2b8bcf02be3dcb895c384fbc73622cc4f5cbee",
+    "artifacts/P379_biglotto_regression_archive_explorer_snapshot_summary.json": "cae4d8930d9a4f1668d5149f7c90b4c7714621e87903e902357d6d6e991b26d2",
+    "recovered_strategies/biglotto/no_db_command_center_regression_runner.py": "244609d4779cc9b03c2d764df20504a8a7a2cf30f8f959ca251ffa9946b9ad84",
+    "recovered_strategies/biglotto/no_db_regression_archive_explorer.py": "c9cb0a532dd2c820f8c12813fda723380ee6447f3710d1a383c7aa7da240696d",
+    "recovered_strategies/biglotto/no_db_regression_run_archive.py": "0c1c251034a68bbc36ee3d2f5a8d2bb04c6087d65d3d3c2211e925149d7ba9e7"
+  },
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "blended_leaderboard": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "force_operations": false,
+    "future_prediction_guarantee": false,
+    "generated_db_rows": false,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring": false,
+    "new_scoring_cohort": false,
+    "production_registry_imported": false,
+    "production_release_approval": false,
+    "strategy_status_changes": false
+  },
+  "task": "P380_biglotto_regression_archive_query"
+}

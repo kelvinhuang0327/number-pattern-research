@@ -1,0 +1,10 @@
+# P325A reproduction commands (read-only)
+cd /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p300a-d5-ui
+git fetch origin
+git rev-parse origin/main            # -> fce02f0dc271274f7cffc54de527f0262e4f4830
+git status --porcelain               # -> clean
+shasum -a 256 public/demo-data/lottery-d5/p320a/strategy_combination_metrics.csv
+shasum -a 256 public/demo-data/lottery-d5/p320a/top_descriptive_candidates.csv
+shasum -a 256 public/demo-data/lottery-d5/p320a/window_summary.csv
+python3 /Users/kelvin/Kelvin-WorkSpace/p325a_d5_equal_budget_baseline_analysis_20260701_145150/build_p325a.py    # deterministic, zero-DB, no randomness
+# re-verify: shasum -a 256 <each payload artifact> == manifest.json entries

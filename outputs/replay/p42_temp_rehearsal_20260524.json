@@ -1,0 +1,148 @@
+{
+  "phase": "P42_WAVE3_BIGLOTTO_DRY_RUN",
+  "run_id": "p42_wave3_biglotto_dryrun_20260524",
+  "started_at": "2026-05-23T23:49:05.751950+00:00",
+  "finished_at": "2026-05-23T23:49:13.814645+00:00",
+  "temp_db_path": "/tmp/p42_temp_rehearsal.db",
+  "prod_rows_before": 28960,
+  "prod_rows_after": 28960,
+  "prod_rows_unchanged": true,
+  "total_dry_run_rows": 9000,
+  "expected_dry_run_rows": 9000,
+  "row_count_ok": true,
+  "schema_validation": {
+    "total_rows": 9000,
+    "errors": [],
+    "valid": true
+  },
+  "leakage_check": {
+    "violation_count": 0,
+    "violations": [],
+    "pass": true
+  },
+  "biglotto_format_ok": true,
+  "r1": {
+    "r1_inserted": 9000,
+    "r1_total_after": 9000,
+    "r1_expected": 9000,
+    "r1_ok": true
+  },
+  "r2": {
+    "r2_before": 9000,
+    "r2_duplicate_inserted": 0,
+    "r2_after": 9000,
+    "r2_idempotent": true
+  },
+  "r3": {
+    "r3_before": 9000,
+    "r3_after": 0,
+    "r3_rollback_ok": true
+  },
+  "per_strategy_counts": {
+    "markov_single_biglotto": 1500,
+    "markov_2bet_biglotto": 1500,
+    "bet2_fourier_expansion_biglotto": 1500,
+    "fourier30_markov30_biglotto": 1500,
+    "cold_complement_biglotto": 1500,
+    "coldpool15_biglotto": 1500
+  },
+  "hit_stats": {
+    "markov_single_biglotto": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 23,
+      "hit_3plus_rate": 0.0153,
+      "hit_breakdown": {
+        "0": 650,
+        "1": 634,
+        "2": 193,
+        "3": 20,
+        "4": 3,
+        "5": 0,
+        "6": 0
+      }
+    },
+    "markov_2bet_biglotto": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 23,
+      "hit_3plus_rate": 0.0153,
+      "hit_breakdown": {
+        "0": 650,
+        "1": 634,
+        "2": 193,
+        "3": 20,
+        "4": 3,
+        "5": 0,
+        "6": 0
+      }
+    },
+    "bet2_fourier_expansion_biglotto": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 36,
+      "hit_3plus_rate": 0.024,
+      "hit_breakdown": {
+        "0": 664,
+        "1": 626,
+        "2": 174,
+        "3": 32,
+        "4": 4,
+        "5": 0,
+        "6": 0
+      }
+    },
+    "fourier30_markov30_biglotto": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 21,
+      "hit_3plus_rate": 0.014,
+      "hit_breakdown": {
+        "0": 652,
+        "1": 638,
+        "2": 189,
+        "3": 18,
+        "4": 3,
+        "5": 0,
+        "6": 0
+      }
+    },
+    "cold_complement_biglotto": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 22,
+      "hit_3plus_rate": 0.0147,
+      "hit_breakdown": {
+        "0": 644,
+        "1": 632,
+        "2": 202,
+        "3": 21,
+        "4": 1,
+        "5": 0,
+        "6": 0
+      }
+    },
+    "coldpool15_biglotto": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 22,
+      "hit_3plus_rate": 0.0147,
+      "hit_breakdown": {
+        "0": 644,
+        "1": 632,
+        "2": 202,
+        "3": 21,
+        "4": 1,
+        "5": 0,
+        "6": 0
+      }
+    }
+  },
+  "all_rehearsals_pass": true
+}

@@ -1,0 +1,43 @@
+{
+  "phase": "P16_BIGLOTTO_REMAINING_STRATEGIES_APPLY_DECISION",
+  "generated_at": "2026-05-20T13:05:00.000000+00:00",
+  "production_apply_authorized": true,
+  "production_rows_before": 1960,
+  "strategies": [
+    "biglotto_triple_strike",
+    "biglotto_deviation_2bet"
+  ],
+  "per_strategy_planned_insert": {
+    "biglotto_triple_strike": 1500,
+    "biglotto_deviation_2bet": 1500
+  },
+  "planned_insert_count": 3000,
+  "expected_rows_after_apply": 4960,
+  "legacy_rows_outside_window": {
+    "biglotto_triple_strike": 70,
+    "biglotto_deviation_2bet": 70
+  },
+  "duplicate_existing_in_window": 0,
+  "note": "Legacy rows (99000056-99000105) predate the 1500-draw window (starts 102000009). No duplicates in target window.",
+  "prediction_timestamp_required": true,
+  "prediction_cutoff_date_present": true,
+  "prediction_generated_at_present": true,
+  "schema_patch_required": true,
+  "schema_patch_columns": ["prediction_cutoff_date", "prediction_generated_at"],
+  "temp_rehearsal_pass": true,
+  "idempotency_pass": true,
+  "rollback_pass": true,
+  "r1_inserted_count": 3000,
+  "r2_inserted_count": 0,
+  "rollback_deleted_count": 3000,
+  "rows_after_rollback": 1960,
+  "production_apply_performed": true,
+  "inserted_count": 3000,
+  "duplicate_count": 0,
+  "rows_after_apply": 4960,
+  "apply_status": "COMPLETE",
+  "required_apply_phrase": "YES apply Big Lotto remaining strategies replay rows with prediction timestamp",
+  "final_classification": "P16A_PRODUCTION_APPLY_COMPLETE",
+  "controlled_apply_id": "P16_BIGLOTTO_REMAINING_1500_PROD_20260520",
+  "truth_level": "BIGLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED"
+}

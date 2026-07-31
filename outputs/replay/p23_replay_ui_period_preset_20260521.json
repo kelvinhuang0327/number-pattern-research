@@ -1,0 +1,95 @@
+{
+  "phase": "P23a",
+  "title": "Replay UI Period Preset Quick-Select Buttons",
+  "branch": "p23-replay-ui-period-preset",
+  "date": "2026-05-21",
+  "classification": "P23_REPLAY_UI_PERIOD_PRESET",
+
+  "implementation_summary": {
+    "files_changed": ["index.html"],
+    "files_added": [
+      "tests/test_p23_replay_ui_period_preset.py",
+      "outputs/replay/p23_replay_ui_period_preset_20260521.json",
+      "docs/replay/p23_replay_ui_period_preset_20260521.md"
+    ],
+    "backend_changes": "none — backend page_size ceiling le=200 sufficient for multi-fetch",
+    "db_writes": "none"
+  },
+
+  "changes": {
+    "html": {
+      "location": "index.html line ~2047 (card-header for 🗂️ 回放記錄)",
+      "description": "Added flex-wrap:wrap to card-header; inserted rp-preset-btns div with four buttons: 100期, 500期, 1000期, 1500期. Each button has data-preset attribute and data-testid for test targeting.",
+      "preset_buttons": [
+        {"label": "100期", "data-preset": "100", "data-testid": "rp-preset-100"},
+        {"label": "500期", "data-preset": "500", "data-testid": "rp-preset-500"},
+        {"label": "1000期", "data-preset": "1000", "data-testid": "rp-preset-1000"},
+        {"label": "1500期", "data-preset": "1500", "data-testid": "rp-preset-1500"}
+      ]
+    },
+    "js_variables": {
+      "rpPageSize": "changed from const to let (allows rpPresetFetch to restore default 50 after preset)",
+      "rpPresetPeriods": "new let variable, 0 = normal paginated mode, N = preset mode"
+    },
+    "rpBuildHistoryRows": {
+      "type": "new function declaration (hoisted within IIFE)",
+      "purpose": "Extracts row rendering logic from rpQuery to share with rpPresetFetch",
+      "guards_preserved": ["predicted_special != null (P22 DAILY_539 fix)", "truth_level badge", "fixture_mode row class", "REPLAY_ERROR tooltip"]
+    },
+    "rpPresetFetch": {
+      "type": "new async function",
+      "FETCH_PS": 200,
+      "strategy": "while (allRecords.length < n) loop with page_size=min(200, remaining) per call; slices to n; disables prev/next buttons; shows '前N期 / X筆' in total label",
+      "filters_forwarded": ["lottery_type", "lifecycle_status", "strategy_id", "replay_status", "date_from", "date_to", "fixture_mode"],
+      "no_db_write": true
+    },
+    "rpQuery": {
+      "change": "inline records.map() render loop replaced with rpBuildHistoryRows(records) call",
+      "behavior_unchanged": true
+    },
+    "dom_event_wiring": {
+      "preset_buttons": "querySelectorAll('.rp-preset-btn').forEach → rpPresetFetch(n)",
+      "query_button": "resets rpPresetPeriods=0, rpPageSize=50, rpPage=1 before calling rpQuery()"
+    }
+  },
+
+  "test_results": {
+    "p23_new_tests": {"file": "tests/test_p23_replay_ui_period_preset.py", "total": 47, "passed": 47, "failed": 0},
+    "canonical_suite": {
+      "tests": [
+        "tests/test_replay_lifecycle_drift_guard.py",
+        "tests/test_replay_api_contract.py",
+        "tests/test_replay_branch_governance_guard.py",
+        "tests/test_p21b_daily539_tempdb_rehearsal.py",
+        "tests/test_p22_daily539_api_ui_verification.py",
+        "tests/test_p23_replay_ui_period_preset.py"
+      ],
+      "total": 186,
+      "passed": 186,
+      "failed": 0
+    }
+  },
+
+  "guards": {
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "governance_guard": "BRANCH_GOVERNANCE_PASS — branch='p23-replay-ui-period-preset' rows=12460"
+  },
+
+  "production_db": {
+    "path": "lottery_api/data/lottery_v2.db",
+    "table": "strategy_prediction_replays",
+    "rows": 12460,
+    "changed": false,
+    "DAILY_539_rows": 3180,
+    "DAILY_539_predicted_special_non_null": 0
+  },
+
+  "multi_fetch_design": {
+    "backend_ceiling": "page_size le=200",
+    "preset_100": "1 fetch call (page_size=100)",
+    "preset_500": "3 fetch calls (200+200+100)",
+    "preset_1000": "5 fetch calls (200×5)",
+    "preset_1500": "8 fetch calls (200×7+100)",
+    "early_termination": "loop breaks if batch is empty or allRecords >= total"
+  }
+}

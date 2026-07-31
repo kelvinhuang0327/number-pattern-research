@@ -1,0 +1,13 @@
+artifact_group,artifact_role,path,row_count,sha256,no_db_open_write,details
+source,p363_summary,artifacts/P363_biglotto_evidence_pack_summary.csv,24,588d6450251b20b747ad0cd956898f215b91df322a49f70be47faad05cc8aad0,YES,P363 evidence-pack source artifact.
+source,p363_adapter_cards,artifacts/P363_biglotto_evidence_pack_adapter_cards.csv,5,9db24b6030f484b7d101ff1b7d9fa7441a3e2170a87e8d84219d285e11e3544f,YES,P363 evidence-pack source artifact.
+source,p363_subset_cards,artifacts/P363_biglotto_evidence_pack_subset_cards.csv,31,c973c7110e26516ea0248cee3d83d200e0e6fa5c53d63f7a4e6e24fe46110042,YES,P363 evidence-pack source artifact.
+source,p363_consistency_checks,artifacts/P363_biglotto_evidence_pack_consistency_checks.csv,9,854b4cc3b691da09328adb2159749c20e63bd957583905b5ab908cd852c386a6,YES,P363 evidence-pack source artifact.
+source,p363_manifest,artifacts/P363_biglotto_evidence_pack_manifest.csv,14,1cf583ffb60103e6d20973dd7e29f4ff5d25ad2c16894a1d969ae15bb3ef6e20,YES,P363 evidence-pack source artifact.
+source,p363_report,artifacts/P363_biglotto_evidence_pack_report.md,,e7fab14e746a77aaf6cfb930eb8502496aa1a587fd828bbe09d8854b23fc2e82,YES,P363 evidence-pack source artifact.
+output,index,artifacts/P364_biglotto_evidence_dashboard_index.json,1,630edbc4f2943376aeb3f5e111f21d676f462f28b6fac0daeadbc26b315a86f5,YES,P364 derived output artifact.
+output,adapter_table,artifacts/P364_biglotto_evidence_dashboard_adapter_table.csv,5,d424b766aeeabcd71353b53a08841757ab2d3836b43c5ea2675796789ec6dbd2,YES,P364 derived output artifact.
+output,subset_table,artifacts/P364_biglotto_evidence_dashboard_subset_table.csv,31,2dc2f100f09e7c402f798739cd8461b9ee35c85ac50a78a40eca79f34efc4999,YES,P364 derived output artifact.
+output,html,artifacts/P364_biglotto_evidence_dashboard.html,,70d91a1b712fdd39e32da8bcf0bf2a0ea3c90e8ef0f9413f7b561c42b8ec518d,YES,P364 derived output artifact.
+output,manifest,artifacts/P364_biglotto_evidence_dashboard_manifest.csv,12,,YES,P364 manifest records deterministic source/output inventory; self SHA omitted.
+statement,no_db_open_write,,,,YES,"P364 reads only merged P363 evidence-pack artifacts; no DB open/write, no adapter calls, no scoring cohort, no production registry import, no deploy."

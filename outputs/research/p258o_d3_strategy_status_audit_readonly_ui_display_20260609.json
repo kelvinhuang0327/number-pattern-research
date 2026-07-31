@@ -1,0 +1,77 @@
+{
+  "task_id": "P258O",
+  "task_name": "D3 Strategy Status Audit — Read-only UI Display",
+  "artifact_date": "2026-06-09",
+  "task_status": "P258O_D3_STRATEGY_STATUS_AUDIT_READONLY_UI_DISPLAY_READY",
+  "final_classification": "P258O_D3_STRATEGY_STATUS_AUDIT_READONLY_UI_DISPLAY_READY",
+
+  "ui_display_implemented": true,
+  "ui_entry_location": "index.html — section id=p258-d3-audit-section, nav data-section=p258-d3-audit",
+  "api_route_used": "GET /api/replay/d3-strategy-status-audit",
+
+  "row_fields_displayed": [
+    "lottery_type",
+    "strategy_id",
+    "lifecycle_status",
+    "evidence_status",
+    "replay_row_count",
+    "draw_coverage",
+    "d3_contract_status",
+    "d3_contract_reason"
+  ],
+
+  "filters_implemented": [
+    "lottery_type",
+    "lifecycle_status",
+    "d3_contract_status"
+  ],
+
+  "safety_disclaimers_displayed": [
+    "D3 is not a prediction model.",
+    "Contract validation is not strategy evaluation.",
+    "NOT_YET_REJECTED is not approval.",
+    "Passing contract validation does not imply improved prediction accuracy.",
+    "This page is historical/read-only evidence, not betting advice."
+  ],
+
+  "d3_lifecycle_evidence_visually_separate": true,
+  "d3_lifecycle_separation_method": "Two column groups with different header colors: lifecycle/evidence in blue (#58a6ff), D3 contract in purple (#8b5cf6) with a visual border separator",
+
+  "allowed_d3_statuses_only": true,
+  "allowed_d3_statuses_in_ui": [
+    "NOT_EVALUATED_BY_D3",
+    "CONTRACT_READY",
+    "CONTRACT_BLOCKED",
+    "NOT_APPLICABLE_HISTORICAL_ARTIFACT",
+    "NOT_APPLICABLE_NO_REPLAY"
+  ],
+
+  "forbidden_d3_statuses_confirmed_absent": [
+    "APPROVED",
+    "PROMOTED",
+    "PRODUCTION_READY",
+    "RECOMMENDED",
+    "PREDICTIVE_EDGE_CONFIRMED"
+  ],
+
+  "no_db_query_proof": "UI fetches only /api/replay/d3-strategy-status-audit via browser fetch(). No sqlite3, DatabaseManager, or backend DB path is called from JS. The API route itself is artifact-backed (P258N confirmed).",
+  "no_d3_execution_proof": "JS calls only /api/replay/d3-strategy-status-audit. No run_contract_validation_flow(), gate_statistics, gate_orchestrator, or any executable D3 module is invoked.",
+  "no_strategy_evaluation_proof": "UI renders rows as read-only display. No scoring, ranking, or recommendation logic exists in the JS. D3 contract status column is explicitly labeled as non-approval.",
+  "no_forbidden_d3_statuses_proof": "D3_STATUS_LABELS and D3_STATUS_COLORS dicts in JS contain only the 5 allowed statuses. APPROVED/PROMOTED/PRODUCTION_READY/RECOMMENDED/PREDICTIVE_EDGE_CONFIRMED are not in any JS string.",
+  "no_db_recommendation_production_registry_proof": "index.html JS block contains no backend imports, DB connections, registry mutations, recommendation logic, or deployment calls.",
+
+  "governance": {
+    "d3_is_not_approval_gate": true,
+    "d3_is_not_prediction_model": true,
+    "contract_validation_is_not_strategy_evaluation": true,
+    "not_yet_rejected_is_not_approval": true,
+    "p258o_does_not_authorize_p258p_automatically": true,
+    "p258p_requires_separate_explicit_authorization": true
+  },
+
+  "future_task_split": {
+    "next_allowed_task": "P258P: read-only E2E / UX / safety closeout only, if explicitly authorized",
+    "running_d3_on_real_candidate_methods": "FORBIDDEN — requires separate future task and explicit authorization beyond P258P",
+    "each_task_requires_separate_explicit_authorization": true
+  }
+}

@@ -1,0 +1,271 @@
+{
+  "run_id": "p3bb_official_draw_ingestion_dryrun_20260516",
+  "generated_at": "2026-05-16T05:49:14Z",
+  "overall_classification": "P3BB_OFFICIAL_DRAW_INGESTION_DRYRUN_READY",
+  "safety": {
+    "db_written": false,
+    "replay_rows_generated": false,
+    "draw_rows_inserted": false,
+    "prediction_items_promoted": false,
+    "strategy_logic_changed": false,
+    "api_ui_backend_changed": false
+  },
+  "config": {
+    "targets": [
+      {
+        "lottery_type": "DAILY_539",
+        "draw": "115000106"
+      },
+      {
+        "lottery_type": "POWER_LOTTO",
+        "draw": "115000035"
+      }
+    ],
+    "db_path": "lottery_api/data/lottery_v2.db",
+    "dry_run": true
+  },
+  "db_preflight": {
+    "db_path": "lottery_api/data/lottery_v2.db",
+    "existence_by_type": {
+      "DAILY_539": {
+        "115000106": false
+      },
+      "POWER_LOTTO": {
+        "115000035": false
+      }
+    }
+  },
+  "pending_items": {
+    "DAILY_539:115000106": [
+      {
+        "id": 1087,
+        "status": "PENDING",
+        "numbers": "[9, 16, 23, 37, 39]",
+        "special": null
+      },
+      {
+        "id": 1088,
+        "status": "PENDING",
+        "numbers": "[7, 17, 26, 30, 35]",
+        "special": null
+      },
+      {
+        "id": 1089,
+        "status": "PENDING",
+        "numbers": "[5, 18, 20, 24, 31]",
+        "special": null
+      }
+    ],
+    "POWER_LOTTO:115000035": [
+      {
+        "id": 1072,
+        "status": "PENDING",
+        "numbers": "[12, 22, 24, 26, 29, 37]",
+        "special": null
+      },
+      {
+        "id": 1073,
+        "status": "PENDING",
+        "numbers": "[4, 23, 25, 27, 33, 36]",
+        "special": null
+      },
+      {
+        "id": 1074,
+        "status": "PENDING",
+        "numbers": "[2, 11, 13, 15, 20, 32]",
+        "special": null
+      }
+    ]
+  },
+  "pending_unblock": {
+    "DAILY_539:115000106": {
+      "draw": "115000106",
+      "lottery_type": "DAILY_539",
+      "item_ids": [
+        1087,
+        1088,
+        1089
+      ],
+      "unblock_status": "READY_PENDING_IMPORT"
+    },
+    "POWER_LOTTO:115000035": {
+      "draw": "115000035",
+      "lottery_type": "POWER_LOTTO",
+      "item_ids": [
+        1072,
+        1073,
+        1074
+      ],
+      "unblock_status": "READY_PENDING_IMPORT"
+    }
+  },
+  "draw_results": [
+    {
+      "source_url": "https://api.taiwanlottery.com/TLCAPIWeB/Lottery/Daily539Result?period=115000106",
+      "draw": "115000106",
+      "lottery_type": "DAILY_539",
+      "fetch_status": "FETCHED",
+      "date": "2026/04/30",
+      "numbers": [
+        6,
+        15,
+        27,
+        30,
+        31
+      ],
+      "special": null,
+      "raw_content": {
+        "period": 115000106,
+        "lotteryDate": "2026-04-30T00:00:00",
+        "redeemableDate": "2026-08-03T00:00:00",
+        "drawNumberSize": [
+          6,
+          15,
+          27,
+          30,
+          31
+        ],
+        "drawNumberAppear": [
+          15,
+          31,
+          30,
+          6,
+          27
+        ],
+        "sellAmount": 35425850,
+        "totalAmount": 8678550,
+        "d539JackpotAssign": {
+          "winnerCount": 0,
+          "perPrize": 8000000
+        },
+        "d539SecondAssign": {
+          "winnerCount": 159,
+          "perPrize": 20000
+        },
+        "d539ThirdAssign": {
+          "winnerCount": 6249,
+          "perPrize": 300
+        },
+        "d539FourthAssign": {
+          "winnerCount": 72477,
+          "perPrize": 50
+        }
+      },
+      "error": null,
+      "period_from_api": "115000106",
+      "validation": {
+        "passed": true,
+        "issues": []
+      },
+      "exists_in_db": false
+    },
+    {
+      "source_url": "https://api.taiwanlottery.com/TLCAPIWeB/Lottery/SuperLotto638Result?period=115000035",
+      "draw": "115000035",
+      "lottery_type": "POWER_LOTTO",
+      "fetch_status": "FETCHED",
+      "date": "2026/04/30",
+      "numbers": [
+        1,
+        4,
+        13,
+        19,
+        27,
+        30
+      ],
+      "special": 8,
+      "raw_content": {
+        "period": 115000035,
+        "lotteryDate": "2026-04-30T00:00:00",
+        "redeemableDate": "2026-08-03T00:00:00",
+        "drawNumberSize": [
+          1,
+          4,
+          13,
+          19,
+          27,
+          30,
+          8
+        ],
+        "drawNumberAppear": [
+          1,
+          13,
+          27,
+          30,
+          4,
+          19,
+          8
+        ],
+        "totalAmount": 371171603,
+        "sellAmount": 83520300,
+        "super638JackpotAssign": {
+          "prize": 26637401,
+          "lastPrize": 325235438,
+          "winnerCount": 0,
+          "perPrize": 0
+        },
+        "super638SecondAssign": {
+          "prize": 3292263,
+          "lastPrize": 0,
+          "winnerCount": 0,
+          "perPrize": 0
+        },
+        "super638ThirdAssign": {
+          "prize": 600000,
+          "lastPrize": 0,
+          "winnerCount": 4,
+          "perPrize": 150000
+        },
+        "super638FourthAssign": {
+          "prize": 760000,
+          "lastPrize": 0,
+          "winnerCount": 38,
+          "perPrize": 20000
+        },
+        "super638FifthAssign": {
+          "prize": 1040000,
+          "lastPrize": 0,
+          "winnerCount": 260,
+          "perPrize": 4000
+        },
+        "super638SixthAssign": {
+          "prize": 1544000,
+          "lastPrize": 0,
+          "winnerCount": 1930,
+          "perPrize": 800
+        },
+        "super638SeventhAssign": {
+          "prize": 1386000,
+          "lastPrize": 0,
+          "winnerCount": 3465,
+          "perPrize": 400
+        },
+        "super638EighthAssign": {
+          "prize": 3830800,
+          "lastPrize": 0,
+          "winnerCount": 19154,
+          "perPrize": 200
+        },
+        "super638NormalAssign": {
+          "prize": 4326600,
+          "lastPrize": 0,
+          "winnerCount": 43266,
+          "perPrize": 100
+        },
+        "super638NinthAssign": {
+          "prize": 2519100,
+          "lastPrize": 0,
+          "winnerCount": 25191,
+          "perPrize": 100
+        }
+      },
+      "error": null,
+      "period_from_api": "115000035",
+      "validation": {
+        "passed": true,
+        "issues": []
+      },
+      "exists_in_db": false
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "task_id": "SZC2_SECOND_ZONE_SCORE_GUARD_AUDIT",
+  "generated_at": "2026-06-01",
+  "scope": "lightweight static verification",
+  "preflight": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "git_dir": ".git",
+    "dirty_worktree_detected": true,
+    "note": "Read-only static audit continued without production logic changes."
+  },
+  "szc1_dependency": {
+    "classification": "SECOND_ZONE_NO_SIGNAL_CONFIRMED",
+    "governance_direction": [
+      "display-only",
+      "exclude from recommendation score",
+      "separate second-zone evaluation"
+    ]
+  },
+  "scanned_files": [
+    "src/core/App.js",
+    "src/core/handlers/UIDisplayHandler.js",
+    "src/ui/AutoLearningManager.js",
+    "src/engine/PredictionEngine.js",
+    "src/engine/strategies/*",
+    "lottery_api/* (static grep for special fields in scoring/ranking paths)"
+  ],
+  "special_related_symbols_found": [
+    "predictedSpecial",
+    "actualSpecial",
+    "special",
+    "predicted_special",
+    "actual_special",
+    "special_hit"
+  ],
+  "code_path_inventory": {
+    "display_only_or_metrics": [
+      {
+        "file": "src/core/handlers/UIDisplayHandler.js",
+        "finding": "special appears in UI badges and notes (display only)."
+      },
+      {
+        "file": "src/core/App.js",
+        "finding": "predictedSpecial/actualSpecial are attached to simulation result rows for display/evaluation output."
+      }
+    ],
+    "score_ranking_confidence_paths": [
+      {
+        "file": "src/core/App.js",
+        "finding": "numberScores/overallScore/overallConfidence use only result.numbers and result.confidence. No special-field input in score accumulation loops."
+      },
+      {
+        "file": "src/ui/AutoLearningManager.js",
+        "finding": "evaluation dual-bet numberScores/ranking/confidence derive from numbers+confidence only."
+      }
+    ],
+    "ambiguous_paths": []
+  },
+  "score_contamination_check": {
+    "contamination_found": false,
+    "evidence_summary": [
+      "No static evidence that predicted_special/actual_special/special_hit are used in numberScores aggregation.",
+      "No static evidence that special fields affect overall recommendation score, ranking, confidence, or candidate selection in core UI scoring paths."
+    ]
+  },
+  "ui_api_disclosure_risk": {
+    "risk_found": false,
+    "notes": [
+      "Special is shown as informational badge/note in display handlers.",
+      "No direct static wording found in inspected score paths that claims special improves core recommendation score."
+    ]
+  },
+  "recommended_contracts": [
+    "Second-zone special must not be included in numberScores aggregation.",
+    "Second-zone must remain display-only/informational in recommendation UI.",
+    "Second-zone metrics should be reported separately from first-zone score.",
+    "Second-zone random baseline 0.125 should be disclosed when presenting special performance."
+  ],
+  "risk_level": "LOW",
+  "final_classification": "SECOND_ZONE_DISPLAY_ONLY_CONFIRMED",
+  "recommended_next_action": "Maintain current score guard and optionally add dedicated contract test to prevent future special-field contamination."
+}

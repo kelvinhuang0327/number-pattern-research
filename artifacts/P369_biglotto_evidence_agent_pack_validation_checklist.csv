@@ -1,0 +1,14 @@
+check_name,status,expected,actual,details
+required_p367_p368_files_exist,PASS,16,16,Required P367/P368 source files are present.
+p367_api_validation_has_no_failures,PASS,all PASS,0,P367 validation CSV has no failing rows.
+p368_compatibility_matrix_has_no_fail_rows,PASS,all TRUE,0,P368 compatibility matrix has no incompatible rows.
+p368_contract_drift_has_no_fail_rows,PASS,no FAIL,0,P368 contract drift CSV has no FAIL rows.
+summary_json_schema,PASS,required summary keys,"['api_facade_availability', 'generated_at', 'recommended_safe_next_task_categories', 'scope_statements', 'snapshot_compatibility_status', 'source_artifacts', 'source_merge_baseline', 'statements', 'task']",Summary JSON includes the required P369 sections.
+task_prompts_json_schema,PASS,5 prompts,5,Task prompts JSON includes deterministic prompt templates.
+query_recipes_json_schema,PASS,6 recipes,6,Query recipes JSON includes deterministic recipe templates.
+generated_prompts_contain_required_constraints,PASS,all required phrases in every prompt,present,Each generated prompt contains no-DB/no-adapter/no-scoring/no-deploy/no-betting/no-future-claim constraints.
+generated_examples_contain_required_sections,PASS,all examples sections,present,Examples Markdown includes required sections.
+generated_examples_contain_disclaimers,PASS,all disclaimer lines,present,Examples Markdown contains all required disclaimers.
+generated_prompts_do_not_authorize_forbidden_actions,PASS,absent,absent,"Generated pack text does not authorize DB writes, adapter execution, scoring, deploy, force operations, or betting claims."
+snapshot_compatibility_status_true,PASS,True,True,Summary reports compatible P367/P368 evidence state.
+prompt_text_is_nonempty,PASS,nonempty,4036,Prompt text is available for agent handoff.

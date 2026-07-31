@@ -1,0 +1,544 @@
+{
+  "task_id": "P272B_PROSPECTIVE_OOS_DETECTABILITY_POWER",
+  "artifact_date": "2026-06-14",
+  "branch": "task/p272b-prospective-oos-detectability-power",
+  "base_main": "8b62b358aef3e9fce8962054c166e80c1944d00c",
+  "mode": "prospective_oos_detectability_power_brief",
+  "task_class": "statistical_research_and_artifact",
+  "production_apply_authorized": false,
+  "controlled_apply_started": false,
+  "P271M_started": false,
+  "P271N_started": false,
+  "prediction_success_claim": false,
+  "db_opened": false,
+  "db_write": false,
+  "registry_write": false,
+  "network_access": false,
+  "subprocess_used": false,
+  "migration_or_deployment_or_activation": false,
+  "historical_strategy_reselection": false,
+  "project_classification": "P271L_PREFLIGHT_COMPLETE_NOT_READY_FOR_APPLY",
+  "production_apply_state": "NOT_READY_FOR_APPLY",
+  "pre_registered_contract": {
+    "lotteries": [
+      "DAILY_539",
+      "BIG_LOTTO",
+      "POWER_LOTTO"
+    ],
+    "primary_endpoint": "P265A-compatible draw-level M3+ any-bet (hit_count>=3; special_hit excluded; denominator=distinct target_draw)",
+    "primary_bet_count": 1,
+    "power_targets": [
+      0.8,
+      0.9
+    ],
+    "family_alpha": 0.05,
+    "primary_correction": "Bonferroni",
+    "primary_correction_m": 3,
+    "bh_fdr": "descriptive_only",
+    "deterministic_seed": 42,
+    "effect_scenarios": "committed_evidence_only",
+    "calendar_reporting_horizons_years": [
+      1,
+      3,
+      5,
+      10
+    ],
+    "test_sidedness": "one_sided_upper",
+    "no_invented_deployable_threshold": true,
+    "no_retrospective_strategy_reselection": true
+  },
+  "alpha_corrected_bonferroni_m3": 0.01666667,
+  "alpha_uncorrected": 0.05,
+  "statistical_method": {
+    "test": "exact one-sided (upper) binomial test of observed M3+ rate vs p0",
+    "exactness": "EXACT_BINOMIAL",
+    "exact_method_detail": "log-gamma PMF + forward-recurrence tail summation; not a normal/Poisson approximation",
+    "rejection_rule": "reject H0 when X >= k*, where k* is the smallest k with P(X>=k|p0) <= alpha",
+    "power_definition": "P(X >= k* | p1)",
+    "normal_approx": "reported per cell as normal_approx_n_crosscheck (APPROXIMATE cross-check only)",
+    "deterministic": true,
+    "seed": 42,
+    "stochastic_component": false
+  },
+  "p0_verification": {
+    "DAILY_539": {
+      "computed": 0.01004069,
+      "committed": 0.010041,
+      "abs_diff": 3.057e-07,
+      "match": true
+    },
+    "BIG_LOTTO": {
+      "computed": 0.01863755,
+      "committed": 0.018638,
+      "abs_diff": 4.55e-07,
+      "match": true
+    },
+    "POWER_LOTTO": {
+      "computed": 0.03869806,
+      "committed": 0.038698,
+      "abs_diff": 6.04e-08,
+      "match": true
+    }
+  },
+  "inputs_traceable": true,
+  "cadence_traceable": true,
+  "evidence_manifest": [
+    {
+      "input": "lottery_pool_and_pick",
+      "source_path": "lottery_api/CLAUDE.md",
+      "source_sha256": "7124d1d519c464d472115cf934b98d9b7cf6e9f650520c1e7f2dd9578eb550d5",
+      "field": "header line '大樂透 (1-49選6) | 威力彩 (1-38選6)' + DAILY_539 5/39 convention",
+      "value": "DAILY_539=5/39, BIG_LOTTO=6/49, POWER_LOTTO=6/38 first zone (+1/8 second zone)",
+      "derivation": "documented pool/pick; cross-checked by recomputing p0 (hypergeometric) == committed P267C value",
+      "status": "CONFIRMED"
+    },
+    {
+      "input": "p265a_m3plus_endpoint_definition",
+      "source_path": "outputs/research/p265a_d3_m3_real_replay_success_rate_20260610.md",
+      "source_sha256": "6c9d8af89381ddfc495f3dec62a2bad0ccc8c27fd9b81f708418279b5b60d41f",
+      "field": "draw_success_rule / success_metric",
+      "value": "draw-level any-bet hit_count>=3; special_hit excluded; denominator=distinct target_draw",
+      "derivation": "quoted verbatim from committed P265A artifact (corroborated by P267C success_metric)",
+      "status": "CONFIRMED"
+    },
+    {
+      "input": "p0_one_bet_null_DAILY_539",
+      "source_path": "outputs/research/p267c_m3plus_strategy_revalidation_20260610.json",
+      "source_sha256": "3769596df51f6eaab5ef98cdf799ba9915f0c0349810f0899a7516004639a241",
+      "field": "one_bet_baseline_sanity.DAILY_539.exact",
+      "value": 0.010041,
+      "derivation": "exact hypergeometric P(>=3) recomputed here from (pool,pick) and matched to committed value within 5e-7",
+      "status": "CONFIRMED"
+    },
+    {
+      "input": "p0_one_bet_null_BIG_LOTTO",
+      "source_path": "outputs/research/p267c_m3plus_strategy_revalidation_20260610.json",
+      "source_sha256": "3769596df51f6eaab5ef98cdf799ba9915f0c0349810f0899a7516004639a241",
+      "field": "one_bet_baseline_sanity.BIG_LOTTO.exact",
+      "value": 0.018638,
+      "derivation": "exact hypergeometric P(>=3) recomputed here from (pool,pick) and matched to committed value within 5e-7",
+      "status": "CONFIRMED"
+    },
+    {
+      "input": "p0_one_bet_null_POWER_LOTTO",
+      "source_path": "outputs/research/p267c_m3plus_strategy_revalidation_20260610.json",
+      "source_sha256": "3769596df51f6eaab5ef98cdf799ba9915f0c0349810f0899a7516004639a241",
+      "field": "one_bet_baseline_sanity.POWER_LOTTO.exact",
+      "value": 0.038698,
+      "derivation": "exact hypergeometric P(>=3) recomputed here from (pool,pick) and matched to committed value within 5e-7",
+      "status": "CONFIRMED"
+    },
+    {
+      "input": "effect_scenario_observed_excess_DAILY_539",
+      "source_path": "outputs/research/p270b_outcome_blind_portfolio_geometry_power_audit_20260611.json",
+      "source_sha256": "37808a0166d22113598eaf0458e190c92187708424e690109fd432c7168c53d9",
+      "field": "mde_summary.DAILY_539.p267c_best_uncorrected_excess_pp",
+      "value": 1.32,
+      "derivation": "P267C best uncorrected per-lottery observed excess (committed in P270B and P267C results table); NOT correction-surviving",
+      "status": "CONFIRMED"
+    },
+    {
+      "input": "effect_scenario_observed_excess_BIG_LOTTO",
+      "source_path": "outputs/research/p270b_outcome_blind_portfolio_geometry_power_audit_20260611.json",
+      "source_sha256": "37808a0166d22113598eaf0458e190c92187708424e690109fd432c7168c53d9",
+      "field": "mde_summary.BIG_LOTTO.p267c_best_uncorrected_excess_pp",
+      "value": 1.23,
+      "derivation": "P267C best uncorrected per-lottery observed excess (committed in P270B and P267C results table); NOT correction-surviving",
+      "status": "CONFIRMED"
+    },
+    {
+      "input": "effect_scenario_observed_excess_POWER_LOTTO",
+      "source_path": "outputs/research/p270b_outcome_blind_portfolio_geometry_power_audit_20260611.json",
+      "source_sha256": "37808a0166d22113598eaf0458e190c92187708424e690109fd432c7168c53d9",
+      "field": "mde_summary.POWER_LOTTO.p267c_best_uncorrected_excess_pp",
+      "value": 1.48,
+      "derivation": "P267C best uncorrected per-lottery observed excess (committed in P270B and P267C results table); NOT correction-surviving",
+      "status": "CONFIRMED"
+    },
+    {
+      "input": "p270b_mde_power_findings",
+      "source_path": "outputs/research/p270b_outcome_blind_portfolio_geometry_power_audit_20260611.json",
+      "source_sha256": "37808a0166d22113598eaf0458e190c92187708424e690109fd432c7168c53d9",
+      "field": "mde_summary.{lottery}.{n,alpha,power,z_alpha_2,z_beta,mde_increment_pp_*}",
+      "value": "n=1000, alpha=0.0167, power=0.80, z_alpha_2=2.3934, z_beta=0.8416 (two-proportion portfolio MDE)",
+      "derivation": "prior committed power finding; complementary two-proportion MDE, distinct from this one-sample binomial N*",
+      "status": "CONFIRMED"
+    },
+    {
+      "input": "draw_cadence",
+      "source_path": "outputs/research/p268d1_draw_order_full_history_artifact_backfill_20260610.jsonl",
+      "source_sha256": "f4accb6f527694e739689242c929e87e4b031a364becb4fadb4aaea50ef2e3f8",
+      "field": "draw_date (per record, all 5 games, 2007..2026)",
+      "value": "DAILY_539 6/wk (Mon-Sat), BIG_LOTTO 2/wk (Tue,Fri), POWER_LOTTO 2/wk (Mon,Thu)",
+      "derivation": "reproducibly derived: modal weekday set over CY2025 of committed draw_date; no production DB access",
+      "status": "CONFIRMED"
+    },
+    {
+      "input": "governed_acceptable_horizon",
+      "source_path": "00-Plan/, docs/, outputs/research/ (bounded search)",
+      "source_sha256": null,
+      "field": "n/a",
+      "value": "NO_GOVERNED_ACCEPTABLE_HORIZON_OR_THRESHOLD_FOUND",
+      "derivation": "bounded rg search found no committed governed acceptable horizon or deployable threshold",
+      "status": "CONFIRMED_ABSENT"
+    },
+    {
+      "input": "family_alpha_and_correction",
+      "source_path": "locked_contract (this artifact) + P270B alpha=0.0167 cross-check",
+      "source_sha256": null,
+      "field": "family_alpha / Bonferroni m",
+      "value": "family alpha=0.05; Bonferroni m=3 -> per-test 0.016667 (P270B used rounded 0.0167)",
+      "derivation": "pre-registered contract; corroborated by committed P270B alpha",
+      "status": "CONFIRMED"
+    }
+  ],
+  "lottery_inputs": {
+    "DAILY_539": {
+      "pool_size": 39,
+      "pick_count": 5,
+      "second_zone_size": null,
+      "p0_exact": 0.01004069,
+      "p0_committed_p267c": 0.010041,
+      "p0_match_committed": true,
+      "effect_scenario_pp": 1.32,
+      "p1": 0.02324069,
+      "endpoint": "P265A-compatible draw-level M3+ any-bet (hit_count>=3; special_hit excluded; denominator=distinct target_draw)",
+      "bet_count": 1
+    },
+    "BIG_LOTTO": {
+      "pool_size": 49,
+      "pick_count": 6,
+      "second_zone_size": null,
+      "p0_exact": 0.01863755,
+      "p0_committed_p267c": 0.018638,
+      "p0_match_committed": true,
+      "effect_scenario_pp": 1.23,
+      "p1": 0.03093755,
+      "endpoint": "P265A-compatible draw-level M3+ any-bet (hit_count>=3; special_hit excluded; denominator=distinct target_draw)",
+      "bet_count": 1
+    },
+    "POWER_LOTTO": {
+      "pool_size": 38,
+      "pick_count": 6,
+      "second_zone_size": 8,
+      "p0_exact": 0.03869806,
+      "p0_committed_p267c": 0.038698,
+      "p0_match_committed": true,
+      "effect_scenario_pp": 1.48,
+      "p1": 0.05349806,
+      "endpoint": "P265A-compatible draw-level M3+ any-bet (hit_count>=3; special_hit excluded; denominator=distinct target_draw)",
+      "bet_count": 1
+    }
+  },
+  "cadence": {
+    "DAILY_539": {
+      "draws_per_week": 6,
+      "weekdays": "Mon-Sat",
+      "draws_per_year": 313.0714,
+      "source_path": "outputs/research/p268d1_draw_order_full_history_artifact_backfill_20260610.jsonl",
+      "source_sha256": "f4accb6f527694e739689242c929e87e4b031a364becb4fadb4aaea50ef2e3f8",
+      "derivation": "modal weekday set over calendar year 2025 of committed draw_date field; draws/year = draws_per_week * 365.25/7",
+      "status": "CONFIRMED"
+    },
+    "BIG_LOTTO": {
+      "draws_per_week": 2,
+      "weekdays": "Tue,Fri",
+      "draws_per_year": 104.3571,
+      "source_path": "outputs/research/p268d1_draw_order_full_history_artifact_backfill_20260610.jsonl",
+      "source_sha256": "f4accb6f527694e739689242c929e87e4b031a364becb4fadb4aaea50ef2e3f8",
+      "derivation": "modal weekday set over calendar year 2025 of committed draw_date field; draws/year = draws_per_week * 365.25/7",
+      "status": "CONFIRMED"
+    },
+    "POWER_LOTTO": {
+      "draws_per_week": 2,
+      "weekdays": "Mon,Thu",
+      "draws_per_year": 104.3571,
+      "source_path": "outputs/research/p268d1_draw_order_full_history_artifact_backfill_20260610.jsonl",
+      "source_sha256": "f4accb6f527694e739689242c929e87e4b031a364becb4fadb4aaea50ef2e3f8",
+      "derivation": "modal weekday set over calendar year 2025 of committed draw_date field; draws/year = draws_per_week * 365.25/7",
+      "status": "CONFIRMED"
+    }
+  },
+  "power_results": {
+    "DAILY_539": {
+      "draws_per_year": 313.0714,
+      "alpha_corrected_bonferroni_m3": {
+        "alpha": 0.01666667,
+        "power_80": {
+          "target_power": 0.8,
+          "found": true,
+          "result_label": "DETECTABLE",
+          "n_star_draws": 778,
+          "k_star": 15,
+          "actual_test_size": 0.01383517,
+          "power_at_n_star": 0.800279,
+          "normal_approx_n_crosscheck": 660,
+          "calendar_years_required": 2.485,
+          "max_n_search_bound": 100000
+        },
+        "power_90": {
+          "target_power": 0.9,
+          "found": true,
+          "result_label": "DETECTABLE",
+          "n_star_draws": 1013,
+          "k_star": 18,
+          "actual_test_size": 0.01610692,
+          "power_at_n_star": 0.900484,
+          "normal_approx_n_crosscheck": 943,
+          "calendar_years_required": 3.236,
+          "max_n_search_bound": 100000
+        }
+      },
+      "alpha_uncorrected": {
+        "alpha": 0.05,
+        "power_80": {
+          "target_power": 0.8,
+          "found": true,
+          "result_label": "DETECTABLE",
+          "n_star_draws": 537,
+          "k_star": 10,
+          "actual_test_size": 0.04748218,
+          "power_at_n_star": 0.800198,
+          "normal_approx_n_crosscheck": 486,
+          "calendar_years_required": 1.715,
+          "max_n_search_bound": 100000
+        },
+        "power_90": {
+          "target_power": 0.9,
+          "found": true,
+          "result_label": "DETECTABLE",
+          "n_star_draws": 763,
+          "k_star": 13,
+          "actual_test_size": 0.04796726,
+          "power_at_n_star": 0.90074,
+          "normal_approx_n_crosscheck": 732,
+          "calendar_years_required": 2.437,
+          "max_n_search_bound": 100000
+        }
+      }
+    },
+    "BIG_LOTTO": {
+      "draws_per_year": 104.3571,
+      "alpha_corrected_bonferroni_m3": {
+        "alpha": 0.01666667,
+        "power_80": {
+          "target_power": 0.8,
+          "found": true,
+          "result_label": "DETECTABLE",
+          "n_star_draws": 1355,
+          "k_star": 37,
+          "actual_test_size": 0.01579651,
+          "power_at_n_star": 0.800665,
+          "normal_approx_n_crosscheck": 1243,
+          "calendar_years_required": 12.984,
+          "max_n_search_bound": 100000
+        },
+        "power_90": {
+          "target_power": 0.9,
+          "found": true,
+          "result_label": "DETECTABLE",
+          "n_star_draws": 1805,
+          "k_star": 47,
+          "actual_test_size": 0.01605209,
+          "power_at_n_star": 0.900589,
+          "normal_approx_n_crosscheck": 1718,
+          "calendar_years_required": 17.296,
+          "max_n_search_bound": 100000
+        }
+      },
+      "alpha_uncorrected": {
+        "alpha": 0.05,
+        "power_80": {
+          "target_power": 0.8,
+          "found": true,
+          "result_label": "DETECTABLE",
+          "n_star_draws": 973,
+          "k_star": 26,
+          "actual_test_size": 0.0462711,
+          "power_at_n_star": 0.800851,
+          "normal_approx_n_crosscheck": 896,
+          "calendar_years_required": 9.324,
+          "max_n_search_bound": 100000
+        },
+        "power_90": {
+          "target_power": 0.9,
+          "found": true,
+          "result_label": "DETECTABLE",
+          "n_star_draws": 1343,
+          "k_star": 34,
+          "actual_test_size": 0.04880817,
+          "power_at_n_star": 0.900798,
+          "normal_approx_n_crosscheck": 1306,
+          "calendar_years_required": 12.869,
+          "max_n_search_bound": 100000
+        }
+      }
+    },
+    "POWER_LOTTO": {
+      "draws_per_year": 104.3571,
+      "alpha_corrected_bonferroni_m3": {
+        "alpha": 0.01666667,
+        "power_80": {
+          "target_power": 0.8,
+          "found": true,
+          "result_label": "DETECTABLE",
+          "n_star_draws": 1728,
+          "k_star": 85,
+          "actual_test_size": 0.01644095,
+          "power_at_n_star": 0.800955,
+          "normal_approx_n_crosscheck": 1643,
+          "calendar_years_required": 16.559,
+          "max_n_search_bound": 100000
+        },
+        "power_90": {
+          "target_power": 0.9,
+          "found": true,
+          "result_label": "DETECTABLE",
+          "n_star_draws": 2304,
+          "k_star": 110,
+          "actual_test_size": 0.01619076,
+          "power_at_n_star": 0.900303,
+          "normal_approx_n_crosscheck": 2230,
+          "calendar_years_required": 22.078,
+          "max_n_search_bound": 100000
+        }
+      },
+      "alpha_uncorrected": {
+        "alpha": 0.05,
+        "power_80": {
+          "target_power": 0.8,
+          "found": true,
+          "result_label": "DETECTABLE",
+          "n_star_draws": 1218,
+          "k_star": 59,
+          "actual_test_size": 0.0493493,
+          "power_at_n_star": 0.80039,
+          "normal_approx_n_crosscheck": 1172,
+          "calendar_years_required": 11.671,
+          "max_n_search_bound": 100000
+        },
+        "power_90": {
+          "target_power": 0.9,
+          "found": true,
+          "result_label": "DETECTABLE",
+          "n_star_draws": 1707,
+          "k_star": 80,
+          "actual_test_size": 0.0489744,
+          "power_at_n_star": 0.900159,
+          "normal_approx_n_crosscheck": 1675,
+          "calendar_years_required": 16.357,
+          "max_n_search_bound": 100000
+        }
+      }
+    }
+  },
+  "calendar_horizons": {
+    "DAILY_539": {
+      "power_80": {
+        "n_star_draws": 778,
+        "calendar_years_required": 2.485,
+        "detectable_within_horizon_years": {
+          "1": false,
+          "3": true,
+          "5": true,
+          "10": true
+        }
+      },
+      "power_90": {
+        "n_star_draws": 1013,
+        "calendar_years_required": 3.236,
+        "detectable_within_horizon_years": {
+          "1": false,
+          "3": false,
+          "5": true,
+          "10": true
+        }
+      }
+    },
+    "BIG_LOTTO": {
+      "power_80": {
+        "n_star_draws": 1355,
+        "calendar_years_required": 12.984,
+        "detectable_within_horizon_years": {
+          "1": false,
+          "3": false,
+          "5": false,
+          "10": false
+        }
+      },
+      "power_90": {
+        "n_star_draws": 1805,
+        "calendar_years_required": 17.296,
+        "detectable_within_horizon_years": {
+          "1": false,
+          "3": false,
+          "5": false,
+          "10": false
+        }
+      }
+    },
+    "POWER_LOTTO": {
+      "power_80": {
+        "n_star_draws": 1728,
+        "calendar_years_required": 16.559,
+        "detectable_within_horizon_years": {
+          "1": false,
+          "3": false,
+          "5": false,
+          "10": false
+        }
+      },
+      "power_90": {
+        "n_star_draws": 2304,
+        "calendar_years_required": 22.078,
+        "detectable_within_horizon_years": {
+          "1": false,
+          "3": false,
+          "5": false,
+          "10": false
+        }
+      }
+    }
+  },
+  "governed_horizon": {
+    "years": null,
+    "search_result": "NO_GOVERNED_ACCEPTABLE_HORIZON_OR_THRESHOLD_FOUND",
+    "searched_paths": [
+      "00-Plan/",
+      "docs/",
+      "outputs/research/"
+    ]
+  },
+  "decision_classification": "POWER_QUANTIFIED_THRESHOLD_NOT_GOVERNED",
+  "allowed_decision_classifications": [
+    "PROSPECTIVE_APPLY_POWER_GO",
+    "PROSPECTIVE_APPLY_POWER_NO_GO",
+    "POWER_QUANTIFIED_THRESHOLD_NOT_GOVERNED",
+    "NOT_DETECTABLE_WITHIN_SEARCH_BOUND",
+    "P272B_BLOCKED_UNTRACEABLE_POWER_INPUT"
+  ],
+  "success_classification": "P272B_PROSPECTIVE_OOS_DETECTABILITY_POWER_COMPLETE",
+  "test_execution": {
+    "focused_command": "./venv/bin/python -m pytest tests/test_p272b_prospective_oos_detectability_power.py -q",
+    "focused_result": "61 passed",
+    "regression_p267c": "19 passed",
+    "regression_p270b": "12 passed",
+    "regression_p271l_preflight": "50 passed",
+    "regression_p271l_readonly_schema": "72 passed",
+    "full_repository_suite": "NOT_RUN",
+    "git_diff_check": "PASS",
+    "static_forbidden_interface_scan": "PASS",
+    "json_parse_validation": "PASS",
+    "deterministic_regeneration": "PASS",
+    "markdown_json_consistency": "PASS"
+  },
+  "limitations": [
+    "POWER FEASIBILITY IS NOT EVIDENCE OF A PREDICTIVE EDGE. This brief only answers 'how many future draws to detect an effect of magnitude delta'; it makes no claim that such an effect exists.",
+    "Effect scenarios are the committed P267C best uncorrected per-lottery observed excesses (DAILY_539 +1.32pp / BIG_LOTTO +1.23pp / POWER_LOTTO +1.48pp). NONE survived Bonferroni or BH-FDR in P267C (0/36 cells); they are upper-plausible scenario magnitudes, not established edges.",
+    "Bet-count nuance: p0 is the exact 1-bet M3+ hypergeometric baseline and the locked contract fixes primary_bet_count=1, but the committed observed excesses were measured at the draw-level any-bet endpoint on multi-bet cells (5/3/4 bets). The excess is applied here as a candidate prospective 1-bet effect magnitude; a true prospective 1-bet stream may exhibit a different effect size.",
+    "The test is exact one-sided upper binomial (detecting excess). P267C/P270B used two-sided framing; a one-sided test needs no more N than two-sided at the same per-test alpha, so these N* are not inflated by sidedness.",
+    "Draw cadence is derived from the modal weekday set over calendar year 2025 in the committed P268D1 draw_date field (DAILY_539 6/wk, BIG_LOTTO 2/wk, POWER_LOTTO 2/wk). Sporadic BIG_LOTTO add-on draws and rare DAILY_539 Sunday make-ups are excluded from the regular accrual rate; empirical full-history rates (5.80 / 2.11 / 2.00 per week) and CY2025 counts (316 / 118 / 104) bound the sensitivity.",
+    "No committed governed acceptable detection horizon or deployable threshold exists; therefore neither GO nor NO_GO is selectable and the decision is POWER_QUANTIFIED_THRESHOLD_NOT_GOVERNED.",
+    "Prospective detection further assumes a stable data-generating process over the multi-year accrual window and i.i.d. draw-level outcomes; regime drift or non-stationarity would invalidate the simple binomial model."
+  ]
+}

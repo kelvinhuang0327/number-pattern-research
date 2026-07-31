@@ -27,14 +27,17 @@ allowed-tools: Read, Bash(python3:*)
 python3 tools/quick_backtest.py $ARGUMENTS
 ```
 
-## 策略對照 (2026-02-11 更新)
+## 策略對照 (2026-07-25 legacy continuity 訂正)
 
 | 用戶輸入 | lottery_type | 默認注數 | 策略 | Edge |
 |---------|--------------|---------|------|------|
-| 大樂透 / biglotto | BIG_LOTTO | 3 | Triple Strike | +0.98% |
-| 大樂透 2注 | BIG_LOTTO | 2 | 偏差互補+回聲 P0 | +1.21% |
+| 大樂透 / biglotto | BIG_LOTTO | 3 | Triple Strike | +0.98% (historical) |
+| 大樂透 2注 | BIG_LOTTO | 2 | 偏差互補+回聲 P0 | +1.21% (historical) |
 | 威力彩 / power | POWER_LOTTO | 2 | Fourier Rhythm | +1.91% |
 | 威力彩 3注 | POWER_LOTTO | 3 | Power Precision (F2+Echo/Cold) | +2.30% |
+
+> ⚠️ **大樂透 2注／3注**：evidence_status=HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED。
+> No reliable predictive advantage is currently established. Edge 數值僅為歷史回測描述性紀錄。
 
 ## 隨機基準
 

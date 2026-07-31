@@ -1,0 +1,19 @@
+{
+  "phase": "P17B_P14D_TIMESTAMP_BACKFILL",
+  "mode": "apply",
+  "generated_at": "2026-05-20T13:33:33.614367+00:00",
+  "production_apply": true,
+  "target_apply_id": "P14D_BIGLOTTO_TS3_1500_PROD_20260520",
+  "controlled_apply_id": "P17B_P14D_TIMESTAMP_BACKFILL_20260520",
+  "target_rows": 1500,
+  "eligible_rows": 1500,
+  "cutoff_join_count": 1500,
+  "updated_count": 1500,
+  "inserted_count": 0,
+  "deleted_count": 0,
+  "rows_before": 4960,
+  "rows_after": 4960,
+  "cutoff_violations": 0,
+  "prediction_generated_at_semantics": "P17B_METADATA_BACKFILL_TIME_NOT_ORIGINAL_PREDICTION_TIME",
+  "production_rows_after": 4960
+}

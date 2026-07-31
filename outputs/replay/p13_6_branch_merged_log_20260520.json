@@ -1,0 +1,1795 @@
+{
+  "phase": "P13_6_BRANCH_MERGED_ARCHIVE",
+  "generated_at": "2026-05-20T08:38:19.575837+00:00",
+  "policy": "RENAME_ONLY_NO_DELETION",
+  "active_branch_after": "main",
+  "merged_namespace": "merged/",
+  "protected_branches": [
+    "main"
+  ],
+  "local_total_candidates": 128,
+  "remote_total_candidates": 80,
+  "worktree_candidates": 20,
+  "candidate_local_renames": [
+    {
+      "name": "audit/p4-artifact-parser-feasibility-20260513",
+      "sha": "d438fb60cb19098562558ba3b455e618fe3bf7a6",
+      "last_commit_date": "2026-05-13 14:45:24 +0800",
+      "merged_into_main": "Y",
+      "ahead_of_main": 0,
+      "behind_main": 35,
+      "target_name": "merged/audit/p4-artifact-parser-feasibility-20260513"
+    },
+    {
+      "name": "auto/inbox/20260424",
+      "sha": "761164ee2156d3e55685ed5e381f86ea7eaea94d",
+      "last_commit_date": "2026-04-25 09:10:50 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 30,
+      "behind_main": 166,
+      "target_name": "merged/auto/inbox/20260424"
+    },
+    {
+      "name": "auto/inbox/20260425/claudemd",
+      "sha": "3a56efa868164294cf8263c67b9644d24116f836",
+      "last_commit_date": "2026-04-25 17:26:29 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 32,
+      "behind_main": 166,
+      "target_name": "merged/auto/inbox/20260425/claudemd"
+    },
+    {
+      "name": "auto/inbox/20260425/outputs",
+      "sha": "3a56efa868164294cf8263c67b9644d24116f836",
+      "last_commit_date": "2026-04-25 17:26:29 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 32,
+      "behind_main": 166,
+      "target_name": "merged/auto/inbox/20260425/outputs"
+    },
+    {
+      "name": "auto/inbox/20260428/orchestrator",
+      "sha": "4ee072eb6fa92cd5044fc88f0ad0237efa1b52c4",
+      "last_commit_date": "2026-04-28 14:19:37 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 33,
+      "behind_main": 166,
+      "target_name": "merged/auto/inbox/20260428/orchestrator"
+    },
+    {
+      "name": "auto/inbox/20260428/outputs",
+      "sha": "89cf6132edad653e5696f31744eb0207fb68777d",
+      "last_commit_date": "2026-04-29 09:50:24 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 34,
+      "behind_main": 166,
+      "target_name": "merged/auto/inbox/20260428/outputs"
+    },
+    {
+      "name": "auto/inbox/20260428/tests",
+      "sha": "3a56efa868164294cf8263c67b9644d24116f836",
+      "last_commit_date": "2026-04-25 17:26:29 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 32,
+      "behind_main": 166,
+      "target_name": "merged/auto/inbox/20260428/tests"
+    },
+    {
+      "name": "auto/inbox/20260428/tools",
+      "sha": "4ee072eb6fa92cd5044fc88f0ad0237efa1b52c4",
+      "last_commit_date": "2026-04-28 14:19:37 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 33,
+      "behind_main": 166,
+      "target_name": "merged/auto/inbox/20260428/tools"
+    },
+    {
+      "name": "auto/inbox/20260429/outputs",
+      "sha": "89cf6132edad653e5696f31744eb0207fb68777d",
+      "last_commit_date": "2026-04-29 09:50:24 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 34,
+      "behind_main": 166,
+      "target_name": "merged/auto/inbox/20260429/outputs"
+    },
+    {
+      "name": "auto/inbox/20260429/research",
+      "sha": "79e15eca9f5b18269326594eb2c903bc40451be4",
+      "last_commit_date": "2026-04-29 16:06:54 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 36,
+      "behind_main": 166,
+      "target_name": "merged/auto/inbox/20260429/research"
+    },
+    {
+      "name": "auto/inbox/20260429/runtime",
+      "sha": "2387dd9034c5da315a4430d3de564602dfd27037",
+      "last_commit_date": "2026-04-30 07:54:32 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 37,
+      "behind_main": 166,
+      "target_name": "merged/auto/inbox/20260429/runtime"
+    },
+    {
+      "name": "auto/inbox/20260430",
+      "sha": "73062646f11d8881ab6c49565977fb553739bdf3",
+      "last_commit_date": "2026-05-09 08:17:12 +0000",
+      "merged_into_main": "N",
+      "ahead_of_main": 48,
+      "behind_main": 166,
+      "target_name": "merged/auto/inbox/20260430"
+    },
+    {
+      "name": "backup/local-main-before-reconcile-20260509",
+      "sha": "32fc1c85a66ce9f472d612d6a32578fcc2a9a21f",
+      "last_commit_date": "2026-05-09 15:22:44 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 101,
+      "target_name": "merged/backup/local-main-before-reconcile-20260509"
+    },
+    {
+      "name": "chore/ingestion-pipeline-diagnostic-20260515",
+      "sha": "2ef5bc6c5080c388dba482e06441ef711aabd309",
+      "last_commit_date": "2026-05-15 17:12:27 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 23,
+      "target_name": "merged/chore/ingestion-pipeline-diagnostic-20260515"
+    },
+    {
+      "name": "chore/p2-controlled-replay-backfill-dryrun-20260515",
+      "sha": "fb49ae6b7a34ebf9b1ed0cd7b9c56fce82982636",
+      "last_commit_date": "2026-05-15 13:28:55 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 2,
+      "behind_main": 24,
+      "target_name": "merged/chore/p2-controlled-replay-backfill-dryrun-20260515"
+    },
+    {
+      "name": "chore/p2c-draw-115000051-watcher-20260515",
+      "sha": "40cf311b0bc317a8ef04d9411f1c50e713d0677b",
+      "last_commit_date": "2026-05-15 15:04:52 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 8,
+      "behind_main": 23,
+      "target_name": "merged/chore/p2c-draw-115000051-watcher-20260515"
+    },
+    {
+      "name": "chore/p2c-ts3-regime-readiness-20260515",
+      "sha": "c91125244ddf223ece9d2040b1b206479182e2cd",
+      "last_commit_date": "2026-05-15 14:11:36 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 23,
+      "target_name": "merged/chore/p2c-ts3-regime-readiness-20260515"
+    },
+    {
+      "name": "chore/p2d-official-draw-ingestion-dryrun-20260515",
+      "sha": "25832ee4753e47adc9a0c9d157fc3b44631e45ff",
+      "last_commit_date": "2026-05-15 20:05:36 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 23,
+      "target_name": "merged/chore/p2d-official-draw-ingestion-dryrun-20260515"
+    },
+    {
+      "name": "chore/p2e-controlled-official-draw-import-20260515",
+      "sha": "47f501158f87cc3c960b90652976bf2782bda6af",
+      "last_commit_date": "2026-05-15 20:20:34 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 3,
+      "behind_main": 23,
+      "target_name": "merged/chore/p2e-controlled-official-draw-import-20260515"
+    },
+    {
+      "name": "chore/p3bb-official-draw-ingestion-dryrun-20260516",
+      "sha": "a2968f1a6a1a037bb35e70bb3c3d5e79d3733d8f",
+      "last_commit_date": "2026-05-16 15:05:58 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 20,
+      "target_name": "merged/chore/p3bb-official-draw-ingestion-dryrun-20260516"
+    },
+    {
+      "name": "chore/replay-lifecycle-drift-guard-20260514",
+      "sha": "70f67785af6d3fdbff2cb722315f24cfc09d962c",
+      "last_commit_date": "2026-05-14 17:55:35 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 18,
+      "behind_main": 27,
+      "target_name": "merged/chore/replay-lifecycle-drift-guard-20260514"
+    },
+    {
+      "name": "claude/affectionate-yonath-c22b2f",
+      "sha": "b98a1feb8465ae82a520a2a7c6c5e07325f2ca4c",
+      "last_commit_date": "2026-05-14 20:52:15 +0800",
+      "merged_into_main": "Y",
+      "ahead_of_main": 0,
+      "behind_main": 26,
+      "target_name": "merged/claude/affectionate-yonath-c22b2f"
+    },
+    {
+      "name": "claude/busy-leavitt-720de6",
+      "sha": "186949e2463f5124d5e9ad43cea8ebf2ad23d4ac",
+      "last_commit_date": "2026-05-12 16:19:29 +0800",
+      "merged_into_main": "Y",
+      "ahead_of_main": 0,
+      "behind_main": 44,
+      "target_name": "merged/claude/busy-leavitt-720de6"
+    },
+    {
+      "name": "claude/clever-villani-2f0ef7",
+      "sha": "7cd02b069407a3823b37d4da4157df666a03db4a",
+      "last_commit_date": "2026-05-19 21:11:10 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 4,
+      "behind_main": 0,
+      "target_name": "merged/claude/clever-villani-2f0ef7"
+    },
+    {
+      "name": "claude/gallant-rosalind-97a32a",
+      "sha": "3496d6887a1bcd0b50a178ba3d11eb4d6b8929b4",
+      "last_commit_date": "2026-05-09 23:14:29 +0800",
+      "merged_into_main": "Y",
+      "ahead_of_main": 0,
+      "behind_main": 93,
+      "target_name": "merged/claude/gallant-rosalind-97a32a"
+    },
+    {
+      "name": "claude/great-borg-1546ee",
+      "sha": "4ffddd0c1e116374ec7084758f713fd9a264065e",
+      "last_commit_date": "2026-05-17 15:33:33 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 7,
+      "behind_main": 1,
+      "target_name": "merged/claude/great-borg-1546ee"
+    },
+    {
+      "name": "claude/great-torvalds-2a48f0",
+      "sha": "d438fb60cb19098562558ba3b455e618fe3bf7a6",
+      "last_commit_date": "2026-05-13 14:45:24 +0800",
+      "merged_into_main": "Y",
+      "ahead_of_main": 0,
+      "behind_main": 35,
+      "target_name": "merged/claude/great-torvalds-2a48f0"
+    },
+    {
+      "name": "claude/hungry-goldwasser-c6afd0",
+      "sha": "40cd6a54fe1e044632d2fbb41042586859555cdd",
+      "last_commit_date": "2026-05-18 14:23:37 +0800",
+      "merged_into_main": "Y",
+      "ahead_of_main": 0,
+      "behind_main": 0,
+      "target_name": "merged/claude/hungry-goldwasser-c6afd0"
+    },
+    {
+      "name": "claude/intelligent-beaver-451c84",
+      "sha": "b065b9702396e1a773a1eeb8682118818303b430",
+      "last_commit_date": "2026-05-14 15:28:25 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 12,
+      "behind_main": 30,
+      "target_name": "merged/claude/intelligent-beaver-451c84"
+    },
+    {
+      "name": "claude/optimistic-blackburn-e37dde",
+      "sha": "b98a1feb8465ae82a520a2a7c6c5e07325f2ca4c",
+      "last_commit_date": "2026-05-14 20:52:15 +0800",
+      "merged_into_main": "Y",
+      "ahead_of_main": 0,
+      "behind_main": 26,
+      "target_name": "merged/claude/optimistic-blackburn-e37dde"
+    },
+    {
+      "name": "claude/peaceful-gauss-5fa4e6",
+      "sha": "40cd6a54fe1e044632d2fbb41042586859555cdd",
+      "last_commit_date": "2026-05-18 14:23:37 +0800",
+      "merged_into_main": "Y",
+      "ahead_of_main": 0,
+      "behind_main": 0,
+      "target_name": "merged/claude/peaceful-gauss-5fa4e6"
+    },
+    {
+      "name": "claude/priceless-torvalds-4d0c7e",
+      "sha": "ea1e3441a48e72ac0b83c0c43eb42f881245a0d2",
+      "last_commit_date": "2026-05-11 13:56:16 +0800",
+      "merged_into_main": "Y",
+      "ahead_of_main": 0,
+      "behind_main": 79,
+      "target_name": "merged/claude/priceless-torvalds-4d0c7e"
+    },
+    {
+      "name": "claude/relaxed-fermat-ac07fe",
+      "sha": "7d80a03c4b219b16e9ac170f25adcde6f0cb4a31",
+      "last_commit_date": "2026-05-12 07:48:30 +0800",
+      "merged_into_main": "Y",
+      "ahead_of_main": 0,
+      "behind_main": 62,
+      "target_name": "merged/claude/relaxed-fermat-ac07fe"
+    },
+    {
+      "name": "claude/silly-dijkstra-e72012",
+      "sha": "920ce3ed420d2b64a514ccfccae7ad065072a8c8",
+      "last_commit_date": "2026-05-10 19:36:00 +0800",
+      "merged_into_main": "Y",
+      "ahead_of_main": 0,
+      "behind_main": 88,
+      "target_name": "merged/claude/silly-dijkstra-e72012"
+    },
+    {
+      "name": "claude/silly-golick-1669b2",
+      "sha": "4ffddd0c1e116374ec7084758f713fd9a264065e",
+      "last_commit_date": "2026-05-17 15:33:33 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 7,
+      "behind_main": 1,
+      "target_name": "merged/claude/silly-golick-1669b2"
+    },
+    {
+      "name": "claude/vigilant-meninsky-6af4cd",
+      "sha": "3496d6887a1bcd0b50a178ba3d11eb4d6b8929b4",
+      "last_commit_date": "2026-05-09 23:14:29 +0800",
+      "merged_into_main": "Y",
+      "ahead_of_main": 0,
+      "behind_main": 93,
+      "target_name": "merged/claude/vigilant-meninsky-6af4cd"
+    },
+    {
+      "name": "codex/daily-engineering-handoff-20260509",
+      "sha": "b4a80da8953a35403360968ed7df44e4d95ba841",
+      "last_commit_date": "2026-05-09 17:46:20 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 98,
+      "target_name": "merged/codex/daily-engineering-handoff-20260509"
+    },
+    {
+      "name": "codex/final-daily-engineering-handoff-20260509",
+      "sha": "cc15124aed6ecaeca513c8c42c26eda0aac218d4",
+      "last_commit_date": "2026-05-09 18:43:58 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 97,
+      "target_name": "merged/codex/final-daily-engineering-handoff-20260509"
+    },
+    {
+      "name": "codex/final-post-pr8-cto-ceo-handoff-20260509",
+      "sha": "4705f197ed8f87f4fd7d13ca38e6f31f05ca6d00",
+      "last_commit_date": "2026-05-09 19:43:32 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 96,
+      "target_name": "merged/codex/final-post-pr8-cto-ceo-handoff-20260509"
+    },
+    {
+      "name": "codex/final-replay-lifecycle-cto-ceo-handoff-20260509",
+      "sha": "16ca95b534faca400d3aa92fc03dcc7c3bb1c970",
+      "last_commit_date": "2026-05-09 22:43:39 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 94,
+      "target_name": "merged/codex/final-replay-lifecycle-cto-ceo-handoff-20260509"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-browser-e2e-ci-enablement",
+      "sha": "c49c353d93a97f5b088dab1219ecbad02b6ce496",
+      "last_commit_date": "2026-05-09 21:37:51 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 8,
+      "behind_main": 96,
+      "target_name": "merged/codex/p0-replay-lifecycle-browser-e2e-ci-enablement"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-catalog-population-merge-report",
+      "sha": "fd22d618b502319efd9ad21a6272eba9bf6ffd85",
+      "last_commit_date": "2026-05-09 22:40:41 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 94,
+      "target_name": "merged/codex/p0-replay-lifecycle-catalog-population-merge-report"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-catalog-population-plan",
+      "sha": "a2c30361526b9443348feff0fadbdd68ca3ce334",
+      "last_commit_date": "2026-05-09 22:22:08 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 2,
+      "behind_main": 95,
+      "target_name": "merged/codex/p0-replay-lifecycle-catalog-population-plan"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-empty-state-implementation",
+      "sha": "5ee0d3f27ce4d09c55c588ccc8c4c4694622f45a",
+      "last_commit_date": "2026-05-09 23:05:47 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 4,
+      "behind_main": 94,
+      "target_name": "merged/codex/p0-replay-lifecycle-empty-state-implementation"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-empty-state-merge-report",
+      "sha": "2874a70e967eefedef22114e34f32b9093378753",
+      "last_commit_date": "2026-05-09 23:15:46 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 93,
+      "target_name": "merged/codex/p0-replay-lifecycle-empty-state-merge-report"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-ui-20260509",
+      "sha": "00424937f7668468ed41c58c00ebeaebd6f0d08a",
+      "last_commit_date": "2026-05-09 08:27:53 +0000",
+      "merged_into_main": "N",
+      "ahead_of_main": 3,
+      "behind_main": 101,
+      "target_name": "merged/codex/p0-replay-lifecycle-ui-20260509"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-ui-cto-ceo-handoff",
+      "sha": "8b1a17111669068c47a790710cd462547fd9dac1",
+      "last_commit_date": "2026-05-09 17:20:14 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 99,
+      "target_name": "merged/codex/p0-replay-lifecycle-ui-cto-ceo-handoff"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-ui-daily-handoff",
+      "sha": "349221f5df031b34776b5e3afbe5116051d4d2a1",
+      "last_commit_date": "2026-05-09 17:13:48 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 2,
+      "behind_main": 100,
+      "target_name": "merged/codex/p0-replay-lifecycle-ui-daily-handoff"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-ui-merge-protection-report",
+      "sha": "47e848a02ae442ca18df2b755760ad1028e92877",
+      "last_commit_date": "2026-05-09 17:06:22 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 2,
+      "behind_main": 101,
+      "target_name": "merged/codex/p0-replay-lifecycle-ui-merge-protection-report"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-ui-merge-protection-report-clean",
+      "sha": "e0859a3d0e28b9b1a513441b69e8699fa54e5f00",
+      "last_commit_date": "2026-05-09 17:16:12 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 100,
+      "target_name": "merged/codex/p0-replay-lifecycle-ui-merge-protection-report-clean"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-ui-postmerge-cleanup",
+      "sha": "3d7ac6cbdd93f150b546038ab4d5353a4d02e4a2",
+      "last_commit_date": "2026-05-09 17:10:16 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 100,
+      "target_name": "merged/codex/p0-replay-lifecycle-ui-postmerge-cleanup"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-ui-pr4-cleanup-report",
+      "sha": "cd8bff3cccb06f1dfac35d57adcc6ea0477250d0",
+      "last_commit_date": "2026-05-09 17:17:04 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 100,
+      "target_name": "merged/codex/p0-replay-lifecycle-ui-pr4-cleanup-report"
+    },
+    {
+      "name": "codex/p1-6g-branch-protection-execution",
+      "sha": "32fc1c85a66ce9f472d612d6a32578fcc2a9a21f",
+      "last_commit_date": "2026-05-09 15:22:44 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 101,
+      "target_name": "merged/codex/p1-6g-branch-protection-execution"
+    },
+    {
+      "name": "codex/p1-6g-pr-validation-merge",
+      "sha": "5bb3c2a4711959be23a0552e3eea3f0504fcb3ba",
+      "last_commit_date": "2026-05-09 16:44:25 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 4,
+      "behind_main": 101,
+      "target_name": "merged/codex/p1-6g-pr-validation-merge"
+    },
+    {
+      "name": "codex/p1-replay-lifecycle-aligned-fixture-e2e",
+      "sha": "cac8f06c29a5b0e633b6bed62d027bbea72bcbe2",
+      "last_commit_date": "2026-05-09 18:03:46 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 3,
+      "behind_main": 98,
+      "target_name": "merged/codex/p1-replay-lifecycle-aligned-fixture-e2e"
+    },
+    {
+      "name": "codex/p1-replay-lifecycle-aligned-fixture-merge-report",
+      "sha": "28c1c93056c203a993c8a638a40fc8b2d1f7f84b",
+      "last_commit_date": "2026-05-09 18:31:20 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 97,
+      "target_name": "merged/codex/p1-replay-lifecycle-aligned-fixture-merge-report"
+    },
+    {
+      "name": "codex/p1-replay-lifecycle-hardening",
+      "sha": "b735d5aca3288a7d22ac84b02e2bad650b7c7b3b",
+      "last_commit_date": "2026-05-09 17:41:55 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 5,
+      "behind_main": 99,
+      "target_name": "merged/codex/p1-replay-lifecycle-hardening"
+    },
+    {
+      "name": "codex/p1-replay-lifecycle-hardening-merge-report",
+      "sha": "5282120809cb3df08c3b47a914b9b3ae6e831b22",
+      "last_commit_date": "2026-05-09 17:43:44 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 98,
+      "target_name": "merged/codex/p1-replay-lifecycle-hardening-merge-report"
+    },
+    {
+      "name": "codex/p1-replay-lifecycle-multistate-fixture-browser-tooling",
+      "sha": "90701f190c8796b7a73fa3b88d30d3f482ec8c10",
+      "last_commit_date": "2026-05-09 19:25:48 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 2,
+      "behind_main": 97,
+      "target_name": "merged/codex/p1-replay-lifecycle-multistate-fixture-browser-tooling"
+    },
+    {
+      "name": "codex/p1-replay-lifecycle-multistate-fixture-merge-report",
+      "sha": "c8e5d335aaa9e4346655ddd0c627a6f5a1fa796f",
+      "last_commit_date": "2026-05-09 19:28:56 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 96,
+      "target_name": "merged/codex/p1-replay-lifecycle-multistate-fixture-merge-report"
+    },
+    {
+      "name": "codex/p1-replay-lifecycle-rejected-canonical-promotion-plan",
+      "sha": "4ff5adc28fcc0652f6f3e9f51765ae4e4df62c13",
+      "last_commit_date": "2026-05-10 13:10:53 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 93,
+      "target_name": "merged/codex/p1-replay-lifecycle-rejected-canonical-promotion-plan"
+    },
+    {
+      "name": "codex/p3-1-artifact-normalization",
+      "sha": "d4415c58f992dba1701246d428c68dc05e6ceff4",
+      "last_commit_date": "2026-05-14 11:24:45 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 31,
+      "target_name": "merged/codex/p3-1-artifact-normalization"
+    },
+    {
+      "name": "codex/replay-required-check-roadmap-reconcile-20260509",
+      "sha": "38cbacfd6aae1fa637b8bc495311ccca2db255eb",
+      "last_commit_date": "2026-05-09 21:25:56 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 96,
+      "target_name": "merged/codex/replay-required-check-roadmap-reconcile-20260509"
+    },
+    {
+      "name": "docs/p1-strategy-universe-inventory-20260515",
+      "sha": "63a7d8def50169059c4259a2a3f0f97d1f0faf44",
+      "last_commit_date": "2026-05-15 11:15:55 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 26,
+      "target_name": "merged/docs/p1-strategy-universe-inventory-20260515"
+    },
+    {
+      "name": "docs/p11-strategy-denominator-cleanup-20260515",
+      "sha": "d1a7096d89aa2ead3eeddb5b7f6634a39769831b",
+      "last_commit_date": "2026-05-15 11:34:10 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 26,
+      "target_name": "merged/docs/p11-strategy-denominator-cleanup-20260515"
+    },
+    {
+      "name": "docs/p12-operator-decision-resolution-20260515",
+      "sha": "eb4c768d28d20409e921bdaf00bceff012fcc01b",
+      "last_commit_date": "2026-05-15 11:44:47 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 26,
+      "target_name": "merged/docs/p12-operator-decision-resolution-20260515"
+    },
+    {
+      "name": "docs/p16-lifecycle-dashboard-closure-summary-20260511",
+      "sha": "5efc2c9edd613368540f00afc0a1263f25d3e8ab",
+      "last_commit_date": "2026-05-11 13:59:04 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 79,
+      "target_name": "merged/docs/p16-lifecycle-dashboard-closure-summary-20260511"
+    },
+    {
+      "name": "docs/p2-1day-no-write-skeleton-review-status-20260510",
+      "sha": "02bc4e675856fec41b14b905ec0926fa7055701b",
+      "last_commit_date": "2026-05-10 20:53:21 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 88,
+      "target_name": "merged/docs/p2-1day-no-write-skeleton-review-status-20260510"
+    },
+    {
+      "name": "docs/p2-24h-no-write-skeleton-implementation-review-readiness-20260510",
+      "sha": "f93c444c430f207f10db23acea7ca2822018e890",
+      "last_commit_date": "2026-05-10 22:19:30 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 88,
+      "target_name": "merged/docs/p2-24h-no-write-skeleton-implementation-review-readiness-20260510"
+    },
+    {
+      "name": "docs/p2-24h-no-write-skeleton-review-governance-report-20260510",
+      "sha": "e6af80d8e789439b99c7c0dd5c0951cd9638993c",
+      "last_commit_date": "2026-05-10 20:49:46 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 88,
+      "target_name": "merged/docs/p2-24h-no-write-skeleton-review-governance-report-20260510"
+    },
+    {
+      "name": "docs/p2-apply-skeleton-no-write-readiness-20260510",
+      "sha": "c64f843702e88209cde46f20be6fc819a73e3a8e",
+      "last_commit_date": "2026-05-10 19:52:56 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 88,
+      "target_name": "merged/docs/p2-apply-skeleton-no-write-readiness-20260510"
+    },
+    {
+      "name": "docs/p2-gated-apply-planning-20260510",
+      "sha": "1044ab98bee0f576f6c6a7fffbff15c2051a5c59",
+      "last_commit_date": "2026-05-10 19:43:38 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 88,
+      "target_name": "merged/docs/p2-gated-apply-planning-20260510"
+    },
+    {
+      "name": "docs/p2-lifecycle-backfill-closure-audit-20260510",
+      "sha": "fb591ffbc8d586274f5169a7b80c38574b16901b",
+      "last_commit_date": "2026-05-10 19:40:03 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 88,
+      "target_name": "merged/docs/p2-lifecycle-backfill-closure-audit-20260510"
+    },
+    {
+      "name": "docs/p2-long-run-pr-closure-gated-apply-status-20260510",
+      "sha": "3267c3be076e57472ec9701446a27eedfe5c4727",
+      "last_commit_date": "2026-05-10 19:50:26 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 88,
+      "target_name": "merged/docs/p2-long-run-pr-closure-gated-apply-status-20260510"
+    },
+    {
+      "name": "docs/p2-multi-pr-gate-status-20260510",
+      "sha": "a2ef19443c6cbcea172ca3a1e00d87a8467e11cc",
+      "last_commit_date": "2026-05-10 20:11:53 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 88,
+      "target_name": "merged/docs/p2-multi-pr-gate-status-20260510"
+    },
+    {
+      "name": "docs/p2-next-no-write-skeleton-prompt-20260510",
+      "sha": "9deaf9bbc57cfecaffd528a67a397f9dc1daa500",
+      "last_commit_date": "2026-05-10 20:22:17 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 88,
+      "target_name": "merged/docs/p2-next-no-write-skeleton-prompt-20260510"
+    },
+    {
+      "name": "docs/p2-next-skeleton-prompt-open-prs-status-20260510",
+      "sha": "cd7da6ec1f56feb4c4d383651305d45c04fadbd2",
+      "last_commit_date": "2026-05-10 20:26:20 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 2,
+      "behind_main": 88,
+      "target_name": "merged/docs/p2-next-skeleton-prompt-open-prs-status-20260510"
+    },
+    {
+      "name": "docs/p2-next-skeleton-prompt-open-prs-status-20260510-clean",
+      "sha": "4c45d157a09bb06f52d9709a08d5fb0e1d8774c0",
+      "last_commit_date": "2026-05-10 20:28:12 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 88,
+      "target_name": "merged/docs/p2-next-skeleton-prompt-open-prs-status-20260510-clean"
+    },
+    {
+      "name": "docs/p2-no-write-apply-skeleton-spec-20260510",
+      "sha": "fdfccef70dfca6487284e37112ba66c6185feea6",
+      "last_commit_date": "2026-05-10 20:15:43 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 88,
+      "target_name": "merged/docs/p2-no-write-apply-skeleton-spec-20260510"
+    },
+    {
+      "name": "docs/p2-no-write-skeleton-implementation-review-next-prompt-20260510",
+      "sha": "a7c1f37e727465c464be6122dbad889a26414e56",
+      "last_commit_date": "2026-05-10 20:39:47 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 88,
+      "target_name": "merged/docs/p2-no-write-skeleton-implementation-review-next-prompt-20260510"
+    },
+    {
+      "name": "docs/p2-no-write-skeleton-implementation-review-plan-20260510",
+      "sha": "8c8eb9cbd825fd630c2d1c28ee305801bba9e0d7",
+      "last_commit_date": "2026-05-10 20:31:51 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 88,
+      "target_name": "merged/docs/p2-no-write-skeleton-implementation-review-plan-20260510"
+    },
+    {
+      "name": "docs/p2-pr-queue-governance-skeleton-review-status-20260510",
+      "sha": "3bba543a9349fcdf560fb1f3a5e8fce28c18cf45",
+      "last_commit_date": "2026-05-10 21:11:40 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 88,
+      "target_name": "merged/docs/p2-pr-queue-governance-skeleton-review-status-20260510"
+    },
+    {
+      "name": "docs/p2-review-plan-next-status-20260510",
+      "sha": "e41c3aab8894cb1b518e1565bfedd56b15788539",
+      "last_commit_date": "2026-05-10 20:35:48 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 88,
+      "target_name": "merged/docs/p2-review-plan-next-status-20260510"
+    },
+    {
+      "name": "docs/p2-review-prompt-implementation-readiness-status-20260510",
+      "sha": "a04a403b0bbb16740c856cc120fbda76bec6a82a",
+      "last_commit_date": "2026-05-10 20:44:03 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 88,
+      "target_name": "merged/docs/p2-review-prompt-implementation-readiness-status-20260510"
+    },
+    {
+      "name": "docs/p2-skeleton-spec-open-prs-status-20260510",
+      "sha": "0f56c5666156024d6b9492603632dadff670fc55",
+      "last_commit_date": "2026-05-10 20:19:02 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 88,
+      "target_name": "merged/docs/p2-skeleton-spec-open-prs-status-20260510"
+    },
+    {
+      "name": "docs/p3-pending-items-audit-20260515",
+      "sha": "bbeb1a876b756b63761269df4e1e29bed531bca9",
+      "last_commit_date": "2026-05-15 21:46:56 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 21,
+      "target_name": "merged/docs/p3-pending-items-audit-20260515"
+    },
+    {
+      "name": "docs/p4a-rsm-refresh-status-20260516",
+      "sha": "a980ab31949a09b58fd77b51310179542170477f",
+      "last_commit_date": "2026-05-17 10:12:55 +0800",
+      "merged_into_main": "Y",
+      "ahead_of_main": 0,
+      "behind_main": 17,
+      "target_name": "merged/docs/p4a-rsm-refresh-status-20260516"
+    },
+    {
+      "name": "docs/p4c-quick-predict-dryrun-matrix-20260516",
+      "sha": "5a489c363a00f19c0d47fb0837fe6cecdadc641e",
+      "last_commit_date": "2026-05-17 10:57:54 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 14,
+      "target_name": "merged/docs/p4c-quick-predict-dryrun-matrix-20260516"
+    },
+    {
+      "name": "docs/p6-next-draw-watcher-20260516",
+      "sha": "8e49198a6955d87f6bda8417766f43d5ac52cc24",
+      "last_commit_date": "2026-05-17 12:11:29 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 11,
+      "target_name": "merged/docs/p6-next-draw-watcher-20260516"
+    },
+    {
+      "name": "docs/p68-operator-ui-verification-20260513",
+      "sha": "75207518cfab6161359495f0511c0de6fb6bdb7e",
+      "last_commit_date": "2026-05-13 12:33:31 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 39,
+      "target_name": "merged/docs/p68-operator-ui-verification-20260513"
+    },
+    {
+      "name": "docs/p6d-scheduled-monitor-rerun-20260517",
+      "sha": "6d40459452b8f0f2ef6b347ae7d4694479dacd95",
+      "last_commit_date": "2026-05-17 13:08:40 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 6,
+      "behind_main": 7,
+      "target_name": "merged/docs/p6d-scheduled-monitor-rerun-20260517"
+    },
+    {
+      "name": "docs/p6e-scheduled-monitor-rerun-20260517",
+      "sha": "d02416d783e4e74cd0bca1a67149e7a533a08802",
+      "last_commit_date": "2026-05-17 13:16:44 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 6,
+      "target_name": "merged/docs/p6e-scheduled-monitor-rerun-20260517"
+    },
+    {
+      "name": "docs/p6f-scheduled-monitor-rerun-20260517",
+      "sha": "b2e0e9c447801fa0fa67d90d0f26af3e3bbe2c94",
+      "last_commit_date": "2026-05-17 14:34:27 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 7,
+      "behind_main": 5,
+      "target_name": "merged/docs/p6f-scheduled-monitor-rerun-20260517"
+    },
+    {
+      "name": "docs/p6g-scheduled-monitor-rerun-20260517",
+      "sha": "924754c63a72c3ccc9b4d4d59128f781b18503fa",
+      "last_commit_date": "2026-05-17 14:52:03 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 4,
+      "target_name": "merged/docs/p6g-scheduled-monitor-rerun-20260517"
+    },
+    {
+      "name": "docs/p6h-scheduled-monitor-rerun-20260517",
+      "sha": "86f58dcdef4dffc9d8b6381c3d3d14d4ee9de302",
+      "last_commit_date": "2026-05-17 15:03:08 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 3,
+      "target_name": "merged/docs/p6h-scheduled-monitor-rerun-20260517"
+    },
+    {
+      "name": "docs/p6i-scheduled-monitor-rerun-20260517",
+      "sha": "b8ad24a5285b5631af979a76b019fe487635bb36",
+      "last_commit_date": "2026-05-17 15:27:21 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 2,
+      "target_name": "merged/docs/p6i-scheduled-monitor-rerun-20260517"
+    },
+    {
+      "name": "docs/p6j-scheduled-monitor-rerun-20260517",
+      "sha": "81f4667fb306062921a6a49183425d43283309f6",
+      "last_commit_date": "2026-05-17 15:33:56 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 8,
+      "behind_main": 1,
+      "target_name": "merged/docs/p6j-scheduled-monitor-rerun-20260517"
+    },
+    {
+      "name": "docs/p70-pr87-operator-evidence-20260513",
+      "sha": "919eef26bb395960df3c41c699c33b6ef4f573ef",
+      "last_commit_date": "2026-05-13 13:00:40 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 39,
+      "target_name": "merged/docs/p70-pr87-operator-evidence-20260513"
+    },
+    {
+      "name": "docs/post-v3-release-closure-20260514",
+      "sha": "30babe27b4096002eaa666a129bebd1e15f60768",
+      "last_commit_date": "2026-05-14 17:18:36 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 29,
+      "target_name": "merged/docs/post-v3-release-closure-20260514"
+    },
+    {
+      "name": "docs/replay-display-semantics-spec-20260515",
+      "sha": "cb5297c3cbcf8cb0f8d8d0ba107f08d47f4f472c",
+      "last_commit_date": "2026-05-15 10:43:21 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 26,
+      "target_name": "merged/docs/replay-display-semantics-spec-20260515"
+    },
+    {
+      "name": "feat/defensive-framework",
+      "sha": "66f7618ce24ecc5a501f8938b5bf888cc15a4e36",
+      "last_commit_date": "2026-03-05 16:00:57 +0800",
+      "merged_into_main": "Y",
+      "ahead_of_main": 0,
+      "behind_main": 118,
+      "target_name": "merged/feat/defensive-framework"
+    },
+    {
+      "name": "feat/frontend-redesign-20260508",
+      "sha": "c35d933825b6e3e66a56b890a7b3de6a77d5283b",
+      "last_commit_date": "2026-05-08 16:59:16 +0800",
+      "merged_into_main": "Y",
+      "ahead_of_main": 0,
+      "behind_main": 112,
+      "target_name": "merged/feat/frontend-redesign-20260508"
+    },
+    {
+      "name": "feat/p0-replay-visual-reality-check-20260517",
+      "sha": "57c4cc2603fa08e082a76ef6c1d6289d889aecbd",
+      "last_commit_date": "2026-05-17 20:52:23 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 9,
+      "behind_main": 1,
+      "target_name": "merged/feat/p0-replay-visual-reality-check-20260517"
+    },
+    {
+      "name": "feat/p0-schema-stabilization-20260518",
+      "sha": "b6bd5e4950fbbc116e7766d02b2ae3ed962bce6b",
+      "last_commit_date": "2026-05-18 12:22:40 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 8,
+      "behind_main": 1,
+      "target_name": "merged/feat/p0-schema-stabilization-20260518"
+    },
+    {
+      "name": "feat/p0-single-repo-stabilization-p1-catalog-plan-20260519",
+      "sha": "16c39707224268a7cdba31c9ba5d24205ea032c0",
+      "last_commit_date": "2026-05-20 16:01:35 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 14,
+      "behind_main": 0,
+      "target_name": "merged/feat/p0-single-repo-stabilization-p1-catalog-plan-20260519"
+    },
+    {
+      "name": "feat/p0-strategy-universe-inventory-20260517",
+      "sha": "7c48cfdd072af98ce7a2cdee7975a3c944d85af0",
+      "last_commit_date": "2026-05-17 15:59:40 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 8,
+      "behind_main": 1,
+      "target_name": "merged/feat/p0-strategy-universe-inventory-20260517"
+    },
+    {
+      "name": "feat/p1-catalog-visibility-registry-expansion-20260518",
+      "sha": "fc7f1356a6350d561cb1b533bfad6ef70f21a48d",
+      "last_commit_date": "2026-05-18 16:28:56 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 0,
+      "target_name": "merged/feat/p1-catalog-visibility-registry-expansion-20260518"
+    },
+    {
+      "name": "feat/p1-replay-lifecycle-formalization-20260517",
+      "sha": "b61350d1aa4eee71048021bd3af0ce78e81486ae",
+      "last_commit_date": "2026-05-17 16:08:40 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 8,
+      "behind_main": 1,
+      "target_name": "merged/feat/p1-replay-lifecycle-formalization-20260517"
+    },
+    {
+      "name": "feat/p3-replay-pipeline-split-20260517",
+      "sha": "480c55414c70eeb8e062bd50fd12d1812ce84383",
+      "last_commit_date": "2026-05-17 16:25:05 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 8,
+      "behind_main": 1,
+      "target_name": "merged/feat/p3-replay-pipeline-split-20260517"
+    },
+    {
+      "name": "feat/p5-replay-db-source-of-truth-20260517",
+      "sha": "235b271729b260af657e270f95ea4cc628a42612",
+      "last_commit_date": "2026-05-17 16:32:29 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 8,
+      "behind_main": 1,
+      "target_name": "merged/feat/p5-replay-db-source-of-truth-20260517"
+    },
+    {
+      "name": "feat/p5a-replay-source-promotion-policy-20260517",
+      "sha": "0a9924a25a7fc89bb6ae7e1e62ab79c34cec0774",
+      "last_commit_date": "2026-05-17 16:38:37 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 8,
+      "behind_main": 1,
+      "target_name": "merged/feat/p5a-replay-source-promotion-policy-20260517"
+    },
+    {
+      "name": "feat/track-b-winning-quality",
+      "sha": "f66c9fed1913182db60cd14b901a6b9bd850c890",
+      "last_commit_date": "2026-04-23 17:13:47 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 23,
+      "behind_main": 166,
+      "target_name": "merged/feat/track-b-winning-quality"
+    },
+    {
+      "name": "feature/p1-fixture-to-ui-bridge-spec-20260511",
+      "sha": "46550d7e4e8efd5988c8feac18d7b6a6a28dea53",
+      "last_commit_date": "2026-05-11 19:41:08 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 73,
+      "target_name": "merged/feature/p1-fixture-to-ui-bridge-spec-20260511"
+    },
+    {
+      "name": "feature/p1-strategy-lifecycle-inventory-20260511",
+      "sha": "78a118e840aedd303c50544ba13ecbd05af98330",
+      "last_commit_date": "2026-05-11 10:39:48 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 1,
+      "behind_main": 88,
+      "target_name": "merged/feature/p1-strategy-lifecycle-inventory-20260511"
+    },
+    {
+      "name": "feature/phase4-required-check-20260509",
+      "sha": "73062646f11d8881ab6c49565977fb553739bdf3",
+      "last_commit_date": "2026-05-09 08:17:12 +0000",
+      "merged_into_main": "N",
+      "ahead_of_main": 48,
+      "behind_main": 166,
+      "target_name": "merged/feature/phase4-required-check-20260509"
+    },
+    {
+      "name": "fix/p0.1-cleanup-539-conflict-stale-test-css",
+      "sha": "84fdade0ee221734885525ed52a6c2aee7113cf4",
+      "last_commit_date": "2026-05-18 14:17:43 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 9,
+      "behind_main": 1,
+      "target_name": "merged/fix/p0.1-cleanup-539-conflict-stale-test-css"
+    },
+    {
+      "name": "fresh-start",
+      "sha": "440fcd3685a782f046292f4927f1759b882b4fe5",
+      "last_commit_date": "2026-03-19 16:22:33 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 3,
+      "behind_main": 166,
+      "target_name": "merged/fresh-start"
+    },
+    {
+      "name": "init-release",
+      "sha": "73689e913dca6da3f3074eb77a32cb3d2bf6af83",
+      "last_commit_date": "2026-03-19 19:26:54 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 8,
+      "behind_main": 166,
+      "target_name": "merged/init-release"
+    },
+    {
+      "name": "phase4-clean",
+      "sha": "3496d6887a1bcd0b50a178ba3d11eb4d6b8929b4",
+      "last_commit_date": "2026-05-09 23:14:29 +0800",
+      "merged_into_main": "Y",
+      "ahead_of_main": 0,
+      "behind_main": 93,
+      "target_name": "merged/phase4-clean"
+    },
+    {
+      "name": "post-v3-replay-lifecycle-closure",
+      "sha": "59540c92f413e287fe6418266fe2f463170c0b79",
+      "last_commit_date": "2026-05-14 15:47:54 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 15,
+      "behind_main": 30,
+      "target_name": "merged/post-v3-replay-lifecycle-closure"
+    },
+    {
+      "name": "pr93",
+      "sha": "d6b48c3fad02472d33c469ed02d4764484993d4d",
+      "last_commit_date": "2026-05-14 11:11:11 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 3,
+      "behind_main": 34,
+      "target_name": "merged/pr93"
+    },
+    {
+      "name": "pr94",
+      "sha": "cc9435d435fe5fd6597dacced818afecc2922022",
+      "last_commit_date": "2026-05-14 11:13:05 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 2,
+      "behind_main": 33,
+      "target_name": "merged/pr94"
+    },
+    {
+      "name": "pr95",
+      "sha": "67493b35a04e7b1028d0540936550a2aa930d09a",
+      "last_commit_date": "2026-05-14 11:15:54 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 2,
+      "behind_main": 32,
+      "target_name": "merged/pr95"
+    },
+    {
+      "name": "release/p0-replay-20260508",
+      "sha": "e5b0543d627e7c71b52d48eedd00a923ad516e1b",
+      "last_commit_date": "2026-05-08 12:19:22 +0000",
+      "merged_into_main": "Y",
+      "ahead_of_main": 0,
+      "behind_main": 109,
+      "target_name": "merged/release/p0-replay-20260508"
+    },
+    {
+      "name": "replay/display-semantics-spec-20260515",
+      "sha": "1e56c7b46b41723ef2fb3a32dcb8690325cd04f0",
+      "last_commit_date": "2026-05-15 10:16:21 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 49,
+      "behind_main": 166,
+      "target_name": "merged/replay/display-semantics-spec-20260515"
+    },
+    {
+      "name": "replay/p0-display-semantics-spec",
+      "sha": "50b8b3a6c03ea41d9f3133345879c2d96afd7b80",
+      "last_commit_date": "2026-05-15 10:33:07 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 2,
+      "behind_main": 26,
+      "target_name": "merged/replay/p0-display-semantics-spec"
+    },
+    {
+      "name": "review/sgp-rejection",
+      "sha": "40b6cdfb2fab3f678832822063cf85075efd73da",
+      "last_commit_date": "2026-03-05 15:41:27 +0800",
+      "merged_into_main": "Y",
+      "ahead_of_main": 0,
+      "behind_main": 121,
+      "target_name": "merged/review/sgp-rejection"
+    },
+    {
+      "name": "update/539-strategy-rsm-2026-03-05",
+      "sha": "7b7eb511c315a9712e699a6f721bca13c3de9c04",
+      "last_commit_date": "2026-03-22 23:24:16 +0800",
+      "merged_into_main": "N",
+      "ahead_of_main": 3,
+      "behind_main": 116,
+      "target_name": "merged/update/539-strategy-rsm-2026-03-05"
+    }
+  ],
+  "candidate_remote_renames": [
+    {
+      "name": "chore/ingestion-pipeline-diagnostic-20260515",
+      "remote_ref": "origin/chore/ingestion-pipeline-diagnostic-20260515",
+      "sha": "2ef5bc6c5080c388dba482e06441ef711aabd309",
+      "target_name": "merged/chore/ingestion-pipeline-diagnostic-20260515"
+    },
+    {
+      "name": "chore/p2-controlled-replay-backfill-dryrun-20260515",
+      "remote_ref": "origin/chore/p2-controlled-replay-backfill-dryrun-20260515",
+      "sha": "fb49ae6b7a34ebf9b1ed0cd7b9c56fce82982636",
+      "target_name": "merged/chore/p2-controlled-replay-backfill-dryrun-20260515"
+    },
+    {
+      "name": "chore/p2c-draw-115000051-watcher-20260515",
+      "remote_ref": "origin/chore/p2c-draw-115000051-watcher-20260515",
+      "sha": "40cf311b0bc317a8ef04d9411f1c50e713d0677b",
+      "target_name": "merged/chore/p2c-draw-115000051-watcher-20260515"
+    },
+    {
+      "name": "chore/p2c-ts3-regime-readiness-20260515",
+      "remote_ref": "origin/chore/p2c-ts3-regime-readiness-20260515",
+      "sha": "c91125244ddf223ece9d2040b1b206479182e2cd",
+      "target_name": "merged/chore/p2c-ts3-regime-readiness-20260515"
+    },
+    {
+      "name": "chore/p2d-official-draw-ingestion-dryrun-20260515",
+      "remote_ref": "origin/chore/p2d-official-draw-ingestion-dryrun-20260515",
+      "sha": "25832ee4753e47adc9a0c9d157fc3b44631e45ff",
+      "target_name": "merged/chore/p2d-official-draw-ingestion-dryrun-20260515"
+    },
+    {
+      "name": "chore/p2e-controlled-official-draw-import-20260515",
+      "remote_ref": "origin/chore/p2e-controlled-official-draw-import-20260515",
+      "sha": "47f501158f87cc3c960b90652976bf2782bda6af",
+      "target_name": "merged/chore/p2e-controlled-official-draw-import-20260515"
+    },
+    {
+      "name": "chore/p3bb-official-draw-ingestion-dryrun-20260516",
+      "remote_ref": "origin/chore/p3bb-official-draw-ingestion-dryrun-20260516",
+      "sha": "a2968f1a6a1a037bb35e70bb3c3d5e79d3733d8f",
+      "target_name": "merged/chore/p3bb-official-draw-ingestion-dryrun-20260516"
+    },
+    {
+      "name": "codex/daily-engineering-handoff-20260509",
+      "remote_ref": "origin/codex/daily-engineering-handoff-20260509",
+      "sha": "b4a80da8953a35403360968ed7df44e4d95ba841",
+      "target_name": "merged/codex/daily-engineering-handoff-20260509"
+    },
+    {
+      "name": "codex/final-daily-engineering-handoff-20260509",
+      "remote_ref": "origin/codex/final-daily-engineering-handoff-20260509",
+      "sha": "cc15124aed6ecaeca513c8c42c26eda0aac218d4",
+      "target_name": "merged/codex/final-daily-engineering-handoff-20260509"
+    },
+    {
+      "name": "codex/final-post-pr8-cto-ceo-handoff-20260509",
+      "remote_ref": "origin/codex/final-post-pr8-cto-ceo-handoff-20260509",
+      "sha": "4705f197ed8f87f4fd7d13ca38e6f31f05ca6d00",
+      "target_name": "merged/codex/final-post-pr8-cto-ceo-handoff-20260509"
+    },
+    {
+      "name": "codex/final-replay-lifecycle-cto-ceo-handoff-20260509",
+      "remote_ref": "origin/codex/final-replay-lifecycle-cto-ceo-handoff-20260509",
+      "sha": "16ca95b534faca400d3aa92fc03dcc7c3bb1c970",
+      "target_name": "merged/codex/final-replay-lifecycle-cto-ceo-handoff-20260509"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-browser-e2e-ci-enablement",
+      "remote_ref": "origin/codex/p0-replay-lifecycle-browser-e2e-ci-enablement",
+      "sha": "c49c353d93a97f5b088dab1219ecbad02b6ce496",
+      "target_name": "merged/codex/p0-replay-lifecycle-browser-e2e-ci-enablement"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-catalog-population-merge-report",
+      "remote_ref": "origin/codex/p0-replay-lifecycle-catalog-population-merge-report",
+      "sha": "fd22d618b502319efd9ad21a6272eba9bf6ffd85",
+      "target_name": "merged/codex/p0-replay-lifecycle-catalog-population-merge-report"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-catalog-population-plan",
+      "remote_ref": "origin/codex/p0-replay-lifecycle-catalog-population-plan",
+      "sha": "a2c30361526b9443348feff0fadbdd68ca3ce334",
+      "target_name": "merged/codex/p0-replay-lifecycle-catalog-population-plan"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-empty-state-implementation",
+      "remote_ref": "origin/codex/p0-replay-lifecycle-empty-state-implementation",
+      "sha": "5ee0d3f27ce4d09c55c588ccc8c4c4694622f45a",
+      "target_name": "merged/codex/p0-replay-lifecycle-empty-state-implementation"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-empty-state-merge-report",
+      "remote_ref": "origin/codex/p0-replay-lifecycle-empty-state-merge-report",
+      "sha": "2874a70e967eefedef22114e34f32b9093378753",
+      "target_name": "merged/codex/p0-replay-lifecycle-empty-state-merge-report"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-ui-20260509",
+      "remote_ref": "origin/codex/p0-replay-lifecycle-ui-20260509",
+      "sha": "00424937f7668468ed41c58c00ebeaebd6f0d08a",
+      "target_name": "merged/codex/p0-replay-lifecycle-ui-20260509"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-ui-cto-ceo-handoff",
+      "remote_ref": "origin/codex/p0-replay-lifecycle-ui-cto-ceo-handoff",
+      "sha": "8b1a17111669068c47a790710cd462547fd9dac1",
+      "target_name": "merged/codex/p0-replay-lifecycle-ui-cto-ceo-handoff"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-ui-daily-handoff",
+      "remote_ref": "origin/codex/p0-replay-lifecycle-ui-daily-handoff",
+      "sha": "349221f5df031b34776b5e3afbe5116051d4d2a1",
+      "target_name": "merged/codex/p0-replay-lifecycle-ui-daily-handoff"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-ui-merge-protection-report",
+      "remote_ref": "origin/codex/p0-replay-lifecycle-ui-merge-protection-report",
+      "sha": "47e848a02ae442ca18df2b755760ad1028e92877",
+      "target_name": "merged/codex/p0-replay-lifecycle-ui-merge-protection-report"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-ui-merge-protection-report-clean",
+      "remote_ref": "origin/codex/p0-replay-lifecycle-ui-merge-protection-report-clean",
+      "sha": "e0859a3d0e28b9b1a513441b69e8699fa54e5f00",
+      "target_name": "merged/codex/p0-replay-lifecycle-ui-merge-protection-report-clean"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-ui-postmerge-cleanup",
+      "remote_ref": "origin/codex/p0-replay-lifecycle-ui-postmerge-cleanup",
+      "sha": "3d7ac6cbdd93f150b546038ab4d5353a4d02e4a2",
+      "target_name": "merged/codex/p0-replay-lifecycle-ui-postmerge-cleanup"
+    },
+    {
+      "name": "codex/p0-replay-lifecycle-ui-pr4-cleanup-report",
+      "remote_ref": "origin/codex/p0-replay-lifecycle-ui-pr4-cleanup-report",
+      "sha": "cd8bff3cccb06f1dfac35d57adcc6ea0477250d0",
+      "target_name": "merged/codex/p0-replay-lifecycle-ui-pr4-cleanup-report"
+    },
+    {
+      "name": "codex/p1-6g-branch-protection-execution",
+      "remote_ref": "origin/codex/p1-6g-branch-protection-execution",
+      "sha": "32fc1c85a66ce9f472d612d6a32578fcc2a9a21f",
+      "target_name": "merged/codex/p1-6g-branch-protection-execution"
+    },
+    {
+      "name": "codex/p1-6g-pr-validation-merge",
+      "remote_ref": "origin/codex/p1-6g-pr-validation-merge",
+      "sha": "98ef3ed2b2e7771301543b437f516d2a5e5542bc",
+      "target_name": "merged/codex/p1-6g-pr-validation-merge"
+    },
+    {
+      "name": "codex/p1-replay-lifecycle-aligned-fixture-e2e",
+      "remote_ref": "origin/codex/p1-replay-lifecycle-aligned-fixture-e2e",
+      "sha": "cac8f06c29a5b0e633b6bed62d027bbea72bcbe2",
+      "target_name": "merged/codex/p1-replay-lifecycle-aligned-fixture-e2e"
+    },
+    {
+      "name": "codex/p1-replay-lifecycle-aligned-fixture-merge-report",
+      "remote_ref": "origin/codex/p1-replay-lifecycle-aligned-fixture-merge-report",
+      "sha": "28c1c93056c203a993c8a638a40fc8b2d1f7f84b",
+      "target_name": "merged/codex/p1-replay-lifecycle-aligned-fixture-merge-report"
+    },
+    {
+      "name": "codex/p1-replay-lifecycle-hardening",
+      "remote_ref": "origin/codex/p1-replay-lifecycle-hardening",
+      "sha": "b735d5aca3288a7d22ac84b02e2bad650b7c7b3b",
+      "target_name": "merged/codex/p1-replay-lifecycle-hardening"
+    },
+    {
+      "name": "codex/p1-replay-lifecycle-hardening-merge-report",
+      "remote_ref": "origin/codex/p1-replay-lifecycle-hardening-merge-report",
+      "sha": "5282120809cb3df08c3b47a914b9b3ae6e831b22",
+      "target_name": "merged/codex/p1-replay-lifecycle-hardening-merge-report"
+    },
+    {
+      "name": "codex/p1-replay-lifecycle-multistate-fixture-browser-tooling",
+      "remote_ref": "origin/codex/p1-replay-lifecycle-multistate-fixture-browser-tooling",
+      "sha": "90701f190c8796b7a73fa3b88d30d3f482ec8c10",
+      "target_name": "merged/codex/p1-replay-lifecycle-multistate-fixture-browser-tooling"
+    },
+    {
+      "name": "codex/p1-replay-lifecycle-multistate-fixture-merge-report",
+      "remote_ref": "origin/codex/p1-replay-lifecycle-multistate-fixture-merge-report",
+      "sha": "c8e5d335aaa9e4346655ddd0c627a6f5a1fa796f",
+      "target_name": "merged/codex/p1-replay-lifecycle-multistate-fixture-merge-report"
+    },
+    {
+      "name": "codex/p1-replay-lifecycle-rejected-canonical-promotion-plan",
+      "remote_ref": "origin/codex/p1-replay-lifecycle-rejected-canonical-promotion-plan",
+      "sha": "4ff5adc28fcc0652f6f3e9f51765ae4e4df62c13",
+      "target_name": "merged/codex/p1-replay-lifecycle-rejected-canonical-promotion-plan"
+    },
+    {
+      "name": "codex/replay-required-check-roadmap-reconcile-20260509",
+      "remote_ref": "origin/codex/replay-required-check-roadmap-reconcile-20260509",
+      "sha": "38cbacfd6aae1fa637b8bc495311ccca2db255eb",
+      "target_name": "merged/codex/replay-required-check-roadmap-reconcile-20260509"
+    },
+    {
+      "name": "docs/p1-strategy-universe-inventory-20260515",
+      "remote_ref": "origin/docs/p1-strategy-universe-inventory-20260515",
+      "sha": "63a7d8def50169059c4259a2a3f0f97d1f0faf44",
+      "target_name": "merged/docs/p1-strategy-universe-inventory-20260515"
+    },
+    {
+      "name": "docs/p11-strategy-denominator-cleanup-20260515",
+      "remote_ref": "origin/docs/p11-strategy-denominator-cleanup-20260515",
+      "sha": "d1a7096d89aa2ead3eeddb5b7f6634a39769831b",
+      "target_name": "merged/docs/p11-strategy-denominator-cleanup-20260515"
+    },
+    {
+      "name": "docs/p12-operator-decision-resolution-20260515",
+      "remote_ref": "origin/docs/p12-operator-decision-resolution-20260515",
+      "sha": "eb4c768d28d20409e921bdaf00bceff012fcc01b",
+      "target_name": "merged/docs/p12-operator-decision-resolution-20260515"
+    },
+    {
+      "name": "docs/p16-lifecycle-dashboard-closure-summary-20260511",
+      "remote_ref": "origin/docs/p16-lifecycle-dashboard-closure-summary-20260511",
+      "sha": "5efc2c9edd613368540f00afc0a1263f25d3e8ab",
+      "target_name": "merged/docs/p16-lifecycle-dashboard-closure-summary-20260511"
+    },
+    {
+      "name": "docs/p2-1day-no-write-skeleton-review-status-20260510",
+      "remote_ref": "origin/docs/p2-1day-no-write-skeleton-review-status-20260510",
+      "sha": "02bc4e675856fec41b14b905ec0926fa7055701b",
+      "target_name": "merged/docs/p2-1day-no-write-skeleton-review-status-20260510"
+    },
+    {
+      "name": "docs/p2-24h-no-write-skeleton-implementation-review-readiness-20260510",
+      "remote_ref": "origin/docs/p2-24h-no-write-skeleton-implementation-review-readiness-20260510",
+      "sha": "f93c444c430f207f10db23acea7ca2822018e890",
+      "target_name": "merged/docs/p2-24h-no-write-skeleton-implementation-review-readiness-20260510"
+    },
+    {
+      "name": "docs/p2-24h-no-write-skeleton-review-governance-report-20260510",
+      "remote_ref": "origin/docs/p2-24h-no-write-skeleton-review-governance-report-20260510",
+      "sha": "e6af80d8e789439b99c7c0dd5c0951cd9638993c",
+      "target_name": "merged/docs/p2-24h-no-write-skeleton-review-governance-report-20260510"
+    },
+    {
+      "name": "docs/p2-apply-skeleton-no-write-readiness-20260510",
+      "remote_ref": "origin/docs/p2-apply-skeleton-no-write-readiness-20260510",
+      "sha": "c64f843702e88209cde46f20be6fc819a73e3a8e",
+      "target_name": "merged/docs/p2-apply-skeleton-no-write-readiness-20260510"
+    },
+    {
+      "name": "docs/p2-gated-apply-planning-20260510",
+      "remote_ref": "origin/docs/p2-gated-apply-planning-20260510",
+      "sha": "1044ab98bee0f576f6c6a7fffbff15c2051a5c59",
+      "target_name": "merged/docs/p2-gated-apply-planning-20260510"
+    },
+    {
+      "name": "docs/p2-lifecycle-backfill-closure-audit-20260510",
+      "remote_ref": "origin/docs/p2-lifecycle-backfill-closure-audit-20260510",
+      "sha": "fb591ffbc8d586274f5169a7b80c38574b16901b",
+      "target_name": "merged/docs/p2-lifecycle-backfill-closure-audit-20260510"
+    },
+    {
+      "name": "docs/p2-long-run-pr-closure-gated-apply-status-20260510",
+      "remote_ref": "origin/docs/p2-long-run-pr-closure-gated-apply-status-20260510",
+      "sha": "3267c3be076e57472ec9701446a27eedfe5c4727",
+      "target_name": "merged/docs/p2-long-run-pr-closure-gated-apply-status-20260510"
+    },
+    {
+      "name": "docs/p2-multi-pr-gate-status-20260510",
+      "remote_ref": "origin/docs/p2-multi-pr-gate-status-20260510",
+      "sha": "a2ef19443c6cbcea172ca3a1e00d87a8467e11cc",
+      "target_name": "merged/docs/p2-multi-pr-gate-status-20260510"
+    },
+    {
+      "name": "docs/p2-next-no-write-skeleton-prompt-20260510",
+      "remote_ref": "origin/docs/p2-next-no-write-skeleton-prompt-20260510",
+      "sha": "9deaf9bbc57cfecaffd528a67a397f9dc1daa500",
+      "target_name": "merged/docs/p2-next-no-write-skeleton-prompt-20260510"
+    },
+    {
+      "name": "docs/p2-next-skeleton-prompt-open-prs-status-20260510",
+      "remote_ref": "origin/docs/p2-next-skeleton-prompt-open-prs-status-20260510",
+      "sha": "cd7da6ec1f56feb4c4d383651305d45c04fadbd2",
+      "target_name": "merged/docs/p2-next-skeleton-prompt-open-prs-status-20260510"
+    },
+    {
+      "name": "docs/p2-next-skeleton-prompt-open-prs-status-20260510-clean",
+      "remote_ref": "origin/docs/p2-next-skeleton-prompt-open-prs-status-20260510-clean",
+      "sha": "4c45d157a09bb06f52d9709a08d5fb0e1d8774c0",
+      "target_name": "merged/docs/p2-next-skeleton-prompt-open-prs-status-20260510-clean"
+    },
+    {
+      "name": "docs/p2-no-write-apply-skeleton-spec-20260510",
+      "remote_ref": "origin/docs/p2-no-write-apply-skeleton-spec-20260510",
+      "sha": "fdfccef70dfca6487284e37112ba66c6185feea6",
+      "target_name": "merged/docs/p2-no-write-apply-skeleton-spec-20260510"
+    },
+    {
+      "name": "docs/p2-no-write-skeleton-implementation-review-next-prompt-20260510",
+      "remote_ref": "origin/docs/p2-no-write-skeleton-implementation-review-next-prompt-20260510",
+      "sha": "a7c1f37e727465c464be6122dbad889a26414e56",
+      "target_name": "merged/docs/p2-no-write-skeleton-implementation-review-next-prompt-20260510"
+    },
+    {
+      "name": "docs/p2-no-write-skeleton-implementation-review-plan-20260510",
+      "remote_ref": "origin/docs/p2-no-write-skeleton-implementation-review-plan-20260510",
+      "sha": "8c8eb9cbd825fd630c2d1c28ee305801bba9e0d7",
+      "target_name": "merged/docs/p2-no-write-skeleton-implementation-review-plan-20260510"
+    },
+    {
+      "name": "docs/p2-pr-queue-governance-skeleton-review-status-20260510",
+      "remote_ref": "origin/docs/p2-pr-queue-governance-skeleton-review-status-20260510",
+      "sha": "3bba543a9349fcdf560fb1f3a5e8fce28c18cf45",
+      "target_name": "merged/docs/p2-pr-queue-governance-skeleton-review-status-20260510"
+    },
+    {
+      "name": "docs/p2-review-plan-next-status-20260510",
+      "remote_ref": "origin/docs/p2-review-plan-next-status-20260510",
+      "sha": "e41c3aab8894cb1b518e1565bfedd56b15788539",
+      "target_name": "merged/docs/p2-review-plan-next-status-20260510"
+    },
+    {
+      "name": "docs/p2-review-prompt-implementation-readiness-status-20260510",
+      "remote_ref": "origin/docs/p2-review-prompt-implementation-readiness-status-20260510",
+      "sha": "a04a403b0bbb16740c856cc120fbda76bec6a82a",
+      "target_name": "merged/docs/p2-review-prompt-implementation-readiness-status-20260510"
+    },
+    {
+      "name": "docs/p2-skeleton-spec-open-prs-status-20260510",
+      "remote_ref": "origin/docs/p2-skeleton-spec-open-prs-status-20260510",
+      "sha": "0f56c5666156024d6b9492603632dadff670fc55",
+      "target_name": "merged/docs/p2-skeleton-spec-open-prs-status-20260510"
+    },
+    {
+      "name": "docs/p3-pending-items-audit-20260515",
+      "remote_ref": "origin/docs/p3-pending-items-audit-20260515",
+      "sha": "bbeb1a876b756b63761269df4e1e29bed531bca9",
+      "target_name": "merged/docs/p3-pending-items-audit-20260515"
+    },
+    {
+      "name": "docs/p4a-rsm-refresh-status-20260516",
+      "remote_ref": "origin/docs/p4a-rsm-refresh-status-20260516",
+      "sha": "a980ab31949a09b58fd77b51310179542170477f",
+      "target_name": "merged/docs/p4a-rsm-refresh-status-20260516"
+    },
+    {
+      "name": "docs/p4c-quick-predict-dryrun-matrix-20260516",
+      "remote_ref": "origin/docs/p4c-quick-predict-dryrun-matrix-20260516",
+      "sha": "5a489c363a00f19c0d47fb0837fe6cecdadc641e",
+      "target_name": "merged/docs/p4c-quick-predict-dryrun-matrix-20260516"
+    },
+    {
+      "name": "docs/p6-next-draw-watcher-20260516",
+      "remote_ref": "origin/docs/p6-next-draw-watcher-20260516",
+      "sha": "8e49198a6955d87f6bda8417766f43d5ac52cc24",
+      "target_name": "merged/docs/p6-next-draw-watcher-20260516"
+    },
+    {
+      "name": "docs/p68-operator-ui-verification-20260513",
+      "remote_ref": "origin/docs/p68-operator-ui-verification-20260513",
+      "sha": "75207518cfab6161359495f0511c0de6fb6bdb7e",
+      "target_name": "merged/docs/p68-operator-ui-verification-20260513"
+    },
+    {
+      "name": "docs/p6d-scheduled-monitor-rerun-20260517",
+      "remote_ref": "origin/docs/p6d-scheduled-monitor-rerun-20260517",
+      "sha": "6d40459452b8f0f2ef6b347ae7d4694479dacd95",
+      "target_name": "merged/docs/p6d-scheduled-monitor-rerun-20260517"
+    },
+    {
+      "name": "docs/p6e-scheduled-monitor-rerun-20260517",
+      "remote_ref": "origin/docs/p6e-scheduled-monitor-rerun-20260517",
+      "sha": "d02416d783e4e74cd0bca1a67149e7a533a08802",
+      "target_name": "merged/docs/p6e-scheduled-monitor-rerun-20260517"
+    },
+    {
+      "name": "docs/p6f-scheduled-monitor-rerun-20260517",
+      "remote_ref": "origin/docs/p6f-scheduled-monitor-rerun-20260517",
+      "sha": "b2e0e9c447801fa0fa67d90d0f26af3e3bbe2c94",
+      "target_name": "merged/docs/p6f-scheduled-monitor-rerun-20260517"
+    },
+    {
+      "name": "docs/p6g-scheduled-monitor-rerun-20260517",
+      "remote_ref": "origin/docs/p6g-scheduled-monitor-rerun-20260517",
+      "sha": "924754c63a72c3ccc9b4d4d59128f781b18503fa",
+      "target_name": "merged/docs/p6g-scheduled-monitor-rerun-20260517"
+    },
+    {
+      "name": "docs/p6h-scheduled-monitor-rerun-20260517",
+      "remote_ref": "origin/docs/p6h-scheduled-monitor-rerun-20260517",
+      "sha": "86f58dcdef4dffc9d8b6381c3d3d14d4ee9de302",
+      "target_name": "merged/docs/p6h-scheduled-monitor-rerun-20260517"
+    },
+    {
+      "name": "docs/p6i-scheduled-monitor-rerun-20260517",
+      "remote_ref": "origin/docs/p6i-scheduled-monitor-rerun-20260517",
+      "sha": "b8ad24a5285b5631af979a76b019fe487635bb36",
+      "target_name": "merged/docs/p6i-scheduled-monitor-rerun-20260517"
+    },
+    {
+      "name": "docs/p6j-scheduled-monitor-rerun-20260517",
+      "remote_ref": "origin/docs/p6j-scheduled-monitor-rerun-20260517",
+      "sha": "81f4667fb306062921a6a49183425d43283309f6",
+      "target_name": "merged/docs/p6j-scheduled-monitor-rerun-20260517"
+    },
+    {
+      "name": "docs/p70-pr87-operator-evidence-20260513",
+      "remote_ref": "origin/docs/p70-pr87-operator-evidence-20260513",
+      "sha": "919eef26bb395960df3c41c699c33b6ef4f573ef",
+      "target_name": "merged/docs/p70-pr87-operator-evidence-20260513"
+    },
+    {
+      "name": "docs/replay-display-semantics-spec-20260515",
+      "remote_ref": "origin/docs/replay-display-semantics-spec-20260515",
+      "sha": "cb5297c3cbcf8cb0f8d8d0ba107f08d47f4f472c",
+      "target_name": "merged/docs/replay-display-semantics-spec-20260515"
+    },
+    {
+      "name": "feat/frontend-redesign-20260508",
+      "remote_ref": "origin/feat/frontend-redesign-20260508",
+      "sha": "c35d933825b6e3e66a56b890a7b3de6a77d5283b",
+      "target_name": "merged/feat/frontend-redesign-20260508"
+    },
+    {
+      "name": "feat/track-b-winning-quality",
+      "remote_ref": "origin/feat/track-b-winning-quality",
+      "sha": "1c3dcf7205ff1c2b5d0e656d951c8daffb6cf7cd",
+      "target_name": "merged/feat/track-b-winning-quality"
+    },
+    {
+      "name": "feature/p1-fixture-to-ui-bridge-spec-20260511",
+      "remote_ref": "origin/feature/p1-fixture-to-ui-bridge-spec-20260511",
+      "sha": "46550d7e4e8efd5988c8feac18d7b6a6a28dea53",
+      "target_name": "merged/feature/p1-fixture-to-ui-bridge-spec-20260511"
+    },
+    {
+      "name": "feature/p1-strategy-lifecycle-inventory-20260511",
+      "remote_ref": "origin/feature/p1-strategy-lifecycle-inventory-20260511",
+      "sha": "78a118e840aedd303c50544ba13ecbd05af98330",
+      "target_name": "merged/feature/p1-strategy-lifecycle-inventory-20260511"
+    },
+    {
+      "name": "feature/p21-non-online-replay-fixture-generator-20260511",
+      "remote_ref": "origin/feature/p21-non-online-replay-fixture-generator-20260511",
+      "sha": "013d68fd38de51d30ae9839b573a58cb4ef3c14c",
+      "target_name": "merged/feature/p21-non-online-replay-fixture-generator-20260511"
+    },
+    {
+      "name": "feature/phase4-required-check-20260509",
+      "remote_ref": "origin/feature/phase4-required-check-20260509",
+      "sha": "73062646f11d8881ab6c49565977fb553739bdf3",
+      "target_name": "merged/feature/phase4-required-check-20260509"
+    },
+    {
+      "name": "fix/p0.1-cleanup-539-conflict-stale-test-css",
+      "remote_ref": "origin/fix/p0.1-cleanup-539-conflict-stale-test-css",
+      "sha": "84fdade0ee221734885525ed52a6c2aee7113cf4",
+      "target_name": "merged/fix/p0.1-cleanup-539-conflict-stale-test-css"
+    },
+    {
+      "name": "release/p0-replay-20260508",
+      "remote_ref": "origin/release/p0-replay-20260508",
+      "sha": "e5b0543d627e7c71b52d48eedd00a923ad516e1b",
+      "target_name": "merged/release/p0-replay-20260508"
+    },
+    {
+      "name": "replay/display-semantics-spec-20260515",
+      "remote_ref": "origin/replay/display-semantics-spec-20260515",
+      "sha": "1e56c7b46b41723ef2fb3a32dcb8690325cd04f0",
+      "target_name": "merged/replay/display-semantics-spec-20260515"
+    },
+    {
+      "name": "replay/p0-display-semantics-spec",
+      "remote_ref": "origin/replay/p0-display-semantics-spec",
+      "sha": "7693aa2207a02a371c6413302b878da7bc4ebe60",
+      "target_name": "merged/replay/p0-display-semantics-spec"
+    },
+    {
+      "name": "update/539-strategy-rsm-2026-03-05",
+      "remote_ref": "origin/update/539-strategy-rsm-2026-03-05",
+      "sha": "7b7eb511c315a9712e699a6f721bca13c3de9c04",
+      "target_name": "merged/update/539-strategy-rsm-2026-03-05"
+    }
+  ],
+  "candidate_worktrees_to_remove": [
+    {
+      "path": "/private/tmp/lottery-p3_1",
+      "branch": "codex/p3-1-artifact-normalization",
+      "sha": "d4415c58f992dba1701246d428c68dc05e6ceff4",
+      "prunable": false,
+      "recommend_remove": true
+    },
+    {
+      "path": "/private/tmp/lottery-pr93",
+      "branch": "pr93",
+      "sha": "d6b48c3fad02472d33c469ed02d4764484993d4d",
+      "prunable": false,
+      "recommend_remove": true
+    },
+    {
+      "path": "/private/tmp/lottery-pr94",
+      "branch": "pr94",
+      "sha": "cc9435d435fe5fd6597dacced818afecc2922022",
+      "prunable": false,
+      "recommend_remove": true
+    },
+    {
+      "path": "/private/tmp/lottery-pr95",
+      "branch": "pr95",
+      "sha": "67493b35a04e7b1028d0540936550a2aa930d09a",
+      "prunable": false,
+      "recommend_remove": true
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean",
+      "branch": "feat/p1-catalog-visibility-registry-expansion-20260518",
+      "sha": "fc7f1356a6350d561cb1b533bfad6ef70f21a48d",
+      "prunable": false,
+      "recommend_remove": false
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/affectionate-yonath-c22b2f",
+      "branch": "claude/affectionate-yonath-c22b2f",
+      "sha": "b98a1feb8465ae82a520a2a7c6c5e07325f2ca4c",
+      "prunable": false,
+      "recommend_remove": false
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/busy-leavitt-720de6",
+      "branch": "claude/busy-leavitt-720de6",
+      "sha": "186949e2463f5124d5e9ad43cea8ebf2ad23d4ac",
+      "prunable": false,
+      "recommend_remove": false
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7",
+      "branch": "claude/clever-villani-2f0ef7",
+      "sha": "7cd02b069407a3823b37d4da4157df666a03db4a",
+      "prunable": false,
+      "recommend_remove": false
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/gallant-rosalind-97a32a",
+      "branch": "claude/gallant-rosalind-97a32a",
+      "sha": "3496d6887a1bcd0b50a178ba3d11eb4d6b8929b4",
+      "prunable": false,
+      "recommend_remove": false
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/great-borg-1546ee",
+      "branch": "claude/great-borg-1546ee",
+      "sha": "4ffddd0c1e116374ec7084758f713fd9a264065e",
+      "prunable": false,
+      "recommend_remove": false
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/great-torvalds-2a48f0",
+      "branch": "claude/great-torvalds-2a48f0",
+      "sha": "d438fb60cb19098562558ba3b455e618fe3bf7a6",
+      "prunable": false,
+      "recommend_remove": false
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/hungry-goldwasser-c6afd0",
+      "branch": "claude/hungry-goldwasser-c6afd0",
+      "sha": "40cd6a54fe1e044632d2fbb41042586859555cdd",
+      "prunable": false,
+      "recommend_remove": false
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/intelligent-beaver-451c84",
+      "branch": "claude/intelligent-beaver-451c84",
+      "sha": "b065b9702396e1a773a1eeb8682118818303b430",
+      "prunable": false,
+      "recommend_remove": false
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/optimistic-blackburn-e37dde",
+      "branch": "claude/optimistic-blackburn-e37dde",
+      "sha": "b98a1feb8465ae82a520a2a7c6c5e07325f2ca4c",
+      "prunable": false,
+      "recommend_remove": false
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/peaceful-gauss-5fa4e6",
+      "branch": "claude/peaceful-gauss-5fa4e6",
+      "sha": "40cd6a54fe1e044632d2fbb41042586859555cdd",
+      "prunable": false,
+      "recommend_remove": false
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/priceless-torvalds-4d0c7e",
+      "branch": "claude/priceless-torvalds-4d0c7e",
+      "sha": "ea1e3441a48e72ac0b83c0c43eb42f881245a0d2",
+      "prunable": false,
+      "recommend_remove": false
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/relaxed-fermat-ac07fe",
+      "branch": "claude/relaxed-fermat-ac07fe",
+      "sha": "7d80a03c4b219b16e9ac170f25adcde6f0cb4a31",
+      "prunable": false,
+      "recommend_remove": false
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/silly-dijkstra-e72012",
+      "branch": "claude/silly-dijkstra-e72012",
+      "sha": "920ce3ed420d2b64a514ccfccae7ad065072a8c8",
+      "prunable": false,
+      "recommend_remove": false
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/silly-golick-1669b2",
+      "branch": "claude/silly-golick-1669b2",
+      "sha": "4ffddd0c1e116374ec7084758f713fd9a264065e",
+      "prunable": false,
+      "recommend_remove": false
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/vigilant-meninsky-6af4cd",
+      "branch": "claude/vigilant-meninsky-6af4cd",
+      "sha": "3496d6887a1bcd0b50a178ba3d11eb4d6b8929b4",
+      "prunable": false,
+      "recommend_remove": false
+    }
+  ],
+  "renames_executed": [],
+  "worktrees_removed": [],
+  "deletions_executed": [],
+  "classification": "AUDIT_ONLY_NO_RENAME"
+}

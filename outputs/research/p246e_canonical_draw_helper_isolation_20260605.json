@@ -1,0 +1,113 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P246E",
+  "classification": "P246E_CANONICAL_DRAW_HELPER_ISOLATION_COMPLETE",
+  "implemented_helper": {
+    "function": "get_canonical_draws(lottery_type, limit=None)",
+    "location": "lottery_api/database.py",
+    "status": {
+      "found": true,
+      "has_hyphen_filter": true,
+      "has_date_format_filter": true,
+      "has_small_pool_python_filter": true,
+      "has_preservation_comment": true
+    }
+  },
+  "updated_callers": [
+    {
+      "file": "tools/quick_predict.py",
+      "function": "load_history()",
+      "change": "db.get_all_draws(BIG_LOTTO) → db.get_canonical_draws(BIG_LOTTO)",
+      "status": {
+        "found": true,
+        "uses_canonical_helper": true,
+        "load_history_uses_canonical": true,
+        "raw_get_all_draws_still_present": true
+      }
+    }
+  ],
+  "raw_access_preserved": {
+    "description": "get_all_draws() and get_draws() remain unchanged and return all 22,238 BIG_LOTTO rows. ADD_ON_PRIZE_EXCLUDED records (19,100 rows) are preserved in the DB and accessible via raw-access methods for display/history use.",
+    "verified": true
+  },
+  "db_write_performed": false,
+  "db_read_status": {
+    "read": true,
+    "read_only": true,
+    "write_performed": false
+  },
+  "canonical_filter_rules": {
+    "BIG_LOTTO": {
+      "sql_filter_add_on": "draw NOT LIKE '%-%'",
+      "sql_filter_date_format": "NOT (LENGTH(draw)=8 AND draw LIKE '20%')",
+      "python_filter_small_pool": "max(numbers) > 25",
+      "combined_sql": "lottery_type='BIG_LOTTO' AND draw NOT LIKE '%-%' AND NOT (LENGTH(draw)=8 AND draw LIKE '20%')",
+      "post_filter": "max(row['numbers']) > 25  -- excludes SMALL_POOL_ALIEN",
+      "expected_canonical_count": 2113,
+      "families_excluded": [
+        "ADD_ON_PRIZE_EXCLUDED (hyphenated IDs, add-on/special prize records — valid but out-of-scope)",
+        "DATE_FORMAT_ALIEN (8-digit YYYYMMDD IDs, numbers not 6/49)",
+        "SMALL_POOL_ALIEN (serial IDs, max(numbers)<=25, likely mislabeled game)"
+      ]
+    },
+    "POWER_LOTTO": {
+      "sql_filter": "lottery_type='POWER_LOTTO'",
+      "python_filter": "None",
+      "note": "No known non-canonical row families; passes through unchanged"
+    },
+    "DAILY_539": {
+      "sql_filter": "lottery_type='DAILY_539'",
+      "python_filter": "None",
+      "note": "No known non-canonical row families; passes through unchanged"
+    }
+  },
+  "row_count_validation": {
+    "db_read": true,
+    "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+    "db_write_performed": false,
+    "BIG_LOTTO": {
+      "raw_count": 22238,
+      "canonical_count": 2113,
+      "excluded_count": 20125,
+      "hyphen_in_canonical": 0,
+      "date_format_in_canonical": 0,
+      "small_pool_in_canonical": 0,
+      "hyphen_in_raw": 19100,
+      "canonical_matches_expected": true,
+      "hyphen_excluded": true,
+      "small_pool_excluded": true,
+      "raw_preserves_addon": true
+    },
+    "POWER_LOTTO": {
+      "canonical_count": 1916,
+      "raw_count": 1916,
+      "unchanged": true
+    },
+    "DAILY_539": {
+      "canonical_count": 5879,
+      "raw_count": 5879,
+      "unchanged": true
+    }
+  },
+  "all_isolation_checks_pass": true,
+  "forbidden_actions_confirmed": [
+    "DB_write",
+    "DB_migration_apply",
+    "row_deletion",
+    "registry_mutation",
+    "production_recommendation_change",
+    "strategy_promotion",
+    "betting_advice",
+    "Type_D_apply",
+    "GATE_OPEN_for_BIG_LOTTO_research"
+  ],
+  "big_lotto_gate": "GATE_RED_PENDING_CANONICAL_SEPARATION",
+  "remaining_future_work": [
+    "Phase 2 (Type D): CREATE VIEW draws_big_lotto_canonical_main in DB",
+    "Phase 3 (Type D): CREATE TABLE draw_row_family_annotations",
+    "Phase 4: Re-run P238B NIST audit on canonical population only",
+    "Update test_p238b assertion from >= 22238 to >= 2113",
+    "Verify RSM and other engine callers use canonical helper"
+  ],
+  "final_decision": "P246E Phase 1 implementation complete. get_canonical_draws() added to database.py — BIG_LOTTO canonical count: 2113 (expected 2113). Excludes ADD_ON_PRIZE_EXCLUDED (hyphenated IDs), DATE_FORMAT_ALIEN, and SMALL_POOL_ALIEN via SQL + Python filters. tools/quick_predict.py load_history() updated to use canonical helper. Raw records preserved: get_all_draws() still returns all 22,238 BIG_LOTTO rows. No DB write performed. No row deletion. No migration. BIG_LOTTO research gate remains GATE_RED_PENDING_CANONICAL_SEPARATION pending Phase 2/3 Type D DB operations."
+}

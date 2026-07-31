@@ -1,0 +1,43 @@
+{
+  "schema_version": "p107a_v1",
+  "generated_at": "2026-05-27T07:40:37.245218+00:00",
+  "classification": "P107A_SPECIAL3_100DRAW_WAIT_MORE_DRAWS",
+  "source_unknown_caveat": true,
+  "p106_reference": {
+    "classification": "P106_SPECIAL3_PROSPECTIVE_EVALUATION_PARTIAL",
+    "pr_number": 235,
+    "p100_criteria_passed": 5,
+    "p100_criteria_total": 6,
+    "ensemble_v2_top20_hit_rate": 0.1429,
+    "ensemble_v2_top20_threshold": 0.15,
+    "best_individual_strategy": "sum_band_frequency",
+    "best_individual_strategy_top20_hit_rate": 0.1905
+  },
+  "history_end_draw": "115000024",
+  "p106_evaluated_range": {
+    "min": "115000028",
+    "max": "115000106",
+    "evaluated_draws": 63
+  },
+  "current_db_snapshot": {
+    "replay_rows": 54462,
+    "three_star_count": 4179,
+    "three_star_max_draw": "115000106",
+    "four_star_count": 2922,
+    "four_star_max_draw": "115000103",
+    "power_lotto_count": 1913,
+    "power_lotto_max_draw": "115000041"
+  },
+  "prospective_draw_counts": {
+    "total_after_p99_cutoff": 63,
+    "additional_after_p106": 0,
+    "remaining_needed_for_100": 37
+  },
+  "recommendation": "wait_for_more_draws",
+  "db_writes": false,
+  "replay_rows_before": 54462,
+  "replay_rows_after": 54462,
+  "no_strategy_promotion": true,
+  "no_4star_backtest": true,
+  "no_lifecycle_mutation": true
+}

@@ -1,0 +1,112 @@
+{
+  "phase": "P32_REPLAY_POST_P31B_VERIFICATION",
+  "classification": "P32_REPLAY_POST_P31B_VERIFICATION_MERGED_TO_MAIN",
+  "status": "PASS",
+  "generated_at": "2026-05-23T08:30:00.000000+00:00",
+  "p31b_controlled_apply_id": "P31B_DAILY539_RETIRED_7500_PROD_20260523",
+  "verification_summary": {
+    "db_verification": "PASS",
+    "api_verification": "PASS",
+    "ui_smoke_test": "PASS",
+    "catalog_verification": "PASS",
+    "pagination_verification": "PASS",
+    "lifecycle_filter_verification": "PASS",
+    "data_quality_verification": "PASS",
+    "drift_guard": "PASS",
+    "governance_guard": "PASS"
+  },
+  "row_counts": {
+    "production_rows_before": 19960,
+    "production_rows_after": 19960,
+    "p31b_total": 7500,
+    "rows_added_by_p32": 0
+  },
+  "per_strategy_row_counts": {
+    "acb_1bet": 1500,
+    "acb_markov_midfreq": 1500,
+    "acb_markov_midfreq_3bet": 1500,
+    "midfreq_acb_2bet": 1500,
+    "midfreq_fourier_2bet": 1500
+  },
+  "api_verification": {
+    "acb_1bet": {
+      "total": 1500,
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "api_queryable": true
+    },
+    "acb_markov_midfreq": {
+      "total": 1500,
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "api_queryable": true
+    },
+    "acb_markov_midfreq_3bet": {
+      "total": 1500,
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "api_queryable": true
+    },
+    "midfreq_acb_2bet": {
+      "total": 1500,
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "api_queryable": true
+    },
+    "midfreq_fourier_2bet": {
+      "total": 1500,
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "api_queryable": true
+    }
+  },
+  "catalog_summary": {
+    "all_5_in_catalog": true,
+    "all_5_lifecycle_retired": true,
+    "all_5_label_retired": true,
+    "online_count_for_p31b_strategies": 0
+  },
+  "pagination_verification": {
+    "strategy": "acb_1bet",
+    "page_size": 200,
+    "total": 1500,
+    "pages": 8,
+    "page1_records": 200,
+    "page2_records": 200,
+    "draws_descending": true
+  },
+  "lifecycle_filter_verification": {
+    "RETIRED_filter_total_DAILY_539": 7500,
+    "ONLINE_filter_for_acb_1bet": 0
+  },
+  "data_quality": {
+    "zero_hit_count_mismatches": true,
+    "zero_rows_with_special_number": true,
+    "zero_rows_with_not_5_predicted_numbers": true,
+    "zero_null_prediction_cutoff_date": true,
+    "zero_null_prediction_generated_at": true,
+    "all_dry_run_0": true,
+    "all_replay_status_predicted": true
+  },
+  "ui_smoke_test": {
+    "frontend_accessible": true,
+    "replay_section_visible": true,
+    "lifecycle_filter_shows_retired_5": true,
+    "catalog_panel_shows_retired_5": true,
+    "query_daily539_retired_returns_7500": true
+  },
+  "lifecycle_semantics": {
+    "option": "OPTION_A",
+    "description": "Row-backed retired strategies: queryable via API but not promoted to ONLINE",
+    "all_5_remain_retired": true,
+    "no_lifecycle_promotion": true,
+    "registry_unchanged_by_p32": true
+  },
+  "notes": [
+    "P32 is a verification-only phase; no DB writes performed",
+    "Catalog queryable=False is expected for RETIRED strategies under P26 label model",
+    "catalog.row_count may be 0 (from P24 static inventory) — live row count via /history is authoritative",
+    "UI total=7500 confirmed via browser smoke test at http://localhost:8081",
+    "Production rows remain 19960 throughout P32"
+  ]
+}

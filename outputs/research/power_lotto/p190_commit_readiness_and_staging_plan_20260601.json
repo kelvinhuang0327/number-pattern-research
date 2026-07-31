@@ -1,0 +1,341 @@
+{
+  "task": "P190_COMMIT_READINESS_AND_STAGING_PLAN_ONLY",
+  "date": "2026-06-01",
+  "final_classification": "P190_COMMIT_READINESS_AND_STAGING_PLAN_READY",
+  "authorization_phrase_detected": "YES start P190 commit readiness and staging plan only",
+  "phase_0_verification": {
+    "status": "PASS",
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "git_dir": ".git",
+    "in_worktree": false,
+    "production_db_rows": 94924,
+    "bet_index_present": true,
+    "bet_index_null_count": 0,
+    "duplicate_count": 0,
+    "integrity_check": "ok",
+    "p188_backup_exists": true,
+    "p188_backup_path": "backups/p188_lottery_v2_backup_20260601_153821.db",
+    "p188_backup_sha256_exists": true,
+    "p188_backup_rows": 54462,
+    "p188_backup_bet_index": "ABSENT",
+    "p178a_to_p189_tests": "644 passed, 0 failed, 0 skipped",
+    "drift_guard_result": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "staged_files": 0,
+    "p189_json_exists": true,
+    "p189_md_exists": true,
+    "p189_classification": "P189_POST_MIGRATION_VERIFICATION_COMMIT_READINESS_READY",
+    "stop_conditions_triggered": []
+  },
+  "p189_classification_referenced": "P189_POST_MIGRATION_VERIFICATION_COMMIT_READINESS_READY",
+  "current_git_dirty_inventory": {
+    "modified_tracked": [
+      {"path": "lottery_api/data/lottery_v2.db", "category": "db_migration_payload", "note": "Production DB migrated 54462->94924; bet_index added"},
+      {"path": "scripts/replay_lifecycle_drift_guard.py", "category": "drift_guard_update", "note": "Updated thresholds for 94924 rows (P189)"},
+      {"path": "tests/conftest.py", "category": "stale_test_repair", "note": "9 pre-migration live-check assertions updated (P189)"},
+      {"path": "pytest.ini", "category": "test_config", "note": "Updated during P182 backport"},
+      {"path": "00-Plan/roadmap/CTO-Analysis.md", "category": "roadmap_doc", "note": "CTO analysis updates through P189"},
+      {"path": "00-Plan/roadmap/roadmap.md", "category": "roadmap_doc", "note": "Roadmap updated through P189 completion"},
+      {"path": "docs/replay/p126_controlled_apply_plan_tier_b_multi_bet_20260528.md", "category": "replay_docs_pre_existing", "note": "Pre-existing dirty from P128 chain"},
+      {"path": "outputs/replay/p126_controlled_apply_plan_tier_b_multi_bet_20260528.json", "category": "replay_output_pre_existing", "note": "Pre-existing dirty from P128 chain"},
+      {"path": "outputs/replay/p12_1500_draw_gap_analysis_20260520.json", "category": "replay_output_pre_existing", "note": "Pre-existing dirty"},
+      {"path": "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json", "category": "replay_output_pre_existing", "note": "Pre-existing dirty"},
+      {"path": "outputs/replay/p2_lifecycle_backfill_dry_run_report_20260510.md", "category": "replay_output_pre_existing", "note": "Pre-existing dirty"},
+      {"path": "data/rolling_monitor_BIG_LOTTO.json", "category": "monitoring_data_pre_existing", "note": "Pre-existing dirty — do not stage without review"},
+      {"path": "data/rolling_monitor_POWER_LOTTO.json", "category": "monitoring_data_pre_existing", "note": "Pre-existing dirty — do not stage without review"},
+      {"path": "lottery_api/data/lottery_history.json", "category": "data_file_pre_existing", "note": "Pre-existing dirty — not a migration product"},
+      {"path": "backend.pid", "category": "forbidden_runtime", "note": "PID file — MUST NOT STAGE"},
+      {"path": "frontend.pid", "category": "forbidden_runtime", "note": "PID file — MUST NOT STAGE"},
+      {"path": "claude-code-showcase", "category": "suspicious_unknown", "note": "Unknown artifact — MUST NOT STAGE without explicit CEO review"}
+    ],
+    "untracked_new": {
+      "roadmap_docs": ["00-Plan/roadmap/active_task.md", "00-Plan/roadmap/CEO-Decision.md"],
+      "p188_backup_payload": [
+        "backups/p188_lottery_v2_backup_20260601_153821.db",
+        "backups/p188_lottery_v2_backup_20260601_153821.db-shm (WAL sidecar — exclude after checkpoint)",
+        "backups/p188_lottery_v2_backup_20260601_153821.db-wal (WAL sidecar — exclude if empty)",
+        "backups/p188_lottery_v2_backup_20260601_153821.db.sha256"
+      ],
+      "older_backups_pre_p188": [
+        "backups/lottery_v2_pre_p0_20260519_192547.db (+ shm/wal)",
+        "backups/lottery_v2_pre_p16_biglotto_remaining_apply_20260520.db (+ shm/wal)",
+        "backups/lottery_v2_pre_p66_wave6_20260525_093850.db (+ shm/wal)",
+        "backups/lottery_v2_pre_p66_wave6_20260526_044224.db (+ shm/wal)",
+        "backups/lottery_v2_pre_p7_controlled_apply_20260520.db (+ shm/wal)",
+        "backups/p7_pre_apply_20260520.sql"
+      ],
+      "research_artifacts_count": "65 files in outputs/research/power_lotto/ (P161-P189 JSON+MD + SZC1/SZC2 + rehearsal dirs + SQL log)",
+      "contract_tests_count": "40 test files in tests/ (test_p161 through test_p190, test_szc1, test_p2/p3/p4/p5 catalog tests)",
+      "analysis_scripts": [
+        "analysis/power_lotto/p161_effectiveness_baseline.py",
+        "analysis/power_lotto/p167_ensemble_voting_research.py",
+        "analysis/power_lotto/p170_threshold_sensitivity_and_signal_tracking.py",
+        "analysis/power_lotto/p173_new_strategy_minimal_prototype_read_only.py",
+        "analysis/power_lotto/p176_advanced_feature_minimal_prototype_read_only.py",
+        "analysis/power_lotto/szc1_second_zone_containment_diagnostic.py",
+        "analysis/power_lotto/__init__.py"
+      ],
+      "other_code_and_scripts": [
+        "lottery_api/fetcher/ (dir)",
+        "lottery_api/migrations/0002_p2_catalog_table.sql",
+        "lottery_api/start_server.sh",
+        "scripts/gen_p26_artifact.py",
+        "scripts/p0_strategy_universe_inventory.py",
+        "scripts/p2_catalog_apply.py",
+        "scripts/p4_replay_coverage_matrix.py",
+        "scripts/p65_wave6_controlled_apply_proposal.py",
+        "docs/replay/p0_strategy_universe_inventory_report_20260517.md",
+        "docs/replay/p2_catalog_apply_dry_run_20260520.md",
+        "docs/replay/p2_catalog_apply_readiness_20260520.md",
+        "docs/replay/p5_readiness_report_20260520.md",
+        "outputs/replay/p0_strategy_universe_inventory_20260517.json",
+        "outputs/replay/p2_catalog_apply_dry_run_20260520.json",
+        "outputs/replay/p4_replay_coverage_matrix_20260520.json",
+        "professional-design.css"
+      ],
+      "forbidden_files": [
+        ".gstack/ (tool internal — NEVER STAGE)",
+        "claude-code-showcase.worktrees/ (worktree artifacts — NEVER STAGE)",
+        "runtime/ (runtime directory — NEVER STAGE)",
+        "lottery_api/data/.fuse_hidden* (OS FUSE temp files — NEVER STAGE)",
+        "lottery_api/data/ingest_log.jsonl (log file — NEVER STAGE)",
+        "lottery_api/data/lottery_v2.db.bak_* (old DB backups in data dir — DO NOT STAGE)"
+      ]
+    }
+  },
+  "commit_readiness_audit": {
+    "overall": "READY",
+    "db_migration": {
+      "result": "COMPLETE",
+      "rows_before": 54462,
+      "rows_after": 94924,
+      "bet_index_added": true,
+      "integrity_check": "ok",
+      "duplicate_count": 0,
+      "null_bet_index_count": 0
+    },
+    "backup": {
+      "result": "VERIFIED",
+      "path": "backups/p188_lottery_v2_backup_20260601_153821.db",
+      "rows": 54462,
+      "bet_index": "ABSENT",
+      "sha256_exists": true
+    },
+    "drift_guard": {"result": "PASS", "total_rows": 94924, "legacy_rows": 420},
+    "test_suite": {"result": "PASS", "passed": 644, "failed": 0, "skipped": 0},
+    "staged_files": 0,
+    "pre_existing_dirty_count": 17
+  },
+  "staging_whitelist_proposal": {
+    "group_A_db_migration_payload": {
+      "files": ["lottery_api/data/lottery_v2.db"],
+      "prerequisite": "PRAGMA wal_checkpoint(TRUNCATE) before staging to close WAL",
+      "risk": "MEDIUM — large binary; increases repo size"
+    },
+    "group_B_backup_payload": {
+      "include": ["backups/p188_lottery_v2_backup_20260601_153821.db", "backups/p188_lottery_v2_backup_20260601_153821.db.sha256"],
+      "exclude": ["backups/p188_lottery_v2_backup_20260601_153821.db-shm (exclude after wal checkpoint)", "backups/p188_lottery_v2_backup_20260601_153821.db-wal (exclude if empty after checkpoint)", "backups/lottery_v2_pre_p0_* through pre_p7_* (older backups — separate CEO decision required)"],
+      "risk": "MEDIUM — backup DB binary ~5MB"
+    },
+    "group_C_research_artifacts": {
+      "include_pattern": "outputs/research/power_lotto/p16[1-9]_*, p17[0-9]_*, p18[0-9]_*, p190_*, szc[12]_*, p184_rehearsal/, p185_rehearsal/, p188_*sql_log*",
+      "count": "65+ files",
+      "risk": "LOW — text artifacts"
+    },
+    "group_D_contract_tests": {
+      "include": ["tests/test_p161_* through tests/test_p190_*", "tests/test_szc1_*", "tests/test_p2_catalog_apply_*.py", "tests/test_p3_replay_*.py", "tests/test_p4_replay_*.py", "tests/test_p5_*.py"],
+      "count": "40 test files",
+      "risk": "LOW"
+    },
+    "group_E_drift_guard_and_config": {
+      "files": ["scripts/replay_lifecycle_drift_guard.py", "tests/conftest.py", "pytest.ini"],
+      "risk": "LOW"
+    },
+    "group_F_analysis_scripts": {
+      "files": ["analysis/power_lotto/p161_effectiveness_baseline.py", "analysis/power_lotto/p167_ensemble_voting_research.py", "analysis/power_lotto/p170_threshold_sensitivity_and_signal_tracking.py", "analysis/power_lotto/p173_new_strategy_minimal_prototype_read_only.py", "analysis/power_lotto/p176_advanced_feature_minimal_prototype_read_only.py", "analysis/power_lotto/szc1_second_zone_containment_diagnostic.py", "analysis/power_lotto/__init__.py"],
+      "risk": "LOW"
+    },
+    "group_G_other_code_and_docs": {
+      "files_for_ceo_review": [
+        "lottery_api/fetcher/", "lottery_api/migrations/0002_p2_catalog_table.sql", "lottery_api/start_server.sh",
+        "scripts/gen_p26_artifact.py", "scripts/p0_strategy_universe_inventory.py", "scripts/p2_catalog_apply.py", "scripts/p4_replay_coverage_matrix.py", "scripts/p65_wave6_controlled_apply_proposal.py",
+        "docs/replay/p0_strategy_universe_inventory_report_20260517.md", "docs/replay/p2_catalog_apply_dry_run_20260520.md", "docs/replay/p2_catalog_apply_readiness_20260520.md", "docs/replay/p5_readiness_report_20260520.md",
+        "outputs/replay/p0_strategy_universe_inventory_20260517.json", "outputs/replay/p2_catalog_apply_dry_run_20260520.json", "outputs/replay/p4_replay_coverage_matrix_20260520.json",
+        "docs/replay/p126_controlled_apply_plan_tier_b_multi_bet_20260528.md",
+        "outputs/replay/p126_controlled_apply_plan_tier_b_multi_bet_20260528.json", "outputs/replay/p12_1500_draw_gap_analysis_20260520.json",
+        "outputs/replay/p2_lifecycle_backfill_dry_run_manifest_20260510.json", "outputs/replay/p2_lifecycle_backfill_dry_run_report_20260510.md",
+        "professional-design.css"
+      ],
+      "note": "Pre-existing dirty from P0-P128 chain. CEO should confirm these belong in the P182-P190 commit or a separate cleanup commit.",
+      "risk": "LOW — text/code only"
+    },
+    "group_H_roadmap_docs": {
+      "files": ["00-Plan/roadmap/active_task.md", "00-Plan/roadmap/CTO-Analysis.md", "00-Plan/roadmap/roadmap.md", "00-Plan/roadmap/CEO-Decision.md"],
+      "risk": "LOW"
+    }
+  },
+  "forbidden_staging_policy": {
+    "absolute_never_stage": [
+      "backend.pid",
+      "frontend.pid",
+      "runtime/ (entire directory)",
+      ".gstack/ (entire directory)",
+      "claude-code-showcase.worktrees/ (entire directory)",
+      "lottery_api/data/.fuse_hidden* (all OS FUSE temp files)",
+      "lottery_api/data/ingest_log.jsonl",
+      "lottery_api/data/lottery_v2.db.bak_* (ALL .bak_* files in data dir — these are old local backups, not P188 backup)"
+    ],
+    "do_not_stage_without_explicit_ceo_review": [
+      "claude-code-showcase (unknown binary/artifact)",
+      "data/rolling_monitor_BIG_LOTTO.json",
+      "data/rolling_monitor_POWER_LOTTO.json",
+      "data/performance_history.json",
+      "lottery_api/data/lottery_history.json",
+      "lottery_api/data/lottery_v2.db-shm (if present after checkpoint — should be absent)",
+      "lottery_api/data/lottery_v2.db-wal (if present after checkpoint — should be absent)",
+      "analysis/__pycache__/ (Python bytecache — should be .gitignored)",
+      "backups/lottery_v2_pre_p0_* through pre_p7_* (older pre-P188 backups)"
+    ],
+    "broad_staging_absolute_ban": "git add -A and git add . are EXPLICITLY FORBIDDEN. Only explicit per-file or per-group git add is permitted in P191.",
+    "pre_stage_wal_checkpoint": "Before staging lottery_api/data/lottery_v2.db: run 'sqlite3 lottery_api/data/lottery_v2.db PRAGMA wal_checkpoint(TRUNCATE)' to ensure clean DB file with no WAL residue.",
+    "post_add_scan_required": "After every git add step: run 'git diff --cached --name-only' and verify no forbidden files appear in staged set."
+  },
+  "commit_message_proposal": {
+    "subject": "P182-P190: reconcile replay DB and post-migration governance",
+    "body": [
+      "P182: backport 42 research artifacts (P161-P181), 5 analysis scripts,",
+      "      21 contract tests, and conftest skip markers from zen-gates to main.",
+      "      No DB write; main was still 54462 rows, bet_index ABSENT.",
+      "",
+      "P183-P185: controlled DB migration rehearsal (temp copy only).",
+      "  P183: 11-step plan; found TABLE RECREATION required (ALTER TABLE insufficient).",
+      "  P184: schema rehearsal; MAX(id) dedup 54462->54302 base rows.",
+      "  P185: row-delta import; 40622 rows added; final 94924 exact match zen-gates.",
+      "",
+      "P186-P187: production migration authorization gate + 13-item dry-run checklist.",
+      "      MAX(id) dedup policy and exact SQL approved before production write.",
+      "",
+      "P188: production DB migration executed.",
+      "  DB rows: 54462 -> 94924",
+      "  bet_index: ABSENT -> PRESENT (NOT NULL DEFAULT 1)",
+      "  Dropped: 160 duplicate rows (all NULL provenance)",
+      "  Imported: 40622 multi-bet rows (bet_index 2-5)",
+      "  Backup: backups/p188_lottery_v2_backup_20260601_153821.db (54462 rows, verified)",
+      "  PRAGMA integrity_check: ok | No controlled_apply | No POWER_LOTTO research rerun",
+      "",
+      "P189: post-migration verification + test repair.",
+      "  Drift guard updated: total=94924, legacy=420",
+      "  9 stale pre-migration assertions repaired (P183-P187 contract tests)",
+      "  Full test suite: 644 passed, 0 failed, 0 skipped",
+      "",
+      "P190: commit readiness audit + staging whitelist plan.",
+      "  Staged: 0 (P190 plan-only; stage/commit/push deferred to P191)",
+      "",
+      "Governance:",
+      "  POWER_LOTTO R2 research: CLOSED (P178A) — no promotion, no wagering guidance",
+      "  Second-zone SZC1/SZC2: display-only governance enforced",
+      "  main/zen-gates DB split: RECONCILED",
+      "  DB-level reconciliation: COMPLETE; not yet committed (awaiting P191 authorization)"
+    ]
+  },
+  "p191_authorization_options": [
+    {
+      "option": "A",
+      "phrase": "YES start P191 stage commit push authorization gate only",
+      "description": "P191 produces a per-file staging authorization gate with forbidden scan. Plan only — no git add.",
+      "risk_level": "LOW (plan only)"
+    },
+    {
+      "option": "B",
+      "phrase": "YES start P191 stage reviewed files and create local commit only, no push",
+      "description": "P191 stages the reviewed whitelist and creates a local commit. Does NOT push. Reversible via git reset.",
+      "risk_level": "MEDIUM (local commit; reversible before push)"
+    },
+    {
+      "option": "C",
+      "phrase": "YES start P191 stage reviewed files commit and push to origin main",
+      "description": "P191 stages, commits, and pushes to origin/main. Full irreversible publish.",
+      "risk_level": "HIGH (irreversible after push; verify branch protection first)"
+    },
+    {
+      "option": "D",
+      "phrase": "YES start P191 rollback decision gate only",
+      "description": "P191 documents the rollback plan: restore P188 backup to production DB. No stage/commit/push.",
+      "risk_level": "LOW (plan only)"
+    },
+    {
+      "option": "E",
+      "phrase": "YES start P191 pause with migrated DB uncommitted",
+      "description": "Explicitly defer all stage/commit/push. Migrated DB stays uncommitted.",
+      "risk_level": "LOW (no action)"
+    }
+  ],
+  "risk_assessment": {
+    "R1_committing_db_binary": {
+      "risk": "HIGH",
+      "description": "lottery_v2.db is a binary that increases repo size by ~15-25MB. Every checkout includes the full DB.",
+      "mitigation": "Run PRAGMA wal_checkpoint(TRUNCATE) before staging. Consider .gitignore or git-lfs for DB if size is a concern."
+    },
+    "R2_backup_inclusion": {
+      "risk": "MEDIUM",
+      "description": "Including backup DB (~5MB) is a good audit trail but adds repo size.",
+      "mitigation": "Recommended: include for audit trail. Alternative: document backup path in commit message only."
+    },
+    "R3_large_diff_repo_size": {
+      "risk": "MEDIUM",
+      "description": "This commit bundles 2 DB binaries, 65+ research artifacts, 40+ tests, scripts, and docs. Very large diff.",
+      "mitigation": "Stage in groups A-H. Consider splitting into 2 commits: (1) code/tests/docs; (2) DB + backup."
+    },
+    "R4_incomplete_staging": {
+      "risk": "MEDIUM",
+      "description": "Partial staging (DB committed without drift guard or tests) leaves internally inconsistent commit.",
+      "mitigation": "P191 must stage ALL whitelist groups atomically and run 644-test suite before committing."
+    },
+    "R5_accidental_forbidden_staging": {
+      "risk": "HIGH",
+      "description": "Working tree has .fuse_hidden*, *.pid, runtime/, DB.bak_ files. git add -A would stage these.",
+      "mitigation": "ABSOLUTE: explicit per-file git add only. Run forbidden scan after every add step."
+    },
+    "R6_push_without_authorization": {
+      "risk": "HIGH",
+      "description": "Push to origin/main requires explicit CEO authorization (Option C). Default to Option B (local commit only).",
+      "mitigation": "Never push unless CEO provides Option C phrase explicitly."
+    },
+    "R7_rollback_complexity": {
+      "risk": "MEDIUM",
+      "description": "After commit+push, rollback requires: restore backup to DB, revert conftest/drift guard, force-push or revert commit.",
+      "mitigation": "P188 backup verified. Document rollback procedure in P191 Option D."
+    },
+    "R8_branch_protection_ci": {
+      "risk": "LOW-MEDIUM",
+      "description": "Branch protection or CI may block push to main. Not verified in P190.",
+      "mitigation": "P191 should check branch protection before attempting push."
+    },
+    "R9_wal_sidecar": {
+      "risk": "LOW",
+      "description": "lottery_v2.db-wal and .db-shm may exist. Staging DB without checkpoint leaves inconsistent WAL state.",
+      "mitigation": "Run PRAGMA wal_checkpoint(TRUNCATE) first. Verify .db-wal and .db-shm are absent or empty."
+    }
+  },
+  "governance_confirmations": {
+    "no_db_write_in_p190": true,
+    "no_controlled_apply": true,
+    "no_registry_mutation": true,
+    "no_research_rerun": true,
+    "no_merge": true,
+    "no_rebase": true,
+    "no_cherry_pick": true,
+    "no_checkout_other_branch": true,
+    "no_stage": true,
+    "no_commit": true,
+    "no_push": true,
+    "production_db_rows": 94924,
+    "bet_index_present": true,
+    "drift_guard_pass": true,
+    "tests_pass": true,
+    "power_lotto_research_closed": true,
+    "db_level_reconciliation_complete": true,
+    "commit_not_yet_created": true
+  },
+  "next_task_blocked_by_user_authorization": true
+}

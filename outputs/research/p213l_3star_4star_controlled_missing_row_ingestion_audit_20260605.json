@@ -1,0 +1,62 @@
+{
+  "audit": {
+    "task_id": "P213L",
+    "classification": "P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE",
+    "task_type": "Type D",
+    "mode": "apply",
+    "db_write_authorized": true,
+    "backup_path": "backups/p213l_lottery_v2_backup_20260605_20260605_151715.db",
+    "backup_sha256": "1b2abd793a3ea3f2d300337eb2db6d2621b52e1600453bc20141377fa6475485",
+    "backup_sha256_path": "backups/p213l_lottery_v2_backup_20260605_20260605_151715.db.sha256",
+    "backup_integrity": "ok",
+    "production_db_rows_before": 94924,
+    "production_db_rows_after": 94924,
+    "draw_rows_before": 59762,
+    "draw_rows_after": 64361,
+    "star_draw_rows_before": {
+      "3_STAR": 4179,
+      "4_STAR": 2922
+    },
+    "star_draw_rows_after": {
+      "3_STAR": 5850,
+      "4_STAR": 5850
+    },
+    "star_positional_rows_before": 7101,
+    "star_positional_rows_after": 11700,
+    "source_rows_parsed": 11700,
+    "existing_db_matched_rows": 7101,
+    "missing_source_rows_from_p213k": 4599,
+    "expected_insert_count": 4599,
+    "rows_insert_candidates": 4599,
+    "rows_inserted": 4599,
+    "rows_skipped_existing": 0,
+    "rows_skipped_mismatch": 0,
+    "rows_skipped_non_star": 0,
+    "duplicate_source_keys": 0,
+    "existing_db_key_conflicts": 0,
+    "replay_rows_changed": false,
+    "numbers_column_changed": false,
+    "existing_star_rows_changed": false,
+    "numbers_positional_inserted_count": 4599,
+    "non_star_rows_touched": 0,
+    "schema_column_added": false,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "tests": {
+      "command": "python3 -m unittest discover -s tests -p 'test_p213l_3star_4star_controlled_missing_row_ingestion.py'",
+      "result": "PASS"
+    },
+    "no_registry_mutation": true,
+    "no_production_recommendation_change": true,
+    "no_monitoring_change": true,
+    "no_strategy_authorization": true,
+    "no_betting_advice": true,
+    "p238b_interpretation": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY - observation only; no strategy, production, recommendation, monitoring, DB write, or betting implication.",
+    "rollback_instruction": "Restore backup over lottery_api/data/lottery_v2.db only with explicit rollback authorization.",
+    "final_state": {
+      "active_task_status": "WAITING_FOR_USER_AUTHORIZATION",
+      "production_db_rows_unchanged": true,
+      "draw_rows_increased_by_inserted_count": true,
+      "missing_source_rows_inserted": 4599
+    }
+  }
+}

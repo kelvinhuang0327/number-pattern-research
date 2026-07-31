@@ -1,0 +1,33 @@
+# commands.log
+Evidence root: /Users/kelvin/Kelvin-WorkSpace/p299a_d5_big_daily_hit_rate_matrix_mvp_20260630_160533
+Started: 2026-06-30 16:05:33 CST
+
+## Commands run before evidence root creation
+- sed -n '1,260p' /Users/kelvin/.codex/attachments/1ca98d0d-a3ff-4849-8f41-07a667ba7840/pasted-text.txt
+- git branch --show-current && git rev-parse HEAD && git status --short
+- shasum -a 256 over required P297A/P298A artifact list
+
+## Commands run after evidence root creation
+- ROOT="/Users/kelvin/Kelvin-WorkSpace/p299a_d5_big_daily_hit_rate_matrix_mvp_20260630_160533"; mkdir -p "/Users/kelvin/Kelvin-WorkSpace/p299a_d5_big_daily_hit_rate_matrix_mvp_20260630_160533"; initialize commands.log
+
+### Phase 0 capture and source artifact read
+COMMAND: capture git/worktree state, read required P297A/P298A manifests/artifacts, and snapshot DB sidecars before SQLite reads
+
+### Immutable SQLite metrics query and artifact generation
+COMMAND: python3 sqlite3 immutable read-only query against /Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db for BIG_LOTTO and DAILY_539 hit-rate windows
+SQLite URI: file:/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db?mode=ro&immutable=1
+
+### Final validation and manifest generation
+COMMAND: append prohibited NOT RUN markers, write validation_report.md, generate manifest.json, recompute manifest-listed hashes
+
+### Prohibited/skipped commands
+NOT RUN: commit
+NOT RUN: push
+NOT RUN: pull request
+NOT RUN: merge
+NOT RUN: DB write
+NOT RUN: migration
+NOT RUN: checkpoint
+NOT RUN: registry publication
+NOT RUN: future-ticket creation
+NOT RUN: production apply

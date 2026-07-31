@@ -1,0 +1,1233 @@
+{
+  "generated_at": "2026-05-19T11:30:21.776274Z",
+  "phase": "P1",
+  "dry_run_only": true,
+  "runtime_canonical_before": {
+    "total": 18,
+    "replay_row_strategies": 6,
+    "by_lifecycle": {
+      "ONLINE": 8,
+      "REJECTED": 4,
+      "RETIRED": 5,
+      "OBSERVATION": 1
+    }
+  },
+  "artifact_candidate_count": 41,
+  "by_visibility_state": {
+    "REGISTERED_WITH_REPLAY_ROWS": 6,
+    "RECONSTRUCTIBLE": 12,
+    "REGISTERED_NO_DATA": 0,
+    "ARTIFACT_CANDIDATE": 41,
+    "UNSUPPORTED": 0
+  },
+  "reconstructible_candidates": [
+    "fourier_rhythm_3bet",
+    "ts3_regime_3bet",
+    "biglotto_ts3_acb_4bet",
+    "biglotto_ts3_markov_freq_5bet",
+    "power_shlc_midfreq",
+    "p1_deviation_2bet_539",
+    "acb_1bet",
+    "acb_markov_midfreq",
+    "acb_markov_midfreq_3bet",
+    "midfreq_acb_2bet",
+    "midfreq_fourier_2bet",
+    "h6_gate_mk20_ew85"
+  ],
+  "reconstructible_count": 12,
+  "entries": [
+    {
+      "strategy_id": "power_precision_3bet",
+      "display_name": "威力彩 Precision 3注",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_state": "ONLINE",
+      "catalog_visibility_state": "REGISTERED_WITH_REPLAY_ROWS",
+      "source_paths": [
+        "lottery_api/models/replay_strategy_registry.py"
+      ],
+      "artifact_source_type": "CODE_SCAN",
+      "has_replay_rows": true,
+      "has_historical_predictions": false,
+      "replay_row_count": 70,
+      "reconstructible_reason": null,
+      "no_data_reason": null,
+      "provenance_hash": null,
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "display_name": "威力彩 Orthogonal 5注",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_state": "ONLINE",
+      "catalog_visibility_state": "REGISTERED_WITH_REPLAY_ROWS",
+      "source_paths": [
+        "lottery_api/models/replay_strategy_registry.py"
+      ],
+      "artifact_source_type": "CODE_SCAN",
+      "has_replay_rows": true,
+      "has_historical_predictions": false,
+      "replay_row_count": 70,
+      "reconstructible_reason": null,
+      "no_data_reason": null,
+      "provenance_hash": null,
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "display_name": "威力彩 Fourier Rhythm 3注",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_state": "ONLINE",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "source_paths": [
+        "DB:prediction_items[strategy_name='fourier_rhythm_3bet']"
+      ],
+      "artifact_source_type": "PREDICTION_LOG",
+      "has_replay_rows": false,
+      "has_historical_predictions": true,
+      "replay_row_count": 0,
+      "reconstructible_reason": "prediction_items rows exist for this strategy_name; can reconstruct predictions from historical prediction runs",
+      "no_data_reason": null,
+      "provenance_hash": null,
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "biglotto_triple_strike",
+      "display_name": "大樂透 Triple Strike",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_state": "ONLINE",
+      "catalog_visibility_state": "REGISTERED_WITH_REPLAY_ROWS",
+      "source_paths": [
+        "lottery_api/models/replay_strategy_registry.py"
+      ],
+      "artifact_source_type": "CODE_SCAN",
+      "has_replay_rows": true,
+      "has_historical_predictions": false,
+      "replay_row_count": 70,
+      "reconstructible_reason": null,
+      "no_data_reason": null,
+      "provenance_hash": null,
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "biglotto_deviation_2bet",
+      "display_name": "大樂透 Deviation 2注",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_state": "ONLINE",
+      "catalog_visibility_state": "REGISTERED_WITH_REPLAY_ROWS",
+      "source_paths": [
+        "lottery_api/models/replay_strategy_registry.py"
+      ],
+      "artifact_source_type": "CODE_SCAN",
+      "has_replay_rows": true,
+      "has_historical_predictions": false,
+      "replay_row_count": 70,
+      "reconstructible_reason": null,
+      "no_data_reason": null,
+      "provenance_hash": null,
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "display_name": "大樂透 TS3+Regime 3注",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_state": "ONLINE",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "source_paths": [
+        "DB:prediction_items[strategy_name='ts3_regime_3bet']"
+      ],
+      "artifact_source_type": "PREDICTION_LOG",
+      "has_replay_rows": false,
+      "has_historical_predictions": true,
+      "replay_row_count": 0,
+      "reconstructible_reason": "prediction_items rows exist for this strategy_name; can reconstruct predictions from historical prediction runs",
+      "no_data_reason": null,
+      "provenance_hash": null,
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "display_name": "今彩539 F4 Cold",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "ONLINE",
+      "catalog_visibility_state": "REGISTERED_WITH_REPLAY_ROWS",
+      "source_paths": [
+        "lottery_api/models/replay_strategy_registry.py"
+      ],
+      "artifact_source_type": "CODE_SCAN",
+      "has_replay_rows": true,
+      "has_historical_predictions": false,
+      "replay_row_count": 90,
+      "reconstructible_reason": null,
+      "no_data_reason": null,
+      "provenance_hash": null,
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "daily539_markov_cold",
+      "display_name": "今彩539 Markov Cold",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "ONLINE",
+      "catalog_visibility_state": "REGISTERED_WITH_REPLAY_ROWS",
+      "source_paths": [
+        "lottery_api/models/replay_strategy_registry.py"
+      ],
+      "artifact_source_type": "CODE_SCAN",
+      "has_replay_rows": true,
+      "has_historical_predictions": false,
+      "replay_row_count": 90,
+      "reconstructible_reason": null,
+      "no_data_reason": null,
+      "provenance_hash": null,
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "biglotto_ts3_acb_4bet",
+      "display_name": "大樂透 TS3+ACB 4注",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_state": "REJECTED",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "source_paths": [
+        "lottery_api/models/replay_strategy_registry.py"
+      ],
+      "artifact_source_type": "CODE_SCAN",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": "strategy found in Python source; can re-run backtest from code to generate replay rows",
+      "no_data_reason": null,
+      "provenance_hash": null,
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_freq_5bet",
+      "display_name": "大樂透 TS3+Markov 頻率正交 5注",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_state": "REJECTED",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "source_paths": [
+        "lottery_api/models/replay_strategy_registry.py"
+      ],
+      "artifact_source_type": "CODE_SCAN",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": "strategy found in Python source; can re-run backtest from code to generate replay rows",
+      "no_data_reason": null,
+      "provenance_hash": null,
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "power_shlc_midfreq",
+      "display_name": "威力彩 SHLC 中頻指標",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_state": "REJECTED",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "source_paths": [
+        "lottery_api/models/replay_strategy_registry.py"
+      ],
+      "artifact_source_type": "CODE_SCAN",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": "strategy found in Python source; can re-run backtest from code to generate replay rows",
+      "no_data_reason": null,
+      "provenance_hash": null,
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "p1_deviation_2bet_539",
+      "display_name": "今彩539 P1鄰號+偏差互補 2注",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "REJECTED",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "source_paths": [
+        "rejected/p1_deviation_2bet_539.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": "rejected/p1_deviation_2bet_539.json artifact found; strategy config and validation results preserved",
+      "no_data_reason": null,
+      "provenance_hash": null,
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "acb_1bet",
+      "display_name": "今彩539 ACB 1注",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "source_paths": [
+        "DB:prediction_items[strategy_name='acb_1bet']"
+      ],
+      "artifact_source_type": "PREDICTION_LOG",
+      "has_replay_rows": false,
+      "has_historical_predictions": true,
+      "replay_row_count": 0,
+      "reconstructible_reason": "prediction_items rows exist for this strategy_name; can reconstruct predictions from historical prediction runs",
+      "no_data_reason": null,
+      "provenance_hash": null,
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "acb_markov_midfreq",
+      "display_name": "今彩539 ACB+Markov 中頻",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "source_paths": [
+        "lottery_api/models/replay_strategy_registry.py"
+      ],
+      "artifact_source_type": "CODE_SCAN",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": "strategy found in Python source; can re-run backtest from code to generate replay rows",
+      "no_data_reason": null,
+      "provenance_hash": null,
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "display_name": "今彩539 ACB+Markov 中頻 3注",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "source_paths": [
+        "DB:prediction_items[strategy_name='acb_markov_midfreq_3bet']"
+      ],
+      "artifact_source_type": "PREDICTION_LOG",
+      "has_replay_rows": false,
+      "has_historical_predictions": true,
+      "replay_row_count": 0,
+      "reconstructible_reason": "prediction_items rows exist for this strategy_name; can reconstruct predictions from historical prediction runs",
+      "no_data_reason": null,
+      "provenance_hash": null,
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "midfreq_acb_2bet",
+      "display_name": "今彩539 中頻 ACB 2注",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "source_paths": [
+        "DB:prediction_items[strategy_name='midfreq_acb_2bet']"
+      ],
+      "artifact_source_type": "PREDICTION_LOG",
+      "has_replay_rows": false,
+      "has_historical_predictions": true,
+      "replay_row_count": 0,
+      "reconstructible_reason": "prediction_items rows exist for this strategy_name; can reconstruct predictions from historical prediction runs",
+      "no_data_reason": null,
+      "provenance_hash": null,
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "display_name": "今彩539 中頻 Fourier 2注",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "source_paths": [
+        "lottery_api/models/replay_strategy_registry.py"
+      ],
+      "artifact_source_type": "CODE_SCAN",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": "strategy found in Python source; can re-run backtest from code to generate replay rows",
+      "no_data_reason": null,
+      "provenance_hash": null,
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "h6_gate_mk20_ew85",
+      "display_name": "威力彩 H6 Gate mk20 ew85",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_state": "OBSERVATION",
+      "catalog_visibility_state": "RECONSTRUCTIBLE",
+      "source_paths": [
+        "lottery_api/models/replay_strategy_registry.py"
+      ],
+      "artifact_source_type": "CODE_SCAN",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": "strategy found in Python source; can re-run backtest from code to generate replay rows",
+      "no_data_reason": null,
+      "provenance_hash": null,
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    }
+  ],
+  "artifact_candidates_extra": [
+    {
+      "strategy_id": "lift_pair_single_539",
+      "display_name": "lift_pair_single_539",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/lift_pair_single_539.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "gap_dynamic_threshold_biglotto",
+      "display_name": "gap_dynamic_threshold_biglotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/gap_dynamic_threshold_biglotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "sgp_v9_apex_powerlotto",
+      "display_name": "sgp_v9_apex_powerlotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/sgp_v9_apex_powerlotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "short_term_hot_independent_bet",
+      "display_name": "short_term_hot_independent_bet",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/short_term_hot_independent_bet.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "markov_repeat_exception_biglotto",
+      "display_name": "markov_repeat_exception_biglotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/markov_repeat_exception_biglotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "p0_neighbor_injection",
+      "display_name": "p0_neighbor_injection",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/p0_neighbor_injection.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "p0b_539_3bet_f_cold_fmid",
+      "display_name": "p0b_539_3bet_f_cold_fmid",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/p0b_539_3bet_f_cold_fmid.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "markov_single_biglotto",
+      "display_name": "markov_single_biglotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/markov_single_biglotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "p0c_539_3bet_f_cold_x2",
+      "display_name": "p0c_539_3bet_f_cold_x2",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/p0c_539_3bet_f_cold_x2.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "apriori_3bet_biglotto",
+      "display_name": "apriori_3bet_biglotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/apriori_3bet_biglotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "special_mab_decay_adjustment_power",
+      "display_name": "special_mab_decay_adjustment_power",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/special_mab_decay_adjustment_power.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "multiwindow_fourier_biglotto",
+      "display_name": "multiwindow_fourier_biglotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/multiwindow_fourier_biglotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "ts3_markov_freq_5bet_biglotto",
+      "display_name": "ts3_markov_freq_5bet_biglotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/ts3_markov_freq_5bet_biglotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "p2_mab_fusion",
+      "display_name": "p2_mab_fusion",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/p2_mab_fusion.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "cluster_pivot_biglotto",
+      "display_name": "cluster_pivot_biglotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/cluster_pivot_biglotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "p1_conditional_branch_powerlotto",
+      "display_name": "p1_conditional_branch_powerlotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/p1_conditional_branch_powerlotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "shlc_midfreq_power",
+      "display_name": "shlc_midfreq_power",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/shlc_midfreq_power.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "markov_2bet_biglotto",
+      "display_name": "markov_2bet_biglotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/markov_2bet_biglotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "sgp_power_017_research",
+      "display_name": "sgp_power_017_research",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/sgp_power_017_research.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "core_satellite_biglotto",
+      "display_name": "core_satellite_biglotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/core_satellite_biglotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "coldpool15_biglotto",
+      "display_name": "coldpool15_biglotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/coldpool15_biglotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "539_3bet_orthogonal",
+      "display_name": "539_3bet_orthogonal",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/539_3bet_orthogonal.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "ts3_acb_4bet_biglotto",
+      "display_name": "ts3_acb_4bet_biglotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/ts3_acb_4bet_biglotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "consecutive_pair_detector_539",
+      "display_name": "consecutive_pair_detector_539",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/consecutive_pair_detector_539.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "zone_gap_3bet_539",
+      "display_name": "zone_gap_3bet_539",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/zone_gap_3bet_539.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "structural_zone_guard_pp3_power",
+      "display_name": "structural_zone_guard_pp3_power",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/structural_zone_guard_pp3_power.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "hot_gap_return_biglotto",
+      "display_name": "hot_gap_return_biglotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/hot_gap_return_biglotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "hot_stop_rebound_biglotto",
+      "display_name": "hot_stop_rebound_biglotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/hot_stop_rebound_biglotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "acb_hot_fourier_3bet_biglotto",
+      "display_name": "acb_hot_fourier_3bet_biglotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/acb_hot_fourier_3bet_biglotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "p3_state_aware",
+      "display_name": "p3_state_aware",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/p3_state_aware.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "neighbor_acb_2bet_539",
+      "display_name": "neighbor_acb_2bet_539",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/neighbor_acb_2bet_539.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "markov_1bet_539",
+      "display_name": "markov_1bet_539",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/markov_1bet_539.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "fourier30_markov30_biglotto",
+      "display_name": "fourier30_markov30_biglotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/fourier30_markov30_biglotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "zone_constraint_cold_bet2",
+      "display_name": "zone_constraint_cold_bet2",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/zone_constraint_cold_bet2.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "bandit_ucb1_2bet_539",
+      "display_name": "bandit_ucb1_2bet_539",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/bandit_ucb1_2bet_539.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "gap_rebound_powerlotto",
+      "display_name": "gap_rebound_powerlotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/gap_rebound_powerlotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "cold_complement_biglotto",
+      "display_name": "cold_complement_biglotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/cold_complement_biglotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "streak_boost_neighbor_bet1",
+      "display_name": "streak_boost_neighbor_bet1",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/streak_boost_neighbor_bet1.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "acb_single_539",
+      "display_name": "acb_single_539",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/acb_single_539.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "neighbor_injection_biglotto",
+      "display_name": "neighbor_injection_biglotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/neighbor_injection_biglotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "display_name": "bet2_fourier_expansion_biglotto",
+      "lottery_type": "UNKNOWN",
+      "lifecycle_state": "NOT_REGISTERED",
+      "catalog_visibility_state": "ARTIFACT_CANDIDATE",
+      "source_paths": [
+        "rejected/bet2_fourier_expansion_biglotto.json"
+      ],
+      "artifact_source_type": "REJECTED_JSON",
+      "has_replay_rows": false,
+      "has_historical_predictions": false,
+      "replay_row_count": 0,
+      "reconstructible_reason": null,
+      "no_data_reason": "Not in runtime registry; artifact exists in rejected/",
+      "created_by_phase": "P1",
+      "dry_run_only": true
+    }
+  ],
+  "planned_actions": [
+    {
+      "strategy_id": "power_precision_3bet",
+      "action": "SKIP",
+      "reason": "Already has 70 replay rows",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "action": "SKIP",
+      "reason": "Already has 70 replay rows",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "action": "INSERT_PENDING_P5",
+      "reason": "Reconstructible via PREDICTION_LOG; deferred to P5-P7",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "biglotto_triple_strike",
+      "action": "SKIP",
+      "reason": "Already has 70 replay rows",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "biglotto_deviation_2bet",
+      "action": "SKIP",
+      "reason": "Already has 70 replay rows",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "action": "INSERT_PENDING_P5",
+      "reason": "Reconstructible via PREDICTION_LOG; deferred to P5-P7",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "action": "SKIP",
+      "reason": "Already has 90 replay rows",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "daily539_markov_cold",
+      "action": "SKIP",
+      "reason": "Already has 90 replay rows",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "biglotto_ts3_acb_4bet",
+      "action": "INSERT_PENDING_P5",
+      "reason": "Reconstructible via CODE_SCAN; deferred to P5-P7",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_freq_5bet",
+      "action": "INSERT_PENDING_P5",
+      "reason": "Reconstructible via CODE_SCAN; deferred to P5-P7",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "power_shlc_midfreq",
+      "action": "INSERT_PENDING_P5",
+      "reason": "Reconstructible via CODE_SCAN; deferred to P5-P7",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "p1_deviation_2bet_539",
+      "action": "INSERT_PENDING_P5",
+      "reason": "Reconstructible via REJECTED_JSON; deferred to P5-P7",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "acb_1bet",
+      "action": "INSERT_PENDING_P5",
+      "reason": "Reconstructible via PREDICTION_LOG; deferred to P5-P7",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "acb_markov_midfreq",
+      "action": "INSERT_PENDING_P5",
+      "reason": "Reconstructible via CODE_SCAN; deferred to P5-P7",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "action": "INSERT_PENDING_P5",
+      "reason": "Reconstructible via PREDICTION_LOG; deferred to P5-P7",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "midfreq_acb_2bet",
+      "action": "INSERT_PENDING_P5",
+      "reason": "Reconstructible via PREDICTION_LOG; deferred to P5-P7",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "action": "INSERT_PENDING_P5",
+      "reason": "Reconstructible via CODE_SCAN; deferred to P5-P7",
+      "dry_run_only": true
+    },
+    {
+      "strategy_id": "h6_gate_mk20_ew85",
+      "action": "INSERT_PENDING_P5",
+      "reason": "Reconstructible via CODE_SCAN; deferred to P5-P7",
+      "dry_run_only": true
+    }
+  ],
+  "notes": "All entries have dry_run_only=True. can_generate_replay_rows() returns False for all entries. RECONSTRUCTIBLE strategies are P5-P7 inputs. ARTIFACT_CANDIDATE strategies are NOT in runtime registry and require governance review before any row generation."
+}

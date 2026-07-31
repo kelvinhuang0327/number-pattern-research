@@ -16,6 +16,41 @@ from collections import Counter
 from .config import MAX_NUM, PICK, P_SINGLE_M3, SEED, MIN_HISTORY, n_bet_baseline
 
 
+def _p291u_repo_root():
+    current = Path(__file__)
+    if not current.is_absolute():
+        raise FileNotFoundError(f"Source file path is not absolute: {current}")
+    for parent in (current.parent, *current.parents):
+        if (parent / "lottery_api").is_dir():
+            return parent
+    raise FileNotFoundError(f"Unable to locate repository root from source file: {current}")
+
+
+def _p291u_default_db_path():
+    db_path = _p291u_repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+    if not db_path.is_file():
+        raise FileNotFoundError(f"Default lottery DB path is missing or non-regular: {db_path}")
+    return db_path
+
+
+def _p291u_resolve_db_path(db_path=None):
+    if db_path is None:
+        return _p291u_default_db_path()
+    path = Path(db_path)
+    if not path.is_absolute():
+        raise ValueError(f"Explicit DB path must be absolute: {db_path}")
+    if not path.is_file():
+        raise FileNotFoundError(f"Explicit DB path is missing or non-regular: {path}")
+    return path
+
+
+def _p291u_connect_resolved(db_path, *, uri=False):
+    if uri:
+        return sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    return sqlite3.connect(str(db_path))
+
+
+
 @dataclass
 class BacktestResult:
     """回測結果"""
@@ -53,11 +88,12 @@ class BacktestResult:
 
 def load_draws(db_path: Optional[str] = None) -> List[Dict]:
     """從 SQLite 載入所有大樂透開獎資料，依日期升序"""
+    _p291u_db_path = _p291u_resolve_db_path(db_path)
     if db_path is None:
         project_root = Path(__file__).parent.parent.parent
         db_path = str(project_root / 'lottery_api' / 'data' / 'lottery_v2.db')
 
-    conn = sqlite3.connect(db_path)
+    conn = _p291u_connect_resolved(_p291u_db_path)
     cursor = conn.cursor()
     cursor.execute(
         "SELECT draw, date, numbers, special FROM draws "

@@ -1,0 +1,73 @@
+lottery_type,rule,pool_N,draw_D,ticket_size_s,ticket_budget_m,k,q_k_single_ticket,random_expected_hit_at_least_k_rate,status
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,1,1,0.564035024488,0.564035024488,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,1,2,0.151015574004,0.151015574004,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,1,3,0.018637545002,0.018637545002,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,1,4,0.000987141135,0.000987141135,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,2,1,0.564035024488,0.809934540127,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,2,2,0.151015574004,0.279225444415,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,2,3,0.018637545002,0.036927731920,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,2,4,0.000987141135,0.001973307823,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,3,1,0.564035024488,0.917138116441,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,3,2,0.151015574004,0.388073627654,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,3,3,0.018637545002,0.054877034657,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,3,4,0.000987141135,0.002958501025,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,4,1,0.564035024488,0.963875120963,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,4,2,0.151015574004,0.480484040022,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,4,3,0.018637545002,0.072491806456,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,4,4,0.000987141135,0.003942721702,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,5,1,0.564035024488,0.984250817995,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,5,2,0.151015574004,0.558939040922,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,5,3,0.018637545002,0.089778282153,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,5,4,0.000987141135,0.004925970814,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,6,1,0.564035024488,0.993133908253,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,6,2,0.151015574004,0.625546114828,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,6,3,0.018637545002,0.106742580381,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,6,4,0.000987141135,0.005908249321,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,7,1,0.564035024488,0.997006624480,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,7,2,0.151015574004,0.682094483235,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,7,3,0.018637545002,0.123390705738,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,7,4,0.000987141135,0.006889558180,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,8,1,0.564035024488,0.998694993115,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,8,2,0.151015574004,0.730103167328,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,8,3,0.018637545002,0.139728550909,baseline_reference_only
+BIG_LOTTO,大樂透 6/49 main zone,49,6,6,8,4,0.000987141135,0.007869898349,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,1,1,0.516712779871,0.516712779871,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,1,2,0.113973429763,0.113973429763,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,1,3,0.010040694251,0.010040694251,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,1,4,0.000297000297,0.000297000297,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,2,1,0.516712779871,0.766433462860,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,2,2,0.113973429763,0.214956916834,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,2,3,0.010040694251,0.019980572961,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,2,4,0.000297000297,0.000593912385,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,3,1,0.516712779871,0.887120277550,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,3,2,0.113973429763,0.304430969534,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,3,3,0.010040694251,0.029820648389,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,3,4,0.000297000297,0.000890736290,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,4,1,0.516712779871,0.945446672728,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,4,2,0.113973429763,0.383707357573,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,4,3,0.010040694251,0.039561922627,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,4,4,0.000297000297,0.001187472038,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,5,1,0.516712779871,0.973635074114,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,5,2,0.113973429763,0.453948343768,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,5,3,0.010040694251,0.049205387709,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,5,4,0.000297000297,0.001484119655,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,6,1,0.516712779871,0.987258168260,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,6,2,0.113973429763,0.516183723857,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,6,3,0.010040694251,0.058752025707,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,6,4,0.000297000297,0.001780679168,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,7,1,0.516712779871,0.993842035559,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,7,2,0.113973429763,0.571325924224,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,7,3,0.010040694251,0.068202808831,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,7,4,0.000297000297,0.002077150603,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,8,1,0.516712779871,0.997023934484,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,8,2,0.113973429763,0.620183378890,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,8,3,0.010040694251,0.077558699532,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,8,4,0.000297000297,0.002373533986,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,9,1,0.516712779871,0.998561705570,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,9,2,0.113973429763,0.663472381879,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,9,3,0.010040694251,0.086820650595,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,9,4,0.000297000297,0.002669829342,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,11,1,0.516712779871,0.999664062551,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,11,2,0.113973429763,0.735811321100,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,11,3,0.010040694251,0.105066497212,baseline_reference_only
+DAILY_539,今彩539 5/39,39,5,5,11,4,0.000297000297,0.003262156082,baseline_reference_only

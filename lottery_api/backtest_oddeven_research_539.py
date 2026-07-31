@@ -90,7 +90,7 @@ class OddEvenResearch539:
         return unique_bets
 
 def run_backtest():
-    db = DatabaseManager(db_path="data/lottery_v2.db")
+    db = DatabaseManager()
     all_draws = db.get_all_draws('DAILY_539')
     all_draws.sort(key=lambda x: x['date'])
     

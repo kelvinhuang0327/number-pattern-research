@@ -1,0 +1,71 @@
+{
+  "project_context_lock": "LotteryNew",
+  "task": "P75_BATCH_A_APPLY_SCRIPT_CREATION",
+  "date": "20260526",
+  "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+  "branch": "p75-batch-a-apply-script-creation",
+  "head": "5ce3e09",
+  "production_rows_before": 46960,
+  "production_rows_after": 46960,
+  "p74_blocker_summary": {
+    "fourier_rhythm_3bet": {
+      "existing_controlled_apply_id": "P19B_POWERLOTTO_FOURIER_1500_PROD_20260520",
+      "existing_rows": 1500,
+      "existing_draw_range": {"min": 101000002, "max": 115000040}
+    },
+    "fourier30_markov30_2bet": {
+      "existing_controlled_apply_id": "P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525",
+      "existing_rows": 1500,
+      "existing_draw_range": {"min": 101000002, "max": 115000040}
+    },
+    "block_reason": "No P74-specific apply script or source data for draws > 115000040 existed. DB max POWER_LOTTO draw = 115000040."
+  },
+  "source_draw_discovery": {
+    "db_power_lotto_draw_max": 115000040,
+    "db_power_lotto_draw_count": 1912,
+    "draws_after_115000040": 0,
+    "eligible_draws_for_plan": 0,
+    "plan_status": "PLAN_BLOCKED_BY_SOURCE_DATA_GAP"
+  },
+  "apply_plan_path": "outputs/replay/p74_batch_a_apply_plan_20260526.json",
+  "script_path": "scripts/p74_batch_a_controlled_apply.py",
+  "script_dry_run_result": {
+    "executed": true,
+    "plan_status": "PLAN_BLOCKED_BY_SOURCE_DATA_GAP",
+    "total_plan_rows": 0,
+    "eligible_rows": 0,
+    "skipped_rows": 0,
+    "live_rows_ok": true,
+    "p74_collision_free": true,
+    "db_write_occurred": false,
+    "output_classification": "PLAN_BLOCKED_BY_SOURCE_DATA_GAP"
+  },
+  "duplicate_check_result": {
+    "p74_existing_rows": 0,
+    "collision_free": true,
+    "note": "No collision risk because plan has 0 rows. Reserved IDs are clean."
+  },
+  "guard_results": {
+    "drift_guard_preflight": "PASS",
+    "branch_governance_preflight": "BRANCH_GOVERNANCE_PASS — branch='main' rows=46960",
+    "branch_governance_p75": "BRANCH_GOVERNANCE_PASS — branch='p75-batch-a-apply-script-creation' rows=46960",
+    "contamination_scan": "CLEAN"
+  },
+  "no_db_write": true,
+  "no_force_push": true,
+  "no_reset_hard": true,
+  "no_git_clean": true,
+  "no_lifecycle_promotion": true,
+  "no_champion_replacement": true,
+  "no_registry_mutation": true,
+  "p76_readiness_status": {
+    "ready": false,
+    "blockers": [
+      "Must ingest at least 1500 new POWER_LOTTO draws with draw_id > 115000040",
+      "Must run prediction engine to generate prediction_items for those draws",
+      "Must re-generate p74_batch_a_apply_plan_20260526.json with populated plan_insert_rows_by_strategy",
+      "Must verify 0 duplicate collisions in dry-run before requesting P76 apply authorization"
+    ]
+  },
+  "final_classification": "P75_BLOCKED_BY_SOURCE_DATA_GAP"
+}

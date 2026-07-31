@@ -1,0 +1,213 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P247D",
+  "classification": "CONSUMER_ADOPTION_AUDIT_READ_ONLY",
+  "p247c_merged_state_verified": true,
+  "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+  "read_only_confirmed": true,
+  "view_name": "draws_big_lotto_canonical_main",
+  "view_exists": true,
+  "view_row_count": 2113,
+  "raw_big_lotto_count": 22238,
+  "add_on_count": 19100,
+  "db_integrity_result": "ok",
+  "annotation_table_exists": false,
+  "consumer_scan_hits": {
+    "total_consumers_classified": 21,
+    "already_view_backed": 3,
+    "already_helper_canonical": 4,
+    "should_keep_helper": 1,
+    "raw_history_allowed": 3,
+    "future_scope_requires_authorization": 7,
+    "not_affected": 3
+  },
+  "consumer_classifications": [
+    {
+      "path": "analysis/p247c_big_lotto_view_post_apply_reconciliation.py",
+      "classification": "ALREADY_VIEW_BACKED",
+      "description": "P247C reconciliation script. Opens DB read-only, queries view directly.",
+      "action": "NONE_NEEDED"
+    },
+    {
+      "path": "tests/test_p247b_apply_big_lotto_canonical_view.py",
+      "classification": "ALREADY_VIEW_BACKED",
+      "description": "P247B tests. Validates view row count, raw count, integrity. Both JSON artifact and live DB assertions use view.",
+      "action": "NONE_NEEDED"
+    },
+    {
+      "path": "tests/test_p247c_big_lotto_view_post_apply_reconciliation.py",
+      "classification": "ALREADY_VIEW_BACKED",
+      "description": "P247C tests. Queries view and validates all post-apply counts.",
+      "action": "NONE_NEEDED"
+    },
+    {
+      "path": "lottery_api/backtest_framework.py",
+      "classification": "ALREADY_HELPER_CANONICAL",
+      "description": "BacktestEngine.backtest() uses db.get_canonical_draws(lottery_type). This is the primary research/strategy backtesting backbone. Functionally equivalent to the view (returns 2,113 for BIG_LOTTO).",
+      "action": "NONE_NEEDED"
+    },
+    {
+      "path": "tools/rsm_bootstrap.py",
+      "classification": "ALREADY_HELPER_CANONICAL",
+      "description": "RSM strategy monitor bootstrap uses db.get_canonical_draws(). Correctly excludes all non-canonical rows.",
+      "action": "NONE_NEEDED"
+    },
+    {
+      "path": "tools/quick_predict.py",
+      "classification": "ALREADY_HELPER_CANONICAL",
+      "description": "Unified prediction entry point uses db.get_canonical_draws(). Production prediction pipeline correctly canonical.",
+      "action": "NONE_NEEDED"
+    },
+    {
+      "path": "analysis/p246k_canonical_big_lotto_nist_reaudit.py",
+      "classification": "ALREADY_HELPER_CANONICAL",
+      "description": "P246K NIST re-audit uses db.get_canonical_draws('BIG_LOTTO'). Research path is correctly canonical.",
+      "action": "NONE_NEEDED"
+    },
+    {
+      "path": "lottery_api/engine/rolling_strategy_monitor.py",
+      "classification": "SHOULD_KEEP_HELPER",
+      "description": "RSM engine (P246F/G migrated). Already uses get_canonical_draws(). No view adoption needed — helper is semantically equivalent.",
+      "action": "NONE_NEEDED"
+    },
+    {
+      "path": "lottery_api/routes/prediction.py",
+      "classification": "RAW_HISTORY_ALLOWED",
+      "description": "API prediction routes use get_all_draws() to build draw history for strategy context. Includes all lottery types. Raw access intentional — display/history paths must remain raw.",
+      "action": "DO_NOT_CHANGE"
+    },
+    {
+      "path": "lottery_api/routes/history.py",
+      "classification": "RAW_HISTORY_ALLOWED",
+      "description": "History display API endpoint. Must expose all BIG_LOTTO rows including ADD_ON_PRIZE_EXCLUDED for complete historical record.",
+      "action": "DO_NOT_CHANGE"
+    },
+    {
+      "path": "lottery_api/common.py",
+      "classification": "RAW_HISTORY_ALLOWED",
+      "description": "Common history loader used by display/API paths. Intentionally raw — serves all row families.",
+      "action": "DO_NOT_CHANGE"
+    },
+    {
+      "path": "lottery_api/database.py [get_canonical_draws]",
+      "classification": "FUTURE_SCOPE_REQUIRES_AUTHORIZATION",
+      "description": "get_canonical_draws() for BIG_LOTTO currently applies SQL filter (hyphen + date-format) then Python-level SMALL_POOL_ALIEN filter. Could be updated to query draws_big_lotto_canonical_main VIEW internally — eliminating Python-level filter, single source of truth. Requires database.py change authorization. Both produce identical 2,113 rows; no behavioral change for callers.",
+      "action": "FUTURE_TYPE_D_OR_EQUIVALENT"
+    },
+    {
+      "path": "tools/analyze_banker_accuracy.py",
+      "classification": "FUTURE_SCOPE_REQUIRES_AUTHORIZATION",
+      "description": "BIG_LOTTO analysis tool using get_all_draws(). Research script; could adopt get_canonical_draws() or view. Requires dedicated scope and test coverage update.",
+      "action": "FUTURE_SCOPE"
+    },
+    {
+      "path": "tools/analyze_banker_plus_kill.py",
+      "classification": "FUTURE_SCOPE_REQUIRES_AUTHORIZATION",
+      "description": "BIG_LOTTO analysis tool using get_all_draws(). Research script; exploratory analysis. Future scope.",
+      "action": "FUTURE_SCOPE"
+    },
+    {
+      "path": "tools/analyze_biglotto_special.py",
+      "classification": "FUTURE_SCOPE_REQUIRES_AUTHORIZATION",
+      "description": "BIG_LOTTO special-draw analysis using get_all_draws(). Exploratory; not in active prediction pipeline. Future scope.",
+      "action": "FUTURE_SCOPE"
+    },
+    {
+      "path": "tools/analyze_market_temperature.py",
+      "classification": "FUTURE_SCOPE_REQUIRES_AUTHORIZATION",
+      "description": "BIG_LOTTO market temperature analysis using get_all_draws(). Exploratory research tool. Future scope.",
+      "action": "FUTURE_SCOPE"
+    },
+    {
+      "path": "tools/analyze_top_n_for_2.py",
+      "classification": "FUTURE_SCOPE_REQUIRES_AUTHORIZATION",
+      "description": "BIG_LOTTO top-N analysis using get_all_draws(). Exploratory research tool. Future scope.",
+      "action": "FUTURE_SCOPE"
+    },
+    {
+      "path": "tools/audit_big_lotto_*.py [group]",
+      "classification": "FUTURE_SCOPE_REQUIRES_AUTHORIZATION",
+      "description": "BIG_LOTTO audit scripts (audit_big_lotto_3bet, baseline, hyper, rigorous). Use get_all_draws(). Require canonical adoption to ensure audits run only on canonical 2,113 rows. Future scope.",
+      "action": "FUTURE_SCOPE"
+    },
+    {
+      "path": "lottery_api/backtest_*.py [POWER_LOTTO/DAILY_539 group]",
+      "classification": "NOT_AFFECTED",
+      "description": "Backtest scripts targeting POWER_LOTTO or DAILY_539 only. BIG_LOTTO canonical view does not apply.",
+      "action": "NONE_NEEDED"
+    },
+    {
+      "path": "lottery_api/predict_*.py [archived BIG_LOTTO scripts]",
+      "classification": "NOT_AFFECTED",
+      "description": "Archived one-off predict scripts (predict_biglotto_8_bets.py etc). Not in active production pipeline. No adoption needed.",
+      "action": "NONE_NEEDED"
+    },
+    {
+      "path": "tools/post_draw_pipeline.py",
+      "classification": "NOT_AFFECTED",
+      "description": "Post-draw automation pipeline. Does not query draw rows directly for research; delegates to canonical helpers.",
+      "action": "NONE_NEEDED"
+    }
+  ],
+  "recommended_adoption_plan": {
+    "phase_1_immediate": {
+      "description": "P247D audit complete. No code changes required now.",
+      "items": [
+        "Verify view is canonical source via read-only reconciliation (P247C done)",
+        "Document consumer classifications (this task)"
+      ],
+      "authorization_required": "NONE"
+    },
+    "phase_2_database_py": {
+      "description": "Update get_canonical_draws() to query view internally.",
+      "items": [
+        "Replace SQL+Python dual-filter in database.py with: SELECT * FROM draws_big_lotto_canonical_main ORDER BY CAST(draw AS INTEGER) DESC [LIMIT N]",
+        "This eliminates the Python-level SMALL_POOL_ALIEN filter",
+        "All callers automatically benefit without code change",
+        "Result remains 2,113 rows — no behavioral change for callers"
+      ],
+      "authorization_required": "FUTURE_SCOPE — database.py change not in P247D whitelist",
+      "risk": "LOW — idempotent, same output count, improves consistency"
+    },
+    "phase_3_analysis_tools": {
+      "description": "Update BIG_LOTTO analysis tools to use get_canonical_draws().",
+      "items": [
+        "tools/analyze_banker_accuracy.py",
+        "tools/analyze_banker_plus_kill.py",
+        "tools/analyze_biglotto_special.py",
+        "tools/analyze_market_temperature.py",
+        "tools/analyze_top_n_for_2.py",
+        "tools/audit_big_lotto_*.py group"
+      ],
+      "authorization_required": "FUTURE_SCOPE — broad tool refactor, needs dedicated scope",
+      "risk": "MEDIUM — each tool may behave differently with canonical-only rows"
+    },
+    "not_recommended": [
+      "Changing raw history/display API paths (must remain raw for full record)",
+      "Changing callers that already use get_canonical_draws() (no benefit)",
+      "Broad P246 test updates (already clean after P246F/G migration)"
+    ]
+  },
+  "future_scope_items": [
+    "Phase 2: Update database.py get_canonical_draws() to query view internally (eliminates Python-level SMALL_POOL_ALIEN filter, single source of truth)",
+    "Phase 3: Update BIG_LOTTO analysis tools from get_all_draws() to get_canonical_draws() (6 tools + audit group)",
+    "Annotation table (draw_row_family_annotations): remains deferred, requires separate Type D authorization"
+  ],
+  "annotation_table_deferred": true,
+  "db_write_performed": false,
+  "no_row_insert_update_delete": true,
+  "add_on_records_preserved": true,
+  "forbidden_actions_confirmed": {
+    "DB write": "NOT PERFORMED",
+    "DB migration": "NOT PERFORMED",
+    "CREATE TABLE annotation table": "NOT PERFORMED",
+    "DELETE rows": "NOT PERFORMED",
+    "UPDATE rows": "NOT PERFORMED",
+    "INSERT rows": "NOT PERFORMED",
+    "broad strategy/replay refactor": "NOT PERFORMED",
+    "frontend/API display behavior change": "NOT PERFORMED",
+    "registry mutation": "NOT PERFORMED",
+    "production recommendation change": "NOT PERFORMED"
+  },
+  "final_decision": "P247D consumer adoption audit complete. View draws_big_lotto_canonical_main confirmed: 2113 canonical rows, 22238 raw BIG_LOTTO rows preserved. 3 paths ALREADY_VIEW_BACKED, 4 ALREADY_HELPER_CANONICAL (equivalent), 1 SHOULD_KEEP_HELPER, 3 RAW_HISTORY_ALLOWED (must remain raw), 6+ FUTURE_SCOPE_REQUIRES_AUTHORIZATION. No DB write performed. No rows deleted/updated/inserted. Add-on records preserved and raw-accessible. Annotation table remains deferred (future Type D)."
+}

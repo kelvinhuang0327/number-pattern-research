@@ -1,0 +1,187 @@
+{
+  "task_id": "P214",
+  "classification": "P214_3STAR_4STAR_STRAIGHT_PLAY_FEASIBILITY_PROTOCOL_DESIGN_COMPLETE",
+  "task_type": "Type B",
+  "date": "2026-06-05",
+  "production_db_write": false,
+  "ingestion_performed": false,
+  "strategy_scan_performed": false,
+  "source_status": "DATA_READY_NO_SCAN_AUTHORIZED",
+  "draw_rows_total": 64361,
+  "star_rows_by_lottery": {
+    "3_STAR": 5850,
+    "4_STAR": 5850
+  },
+  "star_positional_rows_by_lottery": {
+    "3_STAR": 5850,
+    "4_STAR": 5850
+  },
+  "star_replay_rows_by_lottery": {
+    "3_STAR": 0,
+    "4_STAR": 0
+  },
+  "straight_play_baselines": {
+    "3_STAR_exact_ordered_match": "1/1000 = 0.001",
+    "4_STAR_exact_ordered_match": "1/10000 = 0.0001",
+    "per_position_digit_accuracy": "1/10 = 0.1 per position (baseline for any single digit at any position)",
+    "note_3_STAR": "10^3 = 1000 possible ordered sequences; each digit independently from {0,...,9}",
+    "note_4_STAR": "10^4 = 10000 possible ordered sequences; each digit independently from {0,...,9}",
+    "box_play_3_STAR_reference": "1/120 = 0.00833 (from P227C, order-independent)",
+    "box_play_4_STAR_reference": "1/210 = 0.00476 (from P227C, order-independent)"
+  },
+  "minimum_power_warnings": {
+    "3_STAR_exact_match": {
+      "n_draws": 5850,
+      "expected_hits_under_null": 5.85,
+      "power_status": "MARGINAL",
+      "detail": "To detect a 2x signal (p1=0.002) at alpha=0.05 Bonferroni-corrected (family~120): need hits >= 14; expected under 2x signal at N=5850 is 11.7 — borderline. Power is marginal. Per-position analysis recommended as primary."
+    },
+    "4_STAR_exact_match": {
+      "n_draws": 5850,
+      "expected_hits_under_null": 0.585,
+      "power_status": "INOPERABLE",
+      "detail": "Expected ~0.5 hits in 5850 draws. Cannot distinguish null from any moderate signal. 4_STAR exact-match straight-play is statistically inoperable at this sample size. Minimum recommended: N >= 50000 draws.",
+      "minimum_draws_for_feasibility": 50000
+    },
+    "3_STAR_per_position_accuracy": {
+      "total_observations": 17550,
+      "power_status": "TRACTABLE",
+      "detail": "5850 draws x 3 positions = 17550 digit observations. Chi-squared bias detection feasible."
+    },
+    "4_STAR_per_position_accuracy": {
+      "total_observations": 23400,
+      "power_status": "TRACTABLE",
+      "detail": "5850 draws x 4 positions = 23400 digit observations. Chi-squared bias detection feasible."
+    },
+    "prior_box_play_result": "UNDERPOWERED_NO_SIGNAL from P227C (3_STAR at 4179 draws, 4_STAR at 2922 draws). Straight-play is harder by factor ~8x (3_STAR) and ~48x (4_STAR)."
+  },
+  "proposed_metrics": [
+    {
+      "metric_id": "M1",
+      "name": "star_straight_exact_match",
+      "description": "All digits match in exact position order. Prediction must equal actual in every position.",
+      "baseline": {"3_STAR": "1/1000 = 0.001", "4_STAR": "1/10000 = 0.0001"},
+      "power_level": {"3_STAR": "MARGINAL", "4_STAR": "INOPERABLE"},
+      "recommended_focus": {"3_STAR": true, "4_STAR": false}
+    },
+    {
+      "metric_id": "M2",
+      "name": "star_position_accuracy_k",
+      "description": "Digit at position k is predicted correctly. Applied per position (0, 1, 2 for 3_STAR; 0, 1, 2, 3 for 4_STAR).",
+      "baseline": "1/10 = 0.1 per position",
+      "power_level": "TRACTABLE",
+      "recommended_focus": {"3_STAR": true, "4_STAR": true}
+    },
+    {
+      "metric_id": "M3",
+      "name": "star_partial_match_count",
+      "description": "Number of positions with correct digit. Expected value 0.3 per draw (3_STAR) or 0.4 per draw (4_STAR) under null.",
+      "baseline": "Binomial-derived; expected 0.3 (3_STAR) or 0.4 (4_STAR) positions correct per draw",
+      "power_level": "MODERATE",
+      "recommended_focus": {"3_STAR": true, "4_STAR": true}
+    },
+    {
+      "metric_id": "M4",
+      "name": "star_digit_bias_at_position_k",
+      "description": "Chi-squared test over {0-9} for predicted digit distribution vs actual digit distribution at position k. Tests whether certain digits are over/under-represented.",
+      "baseline": "Uniform chi-squared df=9; expected chi2 = 9 under null",
+      "power_level": "TRACTABLE",
+      "recommended_focus": {"3_STAR": true, "4_STAR": true}
+    }
+  ],
+  "proposed_windows": {
+    "short": [150],
+    "mid": [500, 750, 1000],
+    "all_history": "reference only — must not be used as gating window",
+    "window_rationale": "Inherited from P221F cross-lottery protocol (frozen 2026-06-03). Consistent with P227C box-play scan. Short window (150) cannot serve as standalone signal basis for exact-match (expected 0.15 hits under null). Must be pre-registered before any scan begins.",
+    "short_window_constraint": "150 draws yields ~0.15 expected exact hits (3_STAR). Short windows may only serve as recency features fed into prediction logic, never as standalone significance claims.",
+    "pre_registration_required": true
+  },
+  "multiple_testing_policy": {
+    "family_size_minimum": 32,
+    "family_size_formula": "lottery_types (2) x metrics (4) x windows (4 — excluding all-history gating)",
+    "typical_family_with_features": 256,
+    "typical_family_formula": "lottery_types (2) x metrics (4) x windows (4) x features (8)",
+    "primary_correction": "Bonferroni: alpha_per_test = 0.05 / family_size",
+    "secondary_correction": "Benjamini-Hochberg FDR q=0.05 (exploratory only; BH pass alone does NOT authorize deployment)",
+    "permutation_test": "Required for any Bonferroni-passing result; minimum 1000 permutations of draw labels",
+    "significance_hierarchy": [
+      "Bonferroni-corrected p < alpha_per_test",
+      "Permutation test p < 0.05",
+      "Block stability: majority of non-overlapping sub-windows show same direction",
+      "Walk-forward OOS: edge holds on held-out future draws"
+    ],
+    "bh_fdr_label": "EXPLORATORY_WEAK_SIGNAL_UNCONFIRMED — not sufficient for deployment"
+  },
+  "leakage_guard": {
+    "feature_window_rule": "Features at draw N must only use draws {1, ..., N-1}",
+    "walk_forward_rule": "All significance tests must use OOS draws only; IS period used only for feature design",
+    "no_full_history_fitting": "Cannot select features, weights, or thresholds using full 5850-draw history then test on same history",
+    "pre_declared_baseline": true,
+    "family_size_pre_declared": true,
+    "forbidden": [
+      "Full-history parameter selection before claiming significance",
+      "Post-hoc window adjustment after seeing p-values",
+      "Baseline manipulation after observing hit distribution",
+      "Using draw N outcome in draw N feature computation",
+      "Adding hypotheses after seeing results"
+    ]
+  },
+  "p214b_shape": {
+    "task_type": "Type C",
+    "description": "Additive code implementation: star_straight_exact_match(), star_position_accuracy(), star_digit_bias_at_position(), compute_straight_play_metrics() dry-run script, unit tests with mock data",
+    "db_write": false,
+    "strategy_scan": false,
+    "authorization_phrase": "Authorize P214B 3_STAR/4_STAR straight-play dry-run code implementation (Type C, no DB write, no strategy scan, additive only)"
+  },
+  "p214c_shape": {
+    "task_type": "Type C",
+    "description": "Read-only diagnostic run on 5850 3_STAR draws (4_STAR exact-match excluded due to power). Per-position digit accuracy, digit bias chi-squared, Bonferroni-corrected. JSON + Markdown artifact. No DB write.",
+    "db_write": false,
+    "strategy_scan": false,
+    "4_STAR_exact_match_excluded": true,
+    "4_STAR_per_position_included": true,
+    "authorization_phrase": "Authorize P214C 3_STAR/4_STAR straight-play read-only diagnostic run (Type C, no DB write, no strategy scan, per-position only for 4_STAR, follows P214B implementation)"
+  },
+  "recommended_next_direction": "HOLD pending explicit user authorization. Data is ready after P213L. Design is complete in this artifact. Next safe step is P214B code implementation only if user explicitly authorizes. P214C diagnostic run requires P214B complete first.",
+  "exact_authorization_phrase_for_next_direction": "Authorize P214B 3_STAR/4_STAR straight-play dry-run code implementation (Type C, no DB write, no strategy scan, additive only)",
+  "how_straight_play_differs_from_box_play": {
+    "box_play": "Multiset / sorted match — order irrelevant. Baseline 3_STAR=1/120, 4_STAR=1/210.",
+    "straight_play": "Exact ordered digit match — position matters. Baseline 3_STAR=1/1000, 4_STAR=1/10000.",
+    "difficulty_factor": {"3_STAR": "~8x harder than box-play", "4_STAR": "~48x harder than box-play"},
+    "per_position_benefit": "Straight-play enables per-position digit accuracy analysis which box-play does not support (box-play discards position information)"
+  },
+  "overfitting_controls": [
+    "Inherit P221F anti-overfit gates",
+    "Pre-register windows and baseline before any scan",
+    "Bonferroni correction over full family",
+    "Walk-forward OOS only",
+    "No full-history parameter selection",
+    "Permutation test required for Bonferroni-passing results",
+    "Block stability check required",
+    "No future rows in features",
+    "NULL is a valid and complete result"
+  ],
+  "no_registry_mutation": true,
+  "no_production_recommendation_change": true,
+  "no_monitoring_change": true,
+  "no_strategy_authorization": true,
+  "no_betting_advice": true,
+  "p238b_interpretation": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY - observation only; no strategy, production, recommendation, monitoring, DB write, or betting implication.",
+  "p213l_data_ready_confirmed": true,
+  "p227c_box_play_prior_result": "UNDERPOWERED_NO_SIGNAL for both 3_STAR and 4_STAR",
+  "tests": {
+    "command": "python3 -m pytest tests/test_p214_3star_4star_straight_play_feasibility_protocol_design.py -v",
+    "targeted_test_count": 20
+  },
+  "final_state": {
+    "active_task_status": "WAITING_FOR_USER_AUTHORIZATION",
+    "production_db_rows_unchanged": true,
+    "draw_rows_unchanged_at": 64361,
+    "replay_rows_unchanged_at": 94924,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "p238b_remains": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+    "no_active_worker_after_completion": true,
+    "straight_play_remains_unauthorized_until_next_explicit_task": true
+  }
+}

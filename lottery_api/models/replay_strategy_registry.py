@@ -32,10 +32,11 @@ Backward compatibility:
 from __future__ import annotations
 
 import sys
-import json
 import logging
 from pathlib import Path
-from typing import Optional, List, Tuple, Callable
+from typing import Optional, List, Tuple
+
+from . import power_lotto_second_zone
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -82,6 +83,13 @@ class InvalidOutput(Exception):
 class InsufficientHistory(Exception):
     """
     Raised when history is too short to run the strategy.
+    """
+
+class LifecycleNotExecutable(Exception):
+    """
+    Raised when a non-ONLINE strategy stub is invoked for generation.
+    Non-ONLINE strategies (REJECTED / RETIRED / OFFLINE / OBSERVATION) have
+    metadata registered for lifecycle tracking only — they MUST NOT be executed.
     """
 
 # ─── Registry Entry ───────────────────────────────────────────────────────────
@@ -198,11 +206,47 @@ class ReplayStrategyAdapter:
             )
         numbers = self._call_strategy(history, lottery_type)
         validated = _validate_numbers(numbers, lottery_type, self.meta.strategy_id)
-        special = None if lottery_type in _NO_SPECIAL_TYPES else None  # always None in replay v0.1
+        special = (
+            power_lotto_second_zone.second_zone_predict(history)
+            if lottery_type == "POWER_LOTTO"
+            else None
+        )
         return validated, special
 
     def _call_strategy(self, history: List[dict], lottery_type: str) -> List[int]:
         raise NotImplementedError
+
+
+# ─── Non-Executable Lifecycle Stub ───────────────────────────────────────────
+
+class _LifecycleStub(ReplayStrategyAdapter):
+    """
+    Metadata-only stub for non-ONLINE strategies.
+    Registered in _ALL_ADAPTERS for lifecycle visibility only.
+    get_one_bet() always raises LifecycleNotExecutable.
+    """
+    def __init__(self, strategy_id: str, strategy_name: str,
+                 strategy_version: str, supported_lottery_types: List[str],
+                 min_history: int = 0, status: str = "RETIRED"):
+        self.meta = _StrategyMeta(
+            strategy_id=strategy_id,
+            strategy_name=strategy_name,
+            strategy_version=strategy_version,
+            supported_lottery_types=supported_lottery_types,
+            min_history=min_history,
+            status=status,
+        )
+
+    def get_one_bet(self, history, lottery_type):
+        raise LifecycleNotExecutable(
+            f"{self.meta.strategy_id} lifecycle={self.meta.lifecycle_status} — "
+            "not eligible for replay generation"
+        )
+
+    def _call_strategy(self, history, lottery_type):
+        raise LifecycleNotExecutable(
+            f"{self.meta.strategy_id} is {self.meta.lifecycle_status}"
+        )
 
 
 # ─── Power Lotto Adapters ─────────────────────────────────────────────────────
@@ -325,15 +369,369 @@ class _Daily539MarkovColdAdapter(ReplayStrategyAdapter):
         return bet   # already a flat list of ints
 
 
+# ─── Power Lotto: fourier_rhythm_3bet ONLINE Adapter ─────────────────────────
+# P1.3: Added 2026-05-15 — live production strategy, governance gap closed.
+# Evidence: prediction_run=168 VALID, 3 PENDING items (1072-1074).
+# RSM binding: tools/power_fourier_rhythm.py::fourier_rhythm_predict(n_bets=3, window=500)
+# P1.2 classification: PRODUCT_DENOMINATOR_ONLINE_CANDIDATE → ONLINE
+
+class _PowerFourierRhythm3BetAdapter(ReplayStrategyAdapter):
+    meta = _StrategyMeta(
+        strategy_id="fourier_rhythm_3bet",
+        strategy_name="威力彩 Fourier Rhythm 3注",
+        strategy_version="v0.1",
+        supported_lottery_types=["POWER_LOTTO"],
+        min_history=100,
+        status="ONLINE",
+    )
+
+    def _call_strategy(self, history, lottery_type):
+        from tools.power_fourier_rhythm import fourier_rhythm_predict
+        raw = fourier_rhythm_predict(history, n_bets=3, window=500)
+        first = _extract_first_bet(raw)
+        if not first:
+            raise RejectPrediction("No bets returned by fourier_rhythm_3bet")
+        return first
+
+
+# ─── Big Lotto: ts3_regime_3bet ONLINE Adapter (P1.4 Bound) ──────────────────
+# P1.3: Added 2026-05-15 — live production strategy, governance gap closed.
+# P1.4: Adapter binding resolved 2026-05-15 — SAFE_RECONSTRUCTION (Case B).
+# Evidence: prediction_runs=167(VALID)/174(VALID)/175(RECONSTRUCTED),
+#           9 PENDING items (1069-1071, 1090-1095).
+# P1.2 classification: PRODUCT_DENOMINATOR_ONLINE_CANDIDATE → ONLINE
+#
+# RECONSTRUCTION EVIDENCE:
+# - tools/backtest_biglotto_enhancements.py contains generate_p1a_regime_adaptive()
+#   which implements TS3 (fourier + cold + tail_balance) + regime-adaptive 4th bet.
+# - ts3_regime_3bet = first 3 bets of generate_p1a_regime_adaptive (TS3 component).
+# - Regime detection (detect_regime) only modifies bet4 (gray-zone vs Markov).
+# - Bets 1-3 are regime-invariant: fourier_rhythm_bet, cold_numbers_bet,
+#   tail_balance_bet — same as the first 3 bets of generate_base_ts3m4.
+# - memory/lessons.md L90: "繼續使用 regime_2bet/ts3_regime_3bet/p1_dev_sum5bet"
+#   confirms ts3_regime_3bet is a distinct ONLINE production strategy.
+# - No exact callable found in codebase → SAFE_RECONSTRUCTION via thin wrapper.
+# - run_id=175 RECONSTRUCTED snapshot — additional audit risk documented in P1.3.
+
+class AdapterBindingPending(Exception):
+    """
+    Raised when an ONLINE strategy's predict_func has not yet been bound.
+    The strategy is governance-registered (ONLINE) but cannot generate replay
+    rows until adapter binding completes.
+    This is NOT a lifecycle error — the strategy is ONLINE by operator decision.
+    Retained for import compatibility; no longer raised by ts3_regime_3bet.
+    """
+
+
+def _ts3_regime_3bet_predict(history):
+    """
+    Safe reconstruction of ts3_regime_3bet predict_func (P1.4, 2026-05-15).
+
+    Reconstruction basis:
+    - tools/backtest_biglotto_enhancements.py::generate_p1a_regime_adaptive()
+      generates 4 bets: fourier_rhythm_bet, cold_numbers_bet, tail_balance_bet,
+      + regime-adaptive 4th bet (gray-zone or markov).
+    - ts3_regime_3bet = the TS3 component = first 3 bets of that function.
+    - Regime detection only modifies bet4; bets 1-3 are regime-invariant.
+    - This wrapper returns exactly 3 bets (list of 3 lists of 6 ints each).
+    """
+    from tools.backtest_biglotto_enhancements import (
+        fourier_rhythm_bet,
+        cold_numbers_bet,
+        tail_balance_bet,
+    )
+    bet1 = fourier_rhythm_bet(history)
+    bet2 = cold_numbers_bet(history, exclude=set(bet1))
+    bet3 = tail_balance_bet(history, exclude=set(bet1) | set(bet2))
+    return [bet1, bet2, bet3]
+
+
+class _BigLottoTs3Regime3BetAdapter(ReplayStrategyAdapter):
+    """
+    ONLINE adapter for ts3_regime_3bet (P1.4 bound via safe reconstruction).
+
+    Reconstruction: first 3 bets of generate_p1a_regime_adaptive() from
+    tools/backtest_biglotto_enhancements.py (fourier + cold + tail_balance).
+    Regime detection only affects bet4 which is excluded from this 3-bet variant.
+    """
+    meta = _StrategyMeta(
+        strategy_id="ts3_regime_3bet",
+        strategy_name="大樂透 TS3+Regime 3注",
+        strategy_version="v0.1",
+        supported_lottery_types=["BIG_LOTTO"],
+        min_history=100,
+        status="ONLINE",
+    )
+
+    def _call_strategy(self, history, lottery_type):
+        raw = _ts3_regime_3bet_predict(history)
+        first = _extract_first_bet(raw)
+        if not first:
+            raise RejectPrediction("No bets returned by ts3_regime_3bet")
+        return first
+
+
+from .biglotto_zone_split_adapter import build_zone_split_adapters  # noqa: E402
+from .biglotto_social_wisdom_adapter import (  # noqa: E402
+    build_social_wisdom_adapter,
+)
+
+
+_BIGLOTTO_ZONE_SPLIT_ADAPTERS = build_zone_split_adapters(
+    adapter_base=ReplayStrategyAdapter,
+    meta_type=_StrategyMeta,
+    invalid_output=InvalidOutput,
+    unsupported_lottery_type=UnsupportedLotteryType,
+)
+
+_BIGLOTTO_SOCIAL_WISDOM_ADAPTER = build_social_wisdom_adapter(
+    adapter_base=ReplayStrategyAdapter,
+    meta_type=_StrategyMeta,
+    invalid_output=InvalidOutput,
+    unsupported_lottery_type=UnsupportedLotteryType,
+)
+
+
+# ─── Non-Executable Lifecycle Stubs ─────────────────────────────────────────
+# Registered in _ALL_ADAPTERS for governance visibility.
+# NOT added to _REGISTRY. MUST NOT be executed.
+
+_NON_EXECUTABLE_STUBS: List[_LifecycleStub] = [
+    # ── REJECTED ──
+    _LifecycleStub(
+        strategy_id="biglotto_ts3_acb_4bet",
+        strategy_name="大樂透 TS3+ACB 4注",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="REJECTED",
+    ),
+    _LifecycleStub(
+        strategy_id="biglotto_ts3_markov_freq_5bet",
+        strategy_name="大樂透 TS3+Markov 頻率正交 5注",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="REJECTED",
+    ),
+    _LifecycleStub(
+        strategy_id="power_shlc_midfreq",
+        strategy_name="威力彩 SHLC 中頻指標",
+        strategy_version="v0.0",
+        supported_lottery_types=["POWER_LOTTO"],
+        status="REJECTED",
+    ),
+    _LifecycleStub(
+        strategy_id="p1_deviation_2bet_539",
+        strategy_name="今彩539 P1鄰號+偏差互補 2注",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="REJECTED",
+    ),
+    # ── REJECTED (P233B — formerly LIFECYCLE_UNRESOLVED, evidence: rejected/ archive) ──
+    _LifecycleStub(
+        strategy_id="bet2_fourier_expansion_biglotto",
+        strategy_name="大樂透 Bet2 Fourier Expansion",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="REJECTED",
+    ),
+    _LifecycleStub(
+        strategy_id="cold_complement_biglotto",
+        strategy_name="大樂透 Cold Complement",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="REJECTED",
+    ),
+    _LifecycleStub(
+        strategy_id="coldpool15_biglotto",
+        strategy_name="大樂透 ColdPool-15",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="REJECTED",
+    ),
+    _LifecycleStub(
+        strategy_id="fourier30_markov30_biglotto",
+        strategy_name="大樂透 Fourier30+Markov30",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="REJECTED",
+    ),
+    _LifecycleStub(
+        strategy_id="markov_2bet_biglotto",
+        strategy_name="大樂透 Markov 2注",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="REJECTED",
+    ),
+    _LifecycleStub(
+        strategy_id="markov_single_biglotto",
+        strategy_name="大樂透 Markov Single",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="REJECTED",
+    ),
+    _LifecycleStub(
+        strategy_id="539_3bet_orthogonal",
+        strategy_name="今彩539 3注正交",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="REJECTED",
+    ),
+    _LifecycleStub(
+        strategy_id="acb_single_539",
+        strategy_name="今彩539 ACB Single",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="REJECTED",
+    ),
+    _LifecycleStub(
+        strategy_id="markov_1bet_539",
+        strategy_name="今彩539 Markov 1注",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="REJECTED",
+    ),
+    _LifecycleStub(
+        strategy_id="p0b_539_3bet_f_cold_fmid",
+        strategy_name="今彩539 P0B 3注 F+Cold+FMid",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="REJECTED",
+    ),
+    _LifecycleStub(
+        strategy_id="p0c_539_3bet_f_cold_x2",
+        strategy_name="今彩539 P0C 3注 F+Cold×2",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="REJECTED",
+    ),
+    _LifecycleStub(
+        strategy_id="zone_gap_3bet_539",
+        strategy_name="今彩539 Zone Gap 3注",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="REJECTED",
+    ),
+    # ── RETIRED ──
+    _LifecycleStub(
+        strategy_id="acb_1bet",
+        strategy_name="今彩539 ACB 1注",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="RETIRED",
+    ),
+    _LifecycleStub(
+        strategy_id="acb_markov_midfreq",
+        strategy_name="今彩539 ACB+Markov 中頻",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="RETIRED",
+    ),
+    _LifecycleStub(
+        strategy_id="acb_markov_midfreq_3bet",
+        strategy_name="今彩539 ACB+Markov 中頻 3注",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="RETIRED",
+    ),
+    _LifecycleStub(
+        strategy_id="midfreq_acb_2bet",
+        strategy_name="今彩539 中頻 ACB 2注",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="RETIRED",
+    ),
+    _LifecycleStub(
+        strategy_id="midfreq_fourier_2bet",
+        strategy_name="今彩539 中頻 Fourier 2注",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="RETIRED",
+    ),
+    # ── RETIRED (P233B — formerly LIFECYCLE_UNRESOLVED, evidence: production controlled applies) ──
+    _LifecycleStub(
+        strategy_id="biglotto_echo_aware_3bet",
+        strategy_name="大樂透 Echo Aware 3注",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="RETIRED",
+    ),
+    _LifecycleStub(
+        strategy_id="biglotto_ts3_markov_4bet_w30",
+        strategy_name="大樂透 TS3+Markov 4注 w30",
+        strategy_version="v0.0",
+        supported_lottery_types=["BIG_LOTTO"],
+        status="RETIRED",
+    ),
+    _LifecycleStub(
+        strategy_id="daily539_f4cold_3bet",
+        strategy_name="今彩539 F4Cold 3注",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="RETIRED",
+    ),
+    _LifecycleStub(
+        strategy_id="daily539_f4cold_5bet",
+        strategy_name="今彩539 F4Cold 5注",
+        strategy_version="v0.0",
+        supported_lottery_types=["DAILY_539"],
+        status="RETIRED",
+    ),
+    _LifecycleStub(
+        strategy_id="cold_complement_2bet",
+        strategy_name="威力彩 Cold Complement 2注",
+        strategy_version="v0.0",
+        supported_lottery_types=["POWER_LOTTO"],
+        status="RETIRED",
+    ),
+    _LifecycleStub(
+        strategy_id="fourier30_markov30_2bet",
+        strategy_name="威力彩 Fourier30+Markov30 2注",
+        strategy_version="v0.0",
+        supported_lottery_types=["POWER_LOTTO"],
+        status="RETIRED",
+    ),
+    _LifecycleStub(
+        strategy_id="power_fourier_rhythm_2bet",
+        strategy_name="威力彩 Power Fourier Rhythm 2注",
+        strategy_version="v0.0",
+        supported_lottery_types=["POWER_LOTTO"],
+        status="RETIRED",
+    ),
+    _LifecycleStub(
+        strategy_id="zonal_entropy_2bet",
+        strategy_name="威力彩 Zonal Entropy 2注",
+        strategy_version="v0.0",
+        supported_lottery_types=["POWER_LOTTO"],
+        status="RETIRED",
+    ),
+    # ── OBSERVATION ──
+    _LifecycleStub(
+        strategy_id="h6_gate_mk20_ew85",
+        strategy_name="威力彩 H6 Gate mk20 ew85",
+        strategy_version="v0.0",
+        supported_lottery_types=["POWER_LOTTO"],
+        status="OBSERVATION",
+    ),
+]
+
+
 # ─── Registry ─────────────────────────────────────────────────────────────────
 
 _ALL_ADAPTERS: List[ReplayStrategyAdapter] = [
     _PowerPrecision3BetAdapter(),
     _PowerOrthogonal5BetAdapter(),
+    # P1.3: fourier_rhythm_3bet — live POWER_LOTTO production strategy (2026-05-15)
+    _PowerFourierRhythm3BetAdapter(),
     _BigLottoTripleStrikeAdapter(),
     _BigLottoDeviation2BetAdapter(),
+    # P1.3: ts3_regime_3bet — live BIG_LOTTO production strategy (2026-05-15)
+    # P1.4: adapter binding RESOLVED (SAFE_RECONSTRUCTION, 2026-05-15)
+    _BigLottoTs3Regime3BetAdapter(),
+    *_BIGLOTTO_ZONE_SPLIT_ADAPTERS,
     _Daily539F4ColdAdapter(),
     _Daily539MarkovColdAdapter(),
+    _BIGLOTTO_SOCIAL_WISDOM_ADAPTER,
+    *_NON_EXECUTABLE_STUBS,
 ]
 
 # strategy_id -> adapter (generation-eligible: ONLINE / ACTIVE)
@@ -410,3 +808,94 @@ def get_adapters_for_lottery(lottery_type: str) -> List[ReplayStrategyAdapter]:
         if a.meta.status in _GENERATION_STATUSES
         and lottery_type in a.meta.supported_lottery_types
     ]
+
+
+# ─── P3 Lifecycle Exposure API (metadata-only, no DB, no adapter instances) ──
+
+def list_strategy_lifecycle_metadata(
+    lifecycle_status: Optional[str] = None,
+) -> List[dict]:
+    """
+    Returns metadata dicts for all registered strategies (ONLINE + non-ONLINE).
+
+    Does NOT return adapter instances — safe for external consumers and reports.
+    Does NOT touch DB or replay.
+
+    Optional filter: lifecycle_status (ONLINE|REJECTED|RETIRED|OBSERVATION|OFFLINE)
+    Ordering: deterministic (insertion order of _ALL_ADAPTERS).
+    """
+    canonical_filter: Optional[str] = None
+    if lifecycle_status:
+        canonical_filter = normalise_lifecycle_status(lifecycle_status.upper())
+
+    out = []
+    for a in _ALL_ADAPTERS:
+        if canonical_filter and a.meta.lifecycle_status != canonical_filter:
+            continue
+        out.append({
+            "strategy_id":               a.meta.strategy_id,
+            "strategy_name":             a.meta.strategy_name,
+            "strategy_version":          a.meta.strategy_version,
+            "supported_lottery_types":   a.meta.supported_lottery_types,
+            "min_history":               a.meta.min_history,
+            "lifecycle_status":          a.meta.lifecycle_status,
+        })
+    return out
+
+
+def get_strategy_lifecycle_metadata(strategy_id: str) -> dict:
+    """
+    Returns lifecycle metadata for a single strategy_id.
+    Raises KeyError if strategy_id is not registered.
+    Does NOT fallback — unknown IDs always raise.
+    Does NOT touch DB or replay.
+    """
+    for a in _ALL_ADAPTERS:
+        if a.meta.strategy_id == strategy_id:
+            return {
+                "strategy_id":              a.meta.strategy_id,
+                "strategy_name":            a.meta.strategy_name,
+                "strategy_version":         a.meta.strategy_version,
+                "supported_lottery_types":  a.meta.supported_lottery_types,
+                "min_history":              a.meta.min_history,
+                "lifecycle_status":         a.meta.lifecycle_status,
+            }
+    raise KeyError(
+        f"strategy_id {strategy_id!r} is not registered in the lifecycle registry. "
+        f"Use list_strategy_lifecycle_metadata() to see all registered IDs."
+    )
+
+
+def summarize_strategy_lifecycle_counts() -> dict:
+    """
+    Returns a dict of lifecycle_status → count for all registered strategies.
+    Keys present only if count > 0. Ordered by LIFECYCLE_STATUSES declaration order.
+    Does NOT touch DB or replay.
+    """
+    counts: dict[str, int] = {}
+    for a in _ALL_ADAPTERS:
+        counts[a.meta.lifecycle_status] = counts.get(a.meta.lifecycle_status, 0) + 1
+    # Return in canonical declaration order
+    return {s: counts[s] for s in LIFECYCLE_STATUSES if s in counts}
+
+
+def list_executable_strategy_ids() -> List[str]:
+    """
+    Returns the list of strategy_ids that are ONLINE (replay-generation-eligible).
+    Must equal the keys of _REGISTRY. Does NOT touch DB.
+    """
+    return sorted(_REGISTRY.keys())
+
+
+def list_non_executable_strategy_ids() -> List[str]:
+    """
+    Returns the list of strategy_ids that are registered but NOT ONLINE
+    (REJECTED, RETIRED, OBSERVATION, OFFLINE).
+    These are metadata-only stubs; get_one_bet() raises LifecycleNotExecutable.
+    Does NOT touch DB.
+    """
+    return sorted(
+        a.meta.strategy_id
+        for a in _ALL_ADAPTERS
+        if a.meta.lifecycle_status not in _GENERATION_STATUSES
+    )

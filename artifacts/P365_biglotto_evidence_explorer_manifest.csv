@@ -1,0 +1,21 @@
+artifact_group,artifact_role,path,object_count,row_count,sha256,no_db_open_write,no_adapter_calls,details
+source,p363_summary,artifacts/P363_biglotto_evidence_pack_summary.csv,,24,588d6450251b20b747ad0cd956898f215b91df322a49f70be47faad05cc8aad0,YES,YES,P363/P364 committed evidence source artifact.
+source,p363_adapter_cards,artifacts/P363_biglotto_evidence_pack_adapter_cards.csv,,5,9db24b6030f484b7d101ff1b7d9fa7441a3e2170a87e8d84219d285e11e3544f,YES,YES,P363/P364 committed evidence source artifact.
+source,p363_subset_cards,artifacts/P363_biglotto_evidence_pack_subset_cards.csv,,31,c973c7110e26516ea0248cee3d83d200e0e6fa5c53d63f7a4e6e24fe46110042,YES,YES,P363/P364 committed evidence source artifact.
+source,p363_consistency_checks,artifacts/P363_biglotto_evidence_pack_consistency_checks.csv,,9,854b4cc3b691da09328adb2159749c20e63bd957583905b5ab908cd852c386a6,YES,YES,P363/P364 committed evidence source artifact.
+source,p363_manifest,artifacts/P363_biglotto_evidence_pack_manifest.csv,,14,1cf583ffb60103e6d20973dd7e29f4ff5d25ad2c16894a1d969ae15bb3ef6e20,YES,YES,P363/P364 committed evidence source artifact.
+source,p363_report,artifacts/P363_biglotto_evidence_pack_report.md,,,e7fab14e746a77aaf6cfb930eb8502496aa1a587fd828bbe09d8854b23fc2e82,YES,YES,P363/P364 committed evidence source artifact.
+source,p364_index,artifacts/P364_biglotto_evidence_dashboard_index.json,1,,630edbc4f2943376aeb3f5e111f21d676f462f28b6fac0daeadbc26b315a86f5,YES,YES,P363/P364 committed evidence source artifact.
+source,p364_adapter_table,artifacts/P364_biglotto_evidence_dashboard_adapter_table.csv,,5,d424b766aeeabcd71353b53a08841757ab2d3836b43c5ea2675796789ec6dbd2,YES,YES,P363/P364 committed evidence source artifact.
+source,p364_subset_table,artifacts/P364_biglotto_evidence_dashboard_subset_table.csv,,31,2dc2f100f09e7c402f798739cd8461b9ee35c85ac50a78a40eca79f34efc4999,YES,YES,P363/P364 committed evidence source artifact.
+source,p364_html,artifacts/P364_biglotto_evidence_dashboard.html,,,70d91a1b712fdd39e32da8bcf0bf2a0ea3c90e8ef0f9413f7b561c42b8ec518d,YES,YES,P363/P364 committed evidence source artifact.
+source,p364_manifest,artifacts/P364_biglotto_evidence_dashboard_manifest.csv,,12,ec281d48af2a9adbd2a5a870c9e6c0a9f41cddf71d36dbf458b2fcec824d7c45,YES,YES,P363/P364 committed evidence source artifact.
+output,adapter_detail_cards,artifacts/P365_biglotto_evidence_explorer_adapter_detail_cards.json,5,,0127b67a1584d2d4428bb0fe7afeaa24574c07c85b4b95969005b42e15d4323d,YES,YES,P365 derived output artifact from P363/P364 evidence.
+output,subset_detail_cards,artifacts/P365_biglotto_evidence_explorer_subset_detail_cards.json,31,,91bf82fa024e9276b0fac2e3c8443e2fed22ed7ee726bad796a5960910a8be3d,YES,YES,P365 derived output artifact from P363/P364 evidence.
+output,pairwise_comparison,artifacts/P365_biglotto_evidence_explorer_pairwise_comparison.csv,,10,9fc70ceb327d7b4eed2066a398f7b478176ae8c4bd2fcf10f2a3171dc31eab6f,YES,YES,P365 derived output artifact from P363/P364 evidence.
+output,compact_shortlist,artifacts/P365_biglotto_evidence_explorer_compact_shortlist.csv,,8,0389c8b5ce486a1dc02500260afa9242877114486d5c815e4dbdd25b3216f735,YES,YES,P365 derived output artifact from P363/P364 evidence.
+output,query_snapshots,artifacts/P365_biglotto_evidence_explorer_query_snapshots.json,1,,c8bd77e8e9936793e23f5afa466537ad052f93aeab13b2bb48fd77e186a550ac,YES,YES,P365 derived output artifact from P363/P364 evidence.
+output,html,artifacts/P365_biglotto_evidence_explorer.html,,,8668e270dd15219964ef5e7bbf944be0cb6a711254a3c417efea3ac68eb11590,YES,YES,P365 derived output artifact from P363/P364 evidence.
+output,manifest,artifacts/P365_biglotto_evidence_explorer_manifest.csv,,20,,YES,YES,P365 manifest records source/output inventory; self SHA omitted.
+statement,no_db_open_write,,,,,YES,YES,"P365 reads only merged P363/P364 evidence artifacts; no DB open/write, no adapter calls, no scoring cohort, no production registry import, no deploy."
+statement,scope_disclaimer,,,,,YES,YES,Historical descriptive evidence only; no betting advice; no future prediction guarantee; no blended leaderboard; shape-only and blocked targets remain excluded.

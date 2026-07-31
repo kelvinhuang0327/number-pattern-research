@@ -1,0 +1,72 @@
+{
+  "task_id": "P326A_D5_BASELINE_RESULTS_STATIC_UI_IMPORT",
+  "source_task_id": "P325A_D5_EQUAL_BUDGET_BASELINE_ANALYSIS_READ_ONLY",
+  "source_classification": "P325A_D5_EQUAL_BUDGET_BASELINE_COMPLETE_WITH_LIMITATIONS",
+  "classification": "DESCRIPTIVE_ONLY",
+  "generated_from": "public/demo-data/lottery-d5/p325a/equal_budget_baseline_metrics.csv",
+  "recomputation_note": "Aggregates recomputed from the copied, SHA256-verified P325A metrics CSV. Same descriptive result as P325A; no conclusion changed.",
+  "baseline_status": "COMPUTED",
+  "baseline_status_label": "Matched-budget random baseline computed (analytic hypergeometric, 1-(1-q_k)^m).",
+  "equal_budget_raw_subsampling_status": "INSUFFICIENT_RAW_DATA",
+  "equal_budget_raw_subsampling_label": "Raw per-draw equal-budget subsampling: insufficient raw data. Per-draw / per-ticket hit vectors are absent from the static aggregates, so an empirical equal-budget subsample of the strategies' own tickets is not possible. Nothing was fabricated.",
+  "budget_definition": "Ticket budget m = sample_size_rows / sample_size_draws = the number of tickets a combination spends per draw. Member strategies emit 1-3 tickets each, so m varies within every combination size and raw hit rates are budget-confounded.",
+  "n_metric_rows": 2418,
+  "mean_matched_budget_delta": {
+    "hit_at_least_1": -0.0279,
+    "hit_at_least_2": 0.0075,
+    "hit_at_least_3": -0.0091
+  },
+  "positive_delta_rows": {
+    "hit_at_least_1": 1041,
+    "hit_at_least_2": 1322,
+    "hit_at_least_3": 783,
+    "of_total": 2418
+  },
+  "same_budget_example": {
+    "lottery": "DAILY_539",
+    "window": "recent_50",
+    "budget_m": 5,
+    "metric": "hit_at_least_2",
+    "single_rate": 0.7,
+    "triple_rate": 0.498,
+    "conclusion": "At the same ticket budget the single strategy scores higher than triples; combining dilutes rather than adds."
+  },
+  "big_lotto_summary": {
+    "rows_passing_screen": 0,
+    "label": "Matched-budget deltas hover at or below zero and no BIG_LOTTO combination beats the equal-budget random null - consistent with 6/49 being indistinguishable from fair random."
+  },
+  "inferential_screen": {
+    "method": "exact one-sided binomial vs equal-budget-random null, k in {2, 3}",
+    "n_tests": 4836,
+    "bonferroni_alpha": 1.0339123242349049e-05,
+    "rows_passing": 41,
+    "by_lottery": {
+      "DAILY_539": 41
+    },
+    "by_window": {
+      "recent_300": 6,
+      "recent_750": 35
+    },
+    "by_combination_size": {
+      "1": 1,
+      "2": 13,
+      "3": 27
+    },
+    "passing_via_k2": 41,
+    "passing_via_k3": 0,
+    "signal_carrier_strategy": "daily539_f4cold_5bet",
+    "signal_carrier_rows": 34,
+    "signal_carrier_of_passing": 41,
+    "non_carrier_passing": 7,
+    "interpretation": "All passing rows are DAILY_539 at k=2 and are not independent (nested windows + shared members). The observed single-strategy signal carrier daily539_f4cold_5bet appears in 34 of 41 passing rows; removing it collapses the passing set. This is inherited single-strategy behaviour, not combination synergy."
+  },
+  "headline": "Raw combination hit-rate gains mostly reflect more tickets. At equal ticket budget, larger combinations do not show a clear advantage.",
+  "non_claim": "This is a descriptive baseline check only - not a prediction, not a betting recommendation, and it does not recommend any numbers to play.",
+  "caveats": [
+    "DESCRIPTIVE_ONLY. A baseline result does not prove any future edge.",
+    "Equal-budget comparison is against an analytic random reference (m independent uniform tickets), not an empirical subsample of the strategies' own tickets.",
+    "Binomial screen tests each row against its own equal-budget-random null; rows are not independent (nested windows + shared members), so Bonferroni survivor counts are indicative, not a formal guarantee.",
+    "POWER_LOTTO excluded / not scored.",
+    "Windows and samples inherited verbatim from P320A (recent_50 / recent_300 / recent_750 common draws)."
+  ]
+}

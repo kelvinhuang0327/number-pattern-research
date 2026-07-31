@@ -1,0 +1,6 @@
+equivalence_group,canonical_strategy_id,member_strategy_ids,member_count,basis
+core_satellite_family,history::lottery_api/models/core_satellite.py,history::lottery_api/models/core_satellite.py;core_satellite_biglotto,2,same CoreSatelliteStrategy implementation; artifact is governance evidence
+social_wisdom_family,history::lottery_api/models/social_wisdom_predictor.py,history::lottery_api/models/social_wisdom_predictor.py;biglotto_social_wisdom_anti_popularity,2,registry observation names the historical anti-popularity implementation
+ts3_acb_aliases,biglotto_ts3_acb_4bet,biglotto_ts3_acb_4bet;ts3_acb_4bet_biglotto,2,P358B confirms rejected-artifact alias and missing runnable source
+ts3_markov_freq_aliases,biglotto_ts3_markov_freq_5bet,biglotto_ts3_markov_freq_5bet;ts3_markov_freq_5bet_biglotto,2,same governed TS3/Markov/frequency 5-bet claim; lineage remains incomplete
+zone_split_family,history::lottery_api/models/zone_split.py,history::lottery_api/models/zone_split.py;biglotto_zone_split_3bet_bet1,2,registry observation is a budget/version view of ZoneSplitStrategy

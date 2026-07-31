@@ -1,0 +1,344 @@
+{
+  "task": "P171_POWER_LOTTO_NEW_STRATEGY_FEATURE_ENGINEERING_DISCOVERY_PLAN",
+  "final_classification": "P171_POWER_LOTTO_NEW_STRATEGY_FEATURE_ENGINEERING_DISCOVERY_PLAN_READY",
+  "date": "2026-06-01",
+  "branch": "claude/zen-gates-ff6802",
+  "authorization_phrase_detected": "YES start R2 new POWER_LOTTO strategy discovery from feature engineering, read-only planning first, no DB write",
+  "phase_0_verification": {
+    "result": "PASS",
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "head": "c8b423d0c1de26253be4cec79ae6de77719d1074",
+    "db_rows": 94924,
+    "db_rows_unchanged": true,
+    "drift_guard": "PASS",
+    "p167_script": "PASS",
+    "p170_script": "PASS",
+    "p161_to_p170_tests": "489 PASSED",
+    "p170_artifact_classification": "P170_POWER_LOTTO_SENSITIVITY_DOES_NOT_SUPPORT_TRACKING",
+    "p170_artifact_exists": true
+  },
+  "r1_summary": {
+    "research_round": "R1",
+    "tasks_completed": ["P161", "P162", "P163", "P164", "P165B", "P166", "P167", "P168", "P169", "P170"],
+    "r1_classification": "NO_DEFENSIBLE_EDGE_FOUND",
+    "key_findings": {
+      "p161": "Zero strategies beat random baseline after Bonferroni/BH correction (family=40). Pool mean +0.020 above random (0.9674 vs 0.9474), no corrected significance. POWER_LOTTO at-random NULL confirmed.",
+      "p167": "6-module ensemble/voting research: Module F final gate FAILED. Ensemble did not consistently beat random or best-single-strategy across OOS windows. No defensible edge from combining existing strategies.",
+      "p170": "5 sensitivity threshold scenarios (S1-S5), 2 held-out signal tracking targets. Signal non-stationary confirmed. Window 2 below random at all thresholds (S1-S3 means 0.929-0.938 vs baseline 0.9474). Held-out signals A=0.865, E=0.920, both below random. P167 NULL result strengthened."
+    },
+    "existing_strategy_names": [
+      "fourier30_markov30_2bet",
+      "威力彩 Fourier Rhythm 2注",
+      "威力彩 Fourier Rhythm 3注",
+      "威力彩 MidFreq+Fourier 2注",
+      "威力彩 MidFreq+Fourier+Markov 3注",
+      "威力彩 Orthogonal 5注",
+      "威力彩 PP3+FreqOrt 4注",
+      "威力彩 Precision 3注",
+      "威力彩 Zonal Entropy 2注",
+      "威力彩 冷號互補 2注"
+    ],
+    "existing_signals_exhausted": ["Fourier", "Markov", "MidFreq", "Orthogonal", "FreqOrt", "PP3", "Precision", "ZonalEntropy", "ColdNumber"],
+    "conclusion": "R1 existing-strategy ensemble/voting research closed. No defensible edge found in existing strategy space. Pivoting to R2 new strategy discovery."
+  },
+  "reason_for_pivoting_to_r2": "User explicitly requested exploring approaches that are not just recombinations of existing strategies. R1 has exhausted the signal space defined by Fourier, Markov, MidFreq, Orthogonal, FreqOrt, PP3, Precision, Zonal Entropy, and Cold Number signals. R2 starts fresh from feature engineering to generate genuinely novel strategy hypotheses that have not been evaluated in R1.",
+  "canonical_research_dataset_confirmation": {
+    "dataset": "zen-gates-ff6802 DB",
+    "db_path": "lottery_api/data/lottery_v2.db",
+    "total_rows": 94924,
+    "power_lotto_rows": 36000,
+    "distinct_draws": 1499,
+    "designation": "P165B_ZEN_GATES_CANONICAL_RESEARCH_DATASET_DESIGNATED",
+    "confirmed": true
+  },
+  "no_db_write_confirmation": true,
+  "no_strategy_implementation_confirmation": true,
+  "no_betting_advice_confirmation": true,
+  "no_registry_mutation_confirmation": true,
+  "no_controlled_apply_confirmation": true,
+  "no_champion_promotion_confirmation": true,
+  "feature_engineering_inventory": {
+    "total_families": 10,
+    "data_source_note": "F04 and F08 require lottery_draws table (historical draw records, not replay DB). F01-F03, F05-F07, F09-F10 can use replay DB columns only. All features must be computable from pre-target draws only to avoid data leakage.",
+    "families": [
+      {
+        "family_id": "F01",
+        "name": "recency_frequency_features",
+        "description": "Exponentially decay-weighted number hit frequency. Recent draws weighted more heavily than distant history. Window sizes: 20, 50, 100, 200 draws.",
+        "signals": ["exp_decay_hit_rate", "recency_weighted_rank", "half_life_adjusted_frequency"],
+        "raw_columns_required": ["target_draw", "lottery_type", "hit_count"],
+        "leakage_risk": "LOW — decay weights applied to draws strictly before target_draw",
+        "notes": "Distinct from MidFreq (uniform window count). Decay factor is a free hyperparameter — must be pre-declared before OOS evaluation."
+      },
+      {
+        "family_id": "F02",
+        "name": "rolling_hot_cold_features",
+        "description": "Rolling windows of above-median vs below-median hit frequency. Hot (>75th pct), Cold (<25th pct), Neutral designation per number per window. Hot-cold transition count.",
+        "signals": ["rolling_hot_flag", "rolling_cold_flag", "hot_cold_transition_count"],
+        "raw_columns_required": ["target_draw", "lottery_type", "hit_count"],
+        "leakage_risk": "LOW — rolling window anchored strictly before target_draw",
+        "notes": "More granular than 冷號互補 (raw absence count). Adds transition counting. Threshold percentiles must be pre-declared."
+      },
+      {
+        "family_id": "F03",
+        "name": "positional_frequency_and_number_position_interaction",
+        "description": "Per-bet-position (slot) frequency of each number value. Number-slot correlation matrix. Slot-specific entropy as diversity measure.",
+        "signals": ["slot_frequency_by_value", "cross_slot_rank", "slot_entropy"],
+        "raw_columns_required": ["target_draw", "lottery_type", "bet_index", "hit_count"],
+        "leakage_risk": "MEDIUM — must aggregate slots strictly before target_draw; full-history aggregation is leakage",
+        "notes": "Distinct from FreqOrt (orthogonality constraint). Uses actual slot co-placement patterns. Requires bet_index column to be present."
+      },
+      {
+        "family_id": "F04",
+        "name": "pair_triplet_co_occurrence_features",
+        "description": "Number co-occurrence frequencies for pairs and triplets within the same draw. Graph-based degree centrality. Pair co-occurrence rate normalized by pool size.",
+        "signals": ["pair_cooccurrence_rate", "triplet_frequency", "number_centrality_score"],
+        "raw_columns_required": ["lottery_draws table (historical POWER_LOTTO draws)", "target_draw"],
+        "leakage_risk": "LOW if using only pre-target draws from historical lottery records",
+        "notes": "Requires external lottery_draws data, not replay DB rows. None of the 10 existing strategies use co-occurrence graph structure. Pair space C(38,2)=703 edges — Bonferroni correction mandatory."
+      },
+      {
+        "family_id": "F05",
+        "name": "gap_overdue_last_seen_distance_features",
+        "description": "Number of draws since each number last appeared (gap). Running overdue score. Standardized gap vs expected gap under fair geometric distribution.",
+        "signals": ["draws_since_last_hit", "overdue_z_score", "expected_gap_ratio"],
+        "raw_columns_required": ["lottery_draws table or target_draw sequence"],
+        "leakage_risk": "LOW — last-seen defined strictly before target_draw",
+        "notes": "Distinct from 冷號互補 — adds z-score normalization against theoretical geometric distribution (mean gap = 38/6 ≈ 6.33 for POWER_LOTTO main). Provides principled overdue measure."
+      },
+      {
+        "family_id": "F06",
+        "name": "parity_odd_even_balance_features",
+        "description": "Proportion of odd vs even numbers in each draw. Odd-even streak length. Deviation from expected 50/50 balance under fair random model.",
+        "signals": ["odd_even_ratio", "parity_streak", "parity_deviation_z"],
+        "raw_columns_required": ["target_draw", "lottery_type"],
+        "leakage_risk": "LOW",
+        "notes": "POWER_LOTTO 1-38 has 19 odd / 19 even — expected ratio exactly 0.5. None of the 10 existing strategies explicitly model parity balance."
+      },
+      {
+        "family_id": "F07",
+        "name": "high_low_zone_distribution_features",
+        "description": "Partition 1-38 into low (1-13), mid (14-25), high (26-38) zones. Zone count distribution per draw. Zone frequency imbalance detection. Historical zone-count distribution as target.",
+        "signals": ["zone_count_low", "zone_count_mid", "zone_count_high", "zone_entropy", "zone_imbalance_score"],
+        "raw_columns_required": ["target_draw", "lottery_type"],
+        "leakage_risk": "LOW",
+        "notes": "Existing Zonal Entropy uses entropy of prediction set only. This family adds explicit zone-count features and cross-zone frequency modeling. Zone boundaries are fixed — no boundary-tuning leakage."
+      },
+      {
+        "family_id": "F08",
+        "name": "sum_span_variance_dispersion_features",
+        "description": "Sum of 6 main numbers per draw. Span (max-min). Variance. Mean absolute deviation. Rolling percentile of these statistics against historical distribution.",
+        "signals": ["draw_sum", "draw_span", "draw_variance", "draw_mad", "sum_percentile"],
+        "raw_columns_required": ["lottery_draws table (historical POWER_LOTTO draws)"],
+        "leakage_risk": "LOW if distribution parameters computed from pre-target history only",
+        "notes": "Characterizes draw-level diversity independent of individual number frequencies. No existing strategy explicitly models draw composition dispersion."
+      },
+      {
+        "family_id": "F09",
+        "name": "modulo_residue_class_features",
+        "description": "Numbers classified by mod-3, mod-5, mod-7 residue classes. Residue class frequency imbalance. Cross-mod interaction counts per draw.",
+        "signals": ["mod3_distribution", "mod5_distribution", "mod7_distribution", "mod_entropy"],
+        "raw_columns_required": ["target_draw", "lottery_type"],
+        "leakage_risk": "LOW",
+        "notes": "Genuinely novel for POWER_LOTTO. L84 showed ACB boundary/mod3 heuristic failed for BIG_LOTTO, but this is a pure distributional residue feature, not a hard inclusion rule. Different mechanism."
+      },
+      {
+        "family_id": "F10",
+        "name": "trend_shift_regime_window_features",
+        "description": "CUSUM change-point detection on hit rates. Regime label (high/mid/low activity) computed over rolling windows of 50/100/200 draws. Regime transition probability and stability score.",
+        "signals": ["cusum_signal", "regime_label", "regime_stability_score", "window_hit_rate_trend"],
+        "raw_columns_required": ["target_draw", "lottery_type", "hit_count"],
+        "leakage_risk": "MEDIUM — CUSUM must use one-sided historical-only computation; two-sided CUSUM is leakage",
+        "notes": "More principled than existing Regime strategy which uses retrospective labeling. P170 confirmed non-stationarity — adaptive regime detection is the correct response. CUSUM threshold must be pre-declared."
+      }
+    ]
+  },
+  "strategy_candidates": [
+    {
+      "candidate_id": "C01",
+      "name": "weighted_recency_frequency_strategy",
+      "hypothesis": "Numbers that have appeared more frequently in recent draws under exponential decay weighting have a marginally higher probability of appearing in future draws. Recency weighting reduces noise from distant historical draws in a non-stationary environment.",
+      "required_features": ["F01"],
+      "expected_output_format": "Ranked number list (1-38 for main); top-6 selected per draw",
+      "leakage_risk": "LOW",
+      "overfitting_risk": "MEDIUM — decay rate hyperparameter must be pre-declared; no sweep after seeing OOS",
+      "validation_method": "Walk-forward OOS (min 200 draws); permutation test vs 36/38 random baseline; Bonferroni over decay rate grid",
+      "minimum_oos_requirement": 200,
+      "reason_not_recombining_old_strategies": "Existing MidFreq uses uniform window count. Exponential decay weighting is a fundamentally different signal transformation with different theoretical motivation (non-stationarity hypothesis confirmed by P170)."
+    },
+    {
+      "candidate_id": "C02",
+      "name": "gap_adjusted_overdue_strategy",
+      "hypothesis": "Numbers absent significantly longer than their expected geometric inter-arrival time under a fair random model carry a measurable overdue signal. Selecting statistically overdue numbers improves hit rate vs unconstrained random selection.",
+      "required_features": ["F05"],
+      "expected_output_format": "Numbers ranked by overdue z-score; top-6 selected per draw",
+      "leakage_risk": "LOW",
+      "overfitting_risk": "LOW — single signal with one tunable threshold parameter",
+      "validation_method": "Walk-forward OOS (min 200 draws); compare against 冷號互補 baseline; permutation test",
+      "minimum_oos_requirement": 200,
+      "reason_not_recombining_old_strategies": "冷號互補 uses raw absence count. This strategy normalizes by theoretical geometric distribution (mean gap = 38/6 ≈ 6.33), making the overdue measure statistically grounded rather than count-based."
+    },
+    {
+      "candidate_id": "C03",
+      "name": "co_occurrence_pair_graph_strategy",
+      "hypothesis": "Certain number pairs co-occur more frequently than chance in historical draws. A graph-based centrality measure identifies numbers participating in many high-frequency pairs, suggesting structural non-randomness in number combinations.",
+      "required_features": ["F04"],
+      "expected_output_format": "Numbers ranked by co-occurrence centrality score; top-6 selected per draw",
+      "leakage_risk": "LOW — graph built from pre-target draws only",
+      "overfitting_risk": "HIGH — pair space C(38,2)=703 edges; graph construction window must be pre-declared; Bonferroni correction over pair count mandatory",
+      "validation_method": "Walk-forward OOS (min 300 draws); Bonferroni over pair count; permutation test against pair-random null; compare against P161 best strategy",
+      "minimum_oos_requirement": 300,
+      "reason_not_recombining_old_strategies": "None of the 10 existing strategies use co-occurrence graph structure. This is a fundamentally different representation of lottery history — adjacency relationships rather than individual number frequencies."
+    },
+    {
+      "candidate_id": "C04",
+      "name": "zone_balanced_frequency_strategy",
+      "hypothesis": "Historical draws exhibit characteristic zone distributions. Predictions constrained to match historical zone balance (low/mid/high proportions) and ranked by zone-adjusted frequency outperform unconstrained frequency selection.",
+      "required_features": ["F07"],
+      "expected_output_format": "Candidate sets filtered to satisfy zone balance constraints; frequency-ranked within constraints; top-6 selected",
+      "leakage_risk": "LOW",
+      "overfitting_risk": "MEDIUM — zone boundaries fixed (1-13, 14-25, 26-38); zone-count targets must be pre-declared from training distribution",
+      "validation_method": "Walk-forward OOS (min 200 draws); compare against unconstrained frequency baseline; permutation test",
+      "minimum_oos_requirement": 200,
+      "reason_not_recombining_old_strategies": "Existing Zonal Entropy measures entropy of prediction set. This strategy explicitly constrains selection to match the empirical zone count distribution of historical draws — a different constraint mechanism."
+    },
+    {
+      "candidate_id": "C05",
+      "name": "entropy_dispersion_controlled_strategy",
+      "hypothesis": "Predictions whose sum and span statistics match the historical draw distribution cover more of the number space and avoid systematic biases. Controlling dispersion toward the historical distribution improves coverage and hit rate.",
+      "required_features": ["F08"],
+      "expected_output_format": "Candidate sets scored by dispersion-match to historical distribution; top-6 by composite score",
+      "leakage_risk": "LOW if historical distribution parameters computed from pre-target draws only",
+      "overfitting_risk": "MEDIUM — dispersion target parameters must be pre-declared from training data",
+      "validation_method": "Walk-forward OOS (min 200 draws); permutation test; compare against sum-matched random baseline (C08)",
+      "minimum_oos_requirement": 200,
+      "reason_not_recombining_old_strategies": "No existing strategy explicitly models draw-level dispersion (sum, span, MAD). This is a draw-composition feature rather than a number-frequency feature — a different level of abstraction."
+    },
+    {
+      "candidate_id": "C06",
+      "name": "regime_adaptive_window_strategy",
+      "hypothesis": "POWER_LOTTO hit rates are non-stationary (P170 confirmed Window 2 degradation at all thresholds). A strategy that detects regime shifts via CUSUM and adapts its selection window to the current regime outperforms fixed-window strategies in a non-stationary environment.",
+      "required_features": ["F10"],
+      "expected_output_format": "Regime-labeled frequency ranking; window size adapts per detected regime label; top-6 selected",
+      "leakage_risk": "MEDIUM — CUSUM must use one-sided historical-only lookback; future draws must never enter regime detection",
+      "overfitting_risk": "HIGH — CUSUM threshold and window size per regime must be pre-declared; no tuning on OOS data",
+      "validation_method": "Walk-forward OOS (min 300 draws); compare against fixed-window P161 best strategy; compare against P167 ensemble; permutation test",
+      "minimum_oos_requirement": 300,
+      "reason_not_recombining_old_strategies": "Existing Regime strategy uses retrospective labeling — it knows the regime in hindsight. CUSUM-based online regime detection is a principled change-point method that operates causally, without future information."
+    },
+    {
+      "candidate_id": "C07",
+      "name": "hybrid_rank_aggregation_strategy",
+      "hypothesis": "Aggregating independent feature-based rankings (recency, gap, zone, parity) via Borda count produces a more robust signal than any single feature alone. Rank fusion is more stable than signal fusion when individual signals are noisy.",
+      "required_features": ["F01", "F05", "F06", "F07"],
+      "expected_output_format": "Borda-count aggregated rank; top-6 selected per draw",
+      "leakage_risk": "LOW — all component features are pre-target only",
+      "overfitting_risk": "HIGH — feature weights must be pre-declared; no weight tuning after seeing OOS; Bonferroni over weight grid size",
+      "validation_method": "Walk-forward OOS (min 300 draws); compare against each component individually; compare against P167 ensemble; permutation test; Bonferroni over weight grid",
+      "minimum_oos_requirement": 300,
+      "reason_not_recombining_old_strategies": "P167 ensemble combines existing strategy prediction outputs (number sets). This candidate aggregates raw feature rankings (inputs), a different level of fusion. Features F01, F05, F06, F07 are not extracted by any existing strategy."
+    },
+    {
+      "candidate_id": "C08",
+      "name": "constrained_random_baseline_challenger",
+      "hypothesis": "A purely random baseline constrained only by zone balance (F07) and parity (F06) provides a tighter null model than unconstrained random. If a new strategy cannot beat this constrained random baseline, it has no defensible edge beyond structural constraints.",
+      "required_features": ["F06", "F07"],
+      "expected_output_format": "Random draw constrained to historical zone count and parity distribution; used as comparison baseline only — not as a predictive strategy",
+      "leakage_risk": "LOW",
+      "overfitting_risk": "NOT_APPLICABLE — null model only, not a predictive strategy",
+      "validation_method": "Used as secondary comparison baseline in all R2 validation runs. Not itself subject to significance testing as a predictive strategy.",
+      "minimum_oos_requirement": 200,
+      "reason_not_recombining_old_strategies": "R1 compared against fully unconstrained random (36/38 baseline). This provides a tighter null model accounting for known structural constraints. Required to prevent overclaiming edge against a weaker baseline."
+    }
+  ],
+  "p172_prototype_boundary": {
+    "p172_task_name": "P172_POWER_LOTTO_NEW_STRATEGY_PROTOTYPE_PLAN_ONLY",
+    "allowed_in_p172": [
+      "plan-only or minimal feature extraction prototype implementation",
+      "read-only DB queries only",
+      "pre-declared strategy configs stored in plan artifacts only",
+      "OOS evaluation scripts that do not modify DB or registry"
+    ],
+    "forbidden_in_p172": [
+      "registry mutation",
+      "replay row insertion",
+      "champion promotion",
+      "controlled_apply",
+      "deployment to production",
+      "betting advice",
+      "DB write of any kind",
+      "strategy promotion to production pipeline"
+    ],
+    "p172_authorization_required": true,
+    "p172_blocked_by_user_authorization": true
+  },
+  "r2_validation_protocol": {
+    "principle": "No strategy passes unless it demonstrates reproducible OOS superiority over random and existing strategies under pre-registered configuration.",
+    "steps": [
+      {
+        "step": 1,
+        "name": "time_ordered_train_test_split",
+        "description": "All splits strictly time-ordered by target_draw. No shuffling. Train = earliest draws, test = latest draws. Test set must never be used during feature or hyperparameter selection."
+      },
+      {
+        "step": 2,
+        "name": "walk_forward_oos_evaluation",
+        "description": "Walk-forward expanding window. Start with minimum 500 training draws. Evaluate on rolling 50-draw blocks. Accumulate OOS results without any refitting on OOS data."
+      },
+      {
+        "step": 3,
+        "name": "pre_declared_strategy_configs",
+        "description": "All strategy hyperparameters declared in the P172 plan artifact before any OOS evaluation. No parameter tuning after seeing OOS results. Treated as a pre-registration requirement."
+      },
+      {
+        "step": 4,
+        "name": "random_baseline_comparison",
+        "description": "Primary: 36/38 fair-random main number baseline (P161 confirmed). Secondary: constrained random baseline (C08) with zone and parity constraints."
+      },
+      {
+        "step": 5,
+        "name": "p161_best_strategy_comparison",
+        "description": "Must outperform P161 best single strategy (midfreq_fourier_mk_3bet, raw hit rate 0.9674) in OOS. Not just in training. OOS comparison is the only valid gate."
+      },
+      {
+        "step": 6,
+        "name": "p167_ensemble_comparison",
+        "description": "Must outperform P167 ensemble best OOS window result. P167 showed no consistent OOS edge — new strategy must show consistent superiority across OOS windows."
+      },
+      {
+        "step": 7,
+        "name": "multiple_testing_correction",
+        "description": "Bonferroni correction over number of candidate strategies tested. BH correction as secondary. Family size = number of candidates × number of hyperparameter configurations. Report both corrected and uncorrected p-values."
+      },
+      {
+        "step": 8,
+        "name": "honest_null_reporting",
+        "description": "If no candidate beats the corrected significance threshold: report NULL honestly. Do not claim edge based on uncorrected p-values. Do not retroactively reframe null results as positive signals. R2 NULL is acceptable and must be reported as such."
+      }
+    ]
+  },
+  "governance_confirmations": {
+    "db_rows_before": 94924,
+    "db_rows_after": 94924,
+    "db_unchanged": true,
+    "no_db_write": true,
+    "no_registry_mutation": true,
+    "no_strategy_implementation": true,
+    "no_controlled_apply": true,
+    "no_champion_promotion": true,
+    "no_betting_advice": true,
+    "no_guaranteed_win": true,
+    "no_stage": true,
+    "no_commit": true,
+    "no_push": true,
+    "no_checkout_branch": true,
+    "no_merge_rebase_reset": true,
+    "r2_no_edge_found_yet": true,
+    "p161_to_p170_null_results_stand": true,
+    "main_zen_gates_split_still_unresolved": true
+  },
+  "next_task": "P172_POWER_LOTTO_NEW_STRATEGY_PROTOTYPE_PLAN_ONLY",
+  "next_task_blocked_by_user_authorization": true,
+  "next_task_authorization_required_phrase": "YES start P172 POWER_LOTTO new strategy prototype plan"
+}

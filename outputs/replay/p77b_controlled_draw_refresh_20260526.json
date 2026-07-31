@@ -1,0 +1,114 @@
+{
+  "task": "P77B",
+  "description": "Controlled Canonical Draw Refresh — POWER_LOTTO draw 115000041",
+  "generated_at": "2026-05-26T07:10:00.000000+00:00",
+  "final_classification": "P77B_POWERLOTTO_DRAW_REFRESH_COMPLETE",
+  "project_context_lock": "LotteryNew",
+  "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+  "branch": "main",
+  "p77a_commit": "4a7f808",
+  "controlled_import_id": "P77B_POWERLOTTO_DRAW_REFRESH_20260526",
+  "governance": {
+    "no_replay_row_insert": true,
+    "no_lifecycle_promotion": true,
+    "no_registry_mutation": true,
+    "no_champion_replacement": true,
+    "no_new_tables": true,
+    "no_new_repo": true,
+    "no_official_api_insert": true,
+    "no_force_push": true,
+    "no_git_reset_hard": true,
+    "no_git_clean": true,
+    "no_ceo_decision_modify": true,
+    "no_active_task_modify": true,
+    "draw_insert_only": true,
+    "insert_target_table": "draws",
+    "insert_source": "backups/lottery_v2_pre_p66_wave6_20260525_093850.db"
+  },
+  "db_backup": {
+    "path": "lottery_api/data/lottery_v2.db.bak_p77b_draw_refresh_20260526_150549",
+    "created_before_write": true,
+    "size_bytes": 39329792
+  },
+  "source_validation": {
+    "source_path": "backups/lottery_v2_pre_p66_wave6_20260525_093850.db",
+    "candidate_id": "C1",
+    "draw": "115000041",
+    "lottery_type": "POWER_LOTTO",
+    "date": "2026/05/21",
+    "numbers": [6, 14, 22, 28, 35, 38],
+    "special": 1,
+    "source_created_at": "2026-05-25 08:22:13",
+    "validation_results": {
+      "lottery_type_correct": true,
+      "draw_id_correct": true,
+      "date_correct": true,
+      "numbers_count_6": true,
+      "numbers_in_range_1_to_38": true,
+      "numbers_match_expected": true,
+      "special_correct": true,
+      "schema_compatible": true,
+      "overall": "SOURCE_VALIDATION_PASS"
+    }
+  },
+  "pre_insert_checks": {
+    "production_rows_before": 46960,
+    "power_lotto_count_before": 1912,
+    "power_lotto_max_draw_before": 115000040,
+    "power_lotto_max_date_before": "2026/05/18",
+    "power_lotto_draws_after_115000040_before": 0,
+    "duplicate_draw_check": "PASS — 0 existing rows for 115000041",
+    "drift_guard_pre": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "branch_governance_pre": "BRANCH_GOVERNANCE_PASS — branch='main' rows=46960"
+  },
+  "insert_result": {
+    "status": "INSERTED",
+    "inserted_draw": "115000041",
+    "inserted_date": "2026/05/21",
+    "inserted_numbers": "[6, 14, 22, 28, 35, 38]",
+    "inserted_special": 1,
+    "inserted_created_at": "2026-05-26 07:06:27 | controlled_import_id=P77B_POWERLOTTO_DRAW_REFRESH_20260526",
+    "rows_inserted": 1
+  },
+  "post_insert_verification": {
+    "production_rows_after": 46960,
+    "power_lotto_count_after": 1913,
+    "power_lotto_max_draw_after": 115000041,
+    "power_lotto_max_date_after": "2026/05/21",
+    "power_lotto_draws_after_115000040": 1,
+    "replay_rows_unchanged": true,
+    "no_new_tables_created": true,
+    "gate_checks": {
+      "count_incremented_by_1": true,
+      "max_draw_is_115000041": true,
+      "draws_after_threshold_is_1": true,
+      "replay_rows_exactly_46960": true
+    },
+    "drift_guard_post": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "branch_governance_post": "BRANCH_GOVERNANCE_PASS — branch='main' rows=46960"
+  },
+  "forbidden_staging_scan": {
+    "db_files_staged": false,
+    "backup_files_staged": false,
+    "pid_runtime_files_staged": false,
+    "overall": "STAGE_CLEAN"
+  },
+  "before_after_summary": {
+    "power_lotto_max_draw": {"before": 115000040, "after": 115000041},
+    "power_lotto_draw_count": {"before": 1912, "after": 1913},
+    "power_lotto_max_date": {"before": "2026/05/18", "after": "2026/05/21"},
+    "replay_rows": {"before": 46960, "after": 46960},
+    "draws_after_115000040": {"before": 0, "after": 1}
+  },
+  "p78_readiness": {
+    "can_proceed": true,
+    "reason": "POWER_LOTTO max draw is now 115000041. P74/P75 Batch A (fourier_rhythm_3bet, fourier30_markov30_2bet) can re-run dry-run against draw range including 115000041.",
+    "note": "Draw 115000042+ are still absent from production DB. If P78 targets draws beyond 115000041, further ingestion via official API (P76 gates) is required first.",
+    "batch_a_eligible_draws_added": 1
+  },
+  "files_created": [
+    "outputs/replay/p77b_controlled_draw_refresh_20260526.json",
+    "docs/replay/p77b_controlled_draw_refresh_20260526.md",
+    "tests/test_p77b_controlled_draw_refresh.py"
+  ]
+}

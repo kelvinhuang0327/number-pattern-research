@@ -1,0 +1,20 @@
+key,value
+task,P360_biglotto_no_db_multiwindow_validation
+fixture_relpath,outputs/research/p268d1_draw_order_full_history_artifact_backfill_20260610.jsonl
+fixture_sha256,f4accb6f527694e739689242c929e87e4b031a364becb4fadb4aaea50ef2e3f8
+big_lotto_row_count,2139
+lookback_draws,520
+scoreable_period_count,1619
+first_scoreable_period,100000103
+last_scoreable_period,115000057
+windows,30;150;750;1500
+hit_definition,any ticket matching >=3 main numbers
+baseline_formula,1 - (1 - 0.0186375) ** bet_count
+baseline_single_ticket_p,0.0186375
+baseline_note,"independent-ticket approximation, not proof of edge"
+tier,parity
+required_parity_status,PARITY_ACCEPTABLE_FOR_NO_DB_HARNESS
+adapter_count,5
+adapters,adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet
+db_opened,NO
+production_registry_imported,NO

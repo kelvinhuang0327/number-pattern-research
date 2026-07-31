@@ -1,0 +1,3644 @@
+{
+  "phase": "P232A_ALL_CATALOG_STRATEGY_HISTORICAL_REPLAY_SCOREBOARD",
+  "date": "20260604",
+  "execution_status": "SCOREBOARD_EXECUTED_OK",
+  "db_read_only": true,
+  "db_write_performed": false,
+  "db_rows_before": 94924,
+  "db_rows_after": 94924,
+  "total_catalog_strategy_count": 21,
+  "total_replay_strategy_count": 36,
+  "total_no_replay_count": 5,
+  "total_strategy_count_after_union": 41,
+  "unresolved_lifecycle_count": 20,
+  "per_lottery_counts": {
+    "POWER_LOTTO": 12,
+    "BIG_LOTTO": 13,
+    "DAILY_539": 16
+  },
+  "lifecycle_counts": {
+    "ONLINE": 8,
+    "REJECTED": 4,
+    "RETIRED": 5,
+    "OBSERVATION": 1,
+    "DRY_RUN": 3,
+    "LIFECYCLE_UNRESOLVED": 20
+  },
+  "all_strategy_scoreboard": [
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "威力彩 Precision 3注",
+      "strategy_version": "v0.1",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_status": "ONLINE",
+      "min_history": 100,
+      "catalog_source": "MAIN_REGISTRY",
+      "registry_presence": true,
+      "replay_presence": true,
+      "row_count": 4550,
+      "distinct_target_draws": 1550,
+      "first_target_draw": "99000055",
+      "last_target_draw": "115000040",
+      "bet_index_values": [
+        1,
+        2,
+        3
+      ],
+      "is_multi_bet": true,
+      "replay_status_breakdown": {
+        "PREDICTED": 4550
+      },
+      "baseline_mean_hit": 0.9473684210526315,
+      "baseline_formula": "6*6/38",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.958021978021978,
+      "delta_vs_baseline": 0.010653556969346445,
+      "row_level": {
+        "n_predicted": 4550,
+        "mean_hit_count": 0.958021978021978,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.6784615384615384,
+        "M2_plus_rate": 0.23582417582417584,
+        "M3_plus_rate": 0.04131868131868132,
+        "M4_plus_rate": 0.0024175824175824176,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 1463,
+          "1": 2014,
+          "2": 885,
+          "3": 177,
+          "4": 11
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1550,
+        "mean_best_hit_count": 1.6393548387096775,
+        "M1_plus_rate": 0.9709677419354839,
+        "M2_plus_rate": 0.5458064516129032,
+        "M3_plus_rate": 0.11548387096774193,
+        "M4_plus_rate": 0.0070967741935483875,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1550,
+          "predicted_rows": 1550,
+          "mean_hit_count": 0.9929032258064516,
+          "M1_plus_rate": 0.6890322580645162,
+          "M2_plus_rate": 0.2535483870967742,
+          "M3_plus_rate": 0.04903225806451613,
+          "M4_plus_rate": 0.0012903225806451613,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 482,
+            "1": 675,
+            "2": 317,
+            "3": 74,
+            "4": 2
+          }
+        },
+        "2": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.9406666666666667,
+          "M1_plus_rate": 0.682,
+          "M2_plus_rate": 0.21933333333333332,
+          "M3_plus_rate": 0.03666666666666667,
+          "M4_plus_rate": 0.0026666666666666666,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 477,
+            "1": 694,
+            "2": 274,
+            "3": 51,
+            "4": 4
+          }
+        },
+        "3": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.9393333333333334,
+          "M1_plus_rate": 0.664,
+          "M2_plus_rate": 0.234,
+          "M3_plus_rate": 0.038,
+          "M4_plus_rate": 0.0033333333333333335,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 504,
+            "1": 645,
+            "2": 294,
+            "3": 52,
+            "4": 5
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": 0.125,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "NULL_OR_BASELINE_LIKE"
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "strategy_name": "威力彩 Orthogonal 5注",
+      "strategy_version": "v0.1",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_status": "ONLINE",
+      "min_history": 100,
+      "catalog_source": "MAIN_REGISTRY",
+      "registry_presence": true,
+      "replay_presence": true,
+      "row_count": 7550,
+      "distinct_target_draws": 1550,
+      "first_target_draw": "99000055",
+      "last_target_draw": "115000040",
+      "bet_index_values": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "is_multi_bet": true,
+      "replay_status_breakdown": {
+        "PREDICTED": 7550
+      },
+      "baseline_mean_hit": 0.9473684210526315,
+      "baseline_formula": "6*6/38",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.9633112582781457,
+      "delta_vs_baseline": 0.01594283722551415,
+      "row_level": {
+        "n_predicted": 7550,
+        "mean_hit_count": 0.9633112582781457,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.6813245033112583,
+        "M2_plus_rate": 0.23682119205298013,
+        "M3_plus_rate": 0.04291390728476821,
+        "M4_plus_rate": 0.002251655629139073,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 2406,
+          "1": 3356,
+          "2": 1464,
+          "3": 307,
+          "4": 17
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1550,
+        "mean_best_hit_count": 1.647741935483871,
+        "M1_plus_rate": 0.9716129032258064,
+        "M2_plus_rate": 0.5496774193548387,
+        "M3_plus_rate": 0.11935483870967742,
+        "M4_plus_rate": 0.0070967741935483875,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1550,
+          "predicted_rows": 1550,
+          "mean_hit_count": 0.9929032258064516,
+          "M1_plus_rate": 0.6890322580645162,
+          "M2_plus_rate": 0.2535483870967742,
+          "M3_plus_rate": 0.04903225806451613,
+          "M4_plus_rate": 0.0012903225806451613,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 482,
+            "1": 675,
+            "2": 317,
+            "3": 74,
+            "4": 2
+          }
+        },
+        "2": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 1.002,
+          "M1_plus_rate": 0.6893333333333334,
+          "M2_plus_rate": 0.25733333333333336,
+          "M3_plus_rate": 0.054,
+          "M4_plus_rate": 0.0013333333333333333,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 466,
+            "1": 648,
+            "2": 305,
+            "3": 79,
+            "4": 2
+          }
+        },
+        "3": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.9406666666666667,
+          "M1_plus_rate": 0.682,
+          "M2_plus_rate": 0.21933333333333332,
+          "M3_plus_rate": 0.03666666666666667,
+          "M4_plus_rate": 0.0026666666666666666,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 477,
+            "1": 694,
+            "2": 274,
+            "3": 51,
+            "4": 4
+          }
+        },
+        "4": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.9393333333333334,
+          "M1_plus_rate": 0.664,
+          "M2_plus_rate": 0.234,
+          "M3_plus_rate": 0.038,
+          "M4_plus_rate": 0.0033333333333333335,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 504,
+            "1": 645,
+            "2": 294,
+            "3": 52,
+            "4": 5
+          }
+        },
+        "5": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.9406666666666667,
+          "M1_plus_rate": 0.682,
+          "M2_plus_rate": 0.21933333333333332,
+          "M3_plus_rate": 0.03666666666666667,
+          "M4_plus_rate": 0.0026666666666666666,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 477,
+            "1": 694,
+            "2": 274,
+            "3": 51,
+            "4": 4
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": 0.125,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "NULL_OR_BASELINE_LIKE"
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "strategy_version": "v0.1",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_status": "ONLINE",
+      "min_history": 100,
+      "catalog_source": "MAIN_REGISTRY",
+      "registry_presence": true,
+      "replay_presence": true,
+      "row_count": 4503,
+      "distinct_target_draws": 1501,
+      "first_target_draw": "101000002",
+      "last_target_draw": "115000041",
+      "bet_index_values": [
+        1,
+        2,
+        3
+      ],
+      "is_multi_bet": true,
+      "replay_status_breakdown": {
+        "PREDICTED": 4503
+      },
+      "baseline_mean_hit": 0.9473684210526315,
+      "baseline_formula": "6*6/38",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.9749056184765712,
+      "delta_vs_baseline": 0.027537197423939674,
+      "row_level": {
+        "n_predicted": 4503,
+        "mean_hit_count": 0.9749056184765712,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.6855429713524317,
+        "M2_plus_rate": 0.24206084832334,
+        "M3_plus_rate": 0.045081057073062404,
+        "M4_plus_rate": 0.0022207417277370642,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 1416,
+          "1": 1997,
+          "2": 887,
+          "3": 193,
+          "4": 10
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1501,
+        "mean_best_hit_count": 1.6235842771485676,
+        "M1_plus_rate": 0.9633577614923384,
+        "M2_plus_rate": 0.5336442371752165,
+        "M3_plus_rate": 0.12058627581612258,
+        "M4_plus_rate": 0.005996002664890073,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1501,
+          "predicted_rows": 1501,
+          "mean_hit_count": 0.9926715522984677,
+          "M1_plus_rate": 0.6888740839440373,
+          "M2_plus_rate": 0.25316455696202533,
+          "M3_plus_rate": 0.04930046635576282,
+          "M4_plus_rate": 0.0013324450366422385,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 467,
+            "1": 654,
+            "2": 306,
+            "3": 72,
+            "4": 2
+          }
+        },
+        "2": {
+          "row_count": 1501,
+          "predicted_rows": 1501,
+          "mean_hit_count": 0.9920053297801465,
+          "M1_plus_rate": 0.6862091938707529,
+          "M2_plus_rate": 0.25383077948034644,
+          "M3_plus_rate": 0.04930046635576282,
+          "M4_plus_rate": 0.002664890073284477,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 471,
+            "1": 649,
+            "2": 307,
+            "3": 70,
+            "4": 4
+          }
+        },
+        "3": {
+          "row_count": 1501,
+          "predicted_rows": 1501,
+          "mean_hit_count": 0.9400399733510992,
+          "M1_plus_rate": 0.681545636242505,
+          "M2_plus_rate": 0.21918720852764823,
+          "M3_plus_rate": 0.03664223850766156,
+          "M4_plus_rate": 0.002664890073284477,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 478,
+            "1": 694,
+            "2": 274,
+            "3": 51,
+            "4": 4
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": 0.125,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "WEAK_OBSERVATION_ONLY"
+    },
+    {
+      "strategy_id": "biglotto_triple_strike",
+      "strategy_name": "大樂透 Triple Strike",
+      "strategy_version": "v0.1",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "ONLINE",
+      "min_history": 100,
+      "catalog_source": "MAIN_REGISTRY",
+      "registry_presence": true,
+      "replay_presence": true,
+      "row_count": 1570,
+      "distinct_target_draws": 1550,
+      "first_target_draw": "99000056",
+      "last_target_draw": "115000053",
+      "bet_index_values": [
+        1,
+        2
+      ],
+      "is_multi_bet": true,
+      "replay_status_breakdown": {
+        "PREDICTED": 1570
+      },
+      "baseline_mean_hit": 0.7346938775510204,
+      "baseline_formula": "6*6/49",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.7280254777070063,
+      "delta_vs_baseline": -0.006668399844014128,
+      "row_level": {
+        "n_predicted": 1570,
+        "mean_hit_count": 0.7280254777070063,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.5617834394904458,
+        "M2_plus_rate": 0.1394904458598726,
+        "M3_plus_rate": 0.024840764331210193,
+        "M4_plus_rate": 0.001910828025477707,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 688,
+          "1": 663,
+          "2": 180,
+          "3": 36,
+          "4": 3
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1550,
+        "mean_best_hit_count": 0.7264516129032258,
+        "M1_plus_rate": 0.5612903225806452,
+        "M2_plus_rate": 0.13870967741935483,
+        "M3_plus_rate": 0.024516129032258065,
+        "M4_plus_rate": 0.001935483870967742,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1550,
+          "predicted_rows": 1550,
+          "mean_hit_count": 0.7264516129032258,
+          "M1_plus_rate": 0.5612903225806452,
+          "M2_plus_rate": 0.13870967741935483,
+          "M3_plus_rate": 0.024516129032258065,
+          "M4_plus_rate": 0.001935483870967742,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 680,
+            "1": 655,
+            "2": 177,
+            "3": 35,
+            "4": 3
+          }
+        },
+        "2": {
+          "row_count": 20,
+          "predicted_rows": 20,
+          "mean_hit_count": 0.85,
+          "M1_plus_rate": 0.6,
+          "M2_plus_rate": 0.2,
+          "M3_plus_rate": 0.05,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 8,
+            "1": 8,
+            "2": 3,
+            "3": 1
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "NULL_OR_BASELINE_LIKE"
+    },
+    {
+      "strategy_id": "biglotto_deviation_2bet",
+      "strategy_name": "大樂透 Deviation 2注",
+      "strategy_version": "v0.1",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "ONLINE",
+      "min_history": 100,
+      "catalog_source": "MAIN_REGISTRY",
+      "registry_presence": true,
+      "replay_presence": true,
+      "row_count": 1570,
+      "distinct_target_draws": 1550,
+      "first_target_draw": "99000056",
+      "last_target_draw": "115000053",
+      "bet_index_values": [
+        1,
+        2
+      ],
+      "is_multi_bet": true,
+      "replay_status_breakdown": {
+        "PREDICTED": 1570
+      },
+      "baseline_mean_hit": 0.7346938775510204,
+      "baseline_formula": "6*6/49",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.7573248407643313,
+      "delta_vs_baseline": 0.022630963213310817,
+      "row_level": {
+        "n_predicted": 1570,
+        "mean_hit_count": 0.7573248407643313,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.5802547770700637,
+        "M2_plus_rate": 0.15286624203821655,
+        "M3_plus_rate": 0.02356687898089172,
+        "M4_plus_rate": 0.0006369426751592356,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 659,
+          "1": 671,
+          "2": 203,
+          "3": 36,
+          "4": 1
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1550,
+        "mean_best_hit_count": 0.7574193548387097,
+        "M1_plus_rate": 0.5793548387096774,
+        "M2_plus_rate": 0.15354838709677418,
+        "M3_plus_rate": 0.023870967741935485,
+        "M4_plus_rate": 0.0006451612903225806,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1550,
+          "predicted_rows": 1550,
+          "mean_hit_count": 0.7574193548387097,
+          "M1_plus_rate": 0.5793548387096774,
+          "M2_plus_rate": 0.15354838709677418,
+          "M3_plus_rate": 0.023870967741935485,
+          "M4_plus_rate": 0.0006451612903225806,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 652,
+            "1": 660,
+            "2": 201,
+            "3": 36,
+            "4": 1
+          }
+        },
+        "2": {
+          "row_count": 20,
+          "predicted_rows": 20,
+          "mean_hit_count": 0.75,
+          "M1_plus_rate": 0.65,
+          "M2_plus_rate": 0.1,
+          "M3_plus_rate": 0.0,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 2,
+          "hit_distribution": {
+            "0": 7,
+            "1": 11,
+            "2": 2
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "WEAK_OBSERVATION_ONLY"
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "strategy_name": "大樂透 TS3+Regime 3注",
+      "strategy_version": "v0.1",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "ONLINE",
+      "min_history": 100,
+      "catalog_source": "MAIN_REGISTRY",
+      "registry_presence": true,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "102000010",
+      "last_target_draw": "115000053",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.7346938775510204,
+      "baseline_formula": "6*6/49",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.722,
+      "delta_vs_baseline": -0.012693877551020472,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.722,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.5586666666666666,
+        "M2_plus_rate": 0.13733333333333334,
+        "M3_plus_rate": 0.024,
+        "M4_plus_rate": 0.002,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 662,
+          "1": 632,
+          "2": 170,
+          "3": 33,
+          "4": 3
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.722,
+        "M1_plus_rate": 0.5586666666666666,
+        "M2_plus_rate": 0.13733333333333334,
+        "M3_plus_rate": 0.024,
+        "M4_plus_rate": 0.002,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.722,
+          "M1_plus_rate": 0.5586666666666666,
+          "M2_plus_rate": 0.13733333333333334,
+          "M3_plus_rate": 0.024,
+          "M4_plus_rate": 0.002,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 662,
+            "1": 632,
+            "2": 170,
+            "3": 33,
+            "4": 3
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "NULL_OR_BASELINE_LIKE"
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "今彩539 F4 Cold",
+      "strategy_version": "v0.1",
+      "lottery_type": "DAILY_539",
+      "lifecycle_status": "ONLINE",
+      "min_history": 100,
+      "catalog_source": "MAIN_REGISTRY",
+      "registry_presence": true,
+      "replay_presence": true,
+      "row_count": 1590,
+      "distinct_target_draws": 1550,
+      "first_target_draw": "99000212",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1,
+        2,
+        3
+      ],
+      "is_multi_bet": true,
+      "replay_status_breakdown": {
+        "PREDICTED": 1590
+      },
+      "baseline_mean_hit": 0.6410256410256411,
+      "baseline_formula": "5*5/39",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.6786163522012578,
+      "delta_vs_baseline": 0.03759071117561674,
+      "row_level": {
+        "n_predicted": 1590,
+        "mean_hit_count": 0.6786163522012578,
+        "max_hit_count": 3,
+        "M1_plus_rate": 0.5320754716981132,
+        "M2_plus_rate": 0.13836477987421383,
+        "M3_plus_rate": 0.008176100628930818,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 744,
+          "1": 626,
+          "2": 207,
+          "3": 13
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1550,
+        "mean_best_hit_count": 0.6729032258064516,
+        "M1_plus_rate": 0.5264516129032258,
+        "M2_plus_rate": 0.13806451612903226,
+        "M3_plus_rate": 0.008387096774193548,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1550,
+          "predicted_rows": 1550,
+          "mean_hit_count": 0.6729032258064516,
+          "M1_plus_rate": 0.5264516129032258,
+          "M2_plus_rate": 0.13806451612903226,
+          "M3_plus_rate": 0.008387096774193548,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 734,
+            "1": 602,
+            "2": 201,
+            "3": 13
+          }
+        },
+        "2": {
+          "row_count": 20,
+          "predicted_rows": 20,
+          "mean_hit_count": 0.9,
+          "M1_plus_rate": 0.75,
+          "M2_plus_rate": 0.15,
+          "M3_plus_rate": 0.0,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 2,
+          "hit_distribution": {
+            "0": 5,
+            "1": 12,
+            "2": 3
+          }
+        },
+        "3": {
+          "row_count": 20,
+          "predicted_rows": 20,
+          "mean_hit_count": 0.9,
+          "M1_plus_rate": 0.75,
+          "M2_plus_rate": 0.15,
+          "M3_plus_rate": 0.0,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 2,
+          "hit_distribution": {
+            "0": 5,
+            "1": 12,
+            "2": 3
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "WEAK_OBSERVATION_ONLY"
+    },
+    {
+      "strategy_id": "daily539_markov_cold",
+      "strategy_name": "今彩539 Markov Cold",
+      "strategy_version": "v0.1",
+      "lottery_type": "DAILY_539",
+      "lifecycle_status": "ONLINE",
+      "min_history": 100,
+      "catalog_source": "MAIN_REGISTRY",
+      "registry_presence": true,
+      "replay_presence": true,
+      "row_count": 1590,
+      "distinct_target_draws": 1550,
+      "first_target_draw": "99000212",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1,
+        2,
+        3
+      ],
+      "is_multi_bet": true,
+      "replay_status_breakdown": {
+        "PREDICTED": 1590
+      },
+      "baseline_mean_hit": 0.6410256410256411,
+      "baseline_formula": "5*5/39",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.6327044025157232,
+      "delta_vs_baseline": -0.008321238509917839,
+      "row_level": {
+        "n_predicted": 1590,
+        "mean_hit_count": 0.6327044025157232,
+        "max_hit_count": 3,
+        "M1_plus_rate": 0.49937106918238994,
+        "M2_plus_rate": 0.1220125786163522,
+        "M3_plus_rate": 0.011320754716981131,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 796,
+          "1": 600,
+          "2": 176,
+          "3": 18
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1550,
+        "mean_best_hit_count": 0.6348387096774194,
+        "M1_plus_rate": 0.5006451612903225,
+        "M2_plus_rate": 0.12258064516129032,
+        "M3_plus_rate": 0.011612903225806452,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1550,
+          "predicted_rows": 1550,
+          "mean_hit_count": 0.6348387096774194,
+          "M1_plus_rate": 0.5006451612903225,
+          "M2_plus_rate": 0.12258064516129032,
+          "M3_plus_rate": 0.011612903225806452,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 774,
+            "1": 586,
+            "2": 172,
+            "3": 18
+          }
+        },
+        "2": {
+          "row_count": 20,
+          "predicted_rows": 20,
+          "mean_hit_count": 0.55,
+          "M1_plus_rate": 0.45,
+          "M2_plus_rate": 0.1,
+          "M3_plus_rate": 0.0,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 2,
+          "hit_distribution": {
+            "0": 11,
+            "1": 7,
+            "2": 2
+          }
+        },
+        "3": {
+          "row_count": 20,
+          "predicted_rows": 20,
+          "mean_hit_count": 0.55,
+          "M1_plus_rate": 0.45,
+          "M2_plus_rate": 0.1,
+          "M3_plus_rate": 0.0,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 2,
+          "hit_distribution": {
+            "0": 11,
+            "1": 7,
+            "2": 2
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "NULL_OR_BASELINE_LIKE"
+    },
+    {
+      "strategy_id": "biglotto_ts3_acb_4bet",
+      "strategy_name": "大樂透 TS3+ACB 4注",
+      "strategy_version": "v0.0",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "REJECTED",
+      "min_history": 0,
+      "catalog_source": "MAIN_REGISTRY",
+      "registry_presence": true,
+      "replay_presence": false,
+      "row_count": 0,
+      "distinct_target_draws": 0,
+      "first_target_draw": null,
+      "last_target_draw": null,
+      "bet_index_values": null,
+      "is_multi_bet": null,
+      "replay_status_breakdown": null,
+      "baseline_mean_hit": 0.7346938775510204,
+      "baseline_formula": "6*6/49",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": null,
+      "delta_vs_baseline": null,
+      "row_level": null,
+      "draw_level": null,
+      "per_bet_index": null,
+      "second_zone_display_only": null,
+      "historical_classification": "NO_REPLAY_ROWS"
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_freq_5bet",
+      "strategy_name": "大樂透 TS3+Markov 頻率正交 5注",
+      "strategy_version": "v0.0",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "REJECTED",
+      "min_history": 0,
+      "catalog_source": "MAIN_REGISTRY",
+      "registry_presence": true,
+      "replay_presence": false,
+      "row_count": 0,
+      "distinct_target_draws": 0,
+      "first_target_draw": null,
+      "last_target_draw": null,
+      "bet_index_values": null,
+      "is_multi_bet": null,
+      "replay_status_breakdown": null,
+      "baseline_mean_hit": 0.7346938775510204,
+      "baseline_formula": "6*6/49",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": null,
+      "delta_vs_baseline": null,
+      "row_level": null,
+      "draw_level": null,
+      "per_bet_index": null,
+      "second_zone_display_only": null,
+      "historical_classification": "NO_REPLAY_ROWS"
+    },
+    {
+      "strategy_id": "power_shlc_midfreq",
+      "strategy_name": "威力彩 SHLC 中頻指標",
+      "strategy_version": "v0.0",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_status": "REJECTED",
+      "min_history": 0,
+      "catalog_source": "MAIN_REGISTRY",
+      "registry_presence": true,
+      "replay_presence": false,
+      "row_count": 0,
+      "distinct_target_draws": 0,
+      "first_target_draw": null,
+      "last_target_draw": null,
+      "bet_index_values": null,
+      "is_multi_bet": null,
+      "replay_status_breakdown": null,
+      "baseline_mean_hit": 0.9473684210526315,
+      "baseline_formula": "6*6/38",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": null,
+      "delta_vs_baseline": null,
+      "row_level": null,
+      "draw_level": null,
+      "per_bet_index": null,
+      "second_zone_display_only": null,
+      "historical_classification": "NO_REPLAY_ROWS"
+    },
+    {
+      "strategy_id": "p1_deviation_2bet_539",
+      "strategy_name": "今彩539 P1鄰號+偏差互補 2注",
+      "strategy_version": "v0.0",
+      "lottery_type": "DAILY_539",
+      "lifecycle_status": "REJECTED",
+      "min_history": 0,
+      "catalog_source": "MAIN_REGISTRY",
+      "registry_presence": true,
+      "replay_presence": false,
+      "row_count": 0,
+      "distinct_target_draws": 0,
+      "first_target_draw": null,
+      "last_target_draw": null,
+      "bet_index_values": null,
+      "is_multi_bet": null,
+      "replay_status_breakdown": null,
+      "baseline_mean_hit": 0.6410256410256411,
+      "baseline_formula": "5*5/39",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": null,
+      "delta_vs_baseline": null,
+      "row_level": null,
+      "draw_level": null,
+      "per_bet_index": null,
+      "second_zone_display_only": null,
+      "historical_classification": "NO_REPLAY_ROWS"
+    },
+    {
+      "strategy_id": "acb_1bet",
+      "strategy_name": "今彩539 ACB 1注",
+      "strategy_version": "v0.0",
+      "lottery_type": "DAILY_539",
+      "lifecycle_status": "RETIRED",
+      "min_history": 0,
+      "catalog_source": "MAIN_REGISTRY",
+      "registry_presence": true,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.6410256410256411,
+      "baseline_formula": "5*5/39",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.672,
+      "delta_vs_baseline": 0.030974358974358962,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.672,
+        "max_hit_count": 3,
+        "M1_plus_rate": 0.542,
+        "M2_plus_rate": 0.11933333333333333,
+        "M3_plus_rate": 0.010666666666666666,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 687,
+          "1": 634,
+          "2": 163,
+          "3": 16
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.672,
+        "M1_plus_rate": 0.542,
+        "M2_plus_rate": 0.11933333333333333,
+        "M3_plus_rate": 0.010666666666666666,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.672,
+          "M1_plus_rate": 0.542,
+          "M2_plus_rate": 0.11933333333333333,
+          "M3_plus_rate": 0.010666666666666666,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 687,
+            "1": 634,
+            "2": 163,
+            "3": 16
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "WEAK_OBSERVATION_ONLY"
+    },
+    {
+      "strategy_id": "acb_markov_midfreq",
+      "strategy_name": "今彩539 ACB+Markov 中頻",
+      "strategy_version": "v0.0",
+      "lottery_type": "DAILY_539",
+      "lifecycle_status": "RETIRED",
+      "min_history": 0,
+      "catalog_source": "MAIN_REGISTRY",
+      "registry_presence": true,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.6410256410256411,
+      "baseline_formula": "5*5/39",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.6366666666666667,
+      "delta_vs_baseline": -0.004358974358974366,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.6366666666666667,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.5093333333333333,
+        "M2_plus_rate": 0.11333333333333333,
+        "M3_plus_rate": 0.013333333333333334,
+        "M4_plus_rate": 0.0006666666666666666,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 736,
+          "1": 594,
+          "2": 150,
+          "3": 19,
+          "4": 1
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.6366666666666667,
+        "M1_plus_rate": 0.5093333333333333,
+        "M2_plus_rate": 0.11333333333333333,
+        "M3_plus_rate": 0.013333333333333334,
+        "M4_plus_rate": 0.0006666666666666666,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.6366666666666667,
+          "M1_plus_rate": 0.5093333333333333,
+          "M2_plus_rate": 0.11333333333333333,
+          "M3_plus_rate": 0.013333333333333334,
+          "M4_plus_rate": 0.0006666666666666666,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 736,
+            "1": 594,
+            "2": 150,
+            "3": 19,
+            "4": 1
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "NULL_OR_BASELINE_LIKE"
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "strategy_name": "今彩539 ACB+Markov 中頻 3注",
+      "strategy_version": "v0.0",
+      "lottery_type": "DAILY_539",
+      "lifecycle_status": "RETIRED",
+      "min_history": 0,
+      "catalog_source": "MAIN_REGISTRY",
+      "registry_presence": true,
+      "replay_presence": true,
+      "row_count": 4500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1,
+        2,
+        3
+      ],
+      "is_multi_bet": true,
+      "replay_status_breakdown": {
+        "PREDICTED": 4500
+      },
+      "baseline_mean_hit": 0.6410256410256411,
+      "baseline_formula": "5*5/39",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.66,
+      "delta_vs_baseline": 0.01897435897435895,
+      "row_level": {
+        "n_predicted": 4500,
+        "mean_hit_count": 0.66,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.5242222222222223,
+        "M2_plus_rate": 0.124,
+        "M3_plus_rate": 0.011555555555555555,
+        "M4_plus_rate": 0.00022222222222222223,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 2141,
+          "1": 1801,
+          "2": 506,
+          "3": 51,
+          "4": 1
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 1.2973333333333332,
+        "M1_plus_rate": 0.9113333333333333,
+        "M2_plus_rate": 0.3506666666666667,
+        "M3_plus_rate": 0.034666666666666665,
+        "M4_plus_rate": 0.0006666666666666666,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.672,
+          "M1_plus_rate": 0.542,
+          "M2_plus_rate": 0.11933333333333333,
+          "M3_plus_rate": 0.010666666666666666,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 687,
+            "1": 634,
+            "2": 163,
+            "3": 16
+          }
+        },
+        "2": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.6386666666666667,
+          "M1_plus_rate": 0.5066666666666667,
+          "M2_plus_rate": 0.12,
+          "M3_plus_rate": 0.011333333333333334,
+          "M4_plus_rate": 0.0006666666666666666,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 740,
+            "1": 580,
+            "2": 163,
+            "3": 16,
+            "4": 1
+          }
+        },
+        "3": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.6693333333333333,
+          "M1_plus_rate": 0.524,
+          "M2_plus_rate": 0.13266666666666665,
+          "M3_plus_rate": 0.012666666666666666,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 714,
+            "1": 587,
+            "2": 180,
+            "3": 19
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "WEAK_OBSERVATION_ONLY"
+    },
+    {
+      "strategy_id": "midfreq_acb_2bet",
+      "strategy_name": "今彩539 中頻 ACB 2注",
+      "strategy_version": "v0.0",
+      "lottery_type": "DAILY_539",
+      "lifecycle_status": "RETIRED",
+      "min_history": 0,
+      "catalog_source": "MAIN_REGISTRY",
+      "registry_presence": true,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.6410256410256411,
+      "baseline_formula": "5*5/39",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.6693333333333333,
+      "delta_vs_baseline": 0.028307692307692256,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.6693333333333333,
+        "max_hit_count": 3,
+        "M1_plus_rate": 0.524,
+        "M2_plus_rate": 0.13266666666666665,
+        "M3_plus_rate": 0.012666666666666666,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 714,
+          "1": 587,
+          "2": 180,
+          "3": 19
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.6693333333333333,
+        "M1_plus_rate": 0.524,
+        "M2_plus_rate": 0.13266666666666665,
+        "M3_plus_rate": 0.012666666666666666,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.6693333333333333,
+          "M1_plus_rate": 0.524,
+          "M2_plus_rate": 0.13266666666666665,
+          "M3_plus_rate": 0.012666666666666666,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 714,
+            "1": 587,
+            "2": 180,
+            "3": 19
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "WEAK_OBSERVATION_ONLY"
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "strategy_name": "今彩539 中頻 Fourier 2注",
+      "strategy_version": "v0.0",
+      "lottery_type": "DAILY_539",
+      "lifecycle_status": "RETIRED",
+      "min_history": 0,
+      "catalog_source": "MAIN_REGISTRY",
+      "registry_presence": true,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.6410256410256411,
+      "baseline_formula": "5*5/39",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.6693333333333333,
+      "delta_vs_baseline": 0.028307692307692256,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.6693333333333333,
+        "max_hit_count": 3,
+        "M1_plus_rate": 0.524,
+        "M2_plus_rate": 0.13266666666666665,
+        "M3_plus_rate": 0.012666666666666666,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 714,
+          "1": 587,
+          "2": 180,
+          "3": 19
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.6693333333333333,
+        "M1_plus_rate": 0.524,
+        "M2_plus_rate": 0.13266666666666665,
+        "M3_plus_rate": 0.012666666666666666,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.6693333333333333,
+          "M1_plus_rate": 0.524,
+          "M2_plus_rate": 0.13266666666666665,
+          "M3_plus_rate": 0.012666666666666666,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 714,
+            "1": 587,
+            "2": 180,
+            "3": 19
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "WEAK_OBSERVATION_ONLY"
+    },
+    {
+      "strategy_id": "h6_gate_mk20_ew85",
+      "strategy_name": "威力彩 H6 Gate mk20 ew85",
+      "strategy_version": "v0.0",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_status": "OBSERVATION",
+      "min_history": 0,
+      "catalog_source": "MAIN_REGISTRY",
+      "registry_presence": true,
+      "replay_presence": false,
+      "row_count": 0,
+      "distinct_target_draws": 0,
+      "first_target_draw": null,
+      "last_target_draw": null,
+      "bet_index_values": null,
+      "is_multi_bet": null,
+      "replay_status_breakdown": null,
+      "baseline_mean_hit": 0.9473684210526315,
+      "baseline_formula": "6*6/38",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": null,
+      "delta_vs_baseline": null,
+      "row_level": null,
+      "draw_level": null,
+      "per_bet_index": null,
+      "second_zone_display_only": null,
+      "historical_classification": "NO_REPLAY_ROWS"
+    },
+    {
+      "strategy_id": "pp3_freqort_4bet",
+      "strategy_name": "威力彩 PP3+FreqOrt 4注",
+      "strategy_version": "v0.1-p47",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_status": "DRY_RUN",
+      "min_history": 50,
+      "catalog_source": "P47_WAVE4",
+      "registry_presence": true,
+      "replay_presence": true,
+      "row_count": 6000,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "101000002",
+      "last_target_draw": "115000040",
+      "bet_index_values": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "is_multi_bet": true,
+      "replay_status_breakdown": {
+        "PREDICTED": 6000
+      },
+      "baseline_mean_hit": 0.9473684210526315,
+      "baseline_formula": "6*6/38",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.971,
+      "delta_vs_baseline": 0.023631578947368448,
+      "row_level": {
+        "n_predicted": 6000,
+        "mean_hit_count": 0.971,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.6811666666666667,
+        "M2_plus_rate": 0.242,
+        "M3_plus_rate": 0.04566666666666667,
+        "M4_plus_rate": 0.0021666666666666666,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 1913,
+          "1": 2635,
+          "2": 1178,
+          "3": 261,
+          "4": 13
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 1.6673333333333333,
+        "M1_plus_rate": 0.9806666666666667,
+        "M2_plus_rate": 0.558,
+        "M3_plus_rate": 0.12133333333333333,
+        "M4_plus_rate": 0.007333333333333333,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 1.002,
+          "M1_plus_rate": 0.6893333333333334,
+          "M2_plus_rate": 0.25733333333333336,
+          "M3_plus_rate": 0.054,
+          "M4_plus_rate": 0.0013333333333333333,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 466,
+            "1": 648,
+            "2": 305,
+            "3": 79,
+            "4": 2
+          }
+        },
+        "2": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 1.002,
+          "M1_plus_rate": 0.6893333333333334,
+          "M2_plus_rate": 0.25733333333333336,
+          "M3_plus_rate": 0.054,
+          "M4_plus_rate": 0.0013333333333333333,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 466,
+            "1": 648,
+            "2": 305,
+            "3": 79,
+            "4": 2
+          }
+        },
+        "3": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.9406666666666667,
+          "M1_plus_rate": 0.682,
+          "M2_plus_rate": 0.21933333333333332,
+          "M3_plus_rate": 0.03666666666666667,
+          "M4_plus_rate": 0.0026666666666666666,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 477,
+            "1": 694,
+            "2": 274,
+            "3": 51,
+            "4": 4
+          }
+        },
+        "4": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.9393333333333334,
+          "M1_plus_rate": 0.664,
+          "M2_plus_rate": 0.234,
+          "M3_plus_rate": 0.038,
+          "M4_plus_rate": 0.0033333333333333335,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 504,
+            "1": 645,
+            "2": 294,
+            "3": 52,
+            "4": 5
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 1500,
+        "special_hit_rate": 0.11866666666666667,
+        "special_baseline": 0.125,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "WEAK_OBSERVATION_ONLY"
+    },
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "strategy_name": "威力彩 MidFreq+Fourier+Markov 3注",
+      "strategy_version": "v0.1-p47",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_status": "DRY_RUN",
+      "min_history": 30,
+      "catalog_source": "P47_WAVE4",
+      "registry_presence": true,
+      "replay_presence": true,
+      "row_count": 4500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "101000002",
+      "last_target_draw": "115000040",
+      "bet_index_values": [
+        1,
+        2,
+        3
+      ],
+      "is_multi_bet": true,
+      "replay_status_breakdown": {
+        "PREDICTED": 4500
+      },
+      "baseline_mean_hit": 0.9473684210526315,
+      "baseline_formula": "6*6/38",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.9895555555555555,
+      "delta_vs_baseline": 0.042187134502923995,
+      "row_level": {
+        "n_predicted": 4500,
+        "mean_hit_count": 0.9895555555555555,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.6868888888888889,
+        "M2_plus_rate": 0.25422222222222224,
+        "M3_plus_rate": 0.04533333333333334,
+        "M4_plus_rate": 0.003111111111111111,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 1409,
+          "1": 1947,
+          "2": 940,
+          "3": 190,
+          "4": 14
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 1.524,
+        "M1_plus_rate": 0.9146666666666666,
+        "M2_plus_rate": 0.4886666666666667,
+        "M3_plus_rate": 0.11133333333333334,
+        "M4_plus_rate": 0.009333333333333334,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 1.0273333333333334,
+          "M1_plus_rate": 0.7073333333333334,
+          "M2_plus_rate": 0.2713333333333333,
+          "M3_plus_rate": 0.044,
+          "M4_plus_rate": 0.004666666666666667,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 439,
+            "1": 654,
+            "2": 341,
+            "3": 59,
+            "4": 7
+          }
+        },
+        "2": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 1.002,
+          "M1_plus_rate": 0.6893333333333334,
+          "M2_plus_rate": 0.25733333333333336,
+          "M3_plus_rate": 0.054,
+          "M4_plus_rate": 0.0013333333333333333,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 466,
+            "1": 648,
+            "2": 305,
+            "3": 79,
+            "4": 2
+          }
+        },
+        "3": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.9393333333333334,
+          "M1_plus_rate": 0.664,
+          "M2_plus_rate": 0.234,
+          "M3_plus_rate": 0.038,
+          "M4_plus_rate": 0.0033333333333333335,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 504,
+            "1": 645,
+            "2": 294,
+            "3": 52,
+            "4": 5
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 1500,
+        "special_hit_rate": 0.11866666666666667,
+        "special_baseline": 0.125,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "WEAK_OBSERVATION_ONLY"
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "strategy_name": "威力彩 MidFreq+Fourier 2注",
+      "strategy_version": "v0.1-p47",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_status": "DRY_RUN",
+      "min_history": 10,
+      "catalog_source": "P47_WAVE4",
+      "registry_presence": true,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "101000002",
+      "last_target_draw": "115000040",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.9473684210526315,
+      "baseline_formula": "6*6/38",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.9726666666666667,
+      "delta_vs_baseline": 0.025298245614035153,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.9726666666666667,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.6893333333333334,
+        "M2_plus_rate": 0.23533333333333334,
+        "M3_plus_rate": 0.04666666666666667,
+        "M4_plus_rate": 0.0013333333333333333,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 466,
+          "1": 681,
+          "2": 283,
+          "3": 68,
+          "4": 2
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.9726666666666667,
+        "M1_plus_rate": 0.6893333333333334,
+        "M2_plus_rate": 0.23533333333333334,
+        "M3_plus_rate": 0.04666666666666667,
+        "M4_plus_rate": 0.0013333333333333333,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.9726666666666667,
+          "M1_plus_rate": 0.6893333333333334,
+          "M2_plus_rate": 0.23533333333333334,
+          "M3_plus_rate": 0.04666666666666667,
+          "M4_plus_rate": 0.0013333333333333333,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 466,
+            "1": 681,
+            "2": 283,
+            "3": 68,
+            "4": 2
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 1500,
+        "special_hit_rate": 0.11866666666666667,
+        "special_baseline": 0.125,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "WEAK_OBSERVATION_ONLY"
+    },
+    {
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "strategy_name": "bet2_fourier_expansion_biglotto",
+      "strategy_version": "unknown",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "102000011",
+      "last_target_draw": "115000054",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.7346938775510204,
+      "baseline_formula": "6*6/49",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.724,
+      "delta_vs_baseline": -0.01069387755102047,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.724,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.5573333333333333,
+        "M2_plus_rate": 0.14,
+        "M3_plus_rate": 0.024,
+        "M4_plus_rate": 0.0026666666666666666,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 664,
+          "1": 626,
+          "2": 174,
+          "3": 32,
+          "4": 4
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.724,
+        "M1_plus_rate": 0.5573333333333333,
+        "M2_plus_rate": 0.14,
+        "M3_plus_rate": 0.024,
+        "M4_plus_rate": 0.0026666666666666666,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.724,
+          "M1_plus_rate": 0.5573333333333333,
+          "M2_plus_rate": 0.14,
+          "M3_plus_rate": 0.024,
+          "M4_plus_rate": 0.0026666666666666666,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 664,
+            "1": 626,
+            "2": 174,
+            "3": 32,
+            "4": 4
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    },
+    {
+      "strategy_id": "biglotto_echo_aware_3bet",
+      "strategy_name": "biglotto_echo_aware_3bet",
+      "strategy_version": "unknown",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 4500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "102000012",
+      "last_target_draw": "115000055",
+      "bet_index_values": [
+        1,
+        2,
+        3
+      ],
+      "is_multi_bet": true,
+      "replay_status_breakdown": {
+        "PREDICTED": 4500
+      },
+      "baseline_mean_hit": 0.7346938775510204,
+      "baseline_formula": "6*6/49",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.7477777777777778,
+      "delta_vs_baseline": 0.013083900226757317,
+      "row_level": {
+        "n_predicted": 4500,
+        "mean_hit_count": 0.7477777777777778,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.5642222222222222,
+        "M2_plus_rate": 0.16044444444444445,
+        "M3_plus_rate": 0.021777777777777778,
+        "M4_plus_rate": 0.0013333333333333333,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 1961,
+          "1": 1817,
+          "2": 624,
+          "3": 92,
+          "4": 6
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 1.46,
+        "M1_plus_rate": 0.9493333333333334,
+        "M2_plus_rate": 0.442,
+        "M3_plus_rate": 0.06466666666666666,
+        "M4_plus_rate": 0.004,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.7393333333333333,
+          "M1_plus_rate": 0.56,
+          "M2_plus_rate": 0.15933333333333333,
+          "M3_plus_rate": 0.018666666666666668,
+          "M4_plus_rate": 0.0013333333333333333,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 660,
+            "1": 601,
+            "2": 211,
+            "3": 26,
+            "4": 2
+          }
+        },
+        "2": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.782,
+          "M1_plus_rate": 0.5806666666666667,
+          "M2_plus_rate": 0.17466666666666666,
+          "M3_plus_rate": 0.026,
+          "M4_plus_rate": 0.0006666666666666666,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 629,
+            "1": 609,
+            "2": 223,
+            "3": 38,
+            "4": 1
+          }
+        },
+        "3": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.722,
+          "M1_plus_rate": 0.552,
+          "M2_plus_rate": 0.14733333333333334,
+          "M3_plus_rate": 0.020666666666666667,
+          "M4_plus_rate": 0.002,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 672,
+            "1": 607,
+            "2": 190,
+            "3": 28,
+            "4": 3
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_4bet_w30",
+      "strategy_name": "biglotto_ts3_markov_4bet_w30",
+      "strategy_version": "unknown",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 6000,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "102000012",
+      "last_target_draw": "115000055",
+      "bet_index_values": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "is_multi_bet": true,
+      "replay_status_breakdown": {
+        "PREDICTED": 6000
+      },
+      "baseline_mean_hit": 0.7346938775510204,
+      "baseline_formula": "6*6/49",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.733,
+      "delta_vs_baseline": -0.0016938775510204618,
+      "row_level": {
+        "n_predicted": 6000,
+        "mean_hit_count": 0.733,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.564,
+        "M2_plus_rate": 0.14566666666666667,
+        "M3_plus_rate": 0.021666666666666667,
+        "M4_plus_rate": 0.0016666666666666668,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 2616,
+          "1": 2510,
+          "2": 744,
+          "3": 120,
+          "4": 10
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 1.5853333333333333,
+        "M1_plus_rate": 0.988,
+        "M2_plus_rate": 0.504,
+        "M3_plus_rate": 0.08666666666666667,
+        "M4_plus_rate": 0.006666666666666667,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.722,
+          "M1_plus_rate": 0.558,
+          "M2_plus_rate": 0.138,
+          "M3_plus_rate": 0.024,
+          "M4_plus_rate": 0.002,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 663,
+            "1": 630,
+            "2": 171,
+            "3": 33,
+            "4": 3
+          }
+        },
+        "2": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.7446666666666667,
+          "M1_plus_rate": 0.5726666666666667,
+          "M2_plus_rate": 0.14533333333333334,
+          "M3_plus_rate": 0.025333333333333333,
+          "M4_plus_rate": 0.0013333333333333333,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 641,
+            "1": 641,
+            "2": 180,
+            "3": 36,
+            "4": 2
+          }
+        },
+        "3": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.7493333333333333,
+          "M1_plus_rate": 0.574,
+          "M2_plus_rate": 0.15533333333333332,
+          "M3_plus_rate": 0.018666666666666668,
+          "M4_plus_rate": 0.0013333333333333333,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 639,
+            "1": 628,
+            "2": 205,
+            "3": 26,
+            "4": 2
+          }
+        },
+        "4": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.716,
+          "M1_plus_rate": 0.5513333333333333,
+          "M2_plus_rate": 0.144,
+          "M3_plus_rate": 0.018666666666666668,
+          "M4_plus_rate": 0.002,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 673,
+            "1": 611,
+            "2": 188,
+            "3": 25,
+            "4": 3
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    },
+    {
+      "strategy_id": "cold_complement_biglotto",
+      "strategy_name": "cold_complement_biglotto",
+      "strategy_version": "unknown",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "102000011",
+      "last_target_draw": "115000054",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.7346938775510204,
+      "baseline_formula": "6*6/49",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.7353333333333333,
+      "delta_vs_baseline": 0.0006394557823128366,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.7353333333333333,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.5706666666666667,
+        "M2_plus_rate": 0.14933333333333335,
+        "M3_plus_rate": 0.014666666666666666,
+        "M4_plus_rate": 0.0006666666666666666,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 644,
+          "1": 632,
+          "2": 202,
+          "3": 21,
+          "4": 1
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.7353333333333333,
+        "M1_plus_rate": 0.5706666666666667,
+        "M2_plus_rate": 0.14933333333333335,
+        "M3_plus_rate": 0.014666666666666666,
+        "M4_plus_rate": 0.0006666666666666666,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.7353333333333333,
+          "M1_plus_rate": 0.5706666666666667,
+          "M2_plus_rate": 0.14933333333333335,
+          "M3_plus_rate": 0.014666666666666666,
+          "M4_plus_rate": 0.0006666666666666666,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 644,
+            "1": 632,
+            "2": 202,
+            "3": 21,
+            "4": 1
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    },
+    {
+      "strategy_id": "coldpool15_biglotto",
+      "strategy_name": "coldpool15_biglotto",
+      "strategy_version": "unknown",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "102000011",
+      "last_target_draw": "115000054",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.7346938775510204,
+      "baseline_formula": "6*6/49",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.7353333333333333,
+      "delta_vs_baseline": 0.0006394557823128366,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.7353333333333333,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.5706666666666667,
+        "M2_plus_rate": 0.14933333333333335,
+        "M3_plus_rate": 0.014666666666666666,
+        "M4_plus_rate": 0.0006666666666666666,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 644,
+          "1": 632,
+          "2": 202,
+          "3": 21,
+          "4": 1
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.7353333333333333,
+        "M1_plus_rate": 0.5706666666666667,
+        "M2_plus_rate": 0.14933333333333335,
+        "M3_plus_rate": 0.014666666666666666,
+        "M4_plus_rate": 0.0006666666666666666,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.7353333333333333,
+          "M1_plus_rate": 0.5706666666666667,
+          "M2_plus_rate": 0.14933333333333335,
+          "M3_plus_rate": 0.014666666666666666,
+          "M4_plus_rate": 0.0006666666666666666,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 644,
+            "1": 632,
+            "2": 202,
+            "3": 21,
+            "4": 1
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    },
+    {
+      "strategy_id": "fourier30_markov30_biglotto",
+      "strategy_name": "fourier30_markov30_biglotto",
+      "strategy_version": "unknown",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "102000011",
+      "last_target_draw": "115000054",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.7346938775510204,
+      "baseline_formula": "6*6/49",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.7213333333333334,
+      "delta_vs_baseline": -0.013360544217687065,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.7213333333333334,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.5653333333333334,
+        "M2_plus_rate": 0.14,
+        "M3_plus_rate": 0.014,
+        "M4_plus_rate": 0.002,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 652,
+          "1": 638,
+          "2": 189,
+          "3": 18,
+          "4": 3
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.7213333333333334,
+        "M1_plus_rate": 0.5653333333333334,
+        "M2_plus_rate": 0.14,
+        "M3_plus_rate": 0.014,
+        "M4_plus_rate": 0.002,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.7213333333333334,
+          "M1_plus_rate": 0.5653333333333334,
+          "M2_plus_rate": 0.14,
+          "M3_plus_rate": 0.014,
+          "M4_plus_rate": 0.002,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 652,
+            "1": 638,
+            "2": 189,
+            "3": 18,
+            "4": 3
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    },
+    {
+      "strategy_id": "markov_2bet_biglotto",
+      "strategy_name": "markov_2bet_biglotto",
+      "strategy_version": "unknown",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "102000011",
+      "last_target_draw": "115000054",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.7346938775510204,
+      "baseline_formula": "6*6/49",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.728,
+      "delta_vs_baseline": -0.006693877551020466,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.728,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.5666666666666667,
+        "M2_plus_rate": 0.144,
+        "M3_plus_rate": 0.015333333333333332,
+        "M4_plus_rate": 0.002,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 650,
+          "1": 634,
+          "2": 193,
+          "3": 20,
+          "4": 3
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.728,
+        "M1_plus_rate": 0.5666666666666667,
+        "M2_plus_rate": 0.144,
+        "M3_plus_rate": 0.015333333333333332,
+        "M4_plus_rate": 0.002,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.728,
+          "M1_plus_rate": 0.5666666666666667,
+          "M2_plus_rate": 0.144,
+          "M3_plus_rate": 0.015333333333333332,
+          "M4_plus_rate": 0.002,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 650,
+            "1": 634,
+            "2": 193,
+            "3": 20,
+            "4": 3
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    },
+    {
+      "strategy_id": "markov_single_biglotto",
+      "strategy_name": "markov_single_biglotto",
+      "strategy_version": "unknown",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "102000011",
+      "last_target_draw": "115000054",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.7346938775510204,
+      "baseline_formula": "6*6/49",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.728,
+      "delta_vs_baseline": -0.006693877551020466,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.728,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.5666666666666667,
+        "M2_plus_rate": 0.144,
+        "M3_plus_rate": 0.015333333333333332,
+        "M4_plus_rate": 0.002,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 650,
+          "1": 634,
+          "2": 193,
+          "3": 20,
+          "4": 3
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.728,
+        "M1_plus_rate": 0.5666666666666667,
+        "M2_plus_rate": 0.144,
+        "M3_plus_rate": 0.015333333333333332,
+        "M4_plus_rate": 0.002,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.728,
+          "M1_plus_rate": 0.5666666666666667,
+          "M2_plus_rate": 0.144,
+          "M3_plus_rate": 0.015333333333333332,
+          "M4_plus_rate": 0.002,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 650,
+            "1": 634,
+            "2": 193,
+            "3": 20,
+            "4": 3
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    },
+    {
+      "strategy_id": "539_3bet_orthogonal",
+      "strategy_name": "539_3bet_orthogonal",
+      "strategy_version": "unknown",
+      "lottery_type": "DAILY_539",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.6410256410256411,
+      "baseline_formula": "5*5/39",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.672,
+      "delta_vs_baseline": 0.030974358974358962,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.672,
+        "max_hit_count": 3,
+        "M1_plus_rate": 0.542,
+        "M2_plus_rate": 0.11933333333333333,
+        "M3_plus_rate": 0.010666666666666666,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 687,
+          "1": 634,
+          "2": 163,
+          "3": 16
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.672,
+        "M1_plus_rate": 0.542,
+        "M2_plus_rate": 0.11933333333333333,
+        "M3_plus_rate": 0.010666666666666666,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.672,
+          "M1_plus_rate": 0.542,
+          "M2_plus_rate": 0.11933333333333333,
+          "M3_plus_rate": 0.010666666666666666,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 687,
+            "1": 634,
+            "2": 163,
+            "3": 16
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    },
+    {
+      "strategy_id": "acb_single_539",
+      "strategy_name": "acb_single_539",
+      "strategy_version": "unknown",
+      "lottery_type": "DAILY_539",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.6410256410256411,
+      "baseline_formula": "5*5/39",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.672,
+      "delta_vs_baseline": 0.030974358974358962,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.672,
+        "max_hit_count": 3,
+        "M1_plus_rate": 0.542,
+        "M2_plus_rate": 0.11933333333333333,
+        "M3_plus_rate": 0.010666666666666666,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 687,
+          "1": 634,
+          "2": 163,
+          "3": 16
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.672,
+        "M1_plus_rate": 0.542,
+        "M2_plus_rate": 0.11933333333333333,
+        "M3_plus_rate": 0.010666666666666666,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.672,
+          "M1_plus_rate": 0.542,
+          "M2_plus_rate": 0.11933333333333333,
+          "M3_plus_rate": 0.010666666666666666,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 687,
+            "1": 634,
+            "2": 163,
+            "3": 16
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    },
+    {
+      "strategy_id": "daily539_f4cold_3bet",
+      "strategy_name": "daily539_f4cold_3bet",
+      "strategy_version": "unknown",
+      "lottery_type": "DAILY_539",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 4500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1,
+        2,
+        3
+      ],
+      "is_multi_bet": true,
+      "replay_status_breakdown": {
+        "PREDICTED": 4500
+      },
+      "baseline_mean_hit": 0.6410256410256411,
+      "baseline_formula": "5*5/39",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.6557777777777778,
+      "delta_vs_baseline": 0.014752136752136713,
+      "row_level": {
+        "n_predicted": 4500,
+        "mean_hit_count": 0.6557777777777778,
+        "max_hit_count": 3,
+        "M1_plus_rate": 0.5166666666666667,
+        "M2_plus_rate": 0.12777777777777777,
+        "M3_plus_rate": 0.011333333333333334,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 2175,
+          "1": 1750,
+          "2": 524,
+          "3": 51
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 1.316,
+        "M1_plus_rate": 0.92,
+        "M2_plus_rate": 0.362,
+        "M3_plus_rate": 0.034,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.6726666666666666,
+          "M1_plus_rate": 0.5246666666666666,
+          "M2_plus_rate": 0.13933333333333334,
+          "M3_plus_rate": 0.008666666666666666,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 713,
+            "1": 578,
+            "2": 196,
+            "3": 13
+          }
+        },
+        "2": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.64,
+          "M1_plus_rate": 0.504,
+          "M2_plus_rate": 0.12333333333333334,
+          "M3_plus_rate": 0.012666666666666666,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 744,
+            "1": 571,
+            "2": 166,
+            "3": 19
+          }
+        },
+        "3": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.6546666666666666,
+          "M1_plus_rate": 0.5213333333333333,
+          "M2_plus_rate": 0.12066666666666667,
+          "M3_plus_rate": 0.012666666666666666,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 718,
+            "1": 601,
+            "2": 162,
+            "3": 19
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    },
+    {
+      "strategy_id": "daily539_f4cold_5bet",
+      "strategy_name": "daily539_f4cold_5bet",
+      "strategy_version": "unknown",
+      "lottery_type": "DAILY_539",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 7500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "is_multi_bet": true,
+      "replay_status_breakdown": {
+        "PREDICTED": 7500
+      },
+      "baseline_mean_hit": 0.6410256410256411,
+      "baseline_formula": "5*5/39",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.6492,
+      "delta_vs_baseline": 0.00817435897435892,
+      "row_level": {
+        "n_predicted": 7500,
+        "mean_hit_count": 0.6492,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.5134666666666666,
+        "M2_plus_rate": 0.1228,
+        "M3_plus_rate": 0.012666666666666666,
+        "M4_plus_rate": 0.0002666666666666667,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 3649,
+          "1": 2930,
+          "2": 826,
+          "3": 93,
+          "4": 2
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 1.614,
+        "M1_plus_rate": 0.9953333333333333,
+        "M2_plus_rate": 0.554,
+        "M3_plus_rate": 0.06333333333333334,
+        "M4_plus_rate": 0.0013333333333333333,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.6726666666666666,
+          "M1_plus_rate": 0.5246666666666666,
+          "M2_plus_rate": 0.13933333333333334,
+          "M3_plus_rate": 0.008666666666666666,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 713,
+            "1": 578,
+            "2": 196,
+            "3": 13
+          }
+        },
+        "2": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.64,
+          "M1_plus_rate": 0.504,
+          "M2_plus_rate": 0.12333333333333334,
+          "M3_plus_rate": 0.012666666666666666,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 744,
+            "1": 571,
+            "2": 166,
+            "3": 19
+          }
+        },
+        "3": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.6546666666666666,
+          "M1_plus_rate": 0.5213333333333333,
+          "M2_plus_rate": 0.12066666666666667,
+          "M3_plus_rate": 0.012666666666666666,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 718,
+            "1": 601,
+            "2": 162,
+            "3": 19
+          }
+        },
+        "4": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.606,
+          "M1_plus_rate": 0.488,
+          "M2_plus_rate": 0.10666666666666667,
+          "M3_plus_rate": 0.011333333333333334,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 768,
+            "1": 572,
+            "2": 143,
+            "3": 17
+          }
+        },
+        "5": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.6726666666666666,
+          "M1_plus_rate": 0.5293333333333333,
+          "M2_plus_rate": 0.124,
+          "M3_plus_rate": 0.018,
+          "M4_plus_rate": 0.0013333333333333333,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 706,
+            "1": 608,
+            "2": 159,
+            "3": 25,
+            "4": 2
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    },
+    {
+      "strategy_id": "markov_1bet_539",
+      "strategy_name": "markov_1bet_539",
+      "strategy_version": "unknown",
+      "lottery_type": "DAILY_539",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.6410256410256411,
+      "baseline_formula": "5*5/39",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.634,
+      "delta_vs_baseline": -0.007025641025641072,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.634,
+        "max_hit_count": 3,
+        "M1_plus_rate": 0.502,
+        "M2_plus_rate": 0.12066666666666667,
+        "M3_plus_rate": 0.011333333333333334,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 747,
+          "1": 572,
+          "2": 164,
+          "3": 17
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.634,
+        "M1_plus_rate": 0.502,
+        "M2_plus_rate": 0.12066666666666667,
+        "M3_plus_rate": 0.011333333333333334,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.634,
+          "M1_plus_rate": 0.502,
+          "M2_plus_rate": 0.12066666666666667,
+          "M3_plus_rate": 0.011333333333333334,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 747,
+            "1": 572,
+            "2": 164,
+            "3": 17
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    },
+    {
+      "strategy_id": "p0b_539_3bet_f_cold_fmid",
+      "strategy_name": "p0b_539_3bet_f_cold_fmid",
+      "strategy_version": "unknown",
+      "lottery_type": "DAILY_539",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.6410256410256411,
+      "baseline_formula": "5*5/39",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.6773333333333333,
+      "delta_vs_baseline": 0.03630769230769226,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.6773333333333333,
+        "max_hit_count": 3,
+        "M1_plus_rate": 0.528,
+        "M2_plus_rate": 0.14066666666666666,
+        "M3_plus_rate": 0.008666666666666666,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 708,
+          "1": 581,
+          "2": 198,
+          "3": 13
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.6773333333333333,
+        "M1_plus_rate": 0.528,
+        "M2_plus_rate": 0.14066666666666666,
+        "M3_plus_rate": 0.008666666666666666,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.6773333333333333,
+          "M1_plus_rate": 0.528,
+          "M2_plus_rate": 0.14066666666666666,
+          "M3_plus_rate": 0.008666666666666666,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 708,
+            "1": 581,
+            "2": 198,
+            "3": 13
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    },
+    {
+      "strategy_id": "p0c_539_3bet_f_cold_x2",
+      "strategy_name": "p0c_539_3bet_f_cold_x2",
+      "strategy_version": "unknown",
+      "lottery_type": "DAILY_539",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.6410256410256411,
+      "baseline_formula": "5*5/39",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.6773333333333333,
+      "delta_vs_baseline": 0.03630769230769226,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.6773333333333333,
+        "max_hit_count": 3,
+        "M1_plus_rate": 0.528,
+        "M2_plus_rate": 0.14066666666666666,
+        "M3_plus_rate": 0.008666666666666666,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 708,
+          "1": 581,
+          "2": 198,
+          "3": 13
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.6773333333333333,
+        "M1_plus_rate": 0.528,
+        "M2_plus_rate": 0.14066666666666666,
+        "M3_plus_rate": 0.008666666666666666,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.6773333333333333,
+          "M1_plus_rate": 0.528,
+          "M2_plus_rate": 0.14066666666666666,
+          "M3_plus_rate": 0.008666666666666666,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 708,
+            "1": 581,
+            "2": 198,
+            "3": 13
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    },
+    {
+      "strategy_id": "zone_gap_3bet_539",
+      "strategy_name": "zone_gap_3bet_539",
+      "strategy_version": "unknown",
+      "lottery_type": "DAILY_539",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "110000190",
+      "last_target_draw": "115000121",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.6410256410256411,
+      "baseline_formula": "5*5/39",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.6286666666666667,
+      "delta_vs_baseline": -0.012358974358974373,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.6286666666666667,
+        "max_hit_count": 3,
+        "M1_plus_rate": 0.5166666666666667,
+        "M2_plus_rate": 0.10466666666666667,
+        "M3_plus_rate": 0.007333333333333333,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 725,
+          "1": 618,
+          "2": 146,
+          "3": 11
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.6286666666666667,
+        "M1_plus_rate": 0.5166666666666667,
+        "M2_plus_rate": 0.10466666666666667,
+        "M3_plus_rate": 0.007333333333333333,
+        "M4_plus_rate": 0.0,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.6286666666666667,
+          "M1_plus_rate": 0.5166666666666667,
+          "M2_plus_rate": 0.10466666666666667,
+          "M3_plus_rate": 0.007333333333333333,
+          "M4_plus_rate": 0.0,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 3,
+          "hit_distribution": {
+            "0": 725,
+            "1": 618,
+            "2": 146,
+            "3": 11
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": null,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    },
+    {
+      "strategy_id": "cold_complement_2bet",
+      "strategy_name": "cold_complement_2bet",
+      "strategy_version": "unknown",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "101000002",
+      "last_target_draw": "115000040",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.9473684210526315,
+      "baseline_formula": "6*6/38",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.9406666666666667,
+      "delta_vs_baseline": -0.006701754385964875,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.9406666666666667,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.682,
+        "M2_plus_rate": 0.21933333333333332,
+        "M3_plus_rate": 0.03666666666666667,
+        "M4_plus_rate": 0.0026666666666666666,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 477,
+          "1": 694,
+          "2": 274,
+          "3": 51,
+          "4": 4
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.9406666666666667,
+        "M1_plus_rate": 0.682,
+        "M2_plus_rate": 0.21933333333333332,
+        "M3_plus_rate": 0.03666666666666667,
+        "M4_plus_rate": 0.0026666666666666666,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.9406666666666667,
+          "M1_plus_rate": 0.682,
+          "M2_plus_rate": 0.21933333333333332,
+          "M3_plus_rate": 0.03666666666666667,
+          "M4_plus_rate": 0.0026666666666666666,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 477,
+            "1": 694,
+            "2": 274,
+            "3": 51,
+            "4": 4
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 1500,
+        "special_hit_rate": 0.114,
+        "special_baseline": 0.125,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    },
+    {
+      "strategy_id": "fourier30_markov30_2bet",
+      "strategy_name": "fourier30_markov30_2bet",
+      "strategy_version": "unknown",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 1501,
+      "distinct_target_draws": 1501,
+      "first_target_draw": "101000002",
+      "last_target_draw": "115000041",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1501
+      },
+      "baseline_mean_hit": 0.9473684210526315,
+      "baseline_formula": "6*6/38",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.9646902065289806,
+      "delta_vs_baseline": 0.017321785476349105,
+      "row_level": {
+        "n_predicted": 1501,
+        "mean_hit_count": 0.9646902065289806,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.6855429713524317,
+        "M2_plus_rate": 0.23584277148567623,
+        "M3_plus_rate": 0.04063957361758828,
+        "M4_plus_rate": 0.002664890073284477,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 472,
+          "1": 675,
+          "2": 293,
+          "3": 57,
+          "4": 4
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1501,
+        "mean_best_hit_count": 0.9646902065289806,
+        "M1_plus_rate": 0.6855429713524317,
+        "M2_plus_rate": 0.23584277148567623,
+        "M3_plus_rate": 0.04063957361758828,
+        "M4_plus_rate": 0.002664890073284477,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1501,
+          "predicted_rows": 1501,
+          "mean_hit_count": 0.9646902065289806,
+          "M1_plus_rate": 0.6855429713524317,
+          "M2_plus_rate": 0.23584277148567623,
+          "M3_plus_rate": 0.04063957361758828,
+          "M4_plus_rate": 0.002664890073284477,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 472,
+            "1": 675,
+            "2": 293,
+            "3": 57,
+            "4": 4
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 1500,
+        "special_hit_rate": 0.12466666666666666,
+        "special_baseline": 0.125,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    },
+    {
+      "strategy_id": "power_fourier_rhythm_2bet",
+      "strategy_name": "power_fourier_rhythm_2bet",
+      "strategy_version": "unknown",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 3000,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "101000003",
+      "last_target_draw": "115000041",
+      "bet_index_values": [
+        1,
+        2
+      ],
+      "is_multi_bet": true,
+      "replay_status_breakdown": {
+        "PREDICTED": 3000
+      },
+      "baseline_mean_hit": 0.9473684210526315,
+      "baseline_formula": "6*6/38",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.9633333333333334,
+      "delta_vs_baseline": 0.01596491228070185,
+      "row_level": {
+        "n_predicted": 3000,
+        "mean_hit_count": 0.9633333333333334,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.6773333333333333,
+        "M2_plus_rate": 0.23833333333333334,
+        "M3_plus_rate": 0.04533333333333334,
+        "M4_plus_rate": 0.0023333333333333335,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 968,
+          "1": 1317,
+          "2": 579,
+          "3": 129,
+          "4": 7
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 1.47,
+        "M1_plus_rate": 0.9286666666666666,
+        "M2_plus_rate": 0.446,
+        "M3_plus_rate": 0.09066666666666667,
+        "M4_plus_rate": 0.004666666666666667,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.9926666666666667,
+          "M1_plus_rate": 0.6886666666666666,
+          "M2_plus_rate": 0.25333333333333335,
+          "M3_plus_rate": 0.04933333333333333,
+          "M4_plus_rate": 0.0013333333333333333,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 467,
+            "1": 653,
+            "2": 306,
+            "3": 72,
+            "4": 2
+          }
+        },
+        "2": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.934,
+          "M1_plus_rate": 0.666,
+          "M2_plus_rate": 0.22333333333333333,
+          "M3_plus_rate": 0.04133333333333333,
+          "M4_plus_rate": 0.0033333333333333335,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 501,
+            "1": 664,
+            "2": 273,
+            "3": 57,
+            "4": 5
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 0,
+        "special_hit_rate": null,
+        "special_baseline": 0.125,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    },
+    {
+      "strategy_id": "zonal_entropy_2bet",
+      "strategy_name": "zonal_entropy_2bet",
+      "strategy_version": "unknown",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "min_history": 0,
+      "catalog_source": "DB_ONLY",
+      "registry_presence": false,
+      "replay_presence": true,
+      "row_count": 1500,
+      "distinct_target_draws": 1500,
+      "first_target_draw": "101000002",
+      "last_target_draw": "115000040",
+      "bet_index_values": [
+        1
+      ],
+      "is_multi_bet": false,
+      "replay_status_breakdown": {
+        "PREDICTED": 1500
+      },
+      "baseline_mean_hit": 0.9473684210526315,
+      "baseline_formula": "6*6/38",
+      "baseline_status": "COMPUTED",
+      "mean_hit_count_row_level": 0.946,
+      "delta_vs_baseline": -0.0013684210526315743,
+      "row_level": {
+        "n_predicted": 1500,
+        "mean_hit_count": 0.946,
+        "max_hit_count": 4,
+        "M1_plus_rate": 0.678,
+        "M2_plus_rate": 0.23066666666666666,
+        "M3_plus_rate": 0.03666666666666667,
+        "M4_plus_rate": 0.0006666666666666666,
+        "M5_plus_rate": 0.0,
+        "hit_distribution": {
+          "0": 483,
+          "1": 671,
+          "2": 291,
+          "3": 54,
+          "4": 1
+        }
+      },
+      "draw_level": {
+        "n_predicted_draws": 1500,
+        "mean_best_hit_count": 0.946,
+        "M1_plus_rate": 0.678,
+        "M2_plus_rate": 0.23066666666666666,
+        "M3_plus_rate": 0.03666666666666667,
+        "M4_plus_rate": 0.0006666666666666666,
+        "M5_plus_rate": 0.0
+      },
+      "per_bet_index": {
+        "1": {
+          "row_count": 1500,
+          "predicted_rows": 1500,
+          "mean_hit_count": 0.946,
+          "M1_plus_rate": 0.678,
+          "M2_plus_rate": 0.23066666666666666,
+          "M3_plus_rate": 0.03666666666666667,
+          "M4_plus_rate": 0.0006666666666666666,
+          "M5_plus_rate": 0.0,
+          "max_hit_count": 4,
+          "hit_distribution": {
+            "0": 483,
+            "1": 671,
+            "2": 291,
+            "3": 54,
+            "4": 1
+          }
+        }
+      },
+      "second_zone_display_only": {
+        "n_special_predictions": 1500,
+        "special_hit_rate": 0.114,
+        "special_baseline": 0.125,
+        "note": "DISPLAY ONLY — second-zone never used in classification or ranking"
+      },
+      "historical_classification": "LIFECYCLE_UNRESOLVED"
+    }
+  ],
+  "caveats": [
+    "HISTORICAL EVIDENCE ONLY — not deployability ranking, not betting advice, not future edge proof.",
+    "lifecycle is a label only — it never excludes a strategy from this report.",
+    "Row-level metrics pool all bet_index rows; draw-level metrics use best-bet-per-draw.",
+    "Multi-bet strategies with more bet_index rows must not be compared directly with single-bet strategies using row-level means alone — check per_bet_index and draw_level instead.",
+    "Second-zone / special metrics are DISPLAY_ONLY and never used in classification or ranking.",
+    "LIFECYCLE_UNRESOLVED means the strategy_id exists in the replay DB but is not registered in the main registry or P47 catalog — no lifecycle governance decision has been recorded.",
+    "mean_hit_count delta vs baseline is NOT a forward-looking edge estimate — it is a historical summary only.",
+    "No active deployable candidate in any lottery (per P211A–P231B governance arc)."
+  ],
+  "final_classification": "P232A_ALL_CATALOG_STRATEGY_HISTORICAL_REPLAY_SCOREBOARD_COMPLETE"
+}

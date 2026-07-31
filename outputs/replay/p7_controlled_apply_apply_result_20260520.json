@@ -1,0 +1,21 @@
+{
+  "phase": "P7_APPLY",
+  "applied": true,
+  "scope": "ONLINE_ONLY",
+  "rollback_batch_id": "2235b7b2-c3b3-4667-ae7c-b7eb29f02929",
+  "rows_before": 460,
+  "rows_after": 488,
+  "inserted": 28,
+  "duplicate_skipped": 0,
+  "no_payload_skipped": 0,
+  "planned_insert_count": 28,
+  "errors": [],
+  "generated_at": "2026-05-20T06:20:47.503791Z",
+  "safety_flags": {
+    "db_write_performed": true,
+    "truth_level_applied": "RECONSTRUCTED_FROM_DB_PREDICTION_PAYLOAD",
+    "source_tag": "P7_CONTROLLED_APPLY",
+    "max_insert_guard_28": true,
+    "dry_run_field_value": 0
+  }
+}

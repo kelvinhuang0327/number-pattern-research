@@ -10,8 +10,10 @@ CRITICAL: No data leakage - only use draws BEFORE 115000019 (up to 115000018).
 Actual Result: [16, 35, 36, 37, 39, 49]
 
 Strategies tested:
-  1. 2-bet P0 (Deviation + Echo) - Edge +1.21%
-  2. 3-bet Triple Strike (Fourier + Cold + Tail) - Edge +0.98%
+  1. 2-bet P0 (Deviation + Echo) - historical edge +1.21%
+     (evidence_status=HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED)
+  2. 3-bet Triple Strike (Fourier + Cold + Tail) - historical edge +0.98%
+     (evidence_status=HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED)
   3. 4-bet TS3+Markov(w=30) - Edge +1.23%
   4. 5-bet TS3+Markov+FreqOrtho - Edge +1.77% (BEST, P3 VERIFIED)
   5. 5-bet Orthogonal (from backtest_big_lotto_orthogonal_5bet.py)
@@ -23,6 +25,43 @@ import sqlite3
 import numpy as np
 from collections import Counter
 from scipy.fft import fft, fftfreq
+
+from pathlib import Path
+
+
+def _p291u_repo_root():
+    current = Path(__file__)
+    if not current.is_absolute():
+        raise FileNotFoundError(f"Source file path is not absolute: {current}")
+    for parent in (current.parent, *current.parents):
+        if (parent / "lottery_api").is_dir():
+            return parent
+    raise FileNotFoundError(f"Unable to locate repository root from source file: {current}")
+
+
+def _p291u_default_db_path():
+    db_path = _p291u_repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+    if not db_path.is_file():
+        raise FileNotFoundError(f"Default lottery DB path is missing or non-regular: {db_path}")
+    return db_path
+
+
+def _p291u_resolve_db_path(db_path=None):
+    if db_path is None:
+        return _p291u_default_db_path()
+    path = Path(db_path)
+    if not path.is_absolute():
+        raise ValueError(f"Explicit DB path must be absolute: {db_path}")
+    if not path.is_file():
+        raise FileNotFoundError(f"Explicit DB path is missing or non-regular: {path}")
+    return path
+
+
+def _p291u_connect_resolved(db_path, *, uri=False):
+    if uri:
+        return sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    return sqlite3.connect(str(db_path))
+
 
 # ============================================================
 # Setup paths
@@ -50,8 +89,9 @@ BASELINES = {n: (1 - (1 - P_SINGLE) ** n) * 100 for n in range(1, 8)}
 # ============================================================
 def load_history():
     """Load all BIG_LOTTO draws up to 115000018 from DB."""
+    _p291u_db_path = _p291u_resolve_db_path()
     db_path = os.path.join(PROJECT_ROOT, 'lottery_api', 'data', 'lottery_v2.db')
-    conn = sqlite3.connect(db_path)
+    conn = _p291u_connect_resolved(_p291u_db_path)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -116,7 +156,8 @@ def load_history():
 # Strategy 1: P0 2-bet (Deviation + Echo)
 # ============================================================
 def biglotto_p0_2bet(history, window=50, echo_boost=1.5):
-    """2-bet P0: Hot+Echo + Cold (Edge +1.21%, deterministic)"""
+    """2-bet P0: Hot+Echo + Cold (historical edge +1.21%; evidence_status=
+    HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED)"""
     recent = history[-window:] if len(history) > window else history
     expected = len(recent) * PICK / MAX_NUM
 

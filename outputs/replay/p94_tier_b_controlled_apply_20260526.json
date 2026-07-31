@@ -1,0 +1,89 @@
+{
+  "task": "P94",
+  "title": "Tier B Controlled Replay Apply",
+  "date": "2026-05-26",
+  "generated_at": "2026-05-26T14:41:19.152232+00:00",
+  "final_classification": "P94_TIER_B_CONTROLLED_APPLY_SUCCESS",
+  "controlled_apply_id": "P94_TIERB_CONTROLLED_APPLY_20260526",
+  "truth_level": "TIERB_DRYRUN_VALIDATED",
+  "db_backup_path": "lottery_api/data/lottery_v2.db.bak_p94_pre_apply_20260526_223934",
+  "production_rows_before": 46962,
+  "production_rows_after": 54462,
+  "total_inserted": 7500,
+  "power_lotto_max_draw_before": "115000041",
+  "power_lotto_max_draw_after": "115000041",
+  "p79_sentinel_intact": true,
+  "duplicate_guard": "PASS",
+  "draw_table_unchanged": true,
+  "lifecycle_mutation": false,
+  "per_strategy_production_rows": {
+    "daily539_f4cold_3bet": 1500,
+    "daily539_f4cold_5bet": 1500,
+    "biglotto_echo_aware_3bet": 1500,
+    "power_fourier_rhythm_2bet": 1500,
+    "biglotto_ts3_markov_4bet_w30": 1500
+  },
+  "strategy_results": [
+    {
+      "strategy_id": "daily539_f4cold_3bet",
+      "lottery_type": "DAILY_539",
+      "inserted": 1500,
+      "skipped": 0,
+      "skip_reasons": {},
+      "status": "OK"
+    },
+    {
+      "strategy_id": "daily539_f4cold_5bet",
+      "lottery_type": "DAILY_539",
+      "inserted": 1500,
+      "skipped": 0,
+      "skip_reasons": {},
+      "status": "OK"
+    },
+    {
+      "strategy_id": "biglotto_echo_aware_3bet",
+      "lottery_type": "BIG_LOTTO",
+      "inserted": 1500,
+      "skipped": 0,
+      "skip_reasons": {},
+      "status": "OK"
+    },
+    {
+      "strategy_id": "power_fourier_rhythm_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "inserted": 1500,
+      "skipped": 0,
+      "skip_reasons": {},
+      "status": "OK"
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_4bet_w30",
+      "lottery_type": "BIG_LOTTO",
+      "inserted": 1500,
+      "skipped": 0,
+      "skip_reasons": {},
+      "status": "OK"
+    }
+  ],
+  "rollback_sql": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id = 'P94_TIERB_CONTROLLED_APPLY_20260526';",
+  "governance": {
+    "dry_run_flag_all_rows": false,
+    "truth_level": "TIERB_DRYRUN_VALIDATED",
+    "controlled_apply_id": "P94_TIERB_CONTROLLED_APPLY_20260526",
+    "no_lifecycle_mutation": true,
+    "no_draw_table_mutation": true,
+    "no_official_api_ingestion": true,
+    "no_new_tables": true,
+    "causal_isolation": true,
+    "duplicate_guard": true
+  },
+  "p95_recommendation": {
+    "scope": "Replay UI/API verification — query newly applied rows via replay API",
+    "preconditions": [
+      "replay_rows = 54462",
+      "POWER_LOTTO max_draw = 115000041",
+      "P94 classification = P94_TIER_B_CONTROLLED_APPLY_SUCCESS"
+    ],
+    "api_query_example": "/api/replays?strategy_id=biglotto_echo_aware_3bet&limit=10"
+  }
+}

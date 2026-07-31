@@ -1,0 +1,25 @@
+{
+  "phase": "P20_POWERLOTTO_REMAINING_STRATEGIES_TEMPDB_REHEARSAL",
+  "generated_at": "2026-05-21T01:24:36.042067+00:00",
+  "temp_db_only": true,
+  "production_apply": false,
+  "controlled_apply_id": "P20_POWERLOTTO_REMAINING_1500_PROD_20260520",
+  "strategies": [
+    "power_precision_3bet",
+    "power_orthogonal_5bet"
+  ],
+  "planned_insert_count": 3000,
+  "r1_apply_inserted_count": 3000,
+  "r1_apply_duplicate_count": 0,
+  "r1_apply_rows_after": 9460,
+  "r2_rerun_inserted_count": 0,
+  "r2_rerun_duplicate_count": 3000,
+  "rollback_deleted_count": 3000,
+  "rows_after_rollback": 6460,
+  "temp_rehearsal_pass": true,
+  "idempotency_pass": true,
+  "rollback_pass": true,
+  "production_rows_after": 6460,
+  "fake_success_count": 0,
+  "final_classification": "P20_REMAINING_POWERLOTTO_REHEARSAL_READY"
+}

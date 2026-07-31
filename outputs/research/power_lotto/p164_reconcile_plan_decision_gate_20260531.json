@@ -1,0 +1,173 @@
+{
+  "task": "P164_RECONCILE_PLAN_DECISION_GATE",
+  "date": "2026-06-01",
+  "final_classification": "P164_RECONCILE_PLAN_DECISION_GATE_READY",
+  "phase_0_verification": {
+    "all_checks_passed": true,
+    "worktree_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "head_commit": "c8b423d0c1de26253be4cec79ae6de77719d1074",
+    "db_rows": 94924,
+    "drift_guard": "PASS",
+    "p161_test": "PASS",
+    "p162_test": "PASS",
+    "p163_test": "PASS",
+    "p163_json_artifact": "outputs/research/power_lotto/p163_reconcile_readiness_audit_20260531.json",
+    "p163_md_artifact": "outputs/research/power_lotto/p163_reconcile_readiness_audit_20260531.md",
+    "all_conditions_met": true
+  },
+  "p163_audit_summary": {
+    "classification": "P163_RECONCILE_READINESS_AUDIT_READY",
+    "audit_type": "read-only — no DB write, no merge, no registry mutation, no commit, no push",
+    "zen_gates_db_rows": 94924,
+    "main_db_rows": 54462,
+    "row_delta": 40462,
+    "zen_gates_bet_index_present": true,
+    "main_bet_index_present": false,
+    "zen_gates_schema_columns": 27,
+    "main_schema_columns": 26,
+    "zen_gates_unique_constraint": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+    "main_unique_constraint": "UNIQUE(lottery_type, target_draw, strategy_id)",
+    "zen_gates_research_artifacts_present": true,
+    "main_research_artifacts_present": false,
+    "zen_gates_test_count": 36,
+    "main_test_count_p140_p162": 0,
+    "row_delta_explanation": "zen-gates applied P129B bet_index schema migration + P130-P141 Wave2 multi-bet controlled_apply + P142-P159B replay governance chain, adding ~40462 rows. Main stopped at P128 (design only, no migration, no apply).",
+    "governance_risk_statement": "zen-gates branch has diverged significantly from main. It is NOT a simple ahead-of-main branch — it contains irreversible DB mutations (schema migration + 40462 row inserts) that main does not have. A naive merge would either fail or silently leave main DB in inconsistent state."
+  },
+  "option_comparison_table": [
+    {
+      "option": "A",
+      "label": "Code/docs/tests merge only — leave DB untouched",
+      "risk_level": "LOW",
+      "db_impact": "NONE — main DB remains at 54462 rows, no bet_index column added",
+      "benefits": [
+        "Preserves main DB integrity — no risky schema migration on main",
+        "Allows CI/test artifacts (36 test files, 30+ scripts) to be merged to main without DB risk",
+        "Lower authorization burden — code merge only, no DB authorization needed",
+        "Research artifacts (P161/P162/P163) become part of main branch history"
+      ],
+      "limitations": [
+        "Main DB and code become permanently inconsistent — bet_index column absent means any API code referencing bet_index will error against main DB",
+        "Multi-bet UI features (P151 bet_index badges, P150 all-strategy-catalog) broken on main until DB separately migrated",
+        "30+ scripts and 36 tests reference bet_index or multi-bet rows that main DB cannot satisfy — tests will fail on main DB",
+        "Creates technical debt: future work must know which DB is being targeted"
+      ],
+      "stop_guards": [
+        "If any script in the merge set writes to main DB (e.g., auto-migration on import), STOP immediately",
+        "Verify: 'SELECT COUNT(*) FROM strategy_prediction_replays' on main DB must remain 54462 before and after code merge",
+        "If merge produces conflict in DB migration scripts, STOP and report before resolving"
+      ],
+      "required_authorization_phrase": "YES proceed with Option A code/docs/tests-only reconcile, no DB write",
+      "cto_assessment": "Acceptable as a first step. Gets tests into main history without DB risk. Creates a known code-DB inconsistency that must be documented and resolved later. DB split remains UNRESOLVED after Option A."
+    },
+    {
+      "option": "B",
+      "label": "Formally designate zen-gates as canonical research dataset",
+      "risk_level": "MEDIUM",
+      "db_impact": "NONE — no DB write; changes policy designation only",
+      "benefits": [
+        "Eliminates need for immediate DB migration — one authoritative dataset with full multi-bet schema",
+        "All zen-gates tests and scripts immediately valid against canonical DB",
+        "P161/P162/P163 effectiveness baseline and all future research runs against correct full dataset",
+        "No schema migration risk — zen-gates DB already migrated and validated"
+      ],
+      "limitations": [
+        "Main branch becomes stale/archived — any CI/CD pipelines pointing to main branch DB will need updating",
+        "Requires policy decision: worktree branches are not currently supposed to be canonical (per roadmap Repo Policy)",
+        "Worktree lifecycle risk: git worktrees can be removed; the DB lives in the worktree directory which may not persist long-term without an explicit copy to permanent location",
+        "No formal git history linking main and zen-gates research DBs"
+      ],
+      "stop_guards": [
+        "If zen-gates worktree is removed or pruned before DB is copied to a permanent location, 40462 rows are permanently lost",
+        "Guard: verify worktree still at /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802 before any new work",
+        "Must explicitly update Repo Policy in roadmap.md before proceeding to prevent agent confusion"
+      ],
+      "required_authorization_phrase": "YES designate zen-gates as canonical research dataset",
+      "cto_assessment": "Valid if the user wants to move forward without a DB migration on main. Requires policy update removing the 'no worktree canonical' rule. Worktree DB must be copied to a permanent location before any worktree prune/remove operations."
+    },
+    {
+      "option": "C",
+      "label": "Controlled DB/data migration — bring main DB to zen-gates state",
+      "risk_level": "HIGH",
+      "db_impact": "HIGH — requires schema migration (bet_index) + ~40462 row inserts on main DB",
+      "benefits": [
+        "Achieves full consistency: main branch DB reaches identical state to zen-gates DB (94924 rows, bet_index)",
+        "All zen-gates tests become valid against main DB — no code-DB inconsistency",
+        "Single canonical branch going forward — no split",
+        "Fully auditable: each controlled_apply step has its own authorization and drift guard"
+      ],
+      "limitations": [
+        "Highest complexity: requires running P129B schema migration + ~12 controlled_apply scripts against main DB in correct sequential order",
+        "Each Tier-B strategy (P126B-P126F) plus Wave2 strategies (P131-P141) requires independent authorization phrase",
+        "Risk of partial failure mid-migration leaving main DB in inconsistent state",
+        "Time-consuming: sequential authorization gates for each strategy apply",
+        "Irreversible without backup: once rows are inserted, removing them requires explicit DELETE authorization"
+      ],
+      "stop_guards": [
+        "Before each apply step: verify drift guard PASS on main DB with expected row count",
+        "If row count deviates from expected intermediate value, STOP immediately — do not proceed without reconciliation",
+        "Backup must exist and be verified before step 1 (P129B schema migration)",
+        "If any step fails, STOP and report; do not attempt next step until failure is resolved"
+      ],
+      "required_authorization_phrase": "YES prepare controlled DB/data migration plan only, no apply",
+      "cto_assessment": "Achieves full consistency. Scripts already rehearsed (P129B rehearsed on temp DB with all rows preserved). HIGH authorization burden (~12 sequential phrases). P164 provides PLAN ONLY decision gate — actual DB apply requires a separate P165 with its own authorization chain. Do not conflate plan approval with execution authorization.",
+      "warning": "P164 does NOT authorize DB apply. Option C authorization phrase above authorizes PLAN PREPARATION only. Actual DB migration requires a separate explicit authorization chain in P165 or a subsequent task."
+    }
+  ],
+  "recommended_option": {
+    "primary": "A",
+    "secondary": "B",
+    "reasoning": "Option A is the most conservative path that reduces the governance risk without touching the main DB. It brings the 36 test files, 30+ scripts, and P161-P163 research artifacts into main branch history, enabling CI parity on code artifacts. The main/zen-gates DB split remains UNRESOLVED after Option A — this is an acknowledged limitation, not a hidden risk. Option B is a valid alternative if the user prefers to keep the zen-gates worktree as the single working environment and avoid any main branch changes. Option C is not recommended as an immediate action — it requires a separate authorization chain and should be planned as P165 after Option A or B establishes a stable baseline.",
+    "explicit_limitation_if_option_a": "After Option A, main DB remains at 54462 rows with no bet_index column. Any code in the merged set that references bet_index will fail against main DB. This is a known, accepted inconsistency that must be resolved in a subsequent controlled migration.",
+    "explicit_limitation_if_option_b": "After Option B, the main branch remains stale and must NOT be used as the working environment. All future tasks must target the zen-gates worktree DB. The worktree must be backed up to a permanent location to prevent data loss.",
+    "not_recommended_immediate_option_c": "Option C should only be attempted after a detailed plan (P165) is produced, rehearsed, and explicitly authorized. Do not proceed with Option C based solely on this P164 decision gate."
+  },
+  "rejected_or_deferred_options": [
+    {
+      "option": "C — immediate apply",
+      "status": "DEFERRED",
+      "reason": "Option C requires a separate P165 planning task with backup/restore rehearsal, per-step authorization phrases, and a staged rollback plan. P164 cannot authorize DB apply. Authorization phrase above is for plan-only preparation."
+    },
+    {
+      "option": "Autonomous merge without authorization",
+      "status": "REJECTED",
+      "reason": "No reconcile action (merge, DB write, registry mutation) may be taken without explicit user authorization. This is an absolute STOP guard."
+    }
+  ],
+  "authorization_phrases": {
+    "option_a": "YES proceed with Option A code/docs/tests-only reconcile, no DB write",
+    "option_b": "YES designate zen-gates as canonical research dataset",
+    "option_c_plan_only": "YES prepare controlled DB/data migration plan only, no apply"
+  },
+  "no_action_confirmations": {
+    "no_db_write": true,
+    "no_merge": true,
+    "no_rebase": true,
+    "no_cherry_pick": true,
+    "no_reset": true,
+    "no_registry_mutation": true,
+    "no_champion_promotion": true,
+    "no_controlled_apply": true,
+    "no_scheduler_cron": true,
+    "no_commit": true,
+    "no_push": true,
+    "no_checkout_main": true,
+    "no_new_branch": true,
+    "no_new_worktree": true,
+    "no_clone": true,
+    "no_betting_advice": true,
+    "no_win_guarantee": true,
+    "no_real_money_wording": true
+  },
+  "next_step_state": "WAITING_FOR_USER_AUTHORIZATION",
+  "next_step_description": "P164 decision gate is READY. No reconcile action will be taken until the user explicitly provides one of the three authorization phrases listed above. P165 (or any subsequent task) is BLOCKED until authorization is received. The user must copy-paste or type one of the three phrases to proceed.",
+  "p164_blocked_until": "User explicitly provides one of the three authorization phrases. No agent may assume authorization from context, implication, or prior conversation.",
+  "governance_invariants": {
+    "db_rows_must_remain": 94924,
+    "drift_guard_must_pass": true,
+    "no_commit_no_push": true,
+    "no_scheduler_installed": true,
+    "no_wagering_no_win_promise": true
+  }
+}

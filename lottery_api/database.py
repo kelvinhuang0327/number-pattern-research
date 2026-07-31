@@ -2,14 +2,100 @@
 SQLite 數據庫管理模組
 負責所有彩票數據的持久化存儲
 """
+import os
 import sqlite3
 import json
 import logging
 from typing import List, Dict, Optional, Tuple
 from datetime import datetime
-import os
+
+try:
+    from .canonical_db_path import resolve_db_path
+except ImportError:  # top-level import context
+    from canonical_db_path import resolve_db_path
 
 logger = logging.getLogger(__name__)
+
+
+def _describe_sidecar(path: str) -> str:
+    """Classify a WAL sidecar path as missing, unreadable, or present."""
+    if not os.path.exists(path):
+        return f"{path} (missing)"
+    if not os.access(path, os.R_OK):
+        return f"{path} (unreadable)"
+    return f"{path} (present)"
+
+
+_SQLITE_HEADER_SIZE = 100
+_SQLITE_HEADER_MAGIC = b"SQLite format 3\x00"
+
+
+def _read_sqlite_header(path: str) -> Optional[bytes]:
+    """Read the fixed 100-byte SQLite header, or None if the file can't be
+    opened, is shorter than a full header, or isn't a SQLite database.
+
+    None means "inconclusive" -- callers must not treat that as cold WAL.
+    """
+    try:
+        with open(path, "rb") as handle:
+            header = handle.read(_SQLITE_HEADER_SIZE)
+    except OSError:
+        return None
+    if len(header) < _SQLITE_HEADER_SIZE or not header.startswith(_SQLITE_HEADER_MAGIC):
+        return None
+    return header
+
+
+def _header_indicates_wal(header: bytes) -> bool:
+    """Bytes 18/19 are SQLite's file-format write/read version; both read 2
+    only for WAL mode (1 = legacy rollback journal). Require both bytes to
+    agree, matching SQLite's own interpretation, so a corrupt/ambiguous
+    header never gets misclassified as WAL.
+    """
+    return header[18] == 2 and header[19] == 2
+
+
+def _sidecar_openable(path: str) -> bool:
+    """True only if the sidecar can actually be opened for reading right
+    now -- an existence check alone can be stale or lie on some filesystems.
+    """
+    try:
+        with open(path, "rb"):
+            return True
+    except OSError:
+        return False
+
+
+class ColdWalReadOnlyError(sqlite3.OperationalError):
+    """Strict read-only WAL-mode SQLite database could not be read because
+    its -wal/-shm sidecars are missing or unreadable ("cold WAL").
+
+    Raised only for this confirmed condition, on first real read (never
+    during DatabaseManager construction). Strict read-only mode never
+    creates or repairs sidecars, never retries with a writable connection,
+    and never modifies journal mode -- this failure is fail-closed by
+    design. Restore managed WAL state by starting the authorized
+    backend/runtime against this database, or use a separately approved
+    frozen snapshot instead.
+    """
+
+    def __init__(self, db_path: str):
+        self.db_path = db_path
+        self.wal_path = db_path + "-wal"
+        self.shm_path = db_path + "-shm"
+        message = (
+            f"Cannot read {db_path}: WAL-mode SQLite database is 'cold' "
+            "(its -wal/-shm sidecars are missing or unreadable). "
+            f"Sidecar {_describe_sidecar(self.wal_path)}; "
+            f"sidecar {_describe_sidecar(self.shm_path)}. "
+            "Strict read-only mode (SQLite mode=ro, PRAGMA query_only=ON) "
+            "does not create or repair sidecars and will not retry with a "
+            "writable connection. Restore managed WAL state by starting the "
+            "authorized backend/runtime against this database, or use a "
+            "separately approved frozen snapshot instead."
+        )
+        super().__init__(message)
+
 
 # 不含特別號的彩種。DB 內可能用 0 當佔位值，但 API 輸出應正規化成 None。
 _NO_SPECIAL_TYPES = {
@@ -36,32 +122,119 @@ def _normalize_special_for_output(lottery_type: Optional[str], special):
 class DatabaseManager:
     """SQLite 數據庫管理器"""
     
-    def __init__(self, db_path: str = "data/lottery_v2.db"):
+    def __init__(self, db_path: Optional[str] = None, read_only: bool = False):
         """
-        初始化數據庫管理器
-        
+        初始化數據庫管理器（惰性）
+
+        Construction performs no filesystem or SQLite I/O, so importing this
+        module (or the module-level `db_manager` singleton below) never
+        requires the canonical DB to exist. Path resolution and schema
+        initialization are deferred to the first real connection request, so
+        artifact-only callers that never touch the DB can boot cleanly, while
+        DB-backed callers still fail closed (FileNotFoundError) on first use
+        if the DB is absent.
+
         Args:
-            db_path: 數據庫文件路徑
+            db_path: 絕對數據庫文件路徑；None 使用 canonical 路徑
+            read_only: True 時所有連線一律以 SQLite URI `mode=ro` 開啟並設定
+                `PRAGMA query_only=ON`，且首次使用時完全跳過 schema
+                initialization（不執行任何 CREATE TABLE/INDEX/VIEW）。DB 檔案
+                不存在時 fail closed（不建立檔案）。write 方法在執行任何 SQL
+                前即拒絕。預設 False，既有呼叫者行為不變。
         """
-        self.db_path = db_path
-        
-        # 確保數據目錄存在
-        os.makedirs(os.path.dirname(db_path), exist_ok=True)
-        
-        # 初始化數據庫
+        self._db_path_arg = db_path
+        self.db_path: Optional[str] = None
+        self._initialized = False
+        self._read_only = read_only
+
+    def _ensure_ready(self):
+        """Resolve the DB path and initialize schema on first real use.
+
+        Read-only managers resolve the path and fail closed if the DB file
+        doesn't exist, but never call _init_database() — no CREATE TABLE,
+        INDEX, or VIEW statement is ever issued on a read-only connection.
+        """
+        if self._initialized:
+            return
+        if self.db_path is None:
+            self.db_path = resolve_db_path(self._db_path_arg)
+        if self._read_only:
+            self._initialized = True
+            logger.info(f"✅ Database (read-only) resolved at {self.db_path}")
+            return
         self._init_database()
-        
-        logger.info(f"✅ Database initialized at {db_path}")
-    
+        self._initialized = True
+        logger.info(f"✅ Database initialized at {self.db_path}")
+
+    def _reject_if_read_only(self, operation: str):
+        """Fail closed before any SQL runs, if this manager is read-only."""
+        if self._read_only:
+            raise PermissionError(
+                f"DatabaseManager(read_only=True) cannot perform '{operation}': "
+                "this connection is read-only (SQLite mode=ro, PRAGMA query_only=ON)."
+            )
+
+    @staticmethod
+    def _raise_if_cold_wal(db_path: str) -> None:
+        """Pre-connect guard: if db_path's own file header conclusively
+        indicates WAL mode and either -wal/-shm sidecar is missing or
+        unreadable, raise ColdWalReadOnlyError before sqlite3.connect() is
+        ever called.
+
+        This is deterministic across SQLite/Python versions and never
+        depends on a particular sqlite3.OperationalError message string.
+        Inconclusive headers (short/non-SQLite files, or a rollback-journal
+        header) fall through to the normal connect path unchanged.
+        """
+        header = _read_sqlite_header(db_path)
+        if header is None or not _header_indicates_wal(header):
+            return
+        wal_path = db_path + "-wal"
+        shm_path = db_path + "-shm"
+        if not _sidecar_openable(wal_path) or not _sidecar_openable(shm_path):
+            raise ColdWalReadOnlyError(db_path)
+
     def _get_connection(self) -> sqlite3.Connection:
         """獲取數據庫連接"""
+        self._ensure_ready()
+        if self._read_only:
+            self._raise_if_cold_wal(self.db_path)
+            conn = sqlite3.connect(f"file:{self.db_path}?mode=ro", uri=True)
+            conn.row_factory = sqlite3.Row
+            conn.execute("PRAGMA query_only = ON")
+            # Fallback probe: the pre-connect header check above catches the
+            # deterministic cold-WAL case. This first real read stays as a
+            # safety net for any other way SQLite might fail to open the
+            # database file, so callers still get an actionable error
+            # instead of a bare sqlite3.OperationalError from deep inside an
+            # arbitrary query.
+            try:
+                conn.execute("SELECT 1 FROM sqlite_master LIMIT 1")
+            except sqlite3.OperationalError as exc:
+                conn.close()
+                if "unable to open database file" in str(exc):
+                    raise ColdWalReadOnlyError(self.db_path) from exc
+                raise
+            return conn
         conn = sqlite3.connect(self.db_path)
         conn.row_factory = sqlite3.Row  # 使用字典式訪問
         return conn
-    
+
+    def _raw_connection(self) -> sqlite3.Connection:
+        """Open a connection directly against self.db_path, bypassing _ensure_ready().
+
+        _init_database() runs *during* _ensure_ready(), before _initialized is
+        set to True. If it opened its connection via _get_connection(), that
+        would re-enter _ensure_ready() -> _init_database() -> _get_connection()
+        indefinitely. Callers must guarantee self.db_path is already resolved.
+        """
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row  # 使用字典式訪問
+        return conn
+
     def _init_database(self):
         """初始化數據庫表結構"""
-        conn = self._get_connection()
+        conn = self._raw_connection()
         cursor = conn.cursor()
         
         try:
@@ -75,12 +248,18 @@ class DatabaseManager:
                     numbers TEXT NOT NULL,
                     special INTEGER DEFAULT 0,
                     jackpot_amount REAL DEFAULT NULL,
+                    numbers_positional TEXT DEFAULT NULL,
                     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                     UNIQUE(draw, lottery_type)
                 )
             """)
             try:
                 cursor.execute("ALTER TABLE draws ADD COLUMN jackpot_amount REAL DEFAULT NULL")
+                conn.commit()
+            except Exception:
+                pass
+            try:
+                cursor.execute("ALTER TABLE draws ADD COLUMN numbers_positional TEXT DEFAULT NULL")
                 conn.commit()
             except Exception:
                 pass
@@ -434,10 +613,11 @@ class DatabaseManager:
         """
         if not draws:
             return (0, 0)
-            
+
+        self._reject_if_read_only("insert_draws")
         conn = self._get_connection()
         cursor = conn.cursor()
-        
+
         inserted = 0
         duplicates = 0
         
@@ -461,6 +641,11 @@ class DatabaseManager:
                         pass
                         
                 numbers_json = json.dumps(sorted(numbers))
+                lottery_type = draw.get('lotteryType', draw.get('lottery_type', ''))
+                if lottery_type in ('3_STAR', '4_STAR'):
+                    numbers_positional_json = json.dumps(numbers)
+                else:
+                    numbers_positional_json = None
                 jackpot_amount = draw.get('jackpot_amount', draw.get('jackpot'))
                 if jackpot_amount in (None, ""):
                     jackpot_amount = None
@@ -492,12 +677,13 @@ class DatabaseManager:
                 batch_data.append((
                     draw.get('draw'),
                     draw.get('date'),
-                    draw.get('lotteryType'),
+                    lottery_type,
                     numbers_json,
                     draw.get('special', 0),
                     jackpot_amount,
                     sell_amount,
                     total_amount,
+                    numbers_positional_json,
                 ))
             
             # 使用 executemany 批次插入（大幅提升性能）
@@ -509,8 +695,8 @@ class DatabaseManager:
             
             # 這裡使用方法1（優先性能）+ 後續統計
             cursor.executemany("""
-                INSERT OR IGNORE INTO draws (draw, date, lottery_type, numbers, special, jackpot_amount, sell_amount, total_amount)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT OR IGNORE INTO draws (draw, date, lottery_type, numbers, special, jackpot_amount, sell_amount, total_amount, numbers_positional)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, batch_data)
             
             inserted = cursor.rowcount
@@ -694,7 +880,143 @@ class DatabaseManager:
             raise
         finally:
             conn.close()
-    
+
+    # P247B created draws_big_lotto_canonical_main in lottery_api/data/lottery_v2.db.
+    # P247E: get_canonical_draws uses this view as the preferred source for BIG_LOTTO.
+    _CANONICAL_VIEW_BIG_LOTTO = 'draws_big_lotto_canonical_main'
+
+    def _big_lotto_canonical_view_exists(self, cursor) -> bool:
+        """Return True if draws_big_lotto_canonical_main is present in this DB."""
+        row = cursor.execute(
+            "SELECT name FROM sqlite_master WHERE type='view' AND name=?",
+            (self._CANONICAL_VIEW_BIG_LOTTO,)
+        ).fetchone()
+        return row is not None
+
+    def get_canonical_draws(self, lottery_type: str, limit: Optional[int] = None) -> List[Dict]:
+        """
+        Return only canonical main-draw rows for the given lottery type.
+
+        For BIG_LOTTO, this excludes three non-canonical row families:
+          - ADD_ON_PRIZE_EXCLUDED: hyphenated draw IDs (e.g. 103000009-01)
+            These are valid lottery-related add-on/special prize records.
+            They are excluded from canonical 6/49 research due to population
+            mismatch, NOT because they are fake or invalid.
+          - DATE_FORMAT_ALIEN: 8-digit YYYYMMDD draw IDs (e.g. 20090727)
+            Numbers inconsistent with 6/49 pool.
+          - SMALL_POOL_ALIEN: serial IDs but max(numbers) <= 25
+            Likely a different game mislabeled as BIG_LOTTO.
+
+        P247E: For BIG_LOTTO, prefers querying draws_big_lotto_canonical_main (DB view)
+        which applies all three exclusion filters at the SQL level. Falls back to the
+        original SQL+Python dual-filter when the view is absent (e.g. test DBs).
+
+        Raw history access remains available via get_all_draws() and get_draws().
+        This helper is for research, strategy, and replay callers only.
+
+        For non-BIG_LOTTO types, behaviour matches get_all_draws().
+        """
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            if lottery_type == 'BIG_LOTTO':
+                if self._big_lotto_canonical_view_exists(cursor):
+                    # Preferred path (P247E): query the DB-level canonical view.
+                    # All three exclusion families are filtered at SQL level.
+                    query = f"""
+                        SELECT id, draw, date, lottery_type, numbers, special, jackpot_amount
+                        FROM {self._CANONICAL_VIEW_BIG_LOTTO}
+                        ORDER BY CAST(draw AS INTEGER) DESC
+                    """
+                    if limit:
+                        query += f" LIMIT {int(limit)}"
+                    cursor.execute(query)
+                    rows = cursor.fetchall()
+                    draws = []
+                    for row in rows:
+                        numbers = json.loads(row['numbers'])
+                        draws.append({
+                            'draw': row['draw'],
+                            'date': row['date'],
+                            'lotteryType': row['lottery_type'],
+                            'numbers': numbers,
+                            'special': _normalize_special_for_output(row['lottery_type'], row['special']),
+                            'jackpot_amount': row['jackpot_amount'],
+                        })
+                    logger.info(
+                        f"[get_canonical_draws] BIG_LOTTO: {len(draws)} rows via view"
+                    )
+                else:
+                    # Fallback: view absent (e.g. test DB without view).
+                    # SQL-level filter: excludes ADD_ON_PRIZE_EXCLUDED and DATE_FORMAT_ALIEN.
+                    # Python-level filter: excludes SMALL_POOL_ALIEN (max number <= 25).
+                    logger.warning(
+                        f"[get_canonical_draws] BIG_LOTTO: view absent, using fallback filter"
+                    )
+                    query = """
+                        SELECT id, draw, date, lottery_type, numbers, special, jackpot_amount
+                        FROM draws
+                        WHERE lottery_type = 'BIG_LOTTO'
+                          AND draw NOT LIKE '%-%'
+                          AND NOT (LENGTH(draw) = 8 AND draw LIKE '20%')
+                        ORDER BY CAST(draw AS INTEGER) DESC
+                    """
+                    if limit:
+                        query += f" LIMIT {int(limit)}"
+                    cursor.execute(query)
+                    rows = cursor.fetchall()
+                    draws = []
+                    for row in rows:
+                        numbers = json.loads(row['numbers'])
+                        if numbers and max(numbers) <= 25:
+                            continue
+                        draws.append({
+                            'draw': row['draw'],
+                            'date': row['date'],
+                            'lotteryType': row['lottery_type'],
+                            'numbers': numbers,
+                            'special': _normalize_special_for_output(row['lottery_type'], row['special']),
+                            'jackpot_amount': row['jackpot_amount'],
+                        })
+                    logger.info(
+                        f"[get_canonical_draws] BIG_LOTTO: {len(draws)} rows via fallback filter"
+                    )
+                return draws
+            else:
+                # For non-BIG_LOTTO types, no non-canonical row families are known.
+                # Use a direct query to avoid importing get_related_lottery_types
+                # (which may trigger heavy scheduler imports in test environments).
+                query = """
+                    SELECT id, draw, date, lottery_type, numbers, special, jackpot_amount
+                    FROM draws
+                    WHERE lottery_type = ?
+                    ORDER BY CAST(draw AS INTEGER) DESC
+                """
+                if limit:
+                    query += f" LIMIT {int(limit)}"
+                cursor.execute(query, (lottery_type,))
+                rows = cursor.fetchall()
+                draws = []
+                for row in rows:
+                    numbers = json.loads(row['numbers'])
+                    draws.append({
+                        'draw': row['draw'],
+                        'date': row['date'],
+                        'lotteryType': row['lottery_type'],
+                        'numbers': numbers,
+                        'special': _normalize_special_for_output(row['lottery_type'], row['special']),
+                        'jackpot_amount': row['jackpot_amount'],
+                    })
+                logger.info(
+                    f"[get_canonical_draws] {lottery_type}: {len(draws)} canonical rows returned"
+                )
+                return draws
+        except Exception as e:
+            logger.error(f"❌ get_canonical_draws failed: {e}")
+            raise
+        finally:
+            conn.close()
+
     def get_stats(self, lottery_type: Optional[str] = None) -> Dict:
         """
         獲取統計信息
@@ -771,9 +1093,10 @@ class DatabaseManager:
         Returns:
             是否刪除成功
         """
+        self._reject_if_read_only("delete_draw")
         conn = self._get_connection()
         cursor = conn.cursor()
-        
+
         try:
             cursor.execute("DELETE FROM draws WHERE id = ?", (draw_id,))
             conn.commit()
@@ -798,9 +1121,10 @@ class DatabaseManager:
         Returns:
             刪除的記錄數
         """
+        self._reject_if_read_only("clear_all_data")
         conn = self._get_connection()
         cursor = conn.cursor()
-        
+
         try:
             cursor.execute("SELECT COUNT(*) FROM draws")
             count = cursor.fetchone()[0]
@@ -829,6 +1153,7 @@ class DatabaseManager:
     
     def vacuum(self):
         """優化數據庫（回收空間）"""
+        self._reject_if_read_only("vacuum")
         conn = self._get_connection()
         try:
             conn.execute("VACUUM")

@@ -1,42 +1,17 @@
 #!/usr/bin/env python3
-import sys
 import os
 import json
 import sqlite3
 from collections import Counter
 import numpy as np
-
-# Add current directory to path
-sys.path.insert(0, os.getcwd())
+from lottery_api.canonical_db_path import resolve_db_path
 
 def analyze_distribution():
     print("=" * 80)
     print("📊 BIG_LOTTO vs BIG_LOTTO_BONUS Distribution Analysis")
     print("=" * 80)
     
-    # Fix DB path logic - use absolute path if possible or relative to script
-    # The script is in lottery_api/analyze_bonus_distribution.py
-    # The DB is in lottery_api/data/lottery_v2.db
-    
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    # if we are running from root, current_dir might be just 'lottery_api' or similar if resolved relative
-    # Let's try explicit paths
-    
-    possible_paths = [
-        "data/lottery_v2.db", # If running from lottery_api dir
-        "lottery_api/data/lottery_v2.db", # If running from root dir
-        os.path.join(current_dir, "data/lottery_v2.db") # Relative to script
-    ]
-    
-    db_path = None
-    for p in possible_paths:
-        if os.path.exists(p):
-            db_path = p
-            break
-            
-    if not db_path:
-        print("❌ Database not found in standard locations.")
-        return
+    db_path = resolve_db_path()
 
     print(f"Using DB: {db_path}")
     conn = sqlite3.connect(db_path)

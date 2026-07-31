@@ -1,0 +1,288 @@
+{
+  "task_id": "P269A_LITE_NEXT_EXTERNAL_SIGNAL_REPO_ONLY_SCOUTING",
+  "generated_at": "2026-06-11",
+  "type": "read_only_repo_only_scouting_artifact",
+  "schema_version": "1.0",
+
+  "p268d4_closure_boundary": {
+    "status": "CLOSED",
+    "classification": "P268D4_DRAW_ORDER_H1_NULL_CLOSEOUT_COMPLETE",
+    "arc": "P268A–P268D4 draw-order (drawNumberAppear exit-rank-heterogeneity)",
+    "h1_result": "H1_PRIMARY_FAIL: DAILY_539 p=0.3051 >= alpha=0.01",
+    "h1_holdout_h2_h3": "NOT_AUTHORIZED_NOT_OPENED",
+    "strategy_authorized": false,
+    "do_not_continue": [
+      "draw-order H2 (earliness score / holdout inclusion frequency)",
+      "draw-order H3 (split-half stability)",
+      "any re-parameterization of the exit-rank-heterogeneity H1 hypothesis",
+      "re-running analysis/p268d3_h1_draw_order_confirmatory_permutation_test.py"
+    ]
+  },
+
+  "repo_only_limitation": {
+    "description": "This scouting round is REPO-ONLY. No external web search, no statistical tests, no data fetching, no DB writes. All findings are based solely on existing artifacts, roadmap, outputs/research/, analysis/, and lottery_api/data/ in the canonical repo.",
+    "scope": "Candidate matrix v0 only. Intended to feed P269B pre-registration design. No hit-rate improvement claim is made.",
+    "model_budget_note": "P269A originally designed for Opus/Fable; downgraded to Sonnet repo-only scouting due to model quota constraint."
+  },
+
+  "explicit_non_claims": {
+    "no_hit_rate_improvement_claim": true,
+    "no_strategy": true,
+    "no_betting_recommendation": true,
+    "no_db_write": true,
+    "no_registry_write": true,
+    "no_h1_test_run": true,
+    "no_statistical_test": true,
+    "no_numbers_generated": true,
+    "no_picks": true
+  },
+
+  "repo_evidence_summary": {
+    "draws_table_schema": {
+      "relevant_columns": ["draw", "date", "lottery_type", "numbers", "special", "jackpot_amount", "sell_amount", "total_amount", "numbers_positional"],
+      "jackpot_amount_populated": "0 rows for all lotteries (schema exists, no data)",
+      "sell_amount_populated": "DAILY_539: 5861/5885 rows (full history 2007-2026); BIG_LOTTO: 0; POWER_LOTTO: 0",
+      "total_amount_populated": "DAILY_539: 5861/5885 rows; BIG_LOTTO: 0; POWER_LOTTO: 0"
+    },
+    "draw_schedule_observed": {
+      "DAILY_539": "Mon(1015)/Tue(1015)/Wed(1015)/Thu(1014)/Fri(1014)/Sat(806)/Sun(6) — 6-day schedule with lower Saturday volume",
+      "BIG_LOTTO": "Tue/Fri primary (raw table; canonical 2114 draws confirmed)",
+      "POWER_LOTTO": "Mon(959)/Thu(959) only — strict biweekly"
+    },
+    "api_fields_confirmed_unavailable": [
+      "machine/ball-set ID (P268C confirmed: TLCAPIWeB API exposes no such field)",
+      "draw venue / procedure metadata",
+      "draw cancellation / postponement flags"
+    ],
+    "api_fields_confirmed_available": [
+      "drawNumberAppear (CLOSED, P268D4)",
+      "drawNumberSize (sorted equivalent)",
+      "lotteryDate (draw date — already in DB as 'date')",
+      "winnerCount / prizeLevel (TLCAPIWeB, not fetched, classified EV-only by P268A)"
+    ],
+    "key_prior_findings": {
+      "L82": "DAILY_539 H001-H008 all REJECT/FAST_REJECT — signal space exhausted",
+      "L90_L91": "BIG_LOTTO 49C6 indistinguishable from fair random (6 randomness tests)",
+      "L101_L102": "Anti-crowd / sell-amount conditioning: unconditional edge remains negative; advisory-only",
+      "P245A_P245B": "P245A ranked drawNumberAppear as Top-1 hit-rate; all others EV-only or diagnostic; P245B bias gate design complete",
+      "P213_H_REGIME_SEGMENTATION": "Design-only, not authorized, P221F gate not passed",
+      "P253H_draw_history_feature": "days_since_last_draw / calendar_gap / draw_index: NOT tested in P219 M10 sweep"
+    }
+  },
+
+  "candidate_matrix": [
+    {
+      "candidate_id": "C01",
+      "signal_family": "draw-order / drawNumberAppear exit-rank-heterogeneity",
+      "source_hint_from_repo": "P268A-P268D4 arc; outputs/research/p268d4_draw_order_h1_null_closeout_20260611.json",
+      "data_availability_status": "AVAILABLE_IN_REPO",
+      "hit_rate_plausibility": "LOW",
+      "ev_only_or_popularity_risk": "LOW",
+      "leakage_risk": "LOW",
+      "oos_feasibility": "HIGH",
+      "validation_difficulty": "MEDIUM",
+      "prior_status": "ALREADY_NULL",
+      "classification": "ALREADY_NULL",
+      "recommendation": "REJECT",
+      "reason": "H1 PRIMARY_FAIL (DAILY_539 p=0.3051 >= alpha=0.01). Arc closed as DIAGNOSTICS_ONLY_NULL_CLOSURE. H2/H3 not authorized. P268D1 JSONL artifact remains available for a structurally different hypothesis (NOT H1/H2/H3 as designed), but that requires fresh pre-registration — not this scouting round."
+    },
+    {
+      "candidate_id": "C02",
+      "signal_family": "prize-tier / winner-count history as popularity proxy",
+      "source_hint_from_repo": "P268A Track B classification: 'winnerCount / prize-distribution classified payout/EV-only'; active_task.md P268A-S entry; analysis/p268b_official_draw_order_positional_bias_audit.py",
+      "data_availability_status": "SOURCE_HINT_ONLY",
+      "hit_rate_plausibility": "LOW",
+      "ev_only_or_popularity_risk": "HIGH",
+      "leakage_risk": "LOW",
+      "oos_feasibility": "MEDIUM",
+      "validation_difficulty": "MEDIUM",
+      "prior_status": "ALREADY_NULL",
+      "classification": "EV_ONLY_OR_POPULARITY_ONLY",
+      "recommendation": "REJECT",
+      "reason": "Explicitly classified as Track B (payout/EV-only) by P268A-S. Winner count per prize tier affects expected payout share given a win, not P(win). L101/L102 already established that anti-crowd conditioning is advisory-only with unconditional edge remaining negative. Not a hit-rate signal."
+    },
+    {
+      "candidate_id": "C03",
+      "signal_family": "DAILY_539 ticket sales volume (sell_amount / total_amount) as regime signal",
+      "source_hint_from_repo": "lottery_api/data/lottery_v2.db draws.sell_amount and draws.total_amount — DAILY_539 has 5,861/5,885 rows populated covering full history 2007–2026; lottery_api/database.py:485-511 confirms ingestion path",
+      "data_availability_status": "AVAILABLE_IN_REPO",
+      "hit_rate_plausibility": "LOW",
+      "ev_only_or_popularity_risk": "HIGH",
+      "leakage_risk": "LOW",
+      "oos_feasibility": "HIGH",
+      "validation_difficulty": "MEDIUM",
+      "prior_status": "NEW",
+      "classification": "EV_ONLY_OR_POPULARITY_ONLY",
+      "recommendation": "REJECT",
+      "reason": "DAILY_539 is a fixed-prize lottery (not pari-mutuel), so ticket sales volume does not affect prize amounts. sell_amount is only useful as a crowd/popularity proxy (anti-crowd EV angle, L101/L102 already marginal). Does not plausibly affect P(win). BIG_LOTTO/POWER_LOTTO have 0 rows for jackpot/sell/total columns despite schema existing.",
+      "data_richness_note": "DAILY_539 5,861 rows fully available — if a future P269B task ever formulates a specific sell_amount-gated hypothesis (e.g., high-sales-day vs low-sales-day hit-rate regime test with pre-registered boundaries), this data is ready without external fetch. However, the EV-only risk is HIGH and such a test is expected to reproduce L101/L102 null."
+    },
+    {
+      "candidate_id": "C04",
+      "signal_family": "jackpot size / rollover count for BIG_LOTTO and POWER_LOTTO",
+      "source_hint_from_repo": "lottery_api/data/lottery_v2.db draws.jackpot_amount column schema present (0 rows populated for any lottery); lottery_api/database.py:475-482; P236A classified jackpot sharing as GRAYLIST_PAYOUT_METRIC",
+      "data_availability_status": "SOURCE_HINT_ONLY",
+      "hit_rate_plausibility": "LOW",
+      "ev_only_or_popularity_risk": "HIGH",
+      "leakage_risk": "LOW",
+      "oos_feasibility": "MEDIUM",
+      "validation_difficulty": "HIGH",
+      "prior_status": "NEW",
+      "classification": "EV_ONLY_OR_POPULARITY_ONLY",
+      "reason": "Jackpot size drives ticket demand (more rolls → higher jackpot → more players). Player count affects prize sharing (EV), not draw randomness (hit-rate). P236A labeled this GRAYLIST_PAYOUT_METRIC. Schema exists but 0 data rows — requires external fetch from TLCAPIWeB. Not a hit-rate signal.",
+      "recommendation": "REJECT"
+    },
+    {
+      "candidate_id": "C05",
+      "signal_family": "draw weekday / schedule regime (Mon vs Sat vs holiday calendar segmentation)",
+      "source_hint_from_repo": "draws.date column in lottery_v2.db (all lotteries); P213 hypothesis_categories H_REGIME_SEGMENTATION (design-only, DAILY_539 + POWER_LOTTO scope, P221F gate not passed); P253H draw_history_feature group (days_since_last_draw listed as NOT tested in P219)",
+      "data_availability_status": "AVAILABLE_IN_REPO",
+      "hit_rate_plausibility": "LOW",
+      "ev_only_or_popularity_risk": "LOW",
+      "leakage_risk": "LOW",
+      "oos_feasibility": "HIGH",
+      "validation_difficulty": "HIGH",
+      "prior_status": "NEW",
+      "classification": "HIT_RATE_PLAUSIBLE",
+      "recommendation": "WATCHLIST",
+      "reason": "Calendar regime (weekday/day-of-week/schedule) is not strictly an EXTERNAL signal family — it is derivable from the existing date column in DB. However, P213 H_REGIME_SEGMENTATION explicitly identified this as a valid design direction for DAILY_539 and POWER_LOTTO (design-only, not authorized). P253H vocabulary confirms 'days_since_last_draw' was NOT tested in the P219 M10 MI sweep. DAILY_539 Saturday (806) vs weekday (1015) draws create a natural regime boundary. However, hit-rate plausibility remains LOW for a fair random lottery: weekday identity does not causally affect ball-draw randomness, and L73/L82 closure implies null. OOS feasibility is HIGH (date fully available). This is a WATCHLIST candidate — not a top candidate — because: (1) it is not a truly external data source, (2) hit-rate plausibility is LOW, (3) P221F pre-registration is required before any scan, (4) power per regime is lower than full-history tests that already returned null.",
+      "p269b_requirement_if_pursued": {
+        "external_data_fetch": false,
+        "pre_registration": true,
+        "hypothesis_registry_write": true,
+        "db_write": false,
+        "strong_model": false,
+        "p221f_windows_per_regime": true,
+        "bonferroni_k_declared_upfront": true
+      }
+    },
+    {
+      "candidate_id": "C06",
+      "signal_family": "calendar gap / days_since_last_draw as temporal regime feature",
+      "source_hint_from_repo": "P253H feature vocabulary group 'draw_history_feature': example 'days_since_last_draw (calendar gap)', p219_tested=false; draws.date column in DB; lottery_api/fetcher/missing_issue_detector.py references holiday/cancellation gaps",
+      "data_availability_status": "AVAILABLE_IN_REPO",
+      "hit_rate_plausibility": "LOW",
+      "ev_only_or_popularity_risk": "LOW",
+      "leakage_risk": "LOW",
+      "oos_feasibility": "HIGH",
+      "validation_difficulty": "HIGH",
+      "prior_status": "NEW",
+      "classification": "HIT_RATE_PLAUSIBLE",
+      "recommendation": "WATCHLIST",
+      "reason": "P253H vocabulary explicitly labels 'days_since_last_draw (calendar gap)' as NOT tested in P219 M10 MI sweep. Gap between draws (e.g., post-holiday draws) might reflect changed player behavior or demand patterns, but does not causally affect draw randomness. Hit-rate plausibility is LOW for the same reasons as C05. Data fully available from DB. Structurally overlaps with C05 (weekday regime); testing both simultaneously requires family-wise multiple-testing correction.",
+      "p269b_requirement_if_pursued": {
+        "external_data_fetch": false,
+        "pre_registration": true,
+        "hypothesis_registry_write": true,
+        "db_write": false,
+        "strong_model": false,
+        "p221f_windows_per_regime": true,
+        "bonferroni_k_declared_upfront": true
+      }
+    },
+    {
+      "candidate_id": "C07",
+      "signal_family": "official game-rule / draw machine / ball-set era metadata",
+      "source_hint_from_repo": "P268C: 'P268A confirmed the public API exposes NO machine/ball-set ID field, so era segmentation is not possible from this data source'; P245A B. Bayesian online changepoint detection direction",
+      "data_availability_status": "UNKNOWN",
+      "hit_rate_plausibility": "MEDIUM",
+      "ev_only_or_popularity_risk": "LOW",
+      "leakage_risk": "LOW",
+      "oos_feasibility": "LOW",
+      "validation_difficulty": "HIGH",
+      "prior_status": "NEW",
+      "classification": "DATA_UNAVAILABLE",
+      "recommendation": "REJECT",
+      "reason": "P268C confirmed that TLCAPIWeB exposes no machine/ball-set ID field. This signal family requires either: (a) official press releases / announcements about machine changes, or (b) BOCPD detection of structural breaks as a proxy (P245A recommendation). The BOCPD path is gated on P238B NIST reaching ORANGE/RED (currently YELLOW observation-only). Machine era boundaries are the most theoretically interesting external signal (structural breaks could create actual non-randomness windows), but data is not available in the repo and the API source does not expose this. Oos feasibility is LOW (no source confirmed). Upgrading to TOP_CANDIDATE would require: confirmed source for machine era dates, NIST gate at ORANGE/RED or independent confirmed break evidence, and separate P269B pre-registration."
+    },
+    {
+      "candidate_id": "C08",
+      "signal_family": "official delayed / cancelled / abnormal draw markers",
+      "source_hint_from_repo": "lottery_api/fetcher/missing_issue_detector.py line comment: 'draw numbers are NOT guaranteed to be consecutive integers (holidays, cancellations, year boundaries)'; CURRENT_STATE.md clean gap handling",
+      "data_availability_status": "UNKNOWN",
+      "hit_rate_plausibility": "LOW",
+      "ev_only_or_popularity_risk": "LOW",
+      "leakage_risk": "LOW",
+      "oos_feasibility": "LOW",
+      "validation_difficulty": "HIGH",
+      "prior_status": "NEW",
+      "classification": "DATA_UNAVAILABLE",
+      "recommendation": "REJECT",
+      "reason": "The missing_issue_detector references holiday and cancellation gaps but provides no structured 'abnormal draw' flag in the DB. Cancelled/delayed draws are already handled as gaps in the draw sequence. There is no evidence that abnormal draws have systematically different hit-rate properties. Even if data were available, the causal pathway to hit-rate improvement is unclear. Data availability UNKNOWN (no in-repo structured source)."
+    },
+    {
+      "candidate_id": "C09",
+      "signal_family": "official sales data (sell_amount / jackpot) for BIG_LOTTO and POWER_LOTTO",
+      "source_hint_from_repo": "lottery_api/data/lottery_v2.db: draws table has jackpot_amount / sell_amount / total_amount columns for BIG_LOTTO and POWER_LOTTO with 0 rows populated; schema added but not fed",
+      "data_availability_status": "SOURCE_HINT_ONLY",
+      "hit_rate_plausibility": "LOW",
+      "ev_only_or_popularity_risk": "HIGH",
+      "leakage_risk": "LOW",
+      "oos_feasibility": "MEDIUM",
+      "validation_difficulty": "HIGH",
+      "prior_status": "NEW",
+      "classification": "EV_ONLY_OR_POPULARITY_ONLY",
+      "recommendation": "REJECT",
+      "reason": "Same EV/popularity logic as C03 (DAILY_539 sell_amount). BIG_LOTTO and POWER_LOTTO are jackpot-based games where sales volume affects prize sharing (EV), not draw randomness (hit-rate). Schema exists in DB but 0 rows. Would require: external fetch from TLCAPIWeB, Type D DB write authorization, and a plausible hit-rate hypothesis (none available). Anti-crowd EV already explored in L101/L102 and found marginal advisory-only."
+    }
+  ],
+
+  "rejected_candidates_summary": [
+    {"id": "C01", "classification": "ALREADY_NULL", "key_reason": "P268D4 CLOSED"},
+    {"id": "C02", "classification": "EV_ONLY_OR_POPULARITY_ONLY", "key_reason": "P268A explicit Track B classification"},
+    {"id": "C03", "classification": "EV_ONLY_OR_POPULARITY_ONLY", "key_reason": "Fixed-prize lottery, sell_amount is crowd proxy only"},
+    {"id": "C04", "classification": "EV_ONLY_OR_POPULARITY_ONLY", "key_reason": "Jackpot level affects EV, not P(win)"},
+    {"id": "C07", "classification": "DATA_UNAVAILABLE", "key_reason": "API exposes no machine/ball-set ID"},
+    {"id": "C08", "classification": "DATA_UNAVAILABLE", "key_reason": "No structured abnormal draw marker in repo"},
+    {"id": "C09", "classification": "EV_ONLY_OR_POPULARITY_ONLY", "key_reason": "Same as C03, no data yet"}
+  ],
+
+  "watchlist_candidates": [
+    {
+      "id": "C05",
+      "signal_family": "draw weekday / schedule regime",
+      "reason_watchlist": "In-repo data available (date column); P213 H_REGIME_SEGMENTATION flagged as valid design direction; NOT tested in P219; LOW hit-rate plausibility but untested",
+      "required_before_p269b": "P221F pre-registration with declared regime boundaries, bonferroni_k, and P221F windows per regime"
+    },
+    {
+      "id": "C06",
+      "signal_family": "calendar gap / days_since_last_draw",
+      "reason_watchlist": "P253H vocabulary confirms NOT tested in P219; in-repo data available; structurally overlaps with C05",
+      "required_before_p269b": "Same as C05; if tested jointly must declare combined family k"
+    }
+  ],
+
+  "top_candidate_recommendation": {
+    "status": "NO_GO",
+    "reason": "From repo-only evidence, no external signal family with HIGH or MEDIUM hit-rate plausibility has been identified that is: (1) not already tested/null, (2) not EV/popularity-only, (3) has available data, and (4) has a plausible causal path to P(win) improvement. The WATCHLIST candidates (C05/C06 calendar regime) are derivable from the existing date column and were flagged in P213 as a legitimate design direction, but they are not truly external signal families, and hit-rate plausibility is LOW for fair random lotteries. The most theoretically interesting external signal (machine/ball-set era, C07) has confirmed unavailable data from the official API. Honest assessment: the repo-only scouting does not surface a strong enough external signal family to justify a full P269B pre-registration effort at this time.",
+    "conditions_for_upgrading_to_go": [
+      "NIST audit reaches ORANGE/RED (P238B gate elevation), enabling BOCPD + machine-era hypothesis (C07)",
+      "Official machine/ball-set change dates confirmed from an external source (press releases, official history)",
+      "A genuinely new external data source beyond TLCAPIWeB is identified (e.g., third-party draw audit reports)",
+      "P245B sequential bias monitor accumulates sufficient evidence (e-value K=100) to reopen a specific game"
+    ]
+  },
+
+  "recommended_p269b_task": {
+    "title": "P269B Calendar Regime Pre-Registration Design (WATCHLIST pathway only)",
+    "condition": "Only recommended if user explicitly decides to pursue the WATCHLIST path despite LOW hit-rate plausibility",
+    "scope": [
+      "Type B read-only design doc only",
+      "Pre-register weekday/calendar-gap regime boundaries for DAILY_539 and/or POWER_LOTTO",
+      "Declare bonferroni_k and P221F windows per regime before any data look",
+      "Hypothesis Registry write required (lottery_api/data/hypothesis_registry.jsonl)",
+      "No DB write, no statistical test, no strategy"
+    ],
+    "requires_external_data_fetch": false,
+    "requires_pre_registration": true,
+    "requires_hypothesis_registry_write": true,
+    "requires_db_write": false,
+    "requires_strong_model": false,
+    "worker_model_recommendation": "Sonnet 中模型, thinking 中",
+    "estimated_task_type": "Type B",
+    "caution": "If hit-rate plausibility is judged insufficient to justify P269B at all, the system should HOLD and wait for the P245B bias gate or a new external data source.",
+    "alternative_recommendation": "HOLD — no P269B at this time. Wait for P245B NIST gate to reach ORANGE/RED, or for explicit user authorization of the WATCHLIST calendar path."
+  },
+
+  "final_classification": "P269A_LITE_NEXT_EXTERNAL_SIGNAL_REPO_ONLY_SCOUTING_COMPLETE_NO_GO"
+}

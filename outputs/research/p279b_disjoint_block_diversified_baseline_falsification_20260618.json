@@ -1,0 +1,804 @@
+{
+  "artifact_version": "p279b_disjoint_block_diversified_baseline_falsification_v1",
+  "baseline_contract": {
+    "exact_diversified": {
+      "3": {
+        "algorithm": "Exhaustively enumerate C(39,5) draws and count a success when any of N mutually disjoint five-number tickets overlaps the draw by >=2.",
+        "canonical_ticket_family": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          [
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          [
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        ],
+        "probability": 0.32576764155711524,
+        "reduced_denominator": 191919,
+        "reduced_numerator": 62521,
+        "ticket_budget": 3,
+        "total_outcome_count": 575757,
+        "winning_outcome_count": 187563
+      },
+      "5": {
+        "algorithm": "Exhaustively enumerate C(39,5) draws and count a success when any of N mutually disjoint five-number tickets overlaps the draw by >=2.",
+        "canonical_ticket_family": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          [
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          [
+            11,
+            12,
+            13,
+            14,
+            15
+          ],
+          [
+            16,
+            17,
+            18,
+            19,
+            20
+          ],
+          [
+            21,
+            22,
+            23,
+            24,
+            25
+          ]
+        ],
+        "probability": 0.5160249897092002,
+        "reduced_denominator": 191919,
+        "reduced_numerator": 99035,
+        "ticket_budget": 5,
+        "total_outcome_count": 575757,
+        "winning_outcome_count": 297105
+      }
+    },
+    "ordinary_random_sensitivity": {
+      "3": {
+        "T": 575757,
+        "W": 65621,
+        "committed_p273_reproduced": true,
+        "committed_p273_values": [
+          0.304431435743
+        ],
+        "formula": "1 - C(T-W,N) / C(T,N)",
+        "probability": 0.304431435742626,
+        "reduced_denominator": 187117861599123,
+        "reduced_numerator": 56964559259711,
+        "role": "SECONDARY_SENSITIVITY_ONLY",
+        "ticket_budget": 3
+      },
+      "5": {
+        "T": 575757,
+        "W": 65621,
+        "committed_p273_reproduced": true,
+        "committed_p273_values": [
+          0.45394956375
+        ],
+        "formula": "1 - C(T-W,N) / C(T,N)",
+        "probability": 0.453949563749733,
+        "reduced_denominator": 113604563250262928889831,
+        "reduced_numerator": 51570741927435806907199,
+        "role": "SECONDARY_SENSITIVITY_ONLY",
+        "ticket_budget": 5
+      }
+    },
+    "p276_monte_carlo_reconciliation": {
+      "by_ticket_budget": {
+        "3": {
+          "derived_wilson_95_interval": [
+            0.3233599942784539,
+            0.327466712395684
+          ],
+          "exact_inside_derived_mc_interval": true,
+          "exact_minus_mc": 0.00035764155711526247,
+          "exact_probability": 0.32576764155711524,
+          "monte_carlo_standard_error": 0.00104766008776702,
+          "p276_implied_success_count": 65082,
+          "p276_prize_aware_single_candidate_rows_verified": [
+            {
+              "portfolio_id": "D539_N3_acbmm3",
+              "strategy_id": "acb_markov_midfreq_3bet",
+              "ticket_budget": 3,
+              "windows": {
+                "300": 0.32541,
+                "50": 0.32541,
+                "750": 0.32541
+              }
+            },
+            {
+              "portfolio_id": "D539_N3_f4cold3",
+              "strategy_id": "daily539_f4cold_3bet",
+              "ticket_budget": 3,
+              "windows": {
+                "300": 0.32541,
+                "50": 0.32541,
+                "750": 0.32541
+              }
+            }
+          ],
+          "p276_sample_count": 200000,
+          "p276_stored_probability": 0.32541,
+          "standardized_difference": 0.34137174956959443,
+          "status": "RECONCILED_EXACT_SUPERSEDES_MC_FOR_P279B_ONLY",
+          "ticket_budget": 3
+        },
+        "5": {
+          "derived_wilson_95_interval": [
+            0.5136695127172641,
+            0.5180498780390688
+          ],
+          "exact_inside_derived_mc_interval": true,
+          "exact_minus_mc": 0.00016498970920020284,
+          "exact_probability": 0.5160249897092002,
+          "monte_carlo_standard_error": 0.001117471387553167,
+          "p276_implied_success_count": 103172,
+          "p276_prize_aware_single_candidate_rows_verified": [
+            {
+              "portfolio_id": "D539_N5_f4cold5",
+              "strategy_id": "daily539_f4cold_5bet",
+              "ticket_budget": 5,
+              "windows": {
+                "300": 0.51586,
+                "50": 0.51586,
+                "750": 0.51586
+              }
+            }
+          ],
+          "p276_sample_count": 200000,
+          "p276_stored_probability": 0.51586,
+          "standardized_difference": 0.14764557825634078,
+          "status": "RECONCILED_EXACT_SUPERSEDES_MC_FOR_P279B_ONLY",
+          "ticket_budget": 5
+        }
+      },
+      "note": "P276 stores each Monte Carlo estimate and sample size, not an explicit interval. P279B derives the reported Wilson 95% Monte Carlo interval from those committed values.",
+      "p276_algorithm": "Seeded universe-permutation disjoint blocks maximizing number coverage and minimizing pairwise overlap; POWER second zone seeded coverage-maximizing.",
+      "same_endpoint": "D539_ANY_PRIZE_AWARE_WIN",
+      "same_equal_ticket_budgets": [
+        3,
+        5
+      ],
+      "status": "PASS"
+    },
+    "primary": "EXACT_MAXIMALLY_DIVERSIFIED_MUTUALLY_DISJOINT_TICKETS",
+    "secondary": "EXACT_ORDINARY_RANDOM_DISTINCT_TICKETS_SENSITIVITY_ONLY",
+    "symmetry_verification": {
+      "alternative_family_count": 3,
+      "family_winning_outcome_counts": {
+        "CANONICAL": {
+          "N3": 187563,
+          "N5": 297105
+        },
+        "INTERLEAVED_LABELS": {
+          "N3": 187563,
+          "N5": 297105
+        },
+        "REVERSED_LABELS": {
+          "N3": 187563,
+          "N5": 297105
+        },
+        "SHIFTED_CONTIGUOUS": {
+          "N3": 187563,
+          "N5": 297105
+        }
+      },
+      "proof": "Every valid mutually disjoint N-ticket family is related by a permutation of the 39 number labels. Uniform five-number draws and the overlap>=2 union event are invariant under that bijection, so the winning-outcome count is unchanged.",
+      "status": "PASS"
+    },
+    "universe": "C(39,5)",
+    "universe_size": 575757
+  },
+  "candidate_decisions": [
+    {
+      "decision": "RETROSPECTIVE_STABILITY_INCONCLUSIVE",
+      "lottery_type": "DAILY_539",
+      "retrospective_research_only": true,
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "ticket_budget": 3
+    },
+    {
+      "decision": "RETROSPECTIVE_STABILITY_FALSIFIED",
+      "lottery_type": "DAILY_539",
+      "retrospective_research_only": true,
+      "strategy_id": "daily539_f4cold_3bet",
+      "ticket_budget": 3
+    },
+    {
+      "decision": "RETROSPECTIVE_STABILITY_INCONCLUSIVE",
+      "lottery_type": "DAILY_539",
+      "retrospective_research_only": true,
+      "strategy_id": "daily539_f4cold_5bet",
+      "ticket_budget": 5
+    }
+  ],
+  "canonical_digest_contract": {
+    "algorithm": "SHA-256 of compact, sorted-key UTF-8 JSON",
+    "excludes_wall_clock_absolute_temporary_paths_and_self_hash": true,
+    "recursively_excluded_keys": [
+      "canonical_payload_digest",
+      "generated_at"
+    ]
+  },
+  "canonical_payload_digest": "88e573947825c321bc8513f06dcfbe9b860445c688a30cbb32002900b604775e",
+  "diagnostic_d50_results": [
+    {
+      "absolute_excess": 0.03423235844288475,
+      "baseline_probability": 0.32576764155711524,
+      "block": "D50",
+      "bonferroni_adjusted_p_value": null,
+      "direction": "POSITIVE",
+      "included_in_m6_family": false,
+      "k": 18,
+      "lottery_type": "DAILY_539",
+      "n": 50,
+      "observed_rate": 0.36,
+      "passes_bonferroni_threshold": null,
+      "raw_p_value": 0.6511765103826637,
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "test": "EXACT_TWO_SIDED_BINOMIAL_PROBABILITY_ORDERING",
+      "ticket_budget": 3
+    },
+    {
+      "absolute_excess": 0.13423235844288478,
+      "baseline_probability": 0.32576764155711524,
+      "block": "D50",
+      "bonferroni_adjusted_p_value": null,
+      "direction": "POSITIVE",
+      "included_in_m6_family": false,
+      "k": 23,
+      "lottery_type": "DAILY_539",
+      "n": 50,
+      "observed_rate": 0.46,
+      "passes_bonferroni_threshold": null,
+      "raw_p_value": 0.04957799168729843,
+      "strategy_id": "daily539_f4cold_3bet",
+      "test": "EXACT_TWO_SIDED_BINOMIAL_PROBABILITY_ORDERING",
+      "ticket_budget": 3
+    },
+    {
+      "absolute_excess": 0.18397501029079977,
+      "baseline_probability": 0.5160249897092002,
+      "block": "D50",
+      "bonferroni_adjusted_p_value": null,
+      "direction": "POSITIVE",
+      "included_in_m6_family": false,
+      "k": 35,
+      "lottery_type": "DAILY_539",
+      "n": 50,
+      "observed_rate": 0.7,
+      "passes_bonferroni_threshold": null,
+      "raw_p_value": 0.010384590883999505,
+      "strategy_id": "daily539_f4cold_5bet",
+      "test": "EXACT_TWO_SIDED_BINOMIAL_PROBABILITY_ORDERING",
+      "ticket_budget": 5
+    }
+  ],
+  "disjoint_block_derivation": [
+    {
+      "derived_block_supports": {
+        "D50": 50,
+        "P250": 250,
+        "P450": 450
+      },
+      "derived_disjoint_counts": {
+        "D50": 18,
+        "P250": 102,
+        "P450": 148
+      },
+      "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+      "expected_p279a_counts_matched": true,
+      "lottery_type": "DAILY_539",
+      "nested_counts": {
+        "latest_300": {
+          "successes": 120,
+          "support": 300
+        },
+        "latest_50": {
+          "successes": 18,
+          "support": 50
+        },
+        "latest_750": {
+          "successes": 268,
+          "support": 750
+        }
+      },
+      "nonnegative_integer_subtraction": true,
+      "recombination": {
+        "D50_plus_P250_equals_latest_300": true,
+        "D50_plus_P250_plus_P450_equals_latest_750": true
+      },
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "ticket_budget": 3
+    },
+    {
+      "derived_block_supports": {
+        "D50": 50,
+        "P250": 250,
+        "P450": 450
+      },
+      "derived_disjoint_counts": {
+        "D50": 23,
+        "P250": 78,
+        "P450": 174
+      },
+      "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+      "expected_p279a_counts_matched": true,
+      "lottery_type": "DAILY_539",
+      "nested_counts": {
+        "latest_300": {
+          "successes": 101,
+          "support": 300
+        },
+        "latest_50": {
+          "successes": 23,
+          "support": 50
+        },
+        "latest_750": {
+          "successes": 275,
+          "support": 750
+        }
+      },
+      "nonnegative_integer_subtraction": true,
+      "recombination": {
+        "D50_plus_P250_equals_latest_300": true,
+        "D50_plus_P250_plus_P450_equals_latest_750": true
+      },
+      "strategy_id": "daily539_f4cold_3bet",
+      "ticket_budget": 3
+    },
+    {
+      "derived_block_supports": {
+        "D50": 50,
+        "P250": 250,
+        "P450": 450
+      },
+      "derived_disjoint_counts": {
+        "D50": 35,
+        "P250": 135,
+        "P450": 255
+      },
+      "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+      "expected_p279a_counts_matched": true,
+      "lottery_type": "DAILY_539",
+      "nested_counts": {
+        "latest_300": {
+          "successes": 170,
+          "support": 300
+        },
+        "latest_50": {
+          "successes": 35,
+          "support": 50
+        },
+        "latest_750": {
+          "successes": 425,
+          "support": 750
+        }
+      },
+      "nonnegative_integer_subtraction": true,
+      "recombination": {
+        "D50_plus_P250_equals_latest_300": true,
+        "D50_plus_P250_plus_P450_equals_latest_750": true
+      },
+      "strategy_id": "daily539_f4cold_5bet",
+      "ticket_budget": 5
+    }
+  ],
+  "endpoint": {
+    "aggregate_counts_only": true,
+    "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+    "lottery_type": "DAILY_539",
+    "success_rule": "hit_count >= 2; at most one success per draw per candidate"
+  },
+  "final_classification": "P279B_RETROSPECTIVE_FALSIFICATION_ARTIFACT_COMPLETE",
+  "frozen_candidates": [
+    {
+      "identity_budget_verified": true,
+      "identity_supports": {
+        "300": 300,
+        "50": 50,
+        "750": 750
+      },
+      "lottery_type": "DAILY_539",
+      "p275b_budget_verified": true,
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "ticket_budget": 3
+    },
+    {
+      "identity_budget_verified": true,
+      "identity_supports": {
+        "300": 300,
+        "50": 50,
+        "750": 750
+      },
+      "lottery_type": "DAILY_539",
+      "p275b_budget_verified": true,
+      "strategy_id": "daily539_f4cold_3bet",
+      "ticket_budget": 3
+    },
+    {
+      "identity_budget_verified": true,
+      "identity_supports": {
+        "300": 300,
+        "50": 50,
+        "750": 750
+      },
+      "lottery_type": "DAILY_539",
+      "p275b_budget_verified": true,
+      "strategy_id": "daily539_f4cold_5bet",
+      "ticket_budget": 5
+    }
+  ],
+  "generated_at": "2026-06-18",
+  "mode": "BOUNDED_RETROSPECTIVE_ARTIFACT_ONLY_FALSIFICATION",
+  "ordinary_random_sensitivity_results": [
+    {
+      "absolute_excess": 0.055568564257374,
+      "baseline_probability": 0.304431435742626,
+      "block": "D50",
+      "bonferroni_adjusted_p_value": null,
+      "direction": "POSITIVE",
+      "included_in_m6_family": false,
+      "k": 18,
+      "lottery_type": "DAILY_539",
+      "n": 50,
+      "observed_rate": 0.36,
+      "passes_bonferroni_threshold": null,
+      "raw_p_value": 0.4421111177629425,
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "test": "EXACT_TWO_SIDED_BINOMIAL_PROBABILITY_ORDERING",
+      "ticket_budget": 3
+    },
+    {
+      "absolute_excess": 0.10356856425737399,
+      "baseline_probability": 0.304431435742626,
+      "block": "P250",
+      "bonferroni_adjusted_p_value": null,
+      "direction": "POSITIVE",
+      "included_in_m6_family": false,
+      "k": 102,
+      "lottery_type": "DAILY_539",
+      "n": 250,
+      "observed_rate": 0.408,
+      "passes_bonferroni_threshold": null,
+      "raw_p_value": 0.0005606510830952463,
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "test": "EXACT_TWO_SIDED_BINOMIAL_PROBABILITY_ORDERING",
+      "ticket_budget": 3
+    },
+    {
+      "absolute_excess": 0.02445745314626291,
+      "baseline_probability": 0.304431435742626,
+      "block": "P450",
+      "bonferroni_adjusted_p_value": null,
+      "direction": "POSITIVE",
+      "included_in_m6_family": false,
+      "k": 148,
+      "lottery_type": "DAILY_539",
+      "n": 450,
+      "observed_rate": 0.3288888888888889,
+      "passes_bonferroni_threshold": null,
+      "raw_p_value": 0.26006195320703723,
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "test": "EXACT_TWO_SIDED_BINOMIAL_PROBABILITY_ORDERING",
+      "ticket_budget": 3
+    },
+    {
+      "absolute_excess": 0.15556856425737403,
+      "baseline_probability": 0.304431435742626,
+      "block": "D50",
+      "bonferroni_adjusted_p_value": null,
+      "direction": "POSITIVE",
+      "included_in_m6_family": false,
+      "k": 23,
+      "lottery_type": "DAILY_539",
+      "n": 50,
+      "observed_rate": 0.46,
+      "passes_bonferroni_threshold": null,
+      "raw_p_value": 0.02079493984493846,
+      "strategy_id": "daily539_f4cold_3bet",
+      "test": "EXACT_TWO_SIDED_BINOMIAL_PROBABILITY_ORDERING",
+      "ticket_budget": 3
+    },
+    {
+      "absolute_excess": 0.007568564257374011,
+      "baseline_probability": 0.304431435742626,
+      "block": "P250",
+      "bonferroni_adjusted_p_value": null,
+      "direction": "POSITIVE",
+      "included_in_m6_family": false,
+      "k": 78,
+      "lottery_type": "DAILY_539",
+      "n": 250,
+      "observed_rate": 0.312,
+      "passes_bonferroni_threshold": null,
+      "raw_p_value": 0.7837669722871531,
+      "strategy_id": "daily539_f4cold_3bet",
+      "test": "EXACT_TWO_SIDED_BINOMIAL_PROBABILITY_ORDERING",
+      "ticket_budget": 3
+    },
+    {
+      "absolute_excess": 0.08223523092404067,
+      "baseline_probability": 0.304431435742626,
+      "block": "P450",
+      "bonferroni_adjusted_p_value": null,
+      "direction": "POSITIVE",
+      "included_in_m6_family": false,
+      "k": 174,
+      "lottery_type": "DAILY_539",
+      "n": 450,
+      "observed_rate": 0.38666666666666666,
+      "passes_bonferroni_threshold": null,
+      "raw_p_value": 0.00021768423061819983,
+      "strategy_id": "daily539_f4cold_3bet",
+      "test": "EXACT_TWO_SIDED_BINOMIAL_PROBABILITY_ORDERING",
+      "ticket_budget": 3
+    },
+    {
+      "absolute_excess": 0.24605043625026696,
+      "baseline_probability": 0.453949563749733,
+      "block": "D50",
+      "bonferroni_adjusted_p_value": null,
+      "direction": "POSITIVE",
+      "included_in_m6_family": false,
+      "k": 35,
+      "lottery_type": "DAILY_539",
+      "n": 50,
+      "observed_rate": 0.7,
+      "passes_bonferroni_threshold": null,
+      "raw_p_value": 0.0005449061042180537,
+      "strategy_id": "daily539_f4cold_5bet",
+      "test": "EXACT_TWO_SIDED_BINOMIAL_PROBABILITY_ORDERING",
+      "ticket_budget": 5
+    },
+    {
+      "absolute_excess": 0.08605043625026704,
+      "baseline_probability": 0.453949563749733,
+      "block": "P250",
+      "bonferroni_adjusted_p_value": null,
+      "direction": "POSITIVE",
+      "included_in_m6_family": false,
+      "k": 135,
+      "lottery_type": "DAILY_539",
+      "n": 250,
+      "observed_rate": 0.54,
+      "passes_bonferroni_threshold": null,
+      "raw_p_value": 0.007514131287779981,
+      "strategy_id": "daily539_f4cold_5bet",
+      "test": "EXACT_TWO_SIDED_BINOMIAL_PROBABILITY_ORDERING",
+      "ticket_budget": 5
+    },
+    {
+      "absolute_excess": 0.11271710291693365,
+      "baseline_probability": 0.453949563749733,
+      "block": "P450",
+      "bonferroni_adjusted_p_value": null,
+      "direction": "POSITIVE",
+      "included_in_m6_family": false,
+      "k": 255,
+      "lottery_type": "DAILY_539",
+      "n": 450,
+      "observed_rate": 0.5666666666666667,
+      "passes_bonferroni_threshold": null,
+      "raw_p_value": 2.0012624319667115e-06,
+      "strategy_id": "daily539_f4cold_5bet",
+      "test": "EXACT_TWO_SIDED_BINOMIAL_PROBABILITY_ORDERING",
+      "ticket_budget": 5
+    }
+  ],
+  "primary_test_results": [
+    {
+      "absolute_excess": 0.08223235844288473,
+      "baseline_probability": 0.32576764155711524,
+      "block": "P250",
+      "bonferroni_adjusted_p_value": 0.04099461121654138,
+      "direction": "POSITIVE",
+      "included_in_m6_family": true,
+      "k": 102,
+      "lottery_type": "DAILY_539",
+      "n": 250,
+      "observed_rate": 0.408,
+      "passes_bonferroni_threshold": true,
+      "raw_p_value": 0.006832435202756897,
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "test": "EXACT_TWO_SIDED_BINOMIAL_PROBABILITY_ORDERING",
+      "ticket_budget": 3
+    },
+    {
+      "absolute_excess": 0.0031212473317736578,
+      "baseline_probability": 0.32576764155711524,
+      "block": "P450",
+      "bonferroni_adjusted_p_value": 1.0,
+      "direction": "POSITIVE",
+      "included_in_m6_family": true,
+      "k": 148,
+      "lottery_type": "DAILY_539",
+      "n": 450,
+      "observed_rate": 0.3288888888888889,
+      "passes_bonferroni_threshold": false,
+      "raw_p_value": 0.8801884602970746,
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "test": "EXACT_TWO_SIDED_BINOMIAL_PROBABILITY_ORDERING",
+      "ticket_budget": 3
+    },
+    {
+      "absolute_excess": -0.01376764155711524,
+      "baseline_probability": 0.32576764155711524,
+      "block": "P250",
+      "bonferroni_adjusted_p_value": 1.0,
+      "direction": "NEGATIVE",
+      "included_in_m6_family": true,
+      "k": 78,
+      "lottery_type": "DAILY_539",
+      "n": 250,
+      "observed_rate": 0.312,
+      "passes_bonferroni_threshold": false,
+      "raw_p_value": 0.6857510138015173,
+      "strategy_id": "daily539_f4cold_3bet",
+      "test": "EXACT_TWO_SIDED_BINOMIAL_PROBABILITY_ORDERING",
+      "ticket_budget": 3
+    },
+    {
+      "absolute_excess": 0.06089902510955142,
+      "baseline_probability": 0.32576764155711524,
+      "block": "P450",
+      "bonferroni_adjusted_p_value": 0.039411887293465744,
+      "direction": "POSITIVE",
+      "included_in_m6_family": true,
+      "k": 174,
+      "lottery_type": "DAILY_539",
+      "n": 450,
+      "observed_rate": 0.38666666666666666,
+      "passes_bonferroni_threshold": true,
+      "raw_p_value": 0.00656864788224429,
+      "strategy_id": "daily539_f4cold_3bet",
+      "test": "EXACT_TWO_SIDED_BINOMIAL_PROBABILITY_ORDERING",
+      "ticket_budget": 3
+    },
+    {
+      "absolute_excess": 0.023975010290799847,
+      "baseline_probability": 0.5160249897092002,
+      "block": "P250",
+      "bonferroni_adjusted_p_value": 1.0,
+      "direction": "POSITIVE",
+      "included_in_m6_family": true,
+      "k": 135,
+      "lottery_type": "DAILY_539",
+      "n": 250,
+      "observed_rate": 0.54,
+      "passes_bonferroni_threshold": false,
+      "raw_p_value": 0.4864685468014209,
+      "strategy_id": "daily539_f4cold_5bet",
+      "test": "EXACT_TWO_SIDED_BINOMIAL_PROBABILITY_ORDERING",
+      "ticket_budget": 5
+    },
+    {
+      "absolute_excess": 0.050641676957466464,
+      "baseline_probability": 0.5160249897092002,
+      "block": "P450",
+      "bonferroni_adjusted_p_value": 0.20232014121085984,
+      "direction": "POSITIVE",
+      "included_in_m6_family": true,
+      "k": 255,
+      "lottery_type": "DAILY_539",
+      "n": 450,
+      "observed_rate": 0.5666666666666667,
+      "passes_bonferroni_threshold": false,
+      "raw_p_value": 0.033720023535143306,
+      "strategy_id": "daily539_f4cold_5bet",
+      "test": "EXACT_TWO_SIDED_BINOMIAL_PROBABILITY_ORDERING",
+      "ticket_budget": 5
+    }
+  ],
+  "project_summary": {
+    "candidate_count": 3,
+    "decision_counts": {
+      "RETROSPECTIVE_STABILITY_FALSIFIED": 1,
+      "RETROSPECTIVE_STABILITY_INCONCLUSIVE": 2,
+      "RETROSPECTIVE_STABILITY_NOT_FALSIFIED_RETAIN_FOR_FUTURE_ONLY": 0
+    },
+    "diagnostic_d50_count": 3,
+    "final_research_classification": "RETROSPECTIVE_STABILITY_NOT_CONFIRMED",
+    "primary_test_count": 6,
+    "research_verdict": "ONE_FALSIFIED_TWO_INCONCLUSIVE_ZERO_RETAINED"
+  },
+  "safety_flags": {
+    "deployment_authorized": false,
+    "network_used": false,
+    "prediction_generation_performed": false,
+    "prediction_success_claim": false,
+    "production_db_copied": false,
+    "production_db_opened": false,
+    "production_db_queried": false,
+    "production_db_written": false,
+    "prospective_confirmation_complete": false,
+    "registry_mutated": false,
+    "replay_generation_performed": false,
+    "strategy_promoted": false
+  },
+  "scientific_limitations": [
+    "All blocks are retrospective and were derived from nested committed historical aggregates.",
+    "The disjoint P250 and P450 blocks remove overlap but do not create prospective OOS evidence.",
+    "The exact diversified baseline tests equal-budget number coverage, not every possible null model.",
+    "D50 is descriptive only and cannot rescue, promote, or override either primary block.",
+    "Candidate labels authorize future-only research at most; they do not establish betting value."
+  ],
+  "scientific_question": "Do the three frozen candidates retain positive prize-aware excess in both non-overlapping historical primary blocks versus an exact equal-budget maximally diversified random-ticket baseline?",
+  "source_artifacts": [
+    {
+      "canonical_payload_digest": "65a4cc59f5ab64d685890566e38493b0295e622f351e0527782f1dce2f38645f",
+      "digest_verified": true,
+      "path": "outputs/research/p273a_primary_window_observed_counts_20260615.json",
+      "raw_sha256": "14b2ed29628111f32925909ba07e9be0b3de48a04ee4b0877e39c1dfa4e51b73",
+      "source_id": "primary_observed_counts"
+    },
+    {
+      "canonical_payload_digest": "ad85e447dfc7db7afd70e9fdde928bb12a2ae367d6c1f23f14b7e3504701ae51",
+      "digest_verified": true,
+      "path": "outputs/research/p273a_distinct_ticket_identity_20260615.json",
+      "raw_sha256": "b10b916c00f807ace7342250b788dbf1d62c12a0b8e2d5aa627b5a4eb25089b0",
+      "source_id": "distinct_ticket_identity"
+    },
+    {
+      "canonical_payload_digest": "5666e67c88e5f3b1233f2d6d5a5f86746c4f7605ae98bda3f2d59ec5aa0b2fb4",
+      "digest_verified": true,
+      "path": "outputs/research/p273a_prize_aware_inferential_validation_20260615.json",
+      "raw_sha256": "ab923a06327afcc8595f224e65bcd98fec0cfdeaf31b10aeeb86ac54ed6648fe",
+      "source_id": "inferential_validation"
+    },
+    {
+      "canonical_payload_digest": "c1b99e57024f528e39e4beeca03cb22dd3278eb1d356aafbe48d8485695102f6",
+      "digest_verified": true,
+      "path": "outputs/research/p275b_unified_prize_aware_success_matrix_20260616.json",
+      "raw_sha256": "0a81b9e652b5d84e80ebf16e9d5c5ff625746d8c46e6cfe5d38e6cfe312cf964",
+      "source_id": "unified_success_matrix"
+    },
+    {
+      "canonical_payload_digest": "438dca463edb574a3ed346ac616728d4621e669d25f010efeb9909478d68657e",
+      "digest_verified": true,
+      "path": "outputs/research/p276b_fixed_n_coverage_complementarity_20260617.json",
+      "raw_sha256": "ed6ba267de53443c46ecff76914887a4595aaaa2762fa31ed46d602b7fac3264",
+      "source_id": "coverage_complementarity"
+    }
+  ],
+  "source_commit": "8004c32c47cb99576ef5689f967c05306a83670c",
+  "statistical_contract": {
+    "bh_fdr_reported": false,
+    "bonferroni_alpha_per_test": 0.008333333333333333,
+    "d50_descriptive_only": true,
+    "d50_included_in_family": false,
+    "family_alpha": 0.05,
+    "family_size": 6,
+    "primary_family": "3 candidates x 2 disjoint primary blocks",
+    "test": "EXACT_TWO_SIDED_BINOMIAL_PROBABILITY_ORDERING"
+  },
+  "task_id": "P279B_FROZEN_DAILY539_DISJOINT_BLOCK_DIVERSIFIED_BASELINE_FALSIFICATION"
+}

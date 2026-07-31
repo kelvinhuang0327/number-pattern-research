@@ -1,0 +1,62 @@
+{
+  "task": "P264A",
+  "title": "Hide Legacy D3 Artifact From Default UI",
+  "date": "2026-06-10",
+  "branch": "p264a-hide-legacy-d3-artifact-default-ui",
+  "base_commit": "63cf24e5fb11d476a4a9ddee19f81aad62424f57",
+  "approach": "nav_reorder_plus_details_collapse",
+  "changes": {
+    "nav_reorder": {
+      "before": ["p258-d3-audit (pos 1)", "p263b-d3-ssot (pos 2)"],
+      "after": ["p263b-d3-ssot (pos 1 — primary)", "p258-d3-audit (pos 2 — dimmed, opacity:0.55, label: D3 合約稽核 (Legacy))"],
+      "rationale": "SSOT is the authoritative view; legacy artifact should be secondary"
+    },
+    "legacy_section_demote": {
+      "heading_badge": "Added 'Legacy' grey badge to P258O section h2",
+      "warning_banner": {
+        "element_id": "p258-legacy-warning-p264a",
+        "copy_zh": "此區為歷史 D3 Artifact 稽核資料（Legacy / Historical Artifact）— 不代表目前策略總數或最新狀態",
+        "copy_redirect": "目前正式策略狀態請以左側「D3 策略狀態 (SSOT)」為準（40 strategies / 41 cells）",
+        "visible": "always when section is active (above <details>)"
+      },
+      "content_collapse": {
+        "mechanism": "<details> element wrapping section-content",
+        "default_state": "collapsed (not open)",
+        "summary_text": "展開歷史稽核資料 / Expand Legacy D3 Artifact Audit Data (artifact-backed snapshot · 14 rows · 2026-06-09)"
+      }
+    },
+    "ssot_section_unchanged": true,
+    "js_unchanged": true,
+    "endpoints_unchanged": true
+  },
+  "p258_contract_preserved": {
+    "data-section=\"p258-d3-audit\"": true,
+    "id=\"p258-d3-audit-section\"": true,
+    "p258-disclaimer-banner": true,
+    "NOT_YET_REJECTED": true,
+    "prediction_model_disclaimer": true,
+    "api_url_/api/replay/d3-strategy-status-audit": true,
+    "p258Init()": true
+  },
+  "p263b_preserved": {
+    "id=\"p263b-d3-ssot-section\"": true,
+    "api_url_/api/replay/d3-strategy-status-coverage": true,
+    "success_rate_30_100_500_1500_cols": true,
+    "lifecycle_registry_status_can_open_detail_missing_reason": true
+  },
+  "test_results": {
+    "test_p264a_hide_legacy_d3_artifact_default_ui": "31/31 PASS",
+    "test_p263b_d3_strategy_status_ssot_rebuild": "29/29 PASS",
+    "test_replay_api_contract": "44/44 PASS",
+    "git_diff_check": "CLEAN"
+  },
+  "modified_files": [
+    "index.html",
+    "tests/test_p264a_hide_legacy_d3_artifact_default_ui.py",
+    "outputs/research/p264a_hide_legacy_d3_artifact_default_ui_20260610.json",
+    "outputs/research/p264a_hide_legacy_d3_artifact_default_ui_20260610.md",
+    "00-Plan/roadmap/active_task.md",
+    "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md"
+  ],
+  "forbidden_files_touched": []
+}

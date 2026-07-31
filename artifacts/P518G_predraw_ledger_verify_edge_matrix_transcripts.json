@@ -1,0 +1,73 @@
+{
+  "artifact_prefix": "P518G_predraw_ledger_verify_edge_matrix",
+  "notices": [
+    "no canonical DB open/write",
+    "no migration/backfill",
+    "no deploy",
+    "synthetic fixtures only",
+    "not production release approval",
+    "no betting/future prediction claims"
+  ],
+  "transcripts": [
+    {
+      "argv": [
+        "tools.predraw_ledger_verify",
+        "${P518G_EDGE_TMP}/edge_malformed_jsonl_row.jsonl"
+      ],
+      "case_id": "malformed_jsonl_row",
+      "exit_code": 1,
+      "stderr": "",
+      "stdout": "[predraw-verify] ledger_path=${P518G_EDGE_TMP}/edge_malformed_jsonl_row.jsonl\n[predraw-verify] validation_status=INVALID\n[predraw-verify] chain_ok=False chain_total_records=1\n[predraw-verify] chain_first_broken_index=0 chain_reason=unparseable/truncated line at index 0\n[predraw-verify] record_count=0 record_kind_counts={}\n[predraw-verify] generation_mode_counts={}\n[predraw-verify] disclaimer: This is a structural/hash-chain validity check only. It is NOT a prediction, betting recommendation, evidence of strategy edge, or out-of-sample (OOS) performance proof.\n"
+    },
+    {
+      "argv": [
+        "tools.predraw_ledger_verify",
+        "${P518G_EDGE_TMP}/edge_empty_ledger_file.jsonl"
+      ],
+      "case_id": "empty_ledger_file",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "[predraw-verify] ledger_path=${P518G_EDGE_TMP}/edge_empty_ledger_file.jsonl\n[predraw-verify] validation_status=VALID\n[predraw-verify] chain_ok=True chain_total_records=0\n[predraw-verify] record_count=0 record_kind_counts={}\n[predraw-verify] generation_mode_counts={}\n[predraw-verify] disclaimer: This is a structural/hash-chain validity check only. It is NOT a prediction, betting recommendation, evidence of strategy edge, or out-of-sample (OOS) performance proof.\n"
+    },
+    {
+      "argv": [
+        "tools.predraw_ledger_verify",
+        "${P518G_EDGE_TMP}/edge_missing_required_field.jsonl"
+      ],
+      "case_id": "missing_required_field",
+      "exit_code": 1,
+      "stderr": "",
+      "stdout": "[predraw-verify] ledger_path=${P518G_EDGE_TMP}/edge_missing_required_field.jsonl\n[predraw-verify] validation_status=INVALID\n[predraw-verify] chain_ok=True chain_total_records=1\n[predraw-verify] record_count=1 record_kind_counts={'PREDICTION': 1}\n[predraw-verify] generation_mode_counts={}\n[predraw-verify] malformed_record_count=1\n[predraw-verify]   index=0 record_id=p518g-edge-missing-field-001 missing_fields=['strategy_id']\n[predraw-verify] disclaimer: This is a structural/hash-chain validity check only. It is NOT a prediction, betting recommendation, evidence of strategy edge, or out-of-sample (OOS) performance proof.\n"
+    },
+    {
+      "argv": [
+        "tools.predraw_ledger_verify",
+        "${P518G_EDGE_TMP}/edge_duplicate_draw_record_supported.jsonl"
+      ],
+      "case_id": "duplicate_draw_record_supported",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "[predraw-verify] ledger_path=${P518G_EDGE_TMP}/edge_duplicate_draw_record_supported.jsonl\n[predraw-verify] validation_status=VALID\n[predraw-verify] chain_ok=True chain_total_records=2\n[predraw-verify] record_count=2 record_kind_counts={'PREDICTION': 2}\n[predraw-verify] generation_mode_counts={'RETROSPECTIVE_REPLAY': 2}\n[predraw-verify] lottery_type=BIG_LOTTO record_count=2 target_draw_range=[114000101, 114000101]\n[predraw-verify] disclaimer: This is a structural/hash-chain validity check only. It is NOT a prediction, betting recommendation, evidence of strategy edge, or out-of-sample (OOS) performance proof.\n"
+    },
+    {
+      "argv": [
+        "tools.predraw_ledger_verify",
+        "${P518G_EDGE_TMP}/edge_wrong_game_identifier_supported.jsonl"
+      ],
+      "case_id": "wrong_game_identifier_supported",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "[predraw-verify] ledger_path=${P518G_EDGE_TMP}/edge_wrong_game_identifier_supported.jsonl\n[predraw-verify] validation_status=VALID\n[predraw-verify] chain_ok=True chain_total_records=1\n[predraw-verify] record_count=1 record_kind_counts={'PREDICTION': 1}\n[predraw-verify] generation_mode_counts={'RETROSPECTIVE_REPLAY': 1}\n[predraw-verify] lottery_type=MYSTERY_LOTTO record_count=1 target_draw_range=[114000101, 114000101]\n[predraw-verify] disclaimer: This is a structural/hash-chain validity check only. It is NOT a prediction, betting recommendation, evidence of strategy edge, or out-of-sample (OOS) performance proof.\n"
+    },
+    {
+      "argv": [
+        "tools.predraw_ledger_verify",
+        "${P518G_EDGE_TMP}/edge_prev_hash_mismatch_chain_invalid.jsonl"
+      ],
+      "case_id": "prev_hash_mismatch_chain_invalid",
+      "exit_code": 1,
+      "stderr": "",
+      "stdout": "[predraw-verify] ledger_path=${P518G_EDGE_TMP}/edge_prev_hash_mismatch_chain_invalid.jsonl\n[predraw-verify] validation_status=INVALID\n[predraw-verify] chain_ok=False chain_total_records=2\n[predraw-verify] chain_first_broken_index=1 chain_reason=prev_record_hash mismatch at index 1\n[predraw-verify] record_count=0 record_kind_counts={}\n[predraw-verify] generation_mode_counts={}\n[predraw-verify] disclaimer: This is a structural/hash-chain validity check only. It is NOT a prediction, betting recommendation, evidence of strategy edge, or out-of-sample (OOS) performance proof.\n"
+    }
+  ]
+}

@@ -1,0 +1,3652 @@
+{
+  "adapter_version": "prize_aware_adapter_v1",
+  "artifact_version": "p276b_fixed_n_coverage_complementarity_v2",
+  "baseline_specification": {
+    "baseline_Q": {
+      "BIG_LOTTO|N3": {
+        "diversified": {
+          "m3_Q": 0.055935,
+          "mean_pairwise_overlap": 0.0,
+          "n_samples": 200000,
+          "prize_Q": 0.093455
+        },
+        "ordinary": {
+          "m3_Q": 0.05512,
+          "mean_pairwise_overlap": 0.7344783333333333,
+          "n_samples": 200000,
+          "prize_Q": 0.090545
+        }
+      },
+      "BIG_LOTTO|N4": {
+        "diversified": {
+          "m3_Q": 0.074435,
+          "mean_pairwise_overlap": 0.0,
+          "n_samples": 200000,
+          "prize_Q": 0.122575
+        },
+        "ordinary": {
+          "m3_Q": 0.07206,
+          "mean_pairwise_overlap": 0.7353325,
+          "n_samples": 200000,
+          "prize_Q": 0.11758
+        }
+      },
+      "DAILY_539|N3": {
+        "diversified": {
+          "m3_Q": 0.02929,
+          "mean_pairwise_overlap": 0.0,
+          "n_samples": 200000,
+          "prize_Q": 0.32541
+        },
+        "ordinary": {
+          "m3_Q": 0.029705,
+          "mean_pairwise_overlap": 0.6385383333333333,
+          "n_samples": 200000,
+          "prize_Q": 0.304455
+        }
+      },
+      "DAILY_539|N5": {
+        "diversified": {
+          "m3_Q": 0.05065,
+          "mean_pairwise_overlap": 0.0,
+          "n_samples": 200000,
+          "prize_Q": 0.51586
+        },
+        "ordinary": {
+          "m3_Q": 0.048635,
+          "mean_pairwise_overlap": 0.6408795,
+          "n_samples": 200000,
+          "prize_Q": 0.45423
+        }
+      }
+    },
+    "diversified_overlap_not_worse_than_ordinary": true,
+    "diversified_random": "Seeded universe-permutation disjoint blocks maximizing number coverage and minimizing pairwise overlap; POWER second zone seeded coverage-maximizing.",
+    "mc_q_samples": 200000,
+    "mc_replicates": 10000,
+    "ordinary_random": "N distinct legal tickets sampled uniformly without replacement; POWER second zone uniform 1-8.",
+    "overlap_report": {
+      "BIG_LOTTO_N3": {
+        "diversified": 0.0,
+        "diversified_le_ordinary": true,
+        "ordinary": 0.7344783333333333
+      },
+      "BIG_LOTTO_N4": {
+        "diversified": 0.0,
+        "diversified_le_ordinary": true,
+        "ordinary": 0.7353325
+      },
+      "DAILY_539_N3": {
+        "diversified": 0.0,
+        "diversified_le_ordinary": true,
+        "ordinary": 0.6385383333333333
+      },
+      "DAILY_539_N5": {
+        "diversified": 0.0,
+        "diversified_le_ordinary": true,
+        "ordinary": 0.6408795
+      }
+    },
+    "per_draw_union_win_probability_Q": "MC-estimated; per-draw union win is iid Bernoulli(Q) by outcome symmetry, so window null = Binomial(support, Q)."
+  },
+  "canonical_payload_digest": "438dca463edb574a3ed346ac616728d4621e669d25f010efeb9909478d68657e",
+  "db_snapshot": {
+    "db_open_mode": "sqlite3 URI mode=ro + PRAGMA query_only=ON + write-denying authorizer",
+    "draws_row_counts": {
+      "BIG_LOTTO": 22241,
+      "DAILY_539": 5889,
+      "POWER_LOTTO": 1920
+    },
+    "latest_draw_in_db": {
+      "BIG_LOTTO": "115000061",
+      "DAILY_539": "115000145",
+      "POWER_LOTTO": "115000048"
+    },
+    "modification_time_utc": "2026-06-16T07:49:43.796584+00:00",
+    "path_identifier": "lottery_v2.db",
+    "read_only_evidence": {
+      "connection_uri": "file:/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db?mode=ro",
+      "mode_ro": true,
+      "query_only_enabled": true,
+      "query_only_pragma_value": 1,
+      "single_connection": true,
+      "single_snapshot": true,
+      "write_denying_authorizer_installed": true
+    },
+    "sha256_post": "4c8736caab661088c8430908ae4423a73522619f7521fb64e2c6f1affd20b056",
+    "sha256_pre": "4c8736caab661088c8430908ae4423a73522619f7521fb64e2c6f1affd20b056",
+    "sha256_unchanged": true,
+    "size_bytes": 99368960
+  },
+  "final_classification": "P276B_FIXED_N_COVERAGE_COMPLEMENTARITY_COMPLETE",
+  "frozen_future_contract": {
+    "any_contract_change_resets_future_clock": true,
+    "bonferroni_per_test_alpha": 0.008333333333333333,
+    "checkpoints": {
+      "future_300": "first inferential checkpoint",
+      "future_50": "integrity / early-warning only",
+      "future_750": "long inferential checkpoint"
+    },
+    "contract_hash_payload": {
+      "artifact_version": "p276b_fixed_n_coverage_complementarity_v2",
+      "contract_reset_rule": "any family, selector, baseline, seed, hypothesis, or correction change resets the future clock",
+      "cutoff_rule": "latest committed-ticket target draw per lottery at contract freeze",
+      "cutoff_target_draw_by_lottery": {
+        "BIG_LOTTO": "115000055",
+        "DAILY_539": "115000121",
+        "POWER_LOTTO": "115000040"
+      },
+      "diversified_random_baseline": {
+        "algorithm_id": "MAXIMALLY_DIVERSIFIED_RANDOM_V1",
+        "description": "Seeded universe-permutation disjoint blocks maximizing number coverage and minimizing pairwise overlap; POWER second zone seeded coverage-maximizing.",
+        "version": "p276b_v1"
+      },
+      "fixed_ticket_budgets": [
+        3,
+        4,
+        5
+      ],
+      "future_eligibility_rule": "only draws strictly after both the cutoff target draw and corrected contract freeze are eligible, and only with prospectively generated committed tickets",
+      "global_seed": 20260617,
+      "hypothesis_family": {
+        "bonferroni_per_test_alpha": 0.008333333333333333,
+        "correction_policy": "BONFERRONI",
+        "family_id": "P276D_FUTURE_CONFIRMATORY_CROSS_PORTFOLIO_FAMILY",
+        "future_confirmatory_family_size": 6,
+        "inferential_windows": [
+          300,
+          750
+        ],
+        "lotteries": [
+          "DAILY_539",
+          "BIG_LOTTO",
+          "POWER_LOTTO"
+        ],
+        "primary_cross_portfolios": [
+          "D539_N3_f4cold3_x_acbmm3",
+          "D539_N5_f4cold5_x_acbmm3",
+          "D539_N5_f4cold5_x_f4cold3_x_acbmm3"
+        ],
+        "primary_lottery": "DAILY_539",
+        "primary_windows": [
+          50,
+          300,
+          750
+        ],
+        "short_non_promotion_rule": "SHORT_50 is integrity / early-warning only and cannot promote."
+      },
+      "mc_q_samples": 200000,
+      "mc_replicates": 10000,
+      "ordinary_random_baseline": {
+        "algorithm_id": "ORDINARY_RANDOM_DISTINCT_LEGAL_TICKETS_V1",
+        "description": "N distinct legal tickets sampled uniformly without replacement; POWER second zone uniform 1-8.",
+        "version": "p276b_v1"
+      },
+      "outcome_families": {
+        "future_bonferroni_policy": "BONFERRONI",
+        "historical_bonferroni_role": "DESCRIPTIVE_MULTIPLICITY_ADJUSTED_ONLY",
+        "prize_aware_and_m3plus_separate": true
+      },
+      "portfolio_family": [
+        {
+          "kind": "SINGLE",
+          "lottery_type": "DAILY_539",
+          "portfolio_id": "D539_N3_f4cold3",
+          "source_cells": [
+            "daily539_f4cold_3bet"
+          ],
+          "ticket_budget": 3,
+          "tier": "PRIMARY"
+        },
+        {
+          "kind": "SINGLE",
+          "lottery_type": "DAILY_539",
+          "portfolio_id": "D539_N3_acbmm3",
+          "source_cells": [
+            "acb_markov_midfreq_3bet"
+          ],
+          "ticket_budget": 3,
+          "tier": "PRIMARY"
+        },
+        {
+          "kind": "CROSS",
+          "lottery_type": "DAILY_539",
+          "portfolio_id": "D539_N3_f4cold3_x_acbmm3",
+          "source_cells": [
+            "daily539_f4cold_3bet",
+            "acb_markov_midfreq_3bet"
+          ],
+          "ticket_budget": 3,
+          "tier": "PRIMARY"
+        },
+        {
+          "kind": "SINGLE",
+          "lottery_type": "DAILY_539",
+          "portfolio_id": "D539_N5_f4cold5",
+          "source_cells": [
+            "daily539_f4cold_5bet"
+          ],
+          "ticket_budget": 5,
+          "tier": "PRIMARY"
+        },
+        {
+          "kind": "CROSS",
+          "lottery_type": "DAILY_539",
+          "portfolio_id": "D539_N5_f4cold5_x_acbmm3",
+          "source_cells": [
+            "daily539_f4cold_5bet",
+            "acb_markov_midfreq_3bet"
+          ],
+          "ticket_budget": 5,
+          "tier": "PRIMARY"
+        },
+        {
+          "kind": "CROSS",
+          "lottery_type": "DAILY_539",
+          "portfolio_id": "D539_N5_f4cold5_x_f4cold3_x_acbmm3",
+          "source_cells": [
+            "daily539_f4cold_5bet",
+            "daily539_f4cold_3bet",
+            "acb_markov_midfreq_3bet"
+          ],
+          "ticket_budget": 5,
+          "tier": "PRIMARY"
+        },
+        {
+          "kind": "SINGLE",
+          "lottery_type": "BIG_LOTTO",
+          "portfolio_id": "BIG_N3_echo3",
+          "source_cells": [
+            "biglotto_echo_aware_3bet"
+          ],
+          "ticket_budget": 3,
+          "tier": "SECONDARY"
+        },
+        {
+          "kind": "SINGLE",
+          "lottery_type": "BIG_LOTTO",
+          "portfolio_id": "BIG_N4_ts3markov4",
+          "source_cells": [
+            "biglotto_ts3_markov_4bet_w30"
+          ],
+          "ticket_budget": 4,
+          "tier": "SECONDARY"
+        }
+      ],
+      "primary_fixed_ticket_budgets": [
+        3,
+        5
+      ],
+      "primary_hypotheses": [
+        {
+          "claim": "A fixed-N strategy portfolio has higher prize-aware union success than both every required equal-N constituent comparator and the maximally-diversified-random equal-N baseline.",
+          "hypothesis_id": "P276D-FUTURE-H1-PRIZE-AWARE-CROSS-BEATS-CONSTITUENTS-AND-DIVERSIFIED",
+          "outcome_family": "prize_aware"
+        }
+      ],
+      "source_strategy_ids_and_order": [
+        {
+          "portfolio_id": "D539_N3_f4cold3",
+          "source_cells": [
+            "daily539_f4cold_3bet"
+          ]
+        },
+        {
+          "portfolio_id": "D539_N3_acbmm3",
+          "source_cells": [
+            "acb_markov_midfreq_3bet"
+          ]
+        },
+        {
+          "portfolio_id": "D539_N3_f4cold3_x_acbmm3",
+          "source_cells": [
+            "daily539_f4cold_3bet",
+            "acb_markov_midfreq_3bet"
+          ]
+        },
+        {
+          "portfolio_id": "D539_N5_f4cold5",
+          "source_cells": [
+            "daily539_f4cold_5bet"
+          ]
+        },
+        {
+          "portfolio_id": "D539_N5_f4cold5_x_acbmm3",
+          "source_cells": [
+            "daily539_f4cold_5bet",
+            "acb_markov_midfreq_3bet"
+          ]
+        },
+        {
+          "portfolio_id": "D539_N5_f4cold5_x_f4cold3_x_acbmm3",
+          "source_cells": [
+            "daily539_f4cold_5bet",
+            "daily539_f4cold_3bet",
+            "acb_markov_midfreq_3bet"
+          ]
+        },
+        {
+          "portfolio_id": "BIG_N3_echo3",
+          "source_cells": [
+            "biglotto_echo_aware_3bet"
+          ]
+        },
+        {
+          "portfolio_id": "BIG_N4_ts3markov4",
+          "source_cells": [
+            "biglotto_ts3_markov_4bet_w30"
+          ]
+        }
+      ],
+      "ticket_selection_algorithm": {
+        "algorithm_id": "ROUND_ROBIN_INTERLEAVE_V1",
+        "rules": [
+          "iterate ticket positions 0,1,2,...",
+          "within each position, visit source strategies in declared source order",
+          "dedupe by canonical ticket fingerprint preserving first occurrence",
+          "stop exactly at ticket_budget N",
+          "draw is ineligible when fewer than N distinct tickets remain",
+          "never back-fill with random or outcome-aware tickets"
+        ],
+        "supersedes_historical_smoke_selector": "FIRST_N_CONCAT_V0",
+        "version": "p276d_corrected_semantics"
+      }
+    },
+    "cutoff_note": "latest committed-ticket target draw per lottery; genuine confirmation requires walk-forward strategy predictions for draws strictly later than the cutoff and after the corrected contract freeze.",
+    "cutoff_target_draw_by_lottery": {
+      "BIG_LOTTO": "115000055",
+      "DAILY_539": "115000121",
+      "POWER_LOTTO": "115000040"
+    },
+    "future_H0": "The observed union advantage is fully explained by ticket count or number coverage.",
+    "future_bonferroni_policy": "BONFERRONI",
+    "future_confirmation_status": "FUTURE_CONFIRMATION_PENDING",
+    "future_confirmatory_family_size": 6,
+    "future_contract_hash_coverage": [
+      "artifact_version",
+      "contract_reset_rule",
+      "cutoff_rule",
+      "cutoff_target_draw_by_lottery",
+      "diversified_random_baseline",
+      "fixed_ticket_budgets",
+      "future_eligibility_rule",
+      "global_seed",
+      "hypothesis_family",
+      "mc_q_samples",
+      "mc_replicates",
+      "ordinary_random_baseline",
+      "outcome_families",
+      "portfolio_family",
+      "primary_fixed_ticket_budgets",
+      "primary_hypotheses",
+      "source_strategy_ids_and_order",
+      "ticket_selection_algorithm"
+    ],
+    "future_contract_prospectively_frozen": true,
+    "future_contract_sha256": "229ecd041430909969fb064ff1e2fdddca126cb1a07412763ff89166105638d4",
+    "future_evidence_requires_prospectively_generated_tickets": true,
+    "future_primary_H1": "A fixed-N strategy portfolio has higher prize-aware union success than both every required equal-N constituent comparator and the maximally-diversified-random equal-N baseline.",
+    "historical_results_not_future_confirmation": true,
+    "status": "FUTURE_CONFIRMATION_PENDING",
+    "ticket_selection_algorithm": {
+      "algorithm_id": "ROUND_ROBIN_INTERLEAVE_V1",
+      "rules": [
+        "iterate ticket positions 0,1,2,...",
+        "within each position, visit source strategies in declared source order",
+        "dedupe by canonical ticket fingerprint preserving first occurrence",
+        "stop exactly at ticket_budget N",
+        "draw is ineligible when fewer than N distinct tickets remain",
+        "never back-fill with random or outcome-aware tickets"
+      ],
+      "supersedes_historical_smoke_selector": "FIRST_N_CONCAT_V0",
+      "version": "p276d_corrected_semantics"
+    }
+  },
+  "generated_at": "2026-06-17T04:24:16.485063+00:00",
+  "historical_analysis_contract": {
+    "bounded_family": true,
+    "bounded_retrospective_analysis_sha256": "3e2aa62c54e2d004b562d72dca8138fc1620ab6d0068874224cc97a9d1469d6e",
+    "cannot_promote_or_activate": true,
+    "cannot_set_prediction_success_claim_true": true,
+    "descriptive_bonferroni_per_test_alpha": 0.008333333333333333,
+    "descriptive_multiplicity_family_size": 6,
+    "execution_chronology": [
+      "P276A selected the candidate direction and source strategies after reviewing prior historical P275B outcome evidence.",
+      "An initial first-N ticket selector was used in a historical outcome-scoring smoke run.",
+      "That run showed CROSS portfolio degeneration to the first source with b/c=0/0.",
+      "The selector was then changed to ROUND_ROBIN after those outcomes had been observed.",
+      "Final historical results were generated using ROUND_ROBIN and are post-hoc descriptive evidence."
+    ],
+    "final_selector": "ROUND_ROBIN",
+    "fixed_ticket_budgets": [
+      3,
+      5
+    ],
+    "historical_bonferroni_role": "DESCRIPTIVE_MULTIPLICITY_ADJUSTED_ONLY",
+    "historical_outcomes_previously_observed": true,
+    "historical_preregistration_claim": false,
+    "historical_results_are_confirmatory": false,
+    "portfolio_family": [
+      {
+        "kind": "SINGLE",
+        "lottery_type": "DAILY_539",
+        "portfolio_id": "D539_N3_f4cold3",
+        "source_cells": [
+          "daily539_f4cold_3bet"
+        ],
+        "ticket_budget": 3,
+        "tier": "PRIMARY"
+      },
+      {
+        "kind": "SINGLE",
+        "lottery_type": "DAILY_539",
+        "portfolio_id": "D539_N3_acbmm3",
+        "source_cells": [
+          "acb_markov_midfreq_3bet"
+        ],
+        "ticket_budget": 3,
+        "tier": "PRIMARY"
+      },
+      {
+        "kind": "CROSS",
+        "lottery_type": "DAILY_539",
+        "portfolio_id": "D539_N3_f4cold3_x_acbmm3",
+        "source_cells": [
+          "daily539_f4cold_3bet",
+          "acb_markov_midfreq_3bet"
+        ],
+        "ticket_budget": 3,
+        "tier": "PRIMARY"
+      },
+      {
+        "kind": "SINGLE",
+        "lottery_type": "DAILY_539",
+        "portfolio_id": "D539_N5_f4cold5",
+        "source_cells": [
+          "daily539_f4cold_5bet"
+        ],
+        "ticket_budget": 5,
+        "tier": "PRIMARY"
+      },
+      {
+        "kind": "CROSS",
+        "lottery_type": "DAILY_539",
+        "portfolio_id": "D539_N5_f4cold5_x_acbmm3",
+        "source_cells": [
+          "daily539_f4cold_5bet",
+          "acb_markov_midfreq_3bet"
+        ],
+        "ticket_budget": 5,
+        "tier": "PRIMARY"
+      },
+      {
+        "kind": "CROSS",
+        "lottery_type": "DAILY_539",
+        "portfolio_id": "D539_N5_f4cold5_x_f4cold3_x_acbmm3",
+        "source_cells": [
+          "daily539_f4cold_5bet",
+          "daily539_f4cold_3bet",
+          "acb_markov_midfreq_3bet"
+        ],
+        "ticket_budget": 5,
+        "tier": "PRIMARY"
+      },
+      {
+        "kind": "SINGLE",
+        "lottery_type": "BIG_LOTTO",
+        "portfolio_id": "BIG_N3_echo3",
+        "source_cells": [
+          "biglotto_echo_aware_3bet"
+        ],
+        "ticket_budget": 3,
+        "tier": "SECONDARY"
+      },
+      {
+        "kind": "SINGLE",
+        "lottery_type": "BIG_LOTTO",
+        "portfolio_id": "BIG_N4_ts3markov4",
+        "source_cells": [
+          "biglotto_ts3_markov_4bet_w30"
+        ],
+        "ticket_budget": 4,
+        "tier": "SECONDARY"
+      }
+    ],
+    "portfolio_family_size": 8,
+    "selector_changed_after_initial_outcome_run": true,
+    "short_50_is_integrity_early_warning_only": true,
+    "status_label": "RETROSPECTIVE_POST_HOC_BOUNDED_EXPLORATORY_NONCONFIRMATORY",
+    "superseded_identity_only_family_hash_note": "This hash covers only the portfolio identity list and is retained for provenance; it is not a historical preregistration hash.",
+    "superseded_identity_only_family_sha256": "48d0c30d7c7643204a76bd0c6b30823c9d74b3061f10e81042bc2399eeb38440",
+    "ticket_selection_algorithm": {
+      "algorithm_id": "ROUND_ROBIN_INTERLEAVE_V1",
+      "rules": [
+        "iterate ticket positions 0,1,2,...",
+        "within each position, visit source strategies in declared source order",
+        "dedupe by canonical ticket fingerprint preserving first occurrence",
+        "stop exactly at ticket_budget N",
+        "draw is ineligible when fewer than N distinct tickets remain",
+        "never back-fill with random or outcome-aware tickets"
+      ],
+      "supersedes_historical_smoke_selector": "FIRST_N_CONCAT_V0",
+      "version": "p276d_corrected_semantics"
+    }
+  },
+  "input_provenance": {
+    "committed_input_hashes": {
+      "p271c_scorer_src_sha256": "907bdfa514aa18b33defe44869673cf43ce82fe143260564635cfc7284a76659",
+      "p271e_adapter_src_sha256": "3297481a05736dcefd79ed67b1f820651b723cd906e46e10a187b8433bf9e484",
+      "p273a_identity_json_sha256": "b10b916c00f807ace7342250b788dbf1d62c12a0b8e2d5aa627b5a4eb25089b0",
+      "p273a_inferential_json_sha256": "ab923a06327afcc8595f224e65bcd98fec0cfdeaf31b10aeeb86ac54ed6648fe",
+      "p273a_primary_counts_json_sha256": "14b2ed29628111f32925909ba07e9be0b3de48a04ee4b0877e39c1dfa4e51b73",
+      "p275b_matrix_json_sha256": "0a81b9e652b5d84e80ebf16e9d5c5ff625746d8c46e6cfe5d38e6cfe312cf964"
+    },
+    "fingerprints_reverified": 33749,
+    "p275b_canonical_digest_verified": "c1b99e57024f528e39e4beeca03cb22dd3278eb1d356aafbe48d8485695102f6",
+    "reused_helpers": [
+      "lottery_api.prize_aware_scorer.score_prize_aware_ticket",
+      "lottery_api.prize_aware_replay_adapter._check_eligibility"
+    ],
+    "source_main_commit_expected": "b9c70cc413969dd0c0b22b2c5b606ddb31980a6b"
+  },
+  "limitations": [
+    "Retrospective post-hoc bounded evidence only; not confirmatory and not a future-only result; no claim of improved future prediction success.",
+    "Prize-tier semantics carry source_verification_status=MANUAL_VERIFICATION_REQUIRED (P271B/P271C).",
+    "50-draw (SHORT) windows are integrity guardrails and cannot support promotion.",
+    "Tickets are the frozen committed P273A identities; portfolios reuse existing strategy tickets without any refitting.",
+    "POWER second-zone-missing rows are excluded as missing eligibility, never imputed or counted as losses.",
+    "Per-draw union-win probability Q is treated as constant across draws by combinatorial symmetry of the outcome; the window null is Binomial(support, Q).",
+    "No monetary budget, EV, ROI, or betting recommendation is computed.",
+    "BIG_LOTTO / POWER_LOTTO portfolios are secondary generalization checks (descriptive only, no promotion verdict)."
+  ],
+  "multiple_testing_policy": {
+    "descriptive_secondary_correction": "BH_FDR",
+    "future_bonferroni_policy": "BONFERRONI",
+    "future_confirmatory_family_size": 6,
+    "historical_bonferroni_role": "DESCRIPTIVE_MULTIPLICITY_ADJUSTED_ONLY",
+    "historical_descriptive_multiplicity_family_size": 6,
+    "historical_family_changed_after_initial_outcome_run": true,
+    "prize_aware_and_m3plus_separate_families": true,
+    "short_50_excluded_from_future_confirmatory_family": true,
+    "unbounded_combination_search_performed": false
+  },
+  "portfolio_results": [
+    {
+      "constituent_native_budgets": {
+        "daily539_f4cold_3bet": 3
+      },
+      "equal_budget_constituents": [
+        "daily539_f4cold_3bet"
+      ],
+      "kind": "SINGLE",
+      "lottery_type": "DAILY_539",
+      "n_eligible_draws_total": 750,
+      "n_ineligible_draws_total": 0,
+      "portfolio_id": "D539_N3_f4cold3",
+      "source_cells": [
+        "daily539_f4cold_3bet"
+      ],
+      "ticket_budget": 3,
+      "tier": "PRIMARY",
+      "windows": [
+        {
+          "duplicate_ticket_rate": 0.0,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "daily539_f4cold_3bet",
+              "union_success_draws": 0,
+              "union_success_rate": 0.0,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.0,
+              0.07112173646419764
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": -0.02929,
+                "baseline_union_win_probability": 0.02929,
+                "expected_success_draws": 1.4645,
+                "mc_p_value_one_sided_upper": 1.0,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 0.0
+              },
+              "ordinary": {
+                "absolute_excess": -0.029705,
+                "baseline_union_win_probability": 0.029705,
+                "expected_success_draws": 1.48525,
+                "mc_p_value_one_sided_upper": 1.0,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6385383333333333,
+                "relative_excess": 0.0
+              }
+            },
+            "support_draws": 50,
+            "union_success_draws": 0,
+            "union_success_rate": 0.0,
+            "wilson_ci_95": [
+              6.938893903907228e-18,
+              0.07134759913335872
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "daily539_f4cold_3bet",
+              "union_success_draws": 23,
+              "union_success_rate": 0.46,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.3181491785686087,
+              0.6067580238830776
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.13459000000000004,
+                "baseline_union_win_probability": 0.32541,
+                "expected_success_draws": 16.2705,
+                "mc_p_value_one_sided_upper": 0.030796920307969204,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.4136013029716359
+              },
+              "ordinary": {
+                "absolute_excess": 0.15554500000000004,
+                "baseline_union_win_probability": 0.304455,
+                "expected_success_draws": 15.22275,
+                "mc_p_value_one_sided_upper": 0.014298570142985701,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6385383333333333,
+                "relative_excess": 1.5108965200111677
+              }
+            },
+            "support_draws": 50,
+            "union_success_draws": 23,
+            "union_success_rate": 0.46,
+            "wilson_ci_95": [
+              0.3296965219222435,
+              0.5960112860084253
+            ]
+          },
+          "promotion_eligible_window": false,
+          "support_draws": 50,
+          "window": 50,
+          "window_draw_count": 50,
+          "window_label": "SHORT"
+        },
+        {
+          "duplicate_ticket_rate": 0.0,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "daily539_f4cold_3bet",
+              "union_success_draws": 10,
+              "union_success_rate": 0.03333333333333333,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.01609816756261932,
+              0.0604453222012656
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.004043333333333333,
+                "baseline_union_win_probability": 0.02929,
+                "expected_success_draws": 8.787,
+                "mc_p_value_one_sided_upper": 0.3775622437756224,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.1380448389666553
+              },
+              "ordinary": {
+                "absolute_excess": 0.003628333333333334,
+                "baseline_union_win_probability": 0.029705,
+                "expected_success_draws": 8.9115,
+                "mc_p_value_one_sided_upper": 0.40015998400159986,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6385383333333333,
+                "relative_excess": 1.1221455422768334
+              }
+            },
+            "support_draws": 300,
+            "union_success_draws": 10,
+            "union_success_rate": 0.03333333333333333,
+            "wilson_ci_95": [
+              0.01820494733885481,
+              0.06026182580405482
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "daily539_f4cold_3bet",
+              "union_success_draws": 101,
+              "union_success_rate": 0.33666666666666667,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.28337398827011695,
+              0.39322301798470716
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.011256666666666693,
+                "baseline_union_win_probability": 0.32541,
+                "expected_success_draws": 97.62299999999999,
+                "mc_p_value_one_sided_upper": 0.35776422357764226,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.0345922579719944
+              },
+              "ordinary": {
+                "absolute_excess": 0.032211666666666694,
+                "baseline_union_win_probability": 0.304455,
+                "expected_success_draws": 91.33649999999999,
+                "mc_p_value_one_sided_upper": 0.12408759124087591,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6385383333333333,
+                "relative_excess": 1.1058010762400574
+              }
+            },
+            "support_draws": 300,
+            "union_success_draws": 101,
+            "union_success_rate": 0.33666666666666667,
+            "wilson_ci_95": [
+              0.2855553679085868,
+              0.39190800269143145
+            ]
+          },
+          "promotion_eligible_window": true,
+          "support_draws": 300,
+          "window": 300,
+          "window_draw_count": 300,
+          "window_label": "MID"
+        },
+        {
+          "duplicate_ticket_rate": 0.0,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "daily539_f4cold_3bet",
+              "union_success_draws": 26,
+              "union_success_rate": 0.034666666666666665,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.02276798529946376,
+              0.05038390456279091
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.005376666666666665,
+                "baseline_union_win_probability": 0.02929,
+                "expected_success_draws": 21.9675,
+                "mc_p_value_one_sided_upper": 0.22567743225677434,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.1835666325253213
+              },
+              "ordinary": {
+                "absolute_excess": 0.004961666666666666,
+                "baseline_union_win_probability": 0.029705,
+                "expected_success_draws": 22.27875,
+                "mc_p_value_one_sided_upper": 0.2293770622937706,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6385383333333333,
+                "relative_excess": 1.1670313639679066
+              }
+            },
+            "support_draws": 750,
+            "union_success_draws": 26,
+            "union_success_rate": 0.034666666666666665,
+            "wilson_ci_95": [
+              0.02376560187032787,
+              0.05031026403926569
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "daily539_f4cold_3bet",
+              "union_success_draws": 275,
+              "union_success_rate": 0.36666666666666664,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.33209436606273274,
+              0.4022921321274561
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.041256666666666664,
+                "baseline_union_win_probability": 0.32541,
+                "expected_success_draws": 244.05749999999998,
+                "mc_p_value_one_sided_upper": 0.0098990100989901,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.1267836472962314
+              },
+              "ordinary": {
+                "absolute_excess": 0.062211666666666665,
+                "baseline_union_win_probability": 0.304455,
+                "expected_success_draws": 228.34124999999997,
+                "mc_p_value_one_sided_upper": 0.00039996000399960006,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6385383333333333,
+                "relative_excess": 1.204337805806003
+              }
+            },
+            "support_draws": 750,
+            "union_success_draws": 275,
+            "union_success_rate": 0.36666666666666664,
+            "wilson_ci_95": [
+              0.33293928229767333,
+              0.4017529428913219
+            ]
+          },
+          "promotion_eligible_window": true,
+          "support_draws": 750,
+          "window": 750,
+          "window_draw_count": 750,
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "constituent_native_budgets": {
+        "acb_markov_midfreq_3bet": 3
+      },
+      "equal_budget_constituents": [
+        "acb_markov_midfreq_3bet"
+      ],
+      "kind": "SINGLE",
+      "lottery_type": "DAILY_539",
+      "n_eligible_draws_total": 750,
+      "n_ineligible_draws_total": 0,
+      "portfolio_id": "D539_N3_acbmm3",
+      "source_cells": [
+        "acb_markov_midfreq_3bet"
+      ],
+      "ticket_budget": 3,
+      "tier": "PRIMARY",
+      "windows": [
+        {
+          "duplicate_ticket_rate": 0.0,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "acb_markov_midfreq_3bet",
+              "union_success_draws": 0,
+              "union_success_rate": 0.0,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.0,
+              0.07112173646419764
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": -0.02929,
+                "baseline_union_win_probability": 0.02929,
+                "expected_success_draws": 1.4645,
+                "mc_p_value_one_sided_upper": 1.0,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 0.0
+              },
+              "ordinary": {
+                "absolute_excess": -0.029705,
+                "baseline_union_win_probability": 0.029705,
+                "expected_success_draws": 1.48525,
+                "mc_p_value_one_sided_upper": 1.0,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6385383333333333,
+                "relative_excess": 0.0
+              }
+            },
+            "support_draws": 50,
+            "union_success_draws": 0,
+            "union_success_rate": 0.0,
+            "wilson_ci_95": [
+              6.938893903907228e-18,
+              0.07134759913335872
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "acb_markov_midfreq_3bet",
+              "union_success_draws": 18,
+              "union_success_rate": 0.36,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.2291570668205873,
+              0.5080686477143987
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.03459000000000001,
+                "baseline_union_win_probability": 0.32541,
+                "expected_success_draws": 16.2705,
+                "mc_p_value_one_sided_upper": 0.34956504349565043,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.1062966718908454
+              },
+              "ordinary": {
+                "absolute_excess": 0.05554500000000001,
+                "baseline_union_win_probability": 0.304455,
+                "expected_success_draws": 15.22275,
+                "mc_p_value_one_sided_upper": 0.23317668233176683,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6385383333333333,
+                "relative_excess": 1.1824407547913485
+              }
+            },
+            "support_draws": 50,
+            "union_success_draws": 18,
+            "union_success_rate": 0.36,
+            "wilson_ci_95": [
+              0.24138749651846741,
+              0.49858983123887307
+            ]
+          },
+          "promotion_eligible_window": false,
+          "support_draws": 50,
+          "window": 50,
+          "window_draw_count": 50,
+          "window_label": "SHORT"
+        },
+        {
+          "duplicate_ticket_rate": 0.0,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "acb_markov_midfreq_3bet",
+              "union_success_draws": 10,
+              "union_success_rate": 0.03333333333333333,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.01609816756261932,
+              0.0604453222012656
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.004043333333333333,
+                "baseline_union_win_probability": 0.02929,
+                "expected_success_draws": 8.787,
+                "mc_p_value_one_sided_upper": 0.3775622437756224,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.1380448389666553
+              },
+              "ordinary": {
+                "absolute_excess": 0.003628333333333334,
+                "baseline_union_win_probability": 0.029705,
+                "expected_success_draws": 8.9115,
+                "mc_p_value_one_sided_upper": 0.40015998400159986,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6385383333333333,
+                "relative_excess": 1.1221455422768334
+              }
+            },
+            "support_draws": 300,
+            "union_success_draws": 10,
+            "union_success_rate": 0.03333333333333333,
+            "wilson_ci_95": [
+              0.01820494733885481,
+              0.06026182580405482
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "acb_markov_midfreq_3bet",
+              "union_success_draws": 120,
+              "union_success_rate": 0.4,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.3441290350863905,
+              0.4578664395655106
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.07459000000000005,
+                "baseline_union_win_probability": 0.32541,
+                "expected_success_draws": 97.62299999999999,
+                "mc_p_value_one_sided_upper": 0.0046995300469953,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.2292185243231617
+              },
+              "ordinary": {
+                "absolute_excess": 0.09554500000000005,
+                "baseline_union_win_probability": 0.304455,
+                "expected_success_draws": 91.33649999999999,
+                "mc_p_value_one_sided_upper": 0.0004999500049995,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6385383333333333,
+                "relative_excess": 1.3138230608792762
+              }
+            },
+            "support_draws": 300,
+            "union_success_draws": 120,
+            "union_success_rate": 0.4,
+            "wilson_ci_95": [
+              0.3461651905860969,
+              0.4563634036588123
+            ]
+          },
+          "promotion_eligible_window": true,
+          "support_draws": 300,
+          "window": 300,
+          "window_draw_count": 300,
+          "window_label": "MID"
+        },
+        {
+          "duplicate_ticket_rate": 0.0,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "acb_markov_midfreq_3bet",
+              "union_success_draws": 25,
+              "union_success_rate": 0.03333333333333333,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.02168544629107526,
+              0.04881500734104549
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.004043333333333333,
+                "baseline_union_win_probability": 0.02929,
+                "expected_success_draws": 21.9675,
+                "mc_p_value_one_sided_upper": 0.2916708329167083,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.1380448389666553
+              },
+              "ordinary": {
+                "absolute_excess": 0.003628333333333334,
+                "baseline_union_win_probability": 0.029705,
+                "expected_success_draws": 22.27875,
+                "mc_p_value_one_sided_upper": 0.298970102989701,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6385383333333333,
+                "relative_excess": 1.1221455422768334
+              }
+            },
+            "support_draws": 750,
+            "union_success_draws": 25,
+            "union_success_rate": 0.03333333333333333,
+            "wilson_ci_95": [
+              0.022678566088417243,
+              0.048744222073066265
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "acb_markov_midfreq_3bet",
+              "union_success_draws": 268,
+              "union_success_rate": 0.35733333333333334,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.32298913530898016,
+              0.3928045715952445
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.03192333333333336,
+                "baseline_union_win_probability": 0.32541,
+                "expected_success_draws": 244.05749999999998,
+                "mc_p_value_one_sided_upper": 0.037196280371962806,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.0981018817286912
+              },
+              "ordinary": {
+                "absolute_excess": 0.05287833333333336,
+                "baseline_union_win_probability": 0.304455,
+                "expected_success_draws": 228.34124999999997,
+                "mc_p_value_one_sided_upper": 0.0012998700129987,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6385383333333333,
+                "relative_excess": 1.1736819343854867
+              }
+            },
+            "support_draws": 750,
+            "union_success_draws": 268,
+            "union_success_rate": 0.35733333333333334,
+            "wilson_ci_95": [
+              0.32384382445876236,
+              0.39227685649346256
+            ]
+          },
+          "promotion_eligible_window": true,
+          "support_draws": 750,
+          "window": 750,
+          "window_draw_count": 750,
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "constituent_native_budgets": {
+        "acb_markov_midfreq_3bet": 3,
+        "daily539_f4cold_3bet": 3
+      },
+      "equal_budget_constituents": [
+        "daily539_f4cold_3bet",
+        "acb_markov_midfreq_3bet"
+      ],
+      "kind": "CROSS",
+      "lottery_type": "DAILY_539",
+      "n_eligible_draws_total": 750,
+      "n_ineligible_draws_total": 0,
+      "portfolio_id": "D539_N3_f4cold3_x_acbmm3",
+      "source_cells": [
+        "daily539_f4cold_3bet",
+        "acb_markov_midfreq_3bet"
+      ],
+      "ticket_budget": 3,
+      "tier": "PRIMARY",
+      "windows": [
+        {
+          "duplicate_ticket_rate": 0.0,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "daily539_f4cold_3bet",
+              "union_success_draws": 0,
+              "union_success_rate": 0.0,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.0,
+              0.07112173646419764
+            ],
+            "marginal_coverage_gain": [
+              {
+                "eligible_draws": 50,
+                "k_sources": 1,
+                "marginal_gain_vs_prev": 0.0,
+                "sources_prefix": [
+                  "daily539_f4cold_3bet"
+                ],
+                "union_success_rate": 0.0
+              },
+              {
+                "eligible_draws": 50,
+                "k_sources": 2,
+                "marginal_gain_vs_prev": 0.0,
+                "sources_prefix": [
+                  "daily539_f4cold_3bet",
+                  "acb_markov_midfreq_3bet"
+                ],
+                "union_success_rate": 0.0
+              }
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": -0.02929,
+                "baseline_union_win_probability": 0.02929,
+                "expected_success_draws": 1.4645,
+                "mc_p_value_one_sided_upper": 1.0,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 0.0
+              },
+              "ordinary": {
+                "absolute_excess": -0.029705,
+                "baseline_union_win_probability": 0.029705,
+                "expected_success_draws": 1.48525,
+                "mc_p_value_one_sided_upper": 1.0,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6385383333333333,
+                "relative_excess": 0.0
+              }
+            },
+            "support_draws": 50,
+            "union_success_draws": 0,
+            "union_success_rate": 0.0,
+            "wilson_ci_95": [
+              6.938893903907228e-18,
+              0.07134759913335872
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 11,
+              "mcnemar_p_value_exact": 0.2265625,
+              "portfolio_minus_constituent_abs": -0.10000000000000003,
+              "strategy_id": "daily539_f4cold_3bet",
+              "union_success_draws": 23,
+              "union_success_rate": 0.46,
+              "unique_complementary_wins_constituent_only": 8,
+              "unique_complementary_wins_portfolio_only": 3
+            },
+            "clopper_pearson_ci_95": [
+              0.2291570668205873,
+              0.5080686477143987
+            ],
+            "marginal_coverage_gain": [
+              {
+                "eligible_draws": 50,
+                "k_sources": 1,
+                "marginal_gain_vs_prev": 0.46,
+                "sources_prefix": [
+                  "daily539_f4cold_3bet"
+                ],
+                "union_success_rate": 0.46
+              },
+              {
+                "eligible_draws": 50,
+                "k_sources": 2,
+                "marginal_gain_vs_prev": -0.10000000000000003,
+                "sources_prefix": [
+                  "daily539_f4cold_3bet",
+                  "acb_markov_midfreq_3bet"
+                ],
+                "union_success_rate": 0.36
+              }
+            ],
+            "pairwise_winning_draw_jaccard": [
+              {
+                "jaccard_winning_draws": 0.20588235294117646,
+                "pair": [
+                  "daily539_f4cold_3bet",
+                  "acb_markov_midfreq_3bet"
+                ]
+              }
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.03459000000000001,
+                "baseline_union_win_probability": 0.32541,
+                "expected_success_draws": 16.2705,
+                "mc_p_value_one_sided_upper": 0.34956504349565043,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.1062966718908454
+              },
+              "ordinary": {
+                "absolute_excess": 0.05554500000000001,
+                "baseline_union_win_probability": 0.304455,
+                "expected_success_draws": 15.22275,
+                "mc_p_value_one_sided_upper": 0.23317668233176683,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6385383333333333,
+                "relative_excess": 1.1824407547913485
+              }
+            },
+            "support_draws": 50,
+            "union_success_draws": 18,
+            "union_success_rate": 0.36,
+            "wilson_ci_95": [
+              0.24138749651846741,
+              0.49858983123887307
+            ]
+          },
+          "promotion_eligible_window": false,
+          "support_draws": 50,
+          "window": 50,
+          "window_draw_count": 50,
+          "window_label": "SHORT"
+        },
+        {
+          "duplicate_ticket_rate": 0.0,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 6,
+              "mcnemar_p_value_exact": 0.6875,
+              "portfolio_minus_constituent_abs": -0.0066666666666666645,
+              "strategy_id": "daily539_f4cold_3bet",
+              "union_success_draws": 10,
+              "union_success_rate": 0.03333333333333333,
+              "unique_complementary_wins_constituent_only": 4,
+              "unique_complementary_wins_portfolio_only": 2
+            },
+            "clopper_pearson_ci_95": [
+              0.01158156775433392,
+              0.05186581196093096
+            ],
+            "marginal_coverage_gain": [
+              {
+                "eligible_draws": 300,
+                "k_sources": 1,
+                "marginal_gain_vs_prev": 0.03333333333333333,
+                "sources_prefix": [
+                  "daily539_f4cold_3bet"
+                ],
+                "union_success_rate": 0.03333333333333333
+              },
+              {
+                "eligible_draws": 300,
+                "k_sources": 2,
+                "marginal_gain_vs_prev": -0.0066666666666666645,
+                "sources_prefix": [
+                  "daily539_f4cold_3bet",
+                  "acb_markov_midfreq_3bet"
+                ],
+                "union_success_rate": 0.02666666666666667
+              }
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": -0.0026233333333333317,
+                "baseline_union_win_probability": 0.02929,
+                "expected_success_draws": 8.787,
+                "mc_p_value_one_sided_upper": 0.6519348065193481,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 0.9104358711733243
+              },
+              "ordinary": {
+                "absolute_excess": -0.0030383333333333304,
+                "baseline_union_win_probability": 0.029705,
+                "expected_success_draws": 8.9115,
+                "mc_p_value_one_sided_upper": 0.6616338366163383,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6385383333333333,
+                "relative_excess": 0.8977164338214667
+              }
+            },
+            "support_draws": 300,
+            "union_success_draws": 8,
+            "union_success_rate": 0.02666666666666667,
+            "wilson_ci_95": [
+              0.01357306980864708,
+              0.05172894295058982
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 109,
+              "mcnemar_p_value_exact": 0.007040750835507646,
+              "portfolio_minus_constituent_abs": -0.09666666666666668,
+              "strategy_id": "acb_markov_midfreq_3bet",
+              "union_success_draws": 120,
+              "union_success_rate": 0.4,
+              "unique_complementary_wins_constituent_only": 69,
+              "unique_complementary_wins_portfolio_only": 40
+            },
+            "clopper_pearson_ci_95": [
+              0.25181975307716814,
+              0.35878082732142946
+            ],
+            "marginal_coverage_gain": [
+              {
+                "eligible_draws": 300,
+                "k_sources": 1,
+                "marginal_gain_vs_prev": 0.33666666666666667,
+                "sources_prefix": [
+                  "daily539_f4cold_3bet"
+                ],
+                "union_success_rate": 0.33666666666666667
+              },
+              {
+                "eligible_draws": 300,
+                "k_sources": 2,
+                "marginal_gain_vs_prev": -0.033333333333333326,
+                "sources_prefix": [
+                  "daily539_f4cold_3bet",
+                  "acb_markov_midfreq_3bet"
+                ],
+                "union_success_rate": 0.30333333333333334
+              }
+            ],
+            "pairwise_winning_draw_jaccard": [
+              {
+                "jaccard_winning_draws": 0.20108695652173914,
+                "pair": [
+                  "daily539_f4cold_3bet",
+                  "acb_markov_midfreq_3bet"
+                ]
+              }
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": -0.022076666666666633,
+                "baseline_union_win_probability": 0.32541,
+                "expected_success_draws": 97.62299999999999,
+                "mc_p_value_one_sided_upper": 0.816018398160184,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 0.9321573809450643
+              },
+              "ordinary": {
+                "absolute_excess": -0.001121666666666632,
+                "baseline_union_win_probability": 0.304455,
+                "expected_success_draws": 91.33649999999999,
+                "mc_p_value_one_sided_upper": 0.5376462353764624,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6385383333333333,
+                "relative_excess": 0.9963158211667845
+              }
+            },
+            "support_draws": 300,
+            "union_success_draws": 91,
+            "union_success_rate": 0.30333333333333334,
+            "wilson_ci_95": [
+              0.2540711301237818,
+              0.3575684385578729
+            ]
+          },
+          "promotion_eligible_window": true,
+          "support_draws": 300,
+          "window": 300,
+          "window_draw_count": 300,
+          "window_label": "MID"
+        },
+        {
+          "duplicate_ticket_rate": 0.0,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 16,
+              "mcnemar_p_value_exact": 0.803619384765625,
+              "portfolio_minus_constituent_abs": -0.0026666666666666644,
+              "strategy_id": "daily539_f4cold_3bet",
+              "union_success_draws": 26,
+              "union_success_rate": 0.034666666666666665,
+              "unique_complementary_wins_constituent_only": 9,
+              "unique_complementary_wins_portfolio_only": 7
+            },
+            "clopper_pearson_ci_95": [
+              0.02060843903446925,
+              0.04724086350338657
+            ],
+            "marginal_coverage_gain": [
+              {
+                "eligible_draws": 750,
+                "k_sources": 1,
+                "marginal_gain_vs_prev": 0.034666666666666665,
+                "sources_prefix": [
+                  "daily539_f4cold_3bet"
+                ],
+                "union_success_rate": 0.034666666666666665
+              },
+              {
+                "eligible_draws": 750,
+                "k_sources": 2,
+                "marginal_gain_vs_prev": -0.0026666666666666644,
+                "sources_prefix": [
+                  "daily539_f4cold_3bet",
+                  "acb_markov_midfreq_3bet"
+                ],
+                "union_success_rate": 0.032
+              }
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.0027100000000000006,
+                "baseline_union_win_probability": 0.02929,
+                "expected_success_draws": 21.9675,
+                "mc_p_value_one_sided_upper": 0.3665633436656334,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.092523045407989
+              },
+              "ordinary": {
+                "absolute_excess": 0.002295000000000002,
+                "baseline_union_win_probability": 0.029705,
+                "expected_success_draws": 22.27875,
+                "mc_p_value_one_sided_upper": 0.37296270372962703,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6385383333333333,
+                "relative_excess": 1.0772597205857601
+              }
+            },
+            "support_draws": 750,
+            "union_success_draws": 24,
+            "union_success_rate": 0.032,
+            "wilson_ci_95": [
+              0.021596719599392245,
+              0.04717299081398123
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 133,
+              "mcnemar_p_value_exact": 0.037028510064148513,
+              "portfolio_minus_constituent_abs": -0.033333333333333326,
+              "strategy_id": "daily539_f4cold_3bet",
+              "union_success_draws": 275,
+              "union_success_rate": 0.36666666666666664,
+              "unique_complementary_wins_constituent_only": 79,
+              "unique_complementary_wins_portfolio_only": 54
+            },
+            "clopper_pearson_ci_95": [
+              0.2996412033798931,
+              0.36834263423628033
+            ],
+            "marginal_coverage_gain": [
+              {
+                "eligible_draws": 750,
+                "k_sources": 1,
+                "marginal_gain_vs_prev": 0.36666666666666664,
+                "sources_prefix": [
+                  "daily539_f4cold_3bet"
+                ],
+                "union_success_rate": 0.36666666666666664
+              },
+              {
+                "eligible_draws": 750,
+                "k_sources": 2,
+                "marginal_gain_vs_prev": -0.033333333333333326,
+                "sources_prefix": [
+                  "daily539_f4cold_3bet",
+                  "acb_markov_midfreq_3bet"
+                ],
+                "union_success_rate": 0.3333333333333333
+              }
+            ],
+            "pairwise_winning_draw_jaccard": [
+              {
+                "jaccard_winning_draws": 0.19078947368421054,
+                "pair": [
+                  "daily539_f4cold_3bet",
+                  "acb_markov_midfreq_3bet"
+                ]
+              }
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.007923333333333338,
+                "baseline_union_win_probability": 0.32541,
+                "expected_success_draws": 244.05749999999998,
+                "mc_p_value_one_sided_upper": 0.3334666533346665,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.0243487702693013
+              },
+              "ordinary": {
+                "absolute_excess": 0.02887833333333334,
+                "baseline_union_win_probability": 0.304455,
+                "expected_success_draws": 228.34124999999997,
+                "mc_p_value_one_sided_upper": 0.046295370462953706,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6385383333333333,
+                "relative_excess": 1.09485255073273
+              }
+            },
+            "support_draws": 750,
+            "union_success_draws": 250,
+            "union_success_rate": 0.3333333333333333,
+            "wilson_ci_95": [
+              0.300520626501627,
+              0.3678446549846171
+            ]
+          },
+          "promotion_eligible_window": true,
+          "support_draws": 750,
+          "window": 750,
+          "window_draw_count": 750,
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "constituent_native_budgets": {
+        "daily539_f4cold_5bet": 5
+      },
+      "equal_budget_constituents": [
+        "daily539_f4cold_5bet"
+      ],
+      "kind": "SINGLE",
+      "lottery_type": "DAILY_539",
+      "n_eligible_draws_total": 750,
+      "n_ineligible_draws_total": 0,
+      "portfolio_id": "D539_N5_f4cold5",
+      "source_cells": [
+        "daily539_f4cold_5bet"
+      ],
+      "ticket_budget": 5,
+      "tier": "PRIMARY",
+      "windows": [
+        {
+          "duplicate_ticket_rate": 0.0,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "daily539_f4cold_5bet",
+              "union_success_draws": 1,
+              "union_success_rate": 0.02,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.000506227983040829,
+              0.1064695457114999
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": -0.03065,
+                "baseline_union_win_probability": 0.05065,
+                "expected_success_draws": 2.5325,
+                "mc_p_value_one_sided_upper": 0.9254074592540746,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 0.39486673247778875
+              },
+              "ordinary": {
+                "absolute_excess": -0.028634999999999997,
+                "baseline_union_win_probability": 0.048635,
+                "expected_success_draws": 2.43175,
+                "mc_p_value_one_sided_upper": 0.9229077092290771,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6408795,
+                "relative_excess": 0.4112264829855043
+              }
+            },
+            "support_draws": 50,
+            "union_success_draws": 1,
+            "union_success_rate": 0.02,
+            "wilson_ci_95": [
+              0.003539259271646236,
+              0.10495443589637815
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "daily539_f4cold_5bet",
+              "union_success_draws": 35,
+              "union_success_rate": 0.7,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.5539176743388218,
+              0.821382154335853
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.18413999999999997,
+                "baseline_union_win_probability": 0.51586,
+                "expected_success_draws": 25.793,
+                "mc_p_value_one_sided_upper": 0.0072992700729927005,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.3569573139999225
+              },
+              "ordinary": {
+                "absolute_excess": 0.24576999999999993,
+                "baseline_union_win_probability": 0.45423,
+                "expected_success_draws": 22.7115,
+                "mc_p_value_one_sided_upper": 0.0007999200079992001,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6408795,
+                "relative_excess": 1.5410695022345506
+              }
+            },
+            "support_draws": 50,
+            "union_success_draws": 35,
+            "union_success_rate": 0.7,
+            "wilson_ci_95": [
+              0.562496495355466,
+              0.8089644649911906
+            ]
+          },
+          "promotion_eligible_window": false,
+          "support_draws": 50,
+          "window": 50,
+          "window_draw_count": 50,
+          "window_label": "SHORT"
+        },
+        {
+          "duplicate_ticket_rate": 0.0,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "daily539_f4cold_5bet",
+              "union_success_draws": 16,
+              "union_success_rate": 0.05333333333333334,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.03078831977347806,
+              0.08516676490951426
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.002683333333333336,
+                "baseline_union_win_probability": 0.05065,
+                "expected_success_draws": 15.195,
+                "mc_p_value_one_sided_upper": 0.45915408459154083,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.0529779532741035
+              },
+              "ordinary": {
+                "absolute_excess": 0.004698333333333339,
+                "baseline_union_win_probability": 0.048635,
+                "expected_success_draws": 14.590499999999999,
+                "mc_p_value_one_sided_upper": 0.38806119388061194,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6408795,
+                "relative_excess": 1.0966039546280115
+              }
+            },
+            "support_draws": 300,
+            "union_success_draws": 16,
+            "union_success_rate": 0.05333333333333334,
+            "wilson_ci_95": [
+              0.03309191251909646,
+              0.08486914177483133
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "daily539_f4cold_5bet",
+              "union_success_draws": 170,
+              "union_success_rate": 0.5666666666666667,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.5085004794599521,
+              0.6235030950045907
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.05080666666666667,
+                "baseline_union_win_probability": 0.51586,
+                "expected_success_draws": 154.75799999999998,
+                "mc_p_value_one_sided_upper": 0.0402959704029597,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.0984892541904134
+              },
+              "ordinary": {
+                "absolute_excess": 0.11243666666666663,
+                "baseline_union_win_probability": 0.45423,
+                "expected_success_draws": 136.269,
+                "mc_p_value_one_sided_upper": 9.999000099990002e-05,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6408795,
+                "relative_excess": 1.2475324541898742
+              }
+            },
+            "support_draws": 300,
+            "union_success_draws": 170,
+            "union_success_rate": 0.5666666666666667,
+            "wilson_ci_95": [
+              0.5100989219821965,
+              0.6215486818545306
+            ]
+          },
+          "promotion_eligible_window": true,
+          "support_draws": 300,
+          "window": 300,
+          "window_draw_count": 300,
+          "window_label": "MID"
+        },
+        {
+          "duplicate_ticket_rate": 0.0,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "daily539_f4cold_5bet",
+              "union_success_draws": 46,
+              "union_success_rate": 0.06133333333333333,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.04524996986684508,
+              0.0809656493823675
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.01068333333333333,
+                "baseline_union_win_probability": 0.05065,
+                "expected_success_draws": 37.9875,
+                "mc_p_value_one_sided_upper": 0.11238876112388761,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.2109246462652188
+              },
+              "ordinary": {
+                "absolute_excess": 0.012698333333333332,
+                "baseline_union_win_probability": 0.048635,
+                "expected_success_draws": 36.47625,
+                "mc_p_value_one_sided_upper": 0.06629337066293371,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6408795,
+                "relative_excess": 1.261094547822213
+              }
+            },
+            "support_draws": 750,
+            "union_success_draws": 46,
+            "union_success_rate": 0.06133333333333333,
+            "wilson_ci_95": [
+              0.046295245145196444,
+              0.08084217572659802
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "daily539_f4cold_5bet",
+              "union_success_draws": 425,
+              "union_success_rate": 0.5666666666666667,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.53033169561451,
+              0.602475409277598
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.05080666666666667,
+                "baseline_union_win_probability": 0.51586,
+                "expected_success_draws": 386.895,
+                "mc_p_value_one_sided_upper": 0.0017998200179982,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.0984892541904134
+              },
+              "ordinary": {
+                "absolute_excess": 0.11243666666666663,
+                "baseline_union_win_probability": 0.45423,
+                "expected_success_draws": 340.6725,
+                "mc_p_value_one_sided_upper": 9.999000099990002e-05,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6408795,
+                "relative_excess": 1.2475324541898742
+              }
+            },
+            "support_draws": 750,
+            "union_success_draws": 425,
+            "union_success_rate": 0.5666666666666667,
+            "wilson_ci_95": [
+              0.5309514107911337,
+              0.6017024766143686
+            ]
+          },
+          "promotion_eligible_window": true,
+          "support_draws": 750,
+          "window": 750,
+          "window_draw_count": 750,
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "constituent_native_budgets": {
+        "acb_markov_midfreq_3bet": 3,
+        "daily539_f4cold_5bet": 5
+      },
+      "equal_budget_constituents": [
+        "daily539_f4cold_5bet"
+      ],
+      "kind": "CROSS",
+      "lottery_type": "DAILY_539",
+      "n_eligible_draws_total": 750,
+      "n_ineligible_draws_total": 0,
+      "portfolio_id": "D539_N5_f4cold5_x_acbmm3",
+      "source_cells": [
+        "daily539_f4cold_5bet",
+        "acb_markov_midfreq_3bet"
+      ],
+      "ticket_budget": 5,
+      "tier": "PRIMARY",
+      "windows": [
+        {
+          "duplicate_ticket_rate": 0.0029247540547726668,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "daily539_f4cold_5bet",
+              "union_success_draws": 1,
+              "union_success_rate": 0.02,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.000506227983040829,
+              0.1064695457114999
+            ],
+            "marginal_coverage_gain": [
+              {
+                "eligible_draws": 50,
+                "k_sources": 1,
+                "marginal_gain_vs_prev": 0.02,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet"
+                ],
+                "union_success_rate": 0.02
+              },
+              {
+                "eligible_draws": 50,
+                "k_sources": 2,
+                "marginal_gain_vs_prev": 0.0,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet",
+                  "acb_markov_midfreq_3bet"
+                ],
+                "union_success_rate": 0.02
+              }
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": -0.03065,
+                "baseline_union_win_probability": 0.05065,
+                "expected_success_draws": 2.5325,
+                "mc_p_value_one_sided_upper": 0.9254074592540746,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 0.39486673247778875
+              },
+              "ordinary": {
+                "absolute_excess": -0.028634999999999997,
+                "baseline_union_win_probability": 0.048635,
+                "expected_success_draws": 2.43175,
+                "mc_p_value_one_sided_upper": 0.9229077092290771,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6408795,
+                "relative_excess": 0.4112264829855043
+              }
+            },
+            "support_draws": 50,
+            "union_success_draws": 1,
+            "union_success_rate": 0.02,
+            "wilson_ci_95": [
+              0.003539259271646236,
+              0.10495443589637815
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 16,
+              "mcnemar_p_value_exact": 0.210113525390625,
+              "portfolio_minus_constituent_abs": -0.12,
+              "strategy_id": "daily539_f4cold_5bet",
+              "union_success_draws": 35,
+              "union_success_rate": 0.7,
+              "unique_complementary_wins_constituent_only": 11,
+              "unique_complementary_wins_portfolio_only": 5
+            },
+            "clopper_pearson_ci_95": [
+              0.43206043506556574,
+              0.7181177588763025
+            ],
+            "marginal_coverage_gain": [
+              {
+                "eligible_draws": 50,
+                "k_sources": 1,
+                "marginal_gain_vs_prev": 0.7,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet"
+                ],
+                "union_success_rate": 0.7
+              },
+              {
+                "eligible_draws": 50,
+                "k_sources": 2,
+                "marginal_gain_vs_prev": -0.12,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet",
+                  "acb_markov_midfreq_3bet"
+                ],
+                "union_success_rate": 0.58
+              }
+            ],
+            "pairwise_winning_draw_jaccard": [
+              {
+                "jaccard_winning_draws": 0.2619047619047619,
+                "pair": [
+                  "daily539_f4cold_5bet",
+                  "acb_markov_midfreq_3bet"
+                ]
+              }
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.06413999999999997,
+                "baseline_union_win_probability": 0.51586,
+                "expected_success_draws": 25.793,
+                "mc_p_value_one_sided_upper": 0.22127787221277873,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.1243360601713643
+              },
+              "ordinary": {
+                "absolute_excess": 0.12576999999999994,
+                "baseline_union_win_probability": 0.45423,
+                "expected_success_draws": 22.7115,
+                "mc_p_value_one_sided_upper": 0.048295170482951705,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6408795,
+                "relative_excess": 1.2768861589943419
+              }
+            },
+            "support_draws": 50,
+            "union_success_draws": 29,
+            "union_success_rate": 0.58,
+            "wilson_ci_95": [
+              0.4423344176857823,
+              0.7062499664528802
+            ]
+          },
+          "promotion_eligible_window": false,
+          "support_draws": 50,
+          "window": 50,
+          "window_draw_count": 50,
+          "window_label": "SHORT"
+        },
+        {
+          "duplicate_ticket_rate": 0.0029247540547726668,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 14,
+              "mcnemar_p_value_exact": 0.79052734375,
+              "portfolio_minus_constituent_abs": -0.006666666666666668,
+              "strategy_id": "daily539_f4cold_5bet",
+              "union_success_draws": 16,
+              "union_success_rate": 0.05333333333333334,
+              "unique_complementary_wins_constituent_only": 8,
+              "unique_complementary_wins_portfolio_only": 6
+            },
+            "clopper_pearson_ci_95": [
+              0.025744649467230946,
+              0.0770598381063587
+            ],
+            "marginal_coverage_gain": [
+              {
+                "eligible_draws": 300,
+                "k_sources": 1,
+                "marginal_gain_vs_prev": 0.05333333333333334,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet"
+                ],
+                "union_success_rate": 0.05333333333333334
+              },
+              {
+                "eligible_draws": 300,
+                "k_sources": 2,
+                "marginal_gain_vs_prev": -0.006666666666666668,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet",
+                  "acb_markov_midfreq_3bet"
+                ],
+                "union_success_rate": 0.04666666666666667
+              }
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": -0.003983333333333332,
+                "baseline_union_win_probability": 0.05065,
+                "expected_success_draws": 15.195,
+                "mc_p_value_one_sided_upper": 0.6672332766723328,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 0.9213557091148404
+              },
+              "ordinary": {
+                "absolute_excess": -0.001968333333333329,
+                "baseline_union_win_probability": 0.048635,
+                "expected_success_draws": 14.590499999999999,
+                "mc_p_value_one_sided_upper": 0.5912408759124088,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6408795,
+                "relative_excess": 0.95952846029951
+              }
+            },
+            "support_draws": 300,
+            "union_success_draws": 14,
+            "union_success_rate": 0.04666666666666667,
+            "wilson_ci_95": [
+              0.027998933682334012,
+              0.07679736022792105
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 85,
+              "mcnemar_p_value_exact": 0.016508822028535212,
+              "portfolio_minus_constituent_abs": -0.07666666666666666,
+              "strategy_id": "daily539_f4cold_5bet",
+              "union_success_draws": 170,
+              "union_success_rate": 0.5666666666666667,
+              "unique_complementary_wins_constituent_only": 54,
+              "unique_complementary_wins_portfolio_only": 31
+            },
+            "clopper_pearson_ci_95": [
+              0.43210864385316705,
+              0.548090756496924
+            ],
+            "marginal_coverage_gain": [
+              {
+                "eligible_draws": 300,
+                "k_sources": 1,
+                "marginal_gain_vs_prev": 0.5666666666666667,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet"
+                ],
+                "union_success_rate": 0.5666666666666667
+              },
+              {
+                "eligible_draws": 300,
+                "k_sources": 2,
+                "marginal_gain_vs_prev": -0.07666666666666666,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet",
+                  "acb_markov_midfreq_3bet"
+                ],
+                "union_success_rate": 0.49
+              }
+            ],
+            "pairwise_winning_draw_jaccard": [
+              {
+                "jaccard_winning_draws": 0.3488372093023256,
+                "pair": [
+                  "daily539_f4cold_5bet",
+                  "acb_markov_midfreq_3bet"
+                ]
+              }
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": -0.025859999999999994,
+                "baseline_union_win_probability": 0.51586,
+                "expected_success_draws": 154.75799999999998,
+                "mc_p_value_one_sided_upper": 0.8273172682731726,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 0.9498701197999457
+              },
+              "ordinary": {
+                "absolute_excess": 0.03576999999999997,
+                "baseline_union_win_probability": 0.45423,
+                "expected_success_draws": 136.269,
+                "mc_p_value_one_sided_upper": 0.11848815118488151,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6408795,
+                "relative_excess": 1.0787486515641855
+              }
+            },
+            "support_draws": 300,
+            "union_success_draws": 147,
+            "union_success_rate": 0.49,
+            "wilson_ci_95": [
+              0.43391704888051774,
+              0.5463358105439731
+            ]
+          },
+          "promotion_eligible_window": true,
+          "support_draws": 300,
+          "window": 300,
+          "window_draw_count": 300,
+          "window_label": "MID"
+        },
+        {
+          "duplicate_ticket_rate": 0.0029247540547726668,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 32,
+              "mcnemar_p_value_exact": 0.37708558747544885,
+              "portfolio_minus_constituent_abs": -0.007999999999999993,
+              "strategy_id": "daily539_f4cold_5bet",
+              "union_success_draws": 46,
+              "union_success_rate": 0.06133333333333333,
+              "unique_complementary_wins_constituent_only": 19,
+              "unique_complementary_wins_portfolio_only": 13
+            },
+            "clopper_pearson_ci_95": [
+              0.03837191244888915,
+              0.07191978240857946
+            ],
+            "marginal_coverage_gain": [
+              {
+                "eligible_draws": 750,
+                "k_sources": 1,
+                "marginal_gain_vs_prev": 0.06133333333333333,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet"
+                ],
+                "union_success_rate": 0.06133333333333333
+              },
+              {
+                "eligible_draws": 750,
+                "k_sources": 2,
+                "marginal_gain_vs_prev": -0.007999999999999993,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet",
+                  "acb_markov_midfreq_3bet"
+                ],
+                "union_success_rate": 0.05333333333333334
+              }
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.002683333333333336,
+                "baseline_union_win_probability": 0.05065,
+                "expected_success_draws": 37.9875,
+                "mc_p_value_one_sided_upper": 0.39566043395660433,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.0529779532741035
+              },
+              "ordinary": {
+                "absolute_excess": 0.004698333333333339,
+                "baseline_union_win_probability": 0.048635,
+                "expected_success_draws": 36.47625,
+                "mc_p_value_one_sided_upper": 0.29727027297270275,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6408795,
+                "relative_excess": 1.0966039546280115
+              }
+            },
+            "support_draws": 750,
+            "union_success_draws": 40,
+            "union_success_rate": 0.05333333333333334,
+            "wilson_ci_95": [
+              0.039408725494952175,
+              0.07181022888818206
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 198,
+              "mcnemar_p_value_exact": 0.00026907856965232104,
+              "portfolio_minus_constituent_abs": -0.0693333333333333,
+              "strategy_id": "daily539_f4cold_5bet",
+              "union_success_draws": 425,
+              "union_success_rate": 0.5666666666666667,
+              "unique_complementary_wins_constituent_only": 125,
+              "unique_complementary_wins_portfolio_only": 73
+            },
+            "clopper_pearson_ci_95": [
+              0.46095406947463424,
+              0.5337336418683556
+            ],
+            "marginal_coverage_gain": [
+              {
+                "eligible_draws": 750,
+                "k_sources": 1,
+                "marginal_gain_vs_prev": 0.5666666666666667,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet"
+                ],
+                "union_success_rate": 0.5666666666666667
+              },
+              {
+                "eligible_draws": 750,
+                "k_sources": 2,
+                "marginal_gain_vs_prev": -0.0693333333333333,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet",
+                  "acb_markov_midfreq_3bet"
+                ],
+                "union_success_rate": 0.49733333333333335
+              }
+            ],
+            "pairwise_winning_draw_jaccard": [
+              {
+                "jaccard_winning_draws": 0.300187617260788,
+                "pair": [
+                  "daily539_f4cold_5bet",
+                  "acb_markov_midfreq_3bet"
+                ]
+              }
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": -0.018526666666666636,
+                "baseline_union_win_probability": 0.51586,
+                "expected_success_draws": 386.895,
+                "mc_p_value_one_sided_upper": 0.8548145185481452,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 0.9640858630894688
+              },
+              "ordinary": {
+                "absolute_excess": 0.04310333333333333,
+                "baseline_union_win_probability": 0.45423,
+                "expected_success_draws": 340.6725,
+                "mc_p_value_one_sided_upper": 0.011498850114988501,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6408795,
+                "relative_excess": 1.0948931892066427
+              }
+            },
+            "support_draws": 750,
+            "union_success_draws": 373,
+            "union_success_rate": 0.49733333333333335,
+            "wilson_ci_95": [
+              0.4616548354226552,
+              0.5330390090811248
+            ]
+          },
+          "promotion_eligible_window": true,
+          "support_draws": 750,
+          "window": 750,
+          "window_draw_count": 750,
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "constituent_native_budgets": {
+        "acb_markov_midfreq_3bet": 3,
+        "daily539_f4cold_3bet": 3,
+        "daily539_f4cold_5bet": 5
+      },
+      "equal_budget_constituents": [
+        "daily539_f4cold_5bet"
+      ],
+      "kind": "CROSS",
+      "lottery_type": "DAILY_539",
+      "n_eligible_draws_total": 750,
+      "n_ineligible_draws_total": 0,
+      "portfolio_id": "D539_N5_f4cold5_x_f4cold3_x_acbmm3",
+      "source_cells": [
+        "daily539_f4cold_5bet",
+        "daily539_f4cold_3bet",
+        "acb_markov_midfreq_3bet"
+      ],
+      "ticket_budget": 5,
+      "tier": "PRIMARY",
+      "windows": [
+        {
+          "duplicate_ticket_rate": 0.18140144073346431,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "daily539_f4cold_5bet",
+              "union_success_draws": 1,
+              "union_success_rate": 0.02,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.000506227983040829,
+              0.1064695457114999
+            ],
+            "marginal_coverage_gain": [
+              {
+                "eligible_draws": 50,
+                "k_sources": 1,
+                "marginal_gain_vs_prev": 0.02,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet"
+                ],
+                "union_success_rate": 0.02
+              },
+              {
+                "eligible_draws": 50,
+                "k_sources": 2,
+                "marginal_gain_vs_prev": 0.0,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet",
+                  "daily539_f4cold_3bet"
+                ],
+                "union_success_rate": 0.02
+              },
+              {
+                "eligible_draws": 50,
+                "k_sources": 3,
+                "marginal_gain_vs_prev": 0.0,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet",
+                  "daily539_f4cold_3bet",
+                  "acb_markov_midfreq_3bet"
+                ],
+                "union_success_rate": 0.02
+              }
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": -0.03065,
+                "baseline_union_win_probability": 0.05065,
+                "expected_success_draws": 2.5325,
+                "mc_p_value_one_sided_upper": 0.9254074592540746,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 0.39486673247778875
+              },
+              "ordinary": {
+                "absolute_excess": -0.028634999999999997,
+                "baseline_union_win_probability": 0.048635,
+                "expected_success_draws": 2.43175,
+                "mc_p_value_one_sided_upper": 0.9229077092290771,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6408795,
+                "relative_excess": 0.4112264829855043
+              }
+            },
+            "support_draws": 50,
+            "union_success_draws": 1,
+            "union_success_rate": 0.02,
+            "wilson_ci_95": [
+              0.003539259271646236,
+              0.10495443589637815
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 17,
+              "mcnemar_p_value_exact": 0.143463134765625,
+              "portfolio_minus_constituent_abs": -0.1399999999999999,
+              "strategy_id": "daily539_f4cold_5bet",
+              "union_success_draws": 35,
+              "union_success_rate": 0.7,
+              "unique_complementary_wins_constituent_only": 12,
+              "unique_complementary_wins_portfolio_only": 5
+            },
+            "clopper_pearson_ci_95": [
+              0.4125441229416732,
+              0.7000927790724565
+            ],
+            "marginal_coverage_gain": [
+              {
+                "eligible_draws": 50,
+                "k_sources": 1,
+                "marginal_gain_vs_prev": 0.7,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet"
+                ],
+                "union_success_rate": 0.7
+              },
+              {
+                "eligible_draws": 50,
+                "k_sources": 2,
+                "marginal_gain_vs_prev": 0.0,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet",
+                  "daily539_f4cold_3bet"
+                ],
+                "union_success_rate": 0.7
+              },
+              {
+                "eligible_draws": 50,
+                "k_sources": 3,
+                "marginal_gain_vs_prev": -0.1399999999999999,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet",
+                  "daily539_f4cold_3bet",
+                  "acb_markov_midfreq_3bet"
+                ],
+                "union_success_rate": 0.56
+              }
+            ],
+            "pairwise_winning_draw_jaccard": [
+              {
+                "jaccard_winning_draws": 0.6571428571428571,
+                "pair": [
+                  "daily539_f4cold_5bet",
+                  "daily539_f4cold_3bet"
+                ]
+              },
+              {
+                "jaccard_winning_draws": 0.2619047619047619,
+                "pair": [
+                  "daily539_f4cold_5bet",
+                  "acb_markov_midfreq_3bet"
+                ]
+              },
+              {
+                "jaccard_winning_draws": 0.20588235294117646,
+                "pair": [
+                  "daily539_f4cold_3bet",
+                  "acb_markov_midfreq_3bet"
+                ]
+              }
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.04414000000000007,
+                "baseline_union_win_probability": 0.51586,
+                "expected_success_draws": 25.793,
+                "mc_p_value_one_sided_upper": 0.3120687931206879,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.0855658511999382
+              },
+              "ordinary": {
+                "absolute_excess": 0.10577000000000003,
+                "baseline_union_win_probability": 0.45423,
+                "expected_success_draws": 22.7115,
+                "mc_p_value_one_sided_upper": 0.08549145085491451,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6408795,
+                "relative_excess": 1.2328556017876406
+              }
+            },
+            "support_draws": 50,
+            "union_success_draws": 28,
+            "union_success_rate": 0.56,
+            "wilson_ci_95": [
+              0.4230602802165686,
+              0.6883780078874284
+            ]
+          },
+          "promotion_eligible_window": false,
+          "support_draws": 50,
+          "window": 50,
+          "window_draw_count": 50,
+          "window_label": "SHORT"
+        },
+        {
+          "duplicate_ticket_rate": 0.18140144073346431,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 10,
+              "mcnemar_p_value_exact": 0.75390625,
+              "portfolio_minus_constituent_abs": -0.006666666666666668,
+              "strategy_id": "daily539_f4cold_5bet",
+              "union_success_draws": 16,
+              "union_success_rate": 0.05333333333333334,
+              "unique_complementary_wins_constituent_only": 6,
+              "unique_complementary_wins_portfolio_only": 4
+            },
+            "clopper_pearson_ci_95": [
+              0.025744649467230946,
+              0.0770598381063587
+            ],
+            "marginal_coverage_gain": [
+              {
+                "eligible_draws": 300,
+                "k_sources": 1,
+                "marginal_gain_vs_prev": 0.05333333333333334,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet"
+                ],
+                "union_success_rate": 0.05333333333333334
+              },
+              {
+                "eligible_draws": 300,
+                "k_sources": 2,
+                "marginal_gain_vs_prev": 0.0,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet",
+                  "daily539_f4cold_3bet"
+                ],
+                "union_success_rate": 0.05333333333333334
+              },
+              {
+                "eligible_draws": 300,
+                "k_sources": 3,
+                "marginal_gain_vs_prev": -0.006666666666666668,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet",
+                  "daily539_f4cold_3bet",
+                  "acb_markov_midfreq_3bet"
+                ],
+                "union_success_rate": 0.04666666666666667
+              }
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": -0.003983333333333332,
+                "baseline_union_win_probability": 0.05065,
+                "expected_success_draws": 15.195,
+                "mc_p_value_one_sided_upper": 0.6672332766723328,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 0.9213557091148404
+              },
+              "ordinary": {
+                "absolute_excess": -0.001968333333333329,
+                "baseline_union_win_probability": 0.048635,
+                "expected_success_draws": 14.590499999999999,
+                "mc_p_value_one_sided_upper": 0.5912408759124088,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6408795,
+                "relative_excess": 0.95952846029951
+              }
+            },
+            "support_draws": 300,
+            "union_success_draws": 14,
+            "union_success_rate": 0.04666666666666667,
+            "wilson_ci_95": [
+              0.027998933682334012,
+              0.07679736022792105
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 81,
+              "mcnemar_p_value_exact": 0.007275502036308492,
+              "portfolio_minus_constituent_abs": -0.08333333333333331,
+              "strategy_id": "daily539_f4cold_5bet",
+              "union_success_draws": 170,
+              "union_success_rate": 0.5666666666666667,
+              "unique_complementary_wins_constituent_only": 53,
+              "unique_complementary_wins_portfolio_only": 28
+            },
+            "clopper_pearson_ci_95": [
+              0.42552840339887743,
+              0.5414706014606286
+            ],
+            "marginal_coverage_gain": [
+              {
+                "eligible_draws": 300,
+                "k_sources": 1,
+                "marginal_gain_vs_prev": 0.5666666666666667,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet"
+                ],
+                "union_success_rate": 0.5666666666666667
+              },
+              {
+                "eligible_draws": 300,
+                "k_sources": 2,
+                "marginal_gain_vs_prev": 0.0,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet",
+                  "daily539_f4cold_3bet"
+                ],
+                "union_success_rate": 0.5666666666666667
+              },
+              {
+                "eligible_draws": 300,
+                "k_sources": 3,
+                "marginal_gain_vs_prev": -0.08333333333333331,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet",
+                  "daily539_f4cold_3bet",
+                  "acb_markov_midfreq_3bet"
+                ],
+                "union_success_rate": 0.48333333333333334
+              }
+            ],
+            "pairwise_winning_draw_jaccard": [
+              {
+                "jaccard_winning_draws": 0.5941176470588235,
+                "pair": [
+                  "daily539_f4cold_5bet",
+                  "daily539_f4cold_3bet"
+                ]
+              },
+              {
+                "jaccard_winning_draws": 0.3488372093023256,
+                "pair": [
+                  "daily539_f4cold_5bet",
+                  "acb_markov_midfreq_3bet"
+                ]
+              },
+              {
+                "jaccard_winning_draws": 0.20108695652173914,
+                "pair": [
+                  "daily539_f4cold_3bet",
+                  "acb_markov_midfreq_3bet"
+                ]
+              }
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": -0.03252666666666665,
+                "baseline_union_win_probability": 0.51586,
+                "expected_success_draws": 154.75799999999998,
+                "mc_p_value_one_sided_upper": 0.8807119288071192,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 0.9369467168094703
+              },
+              "ordinary": {
+                "absolute_excess": 0.029103333333333314,
+                "baseline_union_win_probability": 0.45423,
+                "expected_success_draws": 136.269,
+                "mc_p_value_one_sided_upper": 0.1705829417058294,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6408795,
+                "relative_excess": 1.0640717991619517
+              }
+            },
+            "support_draws": 300,
+            "union_success_draws": 145,
+            "union_success_rate": 0.48333333333333334,
+            "wilson_ci_95": [
+              0.4273544128335898,
+              0.5397336862072283
+            ]
+          },
+          "promotion_eligible_window": true,
+          "support_draws": 300,
+          "window": 300,
+          "window_draw_count": 300,
+          "window_label": "MID"
+        },
+        {
+          "duplicate_ticket_rate": 0.18140144073346431,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 27,
+              "mcnemar_p_value_exact": 0.24778856337070465,
+              "portfolio_minus_constituent_abs": -0.009333333333333332,
+              "strategy_id": "daily539_f4cold_5bet",
+              "union_success_draws": 46,
+              "union_success_rate": 0.06133333333333333,
+              "unique_complementary_wins_constituent_only": 17,
+              "unique_complementary_wins_portfolio_only": 10
+            },
+            "clopper_pearson_ci_95": [
+              0.03723487947163403,
+              0.07040311938094954
+            ],
+            "marginal_coverage_gain": [
+              {
+                "eligible_draws": 750,
+                "k_sources": 1,
+                "marginal_gain_vs_prev": 0.06133333333333333,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet"
+                ],
+                "union_success_rate": 0.06133333333333333
+              },
+              {
+                "eligible_draws": 750,
+                "k_sources": 2,
+                "marginal_gain_vs_prev": 0.0,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet",
+                  "daily539_f4cold_3bet"
+                ],
+                "union_success_rate": 0.06133333333333333
+              },
+              {
+                "eligible_draws": 750,
+                "k_sources": 3,
+                "marginal_gain_vs_prev": -0.009333333333333332,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet",
+                  "daily539_f4cold_3bet",
+                  "acb_markov_midfreq_3bet"
+                ],
+                "union_success_rate": 0.052
+              }
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.001349999999999997,
+                "baseline_union_win_probability": 0.05065,
+                "expected_success_draws": 37.9875,
+                "mc_p_value_one_sided_upper": 0.4617538246175382,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.0266535044422507
+              },
+              "ordinary": {
+                "absolute_excess": 0.003365,
+                "baseline_union_win_probability": 0.048635,
+                "expected_success_draws": 36.47625,
+                "mc_p_value_one_sided_upper": 0.35776422357764226,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6408795,
+                "relative_excess": 1.069188855762311
+              }
+            },
+            "support_draws": 750,
+            "union_success_draws": 39,
+            "union_success_rate": 0.052,
+            "wilson_ci_95": [
+              0.03826992623985369,
+              0.07029595039517048
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 188,
+              "mcnemar_p_value_exact": 0.00010023481098260429,
+              "portfolio_minus_constituent_abs": -0.07200000000000001,
+              "strategy_id": "daily539_f4cold_5bet",
+              "union_success_draws": 425,
+              "union_success_rate": 0.5666666666666667,
+              "unique_complementary_wins_constituent_only": 121,
+              "unique_complementary_wins_portfolio_only": 67
+            },
+            "clopper_pearson_ci_95": [
+              0.4582994469050284,
+              0.5310759758232778
+            ],
+            "marginal_coverage_gain": [
+              {
+                "eligible_draws": 750,
+                "k_sources": 1,
+                "marginal_gain_vs_prev": 0.5666666666666667,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet"
+                ],
+                "union_success_rate": 0.5666666666666667
+              },
+              {
+                "eligible_draws": 750,
+                "k_sources": 2,
+                "marginal_gain_vs_prev": 0.0,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet",
+                  "daily539_f4cold_3bet"
+                ],
+                "union_success_rate": 0.5666666666666667
+              },
+              {
+                "eligible_draws": 750,
+                "k_sources": 3,
+                "marginal_gain_vs_prev": -0.07200000000000001,
+                "sources_prefix": [
+                  "daily539_f4cold_5bet",
+                  "daily539_f4cold_3bet",
+                  "acb_markov_midfreq_3bet"
+                ],
+                "union_success_rate": 0.49466666666666664
+              }
+            ],
+            "pairwise_winning_draw_jaccard": [
+              {
+                "jaccard_winning_draws": 0.6470588235294118,
+                "pair": [
+                  "daily539_f4cold_5bet",
+                  "daily539_f4cold_3bet"
+                ]
+              },
+              {
+                "jaccard_winning_draws": 0.300187617260788,
+                "pair": [
+                  "daily539_f4cold_5bet",
+                  "acb_markov_midfreq_3bet"
+                ]
+              },
+              {
+                "jaccard_winning_draws": 0.19078947368421054,
+                "pair": [
+                  "daily539_f4cold_3bet",
+                  "acb_markov_midfreq_3bet"
+                ]
+              }
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": -0.021193333333333342,
+                "baseline_union_win_probability": 0.51586,
+                "expected_success_draws": 386.895,
+                "mc_p_value_one_sided_upper": 0.8861113888611138,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 0.9589165018932785
+              },
+              "ordinary": {
+                "absolute_excess": 0.04043666666666662,
+                "baseline_union_win_probability": 0.45423,
+                "expected_success_draws": 340.6725,
+                "mc_p_value_one_sided_upper": 0.015598440155984402,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.6408795,
+                "relative_excess": 1.0890224482457491
+              }
+            },
+            "support_draws": 750,
+            "union_success_draws": 371,
+            "union_success_rate": 0.49466666666666664,
+            "wilson_ci_95": [
+              0.4590032728516852,
+              0.5303844161558746
+            ]
+          },
+          "promotion_eligible_window": true,
+          "support_draws": 750,
+          "window": 750,
+          "window_draw_count": 750,
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "constituent_native_budgets": {
+        "biglotto_echo_aware_3bet": 3
+      },
+      "equal_budget_constituents": [
+        "biglotto_echo_aware_3bet"
+      ],
+      "kind": "SINGLE",
+      "lottery_type": "BIG_LOTTO",
+      "n_eligible_draws_total": 750,
+      "n_ineligible_draws_total": 0,
+      "portfolio_id": "BIG_N3_echo3",
+      "source_cells": [
+        "biglotto_echo_aware_3bet"
+      ],
+      "ticket_budget": 3,
+      "tier": "SECONDARY",
+      "windows": [
+        {
+          "duplicate_ticket_rate": 0.0,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "biglotto_echo_aware_3bet",
+              "union_success_draws": 3,
+              "union_success_rate": 0.06,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.012548587835334057,
+              0.16548194660377288
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.004064999999999999,
+                "baseline_union_win_probability": 0.055935,
+                "expected_success_draws": 2.79675,
+                "mc_p_value_one_sided_upper": 0.5437456254374563,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.0726736390453204
+              },
+              "ordinary": {
+                "absolute_excess": 0.0048799999999999955,
+                "baseline_union_win_probability": 0.05512,
+                "expected_success_draws": 2.7560000000000002,
+                "mc_p_value_one_sided_upper": 0.5184481551844815,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.7344783333333333,
+                "relative_excess": 1.0885341074020318
+              }
+            },
+            "support_draws": 50,
+            "union_success_draws": 3,
+            "union_success_rate": 0.06,
+            "wilson_ci_95": [
+              0.02061497034897397,
+              0.16217091688838173
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "biglotto_echo_aware_3bet",
+              "union_success_draws": 4,
+              "union_success_rate": 0.08,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.022227963654929756,
+              0.19234278359596277
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": -0.013454999999999995,
+                "baseline_union_win_probability": 0.093455,
+                "expected_success_draws": 4.67275,
+                "mc_p_value_one_sided_upper": 0.7028297170282972,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 0.8560269648493928
+              },
+              "ordinary": {
+                "absolute_excess": -0.010544999999999999,
+                "baseline_union_win_probability": 0.090545,
+                "expected_success_draws": 4.52725,
+                "mc_p_value_one_sided_upper": 0.6733326667333267,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.7344783333333333,
+                "relative_excess": 0.883538571980783
+              }
+            },
+            "support_draws": 50,
+            "union_success_draws": 4,
+            "union_success_rate": 0.08,
+            "wilson_ci_95": [
+              0.03154951408859298,
+              0.18838246918342838
+            ]
+          },
+          "promotion_eligible_window": false,
+          "support_draws": 50,
+          "window": 50,
+          "window_draw_count": 50,
+          "window_label": "SHORT"
+        },
+        {
+          "duplicate_ticket_rate": 0.0,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "biglotto_echo_aware_3bet",
+              "union_success_draws": 25,
+              "union_success_rate": 0.08333333333333333,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.05465427587840893,
+              0.12055873687593488
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.02739833333333333,
+                "baseline_union_win_probability": 0.055935,
+                "expected_success_draws": 16.7805,
+                "mc_p_value_one_sided_upper": 0.0313968603139686,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.489824498674056
+              },
+              "ordinary": {
+                "absolute_excess": 0.028213333333333326,
+                "baseline_union_win_probability": 0.05512,
+                "expected_success_draws": 16.536,
+                "mc_p_value_one_sided_upper": 0.026697330266973303,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.7344783333333333,
+                "relative_excess": 1.5118529269472665
+              }
+            },
+            "support_draws": 300,
+            "union_success_draws": 25,
+            "union_success_rate": 0.08333333333333333,
+            "wilson_ci_95": [
+              0.057080874056394275,
+              0.12012160196406074
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "biglotto_echo_aware_3bet",
+              "union_success_draws": 33,
+              "union_success_rate": 0.11,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.07693896352761474,
+              0.15100322157472484
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.016545000000000004,
+                "baseline_union_win_probability": 0.093455,
+                "expected_success_draws": 28.0365,
+                "mc_p_value_one_sided_upper": 0.18758124187581243,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.177037076667915
+              },
+              "ordinary": {
+                "absolute_excess": 0.019455,
+                "baseline_union_win_probability": 0.090545,
+                "expected_success_draws": 27.1635,
+                "mc_p_value_one_sided_upper": 0.14238576142385762,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.7344783333333333,
+                "relative_excess": 1.2148655364735768
+              }
+            },
+            "support_draws": 300,
+            "union_success_draws": 33,
+            "union_success_rate": 0.11,
+            "wilson_ci_95": [
+              0.07940528531126051,
+              0.15045623224388538
+            ]
+          },
+          "promotion_eligible_window": true,
+          "support_draws": 300,
+          "window": 300,
+          "window_draw_count": 300,
+          "window_label": "MID"
+        },
+        {
+          "duplicate_ticket_rate": 0.0,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "biglotto_echo_aware_3bet",
+              "union_success_draws": 52,
+              "union_success_rate": 0.06933333333333333,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.0522115240259173,
+              0.08993039182437075
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.013398333333333332,
+                "baseline_union_win_probability": 0.055935,
+                "expected_success_draws": 41.95125,
+                "mc_p_value_one_sided_upper": 0.06829317068293171,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.2395339828968148
+              },
+              "ordinary": {
+                "absolute_excess": 0.014213333333333328,
+                "baseline_union_win_probability": 0.05512,
+                "expected_success_draws": 41.34,
+                "mc_p_value_one_sided_upper": 0.0524947505249475,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.7344783333333333,
+                "relative_excess": 1.2578616352201257
+              }
+            },
+            "support_draws": 750,
+            "union_success_draws": 52,
+            "union_success_rate": 0.06933333333333333,
+            "wilson_ci_95": [
+              0.05326235016321469,
+              0.08979353719724008
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "biglotto_echo_aware_3bet",
+              "union_success_draws": 75,
+              "union_success_rate": 0.1,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.07947022648479377,
+              0.12373562854689288
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.006545000000000009,
+                "baseline_union_win_probability": 0.093455,
+                "expected_success_draws": 70.09125,
+                "mc_p_value_one_sided_upper": 0.28777122287771223,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.070033706061741
+              },
+              "ordinary": {
+                "absolute_excess": 0.009455000000000005,
+                "baseline_union_win_probability": 0.090545,
+                "expected_success_draws": 67.90875,
+                "mc_p_value_one_sided_upper": 0.19558044195580443,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.7344783333333333,
+                "relative_excess": 1.104423214975979
+              }
+            },
+            "support_draws": 750,
+            "union_success_draws": 75,
+            "union_success_rate": 0.1,
+            "wilson_ci_95": [
+              0.08052599662299802,
+              0.12355067894398787
+            ]
+          },
+          "promotion_eligible_window": true,
+          "support_draws": 750,
+          "window": 750,
+          "window_draw_count": 750,
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "constituent_native_budgets": {
+        "biglotto_ts3_markov_4bet_w30": 4
+      },
+      "equal_budget_constituents": [
+        "biglotto_ts3_markov_4bet_w30"
+      ],
+      "kind": "SINGLE",
+      "lottery_type": "BIG_LOTTO",
+      "n_eligible_draws_total": 750,
+      "n_ineligible_draws_total": 0,
+      "portfolio_id": "BIG_N4_ts3markov4",
+      "source_cells": [
+        "biglotto_ts3_markov_4bet_w30"
+      ],
+      "ticket_budget": 4,
+      "tier": "SECONDARY",
+      "windows": [
+        {
+          "duplicate_ticket_rate": 0.0,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "biglotto_ts3_markov_4bet_w30",
+              "union_success_draws": 4,
+              "union_success_rate": 0.08,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.022227963654929756,
+              0.19234278359596277
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.0055650000000000005,
+                "baseline_union_win_probability": 0.074435,
+                "expected_success_draws": 3.72175,
+                "mc_p_value_one_sided_upper": 0.5189481051894811,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.0747632162289247
+              },
+              "ordinary": {
+                "absolute_excess": 0.007940000000000003,
+                "baseline_union_win_probability": 0.07206,
+                "expected_success_draws": 3.6029999999999998,
+                "mc_p_value_one_sided_upper": 0.49005099490050996,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.7353325,
+                "relative_excess": 1.1101859561476548
+              }
+            },
+            "support_draws": 50,
+            "union_success_draws": 4,
+            "union_success_rate": 0.08,
+            "wilson_ci_95": [
+              0.03154951408859298,
+              0.18838246918342838
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "biglotto_ts3_markov_4bet_w30",
+              "union_success_draws": 5,
+              "union_success_rate": 0.1,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.03327509358902247,
+              0.21813536643420225
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": -0.022574999999999998,
+                "baseline_union_win_probability": 0.122575,
+                "expected_success_draws": 6.12875,
+                "mc_p_value_one_sided_upper": 0.7476252374762524,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 0.8158270446665307
+              },
+              "ordinary": {
+                "absolute_excess": -0.01758,
+                "baseline_union_win_probability": 0.11758,
+                "expected_success_draws": 5.8790000000000004,
+                "mc_p_value_one_sided_upper": 0.718028197180282,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.7353325,
+                "relative_excess": 0.8504847763225039
+              }
+            },
+            "support_draws": 50,
+            "union_success_draws": 5,
+            "union_success_rate": 0.1,
+            "wilson_ci_95": [
+              0.04347576493189041,
+              0.21360231437479654
+            ]
+          },
+          "promotion_eligible_window": false,
+          "support_draws": 50,
+          "window": 50,
+          "window_draw_count": 50,
+          "window_label": "SHORT"
+        },
+        {
+          "duplicate_ticket_rate": 0.0,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "biglotto_ts3_markov_4bet_w30",
+              "union_success_draws": 26,
+              "union_success_rate": 0.08666666666666667,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.057394832547051106,
+              0.12440736286509173
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.012231666666666668,
+                "baseline_union_win_probability": 0.074435,
+                "expected_success_draws": 22.3305,
+                "mc_p_value_one_sided_upper": 0.23097690230976903,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.164326817581335
+              },
+              "ordinary": {
+                "absolute_excess": 0.01460666666666667,
+                "baseline_union_win_probability": 0.07206,
+                "expected_success_draws": 21.618,
+                "mc_p_value_one_sided_upper": 0.1942805719428057,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.7353325,
+                "relative_excess": 1.2027014524932926
+              }
+            },
+            "support_draws": 300,
+            "union_success_draws": 26,
+            "union_success_rate": 0.08666666666666667,
+            "wilson_ci_95": [
+              0.05982889751804311,
+              0.12395595869424827
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "biglotto_ts3_markov_4bet_w30",
+              "union_success_draws": 38,
+              "union_success_rate": 0.12666666666666668,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.09121842374575388,
+              0.16969290735849535
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.004091666666666674,
+                "baseline_union_win_probability": 0.122575,
+                "expected_success_draws": 36.7725,
+                "mc_p_value_one_sided_upper": 0.44075592440755923,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.0333809232442723
+              },
+              "ordinary": {
+                "absolute_excess": 0.009086666666666673,
+                "baseline_union_win_probability": 0.11758,
+                "expected_success_draws": 35.274,
+                "mc_p_value_one_sided_upper": 0.3347665233476652,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.7353325,
+                "relative_excess": 1.0772807166751717
+              }
+            },
+            "support_draws": 300,
+            "union_success_draws": 38,
+            "union_success_rate": 0.12666666666666668,
+            "wilson_ci_95": [
+              0.09369224846506602,
+              0.16908117004926165
+            ]
+          },
+          "promotion_eligible_window": true,
+          "support_draws": 300,
+          "window": 300,
+          "window_draw_count": 300,
+          "window_label": "MID"
+        },
+        {
+          "duplicate_ticket_rate": 0.0,
+          "ineligible_draws_in_window": 0,
+          "m3_plus": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "biglotto_ts3_markov_4bet_w30",
+              "union_success_draws": 68,
+              "union_success_rate": 0.09066666666666667,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.07109326293148027,
+              0.11352630342012361
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.016231666666666672,
+                "baseline_union_win_probability": 0.074435,
+                "expected_success_draws": 55.82625,
+                "mc_p_value_one_sided_upper": 0.05219478052194781,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.2180649783927813
+              },
+              "ordinary": {
+                "absolute_excess": 0.018606666666666674,
+                "baseline_union_win_probability": 0.07206,
+                "expected_success_draws": 54.045,
+                "mc_p_value_one_sided_upper": 0.0327967203279672,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.7353325,
+                "relative_excess": 1.2582107503006754
+              }
+            },
+            "support_draws": 750,
+            "union_success_draws": 68,
+            "union_success_rate": 0.09066666666666667,
+            "wilson_ci_95": [
+              0.07214955376669296,
+              0.1133555775635226
+            ]
+          },
+          "prize_aware": {
+            "best_equal_budget_constituent": {
+              "mcnemar_discordant": 0,
+              "mcnemar_p_value_exact": 1.0,
+              "portfolio_minus_constituent_abs": 0.0,
+              "strategy_id": "biglotto_ts3_markov_4bet_w30",
+              "union_success_draws": 99,
+              "union_success_rate": 0.132,
+              "unique_complementary_wins_constituent_only": 0,
+              "unique_complementary_wins_portfolio_only": 0
+            },
+            "clopper_pearson_ci_95": [
+              0.10859355713819338,
+              0.15834306018399072
+            ],
+            "random_baselines": {
+              "diversified": {
+                "absolute_excess": 0.009425000000000003,
+                "baseline_union_win_probability": 0.122575,
+                "expected_success_draws": 91.93125,
+                "mc_p_value_one_sided_upper": 0.22947705229477053,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.0,
+                "relative_excess": 1.0768916989598205
+              },
+              "ordinary": {
+                "absolute_excess": 0.014420000000000002,
+                "baseline_union_win_probability": 0.11758,
+                "expected_success_draws": 88.185,
+                "mc_p_value_one_sided_upper": 0.1254874512548745,
+                "mc_replicates": 10000,
+                "mean_pairwise_overlap": 0.7353325,
+                "relative_excess": 1.122639904745705
+              }
+            },
+            "support_draws": 750,
+            "union_success_draws": 99,
+            "union_success_rate": 0.132,
+            "wilson_ci_95": [
+              0.1096393858970402,
+              0.15811115562458683
+            ]
+          },
+          "promotion_eligible_window": true,
+          "support_draws": 750,
+          "window": 750,
+          "window_draw_count": 750,
+          "window_label": "LONG"
+        }
+      ]
+    }
+  ],
+  "prediction_success_claim": false,
+  "promotion_boundary": {
+    "activation": false,
+    "manual_verification_required_retained": true,
+    "max_classification": "GO_CANDIDATE_RESEARCH_ONLY",
+    "production_recommendation": false,
+    "registry_mutation": false,
+    "strategy_promotion": false
+  },
+  "reconstruction": {
+    "count_reproduction": {
+      "fail_closed": true,
+      "p273a_primary_window_cells_checked": 108,
+      "p275b_success_draws_cross_checked": 108,
+      "reproduction_status": "PASS"
+    },
+    "outcomes_loaded": 2252,
+    "per_draw_outcome_source": "draws table (read-only)",
+    "ticket_source": "committed P273A distinct-ticket identities (frozen)"
+  },
+  "safety_flags": {
+    "activation_or_deployment_performed": false,
+    "controlled_apply_performed": false,
+    "outcome_aware_ticket_backfill": false,
+    "prediction_success_claim": false,
+    "prize_aware_and_m3plus_correction_families_separate": true,
+    "production_db_opened_read_only": true,
+    "production_db_write_performed": false,
+    "registry_mutated": false,
+    "second_zone_manufactured": false,
+    "strategy_promoted": false
+  },
+  "schema_version": "p276b_fixed_n_coverage_complementarity_v2",
+  "scientific_verdict": "NO_RETROSPECTIVE_COMPLEMENTARITY_EVIDENCE",
+  "scope": {
+    "all_fixed_ticket_budgets": [
+      3,
+      4,
+      5
+    ],
+    "lotteries": [
+      "DAILY_539",
+      "BIG_LOTTO",
+      "POWER_LOTTO"
+    ],
+    "max_primary_portfolios": 6,
+    "performs_unbounded_combination_search": false,
+    "primary_fixed_ticket_budgets": [
+      3,
+      5
+    ],
+    "primary_lottery": "DAILY_539",
+    "primary_windows": {
+      "LONG": 750,
+      "MID": 300,
+      "SHORT": 50
+    }
+  },
+  "scoring_version": "prize_aware_v1",
+  "source_verification_status": "MANUAL_VERIFICATION_REQUIRED",
+  "task_id": "P276B_FIXED_N_COVERAGE_COMPLEMENTARITY_BUILD"
+}

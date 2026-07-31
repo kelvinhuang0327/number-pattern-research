@@ -4,6 +4,13 @@
 ====================
 確保所有策略回測結果可復現、可驗證。
 
+P252H SSOT Governance Annotation (2026-06-07):
+_get_random_baseline() uses MC simulation (empirical, requires numpy).
+New code that needs the analytical N-bet baseline formula should use:
+    from lottery_api.utils.baseline_calculator import n_ticket_probability, random_baseline_summary
+n_ticket_probability(pool_size, pick_count, n_tickets, match_threshold) returns the exact
+analytical value via 1-(1-p)^N without MC simulation. See P252C (baseline_calculator SSOT).
+
 使用方式：
     from lottery_api.utils.benchmark_framework import StrategyBenchmark
 

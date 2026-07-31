@@ -1,0 +1,77 @@
+{
+  "p42_version": "20260524",
+  "wave": 3,
+  "lottery_type": "BIG_LOTTO",
+  "total_dryrun_rows": 9000,
+  "strategies": [
+    {
+      "strategy_id": "markov_single_biglotto",
+      "row_count": 1500,
+      "lifecycle": "DRY_RUN"
+    },
+    {
+      "strategy_id": "markov_2bet_biglotto",
+      "row_count": 1500,
+      "lifecycle": "DRY_RUN"
+    },
+    {
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "row_count": 1500,
+      "lifecycle": "DRY_RUN"
+    },
+    {
+      "strategy_id": "fourier30_markov30_biglotto",
+      "row_count": 1500,
+      "lifecycle": "DRY_RUN"
+    },
+    {
+      "strategy_id": "cold_complement_biglotto",
+      "row_count": 1500,
+      "lifecycle": "DRY_RUN"
+    },
+    {
+      "strategy_id": "coldpool15_biglotto",
+      "row_count": 1500,
+      "lifecycle": "DRY_RUN"
+    }
+  ],
+  "temp_rehearsal": {
+    "R1_insert_count": 9000,
+    "R2_duplicate_count": 0,
+    "R3_rollback": "PASS"
+  },
+  "production_rows_before": 28960,
+  "production_rows_after": 28960,
+  "special_number_policy": "NOT_PREDICTED_WAVE3",
+  "schema_validation": {
+    "valid": true,
+    "error_count": 0
+  },
+  "biglotto_format_validation": {
+    "numbers_per_prediction": 6,
+    "range": "1-49",
+    "no_duplicates": true,
+    "format_ok": true
+  },
+  "leakage_check": {
+    "violation_count": 0,
+    "violations": [],
+    "pass": true
+  },
+  "all_rehearsals_pass": true,
+  "classification": "P42_WAVE3_BIGLOTTO_DRYRUN_REHEARSAL_READY",
+  "lifecycle_semantics": {
+    "all_rows_lifecycle": "DRY_RUN",
+    "online_rows": 0,
+    "retired_rows": 0,
+    "note": "P42 is dry-run only. Production apply requires P43 authorization."
+  },
+  "production_apply_readiness": {
+    "ready": true,
+    "requires_p43_authorization": true,
+    "blockers": []
+  },
+  "run_id": "p42_wave3_biglotto_dryrun_20260524",
+  "started_at": "2026-05-23T23:49:05.751950+00:00",
+  "finished_at": "2026-05-23T23:49:13.814645+00:00"
+}

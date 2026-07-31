@@ -1,0 +1,216 @@
+{
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "recipe_ids": [
+    "all_commands",
+    "non_pass_commands",
+    "all_artifacts",
+    "stale_or_missing_artifacts",
+    "all_deltas",
+    "warn_or_fail_deltas",
+    "handoff_digest"
+  ],
+  "recipes": [
+    {
+      "description": "List every archived P377 command row with P378/P379 status context.",
+      "output_artifact": "artifacts/P380_biglotto_regression_archive_query_command_results.csv",
+      "recipe_id": "all_commands",
+      "safety_notes": [
+        "Historical descriptive evidence only.",
+        "No DB open/write.",
+        "No adapter calls.",
+        "No new scoring.",
+        "No deploy.",
+        "No betting advice or future prediction guarantee."
+      ],
+      "source_artifacts": [
+        "artifacts/P377_biglotto_command_center_regression_commands.csv",
+        "artifacts/P378_biglotto_regression_run_archive_command_delta.csv",
+        "artifacts/P379_biglotto_regression_archive_explorer_command_view.csv"
+      ]
+    },
+    {
+      "description": "List command rows whose command or related delta status is not PASS.",
+      "output_artifact": "artifacts/P380_biglotto_regression_archive_query_command_results.csv",
+      "recipe_id": "non_pass_commands",
+      "safety_notes": [
+        "Historical descriptive evidence only.",
+        "No DB open/write.",
+        "No adapter calls.",
+        "No new scoring.",
+        "No deploy.",
+        "No betting advice or future prediction guarantee."
+      ],
+      "source_artifacts": [
+        "artifacts/P377_biglotto_command_center_regression_commands.csv",
+        "artifacts/P378_biglotto_regression_run_archive_command_delta.csv",
+        "artifacts/P379_biglotto_regression_archive_explorer_command_view.csv"
+      ]
+    },
+    {
+      "description": "List all committed P377/P378/P379 source artifacts indexed by P380.",
+      "output_artifact": "artifacts/P380_biglotto_regression_archive_query_artifact_results.csv",
+      "recipe_id": "all_artifacts",
+      "safety_notes": [
+        "Historical descriptive evidence only.",
+        "No DB open/write.",
+        "No adapter calls.",
+        "No new scoring.",
+        "No deploy.",
+        "No betting advice or future prediction guarantee."
+      ],
+      "source_artifacts": [
+        "recovered_strategies/biglotto/no_db_command_center_regression_runner.py",
+        "artifacts/P377_biglotto_command_center_regression_results.json",
+        "artifacts/P377_biglotto_command_center_regression_commands.csv",
+        "artifacts/P377_biglotto_command_center_regression_failures.csv",
+        "artifacts/P377_biglotto_command_center_regression_artifact_freshness.csv",
+        "artifacts/P377_biglotto_command_center_regression_report.html",
+        "artifacts/P377_biglotto_command_center_regression_manifest.csv",
+        "recovered_strategies/biglotto/no_db_regression_run_archive.py",
+        "artifacts/P378_biglotto_regression_run_archive_index.json",
+        "artifacts/P378_biglotto_regression_run_archive_snapshot.json",
+        "artifacts/P378_biglotto_regression_run_archive_comparison.json",
+        "artifacts/P378_biglotto_regression_run_archive_command_delta.csv",
+        "artifacts/P378_biglotto_regression_run_archive_freshness_delta.csv",
+        "artifacts/P378_biglotto_regression_run_archive_report.html",
+        "artifacts/P378_biglotto_regression_run_archive_manifest.csv",
+        "recovered_strategies/biglotto/no_db_regression_archive_explorer.py",
+        "artifacts/P379_biglotto_regression_archive_explorer_index.json",
+        "artifacts/P379_biglotto_regression_archive_explorer_catalog.csv",
+        "artifacts/P379_biglotto_regression_archive_explorer_snapshot_summary.json",
+        "artifacts/P379_biglotto_regression_archive_explorer_command_view.csv",
+        "artifacts/P379_biglotto_regression_archive_explorer_freshness_view.csv",
+        "artifacts/P379_biglotto_regression_archive_explorer_query_snapshots.json",
+        "artifacts/P379_biglotto_regression_archive_explorer_report.html",
+        "artifacts/P379_biglotto_regression_archive_explorer_manifest.csv"
+      ]
+    },
+    {
+      "description": "List source artifacts marked stale, missing, changed, or non-PASS where present.",
+      "output_artifact": "artifacts/P380_biglotto_regression_archive_query_artifact_results.csv",
+      "recipe_id": "stale_or_missing_artifacts",
+      "safety_notes": [
+        "Historical descriptive evidence only.",
+        "No DB open/write.",
+        "No adapter calls.",
+        "No new scoring.",
+        "No deploy.",
+        "No betting advice or future prediction guarantee."
+      ],
+      "source_artifacts": [
+        "artifacts/P377_biglotto_command_center_regression_artifact_freshness.csv",
+        "artifacts/P378_biglotto_regression_run_archive_freshness_delta.csv",
+        "artifacts/P379_biglotto_regression_archive_explorer_freshness_view.csv"
+      ]
+    },
+    {
+      "description": "List every archived command and artifact freshness delta from P378 evidence.",
+      "output_artifact": "artifacts/P380_biglotto_regression_archive_query_delta_results.csv",
+      "recipe_id": "all_deltas",
+      "safety_notes": [
+        "Historical descriptive evidence only.",
+        "No DB open/write.",
+        "No adapter calls.",
+        "No new scoring.",
+        "No deploy.",
+        "No betting advice or future prediction guarantee."
+      ],
+      "source_artifacts": [
+        "artifacts/P378_biglotto_regression_run_archive_command_delta.csv",
+        "artifacts/P378_biglotto_regression_run_archive_freshness_delta.csv"
+      ]
+    },
+    {
+      "description": "List archived delta rows that require WARN/FAIL review.",
+      "output_artifact": "artifacts/P380_biglotto_regression_archive_query_delta_results.csv",
+      "recipe_id": "warn_or_fail_deltas",
+      "safety_notes": [
+        "Historical descriptive evidence only.",
+        "No DB open/write.",
+        "No adapter calls.",
+        "No new scoring.",
+        "No deploy.",
+        "No betting advice or future prediction guarantee."
+      ],
+      "source_artifacts": [
+        "artifacts/P378_biglotto_regression_run_archive_command_delta.csv",
+        "artifacts/P378_biglotto_regression_run_archive_freshness_delta.csv"
+      ]
+    },
+    {
+      "description": "Return compact P377/P378/P379/P380 counts and safety statements for future Workers.",
+      "output_artifact": "artifacts/P380_biglotto_regression_archive_query_transcripts.json",
+      "recipe_id": "handoff_digest",
+      "safety_notes": [
+        "Historical descriptive evidence only.",
+        "No DB open/write.",
+        "No adapter calls.",
+        "No new scoring.",
+        "No deploy.",
+        "No betting advice or future prediction guarantee."
+      ],
+      "source_artifacts": [
+        "recovered_strategies/biglotto/no_db_command_center_regression_runner.py",
+        "artifacts/P377_biglotto_command_center_regression_results.json",
+        "artifacts/P377_biglotto_command_center_regression_commands.csv",
+        "artifacts/P377_biglotto_command_center_regression_failures.csv",
+        "artifacts/P377_biglotto_command_center_regression_artifact_freshness.csv",
+        "artifacts/P377_biglotto_command_center_regression_report.html",
+        "artifacts/P377_biglotto_command_center_regression_manifest.csv",
+        "recovered_strategies/biglotto/no_db_regression_run_archive.py",
+        "artifacts/P378_biglotto_regression_run_archive_index.json",
+        "artifacts/P378_biglotto_regression_run_archive_snapshot.json",
+        "artifacts/P378_biglotto_regression_run_archive_comparison.json",
+        "artifacts/P378_biglotto_regression_run_archive_command_delta.csv",
+        "artifacts/P378_biglotto_regression_run_archive_freshness_delta.csv",
+        "artifacts/P378_biglotto_regression_run_archive_report.html",
+        "artifacts/P378_biglotto_regression_run_archive_manifest.csv",
+        "recovered_strategies/biglotto/no_db_regression_archive_explorer.py",
+        "artifacts/P379_biglotto_regression_archive_explorer_index.json",
+        "artifacts/P379_biglotto_regression_archive_explorer_catalog.csv",
+        "artifacts/P379_biglotto_regression_archive_explorer_snapshot_summary.json",
+        "artifacts/P379_biglotto_regression_archive_explorer_command_view.csv",
+        "artifacts/P379_biglotto_regression_archive_explorer_freshness_view.csv",
+        "artifacts/P379_biglotto_regression_archive_explorer_query_snapshots.json",
+        "artifacts/P379_biglotto_regression_archive_explorer_report.html",
+        "artifacts/P379_biglotto_regression_archive_explorer_manifest.csv"
+      ]
+    }
+  ],
+  "scope_lines": [
+    "Historical descriptive evidence only.",
+    "No future prediction guarantee.",
+    "No betting advice.",
+    "No DB open/write.",
+    "No adapter calls.",
+    "No new scoring.",
+    "No new scoring cohort.",
+    "No production registry import.",
+    "No deploy.",
+    "No generated DB rows.",
+    "No strategy status changes.",
+    "No blended leaderboard.",
+    "No force operations.",
+    "No production registry import or production release approval.",
+    "Not production release approval.",
+    "P380 reads only merged P377/P378/P379 regression archive artifacts and writes only P380-prefixed query artifacts."
+  ],
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "blended_leaderboard": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "force_operations": false,
+    "future_prediction_guarantee": false,
+    "generated_db_rows": false,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring": false,
+    "new_scoring_cohort": false,
+    "production_registry_imported": false,
+    "production_release_approval": false,
+    "strategy_status_changes": false
+  },
+  "task": "P380_biglotto_regression_archive_query"
+}

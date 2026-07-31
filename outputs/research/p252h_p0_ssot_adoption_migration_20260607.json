@@ -1,0 +1,144 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P252H",
+  "classification": "P0_SSOT_ADOPTION_MIGRATION_COMPLETE",
+  "generated_at": "2026-06-07T18:19:35.543934",
+  "phase0_summary": {
+    "canonical_branch": "main (dev branch p252h-p0-ssot-adoption-migration)",
+    "dirty_items": "backend.pid, frontend.pid, claude-code-showcase, data/lottery_v2.db — tolerated",
+    "all_p252x_visible": true
+  },
+  "p252g_dependency_verified": {
+    "found": true,
+    "path": "outputs/research/p252g_p0_external_method_ssot_adoption_audit_20260607.json",
+    "classification": "P0_EXTERNAL_METHOD_SSOT_ADOPTION_AUDIT",
+    "active_duplicate_count": 6
+  },
+  "migration_matrix": [
+    {
+      "finding_id": "F1",
+      "priority": "P0",
+      "file": "lottery_api/engine/rolling_strategy_monitor.py",
+      "domain": "rolling_window",
+      "p252g_classification": "ACTIVE_DUPLICATE_NEEDS_MIGRATION",
+      "action_taken": "EXACT_IMPORT_ADOPTION",
+      "description": "Added `from lottery_api.utils.rolling_window import RSM_WINDOWS` with try/except fallback. MultiWindowAnalyzer.WINDOWS now resolves to `dict(RSM_WINDOWS)` — identical values {short:30,medium:100,long:300}. No semantic change. Behavior preserved exactly.",
+      "behavior_change": false,
+      "equivalence_proof": "RSM_WINDOWS = {'short': 30, 'medium': 100, 'long': 300} matches local dict exactly",
+      "status": "MIGRATED"
+    },
+    {
+      "finding_id": "F2",
+      "priority": "P0",
+      "file": "analysis/p219_external_method_diagnostic_sweep.py",
+      "domain": "baseline+correction+permutation+rolling_window",
+      "p252g_classification": "ACTIVE_DUPLICATE_NEEDS_MIGRATION",
+      "action_taken": "COMMENT_ONLY_GOVERNANCE_ANNOTATION",
+      "description": "Added SSOT governance comment block after `from __future__ import annotations`. Lists all four SSOT modules (P252C-F) with import examples. No code rewritten — P219 is a completed artifact.",
+      "behavior_change": false,
+      "equivalence_proof": "Comment-only; no code changed",
+      "status": "ANNOTATED"
+    },
+    {
+      "finding_id": "F3",
+      "priority": "P1",
+      "file": "scripts/p214c_3star_4star_straight_play_bonferroni_diagnostic_scan.py",
+      "domain": "correction",
+      "p252g_classification": "ACTIVE_DUPLICATE_NEEDS_MIGRATION",
+      "action_taken": "COMMENT_ONLY_GOVERNANCE_ANNOTATION",
+      "description": "Added P252H governance annotation in module docstring referencing correction_gate SSOT (P252D). No code changed — completed artifact.",
+      "behavior_change": false,
+      "equivalence_proof": "Comment-only; no code changed",
+      "status": "ANNOTATED"
+    },
+    {
+      "finding_id": "F4",
+      "priority": "P1",
+      "file": "scripts/p227c_star_box_play_dryrun_scan.py",
+      "domain": "correction+permutation",
+      "p252g_classification": "ACTIVE_DUPLICATE_NEEDS_MIGRATION",
+      "action_taken": "COMMENT_ONLY_GOVERNANCE_ANNOTATION",
+      "description": "Added P252H governance annotation in module docstring referencing correction_gate (P252D) and permutation_test (P252E) SSOTs. No code changed — completed artifact.",
+      "behavior_change": false,
+      "equivalence_proof": "Comment-only; no code changed",
+      "status": "ANNOTATED"
+    },
+    {
+      "finding_id": "F5",
+      "priority": "P1",
+      "file": "scripts/p211r_short_mid_window_diagnostic.py",
+      "domain": "correction+rolling_window",
+      "p252g_classification": "ACTIVE_DUPLICATE_NEEDS_MIGRATION",
+      "action_taken": "COMMENT_ONLY_GOVERNANCE_ANNOTATION",
+      "description": "Added P252H governance annotation in module docstring referencing correction_gate (P252D) and rolling_window (P252F) SSOTs. No code changed — completed artifact.",
+      "behavior_change": false,
+      "equivalence_proof": "Comment-only; no code changed",
+      "status": "ANNOTATED"
+    },
+    {
+      "finding_id": "F6",
+      "priority": "P1",
+      "file": "lottery_api/utils/benchmark_framework.py",
+      "domain": "baseline",
+      "p252g_classification": "ACTIVE_DUPLICATE_NEEDS_MIGRATION",
+      "action_taken": "COMMENT_ONLY_GOVERNANCE_ANNOTATION",
+      "description": "_get_random_baseline() uses MC simulation — NOT equivalent to baseline_calculator.n_ticket_probability() (analytical formula). Added docstring comment pointing to SSOT. No code changed — MC simulation and analytical formula have different outputs.",
+      "behavior_change": false,
+      "equivalence_proof": "Comment-only; MC simulation vs analytical formula are different tools",
+      "status": "ANNOTATED"
+    }
+  ],
+  "files_changed": [
+    "lottery_api/engine/rolling_strategy_monitor.py",
+    "analysis/p219_external_method_diagnostic_sweep.py",
+    "scripts/p214c_3star_4star_straight_play_bonferroni_diagnostic_scan.py",
+    "scripts/p227c_star_box_play_dryrun_scan.py",
+    "scripts/p211r_short_mid_window_diagnostic.py",
+    "lottery_api/utils/benchmark_framework.py"
+  ],
+  "exact_import_adoptions": [
+    "lottery_api/engine/rolling_strategy_monitor.py"
+  ],
+  "comment_only_adoptions": [
+    "analysis/p219_external_method_diagnostic_sweep.py",
+    "scripts/p214c_3star_4star_straight_play_bonferroni_diagnostic_scan.py",
+    "scripts/p227c_star_box_play_dryrun_scan.py",
+    "scripts/p211r_short_mid_window_diagnostic.py",
+    "lottery_api/utils/benchmark_framework.py"
+  ],
+  "deferred_items": [
+    "tools/ exploratory scripts — deferred per P252G recommendation",
+    "lottery_api/tools/backtest_2025_*.py — deferred per P252G recommendation",
+    "scripts/p238b_nist_randomness_audit_artifact_build.py — frozen historical artifact"
+  ],
+  "migration_verification": {
+    "rsm_import_added": true,
+    "rsm_windows_ssot_reference": true,
+    "p219_ssot_annotation": true,
+    "p214c_ssot_annotation": true,
+    "p227c_ssot_annotation": true,
+    "p211r_ssot_annotation": true,
+    "benchmark_ssot_annotation": true
+  },
+  "all_verifications_pass": true,
+  "rsm_import_check": {
+    "rsm_windows_importable": true,
+    "values_match": true,
+    "rsm_windows_values": {
+      "short": 30,
+      "medium": 100,
+      "long": 300
+    }
+  },
+  "behavior_change_summary": {
+    "any_behavior_change": false,
+    "exact_adoptions": 1,
+    "comment_only": 5,
+    "detail": "F1 (RSM): WINDOWS dict now resolved from RSM_WINDOWS SSOT with identical values. try/except fallback preserves behavior if SSOT not importable. F2-F6: Comment-only governance annotations. No statistical logic changed."
+  },
+  "no_db_write_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_strategy_promotion_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "final_decision": "P252H complete. P0 SSOT adoption migration applied to all 6 active duplicate findings. 1 exact import adoption (RSM WINDOWS → RSM_WINDOWS SSOT, identical values). 5 comment-only governance annotations pointing to SSOT modules. No behavior changes. No DB write. No registry mutation. No strategy promotion. No betting advice. Recommended next: P252I — M7 signal stability diagnostics SSOT (P1) or governance review."
+}

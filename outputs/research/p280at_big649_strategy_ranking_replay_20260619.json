@@ -1,0 +1,4120 @@
+{
+  "task_id": "P280AT",
+  "schema_version": "p280at_big649_strategy_ranking_replay_v1",
+  "final_classification": "P280AT_BIG649_STRATEGY_RANKING_REPLAY_PR_OPEN_NULL_NO_PUBLICATION",
+  "verdict": "NULL",
+  "research_only": true,
+  "origin_main": "5e810ec2b427823c9e2de575d429eb2c43b3836d",
+  "pr_463_merge_reconciliation": {
+    "pr_number": 463,
+    "merged_into_main": true,
+    "merge_commit": "5e810ec2b427823c9e2de575d429eb2c43b3836d",
+    "parent1": "25e7f8520164aaf61f440a866a11eca403bb76a3",
+    "parent2": "4a16960e1c9bf40a37ec758341611fdb7c37c513"
+  },
+  "p280as_reconciliation": "P280AS_PR463_MERGED_VERIFIED_NOT_ACTIVATED",
+  "p280aq_reconciliation": "P280AQ_PRIVATE_BIG649_STRATEGY_PACK_DUPLICATE_REMEDIATED_PR_OPEN_NO_PUBLICATION",
+  "database_access": {
+    "opened": true,
+    "queried": true,
+    "copied": false,
+    "written": false,
+    "mode": "SQLite URI mode=ro plus PRAGMA query_only=ON",
+    "main_sha256_pre": "539efda5874b08f7b7e25b36cd0c70e4d4d582c8df9541eec73eaa0e373650d2",
+    "main_sha256_post": "539efda5874b08f7b7e25b36cd0c70e4d4d582c8df9541eec73eaa0e373650d2",
+    "wal_sha256_pre": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "wal_sha256_post": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "shm_sha256_pre": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "shm_sha256_post": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "content_drift_detected": false
+  },
+  "dataset_summary": {
+    "lottery": "BIG_LOTTO",
+    "source_view": "draws_big_lotto_canonical_main",
+    "row_count": 2117,
+    "earliest_draw": "96000001",
+    "latest_local_draw": "115000062",
+    "min_history_per_target": 500,
+    "eligible_replay_target_count": 1617,
+    "duplicate_draw_ids": 0,
+    "malformed_tickets": 0
+  },
+  "replay_horizons": [
+    {
+      "name": "recent_100",
+      "requested_size": 100,
+      "actual_targets": 100
+    },
+    {
+      "name": "mid_300",
+      "requested_size": 300,
+      "actual_targets": 300
+    },
+    {
+      "name": "long_750",
+      "requested_size": 750,
+      "actual_targets": 750
+    },
+    {
+      "name": "all_available",
+      "requested_size": null,
+      "actual_targets": 1617
+    }
+  ],
+  "history_cutoff_rule": "strategy input for target t = draws strictly before t (history[:i]); target outcome never used before scoring",
+  "outcome_leakage_guard": "strategies receive only {'numbers'} of prior draws; special and future draws are withheld until scoring",
+  "strategy_unit": "each strategy's frozen bet_index=1 primary ticket (canonical single recommendation)",
+  "exact_strategy_ids": [
+    "bet2_fourier_expansion_biglotto",
+    "biglotto_deviation_2bet",
+    "biglotto_echo_aware_3bet",
+    "biglotto_triple_strike",
+    "biglotto_ts3_markov_4bet_w30",
+    "cold_complement_biglotto",
+    "coldpool15_biglotto",
+    "fourier30_markov30_biglotto",
+    "markov_2bet_biglotto",
+    "markov_single_biglotto",
+    "ts3_regime_3bet"
+  ],
+  "current_strategy_pack": {
+    "history_cutoff": "115000062",
+    "synthetic_target": "115000063",
+    "adapter_digest": "b8ceac657f081bbf2be6ae0fabe6adbce564ea3a4b4cb77ab610035d0e4a800a",
+    "adapter_digest_expected": "b8ceac657f081bbf2be6ae0fabe6adbce564ea3a4b4cb77ab610035d0e4a800a",
+    "adapter_digest_reconciled": true,
+    "tickets": [
+      {
+        "strategy_id": "bet2_fourier_expansion_biglotto",
+        "bet_index": 1,
+        "predicted_main_numbers": [
+          8,
+          12,
+          37,
+          38,
+          44,
+          46
+        ]
+      },
+      {
+        "strategy_id": "biglotto_deviation_2bet",
+        "bet_index": 1,
+        "predicted_main_numbers": [
+          6,
+          16,
+          20,
+          22,
+          47,
+          48
+        ]
+      },
+      {
+        "strategy_id": "biglotto_echo_aware_3bet",
+        "bet_index": 1,
+        "predicted_main_numbers": [
+          6,
+          16,
+          20,
+          25,
+          28,
+          37
+        ]
+      },
+      {
+        "strategy_id": "biglotto_triple_strike",
+        "bet_index": 1,
+        "predicted_main_numbers": [
+          8,
+          12,
+          37,
+          38,
+          44,
+          47
+        ]
+      },
+      {
+        "strategy_id": "biglotto_ts3_markov_4bet_w30",
+        "bet_index": 1,
+        "predicted_main_numbers": [
+          2,
+          29,
+          30,
+          31,
+          34,
+          42
+        ]
+      },
+      {
+        "strategy_id": "cold_complement_biglotto",
+        "bet_index": 1,
+        "predicted_main_numbers": [
+          16,
+          20,
+          22,
+          25,
+          39,
+          47
+        ]
+      },
+      {
+        "strategy_id": "coldpool15_biglotto",
+        "bet_index": 1,
+        "predicted_main_numbers": [
+          6,
+          7,
+          11,
+          12,
+          18,
+          41
+        ]
+      },
+      {
+        "strategy_id": "fourier30_markov30_biglotto",
+        "bet_index": 1,
+        "predicted_main_numbers": [
+          12,
+          14,
+          15,
+          25,
+          32,
+          40
+        ]
+      },
+      {
+        "strategy_id": "markov_2bet_biglotto",
+        "bet_index": 1,
+        "predicted_main_numbers": [
+          16,
+          19,
+          20,
+          36,
+          45,
+          47
+        ]
+      },
+      {
+        "strategy_id": "markov_single_biglotto",
+        "bet_index": 1,
+        "predicted_main_numbers": [
+          11,
+          14,
+          18,
+          22,
+          25,
+          39
+        ]
+      },
+      {
+        "strategy_id": "ts3_regime_3bet",
+        "bet_index": 1,
+        "predicted_main_numbers": [
+          3,
+          9,
+          21,
+          30,
+          31,
+          34
+        ]
+      }
+    ]
+  },
+  "strategy_level_ranking": [
+    {
+      "strategy_id": "biglotto_deviation_2bet",
+      "long750_prize_win_rate": 0.038667,
+      "long750_avg_main_hits": 0.798667,
+      "stability_across_windows": 0.0,
+      "marginal_portfolio_contribution": 0.166667,
+      "rank": 1
+    },
+    {
+      "strategy_id": "fourier30_markov30_biglotto",
+      "long750_prize_win_rate": 0.032,
+      "long750_avg_main_hits": 0.732,
+      "stability_across_windows": 0.934783,
+      "marginal_portfolio_contribution": 0.5,
+      "rank": 2
+    },
+    {
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "long750_prize_win_rate": 0.030667,
+      "long750_avg_main_hits": 0.725333,
+      "stability_across_windows": 0.079202,
+      "marginal_portfolio_contribution": 0.166667,
+      "rank": 3
+    },
+    {
+      "strategy_id": "biglotto_echo_aware_3bet",
+      "long750_prize_win_rate": 0.029333,
+      "long750_avg_main_hits": 0.732,
+      "stability_across_windows": 0.516137,
+      "marginal_portfolio_contribution": 0.166667,
+      "rank": 4
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_4bet_w30",
+      "long750_prize_win_rate": 0.028,
+      "long750_avg_main_hits": 0.722667,
+      "stability_across_windows": 0.11956,
+      "marginal_portfolio_contribution": 0.5,
+      "rank": 5
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "long750_prize_win_rate": 0.028,
+      "long750_avg_main_hits": 0.722667,
+      "stability_across_windows": 0.11956,
+      "marginal_portfolio_contribution": 0.5,
+      "rank": 6
+    },
+    {
+      "strategy_id": "biglotto_triple_strike",
+      "long750_prize_win_rate": 0.028,
+      "long750_avg_main_hits": 0.722667,
+      "stability_across_windows": 0.11956,
+      "marginal_portfolio_contribution": 0.0,
+      "rank": 7
+    },
+    {
+      "strategy_id": "coldpool15_biglotto",
+      "long750_prize_win_rate": 0.025333,
+      "long750_avg_main_hits": 0.778667,
+      "stability_across_windows": 0.729321,
+      "marginal_portfolio_contribution": 0.333333,
+      "rank": 8
+    },
+    {
+      "strategy_id": "cold_complement_biglotto",
+      "long750_prize_win_rate": 0.025333,
+      "long750_avg_main_hits": 0.778667,
+      "stability_across_windows": 0.729321,
+      "marginal_portfolio_contribution": 0.0,
+      "rank": 9
+    },
+    {
+      "strategy_id": "markov_2bet_biglotto",
+      "long750_prize_win_rate": 0.024,
+      "long750_avg_main_hits": 0.765333,
+      "stability_across_windows": 0.716968,
+      "marginal_portfolio_contribution": 0.5,
+      "rank": 10
+    },
+    {
+      "strategy_id": "markov_single_biglotto",
+      "long750_prize_win_rate": 0.024,
+      "long750_avg_main_hits": 0.765333,
+      "stability_across_windows": 0.716968,
+      "marginal_portfolio_contribution": 0.0,
+      "rank": 11
+    }
+  ],
+  "strategy_level_metrics": {
+    "bet2_fourier_expansion_biglotto": {
+      "recent_100": {
+        "support": 100,
+        "avg_main_hits": 0.72,
+        "hit_distribution": {
+          "0": 44,
+          "1": 42,
+          "2": 13,
+          "3": 0,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 1,
+        "ge3_rate": 0.01,
+        "ge4_count": 1,
+        "ge4_rate": 0.01,
+        "prize_win_count": 1,
+        "prize_win_rate": 0.01,
+        "best_main_hits": 4,
+        "special_hit_count": 13,
+        "special_hit_rate": 0.13,
+        "special_rescue_count": 0
+      },
+      "mid_300": {
+        "support": 300,
+        "avg_main_hits": 0.76,
+        "hit_distribution": {
+          "0": 127,
+          "1": 125,
+          "2": 42,
+          "3": 5,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 6,
+        "ge3_rate": 0.02,
+        "ge4_count": 1,
+        "ge4_rate": 0.003333,
+        "prize_win_count": 8,
+        "prize_win_rate": 0.026667,
+        "best_main_hits": 4,
+        "special_hit_count": 38,
+        "special_hit_rate": 0.126667,
+        "special_rescue_count": 2
+      },
+      "long_750": {
+        "support": 750,
+        "avg_main_hits": 0.725333,
+        "hit_distribution": {
+          "0": 332,
+          "1": 309,
+          "2": 93,
+          "3": 15,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 16,
+        "ge3_rate": 0.021333,
+        "ge4_count": 1,
+        "ge4_rate": 0.001333,
+        "prize_win_count": 23,
+        "prize_win_rate": 0.030667,
+        "best_main_hits": 4,
+        "special_hit_count": 92,
+        "special_hit_rate": 0.122667,
+        "special_rescue_count": 7
+      },
+      "all_available": {
+        "support": 1617,
+        "avg_main_hits": 0.714904,
+        "hit_distribution": {
+          "0": 717,
+          "1": 675,
+          "2": 195,
+          "3": 29,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 30,
+        "ge3_rate": 0.018553,
+        "ge4_count": 1,
+        "ge4_rate": 0.000618,
+        "prize_win_count": 44,
+        "prize_win_rate": 0.027211,
+        "best_main_hits": 4,
+        "special_hit_count": 202,
+        "special_hit_rate": 0.124923,
+        "special_rescue_count": 14
+      }
+    },
+    "biglotto_deviation_2bet": {
+      "recent_100": {
+        "support": 100,
+        "avg_main_hits": 0.85,
+        "hit_distribution": {
+          "0": 36,
+          "1": 44,
+          "2": 19,
+          "3": 1,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 1,
+        "ge3_rate": 0.01,
+        "ge4_count": 0,
+        "ge4_rate": 0.0,
+        "prize_win_count": 1,
+        "prize_win_rate": 0.01,
+        "best_main_hits": 3,
+        "special_hit_count": 11,
+        "special_hit_rate": 0.11,
+        "special_rescue_count": 0
+      },
+      "mid_300": {
+        "support": 300,
+        "avg_main_hits": 0.826667,
+        "hit_distribution": {
+          "0": 121,
+          "1": 117,
+          "2": 55,
+          "3": 7,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 7,
+        "ge3_rate": 0.023333,
+        "ge4_count": 0,
+        "ge4_rate": 0.0,
+        "prize_win_count": 9,
+        "prize_win_rate": 0.03,
+        "best_main_hits": 3,
+        "special_hit_count": 29,
+        "special_hit_rate": 0.096667,
+        "special_rescue_count": 2
+      },
+      "long_750": {
+        "support": 750,
+        "avg_main_hits": 0.798667,
+        "hit_distribution": {
+          "0": 311,
+          "1": 304,
+          "2": 111,
+          "3": 23,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 24,
+        "ge3_rate": 0.032,
+        "ge4_count": 1,
+        "ge4_rate": 0.001333,
+        "prize_win_count": 29,
+        "prize_win_rate": 0.038667,
+        "best_main_hits": 4,
+        "special_hit_count": 87,
+        "special_hit_rate": 0.116,
+        "special_rescue_count": 5
+      },
+      "all_available": {
+        "support": 1617,
+        "avg_main_hits": 0.772418,
+        "hit_distribution": {
+          "0": 660,
+          "1": 705,
+          "2": 213,
+          "3": 38,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 39,
+        "ge3_rate": 0.024119,
+        "ge4_count": 1,
+        "ge4_rate": 0.000618,
+        "prize_win_count": 53,
+        "prize_win_rate": 0.032777,
+        "best_main_hits": 4,
+        "special_hit_count": 193,
+        "special_hit_rate": 0.119357,
+        "special_rescue_count": 14
+      }
+    },
+    "biglotto_echo_aware_3bet": {
+      "recent_100": {
+        "support": 100,
+        "avg_main_hits": 0.72,
+        "hit_distribution": {
+          "0": 44,
+          "1": 41,
+          "2": 14,
+          "3": 1,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 1,
+        "ge3_rate": 0.01,
+        "ge4_count": 0,
+        "ge4_rate": 0.0,
+        "prize_win_count": 2,
+        "prize_win_rate": 0.02,
+        "best_main_hits": 3,
+        "special_hit_count": 14,
+        "special_hit_rate": 0.14,
+        "special_rescue_count": 1
+      },
+      "mid_300": {
+        "support": 300,
+        "avg_main_hits": 0.723333,
+        "hit_distribution": {
+          "0": 134,
+          "1": 123,
+          "2": 36,
+          "3": 6,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 7,
+        "ge3_rate": 0.023333,
+        "ge4_count": 1,
+        "ge4_rate": 0.003333,
+        "prize_win_count": 10,
+        "prize_win_rate": 0.033333,
+        "best_main_hits": 4,
+        "special_hit_count": 39,
+        "special_hit_rate": 0.13,
+        "special_rescue_count": 3
+      },
+      "long_750": {
+        "support": 750,
+        "avg_main_hits": 0.732,
+        "hit_distribution": {
+          "0": 325,
+          "1": 314,
+          "2": 99,
+          "3": 11,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 12,
+        "ge3_rate": 0.016,
+        "ge4_count": 1,
+        "ge4_rate": 0.001333,
+        "prize_win_count": 22,
+        "prize_win_rate": 0.029333,
+        "best_main_hits": 4,
+        "special_hit_count": 105,
+        "special_hit_rate": 0.14,
+        "special_rescue_count": 10
+      },
+      "all_available": {
+        "support": 1617,
+        "avg_main_hits": 0.737168,
+        "hit_distribution": {
+          "0": 708,
+          "1": 660,
+          "2": 218,
+          "3": 28,
+          "4": 3,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 31,
+        "ge3_rate": 0.019171,
+        "ge4_count": 3,
+        "ge4_rate": 0.001855,
+        "prize_win_count": 49,
+        "prize_win_rate": 0.030303,
+        "best_main_hits": 4,
+        "special_hit_count": 213,
+        "special_hit_rate": 0.131725,
+        "special_rescue_count": 18
+      }
+    },
+    "biglotto_triple_strike": {
+      "recent_100": {
+        "support": 100,
+        "avg_main_hits": 0.73,
+        "hit_distribution": {
+          "0": 44,
+          "1": 41,
+          "2": 14,
+          "3": 0,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 1,
+        "ge3_rate": 0.01,
+        "ge4_count": 1,
+        "ge4_rate": 0.01,
+        "prize_win_count": 1,
+        "prize_win_rate": 0.01,
+        "best_main_hits": 4,
+        "special_hit_count": 13,
+        "special_hit_rate": 0.13,
+        "special_rescue_count": 0
+      },
+      "mid_300": {
+        "support": 300,
+        "avg_main_hits": 0.75,
+        "hit_distribution": {
+          "0": 129,
+          "1": 123,
+          "2": 43,
+          "3": 4,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 5,
+        "ge3_rate": 0.016667,
+        "ge4_count": 1,
+        "ge4_rate": 0.003333,
+        "prize_win_count": 7,
+        "prize_win_rate": 0.023333,
+        "best_main_hits": 4,
+        "special_hit_count": 37,
+        "special_hit_rate": 0.123333,
+        "special_rescue_count": 2
+      },
+      "long_750": {
+        "support": 750,
+        "avg_main_hits": 0.722667,
+        "hit_distribution": {
+          "0": 332,
+          "1": 308,
+          "2": 97,
+          "3": 12,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 13,
+        "ge3_rate": 0.017333,
+        "ge4_count": 1,
+        "ge4_rate": 0.001333,
+        "prize_win_count": 21,
+        "prize_win_rate": 0.028,
+        "best_main_hits": 4,
+        "special_hit_count": 91,
+        "special_hit_rate": 0.121333,
+        "special_rescue_count": 8
+      },
+      "all_available": {
+        "support": 1617,
+        "avg_main_hits": 0.716141,
+        "hit_distribution": {
+          "0": 715,
+          "1": 675,
+          "2": 199,
+          "3": 27,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 28,
+        "ge3_rate": 0.017316,
+        "ge4_count": 1,
+        "ge4_rate": 0.000618,
+        "prize_win_count": 43,
+        "prize_win_rate": 0.026592,
+        "best_main_hits": 4,
+        "special_hit_count": 200,
+        "special_hit_rate": 0.123686,
+        "special_rescue_count": 15
+      }
+    },
+    "biglotto_ts3_markov_4bet_w30": {
+      "recent_100": {
+        "support": 100,
+        "avg_main_hits": 0.73,
+        "hit_distribution": {
+          "0": 44,
+          "1": 41,
+          "2": 14,
+          "3": 0,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 1,
+        "ge3_rate": 0.01,
+        "ge4_count": 1,
+        "ge4_rate": 0.01,
+        "prize_win_count": 1,
+        "prize_win_rate": 0.01,
+        "best_main_hits": 4,
+        "special_hit_count": 13,
+        "special_hit_rate": 0.13,
+        "special_rescue_count": 0
+      },
+      "mid_300": {
+        "support": 300,
+        "avg_main_hits": 0.75,
+        "hit_distribution": {
+          "0": 129,
+          "1": 123,
+          "2": 43,
+          "3": 4,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 5,
+        "ge3_rate": 0.016667,
+        "ge4_count": 1,
+        "ge4_rate": 0.003333,
+        "prize_win_count": 7,
+        "prize_win_rate": 0.023333,
+        "best_main_hits": 4,
+        "special_hit_count": 37,
+        "special_hit_rate": 0.123333,
+        "special_rescue_count": 2
+      },
+      "long_750": {
+        "support": 750,
+        "avg_main_hits": 0.722667,
+        "hit_distribution": {
+          "0": 332,
+          "1": 308,
+          "2": 97,
+          "3": 12,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 13,
+        "ge3_rate": 0.017333,
+        "ge4_count": 1,
+        "ge4_rate": 0.001333,
+        "prize_win_count": 21,
+        "prize_win_rate": 0.028,
+        "best_main_hits": 4,
+        "special_hit_count": 91,
+        "special_hit_rate": 0.121333,
+        "special_rescue_count": 8
+      },
+      "all_available": {
+        "support": 1617,
+        "avg_main_hits": 0.716141,
+        "hit_distribution": {
+          "0": 715,
+          "1": 675,
+          "2": 199,
+          "3": 27,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 28,
+        "ge3_rate": 0.017316,
+        "ge4_count": 1,
+        "ge4_rate": 0.000618,
+        "prize_win_count": 43,
+        "prize_win_rate": 0.026592,
+        "best_main_hits": 4,
+        "special_hit_count": 200,
+        "special_hit_rate": 0.123686,
+        "special_rescue_count": 15
+      }
+    },
+    "cold_complement_biglotto": {
+      "recent_100": {
+        "support": 100,
+        "avg_main_hits": 0.73,
+        "hit_distribution": {
+          "0": 44,
+          "1": 41,
+          "2": 13,
+          "3": 2,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 2,
+        "ge3_rate": 0.02,
+        "ge4_count": 0,
+        "ge4_rate": 0.0,
+        "prize_win_count": 3,
+        "prize_win_rate": 0.03,
+        "best_main_hits": 3,
+        "special_hit_count": 9,
+        "special_hit_rate": 0.09,
+        "special_rescue_count": 1
+      },
+      "mid_300": {
+        "support": 300,
+        "avg_main_hits": 0.77,
+        "hit_distribution": {
+          "0": 127,
+          "1": 122,
+          "2": 44,
+          "3": 7,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 7,
+        "ge3_rate": 0.023333,
+        "ge4_count": 0,
+        "ge4_rate": 0.0,
+        "prize_win_count": 10,
+        "prize_win_rate": 0.033333,
+        "best_main_hits": 3,
+        "special_hit_count": 29,
+        "special_hit_rate": 0.096667,
+        "special_rescue_count": 3
+      },
+      "long_750": {
+        "support": 750,
+        "avg_main_hits": 0.778667,
+        "hit_distribution": {
+          "0": 305,
+          "1": 317,
+          "2": 117,
+          "3": 11,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 11,
+        "ge3_rate": 0.014667,
+        "ge4_count": 0,
+        "ge4_rate": 0.0,
+        "prize_win_count": 19,
+        "prize_win_rate": 0.025333,
+        "best_main_hits": 3,
+        "special_hit_count": 91,
+        "special_hit_rate": 0.121333,
+        "special_rescue_count": 8
+      },
+      "all_available": {
+        "support": 1617,
+        "avg_main_hits": 0.729746,
+        "hit_distribution": {
+          "0": 697,
+          "1": 683,
+          "2": 215,
+          "3": 21,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 22,
+        "ge3_rate": 0.013605,
+        "ge4_count": 1,
+        "ge4_rate": 0.000618,
+        "prize_win_count": 37,
+        "prize_win_rate": 0.022882,
+        "best_main_hits": 4,
+        "special_hit_count": 202,
+        "special_hit_rate": 0.124923,
+        "special_rescue_count": 15
+      }
+    },
+    "coldpool15_biglotto": {
+      "recent_100": {
+        "support": 100,
+        "avg_main_hits": 0.73,
+        "hit_distribution": {
+          "0": 44,
+          "1": 41,
+          "2": 13,
+          "3": 2,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 2,
+        "ge3_rate": 0.02,
+        "ge4_count": 0,
+        "ge4_rate": 0.0,
+        "prize_win_count": 3,
+        "prize_win_rate": 0.03,
+        "best_main_hits": 3,
+        "special_hit_count": 9,
+        "special_hit_rate": 0.09,
+        "special_rescue_count": 1
+      },
+      "mid_300": {
+        "support": 300,
+        "avg_main_hits": 0.77,
+        "hit_distribution": {
+          "0": 127,
+          "1": 122,
+          "2": 44,
+          "3": 7,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 7,
+        "ge3_rate": 0.023333,
+        "ge4_count": 0,
+        "ge4_rate": 0.0,
+        "prize_win_count": 10,
+        "prize_win_rate": 0.033333,
+        "best_main_hits": 3,
+        "special_hit_count": 29,
+        "special_hit_rate": 0.096667,
+        "special_rescue_count": 3
+      },
+      "long_750": {
+        "support": 750,
+        "avg_main_hits": 0.778667,
+        "hit_distribution": {
+          "0": 305,
+          "1": 317,
+          "2": 117,
+          "3": 11,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 11,
+        "ge3_rate": 0.014667,
+        "ge4_count": 0,
+        "ge4_rate": 0.0,
+        "prize_win_count": 19,
+        "prize_win_rate": 0.025333,
+        "best_main_hits": 3,
+        "special_hit_count": 91,
+        "special_hit_rate": 0.121333,
+        "special_rescue_count": 8
+      },
+      "all_available": {
+        "support": 1617,
+        "avg_main_hits": 0.729746,
+        "hit_distribution": {
+          "0": 697,
+          "1": 683,
+          "2": 215,
+          "3": 21,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 22,
+        "ge3_rate": 0.013605,
+        "ge4_count": 1,
+        "ge4_rate": 0.000618,
+        "prize_win_count": 37,
+        "prize_win_rate": 0.022882,
+        "best_main_hits": 4,
+        "special_hit_count": 202,
+        "special_hit_rate": 0.124923,
+        "special_rescue_count": 15
+      }
+    },
+    "fourier30_markov30_biglotto": {
+      "recent_100": {
+        "support": 100,
+        "avg_main_hits": 0.79,
+        "hit_distribution": {
+          "0": 40,
+          "1": 43,
+          "2": 15,
+          "3": 2,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 2,
+        "ge3_rate": 0.02,
+        "ge4_count": 0,
+        "ge4_rate": 0.0,
+        "prize_win_count": 3,
+        "prize_win_rate": 0.03,
+        "best_main_hits": 3,
+        "special_hit_count": 13,
+        "special_hit_rate": 0.13,
+        "special_rescue_count": 1
+      },
+      "mid_300": {
+        "support": 300,
+        "avg_main_hits": 0.746667,
+        "hit_distribution": {
+          "0": 128,
+          "1": 126,
+          "2": 40,
+          "3": 6,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 6,
+        "ge3_rate": 0.02,
+        "ge4_count": 0,
+        "ge4_rate": 0.0,
+        "prize_win_count": 9,
+        "prize_win_rate": 0.03,
+        "best_main_hits": 3,
+        "special_hit_count": 29,
+        "special_hit_rate": 0.096667,
+        "special_rescue_count": 3
+      },
+      "long_750": {
+        "support": 750,
+        "avg_main_hits": 0.732,
+        "hit_distribution": {
+          "0": 318,
+          "1": 326,
+          "2": 96,
+          "3": 9,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 10,
+        "ge3_rate": 0.013333,
+        "ge4_count": 1,
+        "ge4_rate": 0.001333,
+        "prize_win_count": 24,
+        "prize_win_rate": 0.032,
+        "best_main_hits": 4,
+        "special_hit_count": 105,
+        "special_hit_rate": 0.14,
+        "special_rescue_count": 14
+      },
+      "all_available": {
+        "support": 1617,
+        "avg_main_hits": 0.722325,
+        "hit_distribution": {
+          "0": 709,
+          "1": 675,
+          "2": 209,
+          "3": 21,
+          "4": 3,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 24,
+        "ge3_rate": 0.014842,
+        "ge4_count": 3,
+        "ge4_rate": 0.001855,
+        "prize_win_count": 46,
+        "prize_win_rate": 0.028448,
+        "best_main_hits": 4,
+        "special_hit_count": 221,
+        "special_hit_rate": 0.136673,
+        "special_rescue_count": 22
+      }
+    },
+    "markov_2bet_biglotto": {
+      "recent_100": {
+        "support": 100,
+        "avg_main_hits": 0.69,
+        "hit_distribution": {
+          "0": 45,
+          "1": 42,
+          "2": 12,
+          "3": 1,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 1,
+        "ge3_rate": 0.01,
+        "ge4_count": 0,
+        "ge4_rate": 0.0,
+        "prize_win_count": 2,
+        "prize_win_rate": 0.02,
+        "best_main_hits": 3,
+        "special_hit_count": 13,
+        "special_hit_rate": 0.13,
+        "special_rescue_count": 1
+      },
+      "mid_300": {
+        "support": 300,
+        "avg_main_hits": 0.733333,
+        "hit_distribution": {
+          "0": 130,
+          "1": 124,
+          "2": 42,
+          "3": 4,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 4,
+        "ge3_rate": 0.013333,
+        "ge4_count": 0,
+        "ge4_rate": 0.0,
+        "prize_win_count": 8,
+        "prize_win_rate": 0.026667,
+        "best_main_hits": 3,
+        "special_hit_count": 36,
+        "special_hit_rate": 0.12,
+        "special_rescue_count": 4
+      },
+      "long_750": {
+        "support": 750,
+        "avg_main_hits": 0.765333,
+        "hit_distribution": {
+          "0": 303,
+          "1": 330,
+          "2": 107,
+          "3": 10,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 10,
+        "ge3_rate": 0.013333,
+        "ge4_count": 0,
+        "ge4_rate": 0.0,
+        "prize_win_count": 18,
+        "prize_win_rate": 0.024,
+        "best_main_hits": 3,
+        "special_hit_count": 86,
+        "special_hit_rate": 0.114667,
+        "special_rescue_count": 8
+      },
+      "all_available": {
+        "support": 1617,
+        "avg_main_hits": 0.742733,
+        "hit_distribution": {
+          "0": 678,
+          "1": 703,
+          "2": 211,
+          "3": 24,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 25,
+        "ge3_rate": 0.015461,
+        "ge4_count": 1,
+        "ge4_rate": 0.000618,
+        "prize_win_count": 42,
+        "prize_win_rate": 0.025974,
+        "best_main_hits": 4,
+        "special_hit_count": 209,
+        "special_hit_rate": 0.129252,
+        "special_rescue_count": 17
+      }
+    },
+    "markov_single_biglotto": {
+      "recent_100": {
+        "support": 100,
+        "avg_main_hits": 0.69,
+        "hit_distribution": {
+          "0": 45,
+          "1": 42,
+          "2": 12,
+          "3": 1,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 1,
+        "ge3_rate": 0.01,
+        "ge4_count": 0,
+        "ge4_rate": 0.0,
+        "prize_win_count": 2,
+        "prize_win_rate": 0.02,
+        "best_main_hits": 3,
+        "special_hit_count": 13,
+        "special_hit_rate": 0.13,
+        "special_rescue_count": 1
+      },
+      "mid_300": {
+        "support": 300,
+        "avg_main_hits": 0.733333,
+        "hit_distribution": {
+          "0": 130,
+          "1": 124,
+          "2": 42,
+          "3": 4,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 4,
+        "ge3_rate": 0.013333,
+        "ge4_count": 0,
+        "ge4_rate": 0.0,
+        "prize_win_count": 8,
+        "prize_win_rate": 0.026667,
+        "best_main_hits": 3,
+        "special_hit_count": 36,
+        "special_hit_rate": 0.12,
+        "special_rescue_count": 4
+      },
+      "long_750": {
+        "support": 750,
+        "avg_main_hits": 0.765333,
+        "hit_distribution": {
+          "0": 303,
+          "1": 330,
+          "2": 107,
+          "3": 10,
+          "4": 0,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 10,
+        "ge3_rate": 0.013333,
+        "ge4_count": 0,
+        "ge4_rate": 0.0,
+        "prize_win_count": 18,
+        "prize_win_rate": 0.024,
+        "best_main_hits": 3,
+        "special_hit_count": 86,
+        "special_hit_rate": 0.114667,
+        "special_rescue_count": 8
+      },
+      "all_available": {
+        "support": 1617,
+        "avg_main_hits": 0.742733,
+        "hit_distribution": {
+          "0": 678,
+          "1": 703,
+          "2": 211,
+          "3": 24,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 25,
+        "ge3_rate": 0.015461,
+        "ge4_count": 1,
+        "ge4_rate": 0.000618,
+        "prize_win_count": 42,
+        "prize_win_rate": 0.025974,
+        "best_main_hits": 4,
+        "special_hit_count": 209,
+        "special_hit_rate": 0.129252,
+        "special_rescue_count": 17
+      }
+    },
+    "ts3_regime_3bet": {
+      "recent_100": {
+        "support": 100,
+        "avg_main_hits": 0.73,
+        "hit_distribution": {
+          "0": 44,
+          "1": 41,
+          "2": 14,
+          "3": 0,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 1,
+        "ge3_rate": 0.01,
+        "ge4_count": 1,
+        "ge4_rate": 0.01,
+        "prize_win_count": 1,
+        "prize_win_rate": 0.01,
+        "best_main_hits": 4,
+        "special_hit_count": 13,
+        "special_hit_rate": 0.13,
+        "special_rescue_count": 0
+      },
+      "mid_300": {
+        "support": 300,
+        "avg_main_hits": 0.75,
+        "hit_distribution": {
+          "0": 129,
+          "1": 123,
+          "2": 43,
+          "3": 4,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 5,
+        "ge3_rate": 0.016667,
+        "ge4_count": 1,
+        "ge4_rate": 0.003333,
+        "prize_win_count": 7,
+        "prize_win_rate": 0.023333,
+        "best_main_hits": 4,
+        "special_hit_count": 37,
+        "special_hit_rate": 0.123333,
+        "special_rescue_count": 2
+      },
+      "long_750": {
+        "support": 750,
+        "avg_main_hits": 0.722667,
+        "hit_distribution": {
+          "0": 332,
+          "1": 308,
+          "2": 97,
+          "3": 12,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 13,
+        "ge3_rate": 0.017333,
+        "ge4_count": 1,
+        "ge4_rate": 0.001333,
+        "prize_win_count": 21,
+        "prize_win_rate": 0.028,
+        "best_main_hits": 4,
+        "special_hit_count": 91,
+        "special_hit_rate": 0.121333,
+        "special_rescue_count": 8
+      },
+      "all_available": {
+        "support": 1617,
+        "avg_main_hits": 0.716141,
+        "hit_distribution": {
+          "0": 715,
+          "1": 675,
+          "2": 199,
+          "3": 27,
+          "4": 1,
+          "5": 0,
+          "6": 0
+        },
+        "ge3_count": 28,
+        "ge3_rate": 0.017316,
+        "ge4_count": 1,
+        "ge4_rate": 0.000618,
+        "prize_win_count": 43,
+        "prize_win_rate": 0.026592,
+        "best_main_hits": 4,
+        "special_hit_count": 200,
+        "special_hit_rate": 0.123686,
+        "special_rescue_count": 15
+      }
+    }
+  },
+  "current_pack_contribution_ranking": [
+    {
+      "rank": 1,
+      "strategy_id": "biglotto_ts3_markov_4bet_w30",
+      "ticket": [
+        2,
+        29,
+        30,
+        31,
+        34,
+        42
+      ],
+      "unique_number_count": 3,
+      "max_pair_overlap": 3,
+      "mean_pair_overlap": 0.3,
+      "marginal_coverage_contribution": 0.5,
+      "redundancy_score": 0.05,
+      "role": "core"
+    },
+    {
+      "rank": 2,
+      "strategy_id": "ts3_regime_3bet",
+      "ticket": [
+        3,
+        9,
+        21,
+        30,
+        31,
+        34
+      ],
+      "unique_number_count": 3,
+      "max_pair_overlap": 3,
+      "mean_pair_overlap": 0.3,
+      "marginal_coverage_contribution": 0.5,
+      "redundancy_score": 0.05,
+      "role": "core"
+    },
+    {
+      "rank": 3,
+      "strategy_id": "fourier30_markov30_biglotto",
+      "ticket": [
+        12,
+        14,
+        15,
+        25,
+        32,
+        40
+      ],
+      "unique_number_count": 3,
+      "max_pair_overlap": 2,
+      "mean_pair_overlap": 0.7,
+      "marginal_coverage_contribution": 0.5,
+      "redundancy_score": 0.116667,
+      "role": "core"
+    },
+    {
+      "rank": 4,
+      "strategy_id": "markov_2bet_biglotto",
+      "ticket": [
+        16,
+        19,
+        20,
+        36,
+        45,
+        47
+      ],
+      "unique_number_count": 3,
+      "max_pair_overlap": 3,
+      "mean_pair_overlap": 0.9,
+      "marginal_coverage_contribution": 0.5,
+      "redundancy_score": 0.15,
+      "role": "core"
+    },
+    {
+      "rank": 5,
+      "strategy_id": "coldpool15_biglotto",
+      "ticket": [
+        6,
+        7,
+        11,
+        12,
+        18,
+        41
+      ],
+      "unique_number_count": 2,
+      "max_pair_overlap": 2,
+      "mean_pair_overlap": 0.7,
+      "marginal_coverage_contribution": 0.333333,
+      "redundancy_score": 0.116667,
+      "role": "core"
+    },
+    {
+      "rank": 6,
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "ticket": [
+        8,
+        12,
+        37,
+        38,
+        44,
+        46
+      ],
+      "unique_number_count": 1,
+      "max_pair_overlap": 5,
+      "mean_pair_overlap": 0.8,
+      "marginal_coverage_contribution": 0.166667,
+      "redundancy_score": 0.133333,
+      "role": "high-overlap"
+    },
+    {
+      "rank": 7,
+      "strategy_id": "biglotto_deviation_2bet",
+      "ticket": [
+        6,
+        16,
+        20,
+        22,
+        47,
+        48
+      ],
+      "unique_number_count": 1,
+      "max_pair_overlap": 4,
+      "mean_pair_overlap": 1.3,
+      "marginal_coverage_contribution": 0.166667,
+      "redundancy_score": 0.216667,
+      "role": "high-overlap"
+    },
+    {
+      "rank": 8,
+      "strategy_id": "biglotto_echo_aware_3bet",
+      "ticket": [
+        6,
+        16,
+        20,
+        25,
+        28,
+        37
+      ],
+      "unique_number_count": 1,
+      "max_pair_overlap": 3,
+      "mean_pair_overlap": 1.3,
+      "marginal_coverage_contribution": 0.166667,
+      "redundancy_score": 0.216667,
+      "role": "redundant"
+    },
+    {
+      "rank": 9,
+      "strategy_id": "markov_single_biglotto",
+      "ticket": [
+        11,
+        14,
+        18,
+        22,
+        25,
+        39
+      ],
+      "unique_number_count": 0,
+      "max_pair_overlap": 3,
+      "mean_pair_overlap": 0.9,
+      "marginal_coverage_contribution": 0.0,
+      "redundancy_score": 0.15,
+      "role": "redundant"
+    },
+    {
+      "rank": 10,
+      "strategy_id": "biglotto_triple_strike",
+      "ticket": [
+        8,
+        12,
+        37,
+        38,
+        44,
+        47
+      ],
+      "unique_number_count": 0,
+      "max_pair_overlap": 5,
+      "mean_pair_overlap": 1.1,
+      "marginal_coverage_contribution": 0.0,
+      "redundancy_score": 0.183333,
+      "role": "high-overlap"
+    },
+    {
+      "rank": 11,
+      "strategy_id": "cold_complement_biglotto",
+      "ticket": [
+        16,
+        20,
+        22,
+        25,
+        39,
+        47
+      ],
+      "unique_number_count": 0,
+      "max_pair_overlap": 4,
+      "mean_pair_overlap": 1.5,
+      "marginal_coverage_contribution": 0.0,
+      "redundancy_score": 0.25,
+      "role": "high-overlap"
+    }
+  ],
+  "current_pack_contribution_detail": {
+    "bet2_fourier_expansion_biglotto": {
+      "ticket": [
+        8,
+        12,
+        37,
+        38,
+        44,
+        46
+      ],
+      "unique_number_contribution": [
+        46
+      ],
+      "unique_number_count": 1,
+      "max_pair_overlap": 5,
+      "mean_pair_overlap": 0.8,
+      "marginal_coverage_contribution": 0.166667,
+      "redundancy_score": 0.133333,
+      "role": "high-overlap"
+    },
+    "biglotto_deviation_2bet": {
+      "ticket": [
+        6,
+        16,
+        20,
+        22,
+        47,
+        48
+      ],
+      "unique_number_contribution": [
+        48
+      ],
+      "unique_number_count": 1,
+      "max_pair_overlap": 4,
+      "mean_pair_overlap": 1.3,
+      "marginal_coverage_contribution": 0.166667,
+      "redundancy_score": 0.216667,
+      "role": "high-overlap"
+    },
+    "biglotto_echo_aware_3bet": {
+      "ticket": [
+        6,
+        16,
+        20,
+        25,
+        28,
+        37
+      ],
+      "unique_number_contribution": [
+        28
+      ],
+      "unique_number_count": 1,
+      "max_pair_overlap": 3,
+      "mean_pair_overlap": 1.3,
+      "marginal_coverage_contribution": 0.166667,
+      "redundancy_score": 0.216667,
+      "role": "redundant"
+    },
+    "biglotto_triple_strike": {
+      "ticket": [
+        8,
+        12,
+        37,
+        38,
+        44,
+        47
+      ],
+      "unique_number_contribution": [],
+      "unique_number_count": 0,
+      "max_pair_overlap": 5,
+      "mean_pair_overlap": 1.1,
+      "marginal_coverage_contribution": 0.0,
+      "redundancy_score": 0.183333,
+      "role": "high-overlap"
+    },
+    "biglotto_ts3_markov_4bet_w30": {
+      "ticket": [
+        2,
+        29,
+        30,
+        31,
+        34,
+        42
+      ],
+      "unique_number_contribution": [
+        2,
+        29,
+        42
+      ],
+      "unique_number_count": 3,
+      "max_pair_overlap": 3,
+      "mean_pair_overlap": 0.3,
+      "marginal_coverage_contribution": 0.5,
+      "redundancy_score": 0.05,
+      "role": "core"
+    },
+    "cold_complement_biglotto": {
+      "ticket": [
+        16,
+        20,
+        22,
+        25,
+        39,
+        47
+      ],
+      "unique_number_contribution": [],
+      "unique_number_count": 0,
+      "max_pair_overlap": 4,
+      "mean_pair_overlap": 1.5,
+      "marginal_coverage_contribution": 0.0,
+      "redundancy_score": 0.25,
+      "role": "high-overlap"
+    },
+    "coldpool15_biglotto": {
+      "ticket": [
+        6,
+        7,
+        11,
+        12,
+        18,
+        41
+      ],
+      "unique_number_contribution": [
+        7,
+        41
+      ],
+      "unique_number_count": 2,
+      "max_pair_overlap": 2,
+      "mean_pair_overlap": 0.7,
+      "marginal_coverage_contribution": 0.333333,
+      "redundancy_score": 0.116667,
+      "role": "core"
+    },
+    "fourier30_markov30_biglotto": {
+      "ticket": [
+        12,
+        14,
+        15,
+        25,
+        32,
+        40
+      ],
+      "unique_number_contribution": [
+        15,
+        32,
+        40
+      ],
+      "unique_number_count": 3,
+      "max_pair_overlap": 2,
+      "mean_pair_overlap": 0.7,
+      "marginal_coverage_contribution": 0.5,
+      "redundancy_score": 0.116667,
+      "role": "core"
+    },
+    "markov_2bet_biglotto": {
+      "ticket": [
+        16,
+        19,
+        20,
+        36,
+        45,
+        47
+      ],
+      "unique_number_contribution": [
+        19,
+        36,
+        45
+      ],
+      "unique_number_count": 3,
+      "max_pair_overlap": 3,
+      "mean_pair_overlap": 0.9,
+      "marginal_coverage_contribution": 0.5,
+      "redundancy_score": 0.15,
+      "role": "core"
+    },
+    "markov_single_biglotto": {
+      "ticket": [
+        11,
+        14,
+        18,
+        22,
+        25,
+        39
+      ],
+      "unique_number_contribution": [],
+      "unique_number_count": 0,
+      "max_pair_overlap": 3,
+      "mean_pair_overlap": 0.9,
+      "marginal_coverage_contribution": 0.0,
+      "redundancy_score": 0.15,
+      "role": "redundant"
+    },
+    "ts3_regime_3bet": {
+      "ticket": [
+        3,
+        9,
+        21,
+        30,
+        31,
+        34
+      ],
+      "unique_number_contribution": [
+        3,
+        9,
+        21
+      ],
+      "unique_number_count": 3,
+      "max_pair_overlap": 3,
+      "mean_pair_overlap": 0.3,
+      "marginal_coverage_contribution": 0.5,
+      "redundancy_score": 0.05,
+      "role": "core"
+    }
+  },
+  "current_pack_coverage": {
+    "distinct_numbers_covered": 35,
+    "pool_size": 49,
+    "coverage_fraction": 0.714286,
+    "pack_size": 11,
+    "expected_random_coverage_same_budget": 37.3536,
+    "pack_coverage_beats_random_coverage": false
+  },
+  "portfolio_combination_ranking": {
+    "k_1": [
+      {
+        "method": "top_k_by_historical_replay",
+        "k": 1,
+        "long750_portfolio_win_rate": 0.032,
+        "beats_equal_budget_random": true,
+        "uses_outcomes": true
+      },
+      {
+        "method": "equal_budget_random_baseline",
+        "k": 1,
+        "long750_portfolio_win_rate": 0.030847,
+        "beats_equal_budget_random": null,
+        "uses_outcomes": false
+      },
+      {
+        "method": "diversity_first_low_overlap",
+        "k": 1,
+        "long750_portfolio_win_rate": 0.030667,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": false
+      },
+      {
+        "method": "hybrid_strategy_plus_diversified_random",
+        "k": 1,
+        "long750_portfolio_win_rate": 0.030667,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": false
+      },
+      {
+        "method": "marginal_contribution_greedy",
+        "k": 1,
+        "long750_portfolio_win_rate": 0.030667,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": false
+      },
+      {
+        "method": "diversified_random_baseline",
+        "k": 1,
+        "long750_portfolio_win_rate": 0.030087,
+        "beats_equal_budget_random": null,
+        "uses_outcomes": false
+      },
+      {
+        "method": "stability_weighted_top_k",
+        "k": 1,
+        "long750_portfolio_win_rate": 0.022667,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": true
+      }
+    ],
+    "k_3": [
+      {
+        "method": "hybrid_strategy_plus_diversified_random",
+        "k": 3,
+        "long750_portfolio_win_rate": 0.096,
+        "beats_equal_budget_random": true,
+        "uses_outcomes": false
+      },
+      {
+        "method": "diversity_first_low_overlap",
+        "k": 3,
+        "long750_portfolio_win_rate": 0.094667,
+        "beats_equal_budget_random": true,
+        "uses_outcomes": false
+      },
+      {
+        "method": "marginal_contribution_greedy",
+        "k": 3,
+        "long750_portfolio_win_rate": 0.094667,
+        "beats_equal_budget_random": true,
+        "uses_outcomes": false
+      },
+      {
+        "method": "diversified_random_baseline",
+        "k": 3,
+        "long750_portfolio_win_rate": 0.090813,
+        "beats_equal_budget_random": null,
+        "uses_outcomes": false
+      },
+      {
+        "method": "equal_budget_random_baseline",
+        "k": 3,
+        "long750_portfolio_win_rate": 0.090433,
+        "beats_equal_budget_random": null,
+        "uses_outcomes": false
+      },
+      {
+        "method": "top_k_by_historical_replay",
+        "k": 3,
+        "long750_portfolio_win_rate": 0.077333,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": true
+      },
+      {
+        "method": "stability_weighted_top_k",
+        "k": 3,
+        "long750_portfolio_win_rate": 0.072,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": true
+      }
+    ],
+    "k_5": [
+      {
+        "method": "hybrid_strategy_plus_diversified_random",
+        "k": 5,
+        "long750_portfolio_win_rate": 0.152,
+        "beats_equal_budget_random": true,
+        "uses_outcomes": false
+      },
+      {
+        "method": "diversified_random_baseline",
+        "k": 5,
+        "long750_portfolio_win_rate": 0.150767,
+        "beats_equal_budget_random": null,
+        "uses_outcomes": false
+      },
+      {
+        "method": "equal_budget_random_baseline",
+        "k": 5,
+        "long750_portfolio_win_rate": 0.145927,
+        "beats_equal_budget_random": null,
+        "uses_outcomes": false
+      },
+      {
+        "method": "diversity_first_low_overlap",
+        "k": 5,
+        "long750_portfolio_win_rate": 0.122667,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": false
+      },
+      {
+        "method": "marginal_contribution_greedy",
+        "k": 5,
+        "long750_portfolio_win_rate": 0.122667,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": false
+      },
+      {
+        "method": "stability_weighted_top_k",
+        "k": 5,
+        "long750_portfolio_win_rate": 0.098667,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": true
+      },
+      {
+        "method": "top_k_by_historical_replay",
+        "k": 5,
+        "long750_portfolio_win_rate": 0.092,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": true
+      }
+    ],
+    "k_7": [
+      {
+        "method": "diversified_random_baseline",
+        "k": 7,
+        "long750_portfolio_win_rate": 0.2109,
+        "beats_equal_budget_random": null,
+        "uses_outcomes": false
+      },
+      {
+        "method": "equal_budget_random_baseline",
+        "k": 7,
+        "long750_portfolio_win_rate": 0.198693,
+        "beats_equal_budget_random": null,
+        "uses_outcomes": false
+      },
+      {
+        "method": "hybrid_strategy_plus_diversified_random",
+        "k": 7,
+        "long750_portfolio_win_rate": 0.186667,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": false
+      },
+      {
+        "method": "diversity_first_low_overlap",
+        "k": 7,
+        "long750_portfolio_win_rate": 0.133333,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": false
+      },
+      {
+        "method": "marginal_contribution_greedy",
+        "k": 7,
+        "long750_portfolio_win_rate": 0.133333,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": false
+      },
+      {
+        "method": "stability_weighted_top_k",
+        "k": 7,
+        "long750_portfolio_win_rate": 0.114667,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": true
+      },
+      {
+        "method": "top_k_by_historical_replay",
+        "k": 7,
+        "long750_portfolio_win_rate": 0.113333,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": true
+      }
+    ],
+    "k_11": [
+      {
+        "method": "diversified_random_baseline",
+        "k": 11,
+        "long750_portfolio_win_rate": 0.308253,
+        "beats_equal_budget_random": null,
+        "uses_outcomes": false
+      },
+      {
+        "method": "equal_budget_random_baseline",
+        "k": 11,
+        "long750_portfolio_win_rate": 0.29322,
+        "beats_equal_budget_random": null,
+        "uses_outcomes": false
+      },
+      {
+        "method": "hybrid_strategy_plus_diversified_random",
+        "k": 11,
+        "long750_portfolio_win_rate": 0.250667,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": false
+      },
+      {
+        "method": "all_11_strategy_pack",
+        "k": 11,
+        "long750_portfolio_win_rate": 0.142667,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": false
+      },
+      {
+        "method": "diversity_first_low_overlap",
+        "k": 11,
+        "long750_portfolio_win_rate": 0.142667,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": false
+      },
+      {
+        "method": "marginal_contribution_greedy",
+        "k": 11,
+        "long750_portfolio_win_rate": 0.142667,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": false
+      },
+      {
+        "method": "stability_weighted_top_k",
+        "k": 11,
+        "long750_portfolio_win_rate": 0.142667,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": true
+      },
+      {
+        "method": "top_k_by_historical_replay",
+        "k": 11,
+        "long750_portfolio_win_rate": 0.142667,
+        "beats_equal_budget_random": false,
+        "uses_outcomes": true
+      }
+    ]
+  },
+  "portfolio_combination_detail": {
+    "top_k_by_historical_replay": {
+      "recent_100": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.01,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.01965,
+          "equal_budget_random_std": 0.017871,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.04,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.04955,
+          "equal_budget_random_std": 0.029263,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.05,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.0937,
+          "equal_budget_random_std": 0.03489,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.05,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.14725,
+          "equal_budget_random_std": 0.042379,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.08,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.2127,
+          "equal_budget_random_std": 0.044201,
+          "beats_random_beyond_mc_noise": false
+        }
+      },
+      "mid_300": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.03,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": 0.0,
+          "equal_budget_random_std": 0.010551,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.08,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.010283,
+          "equal_budget_random_std": 0.017094,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.093333,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.052267,
+          "equal_budget_random_std": 0.022759,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.103333,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.0959,
+          "equal_budget_random_std": 0.024485,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.143333,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.1508,
+          "equal_budget_random_std": 0.026609,
+          "beats_random_beyond_mc_noise": false
+        }
+      },
+      "long_750": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.032,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": true,
+          "vs_random_delta": 0.001153,
+          "equal_budget_random_std": 0.00616,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.077333,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.0131,
+          "equal_budget_random_std": 0.010724,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.092,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.053927,
+          "equal_budget_random_std": 0.014205,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.113333,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.08536,
+          "equal_budget_random_std": 0.015161,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.142667,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.150553,
+          "equal_budget_random_std": 0.016803,
+          "beats_random_beyond_mc_noise": false
+        }
+      },
+      "all_available": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.025835,
+          "scored_targets": 1587,
+          "warmup_skipped": 30,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.005235,
+          "equal_budget_random_std": 0.004222,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.072464,
+          "scored_targets": 1587,
+          "warmup_skipped": 30,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.01808,
+          "equal_budget_random_std": 0.006826,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.090737,
+          "scored_targets": 1587,
+          "warmup_skipped": 30,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.055262,
+          "equal_budget_random_std": 0.00871,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.110271,
+          "scored_targets": 1587,
+          "warmup_skipped": 30,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.088529,
+          "equal_budget_random_std": 0.009812,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.136106,
+          "scored_targets": 1587,
+          "warmup_skipped": 30,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.157119,
+          "equal_budget_random_std": 0.011061,
+          "beats_random_beyond_mc_noise": false
+        }
+      }
+    },
+    "diversity_first_low_overlap": {
+      "recent_100": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.01,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.01965,
+          "equal_budget_random_std": 0.017871,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.06,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.02955,
+          "equal_budget_random_std": 0.029263,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.07,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.0737,
+          "equal_budget_random_std": 0.03489,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.08,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.11725,
+          "equal_budget_random_std": 0.042379,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.08,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.2127,
+          "equal_budget_random_std": 0.044201,
+          "beats_random_beyond_mc_noise": false
+        }
+      },
+      "mid_300": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.026667,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.003333,
+          "equal_budget_random_std": 0.010551,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.09,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.000283,
+          "equal_budget_random_std": 0.017094,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.12,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.0256,
+          "equal_budget_random_std": 0.022759,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.136667,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.062566,
+          "equal_budget_random_std": 0.024485,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.143333,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.1508,
+          "equal_budget_random_std": 0.026609,
+          "beats_random_beyond_mc_noise": false
+        }
+      },
+      "long_750": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.030667,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.00018,
+          "equal_budget_random_std": 0.00616,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.094667,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": true,
+          "vs_random_delta": 0.004234,
+          "equal_budget_random_std": 0.010724,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.122667,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.02326,
+          "equal_budget_random_std": 0.014205,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.133333,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.06536,
+          "equal_budget_random_std": 0.015161,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.142667,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.150553,
+          "equal_budget_random_std": 0.016803,
+          "beats_random_beyond_mc_noise": false
+        }
+      },
+      "all_available": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.027211,
+          "scored_targets": 1617,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.003859,
+          "equal_budget_random_std": 0.004222,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.085343,
+          "scored_targets": 1617,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.005201,
+          "equal_budget_random_std": 0.006826,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.11812,
+          "scored_targets": 1617,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.027879,
+          "equal_budget_random_std": 0.00871,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.128633,
+          "scored_targets": 1617,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.070167,
+          "equal_budget_random_std": 0.009812,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.135436,
+          "scored_targets": 1617,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.157789,
+          "equal_budget_random_std": 0.011061,
+          "beats_random_beyond_mc_noise": false
+        }
+      }
+    },
+    "marginal_contribution_greedy": {
+      "recent_100": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.01,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.01965,
+          "equal_budget_random_std": 0.017871,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.06,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.02955,
+          "equal_budget_random_std": 0.029263,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.07,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.0737,
+          "equal_budget_random_std": 0.03489,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.08,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.11725,
+          "equal_budget_random_std": 0.042379,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.08,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.2127,
+          "equal_budget_random_std": 0.044201,
+          "beats_random_beyond_mc_noise": false
+        }
+      },
+      "mid_300": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.026667,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.003333,
+          "equal_budget_random_std": 0.010551,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.09,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.000283,
+          "equal_budget_random_std": 0.017094,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.12,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.0256,
+          "equal_budget_random_std": 0.022759,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.136667,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.062566,
+          "equal_budget_random_std": 0.024485,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.143333,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.1508,
+          "equal_budget_random_std": 0.026609,
+          "beats_random_beyond_mc_noise": false
+        }
+      },
+      "long_750": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.030667,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.00018,
+          "equal_budget_random_std": 0.00616,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.094667,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": true,
+          "vs_random_delta": 0.004234,
+          "equal_budget_random_std": 0.010724,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.122667,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.02326,
+          "equal_budget_random_std": 0.014205,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.133333,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.06536,
+          "equal_budget_random_std": 0.015161,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.142667,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.150553,
+          "equal_budget_random_std": 0.016803,
+          "beats_random_beyond_mc_noise": false
+        }
+      },
+      "all_available": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.027211,
+          "scored_targets": 1617,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.003859,
+          "equal_budget_random_std": 0.004222,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.085343,
+          "scored_targets": 1617,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.005201,
+          "equal_budget_random_std": 0.006826,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.11812,
+          "scored_targets": 1617,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.027879,
+          "equal_budget_random_std": 0.00871,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.128633,
+          "scored_targets": 1617,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.070167,
+          "equal_budget_random_std": 0.009812,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.135436,
+          "scored_targets": 1617,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.157789,
+          "equal_budget_random_std": 0.011061,
+          "beats_random_beyond_mc_noise": false
+        }
+      }
+    },
+    "stability_weighted_top_k": {
+      "recent_100": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.02,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.00965,
+          "equal_budget_random_std": 0.017871,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.04,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.04955,
+          "equal_budget_random_std": 0.029263,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.04,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.1037,
+          "equal_budget_random_std": 0.03489,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.05,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.14725,
+          "equal_budget_random_std": 0.042379,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.08,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.2127,
+          "equal_budget_random_std": 0.044201,
+          "beats_random_beyond_mc_noise": false
+        }
+      },
+      "mid_300": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.02,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.01,
+          "equal_budget_random_std": 0.010551,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.053333,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.03695,
+          "equal_budget_random_std": 0.017094,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.09,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.0556,
+          "equal_budget_random_std": 0.022759,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.106667,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.092566,
+          "equal_budget_random_std": 0.024485,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.143333,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.1508,
+          "equal_budget_random_std": 0.026609,
+          "beats_random_beyond_mc_noise": false
+        }
+      },
+      "long_750": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.022667,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.00818,
+          "equal_budget_random_std": 0.00616,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.072,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.018433,
+          "equal_budget_random_std": 0.010724,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.098667,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.04726,
+          "equal_budget_random_std": 0.014205,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.114667,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.084026,
+          "equal_budget_random_std": 0.015161,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.142667,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.150553,
+          "equal_budget_random_std": 0.016803,
+          "beats_random_beyond_mc_noise": false
+        }
+      },
+      "all_available": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.020794,
+          "scored_targets": 1587,
+          "warmup_skipped": 30,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.010276,
+          "equal_budget_random_std": 0.004222,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.061752,
+          "scored_targets": 1587,
+          "warmup_skipped": 30,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.028792,
+          "equal_budget_random_std": 0.006826,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.088847,
+          "scored_targets": 1587,
+          "warmup_skipped": 30,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.057152,
+          "equal_budget_random_std": 0.00871,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.109011,
+          "scored_targets": 1587,
+          "warmup_skipped": 30,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.089789,
+          "equal_budget_random_std": 0.009812,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.136106,
+          "scored_targets": 1587,
+          "warmup_skipped": 30,
+          "leakage_free": true,
+          "uses_outcomes": true,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.157119,
+          "equal_budget_random_std": 0.011061,
+          "beats_random_beyond_mc_noise": false
+        }
+      }
+    },
+    "hybrid_strategy_plus_diversified_random": {
+      "recent_100": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.01,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.01965,
+          "equal_budget_random_std": 0.017871,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.08,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.00955,
+          "equal_budget_random_std": 0.029263,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.1,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.0437,
+          "equal_budget_random_std": 0.03489,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.15,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.04725,
+          "equal_budget_random_std": 0.042379,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.2,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.0927,
+          "equal_budget_random_std": 0.044201,
+          "beats_random_beyond_mc_noise": false
+        }
+      },
+      "mid_300": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.026667,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.003333,
+          "equal_budget_random_std": 0.010551,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.076667,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.013616,
+          "equal_budget_random_std": 0.017094,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.15,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": true,
+          "vs_random_delta": 0.0044,
+          "equal_budget_random_std": 0.022759,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.18,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.019233,
+          "equal_budget_random_std": 0.024485,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.25,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.044133,
+          "equal_budget_random_std": 0.026609,
+          "beats_random_beyond_mc_noise": false
+        }
+      },
+      "long_750": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.030667,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.00018,
+          "equal_budget_random_std": 0.00616,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.096,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": true,
+          "vs_random_delta": 0.005567,
+          "equal_budget_random_std": 0.010724,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.152,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": true,
+          "vs_random_delta": 0.006073,
+          "equal_budget_random_std": 0.014205,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.186667,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.012026,
+          "equal_budget_random_std": 0.015161,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.250667,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.042553,
+          "equal_budget_random_std": 0.016803,
+          "beats_random_beyond_mc_noise": false
+        }
+      },
+      "all_available": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.027211,
+          "scored_targets": 1617,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.003859,
+          "equal_budget_random_std": 0.004222,
+          "beats_random_beyond_mc_noise": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.09462,
+          "scored_targets": 1617,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": true,
+          "vs_random_delta": 0.004076,
+          "equal_budget_random_std": 0.006826,
+          "beats_random_beyond_mc_noise": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.14162,
+          "scored_targets": 1617,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.004379,
+          "equal_budget_random_std": 0.00871,
+          "beats_random_beyond_mc_noise": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.179963,
+          "scored_targets": 1617,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.018837,
+          "equal_budget_random_std": 0.009812,
+          "beats_random_beyond_mc_noise": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.262214,
+          "scored_targets": 1617,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.031011,
+          "equal_budget_random_std": 0.011061,
+          "beats_random_beyond_mc_noise": false
+        }
+      }
+    },
+    "all_11_strategy_pack": {
+      "recent_100": {
+        "1": {
+          "applicable": false
+        },
+        "3": {
+          "applicable": false
+        },
+        "5": {
+          "applicable": false
+        },
+        "7": {
+          "applicable": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.08,
+          "scored_targets": 100,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.2127,
+          "equal_budget_random_std": 0.044201,
+          "beats_random_beyond_mc_noise": false
+        }
+      },
+      "mid_300": {
+        "1": {
+          "applicable": false
+        },
+        "3": {
+          "applicable": false
+        },
+        "5": {
+          "applicable": false
+        },
+        "7": {
+          "applicable": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.143333,
+          "scored_targets": 300,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.1508,
+          "equal_budget_random_std": 0.026609,
+          "beats_random_beyond_mc_noise": false
+        }
+      },
+      "long_750": {
+        "1": {
+          "applicable": false
+        },
+        "3": {
+          "applicable": false
+        },
+        "5": {
+          "applicable": false
+        },
+        "7": {
+          "applicable": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.142667,
+          "scored_targets": 750,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.150553,
+          "equal_budget_random_std": 0.016803,
+          "beats_random_beyond_mc_noise": false
+        }
+      },
+      "all_available": {
+        "1": {
+          "applicable": false
+        },
+        "3": {
+          "applicable": false
+        },
+        "5": {
+          "applicable": false
+        },
+        "7": {
+          "applicable": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.135436,
+          "scored_targets": 1617,
+          "warmup_skipped": 0,
+          "leakage_free": true,
+          "uses_outcomes": false,
+          "beats_equal_budget_random": false,
+          "vs_random_delta": -0.157789,
+          "equal_budget_random_std": 0.011061,
+          "beats_random_beyond_mc_noise": false
+        }
+      }
+    },
+    "equal_budget_random_baseline": {
+      "recent_100": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.02965,
+          "std": 0.017871,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.08955,
+          "std": 0.029263,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.1437,
+          "std": 0.03489,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.19725,
+          "std": 0.042379,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.2927,
+          "std": 0.044201,
+          "leakage_free": true,
+          "uses_outcomes": false
+        }
+      },
+      "mid_300": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.03,
+          "std": 0.010551,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.090283,
+          "std": 0.017094,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.1456,
+          "std": 0.022759,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.199233,
+          "std": 0.024485,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.294133,
+          "std": 0.026609,
+          "leakage_free": true,
+          "uses_outcomes": false
+        }
+      },
+      "long_750": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.030847,
+          "std": 0.00616,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.090433,
+          "std": 0.010724,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.145927,
+          "std": 0.014205,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.198693,
+          "std": 0.015161,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.29322,
+          "std": 0.016803,
+          "leakage_free": true,
+          "uses_outcomes": false
+        }
+      },
+      "all_available": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.03107,
+          "std": 0.004222,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.090544,
+          "std": 0.006826,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.145999,
+          "std": 0.00871,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.1988,
+          "std": 0.009812,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.293225,
+          "std": 0.011061,
+          "leakage_free": true,
+          "uses_outcomes": false
+        }
+      }
+    },
+    "diversified_random_baseline": {
+      "recent_100": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.03135,
+          "std": 0.017711,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.0925,
+          "std": 0.029979,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.15435,
+          "std": 0.036036,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.2138,
+          "std": 0.041335,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.31455,
+          "std": 0.047274,
+          "leakage_free": true,
+          "uses_outcomes": false
+        }
+      },
+      "mid_300": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.031183,
+          "std": 0.010593,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.0919,
+          "std": 0.016064,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.151683,
+          "std": 0.020149,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.21195,
+          "std": 0.023348,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.310967,
+          "std": 0.027946,
+          "leakage_free": true,
+          "uses_outcomes": false
+        }
+      },
+      "long_750": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.030087,
+          "std": 0.00632,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.090813,
+          "std": 0.010252,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.150767,
+          "std": 0.012849,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.2109,
+          "std": 0.014688,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.308253,
+          "std": 0.017139,
+          "leakage_free": true,
+          "uses_outcomes": false
+        }
+      },
+      "all_available": {
+        "1": {
+          "applicable": true,
+          "portfolio_win_rate": 0.03043,
+          "std": 0.003983,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "3": {
+          "applicable": true,
+          "portfolio_win_rate": 0.091487,
+          "std": 0.006762,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "5": {
+          "applicable": true,
+          "portfolio_win_rate": 0.151744,
+          "std": 0.008844,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "7": {
+          "applicable": true,
+          "portfolio_win_rate": 0.211939,
+          "std": 0.010561,
+          "leakage_free": true,
+          "uses_outcomes": false
+        },
+        "11": {
+          "applicable": true,
+          "portfolio_win_rate": 0.309332,
+          "std": 0.011927,
+          "leakage_free": true,
+          "uses_outcomes": false
+        }
+      }
+    }
+  },
+  "random_baseline_config": {
+    "type": "equal_budget_random",
+    "construction": "k uniform-random distinct-6 tickets per target",
+    "seed": 42,
+    "replicates": 200,
+    "analytic_portfolio_win_rate_formula": "1-(1-p_any_prize)^k"
+  },
+  "diversified_random_baseline_config": {
+    "type": "diversified_random",
+    "construction": "low-overlap tickets drawn without replacement across the 49-pool, then random fallback",
+    "seed": 42,
+    "replicates": 200
+  },
+  "baseline_and_statistics": {
+    "baseline": {
+      "expected_main_hits_single_ticket": 0.734694,
+      "p_main_ge3": 0.01863755,
+      "p_main_eq2_and_special": 0.01231424,
+      "p_any_prize_single_ticket": 0.03095178,
+      "p_exact_main_hits": {
+        "0": 0.4359649755,
+        "1": 0.4130194505,
+        "2": 0.132378029,
+        "3": 0.0176504039,
+        "4": 0.0009686197,
+        "5": 1.84499e-05,
+        "6": 7.15e-08
+      },
+      "combinations_6_of_49": 13983816
+    },
+    "primary_family_test_count": 33,
+    "bonferroni_alpha": 0.00151515,
+    "bonferroni_note": "Primary family = 11 strategies x 3 windows on the prize-aware win metric = 33 tests. Many further comparisons (all_available window, secondary metrics, 8 combination methods x 5 budgets x 4 horizons) are NOT in this family and are descriptive only.",
+    "bh_fdr": {
+      "m": 33,
+      "alpha": 0.05,
+      "max_significant_rank": 0,
+      "threshold": 0.0
+    },
+    "per_strategy_window_tests": [
+      {
+        "strategy_id": "bet2_fourier_expansion_biglotto",
+        "window": "recent_100",
+        "support": 100,
+        "prize_win_count": 1,
+        "prize_win_rate": 0.01,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.95689389
+      },
+      {
+        "strategy_id": "bet2_fourier_expansion_biglotto",
+        "window": "mid_300",
+        "support": 300,
+        "prize_win_count": 8,
+        "prize_win_rate": 0.026667,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.71240772
+      },
+      {
+        "strategy_id": "bet2_fourier_expansion_biglotto",
+        "window": "long_750",
+        "support": 750,
+        "prize_win_count": 23,
+        "prize_win_rate": 0.030667,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.54694079
+      },
+      {
+        "strategy_id": "biglotto_deviation_2bet",
+        "window": "recent_100",
+        "support": 100,
+        "prize_win_count": 1,
+        "prize_win_rate": 0.01,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.95689389
+      },
+      {
+        "strategy_id": "biglotto_deviation_2bet",
+        "window": "mid_300",
+        "support": 300,
+        "prize_win_count": 9,
+        "prize_win_rate": 0.03,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.58390519
+      },
+      {
+        "strategy_id": "biglotto_deviation_2bet",
+        "window": "long_750",
+        "support": 750,
+        "prize_win_count": 29,
+        "prize_win_rate": 0.038667,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.13372589
+      },
+      {
+        "strategy_id": "biglotto_echo_aware_3bet",
+        "window": "recent_100",
+        "support": 100,
+        "prize_win_count": 2,
+        "prize_win_rate": 0.02,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.81921129
+      },
+      {
+        "strategy_id": "biglotto_echo_aware_3bet",
+        "window": "mid_300",
+        "support": 300,
+        "prize_win_count": 10,
+        "prize_win_rate": 0.033333,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.45073952
+      },
+      {
+        "strategy_id": "biglotto_echo_aware_3bet",
+        "window": "long_750",
+        "support": 750,
+        "prize_win_count": 22,
+        "prize_win_rate": 0.029333,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.63012639
+      },
+      {
+        "strategy_id": "biglotto_triple_strike",
+        "window": "recent_100",
+        "support": 100,
+        "prize_win_count": 1,
+        "prize_win_rate": 0.01,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.95689389
+      },
+      {
+        "strategy_id": "biglotto_triple_strike",
+        "window": "mid_300",
+        "support": 300,
+        "prize_win_count": 7,
+        "prize_win_rate": 0.023333,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.82225614
+      },
+      {
+        "strategy_id": "biglotto_triple_strike",
+        "window": "long_750",
+        "support": 750,
+        "prize_win_count": 21,
+        "prize_win_rate": 0.028,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.70872285
+      },
+      {
+        "strategy_id": "biglotto_ts3_markov_4bet_w30",
+        "window": "recent_100",
+        "support": 100,
+        "prize_win_count": 1,
+        "prize_win_rate": 0.01,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.95689389
+      },
+      {
+        "strategy_id": "biglotto_ts3_markov_4bet_w30",
+        "window": "mid_300",
+        "support": 300,
+        "prize_win_count": 7,
+        "prize_win_rate": 0.023333,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.82225614
+      },
+      {
+        "strategy_id": "biglotto_ts3_markov_4bet_w30",
+        "window": "long_750",
+        "support": 750,
+        "prize_win_count": 21,
+        "prize_win_rate": 0.028,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.70872285
+      },
+      {
+        "strategy_id": "cold_complement_biglotto",
+        "window": "recent_100",
+        "support": 100,
+        "prize_win_count": 3,
+        "prize_win_rate": 0.03,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.6015283
+      },
+      {
+        "strategy_id": "cold_complement_biglotto",
+        "window": "mid_300",
+        "support": 300,
+        "prize_win_count": 10,
+        "prize_win_rate": 0.033333,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.45073952
+      },
+      {
+        "strategy_id": "cold_complement_biglotto",
+        "window": "long_750",
+        "support": 750,
+        "prize_win_count": 19,
+        "prize_win_rate": 0.025333,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.84014694
+      },
+      {
+        "strategy_id": "coldpool15_biglotto",
+        "window": "recent_100",
+        "support": 100,
+        "prize_win_count": 3,
+        "prize_win_rate": 0.03,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.6015283
+      },
+      {
+        "strategy_id": "coldpool15_biglotto",
+        "window": "mid_300",
+        "support": 300,
+        "prize_win_count": 10,
+        "prize_win_rate": 0.033333,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.45073952
+      },
+      {
+        "strategy_id": "coldpool15_biglotto",
+        "window": "long_750",
+        "support": 750,
+        "prize_win_count": 19,
+        "prize_win_rate": 0.025333,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.84014694
+      },
+      {
+        "strategy_id": "fourier30_markov30_biglotto",
+        "window": "recent_100",
+        "support": 100,
+        "prize_win_count": 3,
+        "prize_win_rate": 0.03,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.6015283
+      },
+      {
+        "strategy_id": "fourier30_markov30_biglotto",
+        "window": "mid_300",
+        "support": 300,
+        "prize_win_count": 9,
+        "prize_win_rate": 0.03,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.58390519
+      },
+      {
+        "strategy_id": "fourier30_markov30_biglotto",
+        "window": "long_750",
+        "support": 750,
+        "prize_win_count": 24,
+        "prize_win_rate": 0.032,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.46284158
+      },
+      {
+        "strategy_id": "markov_2bet_biglotto",
+        "window": "recent_100",
+        "support": 100,
+        "prize_win_count": 2,
+        "prize_win_rate": 0.02,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.81921129
+      },
+      {
+        "strategy_id": "markov_2bet_biglotto",
+        "window": "mid_300",
+        "support": 300,
+        "prize_win_count": 8,
+        "prize_win_rate": 0.026667,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.71240772
+      },
+      {
+        "strategy_id": "markov_2bet_biglotto",
+        "window": "long_750",
+        "support": 750,
+        "prize_win_count": 18,
+        "prize_win_rate": 0.024,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.88942276
+      },
+      {
+        "strategy_id": "markov_single_biglotto",
+        "window": "recent_100",
+        "support": 100,
+        "prize_win_count": 2,
+        "prize_win_rate": 0.02,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.81921129
+      },
+      {
+        "strategy_id": "markov_single_biglotto",
+        "window": "mid_300",
+        "support": 300,
+        "prize_win_count": 8,
+        "prize_win_rate": 0.026667,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.71240772
+      },
+      {
+        "strategy_id": "markov_single_biglotto",
+        "window": "long_750",
+        "support": 750,
+        "prize_win_count": 18,
+        "prize_win_rate": 0.024,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.88942276
+      },
+      {
+        "strategy_id": "ts3_regime_3bet",
+        "window": "recent_100",
+        "support": 100,
+        "prize_win_count": 1,
+        "prize_win_rate": 0.01,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.95689389
+      },
+      {
+        "strategy_id": "ts3_regime_3bet",
+        "window": "mid_300",
+        "support": 300,
+        "prize_win_count": 7,
+        "prize_win_rate": 0.023333,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.82225614
+      },
+      {
+        "strategy_id": "ts3_regime_3bet",
+        "window": "long_750",
+        "support": 750,
+        "prize_win_count": 21,
+        "prize_win_rate": 0.028,
+        "baseline_p_any_prize": 0.03095178,
+        "p_value_uncorrected_upper": 0.70872285
+      }
+    ],
+    "survivors_uncorrected_count": 0,
+    "survivors_bonferroni_count": 0,
+    "survivors_uncorrected": [],
+    "survivors_bonferroni": []
+  },
+  "prize_aware_definition": {
+    "rule": "main_hits >= 3 OR (main_hits == 2 AND special in ticket)",
+    "tiers": [
+      {
+        "tier": "1 (jackpot)",
+        "rule": "match 6 main"
+      },
+      {
+        "tier": "2",
+        "rule": "match 5 main + special"
+      },
+      {
+        "tier": "3",
+        "rule": "match 5 main"
+      },
+      {
+        "tier": "4",
+        "rule": "match 4 main + special"
+      },
+      {
+        "tier": "5",
+        "rule": "match 4 main"
+      },
+      {
+        "tier": "6",
+        "rule": "match 3 main + special"
+      },
+      {
+        "tier": "7",
+        "rule": "match 2 main + special"
+      },
+      {
+        "tier": "8 (lowest)",
+        "rule": "match 3 main"
+      }
+    ]
+  },
+  "best_observation_only_candidates": [],
+  "any_strategy_beats_random_baseline": false,
+  "any_strategy_beats_random_baseline_corrected": false,
+  "any_combination_beats_random_baseline_mean": true,
+  "any_combination_beats_random_beyond_mc_noise": false,
+  "any_combination_beats_all_11": true,
+  "random_dominates_strategy_pack_at_k_ge3": true,
+  "multiple_testing_warning": "Bonferroni and BH-FDR applied to the primary 33-test family only. The full ranking explores far more comparisons (combination methods x budgets x horizons x metrics); treat all non-primary positives as descriptive, not confirmatory. Retrospective replay cannot confirm a prospective edge.",
+  "stability_across_horizons": {
+    "biglotto_deviation_2bet": 0.0,
+    "fourier30_markov30_biglotto": 0.934783,
+    "bet2_fourier_expansion_biglotto": 0.079202,
+    "biglotto_echo_aware_3bet": 0.516137,
+    "biglotto_ts3_markov_4bet_w30": 0.11956,
+    "ts3_regime_3bet": 0.11956,
+    "biglotto_triple_strike": 0.11956,
+    "coldpool15_biglotto": 0.729321,
+    "cold_complement_biglotto": 0.729321,
+    "markov_2bet_biglotto": 0.716968,
+    "markov_single_biglotto": 0.716968
+  },
+  "interpretation": "Retrospective historical replay only. NULL = no strategy beats the analytic any-prize random baseline after Bonferroni correction AND no combination beats the equal-budget random baseline beyond Monte-Carlo noise. The few nominal combination wins over the random mean are within one MC standard deviation. At budgets k>=3 the equal-budget and diversified random baselines OUTPERFORM the strategy pack because the frozen primaries are internally redundant (lower distinct-number coverage than independent random tickets). Any observation-only candidate would still require separately authorized prospective / OOS validation before promotion; none is performed here.",
+  "prediction_success_claim": false,
+  "strategy_promoted": false,
+  "activation_authorized": false,
+  "registry_mutated": false,
+  "production_ready_claim": false,
+  "official_target_lookup": false,
+  "official_deadline_lookup": false,
+  "real_publication_performed": false,
+  "pre_draw_manifest_created": false,
+  "publication_pr_created": false,
+  "post_draw_evaluation_started": false,
+  "limitations": [
+    "Retrospective historical replay only; not a forward prediction or success-probability estimate.",
+    "Strategy unit is the frozen bet_index=1 primary; multi-bet strategies' additional bets are reflected only via the portfolio combinations (Task D).",
+    "Tiny base rates (any-prize ~3.1% single ticket) make per-window estimates noisy; horizons overlap (recent_100 subset of mid_300 subset of long_750 subset of all_available).",
+    "Walk-forward selection uses an expanding prior window with a 30-target warmup; the first 30 all_available targets are skipped for outcome-based methods.",
+    "Combination significance is descriptive only under heavy multiple testing.",
+    "Canonical DB is a single read-only snapshot; a live writer may change WAL/SHM but no content drift was observed."
+  ],
+  "next_recommended_step": "If NULL (expected), proceed to a separately authorized P280AV private ticket-decision runner that consumes this ranking/coverage output without claiming an edge. If observation-only candidates surfaced, they require separately authorized prospective/OOS validation before any promotion. No publication, activation, or post-draw evaluation is authorized by this task.",
+  "provenance": {
+    "git_head": "5e810ec2b427823c9e2de575d429eb2c43b3836d",
+    "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+    "tool": "tools/p280at_big649_strategy_ranking_replay.py",
+    "python": "3.9.6"
+  },
+  "canonical_digest": "a905cc7646f54f1e8ec4d64c8a07dce529e5b5455c70baf4c9f09e40a9d3e5db"
+}

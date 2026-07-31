@@ -1,0 +1,79 @@
+{
+  "task_id": "P213G",
+  "classification": "P213G_SOURCE_FORMAT_VALIDATED_WITH_MOCK_ONLY",
+  "task_type": "Type C",
+  "source_authorization": "Authorize P213G 3_STAR/4_STAR historical draw re-download and dry-run source parser validation (no DB write to production)",
+  "lottery_scope": ["3_STAR", "4_STAR"],
+  "date": "2026-06-05",
+
+  "source_status": "P213G_SOURCE_FORMAT_VALIDATED_WITH_MOCK_ONLY",
+  "source_provenance": "Mock content from lottery_api/tools/debug_validator.py and debug_comprehensive.py; represents Taiwan Lottery TXT format; no real historical CSV/TXT files present in repo",
+  "source_checksum": null,
+  "real_historical_files_found": false,
+  "live_download_attempted": false,
+  "format_validated": true,
+  "format_has_draw_order_field": true,
+  "format_draw_order_field_name": "開出順序",
+
+  "parsed_row_count": 5,
+  "invalid_row_count": 0,
+  "duplicate_draw_ids": 0,
+  "db_match_count": 0,
+  "db_mismatch_count": 2,
+  "db_match_note": "2 fixture draw IDs exist in production DB with different real numbers — expected for mock validation; DB comparison logic confirmed correct",
+  "not_in_db_count": 3,
+
+  "row_artifact_path": "outputs/research/p213g_3star_4star_dry_run_source_parser_rows_20260605.json",
+  "parser_script_path": "scripts/p213g_3star_4star_dry_run_source_parser.py",
+
+  "tests": {
+    "file": "tests/test_p213g_3star_4star_dry_run_source_parser.py",
+    "total": 27,
+    "result": "PASS"
+  },
+
+  "production_db_write": false,
+  "production_db_rows_before": 94924,
+  "production_db_rows_after": 94924,
+  "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+
+  "no_registry_mutation": true,
+  "no_production_change": true,
+  "no_monitoring_change": true,
+  "no_strategy_authorization": true,
+  "no_betting_advice": true,
+  "same_pr_closeout": true,
+
+  "p238b_interpretation": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY — observation only; not a strategy signal; not betting advice; not a production change; unchanged by this task",
+
+  "remaining_limitations": [
+    "No real historical 3_STAR/4_STAR source files available — format validated with mock only",
+    "Live download not performed — requires obtaining actual source files before P213H",
+    "P213H cannot proceed until real source files are validated with actual draw numbers",
+    "DB backup required before P213H",
+    "Rollback plan required before P213H"
+  ],
+
+  "remaining_gates_before_db_recovery": [
+    "Obtain real historical 3_STAR/4_STAR TXT source files",
+    "Re-run parser with real files and confirm sorted numbers match production DB",
+    "Confirm production DB backup",
+    "Document rollback plan",
+    "Explicit P213H DB-write authorization"
+  ],
+
+  "recommended_next_direction": "P213H_controlled_production_DB_migration",
+  "exact_authorization_phrase_for_next_direction": "Authorize P213H 3_STAR/4_STAR controlled production DB migration (DB write authorized, backup confirmed, dry-run passed)",
+
+  "final_state": {
+    "classification": "P213G_SOURCE_FORMAT_VALIDATED_WITH_MOCK_ONLY",
+    "production_db_rows_unchanged": 94924,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "p213f_remains_complete": true,
+    "p238b_remains_observation_only": true,
+    "star_games_remain_underpowered_no_signal": true,
+    "active_task_status": "WAITING_FOR_USER_AUTHORIZATION",
+    "no_active_worker": true,
+    "separate_closeout_pr_needed": false
+  }
+}

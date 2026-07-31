@@ -1,0 +1,18 @@
+hook_reference,source_path,indicator_category,indicator,line,ast_node_type,evidence
+scheduler.load_data,lottery_api/utils/scheduler.py,file_output,json.dump,217,text,json.dump({
+scheduler.load_data,lottery_api/utils/scheduler.py,file_output,json.dump,312,text,json.dump({
+scheduler.load_data,lottery_api/utils/scheduler.py,file_output,json.dump,427,text,json.dump({
+scheduler.load_data,lottery_api/utils/scheduler.py,file_output,open(,216,text,"with open(DATA_FILE, 'w', encoding='utf-8') as f:"
+scheduler.load_data,lottery_api/utils/scheduler.py,file_output,open(,230,text,"with open(DATA_FILE, 'r', encoding='utf-8') as f:"
+scheduler.load_data,lottery_api/utils/scheduler.py,file_output,open(,311,text,"with open('data/latest_history.json', 'w', encoding='utf-8') as f:"
+scheduler.load_data,lottery_api/utils/scheduler.py,file_output,open(,326,text,"with open('data/latest_history.json', 'r', encoding='utf-8') as f:"
+scheduler.load_data,lottery_api/utils/scheduler.py,file_output,open(,426,text,"with open(fname, 'w', encoding='utf-8') as f:"
+scheduler.load_data,lottery_api/utils/scheduler.py,file_output,open(,441,text,"with open(fname, 'r', encoding='utf-8') as f:"
+scheduler.load_data,lottery_api/utils/scheduler.py,runtime_side_effect,.start(,71,text,self.scheduler.start()
+scheduler.load_data,lottery_api/utils/scheduler.py,runtime_side_effect,AsyncIOScheduler,10,text,from apscheduler.schedulers.asyncio import AsyncIOScheduler
+scheduler.load_data,lottery_api/utils/scheduler.py,runtime_side_effect,AsyncIOScheduler,32,text,self.scheduler = AsyncIOScheduler()
+scheduler.load_data,lottery_api/utils/scheduler.py,runtime_side_effect,top_level_call_assignment,19,Module,logger = logging.getLogger(__name__)
+scheduler.load_data,lottery_api/utils/scheduler.py,runtime_side_effect,top_level_call_assignment,22,Module,BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+scheduler.load_data,lottery_api/utils/scheduler.py,runtime_side_effect,top_level_call_assignment,23,Module,"DATA_DIR = os.path.join(BASE_DIR, ""data"")"
+scheduler.load_data,lottery_api/utils/scheduler.py,runtime_side_effect,top_level_call_assignment,24,Module,"DATA_FILE = os.path.join(DATA_DIR, ""lottery_history.json"")"
+scheduler.load_data,lottery_api/utils/scheduler.py,runtime_side_effect,top_level_call_assignment,468,Module,scheduler = AutoLearningScheduler()

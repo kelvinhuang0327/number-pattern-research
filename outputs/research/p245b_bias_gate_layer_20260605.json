@@ -1,0 +1,199 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P245B",
+  "date": "2026-06-05",
+  "type": "read_only_design_artifact",
+
+  "dependency_artifacts_verified": [
+    "P236A — outputs/research/p236a_external_statistical_methods_scouting_20260604.md (present, verified)",
+    "P237C — outputs/research/p237c_nist_randomness_audit_tripwire_design_20260604.md (present, verified: P237C_NIST_RANDOMNESS_AUDIT_TRIPWIRE_DESIGN_READY)",
+    "P238B — outputs/research/p238b_nist_randomness_audit_artifact_20260604.json (present, verified: RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY)",
+    "P219 — outputs/research/p219_external_method_diagnostic_sweep_20260605.md (present, verified: P219_TEN_METHOD_SWEEP_PREDICTIVE_NULL_PLUS_BIG_LOTTO_DATA_CONTAMINATION_ARTIFACT, committed 5bb61b4)"
+  ],
+  "dependency_artifacts_missing": [
+    "P245A — outputs/research/p245a_external_predictive_method_scouting_20260605.md (absent — P245B does not depend on P245A; design proceeds from P236A/P237C/P238B/P219)"
+  ],
+
+  "prior_findings": {
+    "P236A": {
+      "conclusion": "7/8 external statistical methods already owned. Single net-new diagnostic: NIST-style randomness audit as SSOT tripwire. No external method raises P(win) on fair-random lotteries.",
+      "classification": "P236A_EXTERNAL_STAT_METHODS_SCOUTING_COMPLETE_FALSIFICATION_AND_DIAGNOSTICS_ONLY"
+    },
+    "P237C": {
+      "conclusion": "Defines draw-level randomness-audit tripwire architecture: uniformity, independence, rolling-window checks; multiple-testing corrected; GREEN=random-compatible (no action); anomaly detection is NOT prediction.",
+      "classification": "P237C_NIST_RANDOMNESS_AUDIT_TRIPWIRE_DESIGN_READY"
+    },
+    "P238B": {
+      "conclusion": "NIST-adapted battery ran on all games. Result: YELLOW = faint observation, no actionable bias, no exploitable edge. YELLOW does not authorize strategy, production change, registry mutation, or betting advice.",
+      "classification": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+      "current_gate_state": "GATE_YELLOW_OBSERVATION_ONLY"
+    },
+    "P219": {
+      "conclusion": "Ten-method × 5-game pre-registered MC/permutation sweep (44 corrected tests). Forward-predictive families (M5 Dirichlet, M8 freq-generator, M9 conformal) NULL on all games. Best predictive edge: +0.49pp p=0.226 on contaminated BIG_LOTTO data — not significant. MI(trailing-freq → next-hit) ≈ 8.8e-6 bits on DAILY_539, effectively zero.",
+      "big_lotto_contamination": {
+        "finding": "BIG_LOTTO draws table contains ~90% non-canonical data: 19,100 simulation rows (hyphen composite IDs), 375 date-format alien rows (sum~75, max≤24), ~650 small-pool alien rows (max≤25). Only ~2,113 of 22,238 rows are plausible real 6/49.",
+        "gate_classification": "GATE_RED_DATA_CONTAMINATION",
+        "is_exploitable_edge": false,
+        "anomaly_is_not_predictor": true
+      },
+      "classification": "P219_TEN_METHOD_SWEEP_PREDICTIVE_NULL_PLUS_BIG_LOTTO_DATA_CONTAMINATION_ARTIFACT"
+    }
+  },
+
+  "gate_states": {
+    "GATE_CLOSED_RANDOM_COMPATIBLE": {
+      "description": "All corrected randomness checks pass. Draw stream is statistically indistinguishable from fair random. No bias research is authorized. This is the expected and desired steady state.",
+      "allowed_actions": ["read_only_diagnostics", "periodic_audit_refresh"],
+      "forbidden_actions": ["hit_rate_research", "strategy_development", "production_recommendation", "db_write", "registry_mutation", "betting_advice"]
+    },
+    "GATE_YELLOW_OBSERVATION_ONLY": {
+      "description": "One or more corrected checks return a weak anomaly that does not meet the evidence threshold for bias research. Current state per P238B. Observation is logged; no downstream action is triggered.",
+      "current_example": "P238B NIST audit result (2026-06-04)",
+      "allowed_actions": ["record_observation", "schedule_next_periodic_audit", "read_only_diagnostics"],
+      "forbidden_actions": ["hit_rate_research", "strategy_development", "production_recommendation", "db_write", "registry_mutation", "betting_advice", "controlled_apply"]
+    },
+    "GATE_RED_DATA_CONTAMINATION": {
+      "description": "Detected anomaly is attributable to data contamination, schema mismatch, or source mixing — NOT a real draw-level bias. Research on this game/series is blocked until contamination is resolved and a clean re-audit passes.",
+      "current_example": "BIG_LOTTO P219 contamination (simulation rows + alien sub-series; ~90% non-canonical)",
+      "allowed_actions": ["data_integrity_audit", "quarantine_plan_design", "read_only_investigation"],
+      "forbidden_actions": ["treating_anomaly_as_predictor", "hit_rate_research", "strategy_development", "production_recommendation", "db_write_outside_quarantine_scope", "registry_mutation", "betting_advice"]
+    },
+    "GATE_OPEN_BIAS_RESEARCH_ALLOWED": {
+      "description": "Sustained, independently confirmed, multiplicity-corrected, data-integrity-clean anomaly meets the evidence threshold. This gate state ONLY authorizes a future separately approved read-only research task. It does NOT authorize production recommendations, betting advice, registry promotion, DB writes, candidate ranking changes, or controlled_apply.",
+      "unlock_conditions_summary": "See future_research_unlock_conditions. Requires e-value threshold breach + Bayesian changepoint confirmation + clean data-integrity audit + minimum sample size + independent replication window + explicit human authorization.",
+      "allowed_actions": ["separately_authorized_read_only_research_task"],
+      "forbidden_actions": ["production_recommendation", "betting_advice", "registry_mutation", "db_write", "strategy_promotion", "candidate_ranking_change", "controlled_apply", "auto_deploy"]
+    },
+    "GATE_INVALID_INSUFFICIENT_DATA": {
+      "description": "Fewer than the minimum required draws, or data-integrity checks not yet run, or pre-registration not complete. No gate state can be assigned.",
+      "allowed_actions": ["data_collection", "pre_registration_preparation", "data_integrity_audit"],
+      "forbidden_actions": ["any_bias_claim", "hit_rate_research", "strategy_development", "production_recommendation", "db_write", "registry_mutation", "betting_advice"]
+    }
+  },
+
+  "e_value_layer": {
+    "purpose": "Always-valid sequential monitoring: compute an e-value (likelihood ratio to pre-registered null) that can be evaluated at any time without inflating false-positive rate from repeated looks.",
+    "null_hypothesis": "Draw outcomes are i.i.d. uniform over the game pool (fair random). Deviations are sampling noise.",
+    "alternative_hypothesis": "Must be pre-registered before monitoring begins. Must be specific: directional frequency shift OR structural break in a pre-declared feature AND window.",
+    "pre_registration_requirements": [
+      "Feature (e.g. number frequency in zone Z, positional digit distribution)",
+      "Window (rolling W draws or cumulative from draw T0)",
+      "Null distribution (analytic or MC baseline, stated before monitoring)",
+      "Alternative (direction and magnitude of hypothesized shift)",
+      "Stopping rule (e-value threshold K; default K=100 for strong evidence)",
+      "Reset conditions (contamination detected, schema change, operator confirmed draw mechanism change)"
+    ],
+    "evidence_accumulation_threshold": {
+      "K_for_strong_evidence": 100,
+      "K_for_replication_confirmation": 20,
+      "note": "K=100 corresponds to approximately p<0.01 under a point alternative; conservative given prior NULLs (L82/L91/P178A/P219)"
+    },
+    "cooldown_and_reset": {
+      "trigger": "GATE_RED_DATA_CONTAMINATION detected, schema or draw-format change, operator-announced draw mechanism change",
+      "action": "Reset e-value accumulator; require fresh clean-data-integrity audit before resuming monitoring",
+      "rationale": "Contamination events (P219 BIG_LOTTO) can manufacture spurious e-value accumulation"
+    },
+    "multiple_testing_in_e_values": "Pre-register the full family (games × features × windows) before monitoring. Product e-values across games are valid but must be reported per-game and combined only under stated independence assumptions. Any look at additional unregistered features requires a new pre-registration."
+  },
+
+  "bayesian_changepoint_layer": {
+    "purpose": "Detect structural breaks (regime shifts) in draw-level summary statistics. Structural-break suspicion triggers a data-integrity audit BEFORE any signal review. Anomaly detection is NOT prediction.",
+    "anomaly_is_not_predictor": true,
+    "algorithm_class": "Bayesian online changepoint detection (BOCD) — posterior over run-length; hazard function H(r) pre-declared",
+    "monitored_scalars": [
+      "Draw sum (mean and variance within rolling window W)",
+      "Per-zone number frequency (frequency vector L1 distance from baseline)",
+      "Positional digit frequency for 3_STAR/4_STAR (per-position entropy)"
+    ],
+    "hazard_interpretation": {
+      "note": "A high posterior on changepoint at draw T means the statistical properties of the draw stream changed at T. It does NOT mean the next draw can be predicted. It means: inspect the data pipeline at T.",
+      "anomaly_is_not_predictor": true
+    },
+    "first_action_on_changepoint_suspicion": "GATE_RED_DATA_CONTAMINATION review — is there a data-ingestion or schema event at T? See P219 BIG_LOTTO example: changepoint exactly co-located with alien sub-series boundary.",
+    "minimum_sample_for_changepoint_validity": {
+      "minimum_draws_per_game": 500,
+      "preferred": 1500,
+      "rationale": "Short series inflate posterior changepoint probability by chance; P219 DAILY_539 (5879 draws) showed clean stationarity, BIG_LOTTO (3138 real draws, heavily contaminated) fired on data boundary"
+    },
+    "no_prediction_claim": "A confirmed structural break in the draw record may indicate a real mechanism change OR a data issue. It does NOT justify predicting future number combinations. Only a data-clean, e-value-confirmed, replicated finding meeting all gate conditions can authorize bias research — and that research still does not constitute betting advice."
+  },
+
+  "multiple_testing_policy": {
+    "mandatory": true,
+    "scope": "Correction must cover all tests run simultaneously: games × features × windows × methods × repeated looks.",
+    "primary_correction": "Bonferroni (alpha/m) for confirmatory gate decisions",
+    "secondary_correction": "BH-FDR (alpha, sorted p-values) for exploratory context reporting only — BH-only findings must not be promoted",
+    "uncorrected_findings": "Uncorrected p<0.05 findings are EXPLORATORY_WEAK_UNCONFIRMED. They must not be promoted, used for strategy development, or reported as real signals. Cite P214C precedent: 0/7 Bonferroni-significant; uncorrected-weak p≈0.025 failed correction.",
+    "minimum_B_for_mc_null": 2000,
+    "note": "L96: permutation nulls that shuffle labels while preserving mean yield p=1.0. Use Binomial(baseline) Monte-Carlo null."
+  },
+
+  "data_integrity_policy": {
+    "mandatory": true,
+    "checks_required_before_any_signal_review": [
+      "mixed_lottery_type: confirm all rows belong to the declared game",
+      "simulated_rows: exclude composite hyphen IDs (e.g. '103000009-01'); verify draw ID format",
+      "alien_id_schemes: date-style IDs (8-digit YYYYMMDD starting '20') are not serial draw IDs",
+      "impossible_number_ranges: for 6/49, any draw with max(numbers)<=25 at >2% rate indicates pool mismatch",
+      "small_pool_subseries: block-level mean draw-sum and max-number must be stable across chronological bins",
+      "duplicate_draws: check distinct draw count vs raw row count",
+      "lifecycle_status_leakage: statistical unit is real draws only, not replay rows (94,924 replay != 5,879 DAILY_539 draws)",
+      "draw_order_schema_mismatch: 3_STAR/4_STAR numbers_positional must be verified present before positional analysis",
+      "canonical_draw_count_mismatch: compare loaded N against known canonical count from active_task.md/governance records"
+    ],
+    "big_lotto_prior_example": {
+      "finding": "P219 (2026-06-05): BIG_LOTTO draws table 22,238 rows; ~2,113 real 6/49 (matches canonical ≈2,118). Contamination: 19,100 simulation rows, 375 date-format alien (sum~75, max≤24), ~650 small-pool alien (max≤25). All corrected-significant P219 signals attributable to this contamination.",
+      "gate_state_assigned": "GATE_RED_DATA_CONTAMINATION",
+      "resolution_required_before_research": "Read-only quarantine audit + DB cleanup under Type D gate before BIG_LOTTO can be used in any bias research"
+    }
+  },
+
+  "allowed_actions": [
+    "read_only_diagnostics",
+    "periodic_audit_refresh",
+    "data_integrity_audit",
+    "record_observation",
+    "design_document_creation",
+    "pre_registration_preparation",
+    "separately_authorized_read_only_research_task (GATE_OPEN only)"
+  ],
+  "forbidden_actions": [
+    "DB write",
+    "registry mutation",
+    "production recommendation change",
+    "controlled_apply",
+    "strategy promotion",
+    "candidate ranking change",
+    "betting advice",
+    "claiming improved P(win)",
+    "treating anomaly as predictor",
+    "deploying any strategy based on this gate",
+    "skipping data-integrity audit before signal review"
+  ],
+
+  "future_research_unlock_conditions": {
+    "note": "ALL conditions must be met simultaneously. Meeting any subset is insufficient.",
+    "conditions": [
+      "e_value_K >= 100 on a pre-registered feature/game/window",
+      "Bayesian changepoint posterior confirms break at the same temporal location",
+      "data_integrity_audit returns clean (no contamination, no schema mismatch, no alien subseries)",
+      "minimum 500 clean OOS draws after the detected changepoint (to allow walk-forward verification)",
+      "independent replication: anomaly confirmed in a second non-overlapping draw window",
+      "multiplicity correction: finding survives Bonferroni across the pre-registered family",
+      "explicit human authorization for the follow-on read-only research task",
+      "pre-registration of the follow-on research task filed before any OOS data is touched"
+    ],
+    "current_status": "NO condition is currently met for any game. P238B = YELLOW (no threshold breach). P219 = predictive NULL + BIG_LOTTO GATE_RED_DATA_CONTAMINATION. All games remain ruin_prob=1.000, all EV negative."
+  },
+
+  "fundamental_constraints": {
+    "fair_random_lotteries_have_no_validated_external_method_that_raises_P_win": true,
+    "anomaly_detection_is_not_prediction": true,
+    "GATE_OPEN_does_not_authorize_betting_advice": true,
+    "all_games_remain_negative_EV": true,
+    "ruin_probability": "1.000 for all games (L99)"
+  },
+
+  "classification": "P245B_CORRECTED_BIAS_GATE_LAYER_DESIGN_COMPLETE",
+  "final_decision": "Gate is currently GATE_YELLOW_OBSERVATION_ONLY (per P238B) for DAILY_539/POWER_LOTTO/3_STAR/4_STAR and GATE_RED_DATA_CONTAMINATION for BIG_LOTTO (per P219). No condition for GATE_OPEN is currently met. No hit-rate research, strategy development, production recommendation, DB write, registry mutation, or betting advice is authorized."
+}

@@ -1,0 +1,222 @@
+{
+  "generated_at": "2026-05-13T10:33:38.713363Z",
+  "dry_run_only": true,
+  "truth_level": "REGENERATED_RETROSPECTIVE",
+  "source": "p3_dryrun",
+  "db_hash": "de0e27bb800bc7183773a0dc596d66b8",
+  "n_target_draws_per_lottery_type": 50,
+  "pr_chain_state": {
+    "92": "OPEN/CI_GREEN/NO_MERGE",
+    "93": "OPEN/CI_GREEN/NO_MERGE",
+    "94": "OPEN/CI_PENDING/NO_MERGE"
+  },
+  "p3_baseline_depends_on_open_pr_chain": true,
+  "strategies_attempted": [
+    "power_precision_3bet",
+    "power_orthogonal_5bet",
+    "biglotto_triple_strike",
+    "biglotto_deviation_2bet",
+    "daily539_f4cold",
+    "daily539_markov_cold"
+  ],
+  "strategies_succeeded": [
+    "power_precision_3bet",
+    "power_orthogonal_5bet",
+    "biglotto_triple_strike",
+    "biglotto_deviation_2bet",
+    "daily539_f4cold",
+    "daily539_markov_cold"
+  ],
+  "strategies_failed": [],
+  "per_strategy": {
+    "power_precision_3bet": {
+      "strategy_id": "power_precision_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "adapter_class": "_PowerPrecision3BetAdapter",
+      "adapter_file_hash": "3ea71cfc20c882714f3824ad68202f6e",
+      "min_history": 100,
+      "total_draws_in_db": 1906,
+      "target_draws_attempted": 50,
+      "target_draws_succeeded": 50,
+      "target_draws_skipped_insufficient": 0,
+      "target_draws_skipped_adapter_error": 0,
+      "leakage_assertions_passed": 50,
+      "first_target_draw_date": "2025/11/06",
+      "last_target_draw_date": "2026/04/27",
+      "candidate_row_count": 50
+    },
+    "power_orthogonal_5bet": {
+      "strategy_id": "power_orthogonal_5bet",
+      "lottery_type": "POWER_LOTTO",
+      "adapter_class": "_PowerOrthogonal5BetAdapter",
+      "adapter_file_hash": "3ea71cfc20c882714f3824ad68202f6e",
+      "min_history": 100,
+      "total_draws_in_db": 1906,
+      "target_draws_attempted": 50,
+      "target_draws_succeeded": 50,
+      "target_draws_skipped_insufficient": 0,
+      "target_draws_skipped_adapter_error": 0,
+      "leakage_assertions_passed": 50,
+      "first_target_draw_date": "2025/11/06",
+      "last_target_draw_date": "2026/04/27",
+      "candidate_row_count": 50
+    },
+    "biglotto_triple_strike": {
+      "strategy_id": "biglotto_triple_strike",
+      "lottery_type": "BIG_LOTTO",
+      "adapter_class": "_BigLottoTripleStrikeAdapter",
+      "adapter_file_hash": "3ea71cfc20c882714f3824ad68202f6e",
+      "min_history": 100,
+      "total_draws_in_db": 2132,
+      "target_draws_attempted": 50,
+      "target_draws_succeeded": 50,
+      "target_draws_skipped_insufficient": 0,
+      "target_draws_skipped_adapter_error": 0,
+      "leakage_assertions_passed": 50,
+      "first_target_draw_date": "2026/01/02",
+      "last_target_draw_date": "2026/05/05",
+      "candidate_row_count": 50
+    },
+    "biglotto_deviation_2bet": {
+      "strategy_id": "biglotto_deviation_2bet",
+      "lottery_type": "BIG_LOTTO",
+      "adapter_class": "_BigLottoDeviation2BetAdapter",
+      "adapter_file_hash": "3ea71cfc20c882714f3824ad68202f6e",
+      "min_history": 100,
+      "total_draws_in_db": 2132,
+      "target_draws_attempted": 50,
+      "target_draws_succeeded": 50,
+      "target_draws_skipped_insufficient": 0,
+      "target_draws_skipped_adapter_error": 0,
+      "leakage_assertions_passed": 50,
+      "first_target_draw_date": "2026/01/02",
+      "last_target_draw_date": "2026/05/05",
+      "candidate_row_count": 50
+    },
+    "daily539_f4cold": {
+      "strategy_id": "daily539_f4cold",
+      "lottery_type": "DAILY_539",
+      "adapter_class": "_Daily539F4ColdAdapter",
+      "adapter_file_hash": "3ea71cfc20c882714f3824ad68202f6e",
+      "min_history": 100,
+      "total_draws_in_db": 5849,
+      "target_draws_attempted": 50,
+      "target_draws_succeeded": 50,
+      "target_draws_skipped_insufficient": 0,
+      "target_draws_skipped_adapter_error": 0,
+      "leakage_assertions_passed": 50,
+      "first_target_draw_date": "2026/03/03",
+      "last_target_draw_date": "2026/04/29",
+      "candidate_row_count": 50
+    },
+    "daily539_markov_cold": {
+      "strategy_id": "daily539_markov_cold",
+      "lottery_type": "DAILY_539",
+      "adapter_class": "_Daily539MarkovColdAdapter",
+      "adapter_file_hash": "3ea71cfc20c882714f3824ad68202f6e",
+      "min_history": 100,
+      "total_draws_in_db": 5849,
+      "target_draws_attempted": 50,
+      "target_draws_succeeded": 50,
+      "target_draws_skipped_insufficient": 0,
+      "target_draws_skipped_adapter_error": 0,
+      "leakage_assertions_passed": 50,
+      "first_target_draw_date": "2026/03/03",
+      "last_target_draw_date": "2026/04/29",
+      "candidate_row_count": 50
+    }
+  },
+  "per_lottery_type": {
+    "POWER_LOTTO": {
+      "count": 100,
+      "strategies": [
+        "power_orthogonal_5bet",
+        "power_precision_3bet"
+      ]
+    },
+    "BIG_LOTTO": {
+      "count": 100,
+      "strategies": [
+        "biglotto_deviation_2bet",
+        "biglotto_triple_strike"
+      ]
+    },
+    "DAILY_539": {
+      "count": 100,
+      "strategies": [
+        "daily539_markov_cold",
+        "daily539_f4cold"
+      ]
+    }
+  },
+  "total_candidate_rows": 300,
+  "total_skipped_insufficient_history": 0,
+  "total_skipped_adapter_error": 0,
+  "total_leakage_guard_assertions": 300,
+  "artifact_only_strategies": [
+    {
+      "strategy_id": "biglotto_ts3_acb_4bet",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "REJECTED",
+      "artifact_path": "rejected/ts3_acb_4bet_biglotto.json",
+      "strategy_dir": "strategies/big_lotto/4bet_ts3_markov_w30",
+      "required_fix": "artifact_parser",
+      "p3_candidate": false,
+      "reason_not_regenerated": "No executable Python adapter registered. Artifact exists as rejected JSON, but deterministic replay formula cannot be inferred from artifact without an artifact_parser wrapper. P4 task required: implement artifact_parser + adapter_wrapper.",
+      "proposed_truth_level": "ARTIFACT_PROVENANCE_ONLY",
+      "p4_future_work": [
+        "artifact_parser: parse rejected JSON to extract deterministic formula",
+        "adapter_wrapper: wrap formula as ReplayStrategyAdapter subclass",
+        "manual_decision: CTO authorization required before promoting to OBSERVATION"
+      ]
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_freq_5bet",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "REJECTED",
+      "artifact_path": "rejected/ts3_markov_freq_5bet_biglotto.json",
+      "strategy_dir": "strategies/big_lotto/5bet_ts3_markov_freq",
+      "required_fix": "artifact_parser",
+      "p3_candidate": false,
+      "reason_not_regenerated": "No executable Python adapter registered. Artifact exists as rejected JSON + strategies dir. P4 task required: implement artifact_parser + adapter_wrapper.",
+      "proposed_truth_level": "ARTIFACT_PROVENANCE_ONLY",
+      "p4_future_work": [
+        "artifact_parser: parse rejected JSON to extract deterministic formula",
+        "adapter_wrapper: wrap formula as ReplayStrategyAdapter subclass",
+        "manual_decision: CTO authorization required before promoting to OBSERVATION"
+      ]
+    },
+    {
+      "strategy_id": "power_shlc_midfreq",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_status": "REJECTED",
+      "artifact_path": "rejected/shlc_midfreq_power.json",
+      "strategy_dir": null,
+      "required_fix": "artifact_parser",
+      "p3_candidate": false,
+      "reason_not_regenerated": "No executable Python adapter registered and no strategies/ dir. Only rejected artifact JSON exists. P4 task required: implement artifact_parser + reconstruct formula from JSON.",
+      "proposed_truth_level": "ARTIFACT_PROVENANCE_ONLY",
+      "p4_future_work": [
+        "artifact_parser: parse rejected JSON to extract deterministic formula",
+        "adapter_wrapper: wrap formula as ReplayStrategyAdapter subclass",
+        "manual_decision: CTO authorization required before promoting to OBSERVATION"
+      ]
+    },
+    {
+      "strategy_id": "p1_deviation_2bet_539",
+      "lottery_type": "DAILY_539",
+      "lifecycle_status": "REJECTED",
+      "artifact_path": "rejected/p1_deviation_2bet_539.json",
+      "strategy_dir": null,
+      "required_fix": "artifact_parser",
+      "p3_candidate": false,
+      "reason_not_regenerated": "No executable Python adapter registered and no strategies/ dir. Only rejected artifact JSON exists. P4 task required: implement artifact_parser + reconstruct formula from JSON.",
+      "proposed_truth_level": "ARTIFACT_PROVENANCE_ONLY",
+      "p4_future_work": [
+        "artifact_parser: parse rejected JSON to extract deterministic formula",
+        "adapter_wrapper: wrap formula as ReplayStrategyAdapter subclass",
+        "manual_decision: CTO authorization required before promoting to OBSERVATION"
+      ]
+    }
+  ]
+}

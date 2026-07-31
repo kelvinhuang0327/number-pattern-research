@@ -1,0 +1,2021 @@
+{
+  "classification": "P114_TEMPORAL_STABILITY_AUDIT_READY",
+  "task_id": "P114_TEMPORAL_STABILITY_AUDIT",
+  "audit_date": "2026-05-27T08:34:05Z",
+  "p112_reference": {
+    "classification": "P112_CROSS_LOTTERY_HELPFULNESS_AUDIT_READY",
+    "artifact_path": "outputs/replay/p112_cross_lottery_prediction_helpfulness_audit_20260527.json"
+  },
+  "p113_reference": {
+    "classification": "P113_P112_ACTION_DECISION_MATRIX_READY",
+    "artifact_path": "outputs/replay/p113_p112_action_decision_matrix_20260527.json"
+  },
+  "db_writes": false,
+  "replay_rows_before": 54462,
+  "replay_rows_after": 54462,
+  "no_strategy_promotion": true,
+  "no_lifecycle_mutation": true,
+  "no_registry_mutation": true,
+  "no_4star_backtest": true,
+  "no_special3_p108_rerun": true,
+  "source_unknown_caveat_preserved": true,
+  "audited_lottery_types": [
+    "POWER_LOTTO",
+    "DAILY_539",
+    "BIG_LOTTO"
+  ],
+  "audited_strategy_count": 36,
+  "temporal_window_definitions": {
+    "first_third": "First 1/3 of rows sorted by target_draw (chronologically earliest)",
+    "middle_third": "Middle 1/3 of rows sorted by target_draw",
+    "last_third": "Last 1/3 of rows sorted by target_draw (most recent)",
+    "rolling_100": "Last 100 rows by target_draw (computed when total rows >= 100)",
+    "rolling_250": "Last 250 rows by target_draw (computed when total rows >= 250)"
+  },
+  "per_strategy_temporal_results": [
+    {
+      "strategy_id": "cold_complement_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.924,
+          "avg_special_hit": 0.094,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.023368,
+          "positive_edge": false
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.978,
+          "avg_special_hit": 0.126,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.030632,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.92,
+          "avg_special_hit": 0.122,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.027368,
+          "positive_edge": false
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.89,
+          "avg_special_hit": 0.13,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.057368,
+          "positive_edge": false
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.884,
+          "avg_special_hit": 0.128,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.063368,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "MIXED",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=FALLBACK_DISCLOSURE_CANDIDATE. Chronological thirds edge: [first_third=-0.0234 | middle_third=+0.0306 | last_third=-0.0274]. Stability=MIXED. baseline=0.947368. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "fourier30_markov30_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "p113_action": "OBSERVATION_QUEUE",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "replay_rows": 1501,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.942,
+          "avg_special_hit": 0.132,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.005368,
+          "positive_edge": false
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.944,
+          "avg_special_hit": 0.112,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.003368,
+          "positive_edge": false
+        },
+        "last_third": {
+          "row_count": 501,
+          "avg_hit_count": 1.007984,
+          "avg_special_hit": 0.129741,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.060616,
+          "positive_edge": true
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 1.07,
+          "avg_special_hit": 0.08,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.122632,
+          "positive_edge": true
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 1.04,
+          "avg_special_hit": 0.124,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.092632,
+          "positive_edge": true
+        }
+      },
+      "stability_label": "UNSTABLE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=OBSERVATION_QUEUE. Chronological thirds edge: [first_third=-0.0054 | middle_third=-0.0034 | last_third=+0.0606]. Stability=UNSTABLE. baseline=0.947368. rows=1501.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "p113_action": "OBSERVATION_QUEUE",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "replay_rows": 1501,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 1.008,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.060632,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 1.038,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.090632,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 501,
+          "avg_hit_count": 0.932136,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.015232,
+          "positive_edge": false
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.84,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.107368,
+          "positive_edge": false
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.876,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.071368,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "MOSTLY_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=OBSERVATION_QUEUE. Chronological thirds edge: [first_third=+0.0606 | middle_third=+0.0906 | last_third=-0.0152]. Stability=MOSTLY_POSITIVE. baseline=0.947368. rows=1501.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "p113_action": "OBSERVATION_QUEUE",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.996,
+          "avg_special_hit": 0.112,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.048632,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.948,
+          "avg_special_hit": 0.12,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.000632,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.974,
+          "avg_special_hit": 0.124,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.026632,
+          "positive_edge": true
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.9,
+          "avg_special_hit": 0.1,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.047368,
+          "positive_edge": false
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.944,
+          "avg_special_hit": 0.104,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.003368,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "STABLE_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=OBSERVATION_QUEUE. Chronological thirds edge: [first_third=+0.0486 | middle_third=+0.0006 | last_third=+0.0266]. Stability=STABLE_POSITIVE. baseline=0.947368. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "p113_action": "WATCHLIST_QUEUE",
+      "p112_classification": "PREDICTION_HELPFUL",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 1.024,
+          "avg_special_hit": 0.112,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.076632,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 1.05,
+          "avg_special_hit": 0.12,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.102632,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 1.008,
+          "avg_special_hit": 0.124,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.060632,
+          "positive_edge": true
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 1.0,
+          "avg_special_hit": 0.1,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.052632,
+          "positive_edge": true
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 1.004,
+          "avg_special_hit": 0.104,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.056632,
+          "positive_edge": true
+        }
+      },
+      "stability_label": "STABLE_POSITIVE",
+      "p114_decision": "READY_FOR_OOS_MONITORING_DESIGN",
+      "promotion_authorized": false,
+      "rationale": "P113 action=WATCHLIST_QUEUE. Chronological thirds edge: [first_third=+0.0766 | middle_third=+0.1026 | last_third=+0.0606]. Stability=STABLE_POSITIVE. baseline=0.947368. rows=1500.",
+      "next_task_candidate": "P116"
+    },
+    {
+      "strategy_id": "power_fourier_rhythm_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "p113_action": "OBSERVATION_QUEUE",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 1.012,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.064632,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 1.038,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.090632,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.928,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.019368,
+          "positive_edge": false
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.84,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.107368,
+          "positive_edge": false
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.876,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.071368,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "MOSTLY_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=OBSERVATION_QUEUE. Chronological thirds edge: [first_third=+0.0646 | middle_third=+0.0906 | last_third=-0.0194]. Stability=MOSTLY_POSITIVE. baseline=0.947368. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "lottery_type": "POWER_LOTTO",
+      "p113_action": "OBSERVATION_QUEUE",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "replay_rows": 1570,
+      "windows": {
+        "first_third": {
+          "row_count": 523,
+          "avg_hit_count": 0.996176,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.048808,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 523,
+          "avg_hit_count": 1.045889,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.098521,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 524,
+          "avg_hit_count": 0.935115,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.012253,
+          "positive_edge": false
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.84,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.107368,
+          "positive_edge": false
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.876,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.071368,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "MOSTLY_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=OBSERVATION_QUEUE. Chronological thirds edge: [first_third=+0.0488 | middle_third=+0.0985 | last_third=-0.0123]. Stability=MOSTLY_POSITIVE. baseline=0.947368. rows=1570.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "p113_action": "OBSERVATION_QUEUE",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "replay_rows": 1570,
+      "windows": {
+        "first_third": {
+          "row_count": 523,
+          "avg_hit_count": 0.996176,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.048808,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 523,
+          "avg_hit_count": 1.045889,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.098521,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 524,
+          "avg_hit_count": 0.935115,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.012253,
+          "positive_edge": false
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.84,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.107368,
+          "positive_edge": false
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.876,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.071368,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "MOSTLY_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=OBSERVATION_QUEUE. Chronological thirds edge: [first_third=+0.0488 | middle_third=+0.0985 | last_third=-0.0123]. Stability=MOSTLY_POSITIVE. baseline=0.947368. rows=1570.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "pp3_freqort_4bet",
+      "lottery_type": "POWER_LOTTO",
+      "p113_action": "WATCHLIST_QUEUE",
+      "p112_classification": "PREDICTION_HELPFUL",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 1.032,
+          "avg_special_hit": 0.112,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.084632,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 1.042,
+          "avg_special_hit": 0.12,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.094632,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.932,
+          "avg_special_hit": 0.124,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.015368,
+          "positive_edge": false
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.86,
+          "avg_special_hit": 0.1,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.087368,
+          "positive_edge": false
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.876,
+          "avg_special_hit": 0.104,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.071368,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "MOSTLY_POSITIVE",
+      "p114_decision": "READY_FOR_CONTROLLED_OBSERVATION_PLAN",
+      "promotion_authorized": false,
+      "rationale": "P113 action=WATCHLIST_QUEUE. Chronological thirds edge: [first_third=+0.0846 | middle_third=+0.0946 | last_third=-0.0154]. Stability=MOSTLY_POSITIVE. baseline=0.947368. rows=1500.",
+      "next_task_candidate": "P116"
+    },
+    {
+      "strategy_id": "zonal_entropy_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.91,
+          "avg_special_hit": 0.094,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": -0.037368,
+          "positive_edge": false
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.966,
+          "avg_special_hit": 0.126,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.018632,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.962,
+          "avg_special_hit": 0.122,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.014632,
+          "positive_edge": true
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 1.02,
+          "avg_special_hit": 0.13,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.072632,
+          "positive_edge": true
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 1.004,
+          "avg_special_hit": 0.128,
+          "baseline_avg_hit_count": 0.947368,
+          "edge_vs_baseline": 0.056632,
+          "positive_edge": true
+        }
+      },
+      "stability_label": "MOSTLY_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=FALLBACK_DISCLOSURE_CANDIDATE. Chronological thirds edge: [first_third=-0.0374 | middle_third=+0.0186 | last_third=+0.0146]. Stability=MOSTLY_POSITIVE. baseline=0.947368. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "539_3bet_orthogonal",
+      "lottery_type": "DAILY_539",
+      "p113_action": "OBSERVATION_QUEUE",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.69,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.048974,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.69,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.048974,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.636,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.005026,
+          "positive_edge": false
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.61,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.031026,
+          "positive_edge": false
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.62,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.021026,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "MOSTLY_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=OBSERVATION_QUEUE. Chronological thirds edge: [first_third=+0.0490 | middle_third=+0.0490 | last_third=-0.0050]. Stability=MOSTLY_POSITIVE. baseline=0.641026. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "acb_1bet",
+      "lottery_type": "DAILY_539",
+      "p113_action": "OBSERVATION_QUEUE",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.69,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.048974,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.69,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.048974,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.636,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.005026,
+          "positive_edge": false
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.61,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.031026,
+          "positive_edge": false
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.62,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.021026,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "MOSTLY_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=OBSERVATION_QUEUE. Chronological thirds edge: [first_third=+0.0490 | middle_third=+0.0490 | last_third=-0.0050]. Stability=MOSTLY_POSITIVE. baseline=0.641026. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "acb_markov_midfreq",
+      "lottery_type": "DAILY_539",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.67,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.028974,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.6,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.041026,
+          "positive_edge": false
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.64,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.001026,
+          "positive_edge": false
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.54,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.101026,
+          "positive_edge": false
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.636,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.005026,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "MIXED",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=FALLBACK_DISCLOSURE_CANDIDATE. Chronological thirds edge: [first_third=+0.0290 | middle_third=-0.0410 | last_third=-0.0010]. Stability=MIXED. baseline=0.641026. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "DAILY_539",
+      "p113_action": "OBSERVATION_QUEUE",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.69,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.048974,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.69,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.048974,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.636,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.005026,
+          "positive_edge": false
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.61,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.031026,
+          "positive_edge": false
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.62,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.021026,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "MOSTLY_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=OBSERVATION_QUEUE. Chronological thirds edge: [first_third=+0.0490 | middle_third=+0.0490 | last_third=-0.0050]. Stability=MOSTLY_POSITIVE. baseline=0.641026. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "acb_single_539",
+      "lottery_type": "DAILY_539",
+      "p113_action": "OBSERVATION_QUEUE",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.69,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.048974,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.69,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.048974,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.636,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.005026,
+          "positive_edge": false
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.61,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.031026,
+          "positive_edge": false
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.62,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.021026,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "MOSTLY_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=OBSERVATION_QUEUE. Chronological thirds edge: [first_third=+0.0490 | middle_third=+0.0490 | last_third=-0.0050]. Stability=MOSTLY_POSITIVE. baseline=0.641026. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "lottery_type": "DAILY_539",
+      "p113_action": "OBSERVATION_QUEUE",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "replay_rows": 1570,
+      "windows": {
+        "first_third": {
+          "row_count": 523,
+          "avg_hit_count": 0.699809,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.058783,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 523,
+          "avg_hit_count": 0.67304,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.032014,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 524,
+          "avg_hit_count": 0.65458,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.013554,
+          "positive_edge": true
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.65,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.008974,
+          "positive_edge": true
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.664,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.022974,
+          "positive_edge": true
+        }
+      },
+      "stability_label": "STABLE_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=OBSERVATION_QUEUE. Chronological thirds edge: [first_third=+0.0588 | middle_third=+0.0320 | last_third=+0.0136]. Stability=STABLE_POSITIVE. baseline=0.641026. rows=1570.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "daily539_f4cold_3bet",
+      "lottery_type": "DAILY_539",
+      "p113_action": "OBSERVATION_QUEUE",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.7,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.058974,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.654,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.012974,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.664,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.022974,
+          "positive_edge": true
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.65,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.008974,
+          "positive_edge": true
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.664,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.022974,
+          "positive_edge": true
+        }
+      },
+      "stability_label": "STABLE_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=OBSERVATION_QUEUE. Chronological thirds edge: [first_third=+0.0590 | middle_third=+0.0130 | last_third=+0.0230]. Stability=STABLE_POSITIVE. baseline=0.641026. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "daily539_f4cold_5bet",
+      "lottery_type": "DAILY_539",
+      "p113_action": "OBSERVATION_QUEUE",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.7,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.058974,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.654,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.012974,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.664,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.022974,
+          "positive_edge": true
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.65,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.008974,
+          "positive_edge": true
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.664,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.022974,
+          "positive_edge": true
+        }
+      },
+      "stability_label": "STABLE_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=OBSERVATION_QUEUE. Chronological thirds edge: [first_third=+0.0590 | middle_third=+0.0130 | last_third=+0.0230]. Stability=STABLE_POSITIVE. baseline=0.641026. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "daily539_markov_cold",
+      "lottery_type": "DAILY_539",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "replay_rows": 1570,
+      "windows": {
+        "first_third": {
+          "row_count": 523,
+          "avg_hit_count": 0.659656,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.01863,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 523,
+          "avg_hit_count": 0.583174,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.057852,
+          "positive_edge": false
+        },
+        "last_third": {
+          "row_count": 524,
+          "avg_hit_count": 0.658397,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.017371,
+          "positive_edge": true
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.6,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.041026,
+          "positive_edge": false
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.648,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.006974,
+          "positive_edge": true
+        }
+      },
+      "stability_label": "MOSTLY_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=FALLBACK_DISCLOSURE_CANDIDATE. Chronological thirds edge: [first_third=+0.0186 | middle_third=-0.0579 | last_third=+0.0174]. Stability=MOSTLY_POSITIVE. baseline=0.641026. rows=1570.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "markov_1bet_539",
+      "lottery_type": "DAILY_539",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.656,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.014974,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.582,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.059026,
+          "positive_edge": false
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.664,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.022974,
+          "positive_edge": true
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.6,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.041026,
+          "positive_edge": false
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.648,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.006974,
+          "positive_edge": true
+        }
+      },
+      "stability_label": "MOSTLY_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=FALLBACK_DISCLOSURE_CANDIDATE. Chronological thirds edge: [first_third=+0.0150 | middle_third=-0.0590 | last_third=+0.0230]. Stability=MOSTLY_POSITIVE. baseline=0.641026. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "midfreq_acb_2bet",
+      "lottery_type": "DAILY_539",
+      "p113_action": "OBSERVATION_QUEUE",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.68,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.038974,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.618,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.023026,
+          "positive_edge": false
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.71,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.068974,
+          "positive_edge": true
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.72,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.078974,
+          "positive_edge": true
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.764,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.122974,
+          "positive_edge": true
+        }
+      },
+      "stability_label": "MOSTLY_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=OBSERVATION_QUEUE. Chronological thirds edge: [first_third=+0.0390 | middle_third=-0.0230 | last_third=+0.0690]. Stability=MOSTLY_POSITIVE. baseline=0.641026. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "lottery_type": "DAILY_539",
+      "p113_action": "OBSERVATION_QUEUE",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.68,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.038974,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.618,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.023026,
+          "positive_edge": false
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.71,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.068974,
+          "positive_edge": true
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.72,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.078974,
+          "positive_edge": true
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.764,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.122974,
+          "positive_edge": true
+        }
+      },
+      "stability_label": "MOSTLY_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=OBSERVATION_QUEUE. Chronological thirds edge: [first_third=+0.0390 | middle_third=-0.0230 | last_third=+0.0690]. Stability=MOSTLY_POSITIVE. baseline=0.641026. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "p0b_539_3bet_f_cold_fmid",
+      "lottery_type": "DAILY_539",
+      "p113_action": "OBSERVATION_QUEUE",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.704,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.062974,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.654,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.012974,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.674,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.032974,
+          "positive_edge": true
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.65,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.008974,
+          "positive_edge": true
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.68,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.038974,
+          "positive_edge": true
+        }
+      },
+      "stability_label": "STABLE_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=OBSERVATION_QUEUE. Chronological thirds edge: [first_third=+0.0630 | middle_third=+0.0130 | last_third=+0.0330]. Stability=STABLE_POSITIVE. baseline=0.641026. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "p0c_539_3bet_f_cold_x2",
+      "lottery_type": "DAILY_539",
+      "p113_action": "OBSERVATION_QUEUE",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.704,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.062974,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.654,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.012974,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.674,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.032974,
+          "positive_edge": true
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.65,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.008974,
+          "positive_edge": true
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.68,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.038974,
+          "positive_edge": true
+        }
+      },
+      "stability_label": "STABLE_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=OBSERVATION_QUEUE. Chronological thirds edge: [first_third=+0.0630 | middle_third=+0.0130 | last_third=+0.0330]. Stability=STABLE_POSITIVE. baseline=0.641026. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "zone_gap_3bet_539",
+      "lottery_type": "DAILY_539",
+      "p113_action": "DEMOTE_OR_QUARANTINE_CANDIDATE",
+      "p112_classification": "SUB_BASELINE",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.648,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.006974,
+          "positive_edge": true
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.622,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.019026,
+          "positive_edge": false
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.616,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.025026,
+          "positive_edge": false
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.67,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": 0.028974,
+          "positive_edge": true
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.64,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.641026,
+          "edge_vs_baseline": -0.001026,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "MIXED",
+      "p114_decision": "HOLD_FOR_ADDITIONAL_STABILITY_EVIDENCE",
+      "promotion_authorized": false,
+      "rationale": "P113 action=DEMOTE_OR_QUARANTINE_CANDIDATE. Chronological thirds edge: [first_third=+0.0070 | middle_third=-0.0190 | last_third=-0.0250]. Stability=MIXED. baseline=0.641026. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "p113_action": "DEMOTE_OR_QUARANTINE_CANDIDATE",
+      "p112_classification": "SUB_BASELINE",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.704,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.030694,
+          "positive_edge": false
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.748,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.013306,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.72,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.014694,
+          "positive_edge": false
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.77,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.035306,
+          "positive_edge": true
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.732,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.002694,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "MIXED",
+      "p114_decision": "HOLD_FOR_ADDITIONAL_STABILITY_EVIDENCE",
+      "promotion_authorized": false,
+      "rationale": "P113 action=DEMOTE_OR_QUARANTINE_CANDIDATE. Chronological thirds edge: [first_third=-0.0307 | middle_third=+0.0133 | last_third=-0.0147]. Stability=MIXED. baseline=0.734694. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "biglotto_deviation_2bet",
+      "lottery_type": "BIG_LOTTO",
+      "p113_action": "OBSERVATION_QUEUE",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "replay_rows": 1570,
+      "windows": {
+        "first_third": {
+          "row_count": 523,
+          "avg_hit_count": 0.715105,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.019589,
+          "positive_edge": false
+        },
+        "middle_third": {
+          "row_count": 523,
+          "avg_hit_count": 0.741874,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.00718,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 524,
+          "avg_hit_count": 0.814885,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.080191,
+          "positive_edge": true
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.84,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.105306,
+          "positive_edge": true
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.836,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.101306,
+          "positive_edge": true
+        }
+      },
+      "stability_label": "MOSTLY_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=OBSERVATION_QUEUE. Chronological thirds edge: [first_third=-0.0196 | middle_third=+0.0072 | last_third=+0.0802]. Stability=MOSTLY_POSITIVE. baseline=0.734694. rows=1570.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "biglotto_echo_aware_3bet",
+      "lottery_type": "BIG_LOTTO",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.722,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.012694,
+          "positive_edge": false
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.732,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.002694,
+          "positive_edge": false
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.764,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.029306,
+          "positive_edge": true
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.78,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.045306,
+          "positive_edge": true
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.772,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.037306,
+          "positive_edge": true
+        }
+      },
+      "stability_label": "UNSTABLE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=FALLBACK_DISCLOSURE_CANDIDATE. Chronological thirds edge: [first_third=-0.0127 | middle_third=-0.0027 | last_third=+0.0293]. Stability=UNSTABLE. baseline=0.734694. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "biglotto_triple_strike",
+      "lottery_type": "BIG_LOTTO",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "replay_rows": 1570,
+      "windows": {
+        "first_third": {
+          "row_count": 523,
+          "avg_hit_count": 0.734226,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.000468,
+          "positive_edge": false
+        },
+        "middle_third": {
+          "row_count": 523,
+          "avg_hit_count": 0.73805,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.003356,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 524,
+          "avg_hit_count": 0.711832,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.022862,
+          "positive_edge": false
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.77,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.035306,
+          "positive_edge": true
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.724,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.010694,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "MIXED",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=FALLBACK_DISCLOSURE_CANDIDATE. Chronological thirds edge: [first_third=-0.0005 | middle_third=+0.0034 | last_third=-0.0229]. Stability=MIXED. baseline=0.734694. rows=1570.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_4bet_w30",
+      "lottery_type": "BIG_LOTTO",
+      "p113_action": "DEMOTE_OR_QUARANTINE_CANDIDATE",
+      "p112_classification": "SUB_BASELINE",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.718,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.016694,
+          "positive_edge": false
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.74,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.005306,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.708,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.026694,
+          "positive_edge": false
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.78,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.045306,
+          "positive_edge": true
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.724,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.010694,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "MIXED",
+      "p114_decision": "HOLD_FOR_ADDITIONAL_STABILITY_EVIDENCE",
+      "promotion_authorized": false,
+      "rationale": "P113 action=DEMOTE_OR_QUARANTINE_CANDIDATE. Chronological thirds edge: [first_third=-0.0167 | middle_third=+0.0053 | last_third=-0.0267]. Stability=MIXED. baseline=0.734694. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "cold_complement_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.686,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.048694,
+          "positive_edge": false
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.738,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.003306,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.782,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.047306,
+          "positive_edge": true
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.7,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.034694,
+          "positive_edge": false
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.764,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.029306,
+          "positive_edge": true
+        }
+      },
+      "stability_label": "MOSTLY_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=FALLBACK_DISCLOSURE_CANDIDATE. Chronological thirds edge: [first_third=-0.0487 | middle_third=+0.0033 | last_third=+0.0473]. Stability=MOSTLY_POSITIVE. baseline=0.734694. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "coldpool15_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.686,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.048694,
+          "positive_edge": false
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.738,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.003306,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.782,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.047306,
+          "positive_edge": true
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.7,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.034694,
+          "positive_edge": false
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.764,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.029306,
+          "positive_edge": true
+        }
+      },
+      "stability_label": "MOSTLY_POSITIVE",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=FALLBACK_DISCLOSURE_CANDIDATE. Chronological thirds edge: [first_third=-0.0487 | middle_third=+0.0033 | last_third=+0.0473]. Stability=MOSTLY_POSITIVE. baseline=0.734694. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "fourier30_markov30_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "p113_action": "DEMOTE_OR_QUARANTINE_CANDIDATE",
+      "p112_classification": "SUB_BASELINE",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.718,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.016694,
+          "positive_edge": false
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.716,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.018694,
+          "positive_edge": false
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.73,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.004694,
+          "positive_edge": false
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.73,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.004694,
+          "positive_edge": false
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.716,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.018694,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "STABLE_NEGATIVE",
+      "p114_decision": "READY_FOR_QUARANTINE_GOVERNANCE",
+      "promotion_authorized": false,
+      "rationale": "P113 action=DEMOTE_OR_QUARANTINE_CANDIDATE. Chronological thirds edge: [first_third=-0.0167 | middle_third=-0.0187 | last_third=-0.0047]. Stability=STABLE_NEGATIVE. baseline=0.734694. rows=1500.",
+      "next_task_candidate": "P115"
+    },
+    {
+      "strategy_id": "markov_2bet_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.722,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.012694,
+          "positive_edge": false
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.77,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.035306,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.692,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.042694,
+          "positive_edge": false
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.66,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.074694,
+          "positive_edge": false
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.708,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.026694,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "MIXED",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=FALLBACK_DISCLOSURE_CANDIDATE. Chronological thirds edge: [first_third=-0.0127 | middle_third=+0.0353 | last_third=-0.0427]. Stability=MIXED. baseline=0.734694. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "markov_single_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.722,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.012694,
+          "positive_edge": false
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.77,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.035306,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.692,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.042694,
+          "positive_edge": false
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.66,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.074694,
+          "positive_edge": false
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.708,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.026694,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "MIXED",
+      "p114_decision": "KEEP_IN_OBSERVATION_AND_RETEST",
+      "promotion_authorized": false,
+      "rationale": "P113 action=FALLBACK_DISCLOSURE_CANDIDATE. Chronological thirds edge: [first_third=-0.0127 | middle_third=+0.0353 | last_third=-0.0427]. Stability=MIXED. baseline=0.734694. rows=1500.",
+      "next_task_candidate": null
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "lottery_type": "BIG_LOTTO",
+      "p113_action": "DEMOTE_OR_QUARANTINE_CANDIDATE",
+      "p112_classification": "SUB_BASELINE",
+      "replay_rows": 1500,
+      "windows": {
+        "first_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.72,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.014694,
+          "positive_edge": false
+        },
+        "middle_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.74,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.005306,
+          "positive_edge": true
+        },
+        "last_third": {
+          "row_count": 500,
+          "avg_hit_count": 0.706,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.028694,
+          "positive_edge": false
+        },
+        "rolling_100": {
+          "row_count": 100,
+          "avg_hit_count": 0.77,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": 0.035306,
+          "positive_edge": true
+        },
+        "rolling_250": {
+          "row_count": 250,
+          "avg_hit_count": 0.724,
+          "avg_special_hit": 0.0,
+          "baseline_avg_hit_count": 0.734694,
+          "edge_vs_baseline": -0.010694,
+          "positive_edge": false
+        }
+      },
+      "stability_label": "MIXED",
+      "p114_decision": "HOLD_FOR_ADDITIONAL_STABILITY_EVIDENCE",
+      "promotion_authorized": false,
+      "rationale": "P113 action=DEMOTE_OR_QUARANTINE_CANDIDATE. Chronological thirds edge: [first_third=-0.0147 | middle_third=+0.0053 | last_third=-0.0287]. Stability=MIXED. baseline=0.734694. rows=1500.",
+      "next_task_candidate": null
+    }
+  ],
+  "stability_label_distribution": {
+    "MIXED": 9,
+    "UNSTABLE": 2,
+    "MOSTLY_POSITIVE": 17,
+    "STABLE_POSITIVE": 7,
+    "STABLE_NEGATIVE": 1
+  },
+  "p114_decision_distribution": {
+    "KEEP_IN_OBSERVATION_AND_RETEST": 29,
+    "READY_FOR_OOS_MONITORING_DESIGN": 1,
+    "READY_FOR_CONTROLLED_OBSERVATION_PLAN": 1,
+    "HOLD_FOR_ADDITIONAL_STABILITY_EVIDENCE": 4,
+    "READY_FOR_QUARANTINE_GOVERNANCE": 1
+  },
+  "oos_monitoring_candidates": [
+    "midfreq_fourier_mk_3bet"
+  ],
+  "controlled_observation_candidates": [
+    "pp3_freqort_4bet"
+  ],
+  "quarantine_governance_candidates": [
+    "fourier30_markov30_biglotto"
+  ],
+  "hold_for_more_data_candidates": [],
+  "limitations": [
+    "Temporal windows based on target_draw ordering (integer sort), not calendar time",
+    "Baseline values carried from P112 (hypergeometric expectation per strategy)",
+    "hit_count measures main number overlap only; prize-tier weighting not applied",
+    "4_STAR backtest unauthorized; 4_STAR strategies excluded from this audit",
+    "Special3/P106 evaluation excluded; P108 blocked until 100 prospective 3_STAR draws",
+    "source_unknown caveat preserved from P112: draw data provenance unverified for some entries",
+    "Stability labels derived from chronological thirds; calendar seasonality not modeled",
+    "Window edges are point estimates; confidence intervals not computed in this pass"
+  ],
+  "explicit_holds": {
+    "SPECIAL3_P108_HOLD": "P108 re-evaluation blocked until 37 more 3_STAR draws accumulated (63/100 so far)",
+    "FOUR_STAR_BACKTEST_HOLD": "4_STAR backtest unauthorized; source_unknown caveat active",
+    "NO_PRODUCTION_PROMOTION_FROM_P114": "P114 does not authorize any strategy promotion to production"
+  },
+  "final_classification": "P114_TEMPORAL_STABILITY_AUDIT_READY"
+}

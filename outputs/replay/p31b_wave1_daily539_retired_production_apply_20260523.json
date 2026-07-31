@@ -1,0 +1,152 @@
+{
+  "phase": "P31B_WAVE1_DAILY539_RETIRED_PRODUCTION_APPLY",
+  "classification": "P31B_WAVE1_DAILY539_RETIRED_PRODUCTION_APPLY_COMPLETE",
+  "status": "PASS",
+  "started_at": "2026-05-23T06:14:14.504036+00:00",
+  "finished_at": "2026-05-23T06:14:16.502617+00:00",
+  "controlled_apply_id": "P31B_DAILY539_RETIRED_7500_PROD_20260523",
+  "truth_level": "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED",
+  "source": "P31B_WAVE1_PRODUCTION_APPLY",
+  "run_id": "p31b_wave1_prod_20260523",
+  "lifecycle_decision": "OPTION_A",
+  "lifecycle_semantics": {
+    "all_5_strategies_remain_retired": true,
+    "no_lifecycle_status_change": true,
+    "replay_available_flag_added": true,
+    "registry_unchanged": true
+  },
+  "row_counts": {
+    "prod_rows_before": 12460,
+    "rows_generated": 7500,
+    "rows_inserted": 7500,
+    "rows_duplicated": 0,
+    "prod_rows_after": 19960
+  },
+  "expected_row_counts": {
+    "pre_apply": 12460,
+    "post_apply": 19960,
+    "inserted": 7500
+  },
+  "per_strategy_row_counts": {
+    "acb_1bet": 1500,
+    "acb_markov_midfreq": 1500,
+    "acb_markov_midfreq_3bet": 1500,
+    "midfreq_acb_2bet": 1500,
+    "midfreq_fourier_2bet": 1500
+  },
+  "per_strategy_generation": {
+    "acb_1bet": {
+      "total": 1500,
+      "predicted": 1500,
+      "errors": 0
+    },
+    "acb_markov_midfreq": {
+      "total": 1500,
+      "predicted": 1500,
+      "errors": 0
+    },
+    "acb_markov_midfreq_3bet": {
+      "total": 1500,
+      "predicted": 1500,
+      "errors": 0
+    },
+    "midfreq_acb_2bet": {
+      "total": 1500,
+      "predicted": 1500,
+      "errors": 0
+    },
+    "midfreq_fourier_2bet": {
+      "total": 1500,
+      "predicted": 1500,
+      "errors": 0
+    }
+  },
+  "hit_statistics": {
+    "acb_1bet": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 16,
+      "hit_3plus_rate": 0.0107,
+      "hit_breakdown": {
+        "0": 687,
+        "1": 634,
+        "2": 163,
+        "3": 16,
+        "4": 0,
+        "5": 0
+      }
+    },
+    "acb_markov_midfreq": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 20,
+      "hit_3plus_rate": 0.0133,
+      "hit_breakdown": {
+        "0": 736,
+        "1": 594,
+        "2": 150,
+        "3": 19,
+        "4": 1,
+        "5": 0
+      }
+    },
+    "acb_markov_midfreq_3bet": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 16,
+      "hit_3plus_rate": 0.0107,
+      "hit_breakdown": {
+        "0": 687,
+        "1": 634,
+        "2": 163,
+        "3": 16,
+        "4": 0,
+        "5": 0
+      }
+    },
+    "midfreq_acb_2bet": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 19,
+      "hit_3plus_rate": 0.0127,
+      "hit_breakdown": {
+        "0": 714,
+        "1": 587,
+        "2": 180,
+        "3": 19,
+        "4": 0,
+        "5": 0
+      }
+    },
+    "midfreq_fourier_2bet": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 19,
+      "hit_3plus_rate": 0.0127,
+      "hit_breakdown": {
+        "0": 714,
+        "1": 587,
+        "2": 180,
+        "3": 19,
+        "4": 0,
+        "5": 0
+      }
+    }
+  },
+  "target_window": {
+    "periods": 1500,
+    "first_draw": "110000190",
+    "last_draw": "115000121",
+    "first_date": "2021/08/10",
+    "last_date": "2026/05/18"
+  },
+  "preflight_pass": true,
+  "duplicate_check_pass": true,
+  "postflight_pass": true,
+  "all_pass": true
+}

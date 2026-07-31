@@ -1,0 +1,195 @@
+{
+  "phase": "P48_WAVE4_POWERLOTTO_PRODUCTION_APPLY",
+  "task_id": "P48",
+  "controlled_apply_id": "P48_POWERLOTTO_WAVE4_4500_PROD_20260524",
+  "run_id": "p48_wave4_prod_20260524",
+  "truth_level": "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED",
+  "authorization_phrases": [
+    "YES create new branch for P48 powerlotto wave4 production apply",
+    "YES apply P48 production wave4 powerlotto"
+  ],
+  "started_at": "2026-05-24T13:54:20.430951+00:00",
+  "finished_at": "2026-05-24T13:54:30.008856+00:00",
+  "branch": "p48-powerlotto-wave4-production-apply",
+  "lottery_type": "POWER_LOTTO",
+  "strategies": [
+    "pp3_freqort_4bet",
+    "midfreq_fourier_mk_3bet",
+    "midfreq_fourier_2bet"
+  ],
+  "window_periods": 1500,
+  "total_draws_loaded": 1912,
+  "raw_rows_generated": 4500,
+  "special_null_policy": "Policy A: skip rows where actual_special is NULL",
+  "skip_count": 0,
+  "rows_to_insert": 4500,
+  "inserted": 4500,
+  "duplicates_in_apply": 0,
+  "prod_rows_before": 37960,
+  "prod_rows_after": 42460,
+  "row_count_ok": true,
+  "per_strategy_inserted": {
+    "pp3_freqort_4bet": 1500,
+    "midfreq_fourier_mk_3bet": 1500,
+    "midfreq_fourier_2bet": 1500
+  },
+  "per_strategy_after": {
+    "pp3_freqort_4bet": 1500,
+    "midfreq_fourier_mk_3bet": 1500,
+    "midfreq_fourier_2bet": 1500
+  },
+  "duplicate_check": {
+    "by_controlled_apply_id": 0,
+    "by_truth_level": 0,
+    "by_run_id": 0,
+    "p47_dryrun_in_production": 0,
+    "per_strategy_existing": {
+      "pp3_freqort_4bet": 0,
+      "midfreq_fourier_mk_3bet": 0,
+      "midfreq_fourier_2bet": 0
+    },
+    "existing_p48_rows": 0,
+    "duplicate_check_pass": true
+  },
+  "semantics_validation": {
+    "total_rows_checked": 4500,
+    "errors": [],
+    "error_count": 0,
+    "semantics_valid": true
+  },
+  "hit_stats": {
+    "pp3_freqort_4bet": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 81,
+      "hit_3plus_rate": 0.054,
+      "special_hits": 178,
+      "special_hit_rate": 0.1187,
+      "hit_breakdown": {
+        "0": 466,
+        "1": 648,
+        "2": 305,
+        "3": 79,
+        "4": 2,
+        "5": 0,
+        "6": 0
+      }
+    },
+    "midfreq_fourier_mk_3bet": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 66,
+      "hit_3plus_rate": 0.044,
+      "special_hits": 178,
+      "special_hit_rate": 0.1187,
+      "hit_breakdown": {
+        "0": 439,
+        "1": 654,
+        "2": 341,
+        "3": 59,
+        "4": 7,
+        "5": 0,
+        "6": 0
+      }
+    },
+    "midfreq_fourier_2bet": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 70,
+      "hit_3plus_rate": 0.0467,
+      "special_hits": 178,
+      "special_hit_rate": 0.1187,
+      "hit_breakdown": {
+        "0": 466,
+        "1": 681,
+        "2": 283,
+        "3": 68,
+        "4": 2,
+        "5": 0,
+        "6": 0
+      }
+    }
+  },
+  "coverage": {
+    "production_rows_before": 37960,
+    "production_rows_after": 42460,
+    "inserted_count": 4500,
+    "skip_count_policy_a": 0,
+    "n_strategy_groups_with_rows_before": 25,
+    "n_strategy_groups_with_rows_after": 28,
+    "strategy_universe_denominator": 59,
+    "coverage_ratio_before": 0.4237,
+    "coverage_ratio_after": 0.4746,
+    "remaining_strategies": 31,
+    "approx_rows_to_full_coverage": 46500,
+    "gap_to_target": "31 strategies remaining; ~46,500 rows needed to reach 1500×all_executable_strategies."
+  },
+  "lifecycle_confirmation": {
+    "all_strategies_lifecycle": "DRY_RUN",
+    "online_promotions": 0,
+    "registry_mutations": 0,
+    "note": "Lifecycle remains DRY_RUN. No ONLINE promotion. P50 territory."
+  },
+  "powerlotto_semantics": {
+    "first_zone": "6 unique ints in [1, 38]",
+    "special_zone": "1 int in [1, 8] (non-null enforced by Policy A)",
+    "hit_count": "first-zone intersection only (NEVER includes special)",
+    "special_hit": "1 if predicted_special == actual_special, else 0",
+    "dry_run_flag": "0 (production row)"
+  },
+  "wave5_readiness_sketch": [
+    {
+      "strategy_id": "hot_window_powerlotto_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "effort": "LOW",
+      "expected_rows": 1500,
+      "rationale": "Sliding hot-window (last 30 draws) for POWER_LOTTO; simple, complementary to MidFreq strategies."
+    },
+    {
+      "strategy_id": "gap_profile_powerlotto_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "effort": "LOW",
+      "expected_rows": 1500,
+      "rationale": "Overdue-number gap profiling; proven for DAILY_539 Wave 2, direct POWER_LOTTO port."
+    },
+    {
+      "strategy_id": "combo_markov_fourier_powerlotto_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "effort": "MED",
+      "expected_rows": 1500,
+      "rationale": "Markov+Fourier ensemble (variant without PP3); diversifies from Wave 4 strategies."
+    },
+    {
+      "strategy_id": "zone_segmented_biglotto_3bet",
+      "lottery_type": "BIG_LOTTO",
+      "effort": "MED",
+      "expected_rows": 1500,
+      "rationale": "Zone-segmented pool (low/mid/high thirds) for BIG_LOTTO; from P30 manual_review list."
+    },
+    {
+      "strategy_id": "harmonic_cycle_daily539_2bet",
+      "lottery_type": "DAILY_539",
+      "effort": "LOW",
+      "expected_rows": 1500,
+      "rationale": "Harmonic cycle detection for DAILY_539; complements Wave 2 frequency strategies."
+    },
+    {
+      "strategy_id": "cold_bridge_powerlotto_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "effort": "LOW",
+      "expected_rows": 1500,
+      "rationale": "Cold-number bridge strategy; analogous to P22 cold_bridge concept but for POWER_LOTTO."
+    },
+    {
+      "strategy_id": "bayesian_fusion_powerlotto_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "effort": "HIGH",
+      "expected_rows": 1500,
+      "rationale": "Bayesian score fusion (P21 variant); highest-effort but strongest theoretical foundation."
+    }
+  ],
+  "classification": "P48_POWERLOTTO_WAVE4_PRODUCTION_APPLY_READY"
+}

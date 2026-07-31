@@ -1,0 +1,44 @@
+{
+  "generated_at": "2026-05-17T04:43:28Z",
+  "final_classification": "P6B_SCHEDULED_MONITOR_DESIGN_DRAFT_PR_READY",
+  "watched_targets": [
+    {
+      "lottery_type": "BIG_LOTTO",
+      "target_draw": "115000053",
+      "support_run_id": 176,
+      "prediction_item_ids": [1096, 1097, 1098]
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "target_draw": "115000036",
+      "support_run_id": 177,
+      "prediction_item_ids": [1099, 1100, 1101]
+    }
+  ],
+  "latest_watcher_result": {
+    "classification": "P6_NEXT_DRAW_WATCHER_WAITING_FOR_OFFICIAL_DRAWS",
+    "db_written": false,
+    "big_lotto_exists": false,
+    "power_lotto_exists": false
+  },
+  "proposed_schedule": {
+    "cadence_options": ["every_6_hours", "every_12_hours"],
+    "recommended": "every_6_hours",
+    "mode": "read_only"
+  },
+  "safety_flags": {
+    "db_written": false,
+    "draw_imported": false,
+    "replay_rows_inserted": false,
+    "prediction_items_modified": false,
+    "prediction_runs_modified": false,
+    "strategy_logic_changed": false,
+    "api_ui_backend_changed": false,
+    "scheduler_changed": false
+  },
+  "next_action": "scheduled_monitor_rerun",
+  "notes": [
+    "WAITING_FOR_OFFICIAL_DRAW_PUBLICATION for both supported lotteries",
+    "DAILY_539 remains excluded from supported production scope"
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "classification": "P59_POWERLOTTO_WAVE5_CONTROLLED_APPLY_COMPLETED",
+  "phase": "P59",
+  "lottery_type": "POWER_LOTTO",
+  "strategy": "fourier30_markov30_2bet",
+  "controlled_apply_id": "P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525",
+  "mode": "CONTROLLED_APPLY",
+  "overall_ok": true,
+  "started_at": "2026-05-25T06:03:07.973735+00:00",
+  "finished_at": "2026-05-25T06:03:09.560728+00:00",
+  "pre_flight": {
+    "production_rows": 42460,
+    "production_rows_ok": true,
+    "strategy_dup_count": 0,
+    "duplicate_check_pass": true,
+    "controlled_apply_id_count": 0,
+    "caid_check_pass": true,
+    "champion_present": true,
+    "p58_commit_ref": "4b6a0c4"
+  },
+  "production_rows_before": 42460,
+  "production_rows_after": 43960,
+  "inserted_rows": 1500,
+  "insert_result": {
+    "inserted": 1500,
+    "skipped": 0,
+    "errors": [],
+    "insert_ok": true
+  },
+  "schema_validation": {
+    "valid": true,
+    "error_count": 0,
+    "errors": []
+  },
+  "leakage_check": {
+    "violation_count": 0,
+    "pass": true,
+    "violations": []
+  },
+  "duplicate_check_pre": {
+    "existing_in_prod": 0,
+    "pass": true
+  },
+  "post_apply_verification": {
+    "total_rows": 43960,
+    "total_ok": true,
+    "strategy_rows": 1500,
+    "strategy_rows_ok": true,
+    "caid_rows": 1500,
+    "caid_rows_ok": true,
+    "online_promotion_count": 0,
+    "online_promotion_ok": true,
+    "dry_run_zero_ok": true,
+    "semantic_ok": true,
+    "semantic_errors": []
+  },
+  "hit_stats": {
+    "predicted": 1500,
+    "hit_3plus": 61,
+    "hit_3plus_rate": 0.0407,
+    "hit_count_distribution": {
+      "0": 472,
+      "1": 675,
+      "2": 292,
+      "3": 57,
+      "4": 4
+    },
+    "special_hits": 187,
+    "special_hit_rate": 0.1247,
+    "theoretical_m3_baseline": 0.0387,
+    "z_test": {
+      "z": 0.395,
+      "p_value": 0.3463
+    }
+  },
+  "governance": {
+    "production_db_write": true,
+    "lifecycle_promotion": false,
+    "champion_replacement": false,
+    "registry_mutation": false,
+    "live_api_call": false,
+    "online_promotion": false,
+    "watchlist_strategies_excluded": [
+      "cold_complement_2bet",
+      "zonal_entropy_2bet"
+    ]
+  },
+  "rollback": {
+    "controlled_apply_id": "P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525",
+    "rollback_sql": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id = 'P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525';",
+    "restore_backup": "cp lottery_api/data/lottery_v2.db.bak_p59_* lottery_api/data/lottery_v2.db",
+    "verify_sql": "SELECT COUNT(*) FROM strategy_prediction_replays;  -- expected: 42460 after rollback"
+  },
+  "p58_ref": {
+    "commit": "4b6a0c4",
+    "classification": "P58_CONTROLLED_APPLY_PROPOSAL_READY",
+    "mode": "PROPOSAL_ONLY"
+  }
+}

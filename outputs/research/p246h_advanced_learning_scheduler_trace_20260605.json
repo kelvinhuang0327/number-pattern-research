@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P246H",
+  "classification": "P246H_ADVANCED_LEARNING_SCHEDULER_TRACE_COMPLETE",
+  "p246g_merged_pr": "PR #322 merged 2026-06-05T14:47:25Z",
+  "scheduler_location": "lottery_api/utils/scheduler.py (LotteryOptimizationScheduler)",
+  "traced_call_chain": {
+    "step_1": {
+      "file": "lottery_api/routes/advanced_learning.py",
+      "function": "run_multi_stage_optimization() / run_adaptive_window_optimization()",
+      "call": "history = scheduler.get_data(lottery_type)",
+      "note": "scheduler is passed as parameter — no direct DB call in this file"
+    },
+    "step_2": {
+      "file": "lottery_api/utils/scheduler.py",
+      "class": "LotteryOptimizationScheduler",
+      "function": "get_data(lottery_type)",
+      "original": "return self.data_by_type.get(lottery_type, [])",
+      "fixed": "Applies canonical BIG_LOTTO filter before returning: excludes ADD_ON_PRIZE_EXCLUDED, DATE_FORMAT_ALIEN, SMALL_POOL_ALIEN"
+    },
+    "step_3": {
+      "file": "lottery_api/utils/scheduler.py",
+      "function": "update_data(history, lottery_rules)",
+      "note": "Populates data_by_type from history (categorized by lotteryType). History sources: optimization.py:90 uses get_all_draws() unfiltered (includes all 22,238 BIG_LOTTO rows), and user-submitted draws via API."
+    },
+    "step_4_root_source_optimization_py": {
+      "file": "lottery_api/routes/optimization.py",
+      "line": 90,
+      "call": "all_draws = db_manager.get_all_draws()",
+      "note": "This is where raw unfiltered BIG_LOTTO rows entered the scheduler cache. get_all_draws() with no lottery_type returns ALL draws from ALL types. get_all_draws is a raw display endpoint — not in scope to change. Fix is applied at scheduler.get_data() to filter at consumption point."
+    }
+  },
+  "data_source_type": {
+    "primary": "In-memory cache (data_by_type dict) populated from multiple sources",
+    "sources": [
+      "optimization.py:90 — db_manager.get_all_draws() (all lottery types, unfiltered)",
+      "optimization.py:176 — user-submitted history via sync-data API",
+      "data.py:65 — user-submitted draws via upload API",
+      "scheduler.load_data_from_disk() — JSON file persisted from previous update_data() calls"
+    ],
+    "note": "get_data() is the single consumption point for ALL callers including advanced_learning. Filtering at get_data() is non-destructive: raw data_by_type is preserved; canonical view is applied only at return time."
+  },
+  "big_lotto_usage_assessment": {
+    "raw_rows_consumed": true,
+    "root_cause": "optimization.py:90 calls db_manager.get_all_draws() without lottery_type filter and feeds all 22,238 BIG_LOTTO rows (including ADD_ON_PRIZE_EXCLUDED) into scheduler cache.",
+    "fix_applied_at": "scheduler.get_data() return time — non-destructive filter",
+    "result": "scheduler.get_data('BIG_LOTTO') now returns only canonical 6/49 main draws for all callers including advanced_learning.py."
+  },
+  "caller_classification": {
+    "advanced_learning.py": {
+      "file": "lottery_api/routes/advanced_learning.py",
+      "classification": "UPDATED_TO_CANONICAL",
+      "updated_via": "scheduler.get_data() fix in lottery_api/utils/scheduler.py",
+      "note": "advanced_learning.py itself has no imports or DB calls. It receives scheduler as parameter. The fix is at the scheduler layer."
+    },
+    "scheduler.get_data": {
+      "file": "lottery_api/utils/scheduler.py",
+      "function": "get_data()",
+      "classification": "UPDATED_TO_CANONICAL",
+      "updated_in": "P246H",
+      "change": "Added BIG_LOTTO canonical filter at return time: excludes hyphenated IDs, 8-digit date-format IDs, max(numbers)<=25 rows."
+    }
+  },
+  "files_updated": [
+    {
+      "file": "lottery_api/utils/scheduler.py",
+      "function": "LotteryOptimizationScheduler.get_data()",
+      "updated_in": "P246H",
+      "change": "Added BIG_LOTTO canonical filter at return time",
+      "non_big_lotto_behavior": "unchanged",
+      "raw_cache_preserved": true
+    }
+  ],
+  "files_deferred": [
+    {
+      "file": "lottery_api/routes/optimization.py:90",
+      "reason": "Calls db_manager.get_all_draws() (all types, unfiltered) to populate scheduler. This is a route-level concern; the canonical filter is now applied at scheduler.get_data() making optimization.py:90 a lower-priority cleanup."
+    },
+    {
+      "file": "60+ archived lottery_api/*.py + tools/*.py scripts",
+      "reason": "Not active production learning paths; outside P246H scope"
+    }
+  ],
+  "canonical_filter_rules_used": {
+    "filter_level": "scheduler.get_data() return-time filter",
+    "python_filter": {
+      "exclude_add_on_prize": "'-' in draw_id",
+      "exclude_date_format_alien": "len(draw_id)==8 and draw_id.startswith('20')",
+      "exclude_small_pool_alien": "max(numbers) <= 25"
+    },
+    "non_destructive": true,
+    "note": "data_by_type raw cache is preserved; filter applied only at return time"
+  },
+  "verification": {
+    "scheduler": {
+      "exists": true,
+      "has_hyphen_filter": true,
+      "has_date_format_filter": true,
+      "has_small_pool_filter": true,
+      "has_big_lotto_branch": true,
+      "has_preservation_comment": true
+    },
+    "advanced_learning": {
+      "exists": true,
+      "has_db_import": false,
+      "still_uses_scheduler_get_data": true,
+      "note": "advanced_learning.py unchanged — fix is at scheduler layer"
+    }
+  },
+  "all_p246h_updates_verified": true,
+  "raw_access_preserved": {
+    "description": "scheduler.data_by_type['BIG_LOTTO'] raw cache is NOT modified. The canonical filter is applied only at get_data() return time. Any caller that needs raw BIG_LOTTO draws can still use db.get_all_draws('BIG_LOTTO') which returns all 22,238 rows."
+  },
+  "db_write_performed": false,
+  "forbidden_actions_confirmed": [
+    "DB_write",
+    "DB_migration_apply",
+    "row_deletion",
+    "row_movement",
+    "frontend_display_change",
+    "registry_mutation",
+    "production_recommendation_change",
+    "strategy_promotion",
+    "betting_advice",
+    "Type_D_apply",
+    "GATE_OPEN_for_BIG_LOTTO_research"
+  ],
+  "p246_arc_summary": {
+    "P246E": "get_canonical_draws() + quick_predict.py",
+    "P246F": "rsm_bootstrap.py + core_satellite.py",
+    "P246G": "drift_detector._load_draws() + backtest_framework.py",
+    "P246H": "scheduler.get_data() — all advanced_learning callers now canonical",
+    "remaining": "optimization.py:90 lower-priority cleanup; 60+ archived scripts (non-production); Phase 2/3 Type D DB operations"
+  },
+  "final_decision": "P246H scheduler trace complete. scheduler.get_data('BIG_LOTTO') now returns only canonical 6/49 main draws, filtering ADD_ON_PRIZE_EXCLUDED (hyphenated IDs), DATE_FORMAT_ALIEN, and SMALL_POOL_ALIEN at return time. advanced_learning.py callers now receive canonical BIG_LOTTO data. Raw data_by_type cache is preserved; filter is non-destructive. Raw get_all_draws('BIG_LOTTO') remains unchanged for display/history. No DB write. BIG_LOTTO gate remains GATE_RED_PENDING_CANONICAL_SEPARATION."
+}

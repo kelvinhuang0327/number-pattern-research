@@ -1,0 +1,126 @@
+{
+  "artifact_type": "GOVERNANCE_SIMPLIFICATION_DESIGN_PROPOSAL",
+  "final_classification": "P240B_GOVERNANCE_SIMPLIFICATION_DESIGN_PROPOSAL_COMPLETE",
+  "generated_at": "2026-06-04",
+  "proposal_only": true,
+  "adoption_authorized": false,
+  "db_write_performed": false,
+  "registry_write_performed": false,
+  "production_change_authorized": false,
+  "monitoring_job_authorized": false,
+  "p211_restart_authorized": false,
+  "strategy_authorized": false,
+  "betting_advice": false,
+  "p238b_yellow_remains_observation_only": true,
+  "p211_remains_held_by_user": true,
+  "problem_statement": {
+    "task_count": "240+",
+    "pattern": "design-doc + build-plan + artifact-build + closeout + steady-state-verify per research unit",
+    "overhead_types": [
+      "no_op_hold_verification_tasks",
+      "separate_closeout_prs_for_small_read_only_tasks",
+      "repeated_governance_boilerplate",
+      "over_fragmentation_of_read_only_phases",
+      "growing_governance_files"
+    ],
+    "example_chain": "P236A -> P237C -> P237D -> P238A -> P238C -> P238B -> P238D -> P239A -> P240A",
+    "substantive_tasks_in_chain": 3,
+    "administrative_tasks_in_chain": 6
+  },
+  "task_types": {
+    "A": {
+      "name": "read_only_decision_support",
+      "output": "response_only_no_artifact_no_pr",
+      "simplification": "no_pr_no_commit_unless_artifact_explicitly_requested",
+      "db_write": "forbidden",
+      "strategy_production": "forbidden"
+    },
+    "B": {
+      "name": "read_only_design_doc_or_artifact",
+      "output": "artifact_files_and_governance_closeout_in_one_pr",
+      "simplification": "same_pr_closeout_allowed",
+      "same_pr_cap": "max_4_governance_files_max_120_governance_lines",
+      "db_write": "forbidden",
+      "strategy_production": "forbidden"
+    },
+    "C": {
+      "name": "implementation_low_risk_additive_code",
+      "output": "code_tests_artifacts_and_governance_closeout_in_one_pr",
+      "simplification": "same_pr_closeout_allowed_if_all_additive",
+      "same_pr_cap": "max_4_governance_files_max_120_governance_lines",
+      "db_write": "forbidden",
+      "strategy_production": "forbidden"
+    },
+    "D": {
+      "name": "db_write_ingestion_destructive",
+      "output": "separate_explicit_authorization_required",
+      "simplification": "none",
+      "db_write": "requires_explicit_authorization",
+      "strategy_production": "forbidden_unless_explicitly_authorized"
+    },
+    "E": {
+      "name": "strategy_production_controlled_apply",
+      "output": "full_existing_governance_unchanged",
+      "simplification": "none",
+      "db_write": "requires_explicit_authorization",
+      "strategy_production": "requires_explicit_authorization"
+    }
+  },
+  "no_op_hold_rule": {
+    "definition": "task_that_re_verifies_state_already_confirmed_with_no_new_external_event",
+    "rule": "do_not_schedule_unless_triggered_by_new_event",
+    "valid_triggers": [
+      "new_pr_merged",
+      "db_row_count_changed",
+      "ci_status_changed_on_pending_pr",
+      "new_draw_data_ingested",
+      "time_based_gate_opened",
+      "explicit_user_request"
+    ],
+    "invalid_triggers": [
+      "previous_round_already_confirmed_clean_state",
+      "system_already_at_waiting_for_user_authorization",
+      "decision_matrix_just_produced"
+    ],
+    "example_no_op_task": "P239A_post_P238D_steady_state_verification"
+  },
+  "closeout_consolidation_rule": {
+    "default": "same_pr_closeout_for_type_b_and_c",
+    "same_pr_allowed_when": [
+      "task_type_b_or_c",
+      "governance_changes_le_4_files_le_120_lines",
+      "all_ci_checks_pass",
+      "no_merge_conflict",
+      "db_row_count_unchanged"
+    ],
+    "separate_pr_required_when": [
+      "artifact_pr_from_external_branch",
+      "ci_failed_on_artifact_pr",
+      "governance_changes_gt_4_files_or_gt_120_lines",
+      "any_db_write_registry_mutation_or_production_change",
+      "manual_conflict_resolution_required"
+    ]
+  },
+  "safety_principles_preserved": [
+    "phase_0_actual_state_verification",
+    "canonical_repo_branch_enforcement",
+    "stop_on_mismatch",
+    "allowed_file_whitelist",
+    "explicit_authorization_for_db_write",
+    "explicit_authorization_for_registry_mutation",
+    "explicit_authorization_for_production",
+    "explicit_authorization_for_monitoring",
+    "explicit_authorization_for_controlled_apply",
+    "explicit_authorization_for_strategy",
+    "explicit_authorization_for_p211_restart",
+    "required_completion_check",
+    "no_workaround_obfuscation_weakened_tests"
+  ],
+  "adoption_authorization_phrase": "Authorize P240C governance simplification rule adoption",
+  "current_state": {
+    "active_task_status": "WAITING_FOR_USER_AUTHORIZATION",
+    "p211_status": "HELD_BY_USER",
+    "p238b_classification": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+    "no_deployable_candidate": true
+  }
+}

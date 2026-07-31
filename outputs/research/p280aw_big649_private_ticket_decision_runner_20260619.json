@@ -1,0 +1,144 @@
+{
+  "task_id": "P280AW",
+  "schema_version": "1.0.0",
+  "date": "2026-06-19",
+  "final_classification": "P280AW_PRIVATE_TICKET_DECISION_RUNNER_PR_OPEN_NO_PUBLICATION_NO_CLAIM",
+  "prediction_success_claim": false,
+  "strategy_promoted": false,
+  "activation": false,
+  "real_publication_performed": false,
+  "pre_draw_manifest_created": false,
+  "publication_pr_created": false,
+  "official_target_lookup_performed": false,
+  "official_deadline_lookup_performed": false,
+  "current_live_ticket_numbers_committed": false,
+  "p280at_null_warning": "P280AT_NULL: No BIG 6/49 strategy has demonstrated reliable edge over equal-budget diversified random (Bonferroni-corrected, k>=3). Strategy tickets are included for observation/tracking ONLY. This runner does NOT claim improved winning probability.",
+  "reconciliation": {
+    "p280av_final_classification": "P280AV_PR464_MERGED_VERIFIED_NULL_NO_PUBLICATION_NOT_ACTIVATED",
+    "p280av_origin_main": "3fdc07fd2e27e64460c134acc433b5cfe0dd2da3",
+    "p280at_final_classification": "P280AT_BIG649_STRATEGY_RANKING_REPLAY_PR_OPEN_NULL_NO_PUBLICATION",
+    "p280at_canonical_digest": "a905cc7646f54f1e8ec4d64c8a07dce529e5b5455c70baf4c9f09e40a9d3e5db",
+    "p280aq_adapter_digest": "b8ceac657f081bbf2be6ae0fabe6adbce564ea3a4b4cb77ab610035d0e4a800a",
+    "p280aq_adapter_digest_verified": true,
+    "p280ao_pr462_touched": false
+  },
+  "database_access": {
+    "opened": true,
+    "queried": true,
+    "copied": false,
+    "written": false,
+    "db_hash_before": "539efda5874b08f7b7e25b36cd0c70e4d4d582c8df9541eec73eaa0e373650d2",
+    "db_hash_after": "539efda5874b08f7b7e25b36cd0c70e4d4d582c8df9541eec73eaa0e373650d2",
+    "drift_detected": false,
+    "latest_local_draw": "115000062",
+    "latest_local_draw_source": "local_db_read_only"
+  },
+  "private_local_ref_id_used": true,
+  "private_local_ref_id_note": "Synthetic local id = latest_local_draw + 1 = 115000063. NOT official target. NOT official deadline. Local reference only.",
+  "runner_design": {
+    "tool_path": "tools/p280aw_big649_private_ticket_decision_runner.py",
+    "test_path": "tests/test_p280aw_big649_private_ticket_decision_runner.py",
+    "purpose": "Local-only private ticket decision runner. Consumes P280AT ranking and P280AQ adapter output. Produces private decision packs on demand. No publication. No edge claim.",
+    "output_modes": [
+      "strategy_reference_pack",
+      "diversified_random_pack",
+      "hybrid_pack",
+      "contribution_report",
+      "summary_recommendation",
+      "all"
+    ],
+    "budget_choices": [3, 5, 7, 11],
+    "default_mode": "summary_recommendation",
+    "default_budget": 5,
+    "default_seed": 42
+  },
+  "output_schema": {
+    "top_level_fields": [
+      "task_id",
+      "schema_version",
+      "final_classification",
+      "p280at_null_warning",
+      "adapter_digest_expected",
+      "adapter_digest_verified",
+      "database_access",
+      "latest_local_draw_source",
+      "latest_local_draw",
+      "private_local_ref_id",
+      "private_local_ref_id_note",
+      "official_target_lookup_performed",
+      "official_deadline_lookup_performed",
+      "current_live_ticket_numbers_committed",
+      "prediction_success_claim",
+      "strategy_promoted",
+      "activation",
+      "real_publication_performed",
+      "pre_draw_manifest_created",
+      "publication_pr_created",
+      "results"
+    ],
+    "mode_strategy_reference_pack": {
+      "fields": ["mode", "p280at_null_warning", "adapter_digest", "adapter_digest_verified", "label", "ticket_count", "tickets", "coverage_metrics"],
+      "label": "OBSERVATION_TRACKING_ONLY_NO_EDGE_CLAIM"
+    },
+    "mode_diversified_random_pack": {
+      "fields": ["mode", "p280at_null_warning", "label", "budget_k", "seed", "tickets", "coverage_metrics", "note"],
+      "label": "LOW_OVERLAP_COVERAGE_NO_EDGE_CLAIM"
+    },
+    "mode_hybrid_pack": {
+      "fields": ["mode", "p280at_null_warning", "label", "budget_k", "seed", "strategy_ticket_count", "random_ticket_count", "strategy_tickets", "random_tickets", "coverage_metrics", "conservative_default_note"],
+      "label": "HYBRID_CONSERVATIVE_NO_EDGE_CLAIM",
+      "hybrid_strategy_counts": {"k_3": 0, "k_5": 1, "k_7": 1, "k_11": 2}
+    },
+    "mode_contribution_report": {
+      "fields": ["mode", "p280at_null_warning", "strategy_count", "coverage_metrics", "marginal_coverage_by_at_rank", "high_overlap_warnings", "internal_redundancy_note"]
+    },
+    "mode_summary_recommendation": {
+      "fields": ["mode", "p280at_null_warning", "budget_k", "seed", "default_recommendation", "reasoning", "practical_guide", "what_not_to_claim"],
+      "default_recommendation": "diversified_random_pack"
+    }
+  },
+  "safety_boundaries": {
+    "no_official_target": true,
+    "no_official_deadline": true,
+    "no_publication_artifact": true,
+    "no_pre_draw_manifest": true,
+    "no_publication_pr": true,
+    "no_db_write": true,
+    "no_db_copy": true,
+    "no_committed_live_ticket_numbers": true,
+    "no_edge_claim": true,
+    "no_prediction_success_claim": true,
+    "no_strategy_promoted": true,
+    "no_activation": true,
+    "output_to_stdout_or_untracked_path_only": true
+  },
+  "smoke_test_summary": {
+    "strategy_reference_pack_coverage": "35/49 unique numbers",
+    "strategy_reference_pack_max_overlap": 5,
+    "strategy_reference_pack_duplicates": 0,
+    "diversified_random_k5_coverage": "24/49 unique numbers",
+    "diversified_random_k5_max_overlap": 2,
+    "hybrid_k5_coverage": "25/49 unique numbers",
+    "adapter_digest_verified": true,
+    "db_drift": false
+  },
+  "how_to_run": {
+    "basic": "python3 tools/p280aw_big649_private_ticket_decision_runner.py",
+    "all_modes": "python3 tools/p280aw_big649_private_ticket_decision_runner.py --mode all --budget 5 --seed 42 --db /path/to/lottery_v2.db",
+    "json_output": "python3 tools/p280aw_big649_private_ticket_decision_runner.py --mode all --json --db /path/to/lottery_v2.db",
+    "to_file": "python3 tools/p280aw_big649_private_ticket_decision_runner.py --mode all --json --db /path/to/lottery_v2.db > /tmp/p280aw_output.json",
+    "note": "Output to /tmp or stdout only. Never commit runtime output with live draw numbers."
+  },
+  "what_this_does_not_do": [
+    "claim improved future winning probability",
+    "perform official target lookup",
+    "perform official deadline lookup",
+    "write or copy the database",
+    "create a pre-draw manifest",
+    "create a publication PR",
+    "activate any strategy",
+    "promote any strategy",
+    "commit current live/private ticket numbers to the repo"
+  ],
+  "p280ao_pr462_status": "OPEN_UNTOUCHED_SEPARATE"
+}

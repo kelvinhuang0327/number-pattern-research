@@ -44,7 +44,7 @@ def run_3bet_audit():
 
     # 2. Setup
     db = DatabaseManager(db_path=os.path.join(project_root, 'lottery_api/data/lottery_v2.db'))
-    all_draws = db.get_all_draws('BIG_LOTTO')
+    all_draws = db.get_canonical_draws('BIG_LOTTO')  # P247F: canonical 2,113 main-draw rows
     rules = get_lottery_rules('BIG_LOTTO')
     optimizer = MultiBetOptimizer()
     

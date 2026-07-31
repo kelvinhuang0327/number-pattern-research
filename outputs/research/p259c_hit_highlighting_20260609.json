@@ -1,0 +1,61 @@
+{
+  "task": "P259C",
+  "title": "History Replay Detail Hit Highlighting — Matched Number Visual Display",
+  "date": "2026-06-09",
+  "final_classification": "P259C_HIT_HIGHLIGHTING_PR_OPEN_WAITING_CI",
+  "branch": "p259c-hit-highlighting",
+  "base_commit": "85ea2c9",
+
+  "files_modified": ["index.html"],
+  "files_created": [
+    "tests/test_p259c_hit_highlighting.py",
+    "outputs/research/p259c_hit_highlighting_20260609.json"
+  ],
+
+  "no_api_changes": true,
+  "api_fields_used": ["hit_numbers (list[int])", "predicted_numbers (list[int])", "actual_numbers (list[int])", "hit_count (int)", "result_label (str)"],
+
+  "css_classes_added": [
+    "replay-number-token — base badge for individual number display",
+    "replay-number-token--hit — green highlight for matched numbers",
+    "replay-row--hit — subtle row background for hit rows",
+    "replay-result-badge--hit — green result badge",
+    "replay-result-badge--miss — neutral result badge"
+  ],
+
+  "js_changes": {
+    "fmtNumberTokens": "New helper: renders number array as individual token spans; hitSet built from hit_numbers (preferred) or predicted∩actual fallback (display-only, no DB write)",
+    "renderDetailRows": "Updated to use fmtNumberTokens for predicted_numbers and actual_numbers columns; uses replay-row--hit and replay-result-badge--hit/miss classes"
+  },
+
+  "fallback_behavior": {
+    "hit_numbers_present": "Uses API-provided hit_numbers for hitSet",
+    "hit_numbers_empty_or_null": "Computes intersection of predicted_numbers ∩ actual_numbers locally in JS (display-only, no DB write)",
+    "no_fabricated_data": true
+  },
+
+  "ux": {
+    "predicted_numbers_col": "Individual badges; hit numbers show green replay-number-token--hit",
+    "actual_numbers_col": "Individual badges; hit numbers show green replay-number-token--hit",
+    "hit_rows": "Subtle green row background (replay-row--hit)",
+    "result_badge": "Green 命中 badge for hits, neutral 未命中 for misses",
+    "pagination_unchanged": true,
+    "overview_unchanged": true
+  },
+
+  "proof_no_db_write": "fmtNumberTokens is a pure JS function; no fetch/XHR/db call; fallback is in-memory Set computation",
+  "proof_no_replay_backfill": true,
+  "proof_no_migration": true,
+  "proof_no_adapter_changes": true,
+  "proof_overview_not_polluted": "P259A test test_p259a_overview_no_per_draw_detail still PASS",
+
+  "tests": {
+    "file": "tests/test_p259c_hit_highlighting.py",
+    "count": 33,
+    "result": "33/33 PASS"
+  },
+  "regression": {
+    "p259b_p259a": "84/84 PASS",
+    "p257_p258": "986/986 PASS"
+  }
+}

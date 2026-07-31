@@ -1,0 +1,3146 @@
+{
+ "schema_version": "p274d.v1",
+ "task_id": "P274D_PRE_G2_ACCEPTANCE_EVIDENCE_GATE_VERIFICATION",
+ "generated_at_utc": "2026-06-16T02:22:19Z",
+ "owner_authorization": "YES authorize P274D_PRE_G2_ACCEPTANCE_EVIDENCE_GATE_VERIFICATION as a read-only and non-production evidence-verification task.",
+ "scope": {
+  "type": "read-only / non-production evidence verification with artifact + four-governance-file reconciliation",
+  "reconciles": "records that PR #443 merged P274C onto main at 77994824d1c1e5e4d4db14f0c7d5cb64bf933ead",
+  "does_not_create_recursive_closeout_task": true
+ },
+ "PR443_merge_identity": {
+  "number": 443,
+  "state": "MERGED",
+  "merged_at_utc": "2026-06-16T01:44:24Z",
+  "merge_commit": "77994824d1c1e5e4d4db14f0c7d5cb64bf933ead",
+  "merge_first_parent": "5da0d09a476d2d4d215112dde788ba31845e38fe",
+  "merge_second_parent": "c6797cb32543ae6d575b003bf09028c385aad13c",
+  "pr_head": "c6797cb32543ae6d575b003bf09028c385aad13c",
+  "base": "main",
+  "pr_head_is_ancestor_of_origin_main": true,
+  "origin_main_at_verification": "77994824d1c1e5e4d4db14f0c7d5cb64bf933ead"
+ },
+ "source_artifacts": [
+  "outputs/research/p274c_g1_prospective_execution_decision_resolution_design_20260615.json",
+  "outputs/research/p274a_prospective_confirmation_protocol_design_20260615.json",
+  "outputs/research/p274b_prospective_execution_activation_readiness_plan_20260615.json"
+ ],
+ "source_identities": {
+  "P274C_canonical_payload_digest": "873dc804130ca1e737e6430ac114791c15277a2799b7567279d809f8b7fc51a6",
+  "P274C_digest_recomputed_match": true,
+  "P274A_canonical_payload_digest": "f2294716699368a9c2b21fb14301d84d70f662b882aef9eab896f96825f18ffc",
+  "P274A_digest_recomputed_match": true,
+  "P274B_canonical_payload_digest": "bf8ae32f8dbd208da4939ee46cdbe19125827f36c3a80aedefc8fee21a994744",
+  "P274B_digest_recomputed_match": true,
+  "p271_test_identities": [
+   {
+    "path": "tests/test_p271j_prospective_capture_ledger_implementation.py",
+    "sha256": "378c4d8861aa4dd9b1260eb21988fe2e7f811feaf526f3736edb52207bd5a536",
+    "type": "COMMITTED_TEST",
+    "historical": "72/72 PASS in cited P271J artifact"
+   },
+   {
+    "path": "tests/test_p271k_prospective_capture_ledger_migration_rehearsal.py",
+    "sha256": "90d680d4d0c23b510e369da2ec6fd367bb7d02e4ef463bc8256d7512fe670092",
+    "type": "COMMITTED_TEST",
+    "historical": "37/37 PASS in cited P271K artifact"
+   },
+   {
+    "path": "tests/test_p271l_controlled_deployment_preflight.py",
+    "sha256": "1bd29256af83ece1c7a56760fb32d2fb3364bf5b1809b029cafdefe24241d917",
+    "type": "COMMITTED_TEST",
+    "historical": "50/50 PASS; preflight/inspection scope only",
+    "not_run_p274d_reason": "preflight references production DB raw stat; not run in P274D"
+   },
+   {
+    "path": "tests/test_p271l_readonly_production_schema_inspection.py",
+    "sha256": "81ba542eff5ff59055d80a79a38e8346ebbd18a521af1c65eac6a9b6d655ad27",
+    "type": "COMMITTED_TEST",
+    "historical": "72/72 PASS; read-only production schema inspection",
+    "not_run_p274d_reason": "opens production DB; FORBIDDEN in P274D, NOT RUN"
+   }
+  ],
+  "p271j_module": {
+   "path": "lottery_api/prospective_capture_ledger.py",
+   "sha256": "18e221ee632a81fbdb95cab171d3c3a4bae3bf2222f9f2c58c8a3398584c71db",
+   "type": "COMMITTED_SOURCE",
+   "scope": "isolated caller-supplied append-only ledger library (tmp/in-memory only)"
+  },
+  "p271k_script": {
+   "path": "scripts/p271k_prospective_capture_ledger_migration_rehearsal.py",
+   "sha256": "02105c4cea4d706f0982ffbd17b12f6630114b6d0738412cbbba257fc49b7d76",
+   "type": "COMMITTED_SOURCE",
+   "scope": "temporary-DB migration rehearsal (tmp_path / :memory:)"
+  }
+ },
+ "fixed_scientific_contract": {
+  "p274c": {
+   "canonical_14_decisions": 14,
+   "additional_decisions": 8,
+   "total_options": 89,
+   "selected_architecture": "RECOMMENDED_RESILIENT_LONG_HORIZON",
+   "g1_outcome": "G1_COMPLETE_READY_FOR_SEPARATE_G2_AUTHORIZATION",
+   "pre_g2_gate_count": 52,
+   "unchanged": true
+  },
+  "p274a": {
+   "daily539_candidates": [
+    "acb_markov_midfreq_3bet (N=3)",
+    "daily539_f4cold_3bet (N=3)",
+    "daily539_f4cold_5bet (N=5)"
+   ],
+   "endpoint": "D539_ANY_PRIZE_AWARE_WIN == M2+ (hit_count>=2)",
+   "exact_distinct_ticket_null": "q_N=1-C(T-W,N)/C(T,N); T=575757=C(39,5); W=65621; q1=0.11397342976290345; q3=0.304431435742626; q5=0.453949563749733",
+   "bonferroni_m": 3,
+   "per_candidate_alpha": 0.016666666666666666,
+   "checkpoints": "50 (integrity-only) / 300 (non-binding futility) / final",
+   "final_horizon_draws": 3605,
+   "interim_efficacy": false,
+   "boundary": "UNSET_PENDING_SEPARATE_ACTIVATION_AUTHORIZATION",
+   "prospective_records": "NONE",
+   "unchanged": true
+  },
+  "p274b": {
+   "canonical_payload_digest": "bf8ae32f8dbd208da4939ee46cdbe19125827f36c3a80aedefc8fee21a994744",
+   "unchanged": true
+  }
+ },
+ "gate_inventory": {
+  "count": 52,
+  "source": "committed P274C pre_g2_acceptance_evidence_gates",
+  "ids": [
+   "PG-01",
+   "PG-02",
+   "PG-03",
+   "PG-04",
+   "PG-05",
+   "PG-06",
+   "PG-07",
+   "PG-08",
+   "PG-09",
+   "PG-10",
+   "PG-11",
+   "PG-12",
+   "PG-13",
+   "PG-14",
+   "PG-15",
+   "PG-16",
+   "PG-17",
+   "PG-18",
+   "PG-19",
+   "PG-20",
+   "PG-21",
+   "PG-22",
+   "PG-23",
+   "PG-24",
+   "PG-25",
+   "PG-26",
+   "PG-27",
+   "PG-28",
+   "PG-29",
+   "PG-30",
+   "PG-31",
+   "PG-32",
+   "PG-33",
+   "PG-34",
+   "PG-35",
+   "PG-36",
+   "PG-37",
+   "PG-38",
+   "PG-39",
+   "PG-40",
+   "PG-41",
+   "PG-42",
+   "PG-43",
+   "PG-44",
+   "PG-45",
+   "PG-46",
+   "PG-47",
+   "PG-48",
+   "PG-49",
+   "PG-50",
+   "PG-51",
+   "PG-52"
+  ],
+  "ids_unique": true,
+  "decision_id_distribution": {
+   "AD-01": 3,
+   "AD-03": 4,
+   "AD-04": 4,
+   "AD-05": 4,
+   "AD-06": 5,
+   "AD-08": 4,
+   "OD-02": 3,
+   "OD-03": 3,
+   "OD-04": 4,
+   "OD-06": 3,
+   "OD-07": 4,
+   "OD-08": 4,
+   "OD-10": 4,
+   "OD-12": 3
+  }
+ },
+ "gate_verification_records": [
+  {
+   "gate_id": "PG-01",
+   "canonical_gate_string": "OD-02: Choose a dedicated evidence DB technology and WORM-capable independent archive",
+   "decision_id": "OD-02",
+   "canonical_requirement": "Choose a dedicated evidence DB technology and WORM-capable independent archive",
+   "required_evidence_items": [
+    "Choose a dedicated evidence DB technology and WORM-capable independent archive"
+   ],
+   "observed_evidence_items": [
+    "P274C selected RECOMMENDED_RESILIENT_LONG_HORIZON with a dedicated evidence store + independent WORM mirror; S3 Object Lock confirms WORM feasibility."
+   ],
+   "missing_evidence_items": [
+    "Finalized binding dedicated-evidence-DB technology choice and a provisioned WORM-capable independent archive (no external service exists)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_freshness": "committed_and_official",
+   "verifier": "Prospective Service Owner",
+   "responsible_role": "Prospective Service Owner",
+   "accountable_role": "Evidence Custodian",
+   "verification_status": "PARTIALLY_VERIFIED",
+   "blocker_codes": [
+    "EXTERNAL_SERVICE_NOT_CONFIGURED",
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": true,
+   "official_references": [
+    "S3_OBJECT_LOCK"
+   ],
+   "pass_criteria_assessment": "Design/component/feasibility portion satisfied; production implementation and/or operation evidence absent",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "In a G2 step, bind the evidence-DB technology and provision/configure the independent WORM archive, then attach configuration evidence.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "evidence_db_and_worm_archive / capture_architecture / append_only_ledger",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-02",
+   "canonical_gate_string": "OD-02: Prove atomic append, uniqueness, no overwrite, canonical export, restore, and digest reconciliation on synthetic data",
+   "decision_id": "OD-02",
+   "canonical_requirement": "Prove atomic append, uniqueness, no overwrite, canonical export, restore, and digest reconciliation on synthetic data",
+   "required_evidence_items": [
+    "Prove atomic append, uniqueness, no overwrite, canonical export, restore, and digest reconciliation on synthetic data"
+   ],
+   "observed_evidence_items": [
+    "P271J append-only ledger proves atomic append, DB-level uniqueness, no-overwrite triggers, payload-hash tamper-evidence; P271K proves temp backup/restore + fingerprint reconciliation; P274D fresh run 106 passed; /tmp probe shows deterministic hashing + tamper detection."
+   ],
+   "missing_evidence_items": [
+    "Same proof on the finalized production evidence DB (gate 1); explicit 'canonical export' coverage on the production store."
+   ],
+   "evidence_sources": [
+    "COMMITTED_SOURCE",
+    "COMMITTED_TEST",
+    "FRESH_SYNTHETIC_REHEARSAL",
+    "FRESH_TEMP_DB_REHEARSAL"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_SOURCE",
+    "COMMITTED_TEST",
+    "FRESH_SYNTHETIC_REHEARSAL",
+    "FRESH_TEMP_DB_REHEARSAL"
+   ],
+   "evidence_freshness": "fresh_synthetic_and_committed",
+   "verifier": "Prospective Service Owner",
+   "responsible_role": "Prospective Service Owner",
+   "accountable_role": "Evidence Custodian",
+   "verification_status": "PARTIALLY_VERIFIED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": true,
+   "synthetic_rehearsal_completed": true,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Design/component/feasibility portion satisfied; production implementation and/or operation evidence absent",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Re-run the synthetic proof against the chosen production evidence-DB implementation in G2 and capture canonical-export evidence.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "evidence_db_and_worm_archive / capture_architecture / append_only_ledger",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-03",
+   "canonical_gate_string": "OD-02: Keep the production operational DB outside the evidence trust boundary",
+   "decision_id": "OD-02",
+   "canonical_requirement": "Keep the production operational DB outside the evidence trust boundary",
+   "required_evidence_items": [
+    "Keep the production operational DB outside the evidence trust boundary"
+   ],
+   "observed_evidence_items": [
+    "P274C trust_boundaries keep the operational DB outside the evidence boundary; P271J uses a separate ledger (strategy_prediction_replays NOT reused)."
+   ],
+   "missing_evidence_items": [
+    "Deployed system that operationally enforces the boundary (no production deployment exists)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "COMMITTED_SOURCE"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "COMMITTED_SOURCE"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Prospective Service Owner",
+   "responsible_role": "Prospective Service Owner",
+   "accountable_role": "Evidence Custodian",
+   "verification_status": "PARTIALLY_VERIFIED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING",
+    "PRODUCTION_EVIDENCE_REQUIRED",
+    "PRODUCTION_AUTHORIZATION_REQUIRED"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Design/component/feasibility portion satisfied; production implementation and/or operation evidence absent",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Demonstrate the enforced boundary on the deployed G2 system.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "evidence_db_and_worm_archive / capture_architecture / append_only_ledger",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-04",
+   "canonical_gate_string": "OD-03: Document exact official endpoints and manual verification",
+   "decision_id": "OD-03",
+   "canonical_requirement": "Document exact official endpoints and manual verification",
+   "required_evidence_items": [
+    "Document exact official endpoints and manual verification"
+   ],
+   "observed_evidence_items": [
+    "P274C design names an official outcome source class; official source state is MANUAL_VERIFICATION_REQUIRED."
+   ],
+   "missing_evidence_items": [
+    "Documented exact official endpoints and a completed manual-verification record (none exists)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Schedule Resolver Owner",
+   "responsible_role": "Schedule Resolver Owner",
+   "accountable_role": "Independent Verifier",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "OFFICIAL_SOURCE_MANUAL_VERIFICATION_REQUIRED",
+    "EXTERNAL_SERVICE_NOT_CONFIGURED"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": true,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Owner/operator must document the official endpoints and perform manual verification.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "official_outcome_source / draw_close_and_target_draw_resolver",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-05",
+   "canonical_gate_string": "OD-03: Store raw responses, fetch times, source versions, Asia/Taipei and UTC normalized times",
+   "decision_id": "OD-03",
+   "canonical_requirement": "Store raw responses, fetch times, source versions, Asia/Taipei and UTC normalized times",
+   "required_evidence_items": [
+    "Store raw responses, fetch times, source versions, Asia/Taipei and UTC normalized times"
+   ],
+   "observed_evidence_items": [
+    "Design specifies storing raw responses + fetch/source-version + Asia/Taipei & UTC normalized times."
+   ],
+   "missing_evidence_items": [
+    "An implemented capture that stores official raw responses and times (no implementation/operation)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Schedule Resolver Owner",
+   "responsible_role": "Schedule Resolver Owner",
+   "accountable_role": "Independent Verifier",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING",
+    "OFFICIAL_SOURCE_MANUAL_VERIFICATION_REQUIRED"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": true,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Implement official-response capture in G2 and verify stored fields.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "official_outcome_source / draw_close_and_target_draw_resolver",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-06",
+   "canonical_gate_string": "OD-03: Pass cancellation, delay, reschedule, ROC/Gregorian, timezone, and disagreement fixtures",
+   "decision_id": "OD-03",
+   "canonical_requirement": "Pass cancellation, delay, reschedule, ROC/Gregorian, timezone, and disagreement fixtures",
+   "required_evidence_items": [
+    "Pass cancellation, delay, reschedule, ROC/Gregorian, timezone, and disagreement fixtures"
+   ],
+   "observed_evidence_items": [
+    "P271J provides a draw-close source-class + timezone-causality precursor; the named cancellation/delay/reschedule/ROC-Gregorian/disagreement fixtures are not committed/run."
+   ],
+   "missing_evidence_items": [
+    "A resolver implementation passing the full named fixture suite (not present)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Schedule Resolver Owner",
+   "responsible_role": "Schedule Resolver Owner",
+   "accountable_role": "Independent Verifier",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING",
+    "SYNTHETIC_REHEARSAL_NOT_RUN"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": true,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Implement the resolver and its fixture suite in G2; run the named fixtures.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "official_outcome_source / draw_close_and_target_draw_resolver",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-07",
+   "canonical_gate_string": "OD-04: At least four configured sources, three healthy, two administrative domains",
+   "decision_id": "OD-04",
+   "canonical_requirement": "At least four configured sources, three healthy, two administrative domains",
+   "required_evidence_items": [
+    "At least four configured sources, three healthy, two administrative domains"
+   ],
+   "observed_evidence_items": [
+    "RFC 8633 confirms >=4-source feasibility; design requires it."
+   ],
+   "missing_evidence_items": [
+    "An actual trusted-clock subsystem with >=4 configured sources / 3 healthy / 2 admin domains (no external service)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_freshness": "committed_and_official",
+   "verifier": "Trusted Time Owner",
+   "responsible_role": "Trusted Time Owner",
+   "accountable_role": "Prospective Service Owner",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "EXTERNAL_SERVICE_NOT_CONFIGURED",
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": true,
+   "official_references": [
+    "RFC8633"
+   ],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Provision and configure the clock sources in G2; attach health telemetry.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "trusted_clock",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-08",
+   "canonical_gate_string": "OD-04: NTS where available; offset <=1 s; spread <=2 s; telemetry age <=60 s",
+   "decision_id": "OD-04",
+   "canonical_requirement": "NTS where available; offset <=1 s; spread <=2 s; telemetry age <=60 s",
+   "required_evidence_items": [
+    "NTS where available; offset <=1 s; spread <=2 s; telemetry age <=60 s"
+   ],
+   "observed_evidence_items": [
+    "RFC 8915 confirms NTS feasibility; design sets offset/spread/telemetry thresholds."
+   ],
+   "missing_evidence_items": [
+    "Configured NTS sources meeting offset<=1s/spread<=2s/telemetry<=60s (no service)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_freshness": "committed_and_official",
+   "verifier": "Trusted Time Owner",
+   "responsible_role": "Trusted Time Owner",
+   "accountable_role": "Prospective Service Owner",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "EXTERNAL_SERVICE_NOT_CONFIGURED",
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": true,
+   "official_references": [
+    "RFC8915"
+   ],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Configure NTS + thresholds in G2; capture telemetry evidence.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "trusted_clock",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-09",
+   "canonical_gate_string": "OD-04: Synthetic skew, stale telemetry, source loss, and clock-step tests fail closed",
+   "decision_id": "OD-04",
+   "canonical_requirement": "Synthetic skew, stale telemetry, source loss, and clock-step tests fail closed",
+   "required_evidence_items": [
+    "Synthetic skew, stale telemetry, source loss, and clock-step tests fail closed"
+   ],
+   "observed_evidence_items": [
+    "P271J has a fail-closed clock-skew-margin causality precursor; the named clock-fault synthetic suite (skew/stale/source-loss/clock-step) is not implemented/run."
+   ],
+   "missing_evidence_items": [
+    "A trusted-clock monitor with the named fail-closed synthetic fault tests (not present)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Trusted Time Owner",
+   "responsible_role": "Trusted Time Owner",
+   "accountable_role": "Prospective Service Owner",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "SYNTHETIC_REHEARSAL_NOT_RUN",
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": true,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Implement the clock monitor + fault tests in G2 and run them.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "trusted_clock",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-10",
+   "canonical_gate_string": "OD-04: Batch sealed by T-120 s",
+   "decision_id": "OD-04",
+   "canonical_requirement": "Batch sealed by T-120 s",
+   "required_evidence_items": [
+    "Batch sealed by T-120 s"
+   ],
+   "observed_evidence_items": [
+    "Design requires per-draw seal by T-120s."
+   ],
+   "missing_evidence_items": [
+    "An operating sealer demonstrating the T-120s seal barrier (no implementation/operation)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Trusted Time Owner",
+   "responsible_role": "Trusted Time Owner",
+   "accountable_role": "Prospective Service Owner",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING",
+    "PRODUCTION_EVIDENCE_REQUIRED",
+    "PRODUCTION_AUTHORIZATION_REQUIRED"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Implement + operate the sealer in G2; capture timing evidence.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "trusted_clock",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-11",
+   "canonical_gate_string": "OD-06: Named primary/backup for service, operations, science, security/key custody, outcome linkage, and independent verification",
+   "decision_id": "OD-06",
+   "canonical_requirement": "Named primary/backup for service, operations, science, security/key custody, outcome linkage, and independent verification",
+   "required_evidence_items": [
+    "Named primary/backup for service, operations, science, security/key custody, outcome linkage, and independent verification"
+   ],
+   "observed_evidence_items": [
+    "P274C responsibility_matrix defines six roles; the maintenance plan says naming happens BEFORE G2. No individuals are named/committed by this authorization."
+   ],
+   "missing_evidence_items": [
+    "Named primary AND backup individuals for service/operations/science/security-key-custody/outcome-linkage/independent-verification."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Owner / Scientific Sponsor",
+   "responsible_role": "Owner / Scientific Sponsor",
+   "accountable_role": "Owner / Scientific Sponsor",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "NAMED_ASSIGNEE_MISSING",
+    "BACKUP_ASSIGNEE_MISSING",
+    "OWNER_COMMITMENT_MISSING"
+   ],
+   "production_access_required_later": false,
+   "owner_commitment_required": true,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Owner must name and commit primary + backup for each role.",
+   "later_authorization_gate": "OWNER_COMMITMENT",
+   "domain": "named_roles_and_long_horizon_ownership / separation_of_duties",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-12",
+   "canonical_gate_string": "OD-06: Recorded acknowledgment and escalation coverage",
+   "decision_id": "OD-06",
+   "canonical_requirement": "Recorded acknowledgment and escalation coverage",
+   "required_evidence_items": [
+    "Recorded acknowledgment and escalation coverage"
+   ],
+   "observed_evidence_items": [
+    "Design defines escalation; no acknowledgments or escalation coverage are recorded (no named people)."
+   ],
+   "missing_evidence_items": [
+    "Recorded role acknowledgments + escalation coverage."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Owner / Scientific Sponsor",
+   "responsible_role": "Owner / Scientific Sponsor",
+   "accountable_role": "Owner / Scientific Sponsor",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "OWNER_COMMITMENT_MISSING",
+    "NAMED_ASSIGNEE_MISSING"
+   ],
+   "production_access_required_later": false,
+   "owner_commitment_required": true,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Owner must record acknowledgments + escalation coverage after assignment.",
+   "later_authorization_gate": "OWNER_COMMITMENT",
+   "domain": "named_roles_and_long_horizon_ownership / separation_of_duties",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-13",
+   "canonical_gate_string": "OD-06: No incompatible role combination",
+   "decision_id": "OD-06",
+   "canonical_requirement": "No incompatible role combination",
+   "required_evidence_items": [
+    "No incompatible role combination"
+   ],
+   "observed_evidence_items": [
+    "Design encodes role separation in the responsibility matrix; cannot be verified without actual named individuals."
+   ],
+   "missing_evidence_items": [
+    "Confirmed assignments with no incompatible role combination."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Owner / Scientific Sponsor",
+   "responsible_role": "Owner / Scientific Sponsor",
+   "accountable_role": "Owner / Scientific Sponsor",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "NAMED_ASSIGNEE_MISSING"
+   ],
+   "production_access_required_later": false,
+   "owner_commitment_required": true,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Verify role separation once individuals are named.",
+   "later_authorization_gate": "OWNER_COMMITMENT",
+   "domain": "named_roles_and_long_horizon_ownership / separation_of_duties",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-14",
+   "canonical_gate_string": "OD-07: Retention policy: protocol lifetime plus seven years",
+   "decision_id": "OD-07",
+   "canonical_requirement": "Retention policy: protocol lifetime plus seven years",
+   "required_evidence_items": [
+    "Retention policy: protocol lifetime plus seven years"
+   ],
+   "observed_evidence_items": [
+    "P274C long-horizon/retention design documents retention = protocol lifetime + 7 years; NIST 800-92 supports retention design."
+   ],
+   "missing_evidence_items": [
+    "A provisioned archive + named retention operator enforcing the policy (no archive/operator)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_freshness": "committed_and_official",
+   "verifier": "Evidence Custodian",
+   "responsible_role": "Evidence Custodian",
+   "accountable_role": "Owner / Resource Sponsor",
+   "verification_status": "PARTIALLY_VERIFIED",
+   "blocker_codes": [
+    "OWNER_COMMITMENT_MISSING",
+    "EXTERNAL_SERVICE_NOT_CONFIGURED"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": true,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": true,
+   "official_references": [
+    "NIST80092"
+   ],
+   "pass_criteria_assessment": "Design/component/feasibility portion satisfied; production implementation and/or operation evidence absent",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Provision the archive and assign a retention operator; attach retention configuration.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "retention_and_archive / backup_verification",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-15",
+   "canonical_gate_string": "OD-07: WORM/version-lock proof",
+   "decision_id": "OD-07",
+   "canonical_requirement": "WORM/version-lock proof",
+   "required_evidence_items": [
+    "WORM/version-lock proof"
+   ],
+   "observed_evidence_items": [
+    "S3 Object Lock / RFC 4998 confirm WORM + version-lock feasibility."
+   ],
+   "missing_evidence_items": [
+    "A provisioned WORM/version-locked store with operational proof (no service)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_freshness": "committed_and_official",
+   "verifier": "Evidence Custodian",
+   "responsible_role": "Evidence Custodian",
+   "accountable_role": "Owner / Resource Sponsor",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "EXTERNAL_SERVICE_NOT_CONFIGURED",
+    "PRODUCTION_EVIDENCE_REQUIRED",
+    "PRODUCTION_AUTHORIZATION_REQUIRED"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": true,
+   "official_references": [
+    "S3_OBJECT_LOCK",
+    "RFC4998"
+   ],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Provision WORM storage in G2 and attach version-lock proof.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "retention_and_archive / backup_verification",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-16",
+   "canonical_gate_string": "OD-07: Quarterly digest sample and annual full restore",
+   "decision_id": "OD-07",
+   "canonical_requirement": "Quarterly digest sample and annual full restore",
+   "required_evidence_items": [
+    "Quarterly digest sample and annual full restore"
+   ],
+   "observed_evidence_items": [
+    "P271K provides a synthetic temp restore precursor; the recurring quarterly-digest/annual-restore operation needs a committed operator + production archive."
+   ],
+   "missing_evidence_items": [
+    "Recurring quarterly digest sampling + annual full restore evidence (no operator/archive)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Evidence Custodian",
+   "responsible_role": "Evidence Custodian",
+   "accountable_role": "Owner / Resource Sponsor",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "OWNER_COMMITMENT_MISSING",
+    "PRODUCTION_EVIDENCE_REQUIRED",
+    "PRODUCTION_AUTHORIZATION_REQUIRED"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": true,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Owner must commit a retention operator; run the recurring restore cadence in operation.",
+   "later_authorization_gate": "OWNER_COMMITMENT",
+   "domain": "retention_and_archive / backup_verification",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-17",
+   "canonical_gate_string": "OD-07: Documented deletion authority after retention",
+   "decision_id": "OD-07",
+   "canonical_requirement": "Documented deletion authority after retention",
+   "required_evidence_items": [
+    "Documented deletion authority after retention"
+   ],
+   "observed_evidence_items": [
+    "Design names a deletion-authority concept; no actual deletion authority is designated."
+   ],
+   "missing_evidence_items": [
+    "A documented, owner-designated deletion authority after retention."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Evidence Custodian",
+   "responsible_role": "Evidence Custodian",
+   "accountable_role": "Owner / Resource Sponsor",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "OWNER_COMMITMENT_MISSING"
+   ],
+   "production_access_required_later": false,
+   "owner_commitment_required": true,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Owner must designate the post-retention deletion authority.",
+   "later_authorization_gate": "OWNER_COMMITMENT",
+   "domain": "retention_and_archive / backup_verification",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-18",
+   "canonical_gate_string": "OD-08: Non-exportable asymmetric key design",
+   "decision_id": "OD-08",
+   "canonical_requirement": "Non-exportable asymmetric key design",
+   "required_evidence_items": [
+    "Non-exportable asymmetric key design"
+   ],
+   "observed_evidence_items": [
+    "P274C security_access_policy specifies a non-exportable asymmetric signing key design; RFC 3161/4998 confirm signing/timestamp feasibility."
+   ],
+   "missing_evidence_items": [
+    "A realized non-exportable key with established custody (no key, no custody)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_freshness": "committed_and_official",
+   "verifier": "Security / Key Custodian",
+   "responsible_role": "Security / Key Custodian",
+   "accountable_role": "Owner / Scientific Sponsor",
+   "verification_status": "PARTIALLY_VERIFIED",
+   "blocker_codes": [
+    "KEY_CUSTODY_NOT_ESTABLISHED",
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": true,
+   "official_references": [
+    "RFC3161",
+    "RFC4998"
+   ],
+   "pass_criteria_assessment": "Design/component/feasibility portion satisfied; production implementation and/or operation evidence absent",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Establish key custody + realize the non-exportable key in G2.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "key_custody / signed_worm_mirror",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-19",
+   "canonical_gate_string": "OD-08: Capture worker cannot administer or export key",
+   "decision_id": "OD-08",
+   "canonical_requirement": "Capture worker cannot administer or export key",
+   "required_evidence_items": [
+    "Capture worker cannot administer or export key"
+   ],
+   "observed_evidence_items": [
+    "Design separates capture worker from key administration."
+   ],
+   "missing_evidence_items": [
+    "An implemented capture worker provably unable to administer/export the key (no key/impl)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Security / Key Custodian",
+   "responsible_role": "Security / Key Custodian",
+   "accountable_role": "Owner / Scientific Sponsor",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "KEY_CUSTODY_NOT_ESTABLISHED",
+    "IMPLEMENTATION_ARTIFACT_MISSING",
+    "SECURITY_REVIEW_NOT_COMPLETED"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Implement the privilege separation + establish key custody in G2; security review.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "key_custody / signed_worm_mirror",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-20",
+   "canonical_gate_string": "OD-08: Rotation, revocation, compromise, and historical verification fixtures",
+   "decision_id": "OD-08",
+   "canonical_requirement": "Rotation, revocation, compromise, and historical verification fixtures",
+   "required_evidence_items": [
+    "Rotation, revocation, compromise, and historical verification fixtures"
+   ],
+   "observed_evidence_items": [
+    "Design requires rotation/revocation/compromise/historical-verification fixtures."
+   ],
+   "missing_evidence_items": [
+    "Key lifecycle fixtures passing against an established key (no key/fixtures)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Security / Key Custodian",
+   "responsible_role": "Security / Key Custodian",
+   "accountable_role": "Owner / Scientific Sponsor",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "KEY_CUSTODY_NOT_ESTABLISHED",
+    "SYNTHETIC_REHEARSAL_NOT_RUN",
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": true,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Establish keys + implement and run the lifecycle fixtures in G2.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "key_custody / signed_worm_mirror",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-21",
+   "canonical_gate_string": "OD-08: Independent verifier has public material only",
+   "decision_id": "OD-08",
+   "canonical_requirement": "Independent verifier has public material only",
+   "required_evidence_items": [
+    "Independent verifier has public material only"
+   ],
+   "observed_evidence_items": [
+    "Design gives the independent verifier public key material only."
+   ],
+   "missing_evidence_items": [
+    "An assigned independent verifier holding only public material against an established keypair."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Security / Key Custodian",
+   "responsible_role": "Security / Key Custodian",
+   "accountable_role": "Owner / Scientific Sponsor",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "KEY_CUSTODY_NOT_ESTABLISHED",
+    "NAMED_ASSIGNEE_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": true,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Assign the independent verifier and establish keys; confirm public-only access.",
+   "later_authorization_gate": "OWNER_COMMITMENT",
+   "domain": "key_custody / signed_worm_mirror",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-22",
+   "canonical_gate_string": "OD-10: Reproducible source/dependency manifests",
+   "decision_id": "OD-10",
+   "canonical_requirement": "Reproducible source/dependency manifests",
+   "required_evidence_items": [
+    "Reproducible source/dependency manifests"
+   ],
+   "observed_evidence_items": [
+    "P271J carries a schema version marker + deterministic identity precursor; SLSA confirms reproducible-manifest feasibility."
+   ],
+   "missing_evidence_items": [
+    "Sealed reproducible source/dependency/container manifests for the G2 package (no build)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "COMMITTED_SOURCE",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "COMMITTED_SOURCE",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_freshness": "committed_and_official",
+   "verifier": "Release / Migration Approver",
+   "responsible_role": "Release / Migration Approver",
+   "accountable_role": "Scientific Protocol Steward",
+   "verification_status": "PARTIALLY_VERIFIED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": true,
+   "official_references": [
+    "SLSA"
+   ],
+   "pass_criteria_assessment": "Design/component/feasibility portion satisfied; production implementation and/or operation evidence absent",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Produce sealed reproducible manifests during the G2 build.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "migration_versioning",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-23",
+   "canonical_gate_string": "OD-10: Synthetic rehearsal, rollback, dual-read comparison, and all-record digest reconciliation",
+   "decision_id": "OD-10",
+   "canonical_requirement": "Synthetic rehearsal, rollback, dual-read comparison, and all-record digest reconciliation",
+   "required_evidence_items": [
+    "Synthetic rehearsal, rollback, dual-read comparison, and all-record digest reconciliation"
+   ],
+   "observed_evidence_items": [
+    "P271K migration rehearsal proves synthetic install/idempotence/incompatible-version rejection/injected-failure rollback/temp backup-restore/fingerprint reconciliation; P274D fresh run included it (106 passed)."
+   ],
+   "missing_evidence_items": [
+    "Same on the production package incl. explicit dual-read comparison + all-record digest reconciliation on the production store."
+   ],
+   "evidence_sources": [
+    "COMMITTED_SOURCE",
+    "COMMITTED_TEST",
+    "FRESH_TEMP_DB_REHEARSAL"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_SOURCE",
+    "COMMITTED_TEST",
+    "FRESH_TEMP_DB_REHEARSAL"
+   ],
+   "evidence_freshness": "fresh_synthetic_and_committed",
+   "verifier": "Release / Migration Approver",
+   "responsible_role": "Release / Migration Approver",
+   "accountable_role": "Scientific Protocol Steward",
+   "verification_status": "PARTIALLY_VERIFIED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": true,
+   "synthetic_rehearsal_completed": true,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Design/component/feasibility portion satisfied; production implementation and/or operation evidence absent",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Re-run migration rehearsal incl. dual-read against the G2 production package.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "migration_versioning",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-24",
+   "canonical_gate_string": "OD-10: No capture window overlaps migration",
+   "decision_id": "OD-10",
+   "canonical_requirement": "No capture window overlaps migration",
+   "required_evidence_items": [
+    "No capture window overlaps migration"
+   ],
+   "observed_evidence_items": [
+    "Design requires no capture window overlaps a migration."
+   ],
+   "missing_evidence_items": [
+    "Operational evidence that capture is paused across a migration window (no operation)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Release / Migration Approver",
+   "responsible_role": "Release / Migration Approver",
+   "accountable_role": "Scientific Protocol Steward",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING",
+    "PRODUCTION_EVIDENCE_REQUIRED",
+    "PRODUCTION_AUTHORIZATION_REQUIRED",
+    "MAINTENANCE_WINDOW_NOT_AUTHORIZED"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Demonstrate the no-overlap window during a G2 migration under a maintenance window.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "migration_versioning",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-25",
+   "canonical_gate_string": "OD-10: Old store/runtime retained",
+   "decision_id": "OD-10",
+   "canonical_requirement": "Old store/runtime retained",
+   "required_evidence_items": [
+    "Old store/runtime retained"
+   ],
+   "observed_evidence_items": [
+    "Design requires retaining the old store/runtime across migration."
+   ],
+   "missing_evidence_items": [
+    "Operational evidence old store/runtime retained (no operation)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Release / Migration Approver",
+   "responsible_role": "Release / Migration Approver",
+   "accountable_role": "Scientific Protocol Steward",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "PRODUCTION_EVIDENCE_REQUIRED",
+    "PRODUCTION_AUTHORIZATION_REQUIRED",
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Retain + evidence the old store/runtime during a G2 migration.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "migration_versioning",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-26",
+   "canonical_gate_string": "OD-12: Signed minimum resource declaration by category and role",
+   "decision_id": "OD-12",
+   "canonical_requirement": "Signed minimum resource declaration by category and role",
+   "required_evidence_items": [
+    "Signed minimum resource declaration by category and role"
+   ],
+   "observed_evidence_items": [
+    "Design requires a signed minimum resource declaration by category and role; this task authorization explicitly provides no such commitment."
+   ],
+   "missing_evidence_items": [
+    "A signed minimum-resource declaration covering the 3,605-draw horizon by category and role."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Owner / Resource Sponsor",
+   "responsible_role": "Owner / Resource Sponsor",
+   "accountable_role": "Owner / Scientific Sponsor",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "LONG_HORIZON_RESOURCE_COMMITMENT_MISSING",
+    "OWNER_COMMITMENT_MISSING"
+   ],
+   "production_access_required_later": false,
+   "owner_commitment_required": true,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Owner must sign the minimum-resource declaration.",
+   "later_authorization_gate": "OWNER_COMMITMENT",
+   "domain": "long_horizon_resource_commitment / succession_abandonment / annual_blinded_review",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-27",
+   "canonical_gate_string": "OD-12: Annual renewal without efficacy peeking",
+   "decision_id": "OD-12",
+   "canonical_requirement": "Annual renewal without efficacy peeking",
+   "required_evidence_items": [
+    "Annual renewal without efficacy peeking"
+   ],
+   "observed_evidence_items": [
+    "Design requires annual renewal without efficacy peeking."
+   ],
+   "missing_evidence_items": [
+    "A committed annual-renewal mechanism (no commitment)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Owner / Resource Sponsor",
+   "responsible_role": "Owner / Resource Sponsor",
+   "accountable_role": "Owner / Scientific Sponsor",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "OWNER_COMMITMENT_MISSING",
+    "LONG_HORIZON_RESOURCE_COMMITMENT_MISSING"
+   ],
+   "production_access_required_later": false,
+   "owner_commitment_required": true,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Owner must commit the annual renewal process.",
+   "later_authorization_gate": "OWNER_COMMITMENT",
+   "domain": "long_horizon_resource_commitment / succession_abandonment / annual_blinded_review",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-28",
+   "canonical_gate_string": "OD-12: Scientific closure if commitments lapse before G2",
+   "decision_id": "OD-12",
+   "canonical_requirement": "Scientific closure if commitments lapse before G2",
+   "required_evidence_items": [
+    "Scientific closure if commitments lapse before G2"
+   ],
+   "observed_evidence_items": [
+    "P274C abandonment_rule defines scientific closure if commitments lapse; no signed commitment exists to govern it."
+   ],
+   "missing_evidence_items": [
+    "A committed governance rule + signed commitments whose lapse triggers closure."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Owner / Resource Sponsor",
+   "responsible_role": "Owner / Resource Sponsor",
+   "accountable_role": "Owner / Scientific Sponsor",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "OWNER_COMMITMENT_MISSING",
+    "LONG_HORIZON_RESOURCE_COMMITMENT_MISSING"
+   ],
+   "production_access_required_later": false,
+   "owner_commitment_required": true,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Owner must commit the resource baseline so the closure rule is bound.",
+   "later_authorization_gate": "OWNER_COMMITMENT",
+   "domain": "long_horizon_resource_commitment / succession_abandonment / annual_blinded_review",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-29",
+   "canonical_gate_string": "AD-01: Manifest includes protocol, candidate, strategy source, dependency/container, scorer digest, expected N, schema, fixtures",
+   "decision_id": "AD-01",
+   "canonical_requirement": "Manifest includes protocol, candidate, strategy source, dependency/container, scorer digest, expected N, schema, fixtures",
+   "required_evidence_items": [
+    "Manifest includes protocol, candidate, strategy source, dependency/container, scorer digest, expected N, schema, fixtures"
+   ],
+   "observed_evidence_items": [
+    "Design specifies the manifest fields; P271J provides a manifest-like deterministic identity precursor; SLSA confirms provenance feasibility."
+   ],
+   "missing_evidence_items": [
+    "A complete sealed production manifest (protocol/candidate/strategy-source/dependency-container/scorer-digest/expected-N/schema/fixtures)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "COMMITTED_SOURCE",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "COMMITTED_SOURCE",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_freshness": "committed_and_official",
+   "verifier": "Candidate Manifest Custodian",
+   "responsible_role": "Candidate Manifest Custodian",
+   "accountable_role": "Scientific Protocol Steward",
+   "verification_status": "PARTIALLY_VERIFIED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": true,
+   "official_references": [
+    "SLSA"
+   ],
+   "pass_criteria_assessment": "Design/component/feasibility portion satisfied; production implementation and/or operation evidence absent",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Produce the sealed manifest in the G2 build.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "candidate_version_provenance / capture_architecture",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-30",
+   "canonical_gate_string": "AD-01: Three fixture replays byte-identical",
+   "decision_id": "AD-01",
+   "canonical_requirement": "Three fixture replays byte-identical",
+   "required_evidence_items": [
+    "Three fixture replays byte-identical"
+   ],
+   "observed_evidence_items": [
+    "P271J deterministic identity/payload-hash + P274D /tmp probe show byte-identical deterministic hashing across runs."
+   ],
+   "missing_evidence_items": [
+    "Three byte-identical fixture replays of the production capture manifest (production form pending)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_SOURCE",
+    "COMMITTED_TEST",
+    "FRESH_SYNTHETIC_REHEARSAL",
+    "FRESH_TEMP_DB_REHEARSAL"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_SOURCE",
+    "COMMITTED_TEST",
+    "FRESH_SYNTHETIC_REHEARSAL",
+    "FRESH_TEMP_DB_REHEARSAL"
+   ],
+   "evidence_freshness": "fresh_synthetic_and_committed",
+   "verifier": "Candidate Manifest Custodian",
+   "responsible_role": "Candidate Manifest Custodian",
+   "accountable_role": "Scientific Protocol Steward",
+   "verification_status": "PARTIALLY_VERIFIED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": true,
+   "synthetic_rehearsal_completed": true,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Design/component/feasibility portion satisfied; production implementation and/or operation evidence absent",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Run the 3x byte-identical replay against the G2 capture manifest.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "candidate_version_provenance / capture_architecture",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-31",
+   "canonical_gate_string": "AD-01: Capture rejects unknown manifest digest",
+   "decision_id": "AD-01",
+   "canonical_requirement": "Capture rejects unknown manifest digest",
+   "required_evidence_items": [
+    "Capture rejects unknown manifest digest"
+   ],
+   "observed_evidence_items": [
+    "P271J fails closed on incompatible schema/unknown identity (duplicate-identity rejection); P274D fresh run exercised these."
+   ],
+   "missing_evidence_items": [
+    "Production capture rejecting an unknown manifest digest (production form pending)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_SOURCE",
+    "COMMITTED_TEST",
+    "FRESH_TEMP_DB_REHEARSAL"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_SOURCE",
+    "COMMITTED_TEST",
+    "FRESH_TEMP_DB_REHEARSAL"
+   ],
+   "evidence_freshness": "fresh_synthetic_and_committed",
+   "verifier": "Candidate Manifest Custodian",
+   "responsible_role": "Candidate Manifest Custodian",
+   "accountable_role": "Scientific Protocol Steward",
+   "verification_status": "PARTIALLY_VERIFIED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": true,
+   "synthetic_rehearsal_completed": true,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Design/component/feasibility portion satisfied; production implementation and/or operation evidence absent",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Implement + test unknown-manifest-digest rejection in G2.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "candidate_version_provenance / capture_architecture",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-32",
+   "canonical_gate_string": "AD-03: Heartbeat every 60 seconds; critical after two misses",
+   "decision_id": "AD-03",
+   "canonical_requirement": "Heartbeat every 60 seconds; critical after two misses",
+   "required_evidence_items": [
+    "Heartbeat every 60 seconds; critical after two misses"
+   ],
+   "observed_evidence_items": [
+    "Design specifies heartbeat every 60s, critical after two misses."
+   ],
+   "missing_evidence_items": [
+    "An operating heartbeat monitor (no implementation/operation)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Operations Primary",
+   "responsible_role": "Operations Primary",
+   "accountable_role": "Prospective Service Owner",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING",
+    "PRODUCTION_EVIDENCE_REQUIRED",
+    "PRODUCTION_AUTHORIZATION_REQUIRED"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Implement + operate the heartbeat monitor in G2.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "monitoring_heartbeat / alert_escalation",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-33",
+   "canonical_gate_string": "AD-03: Warning at T-10 min, critical if no seal by T-3 min, hard fail at T-2 min",
+   "decision_id": "AD-03",
+   "canonical_requirement": "Warning at T-10 min, critical if no seal by T-3 min, hard fail at T-2 min",
+   "required_evidence_items": [
+    "Warning at T-10 min, critical if no seal by T-3 min, hard fail at T-2 min"
+   ],
+   "observed_evidence_items": [
+    "Design specifies T-10min warning / T-3min critical / T-2min hard fail."
+   ],
+   "missing_evidence_items": [
+    "An operating deadline monitor (no implementation/operation)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Operations Primary",
+   "responsible_role": "Operations Primary",
+   "accountable_role": "Prospective Service Owner",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING",
+    "PRODUCTION_EVIDENCE_REQUIRED",
+    "PRODUCTION_AUTHORIZATION_REQUIRED"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Implement + operate the deadline monitor in G2.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "monitoring_heartbeat / alert_escalation",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-34",
+   "canonical_gate_string": "AD-03: Immediate critical on resolver, clock, manifest, digest, storage, access, or capture failure",
+   "decision_id": "AD-03",
+   "canonical_requirement": "Immediate critical on resolver, clock, manifest, digest, storage, access, or capture failure",
+   "required_evidence_items": [
+    "Immediate critical on resolver, clock, manifest, digest, storage, access, or capture failure"
+   ],
+   "observed_evidence_items": [
+    "Design specifies immediate critical on resolver/clock/manifest/digest/storage/access/capture failure."
+   ],
+   "missing_evidence_items": [
+    "An operating alerting integration (no implementation)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Operations Primary",
+   "responsible_role": "Operations Primary",
+   "accountable_role": "Prospective Service Owner",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING",
+    "PRODUCTION_EVIDENCE_REQUIRED"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Implement + operate the failure-alerting in G2.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "monitoring_heartbeat / alert_escalation",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-35",
+   "canonical_gate_string": "AD-03: Primary acknowledgment 5 min, backup escalation 10 min; fail closed regardless",
+   "decision_id": "AD-03",
+   "canonical_requirement": "Primary acknowledgment 5 min, backup escalation 10 min; fail closed regardless",
+   "required_evidence_items": [
+    "Primary acknowledgment 5 min, backup escalation 10 min; fail closed regardless"
+   ],
+   "observed_evidence_items": [
+    "Design specifies 5-min primary ack / 10-min backup escalation, fail-closed regardless. Needs on-call people + runbook."
+   ],
+   "missing_evidence_items": [
+    "Named on-call rota + escalation SLA + operating fail-closed behavior (none exist)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Operations Primary",
+   "responsible_role": "Operations Primary",
+   "accountable_role": "Prospective Service Owner",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "NAMED_ASSIGNEE_MISSING",
+    "OWNER_COMMITMENT_MISSING",
+    "IMPLEMENTATION_ARTIFACT_MISSING",
+    "OPERATIONAL_RUNBOOK_NOT_APPROVED"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": true,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Owner must staff on-call + approve runbook; implement fail-closed escalation in G2.",
+   "later_authorization_gate": "OWNER_COMMITMENT",
+   "domain": "monitoring_heartbeat / alert_escalation",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-36",
+   "canonical_gate_string": "AD-04: Role matrix and machine identities per plane",
+   "decision_id": "AD-04",
+   "canonical_requirement": "Role matrix and machine identities per plane",
+   "required_evidence_items": [
+    "Role matrix and machine identities per plane"
+   ],
+   "observed_evidence_items": [
+    "P274C responsibility_matrix + security_access_policy define the role matrix per plane; NIST 800-53 supports the control design."
+   ],
+   "missing_evidence_items": [
+    "Provisioned machine identities per plane + assigned roles (no provisioning/assignment)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_freshness": "committed_and_official",
+   "verifier": "Security / Key Custodian",
+   "responsible_role": "Security / Key Custodian",
+   "accountable_role": "Prospective Service Owner",
+   "verification_status": "PARTIALLY_VERIFIED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING",
+    "NAMED_ASSIGNEE_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": true,
+   "official_references": [
+    "NIST80053"
+   ],
+   "pass_criteria_assessment": "Design/component/feasibility portion satisfied; production implementation and/or operation evidence absent",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Provision machine identities + assign roles in G2.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "least_privilege / separation_of_duties",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-37",
+   "canonical_gate_string": "AD-04: No shared write credential; capture write-only, evaluator read-only, linker outcome-append-only",
+   "decision_id": "AD-04",
+   "canonical_requirement": "No shared write credential; capture write-only, evaluator read-only, linker outcome-append-only",
+   "required_evidence_items": [
+    "No shared write credential; capture write-only, evaluator read-only, linker outcome-append-only"
+   ],
+   "observed_evidence_items": [
+    "Design mandates no shared write credential and plane-scoped privileges; NIST 800-53 supports least privilege."
+   ],
+   "missing_evidence_items": [
+    "Provisioned credentials enforcing capture write-only / evaluator read-only / linker append-only (none provisioned)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_freshness": "committed_and_official",
+   "verifier": "Security / Key Custodian",
+   "responsible_role": "Security / Key Custodian",
+   "accountable_role": "Prospective Service Owner",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "EXTERNAL_SERVICE_NOT_CONFIGURED",
+    "IMPLEMENTATION_ARTIFACT_MISSING",
+    "SECURITY_REVIEW_NOT_COMPLETED"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": true,
+   "official_references": [
+    "NIST80053"
+   ],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Provision plane-scoped credentials in G2; security review.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "least_privilege / separation_of_duties",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-38",
+   "canonical_gate_string": "AD-04: Dual approval for activation, resume, migration, key rotation, retention change, emergency access",
+   "decision_id": "AD-04",
+   "canonical_requirement": "Dual approval for activation, resume, migration, key rotation, retention change, emergency access",
+   "required_evidence_items": [
+    "Dual approval for activation, resume, migration, key rotation, retention change, emergency access"
+   ],
+   "observed_evidence_items": [
+    "Design requires dual approval for activation/resume/migration/key-rotation/retention-change/emergency-access."
+   ],
+   "missing_evidence_items": [
+    "An implemented dual-approval control + named approvers (none exist)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Security / Key Custodian",
+   "responsible_role": "Security / Key Custodian",
+   "accountable_role": "Prospective Service Owner",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "NAMED_ASSIGNEE_MISSING",
+    "OWNER_COMMITMENT_MISSING",
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": true,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Name approvers + implement dual-approval in G2.",
+   "later_authorization_gate": "OWNER_COMMITMENT",
+   "domain": "least_privilege / separation_of_duties",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-39",
+   "canonical_gate_string": "AD-04: Quarterly access review and immediate revocation",
+   "decision_id": "AD-04",
+   "canonical_requirement": "Quarterly access review and immediate revocation",
+   "required_evidence_items": [
+    "Quarterly access review and immediate revocation"
+   ],
+   "observed_evidence_items": [
+    "Design requires quarterly access review + immediate revocation."
+   ],
+   "missing_evidence_items": [
+    "A committed reviewer + implemented revocation (none exist)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Security / Key Custodian",
+   "responsible_role": "Security / Key Custodian",
+   "accountable_role": "Prospective Service Owner",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "OWNER_COMMITMENT_MISSING",
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": true,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Owner must commit the reviewer; implement access review/revocation in G2.",
+   "later_authorization_gate": "OWNER_COMMITMENT",
+   "domain": "least_privilege / separation_of_duties",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-40",
+   "canonical_gate_string": "AD-05: Evaluator and verifier built independently with shared frozen fixtures only",
+   "decision_id": "AD-05",
+   "canonical_requirement": "Evaluator and verifier built independently with shared frozen fixtures only",
+   "required_evidence_items": [
+    "Evaluator and verifier built independently with shared frozen fixtures only"
+   ],
+   "observed_evidence_items": [
+    "P274A freezes the evaluator design (exact null, varying-N Poisson-binomial) + shared frozen fixtures concept; P274C evaluator_design records independence."
+   ],
+   "missing_evidence_items": [
+    "Two independently built evaluator + verifier implementations + an assigned independent verifier (no build/verifier)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Scientific Protocol Steward",
+   "responsible_role": "Scientific Protocol Steward",
+   "accountable_role": "Independent Verifier",
+   "verification_status": "PARTIALLY_VERIFIED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING",
+    "NAMED_ASSIGNEE_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": true,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Design/component/feasibility portion satisfied; production implementation and/or operation evidence absent",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Build evaluator + verifier independently in G2; assign the independent verifier.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "frozen_evaluator / independent_verifier / missingness_thresholds",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-41",
+   "canonical_gate_string": "AD-05: Exact null, varying-N Poisson-binomial, duplicate/idempotency, missingness, and checkpoint fixtures",
+   "decision_id": "AD-05",
+   "canonical_requirement": "Exact null, varying-N Poisson-binomial, duplicate/idempotency, missingness, and checkpoint fixtures",
+   "required_evidence_items": [
+    "Exact null, varying-N Poisson-binomial, duplicate/idempotency, missingness, and checkpoint fixtures"
+   ],
+   "observed_evidence_items": [
+    "P274A fixes exact null + Poisson-binomial (q_N values independently recomputed in P274D); P271J/K cover duplicate/idempotency synthetically (fresh run)."
+   ],
+   "missing_evidence_items": [
+    "Full evaluator fixture suite incl. missingness + checkpoint fixtures on the built evaluator (production form pending)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "COMMITTED_SOURCE",
+    "COMMITTED_TEST",
+    "FRESH_TEMP_DB_REHEARSAL"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "COMMITTED_SOURCE",
+    "COMMITTED_TEST",
+    "FRESH_TEMP_DB_REHEARSAL"
+   ],
+   "evidence_freshness": "fresh_synthetic_and_committed",
+   "verifier": "Scientific Protocol Steward",
+   "responsible_role": "Scientific Protocol Steward",
+   "accountable_role": "Independent Verifier",
+   "verification_status": "PARTIALLY_VERIFIED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": true,
+   "synthetic_rehearsal_completed": true,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Design/component/feasibility portion satisfied; production implementation and/or operation evidence absent",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Implement + run the full evaluator fixture suite in G2.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "frozen_evaluator / independent_verifier / missingness_thresholds",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-42",
+   "canonical_gate_string": "AD-05: Evaluator cannot emit efficacy at 50/300",
+   "decision_id": "AD-05",
+   "canonical_requirement": "Evaluator cannot emit efficacy at 50/300",
+   "required_evidence_items": [
+    "Evaluator cannot emit efficacy at 50/300"
+   ],
+   "observed_evidence_items": [
+    "P274A alpha_control freezes interim_efficacy_allowed=false and alpha_spent=0.0 at 50/300; the contract forbids efficacy emission at checkpoints."
+   ],
+   "missing_evidence_items": [
+    "An evaluator implementation that enforces no-efficacy-at-50/300 (production form pending)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Scientific Protocol Steward",
+   "responsible_role": "Scientific Protocol Steward",
+   "accountable_role": "Independent Verifier",
+   "verification_status": "PARTIALLY_VERIFIED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Design/component/feasibility portion satisfied; production implementation and/or operation evidence absent",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Implement + test the no-interim-efficacy guard in G2.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "frozen_evaluator / independent_verifier / missingness_thresholds",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-43",
+   "canonical_gate_string": "AD-05: Package/container/source digests sealed before activation and reproducible",
+   "decision_id": "AD-05",
+   "canonical_requirement": "Package/container/source digests sealed before activation and reproducible",
+   "required_evidence_items": [
+    "Package/container/source digests sealed before activation and reproducible"
+   ],
+   "observed_evidence_items": [
+    "SLSA supports sealed reproducible digests; sealing must occur before activation."
+   ],
+   "missing_evidence_items": [
+    "Sealed reproducible package/container/source digests prior to a (separately authorized) activation (no G2 build, no activation)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_freshness": "committed_and_official",
+   "verifier": "Scientific Protocol Steward",
+   "responsible_role": "Scientific Protocol Steward",
+   "accountable_role": "Independent Verifier",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING",
+    "ACTIVATION_AUTHORIZATION_REQUIRED"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": true,
+   "official_references": [
+    "SLSA"
+   ],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Seal reproducible digests in G2 before any separately authorized activation.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "frozen_evaluator / independent_verifier / missingness_thresholds",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-44",
+   "canonical_gate_string": "AD-06: Crash at every write boundary leaves zero or one valid deterministic batch",
+   "decision_id": "AD-06",
+   "canonical_requirement": "Crash at every write boundary leaves zero or one valid deterministic batch",
+   "required_evidence_items": [
+    "Crash at every write boundary leaves zero or one valid deterministic batch"
+   ],
+   "observed_evidence_items": [
+    "P271J/K prove atomic all-or-nothing capture with injected-mid-write-failure rollback (zero/one valid batch) synthetically; P274D fresh run included these."
+   ],
+   "missing_evidence_items": [
+    "Same crash-boundary guarantee on the production capture implementation (production form pending)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_SOURCE",
+    "COMMITTED_TEST",
+    "FRESH_TEMP_DB_REHEARSAL"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_SOURCE",
+    "COMMITTED_TEST",
+    "FRESH_TEMP_DB_REHEARSAL"
+   ],
+   "evidence_freshness": "fresh_synthetic_and_committed",
+   "verifier": "Prospective Service Owner",
+   "responsible_role": "Prospective Service Owner",
+   "accountable_role": "Evidence Custodian",
+   "verification_status": "PARTIALLY_VERIFIED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": true,
+   "synthetic_rehearsal_completed": true,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Design/component/feasibility portion satisfied; production implementation and/or operation evidence absent",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Re-run crash-boundary tests against the G2 implementation.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "restart_disaster_recovery / backup_verification / append_only_ledger",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-45",
+   "canonical_gate_string": "AD-06: Restart never creates a second valid identity",
+   "decision_id": "AD-06",
+   "canonical_requirement": "Restart never creates a second valid identity",
+   "required_evidence_items": [
+    "Restart never creates a second valid identity"
+   ],
+   "observed_evidence_items": [
+    "P271J restart/idempotency: DB-enforced unique identity + duplicate rejection means restart cannot create a second valid identity (fresh run)."
+   ],
+   "missing_evidence_items": [
+    "Same restart guarantee on the production implementation (production form pending)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_SOURCE",
+    "COMMITTED_TEST",
+    "FRESH_TEMP_DB_REHEARSAL"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_SOURCE",
+    "COMMITTED_TEST",
+    "FRESH_TEMP_DB_REHEARSAL"
+   ],
+   "evidence_freshness": "fresh_synthetic_and_committed",
+   "verifier": "Prospective Service Owner",
+   "responsible_role": "Prospective Service Owner",
+   "accountable_role": "Evidence Custodian",
+   "verification_status": "PARTIALLY_VERIFIED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": true,
+   "synthetic_rehearsal_completed": true,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Design/component/feasibility portion satisfied; production implementation and/or operation evidence absent",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Re-run restart-idempotency tests against the G2 implementation.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "restart_disaster_recovery / backup_verification / append_only_ledger",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-46",
+   "canonical_gate_string": "AD-06: Backups include all required DB/WAL state through supported online backup or quiesced snapshot, never raw-copy ambiguity",
+   "decision_id": "AD-06",
+   "canonical_requirement": "Backups include all required DB/WAL state through supported online backup or quiesced snapshot, never raw-copy ambiguity",
+   "required_evidence_items": [
+    "Backups include all required DB/WAL state through supported online backup or quiesced snapshot, never raw-copy ambiguity"
+   ],
+   "observed_evidence_items": [
+    "SQLite WAL doc confirms raw-copy hazard; P271L preflight REJECTED raw-copy-while-WAL; P271K provides a temp backup/restore precursor."
+   ],
+   "missing_evidence_items": [
+    "An implemented + operated production backup using online-backup/quiesced-snapshot with verified WAL state (no operation)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "COMMITTED_SOURCE",
+    "COMMITTED_TEST",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "COMMITTED_SOURCE",
+    "COMMITTED_TEST",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_freshness": "committed_and_official",
+   "verifier": "Prospective Service Owner",
+   "responsible_role": "Prospective Service Owner",
+   "accountable_role": "Evidence Custodian",
+   "verification_status": "PARTIALLY_VERIFIED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING",
+    "PRODUCTION_EVIDENCE_REQUIRED",
+    "PRODUCTION_AUTHORIZATION_REQUIRED"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": true,
+   "official_references": [
+    "SQLITE_WAL"
+   ],
+   "pass_criteria_assessment": "Design/component/feasibility portion satisfied; production implementation and/or operation evidence absent",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Implement + operate the production backup in G2; verify WAL/online-backup evidence.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "restart_disaster_recovery / backup_verification / append_only_ledger",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-47",
+   "canonical_gate_string": "AD-06: Quarterly sample restore and annual full isolated restore reconcile all digests",
+   "decision_id": "AD-06",
+   "canonical_requirement": "Quarterly sample restore and annual full isolated restore reconcile all digests",
+   "required_evidence_items": [
+    "Quarterly sample restore and annual full isolated restore reconcile all digests"
+   ],
+   "observed_evidence_items": [
+    "Design requires quarterly sample + annual full isolated restore reconciling all digests; recurring operation + operator missing."
+   ],
+   "missing_evidence_items": [
+    "Recurring restore evidence reconciling all digests (no operator/operation)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Prospective Service Owner",
+   "responsible_role": "Prospective Service Owner",
+   "accountable_role": "Evidence Custodian",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "OWNER_COMMITMENT_MISSING",
+    "PRODUCTION_EVIDENCE_REQUIRED",
+    "PRODUCTION_AUTHORIZATION_REQUIRED"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": true,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Owner commits an operator; run the recurring restore cadence in operation.",
+   "later_authorization_gate": "OWNER_COMMITMENT",
+   "domain": "restart_disaster_recovery / backup_verification / append_only_ledger",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-48",
+   "canonical_gate_string": "AD-06: Regional/site loss exercise restores read-only evidence before capture resumes",
+   "decision_id": "AD-06",
+   "canonical_requirement": "Regional/site loss exercise restores read-only evidence before capture resumes",
+   "required_evidence_items": [
+    "Regional/site loss exercise restores read-only evidence before capture resumes"
+   ],
+   "observed_evidence_items": [
+    "Design requires a regional/site-loss exercise restoring read-only evidence before capture resumes."
+   ],
+   "missing_evidence_items": [
+    "A DR exercise on provisioned multi-site infrastructure (none provisioned/operated)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Prospective Service Owner",
+   "responsible_role": "Prospective Service Owner",
+   "accountable_role": "Evidence Custodian",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING",
+    "PRODUCTION_EVIDENCE_REQUIRED",
+    "PRODUCTION_AUTHORIZATION_REQUIRED",
+    "EXTERNAL_SERVICE_NOT_CONFIGURED"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Provision DR infrastructure + run the site-loss exercise in G2.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "restart_disaster_recovery / backup_verification / append_only_ledger",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-49",
+   "canonical_gate_string": "AD-08: Separate official outcome source verification and raw-response preservation",
+   "decision_id": "AD-08",
+   "canonical_requirement": "Separate official outcome source verification and raw-response preservation",
+   "required_evidence_items": [
+    "Separate official outcome source verification and raw-response preservation"
+   ],
+   "observed_evidence_items": [
+    "Design separates official outcome-source verification + raw-response preservation; official source is MANUAL_VERIFICATION_REQUIRED."
+   ],
+   "missing_evidence_items": [
+    "Implemented separate outcome-source verification + preserved raw responses (none exist)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Independent Verifier",
+   "responsible_role": "Independent Verifier",
+   "accountable_role": "Prospective Service Owner",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "OFFICIAL_SOURCE_MANUAL_VERIFICATION_REQUIRED",
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": true,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Implement outcome-source verification + raw-response preservation in G2; manual verification.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "outcome_separation / seal_barrier / draw_close_resolver",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-50",
+   "canonical_gate_string": "AD-08: Seal barrier proves capture manifest existed before outcome availability",
+   "decision_id": "AD-08",
+   "canonical_requirement": "Seal barrier proves capture manifest existed before outcome availability",
+   "required_evidence_items": [
+    "Seal barrier proves capture manifest existed before outcome availability"
+   ],
+   "observed_evidence_items": [
+    "RFC 3161 confirms proof-of-existence-before-time; P271J enforces prediction_created_at < draw_close causality; P274D /tmp probe shows seal-before-outcome fail-closed."
+   ],
+   "missing_evidence_items": [
+    "An operated seal barrier with trusted timestamping proving capture-manifest existed before outcome availability (production form pending)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "COMMITTED_SOURCE",
+    "FRESH_SYNTHETIC_REHEARSAL",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "COMMITTED_SOURCE",
+    "FRESH_SYNTHETIC_REHEARSAL",
+    "OFFICIAL_PRIMARY_DOCUMENTATION"
+   ],
+   "evidence_freshness": "fresh_synthetic_and_committed",
+   "verifier": "Independent Verifier",
+   "responsible_role": "Independent Verifier",
+   "accountable_role": "Prospective Service Owner",
+   "verification_status": "PARTIALLY_VERIFIED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": true,
+   "official_references": [
+    "RFC3161"
+   ],
+   "pass_criteria_assessment": "Design/component/feasibility portion satisfied; production implementation and/or operation evidence absent",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Implement + operate the seal barrier with trusted timestamps in G2.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "outcome_separation / seal_barrier / draw_close_resolver",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-51",
+   "canonical_gate_string": "AD-08: Linker append-only and idempotent; cannot update predictions or seals",
+   "decision_id": "AD-08",
+   "canonical_requirement": "Linker append-only and idempotent; cannot update predictions or seals",
+   "required_evidence_items": [
+    "Linker append-only and idempotent; cannot update predictions or seals"
+   ],
+   "observed_evidence_items": [
+    "P271J outcome separation: append-only ledger, idempotent, no result columns, cannot update predictions/seals (fresh run exercised append-only/idempotency)."
+   ],
+   "missing_evidence_items": [
+    "A production linker implementing append-only/idempotent outcome linkage (production form pending)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_SOURCE",
+    "COMMITTED_TEST",
+    "FRESH_TEMP_DB_REHEARSAL"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_SOURCE",
+    "COMMITTED_TEST",
+    "FRESH_TEMP_DB_REHEARSAL"
+   ],
+   "evidence_freshness": "fresh_synthetic_and_committed",
+   "verifier": "Independent Verifier",
+   "responsible_role": "Independent Verifier",
+   "accountable_role": "Prospective Service Owner",
+   "verification_status": "PARTIALLY_VERIFIED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": true,
+   "synthetic_rehearsal_completed": true,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Design/component/feasibility portion satisfied; production implementation and/or operation evidence absent",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Implement + test the production linker in G2.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "outcome_separation / seal_barrier / draw_close_resolver",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  },
+  {
+   "gate_id": "PG-52",
+   "canonical_gate_string": "AD-08: Evaluator accepts only verified linked records",
+   "decision_id": "AD-08",
+   "canonical_requirement": "Evaluator accepts only verified linked records",
+   "required_evidence_items": [
+    "Evaluator accepts only verified linked records"
+   ],
+   "observed_evidence_items": [
+    "Design requires the evaluator accept only verified linked records."
+   ],
+   "missing_evidence_items": [
+    "An evaluator implementation that accepts only verified linked records (no build)."
+   ],
+   "evidence_sources": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_source_type": [
+    "COMMITTED_ARTIFACT",
+    "MISSING"
+   ],
+   "evidence_freshness": "committed_design_only",
+   "verifier": "Independent Verifier",
+   "responsible_role": "Independent Verifier",
+   "accountable_role": "Prospective Service Owner",
+   "verification_status": "UNVERIFIED_BLOCKED",
+   "blocker_codes": [
+    "IMPLEMENTATION_ARTIFACT_MISSING"
+   ],
+   "production_access_required_later": true,
+   "owner_commitment_required": false,
+   "synthetic_rehearsal_required": false,
+   "synthetic_rehearsal_completed": false,
+   "official_source_verification_required": false,
+   "official_references": [],
+   "pass_criteria_assessment": "Required implementation/commitment/external evidence absent; gate definition alone is not pass evidence",
+   "failure_consequence": "STOP / NOT_READY_FOR_G2 until evidence attached; gate must be re-evaluated before any G2 authorization",
+   "next_minimum_action": "Implement + test linked-record gating in the G2 evaluator.",
+   "later_authorization_gate": "G2_IMPLEMENTATION",
+   "domain": "outcome_separation / seal_barrier / draw_close_resolver",
+   "notes": "Gate definition is not pass evidence; P274C architecture selection is design, not implementation. Official documentation (if cited) proves mechanism feasibility only, not LotteryNew implementation/operation."
+  }
+ ],
+ "evidence_source_catalog": {
+  "P274C_JSON": {
+   "path": "outputs/research/p274c_g1_prospective_execution_decision_resolution_design_20260615.json",
+   "canonical_payload_digest": "873dc804130ca1e737e6430ac114791c15277a2799b7567279d809f8b7fc51a6",
+   "type": "COMMITTED_ARTIFACT"
+  },
+  "P274A_JSON": {
+   "path": "outputs/research/p274a_prospective_confirmation_protocol_design_20260615.json",
+   "canonical_payload_digest": "f2294716699368a9c2b21fb14301d84d70f662b882aef9eab896f96825f18ffc",
+   "type": "COMMITTED_ARTIFACT"
+  },
+  "P274B_JSON": {
+   "path": "outputs/research/p274b_prospective_execution_activation_readiness_plan_20260615.json",
+   "canonical_payload_digest": "bf8ae32f8dbd208da4939ee46cdbe19125827f36c3a80aedefc8fee21a994744",
+   "type": "COMMITTED_ARTIFACT"
+  },
+  "P271J_MODULE": {
+   "path": "lottery_api/prospective_capture_ledger.py",
+   "sha256": "18e221ee632a81fbdb95cab171d3c3a4bae3bf2222f9f2c58c8a3398584c71db",
+   "type": "COMMITTED_SOURCE",
+   "scope": "isolated caller-supplied append-only ledger library (tmp/in-memory only)"
+  },
+  "P271J_TEST": {
+   "path": "tests/test_p271j_prospective_capture_ledger_implementation.py",
+   "sha256": "378c4d8861aa4dd9b1260eb21988fe2e7f811feaf526f3736edb52207bd5a536",
+   "type": "COMMITTED_TEST",
+   "historical": "72/72 PASS in cited P271J artifact"
+  },
+  "P271K_SCRIPT": {
+   "path": "scripts/p271k_prospective_capture_ledger_migration_rehearsal.py",
+   "sha256": "02105c4cea4d706f0982ffbd17b12f6630114b6d0738412cbbba257fc49b7d76",
+   "type": "COMMITTED_SOURCE",
+   "scope": "temporary-DB migration rehearsal (tmp_path / :memory:)"
+  },
+  "P271K_TEST": {
+   "path": "tests/test_p271k_prospective_capture_ledger_migration_rehearsal.py",
+   "sha256": "90d680d4d0c23b510e369da2ec6fd367bb7d02e4ef463bc8256d7512fe670092",
+   "type": "COMMITTED_TEST",
+   "historical": "37/37 PASS in cited P271K artifact"
+  },
+  "P271L_PREFLIGHT_TEST": {
+   "path": "tests/test_p271l_controlled_deployment_preflight.py",
+   "sha256": "1bd29256af83ece1c7a56760fb32d2fb3364bf5b1809b029cafdefe24241d917",
+   "type": "COMMITTED_TEST",
+   "historical": "50/50 PASS; preflight/inspection scope only",
+   "not_run_p274d_reason": "preflight references production DB raw stat; not run in P274D"
+  },
+  "P271L_SCHEMA_TEST": {
+   "path": "tests/test_p271l_readonly_production_schema_inspection.py",
+   "sha256": "81ba542eff5ff59055d80a79a38e8346ebbd18a521af1c65eac6a9b6d655ad27",
+   "type": "COMMITTED_TEST",
+   "historical": "72/72 PASS; read-only production schema inspection",
+   "not_run_p274d_reason": "opens production DB; FORBIDDEN in P274D, NOT RUN"
+  },
+  "PR443": {
+   "type": "MERGED_PR_METADATA",
+   "number": 443,
+   "state": "MERGED",
+   "merge_commit": "77994824d1c1e5e4d4db14f0c7d5cb64bf933ead",
+   "head": "c6797cb32543ae6d575b003bf09028c385aad13c",
+   "merged_at_utc": "2026-06-16T01:44:24Z"
+  },
+  "FRESH_JK": {
+   "type": "FRESH_TEMP_DB_REHEARSAL",
+   "desc": "P274D fresh run of committed P271J+P271K temp/in-memory tests, 3 production-DB-hash guard tests deselected",
+   "result": "106 passed, 3 deselected"
+  },
+  "FRESH_PROBE": {
+   "type": "FRESH_SYNTHETIC_REHEARSAL",
+   "desc": "ephemeral /tmp hash-chain + deterministic-manifest + seal-before-outcome probe",
+   "result": "determinism byte-identical, tamper detected, seal-before-outcome fail-closed PASS"
+  }
+ },
+ "official_reference_verification": {
+  "RFC8633": {
+   "source": "IETF RFC 8633 (BCP 223), 2019-07",
+   "topic": "NTP Best Current Practices",
+   "section": "redundancy: >=4 independent diverse sources; monitoring; security",
+   "supports": "feasibility of OD-04 >=4 configured time sources + monitoring",
+   "does_not_support": "that LotteryNew has configured/operates >=4 sources"
+  },
+  "RFC8915": {
+   "source": "IETF RFC 8915 (Proposed Standard), 2020",
+   "topic": "Network Time Security (NTS)",
+   "section": "TLS+AEAD authenticated NTP; NTS-KE",
+   "supports": "feasibility of OD-04 'NTS where available'",
+   "does_not_support": "that LotteryNew enabled/operates NTS"
+  },
+  "RFC3161": {
+   "source": "IETF RFC 3161 (Proposed Standard), 2001-08",
+   "topic": "Time-Stamp Protocol (TSP)",
+   "section": "TST proves a datum existed before a particular time",
+   "supports": "feasibility of AD-08 seal-barrier proof-of-existence-before-outcome",
+   "does_not_support": "that LotteryNew operates a TSA / seal barrier"
+  },
+  "RFC4998": {
+   "source": "IETF RFC 4998 (Proposed Standard), 2007-08",
+   "topic": "Evidence Record Syntax (ERS)",
+   "section": "archive timestamps, Merkle hash trees, timestamp/hash-tree renewal",
+   "supports": "feasibility of OD-07/OD-08 long-term evidence + hash-chain renewal",
+   "does_not_support": "that LotteryNew implements ERS archive records"
+  },
+  "SQLITE_WAL": {
+   "source": "sqlite.org WAL documentation",
+   "topic": "SQLite Write-Ahead Logging",
+   "section": "WAL is part of persistent state; raw-copy of the main DB alone loses committed transactions",
+   "supports": "feasibility/necessity of AD-06 gate-46 online-backup-or-quiesced-snapshot (never raw-copy ambiguity)",
+   "does_not_support": "that LotteryNew operates a verified online backup"
+  },
+  "NIST80092": {
+   "source": "NIST SP 800-92, 2006-09",
+   "topic": "Guide to Computer Security Log Management",
+   "section": "log collection/storage/protection/retention guidance",
+   "supports": "feasibility of OD-07 retention + AD-04 audit design",
+   "does_not_support": "that LotteryNew implements the retention controls"
+  },
+  "NIST80053": {
+   "source": "NIST SP 800-53 Rev.5, 2020-09 (upd 2020-12)",
+   "topic": "Security and Privacy Controls",
+   "section": "AC/AU families; least privilege; separation of duties",
+   "supports": "feasibility of AD-04 least-privilege/separation-of-duties + OD-08 access",
+   "does_not_support": "that LotteryNew implements/operates these controls"
+  },
+  "S3_OBJECT_LOCK": {
+   "source": "AWS S3 Object Lock documentation",
+   "topic": "WORM object storage",
+   "section": "compliance vs governance retention modes; legal hold",
+   "supports": "feasibility of OD-02/OD-07 WORM-capable independent archive + version-lock",
+   "does_not_support": "that LotteryNew provisioned/operates a WORM archive"
+  },
+  "SLSA": {
+   "source": "slsa.dev provenance specification",
+   "topic": "Software supply-chain provenance",
+   "section": "build provenance: builder identity, inputs, build process",
+   "supports": "feasibility of AD-01/AD-05/OD-10 reproducible signed manifests + sealed digests",
+   "does_not_support": "that LotteryNew produces sealed reproducible provenance for a G2 build"
+  }
+ },
+ "committed_evidence_verification": {
+  "p274a_b_c_digests_recomputed": "independently recomputed from each file's documented canonicalization; all three MATCH stored + expected",
+  "p271_test_shas_match_p274c": true,
+  "historical_vs_fresh": "historical P271J 72/72 + P271K 37/37 are COMMITTED_TEST results; P274D fresh run (106 passed, 3 deselected) is the only fresh evidence reported; P271L tests NOT RUN (preflight/inspection touch production DB path)"
+ },
+ "fresh_rehearsal_records": [
+  {
+   "command": "venv/bin/python -m pytest tests/test_p271j_...py tests/test_p271k_...py -p no:cacheprovider -q --deselect <3 production-DB-hash guard tests> (cwd=worktree, PYTHONDONTWRITEBYTECODE=1)",
+   "committed_code_identity": {
+    "p271j_module": "18e221ee...71db",
+    "p271j_test": "378c4d88...",
+    "p271k_test": "90d680d4...",
+    "p271k_script": "02105c4c..."
+   },
+   "environment": "venv pytest 9.0.3; worktree at origin/main 77994824; no lottery_api/data/lottery_v2.db present in worktree",
+   "temporary_path_policy": "tmp_path / :memory: only; bytecode/cache writes suppressed; worktree git status clean after run",
+   "cases_run": "106 ledger + migration-rehearsal tests",
+   "result": "106 passed, 3 deselected",
+   "limitations": "deselected the 3 production-DB-hash guard tests to avoid any production-DB hashing; this is the prototype (P271J/K) mechanism, not the production evidence DB; production form remains unbuilt",
+   "gates_supported": [
+    "PG-02",
+    "PG-23",
+    "PG-30",
+    "PG-31",
+    "PG-41",
+    "PG-44",
+    "PG-45",
+    "PG-51"
+   ]
+  },
+  {
+   "command": "python3 /tmp/p274d_probe.py",
+   "committed_code_identity": "N/A (ephemeral synthetic probe in /tmp, not committed code)",
+   "environment": "/tmp only; stdlib hashlib/json",
+   "temporary_path_policy": "in-memory; no repo/DB/production access",
+   "cases_run": "deterministic-manifest hashing, append-only hash-chain tamper detection, seal-before-outcome ordering",
+   "result": "determinism byte-identical=True; tamper detected=True; seal-before-outcome fail-closed=True",
+   "limitations": "generic mechanism feasibility only; NOT LotteryNew production implementation",
+   "gates_supported": [
+    "PG-02",
+    "PG-30",
+    "PG-31",
+    "PG-50"
+   ]
+  }
+ ],
+ "owner_commitment_audit": {
+  "authorization_provides": [
+   "permission to perform P274D read-only / non-production evidence verification",
+   "permission to use committed evidence, official primary documentation, and safe synthetic/temp rehearsal",
+   "permission to reconcile the four governance files and open one non-draft PR (left open/unmerged)"
+  ],
+  "authorization_does_not_provide": [
+   "named primary owner",
+   "named backup owner",
+   "on-call rota",
+   "long-horizon budget/resource commitment",
+   "3,605-draw maintenance commitment",
+   "key custodian identities",
+   "independent security administrator",
+   "WORM service account",
+   "official-source operating owner",
+   "retention operator",
+   "annual review owner",
+   "incident escalation SLA",
+   "production maintenance window",
+   "production rollback owner",
+   "G2 implementation authorization",
+   "activation authorization",
+   "production DB access"
+  ],
+  "named_primary_owner": "NOT_PROVIDED",
+  "named_backup_owner": "NOT_PROVIDED",
+  "long_horizon_resource_commitment": "NOT_PROVIDED",
+  "key_custody": "NOT_ESTABLISHED",
+  "official_source_operational_verification": "MANUAL_VERIFICATION_REQUIRED (not performed; no production/official access in P274D)",
+  "rule": "No commitment was invented or inferred. Any gate requiring a missing commitment remains UNVERIFIED_BLOCKED with the appropriate blocker code."
+ },
+ "blocker_catalog": {
+  "NAMED_ASSIGNEE_MISSING": "no named individual for a required role",
+  "BACKUP_ASSIGNEE_MISSING": "no named backup",
+  "OWNER_COMMITMENT_MISSING": "required owner commitment not provided by this authorization",
+  "LONG_HORIZON_RESOURCE_COMMITMENT_MISSING": "no signed 3,605-draw / long-horizon resource commitment",
+  "OFFICIAL_SOURCE_MANUAL_VERIFICATION_REQUIRED": "official draw-source endpoints not documented/verified",
+  "KEY_CUSTODY_NOT_ESTABLISHED": "signing-key custody not established",
+  "EXTERNAL_SERVICE_NOT_CONFIGURED": "required external service (clock/WORM/credentials) not configured",
+  "IMPLEMENTATION_ARTIFACT_MISSING": "production implementation artifact does not exist (G2 not authorized)",
+  "SYNTHETIC_REHEARSAL_NOT_RUN": "a named synthetic fixture suite is not committed/run",
+  "PRODUCTION_AUTHORIZATION_REQUIRED": "realization requires production authorization (not granted)",
+  "PRODUCTION_EVIDENCE_REQUIRED": "gate needs operational production evidence (not available)",
+  "ACTIVATION_AUTHORIZATION_REQUIRED": "depends on a separate activation authorization",
+  "MAINTENANCE_WINDOW_NOT_AUTHORIZED": "no authorized production maintenance window",
+  "SECURITY_REVIEW_NOT_COMPLETED": "required security review not completed",
+  "OPERATIONAL_RUNBOOK_NOT_APPROVED": "operational runbook not approved"
+ },
+ "summary_counts": {
+  "total_gate_count": 52,
+  "verified_count": 0,
+  "partially_verified_count": 19,
+  "unverified_blocked_count": 33,
+  "failed_count": 0,
+  "not_applicable_count": 0,
+  "owner_commitment_blocked_count": 12,
+  "named_assignee_blocked_count": 8,
+  "backup_assignee_blocked_count": 1,
+  "key_custody_blocked_count": 4,
+  "official_source_verification_blocked_count": 3,
+  "long_horizon_resource_commitment_blocked_count": 3,
+  "production_authorization_blocked_count": 11,
+  "production_evidence_blocked_count": 12,
+  "external_service_blocked_count": 8,
+  "implementation_artifact_missing_count": 39,
+  "activation_authorization_blocked_count": 1,
+  "synthetic_rehearsal_required_count": 11,
+  "synthetic_rehearsal_completed_count": 8,
+  "gates_supported_by_committed_evidence_count": 19,
+  "gates_supported_by_primary_docs_count": 13,
+  "gates_supported_by_fresh_rehearsal_count": 9
+ },
+ "summary_counts_notes": {
+  "committed_evidence_count_basis": "counts gates MATERIALLY advanced by committed source/test/contract; the P274C design defines all 52 gates but a gate definition is not pass evidence, so design-only context on a BLOCKED gate is not counted as support",
+  "reconcile": "verified+partial+blocked+failed+not_applicable == 52"
+ },
+ "domain_summary": {
+  "capture_architecture": {
+   "gates": [
+    "PG-01",
+    "PG-02",
+    "PG-03",
+    "PG-29",
+    "PG-30",
+    "PG-31"
+   ],
+   "status_counts": {
+    "PARTIALLY_VERIFIED": 6,
+    "UNVERIFIED_BLOCKED": 0,
+    "VERIFIED": 0,
+    "FAILED": 0,
+    "NOT_APPLICABLE_WITH_PROOF": 0
+   }
+  },
+  "candidate_version_provenance": {
+   "gates": [
+    "PG-29",
+    "PG-30",
+    "PG-31",
+    "PG-43"
+   ],
+   "note": "AD-01 manifest + AD-05 sealed digests (PG-43)"
+  },
+  "trusted_clock": {
+   "gates": [
+    "PG-07",
+    "PG-08",
+    "PG-09",
+    "PG-10"
+   ],
+   "status_counts": {
+    "PARTIALLY_VERIFIED": 0,
+    "UNVERIFIED_BLOCKED": 4,
+    "VERIFIED": 0,
+    "FAILED": 0,
+    "NOT_APPLICABLE_WITH_PROOF": 0
+   }
+  },
+  "draw_close_and_target_draw_resolver": {
+   "gates": [
+    "PG-04",
+    "PG-05",
+    "PG-06",
+    "PG-50"
+   ],
+   "note": "OD-03 resolver + AD-08 seal barrier"
+  },
+  "append_only_ledger": {
+   "gates": [
+    "PG-02",
+    "PG-44",
+    "PG-45",
+    "PG-51"
+   ]
+  },
+  "signed_worm_mirror": {
+   "gates": [
+    "PG-01",
+    "PG-15",
+    "PG-18",
+    "PG-19",
+    "PG-20",
+    "PG-21"
+   ]
+  },
+  "monitoring_and_heartbeat": {
+   "gates": [
+    "PG-32",
+    "PG-33",
+    "PG-34"
+   ]
+  },
+  "alert_escalation": {
+   "gates": [
+    "PG-35"
+   ]
+  },
+  "least_privilege": {
+   "gates": [
+    "PG-36",
+    "PG-37"
+   ]
+  },
+  "separation_of_duties": {
+   "gates": [
+    "PG-38",
+    "PG-13"
+   ]
+  },
+  "key_custody": {
+   "gates": [
+    "PG-18",
+    "PG-19",
+    "PG-20",
+    "PG-21"
+   ],
+   "status_counts": {
+    "PARTIALLY_VERIFIED": 1,
+    "UNVERIFIED_BLOCKED": 3,
+    "VERIFIED": 0,
+    "FAILED": 0,
+    "NOT_APPLICABLE_WITH_PROOF": 0
+   }
+  },
+  "retention_and_archive": {
+   "gates": [
+    "PG-14",
+    "PG-15",
+    "PG-16",
+    "PG-17"
+   ],
+   "status_counts": {
+    "PARTIALLY_VERIFIED": 1,
+    "UNVERIFIED_BLOCKED": 3,
+    "VERIFIED": 0,
+    "FAILED": 0,
+    "NOT_APPLICABLE_WITH_PROOF": 0
+   }
+  },
+  "backup_verification": {
+   "gates": [
+    "PG-16",
+    "PG-46",
+    "PG-47"
+   ]
+  },
+  "restart_and_disaster_recovery": {
+   "gates": [
+    "PG-44",
+    "PG-45",
+    "PG-48"
+   ]
+  },
+  "migration_version_evolution": {
+   "gates": [
+    "PG-22",
+    "PG-23",
+    "PG-24",
+    "PG-25"
+   ],
+   "status_counts": {
+    "PARTIALLY_VERIFIED": 2,
+    "UNVERIFIED_BLOCKED": 2,
+    "VERIFIED": 0,
+    "FAILED": 0,
+    "NOT_APPLICABLE_WITH_PROOF": 0
+   }
+  },
+  "missingness_thresholds": {
+   "gates": [
+    "PG-41"
+   ],
+   "note": "missingness fixtures within AD-05 + P274C missingness_policy design"
+  },
+  "suspension_resumption": {
+   "gates": [
+    "PG-28",
+    "PG-42"
+   ],
+   "note": "integrity-stop/abandonment (P274A futility + P274C abandonment_rule, design)"
+  },
+  "protocol_invalidation": {
+   "gates": [
+    "PG-28",
+    "PG-42"
+   ],
+   "note": "P274A integrity-stop + P274C protocol_invalidation_policy (design only)"
+  },
+  "frozen_evaluator": {
+   "gates": [
+    "PG-40",
+    "PG-41",
+    "PG-42"
+   ]
+  },
+  "independent_verifier": {
+   "gates": [
+    "PG-40",
+    "PG-21"
+   ]
+  },
+  "outcome_separation": {
+   "gates": [
+    "PG-49",
+    "PG-50",
+    "PG-51",
+    "PG-52"
+   ],
+   "status_counts": {
+    "PARTIALLY_VERIFIED": 2,
+    "UNVERIFIED_BLOCKED": 2,
+    "VERIFIED": 0,
+    "FAILED": 0,
+    "NOT_APPLICABLE_WITH_PROOF": 0
+   }
+  },
+  "long_horizon_ownership": {
+   "gates": [
+    "PG-11",
+    "PG-12",
+    "PG-26",
+    "PG-27",
+    "PG-28"
+   ]
+  },
+  "succession_and_abandonment": {
+   "gates": [
+    "PG-28"
+   ],
+   "note": "P274C abandonment_rule (design)"
+  },
+  "annual_blinded_review": {
+   "gates": [
+    "PG-27"
+   ],
+   "note": "OD-12 annual renewal without efficacy peeking"
+  },
+  "draw_3605_resource_commitment": {
+   "gates": [
+    "PG-26"
+   ],
+   "note": "OD-12 signed minimum-resource declaration over 3605-draw horizon"
+  }
+ },
+ "failed_gates": [],
+ "partial_gates": [
+  "PG-01",
+  "PG-02",
+  "PG-03",
+  "PG-14",
+  "PG-18",
+  "PG-22",
+  "PG-23",
+  "PG-29",
+  "PG-30",
+  "PG-31",
+  "PG-36",
+  "PG-40",
+  "PG-41",
+  "PG-42",
+  "PG-44",
+  "PG-45",
+  "PG-46",
+  "PG-50",
+  "PG-51"
+ ],
+ "blocked_gates": [
+  "PG-04",
+  "PG-05",
+  "PG-06",
+  "PG-07",
+  "PG-08",
+  "PG-09",
+  "PG-10",
+  "PG-11",
+  "PG-12",
+  "PG-13",
+  "PG-15",
+  "PG-16",
+  "PG-17",
+  "PG-19",
+  "PG-20",
+  "PG-21",
+  "PG-24",
+  "PG-25",
+  "PG-26",
+  "PG-27",
+  "PG-28",
+  "PG-32",
+  "PG-33",
+  "PG-34",
+  "PG-35",
+  "PG-37",
+  "PG-38",
+  "PG-39",
+  "PG-43",
+  "PG-47",
+  "PG-48",
+  "PG-49",
+  "PG-52"
+ ],
+ "verified_gates": [],
+ "readiness_outcome": "PRE_G2_PARTIAL_EVIDENCE_NOT_READY_FOR_G2",
+ "readiness_basis": "All 52 gates were examined and classified; 0 VERIFIED, 19 PARTIALLY_VERIFIED, 33 UNVERIFIED_BLOCKED, 0 FAILED, 0 NOT_APPLICABLE. Because >=1 gate remains PARTIAL or BLOCKED, pre-G2 acceptance evidence is incomplete. G1 completion is NOT pre-G2 completion.",
+ "G2_authorization_boundary": "G2 remains UNAUTHORIZED; a separate owner G2 decision may be considered only after the remaining pre-G2 gates are satisfied with attached, verified evidence.",
+ "activation_boundary": "activation UNAUTHORIZED; activation_timestamp_utc and first_eligible_target_draw remain UNSET_PENDING_SEPARATE_ACTIVATION_AUTHORIZATION.",
+ "production_boundary": "production apply NOT_READY_FOR_APPLY; no production DB access performed.",
+ "forbidden_actions_confirmed": {
+  "source_files_modified": false,
+  "test_files_modified": false,
+  "package_dependency_ci_config_modified": false,
+  "production_db_access": false,
+  "production_db_open_query_hash_copy": false,
+  "production_db_metadata_stat": "ONE filesystem metadata stat (size+mtime) of the production DB path was performed during a cleanliness check; content-free (no open/query/hash/copy/lock); self-identified minor nonconformance; not repeated",
+  "service_or_process_control": false,
+  "g2_implementation": false,
+  "activation": false,
+  "activation_timestamp_assigned": false,
+  "first_eligible_target_draw_assigned": false,
+  "prospective_capture": false,
+  "registry_or_recommendation_mutation": false,
+  "p271_activation": false,
+  "p273b": false,
+  "deployment_or_controlled_apply": false,
+  "production_apply": false,
+  "candidate_or_protocol_modification": false,
+  "prior_artifact_repair": false,
+  "pr_merged": false,
+  "external_memory_files_modified": false
+ },
+ "safety_flags": {
+  "prediction_success_claim": false,
+  "read_only": true,
+  "non_production": true,
+  "p274a_b_c_unchanged": true,
+  "frozen_contract_unchanged": true,
+  "production_db_metadata_stat_nonconformance": true,
+  "synthetic_rehearsal_temp_only": true,
+  "no_canonical_db_path_opened": true
+ },
+ "prediction_success_claim": false,
+ "final_task_classification": "P274D_PRE_G2_ACCEPTANCE_EVIDENCE_GATE_VERIFICATION_COMPLETE",
+ "canonicalization": {
+  "algorithm": "SHA-256",
+  "encoding": "UTF-8 JSON",
+  "object_keys": "recursively sorted",
+  "array_order": "preserved",
+  "separators": "compact",
+  "excluded_fields": [
+   "generated_at_utc",
+   "canonical_payload_digest"
+  ],
+  "machine_local_absolute_paths_excluded": true
+ },
+ "canonical_payload_digest": "e543c703e0e70cf09aa3f03ace677b4e21f8f5d9db6a209d9304f5f73c43393a"
+}

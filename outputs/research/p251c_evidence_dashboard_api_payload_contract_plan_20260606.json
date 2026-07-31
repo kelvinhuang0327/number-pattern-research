@@ -1,0 +1,458 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P251C",
+  "classification": "EVIDENCE_DASHBOARD_API_PAYLOAD_CONTRACT_PLAN",
+  "generated_at": "2026-06-06T19:30:48",
+  "source_artifacts": {
+    "p250a_inventory": "outputs/research/p250a_cross_lottery_strategy_replay_inventory_20260606.json",
+    "p251a_contract": "outputs/research/p251a_cross_lottery_evidence_dashboard_dryrun_plan_20260606.json",
+    "p251b_dashboard_data": "outputs/research/p251b_cross_lottery_evidence_dashboard_data_20260606.json",
+    "current_state": "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md",
+    "active_task": "00-Plan/roadmap/active_task.md"
+  },
+  "route_convention_scan": {
+    "app_mounted_replay_router": true,
+    "app_mounted_best_strategy_overview_router": true,
+    "existing_read_only_patterns": [
+      "/api/replay/strategies",
+      "/api/replay/history",
+      "/api/replay/freshness",
+      "/api/replay/strategy-catalog",
+      "/api/best-strategy-overview",
+      "/api/best-strategy-overview/meta/available-artifacts"
+    ],
+    "observed_conventions": [
+      "Read-only GET endpoints are common in replay and best-strategy namespaces.",
+      "Paged queries use page/page_size in multiple routes.",
+      "Freshness / coverage and artifact-metadata endpoints already exist as read-only patterns.",
+      "Replay router is the clearest namespace match for an evidence dashboard payload."
+    ],
+    "route_conflict_assessment": "no conflict with current routes; future-only endpoint can live under /api/replay/*",
+    "candidate_routes": [
+      {
+        "source_file": "lottery_api/app.py",
+        "route_namespace": "/api/replay/*",
+        "status": "read-only audit namespace",
+        "notes": "Replay router is mounted as a read-only audit family."
+      },
+      {
+        "source_file": "lottery_api/routes/replay.py",
+        "route": "/api/replay/strategies",
+        "method": "GET",
+        "shape": "strategy catalog / visibility list",
+        "notes": "List strategies with lifecycle filters; closest naming pattern for dashboard payloads."
+      },
+      {
+        "source_file": "lottery_api/routes/replay.py",
+        "route": "/api/replay/history",
+        "method": "GET",
+        "shape": "paged audit history",
+        "notes": "Supports page/page_size and lifecycle filters; proves existing query conventions."
+      },
+      {
+        "source_file": "lottery_api/routes/replay.py",
+        "route": "/api/replay/freshness",
+        "method": "GET",
+        "shape": "freshness / coverage advisory",
+        "notes": "Useful precedent for staleness and coverage banners in a read-only dashboard."
+      },
+      {
+        "source_file": "lottery_api/routes/replay.py",
+        "route": "/api/replay/strategy-catalog",
+        "method": "GET",
+        "shape": "read-only strategy catalog",
+        "notes": "Existing read-only catalog endpoint; strong convention match for future payloads."
+      },
+      {
+        "source_file": "lottery_api/routes/best_strategy_overview.py",
+        "route": "/api/best-strategy-overview",
+        "method": "GET",
+        "shape": "artifact-backed ranking cards",
+        "notes": "Shows the repo already uses artifact-backed read-only payload endpoints."
+      },
+      {
+        "source_file": "lottery_api/routes/best_strategy_overview.py",
+        "route": "/api/best-strategy-overview/meta/available-artifacts",
+        "method": "GET",
+        "shape": "artifact discovery metadata",
+        "notes": "Useful precedent for source_artifacts metadata without mutating state."
+      },
+      {
+        "source_file": "lottery_api/routes/data.py",
+        "route": "/api/data/draws",
+        "method": "GET",
+        "shape": "paged query with filters",
+        "notes": "General page/page_size pattern used elsewhere in the API."
+      }
+    ],
+    "raw_scan_notes": {
+      "replay_file_contains_strategy_catalog": true,
+      "replay_file_contains_freshness": true,
+      "best_strategy_file_contains_available_artifacts": true,
+      "data_file_contains_page_size": true
+    }
+  },
+  "proposed_endpoint": {
+    "path": "/api/replay/evidence-dashboard",
+    "http_method": "GET",
+    "future_only": true,
+    "status": "PROPOSED_FUTURE_ONLY",
+    "namespace": "/api/replay/*",
+    "reasoning": "Matches the existing replay audit namespace and keeps the payload read-only and dashboard-focused.",
+    "notes": [
+      "No route implemented in P251C.",
+      "No UI implemented in P251C.",
+      "No DB write, registry mutation, or strategy promotion."
+    ]
+  },
+  "http_method": "GET",
+  "response_schema": {
+    "schema_kind": "future_read_only_api_payload",
+    "required_top_level_fields": [
+      "schema_version",
+      "task_id",
+      "classification",
+      "generated_at",
+      "source_artifacts",
+      "proposed_endpoint",
+      "http_method",
+      "route_convention_scan",
+      "response_schema",
+      "payload_field_contract",
+      "lottery_card_schema",
+      "strategy_row_schema",
+      "lifecycle_filter_schema",
+      "evidence_state_schema",
+      "filter_sort_pagination_contract",
+      "cache_and_staleness_policy",
+      "validation_rules",
+      "implementation_steps_future_only",
+      "no_implementation_confirmed",
+      "forbidden_actions_confirmed",
+      "final_decision",
+      "global_summary",
+      "lottery_cards",
+      "strategy_rows",
+      "lifecycle_filter_options",
+      "lifecycle_badge_vocabulary",
+      "replay_coverage_summary",
+      "draw_count_semantics",
+      "evidence_state_summary",
+      "stale_snapshot_warning",
+      "no_exclusion_rules",
+      "default_filter_state",
+      "no_betting_advice_notice",
+      "implementation_readiness"
+    ],
+    "response_payload_shape": {
+      "global_summary": "object",
+      "lottery_cards": "array<object>",
+      "strategy_rows": "array<object>",
+      "lifecycle_filter_options": "array<object>",
+      "lifecycle_badge_vocabulary": "array<object>",
+      "replay_coverage_summary": "array<object>",
+      "draw_count_semantics": "object",
+      "evidence_state_summary": "object",
+      "stale_snapshot_warning": "object",
+      "no_exclusion_rules": "array<string>",
+      "default_filter_state": "object",
+      "no_betting_advice_notice": "object",
+      "implementation_readiness": "object",
+      "forbidden_actions_confirmed": "object",
+      "final_decision": "string"
+    },
+    "response_contract_notes": [
+      "The response should be shaped for dashboard consumption, not for prediction execution.",
+      "The payload should retain every visible P251B strategy row and preserve lifecycle badges as filters only.",
+      "Pagination is proposed for row-level browsing, but default output should remain complete enough for the dashboard to render the full visible set."
+    ]
+  },
+  "payload_field_contract": {
+    "global_summary": {
+      "purpose": "Top-level evidence summary carried forward from P251B.",
+      "must_include": [
+        "current_registry_entries",
+        "historical_inventory_entries",
+        "artifact_only_entries",
+        "replay_rows_total",
+        "draw_rows_total",
+        "big_lotto_raw_draw_rows",
+        "big_lotto_canonical_rows",
+        "big_lotto_add_on_rows",
+        "no_deployable_candidate",
+        "no_prediction_edge_claim",
+        "lifecycle_is_label_not_exclusion"
+      ]
+    },
+    "lottery_cards": {
+      "purpose": "Per-lottery summary cards for BIG_LOTTO, DAILY_539, and POWER_LOTTO.",
+      "must_include": [
+        "lottery_type",
+        "card_title",
+        "strategy_cards_visible",
+        "replay_strategy_entries",
+        "replay_rows",
+        "draw_rows",
+        "canonical_rows",
+        "artifact_only_rows_visible",
+        "visible_by_default",
+        "lifecycle_visibility_rule",
+        "summary_notes"
+      ]
+    },
+    "strategy_rows": {
+      "purpose": "Full visible inventory rows from P251B, including artifact-only evidence rows.",
+      "must_include": [
+        "strategy_id",
+        "strategy_name",
+        "lottery_type",
+        "current_registry_lifecycle_status",
+        "historical_snapshot_lifecycle_status",
+        "latest_classification",
+        "replay_presence",
+        "replay_rows",
+        "lottery_replay_rows",
+        "lottery_draw_rows",
+        "lottery_canonical_rows",
+        "artifact_only_flag",
+        "visible_by_default",
+        "evidence_state",
+        "badge",
+        "filter_tags",
+        "source_artifacts",
+        "row_visibility"
+      ]
+    },
+    "lifecycle_filter_options": {
+      "purpose": "Filter chips / badges that narrow the view without excluding historical rows by default.",
+      "default_behavior": "include all lifecycle statuses",
+      "statuses": [
+        "ONLINE",
+        "REJECTED",
+        "RETIRED",
+        "OBSERVATION",
+        "ARTIFACT_ONLY",
+        "LIFECYCLE_UNRESOLVED"
+      ]
+    },
+    "evidence_state": {
+      "purpose": "Explicitly state live SSOT versus historical snapshot semantics.",
+      "must_include": [
+        "current_registry_is_live_ssot",
+        "historical_scoreboard_is_snapshot",
+        "artifact_only_visible_by_default",
+        "lifecycle_never_excludes_historical_rows",
+        "no_active_deployable_candidate",
+        "no_prediction_edge_claim"
+      ]
+    },
+    "stale_snapshot_warning": {
+      "purpose": "Warn that P232A/P251A historical evidence is stale relative to live registry SSOT.",
+      "must_include": [
+        "message",
+        "current_registry_ssot",
+        "historical_snapshot",
+        "dashboard_behavior"
+      ]
+    },
+    "no_betting_advice_notice": {
+      "purpose": "Prevent prediction or betting interpretation of the payload.",
+      "must_include": [
+        "message",
+        "no_claims"
+      ]
+    }
+  },
+  "lottery_card_schema": {
+    "required_fields": [
+      "lottery_type",
+      "card_title",
+      "strategy_cards_visible",
+      "replay_strategy_entries",
+      "replay_rows",
+      "draw_rows",
+      "canonical_rows",
+      "artifact_only_rows_visible",
+      "visible_by_default",
+      "lifecycle_visibility_rule",
+      "summary_notes"
+    ],
+    "visibility_rules": [
+      "Cards are summary views only.",
+      "Artifact-only rows must remain visible when present.",
+      "Lifecycle labels may filter the card but must not hide historical evidence by default."
+    ]
+  },
+  "strategy_row_schema": {
+    "required_fields": [
+      "strategy_id",
+      "strategy_name",
+      "lottery_type",
+      "current_registry_lifecycle_status",
+      "historical_snapshot_lifecycle_status",
+      "latest_classification",
+      "replay_presence",
+      "replay_rows",
+      "lottery_replay_rows",
+      "lottery_draw_rows",
+      "lottery_canonical_rows",
+      "artifact_only_flag",
+      "visible_by_default",
+      "evidence_state",
+      "badge",
+      "filter_tags",
+      "source_artifacts",
+      "row_visibility"
+    ],
+    "preserved_semantics": {
+      "default_visible": true,
+      "exclude_by_lifecycle": false,
+      "lifecycle_is_filter_only": true,
+      "artifact_only_rows_visible": true,
+      "historical_rows_not_hidden_by_default": true
+    },
+    "row_visibility_contract": {
+      "default_visible": true,
+      "lifecycle_filtered": false,
+      "exclude_by_lifecycle": false
+    }
+  },
+  "lifecycle_filter_schema": {
+    "default_includes_all_statuses": true,
+    "allowed_statuses": [
+      "ONLINE",
+      "REJECTED",
+      "RETIRED",
+      "OBSERVATION",
+      "ARTIFACT_ONLY",
+      "LIFECYCLE_UNRESOLVED"
+    ],
+    "filter_semantics": "badge/filter only; never exclusion",
+    "default_filter_state": {
+      "include_all_rows": true,
+      "include_all_lifecycle_statuses": true,
+      "exclude_by_lifecycle": false
+    },
+    "validation_checks": [
+      "Every lifecycle badge must remain visible in the default dashboard view.",
+      "Historical rejected/retired/observation/artifact-only rows must not disappear by default."
+    ]
+  },
+  "evidence_state_schema": {
+    "required_fields": [
+      "current_registry_is_live_ssot",
+      "historical_scoreboard_is_snapshot",
+      "artifact_only_visible_by_default",
+      "lifecycle_never_excludes_historical_rows",
+      "no_active_deployable_candidate",
+      "no_prediction_edge_claim"
+    ],
+    "truth_notes": [
+      "Current registry is the live source of truth.",
+      "P232A / historical scoreboard remains evidence only.",
+      "BIG_LOTTO GREEN is a data-quality confirmation, not a predictive edge claim.",
+      "DAILY_539 remains rejected and POWER_LOTTO has no active deployable candidate."
+    ]
+  },
+  "filter_sort_pagination_contract": {
+    "filters": {
+      "lottery_type": "optional string or multi-select (BIG_LOTTO, DAILY_539, POWER_LOTTO)",
+      "lifecycle_status": "optional multi-select; default includes all statuses",
+      "artifact_only": "optional tri-state; default includes visible artifact-only rows",
+      "visible_only": "optional bool; default true for dashboard render"
+    },
+    "sorting": {
+      "default_sort": [
+        "lottery_type",
+        "current_registry_lifecycle_status",
+        "strategy_id"
+      ],
+      "allowed_sort_keys": [
+        "lottery_type",
+        "current_registry_lifecycle_status",
+        "historical_snapshot_lifecycle_status",
+        "strategy_id",
+        "strategy_name",
+        "replay_rows",
+        "draw_rows",
+        "canonical_rows"
+      ],
+      "allowed_sort_orders": [
+        "asc",
+        "desc"
+      ]
+    },
+    "pagination": {
+      "supports_pagination": true,
+      "default_page": 1,
+      "default_page_size": 50,
+      "max_page_size": 200,
+      "proposal_note": "Pagination should be optional because the dashboard defaults to visible all-row evidence rendering."
+    },
+    "filtering_notes": [
+      "Filtering narrows the view; it does not change lifecycle truth or hide evidence by default.",
+      "No filter should imply deployability or betting advice."
+    ]
+  },
+  "cache_and_staleness_policy": {
+    "cacheability": "read-only payload may be cached short-term",
+    "cache_control_proposal": "public, max-age=300, stale-while-revalidate=3600",
+    "etag_strategy": "ETag should be derived from source artifact hashes and the merged dashboard artifact revision.",
+    "staleness_banner_required": true,
+    "staleness_banner_note": "Always show a stale snapshot warning when the payload is rendered from a historical artifact.",
+    "refresh_cadence_note": "Refresh when a new P250A/P251A/P251B-style artifact is merged or the live registry SSOT changes."
+  },
+  "validation_rules": [
+    "JSON must parse successfully.",
+    "classification must equal EVIDENCE_DASHBOARD_API_PAYLOAD_CONTRACT_PLAN.",
+    "proposed_endpoint must be future-only and remain unimplemented in P251C.",
+    "response_schema must include global_summary, lottery_cards, strategy_rows, lifecycle_filter_options, no_exclusion_rules, and no_betting_advice_notice.",
+    "strategy_rows validation must require at least 41 visible rows (41).",
+    "Artifact-only rows must remain visible by default.",
+    "Default lifecycle filter must include all statuses and must not exclude historical rows.",
+    "BIG_LOTTO replay/draw/canonical/add-on semantics must remain separated.",
+    "No DB write, registry mutation, strategy promotion, betting advice, or UI/API implementation may be claimed by the contract."
+  ],
+  "implementation_steps_future_only": [
+    "Define a FastAPI response model matching this contract in a future task.",
+    "Add a future read-only endpoint under /api/replay/* that serializes the dashboard payload.",
+    "Add route-level tests that enforce lifecycle visibility and no-exclusion defaults.",
+    "Wire a UI consumer only after the API payload exists and remains read-only.",
+    "Keep DB, registry, and strategy logic unchanged until a separate authorization is issued."
+  ],
+  "no_implementation_confirmed": {
+    "route_implemented": false,
+    "ui_implemented": false,
+    "db_write": false,
+    "registry_mutation": false,
+    "strategy_promotion": false,
+    "production_recommendation_change": false,
+    "betting_advice": false
+  },
+  "forbidden_actions_confirmed": {
+    "DB write": "NOT PERFORMED",
+    "DB migration": "NOT PERFORMED",
+    "CREATE VIEW / CREATE TABLE": "NOT PERFORMED",
+    "registry mutation": "NOT PERFORMED",
+    "strategy logic change": "NOT PERFORMED",
+    "strategy promotion": "NOT PERFORMED",
+    "UI/API implementation": "NOT PERFORMED",
+    "production recommendation change": "NOT PERFORMED",
+    "betting advice": "NOT PERFORMED",
+    "controlled_apply": "NOT PERFORMED"
+  },
+  "final_decision": "P251C complete. Future-only API payload contract plan produced for the evidence dashboard, anchored to the existing /api/replay/* read-only namespace. No route implemented, no UI implemented, no DB write, no registry mutation, no strategy promotion, and no betting advice.",
+  "dashboard_payload_reference": {
+    "p251b_strategy_rows": 41,
+    "p251b_artifact_only_rows": 3,
+    "p251b_default_filter_includes_all_statuses": true,
+    "p251b_big_lotto_replay_rows": 24140,
+    "p251b_big_lotto_draw_rows": 22238,
+    "p251b_big_lotto_canonical_rows": 2113
+  },
+  "source_artifact_classifications": {
+    "p250a": "CROSS_LOTTERY_STRATEGY_REPLAY_INVENTORY",
+    "p251a": "CROSS_LOTTERY_EVIDENCE_DASHBOARD_DRYRUN_PLAN",
+    "p251b": "CROSS_LOTTERY_EVIDENCE_DASHBOARD_DATA_ARTIFACT"
+  }
+}

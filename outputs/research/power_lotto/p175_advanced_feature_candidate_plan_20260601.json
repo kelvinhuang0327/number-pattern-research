@@ -1,0 +1,238 @@
+{
+  "task": "P175_POWER_LOTTO_R2_ADVANCED_FEATURE_CANDIDATE_PLAN_ONLY",
+  "final_classification": "P175_POWER_LOTTO_R2_ADVANCED_FEATURE_CANDIDATE_PLAN_READY",
+  "date": "2026-06-01",
+  "branch": "claude/zen-gates-ff6802",
+  "authorization_phrase_detected": "YES start P175 POWER_LOTTO R2 advanced feature candidate plan",
+  "phase_0_verification": {
+    "result": "PASS",
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "head": "c8b423d0c1de26253be4cec79ae6de77719d1074",
+    "db_rows": 94924,
+    "db_rows_unchanged": true,
+    "draws_table_power_lotto_rows": 1913,
+    "drift_guard": "PASS",
+    "p167_script": "PASS",
+    "p170_script": "PASS",
+    "p173_script": "PASS",
+    "p161_to_p174_tests": "822 PASSED (P161:23 standalone + P162-P174:799)"
+  },
+  "p174_summary": {
+    "classification": "P174_POWER_LOTTO_R2_DECISION_REVIEW_READY",
+    "recommended_option": "B — plan-only for advanced deferred candidates C03/C05/C06/C07",
+    "p173_null_unchanged": true,
+    "p161_to_p174_null_no_edge_unchanged": true,
+    "p175_is_plan_only": true,
+    "no_prototype_in_p175": true,
+    "no_edge_found_as_of_p174": true,
+    "prior_probability_of_edge": "LOW — consistent with cumulative R1 (P161-P170) + R2 Top 3 (P173) NULL evidence"
+  },
+  "honest_preface": "P175 is a plan-only document. It does NOT represent a finding that advanced feature candidates will yield edge. The prior probability remains LOW. C03/C06/C07 have HIGH overfitting risk. This plan is produced to fulfill the user's goal of exhaustive exploration while maintaining pre-registration governance.",
+  "candidate_plan": {
+    "total_candidates": 4,
+    "candidates": [
+      {
+        "candidate_id": "C03",
+        "name": "co_occurrence_pair_graph_strategy",
+        "feature_description": "Number co-occurrence frequencies for pairs within the same actual POWER_LOTTO draw. Graph-based degree centrality computed from the pair co-occurrence adjacency matrix. Numbers ranked by centrality score; top-6 selected.",
+        "feature_family": "F04",
+        "pair_space": "C(38,2) = 703 edges",
+        "causal_feature_extraction_rule": "For each target draw at index i, compute pair co-occurrence frequency using only draws[0..i-1]. Never use draws[i] or later draws in graph construction. Graph must be rebuilt for each target draw using strictly prior data.",
+        "leakage_prevention_rule": "Strictly chronological cutoff by CAST(draw AS INTEGER). No lookahead. The pair adjacency matrix is rebuilt from scratch for each OOS draw using only prior draws.",
+        "frozen_config_candidates": {
+          "centrality_metric": "degree_centrality (sum of pair co-occurrence weights)",
+          "min_pair_cooccurrence_threshold": 2,
+          "lookback_window_draws": "all prior draws (no windowing — full history up to target)",
+          "top_k": 6,
+          "rationale": "Degree centrality is simplest defensible metric. Threshold=2 avoids singleton noise. Must be frozen before P176 OOS."
+        },
+        "overfitting_risk": "HIGH",
+        "overfitting_risk_explanation": "703 pairs in 38-number pool. Even with Bonferroni over the 4-candidate family (threshold=0.0125), pair-space data snooping during graph construction introduces additional Type I error inflation. The graph is re-fit on historical data — any spurious high-degree nodes may reflect training noise.",
+        "internal_pair_space_burden": "C(38,2) = 703 possible edges. Any selection of 'high-centrality' nodes implicitly tests 703 pair comparisons. Bonferroni correction over the family-of-4 (threshold=0.0125) does NOT account for the internal pair-space selection — this is an additional testing burden that must be acknowledged.",
+        "correction_strategy": "Report p_bonferroni over family=4. In P176 report section, separately document that pair-space selection was not corrected for and that effective Type I error rate may be higher than stated.",
+        "minimum_oos_requirement": 300,
+        "failure_condition": "p_bonferroni >= 0.0125 after P176 OOS evaluation",
+        "expected_null_reporting_behavior": "If p_bonferroni >= 0.0125: report FAIL_CORRECTED. Do not interpret uncorrected p-values as positive signals. Do not retroactively narrow the pair threshold to improve results."
+      },
+      {
+        "candidate_id": "C05",
+        "name": "entropy_dispersion_controlled_strategy",
+        "feature_description": "Predictions whose sum and span statistics (mean, MAD, variance) match the historical POWER_LOTTO draw distribution are scored higher. Candidate number sets are scored by dispersion-match to training draw distribution; top-6 by composite score.",
+        "feature_family": "F08",
+        "causal_feature_extraction_rule": "For each target draw at index i, compute the empirical distribution of draw sums, spans, and MAD from draws[0..i-1] only. Dispersion target parameters are derived from this prior distribution. No future draws enter the distribution estimate.",
+        "leakage_prevention_rule": "Distribution parameters (mean, std of draw sums/spans) computed from strictly prior draws. Must use expanding window — never fixed window anchored to full dataset.",
+        "frozen_config_candidates": {
+          "dispersion_metrics": ["draw_sum", "draw_span", "draw_mad"],
+          "scoring_method": "negative L2 distance from training distribution mean",
+          "top_k": 6,
+          "rationale": "L2 scoring against prior mean is simple and pre-declarable. No secondary tuning permitted."
+        },
+        "overfitting_risk": "MEDIUM",
+        "overfitting_risk_explanation": "Fewer free parameters than C03/C06/C07. Distribution parameters are continuous and estimated from prior draws only. Main risk: if training-draw distribution mean is non-stationary, OOS predictions may be miscalibrated.",
+        "internal_pair_space_burden": "NOT APPLICABLE — continuous scoring, no discrete selection inflation",
+        "correction_strategy": "Bonferroni over family=4 (threshold=0.0125). No additional internal correction needed.",
+        "minimum_oos_requirement": 200,
+        "failure_condition": "p_bonferroni >= 0.0125 after P176 OOS evaluation",
+        "expected_null_reporting_behavior": "If p_bonferroni >= 0.0125: report FAIL_CORRECTED. Do not re-score using a different dispersion metric post-hoc."
+      },
+      {
+        "candidate_id": "C06",
+        "name": "regime_adaptive_window_strategy",
+        "feature_description": "CUSUM change-point detection on hit rates to assign regime labels (high-activity / neutral / low-activity) to each draw. Strategy selects numbers using a frequency window sized to the current regime. Window size adapts based on the most recently detected regime.",
+        "feature_family": "F10",
+        "causal_feature_extraction_rule": "CUSUM must use ONE-SIDED historical lookback only. At each target draw i, CUSUM processes draws[0..i-1] sequentially and outputs the current regime label. The regime label for draw i is determined ONLY from draws before i. Two-sided CUSUM or any future-aware smoothing is leakage.",
+        "leakage_prevention_rule": "No regime label from draw i or later may influence prediction for draw i. Regime detection is strictly causal: it processes the sequence from draw 0 to draw i-1 and outputs a single label. This label is used to choose the frequency window size for draw i's prediction.",
+        "frozen_config_candidates": {
+          "cusum_threshold": 2.0,
+          "cusum_slack": 0.5,
+          "regime_window_sizes": {
+            "high_activity": 50,
+            "neutral": 100,
+            "low_activity": 200
+          },
+          "top_k": 6,
+          "rationale": "CUSUM threshold=2.0 and slack=0.5 are conservative defaults. Window sizes correspond to P170 non-stationarity finding (recent draws differ). All parameters must be frozen before P176 OOS."
+        },
+        "overfitting_risk": "HIGH",
+        "overfitting_risk_explanation": "CUSUM threshold, slack, and 3 regime window sizes = 5 free parameters. Even with pre-declaration, the prior probability of fitting these to POWER_LOTTO's 1913-draw history is substantial. P170 confirmed non-stationarity — this MOTIVATES the approach but does NOT guarantee it will generalize.",
+        "p170_connection": "P170 showed non-stationarity (Window 2 below random at all thresholds). This motivates regime-adaptive window. However, non-stationarity itself may be non-stationary — the regime may shift again in OOS. P170 evidence is motivation, not deployment evidence.",
+        "internal_pair_space_burden": "NOT APPLICABLE — single regime label per draw, no discrete selection inflation",
+        "no_future_labels_rule": "STRICT: the regime label at draw i may only reference draws 0..i-1. Any implementation that assigns regime labels using a smoothed signal including draws >= i is a leakage violation and must be rejected.",
+        "correction_strategy": "Bonferroni over family=4 (threshold=0.0125). No additional correction for regime parameter choices (all pre-declared).",
+        "minimum_oos_requirement": 300,
+        "failure_condition": "p_bonferroni >= 0.0125 after P176 OOS evaluation",
+        "expected_null_reporting_behavior": "If p_bonferroni >= 0.0125: report FAIL_CORRECTED. Do not re-tune CUSUM parameters post-hoc. Do not claim regime detection improved results if OOS is NULL."
+      },
+      {
+        "candidate_id": "C07",
+        "name": "hybrid_rank_aggregation_strategy",
+        "feature_description": "Borda-count rank aggregation of 4 independent feature rankings: recency-weighted frequency (C01), gap-adjusted overdue (C02), zone-adjusted frequency (C04), and pair-graph centrality (C03). The aggregated rank selects top-6 numbers by combined score.",
+        "feature_family": "F01+F05+F07+F04",
+        "causal_feature_extraction_rule": "Each component ranking (C01/C02/C04/C03) must be computed using only draws[0..i-1] for target draw i. The Borda-count aggregation is then applied to the 4 independently-computed rankings. No component ranking may use future draws.",
+        "leakage_prevention_rule": "Same as C01/C02/C04/C03 leakage prevention rules applied individually. The aggregation itself (Borda count) introduces no additional leakage — it is a deterministic function of the 4 input rankings.",
+        "dependency_on_p173_null": "C01/C02/C04 were evaluated in P173 and all FAIL_CORRECTED individually. Borda-count aggregation of individually-null signals may not yield a composite signal. This is the primary risk: combining weak individual signals may amplify noise rather than signal.",
+        "frozen_config_candidates": {
+          "component_weights": "equal weight (each component rank contributes equally to Borda count)",
+          "borda_tie_breaking": "alphabetical by candidate_id (C01 > C02 > C04 > C03)",
+          "top_k": 6,
+          "rationale": "Equal weights avoid weight-grid overfitting. Tie-breaking is deterministic. Must be frozen before P176 OOS."
+        },
+        "overfitting_risk": "HIGH",
+        "overfitting_risk_explanation": "While individual weights are equal (no tuning), the approach implicitly assumes that the 4 components carry equal information. Given P173 NULL (C01/C02/C04 all FAIL_CORRECTED), the prior expectation is that rank aggregation of null signals = null result. Overfitting risk comes from the implicit assumption that combining these signals yields a non-null composite.",
+        "internal_pair_space_burden": "Inherits C03 pair-space burden for the co-occurrence ranking component. See C03 documentation.",
+        "correction_strategy": "Bonferroni over family=4 (threshold=0.0125). C03 pair-space burden must be documented in P176 report.",
+        "minimum_oos_requirement": 300,
+        "failure_condition": "p_bonferroni >= 0.0125 after P176 OOS evaluation",
+        "expected_null_reporting_behavior": "If p_bonferroni >= 0.0125: report FAIL_CORRECTED. The P173 NULL of component signals does NOT prove C07 will fail, but constitutes strong prior evidence that aggregation will not recover a null composite."
+      }
+    ]
+  },
+  "multiple_testing_plan": {
+    "candidate_family_size": 4,
+    "alpha": 0.05,
+    "bonferroni_threshold": 0.0125,
+    "bh_secondary": true,
+    "report_both_corrected_and_uncorrected": true,
+    "c03_internal_pair_space_burden": "C(38,2)=703 edges. Degree-centrality selection implicitly tests which of 703 pairs is highly active. Bonferroni over family=4 does not account for this internal comparison. P176 report must explicitly state that effective Type I error rate for C03 may be higher than 0.0125 due to pair-space selection. This is not a fixable leakage — it is an inherent property of graph-based feature selection.",
+    "predeclaration_requirement": "All candidate configs (configs listed in frozen_config_candidates per candidate) must be declared in this P175 artifact before any P176 OOS evaluation. No config changes after P176 begins.",
+    "null_ruling_per_candidate": "Each candidate is independently assessed. A PASS for one candidate does not elevate others. If 0/4 candidates pass: overall NULL reported.",
+    "c07_dependency_note": "C07 uses C03 as a component. If C03 is run in P176 concurrently with C07, the C03 run for C07 purposes must use the SAME config as standalone C03. No separate config tuning for C07's C03 component."
+  },
+  "oos_protocol_plan": {
+    "data_source": "draws table, POWER_LOTTO records only, ordered by CAST(draw AS INTEGER) ASC",
+    "available_rows": 1913,
+    "read_only": true,
+    "initial_training_size": 500,
+    "evaluation_method": "expanding_window",
+    "no_shuffling": true,
+    "no_oos_refitting": true,
+    "no_leakage": true,
+    "statistical_unit": "per draw (distinct POWER_LOTTO draw), NOT per bet-row",
+    "no_bet_row_pseudo_replication": "hit_count is assessed once per draw per candidate prediction, not per bet-row in strategy_prediction_replays table. Evaluating multiple bet-row hits per draw inflates effective sample size.",
+    "evaluation_metric": "mean hit count per OOS draw vs random baseline 36/38 = 0.9474",
+    "hypothesis_test": "one-sided z-test (H0: mean=36/38, H1: mean>36/38) using hypergeometric variance",
+    "minimum_oos_draws": {
+      "C03": 300,
+      "C05": 200,
+      "C06": 300,
+      "C07": 300
+    },
+    "baseline_comparisons": [
+      "B1: fair random 36/38 = 0.9474",
+      "B2: constrained random C08 (documented, not fully implemented)",
+      "B3: P161 best strategy pool mean = 0.9674",
+      "B4: P173 best candidate (C04 mean=0.964) for comparison"
+    ]
+  },
+  "leakage_prevention_plan": {
+    "general_rule": "All feature extraction for draw at index i must use only draws[0..i-1]. No exceptions.",
+    "c03_specific": "Pair co-occurrence adjacency matrix rebuilt from draws[0..i-1] for each OOS draw. No cached global matrix unless cache is invalidated at each new draw index.",
+    "c05_specific": "Distribution parameters (sum/span/MAD mean and std) computed from draws[0..i-1]. Expanding window — parameters update as each new draw is processed.",
+    "c06_specific": "CUSUM run sequentially on draws[0..i-1] at each prediction step. Output is single regime label for position i. Two-sided CUSUM or retrospective smoothing is prohibited.",
+    "c07_specific": "Each component (C01/C02/C04/C03) uses draws[0..i-1]. Borda aggregation applied after all component rankings computed.",
+    "verification_method": "P176 must include a leakage audit comment in script: for each candidate, document which draws are used in feature extraction at each OOS step. Auditable by inspection."
+  },
+  "risk_assessment": {
+    "overall_prior_probability": "LOW — consistent with R1 (P161-P170 NULL), R2 Top 3 (P173 NULL), L91 (BIG_LOTTO at-random), POWER_LOTTO 38-number pool structure",
+    "c03_risk": "HIGH overfitting, HIGH multiple-testing burden (703 pairs), minimum 300 OOS draws required, co-occurrence graph may fit noise in 1913-draw history",
+    "c05_risk": "MEDIUM overfitting, fewer parameters, minimum 200 OOS draws, non-stationarity may cause distribution drift",
+    "c06_risk": "HIGH overfitting (5 CUSUM parameters), MEDIUM leakage risk (requires careful one-sided implementation), minimum 300 OOS draws, regime-adaptive approach theoretically motivated by P170 but not validated",
+    "c07_risk": "HIGH overfitting (inherits C03 pair-space burden), dependent on individually-null C01/C02/C04 components from P173, aggregation of null signals expected to be null",
+    "cumulative_testing_burden": "P161-P175 represents an extensive multiple-testing sequence across R1 and R2. The probability of at least one false positive increases with each additional family of tests. This systematic risk must be acknowledged in P176 reporting.",
+    "recommendation_if_all_p176_null": "If C03/C05/C06/C07 all FAIL_CORRECTED in P176: R2 research should be concluded. No further feature engineering exploration is warranted without a structural change (new data, new theoretical motivation, different lottery type with documented anomalies)."
+  },
+  "p176_scope_boundary": {
+    "task_name": "P176_POWER_LOTTO_R2_ADVANCED_FEATURE_MINIMAL_PROTOTYPE_READ_ONLY",
+    "scope": "read-only minimal prototype implementation of C03/C05/C06/C07 feature extraction and OOS evaluation only",
+    "allowed_in_p176": [
+      "read-only SQL queries against draws and strategy_prediction_replays tables",
+      "analysis scripts in analysis/power_lotto/ directory only",
+      "OOS evaluation using pre-declared configs from this P175 artifact",
+      "output artifacts in outputs/research/power_lotto/ only",
+      "contract test in tests/ directory"
+    ],
+    "forbidden_in_p176": [
+      "DB write of any kind",
+      "registry mutation",
+      "replay row insertion",
+      "champion promotion",
+      "controlled_apply",
+      "deployment to production",
+      "wagering recommendations",
+      "win-guarantee claims",
+      "strategy code in lottery_api/ or tools/ directories",
+      "modifying existing analysis scripts",
+      "config changes after OOS begins",
+      "retroactive threshold adjustment"
+    ],
+    "p176_must_report_null_if_all_fail": true,
+    "p176_authorization_required": true,
+    "p176_blocked_by_user_authorization": true,
+    "p176_authorization_phrase": "YES start P176 POWER_LOTTO R2 advanced feature minimal prototype read-only"
+  },
+  "governance_confirmations": {
+    "db_rows_before": 94924,
+    "db_rows_after": 94924,
+    "db_unchanged": true,
+    "no_db_write": true,
+    "no_registry_mutation": true,
+    "no_strategy_implementation": true,
+    "no_prototype_script_in_p175": true,
+    "no_controlled_apply": true,
+    "no_champion_promotion": true,
+    "no_wagering_recommendations": true,
+    "no_win_guarantee_claim": true,
+    "no_stage": true,
+    "no_commit": true,
+    "no_push": true,
+    "no_checkout_branch": true,
+    "no_merge_rebase_reset": true,
+    "p173_null_unchanged": true,
+    "p161_to_p174_null_results_unchanged": true,
+    "main_zen_gates_split_still_unresolved": true
+  },
+  "next_task": "P176_POWER_LOTTO_R2_ADVANCED_FEATURE_MINIMAL_PROTOTYPE_READ_ONLY",
+  "next_task_blocked_by_user_authorization": true,
+  "next_task_authorization_required_phrase": "YES start P176 POWER_LOTTO R2 advanced feature minimal prototype read-only"
+}

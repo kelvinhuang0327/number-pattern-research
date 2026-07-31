@@ -1,0 +1,66 @@
+{
+  "task_id": "P117_POWERLOTTO_OOS_MONITORING_CHECKPOINT",
+  "classification": "P117_POWERLOTTO_OOS_WAIT_MORE_DRAWS",
+  "p116_reference": {
+    "classification": "P116_POWERLOTTO_OOS_MONITORING_DESIGN_READY",
+    "artifact_path": "outputs/replay/p116_powerlotto_oos_monitoring_design_20260527.json"
+  },
+  "p115_reference": {
+    "classification": "P115_BIGLOTTO_QUARANTINE_GOVERNANCE_READY",
+    "artifact_path": "outputs/replay/p115_biglotto_quarantine_governance_20260527.json"
+  },
+  "db_writes": false,
+  "replay_rows_before": 54462,
+  "replay_rows_after": 54462,
+  "no_strategy_promotion": true,
+  "no_lifecycle_mutation": true,
+  "no_registry_mutation": true,
+  "no_actual_quarantine_applied": true,
+  "no_replay_row_delete": true,
+  "no_4star_backtest": true,
+  "no_special3_p108_rerun": true,
+  "source_unknown_caveat_preserved": true,
+  "monitored_lottery_type": "POWER_LOTTO",
+  "p116_baseline_power_lotto_max_draw": "115000041",
+  "current_power_lotto_max_draw": "115000041",
+  "new_power_lotto_draws_after_p116": 0,
+  "monitoring_candidates": [
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "minimum_new_draws": 30,
+      "preferred_new_draws": 50,
+      "promotion_discussion_minimum": 80,
+      "threshold_status": "NOT_MET",
+      "remaining_draws_needed_for_minimum": 30,
+      "checkpoint_metrics": null,
+      "checkpoint_decision": "WAIT_MORE_DRAWS",
+      "promotion_authorized": false
+    },
+    {
+      "strategy_id": "pp3_freqort_4bet",
+      "minimum_new_draws": 40,
+      "preferred_new_draws": 60,
+      "promotion_discussion_minimum": 100,
+      "threshold_status": "NOT_MET",
+      "remaining_draws_needed_for_minimum": 40,
+      "checkpoint_metrics": null,
+      "checkpoint_decision": "WAIT_MORE_DRAWS",
+      "promotion_authorized": false
+    }
+  ],
+  "overall_recommendation": "Wait for more POWER_LOTTO draws. Current new draws after P116 baseline (115000041): 0. Need at least 30 for midfreq_fourier_mk_3bet minimum threshold, 40 for pp3_freqort_4bet. Current max draw: 115000041. No OOS conclusions can be drawn.",
+  "explicit_holds": [
+    "Special3 P108 still blocked until 100 prospective draws (currently 63, need 37 more)",
+    "4_STAR backtest remains unauthorized (source unknown)",
+    "BIG_LOTTO actual quarantine remains blocked until explicit authorization phrase: YES quarantine strategy fourier30_markov30_biglotto for stable negative evidence",
+    "Production promotion not authorized from P117 alone"
+  ],
+  "limitations": [
+    "checkpoint_metrics is null for all candidates because no new replay rows have been ingested after P116 baseline",
+    "New POWER_LOTTO draws after P116 = 0; all threshold checks result in WAIT_MORE_DRAWS",
+    "P116 artifact did not record explicit baseline draw; fallback to known P116-time max draw 115000041",
+    "This checkpoint is read-only and does not implement live monitoring jobs",
+    "No OOS performance conclusions can be drawn with 0 new draws"
+  ],
+  "final_classification": "P117_POWERLOTTO_OOS_WAIT_MORE_DRAWS"
+}

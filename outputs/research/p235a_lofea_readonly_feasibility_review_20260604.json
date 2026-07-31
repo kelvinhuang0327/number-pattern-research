@@ -1,0 +1,95 @@
+{
+  "task_id": "P235A",
+  "task_name": "Lofea Read-Only Feasibility Review For LotteryNew",
+  "review_date": "2026-06-04 Asia/Taipei",
+  "review_type": "read-only feasibility review (no implementation, no DB/registry/production write, no strategy, no betting advice, no predictability claim)",
+  "authorization": "User authorized OPT-B P235A (2026-06-04); per CEO-Decision.md CEO_DECISION_PARTIALLY_APPROVED.",
+  "source": {
+    "url": "https://github.com/JeffMv/Lofea",
+    "fetch_succeeded": true,
+    "fetched_by_independent_researchers": 2
+  },
+  "source_identification_status": "CONFIRMED — source fully identified and fetched by two independent researchers; all material claims corroborated. Not BLOCKED.",
+  "lofea_summary": "Lofea is a small, single-author, Python-only open-source toolkit (CC-BY-NC) that engineers statistical features from lottery draw histories and emits ready-to-model TSV/CSV tables (features + supervised-learning labels) for a data scientist to feed into an external ML environment. It targets small-universe 'pick 1-out-of-10 per column' lotteries (Swiss TrioMagic, Belgian Joker+) whose raw data is positionally-ordered single-digit columns, which is structurally different from Western main-numbers+bonus games. Headline ideas: a 'Universe length' (distinct-symbol-count) feature and its dynamics, plus parity, frequency/effectifs, and gap/ecart features over rolling ~10-draw windows, often reframed as a binary classification target (e.g. 'will Universe length increase next draw') rather than predicting exact winning numbers. It self-describes as a snapshot of another (un-named) project, depends on a pinned external author library, and is low-activity/dormant (31 commits, example data from ~2019).",
+  "project_type": "ML feature-engineering / methodology demo (not a validated predictor)",
+  "feature_concepts_observed": [
+    "Universe length: distinct-symbol/number count in a rolling K-draw window, plus dynamics (last moving direction up/down/stagnate, same/greater/lower streak runs, max possible increase/decrease)",
+    "Gap / skip / 'ecart' features: prior gap intervals N-1/N-2/N-3, gap delta-trend over 2 and 4 gaps, mean of recent gaps, position of last 'great gap', mean gaps before last great gap",
+    "Frequency / 'effectifs': median appearance frequency; mean/median frequency split for symbols INSIDE vs OUTSIDE the current rolling frame (MeanEffsIn/Out, MedianEffsIn/Out)",
+    "Parity / odd-even counts over a rolling window",
+    "Rolling-window framing (fixed ~10-draw frames) as the consistent basis for most features",
+    "Group-membership reframing: predict which GROUP/bucket a value falls into rather than the exact number, converting the problem to binary classification",
+    "Trend labeling (targetTrend up/down/stable) and horizon-based appearance targets (will-appear-within-N draws, next-gap-within-threshold)",
+    "Per-column/positional symbol-frequency trends (gch/mil/drt single-digit columns)"
+  ],
+  "feasibility_classification": "FIT_AS_DESIGN_INSPIRATION_ONLY",
+  "deployable_strategy_evidence": false,
+  "deployable_evidence_note": "No backtest, no ROI/Sharpe, no statistical-significance/permutation testing, no walk-forward/OOS validation, no baseline comparison. The only performance signal in the README is anecdotal personal-play experience; the only modeling artifact is a RapidMiner 8 AutoModel demo classifying a binary feature outcome (Universe-length increase). Carries no demonstrated edge and does not attempt to predict winning numbers.",
+  "allowed_future_use": [
+    "Design inspiration ONLY for a future, separately-authorized read-only diagnostics layer (the demoted P2.4 / Direction F concept).",
+    "Reference for feature/label table schema and statistical-unit labeling discipline (Feat-/pred/tTarget column separation).",
+    "Conceptual candidates for HISTORICAL-DESCRIPTION diagnostic columns: 'Universe length' (distinct-number breadth) and in-frame-vs-out-of-frame frequency split — concepts LotteryNew may not track in that exact framing.",
+    "Any borrowed concept must be INDEPENDENTLY RE-DERIVED in native LotteryNew code (to avoid CC-BY-NC vendoring and external-dependency risk), and must pass the P221F anti-overfit gate, multiple-testing correction, and walk-forward/OOS before any validation use."
+  ],
+  "forbidden_actions": [
+    "Do NOT implement Lofea or vendor/copy its code (CC-BY-NC; WebComm is a commercial entity).",
+    "Do NOT run Lofea or its external pinned dependency inside the LotteryNew/production environment (unaudited supply-chain/security risk).",
+    "Do NOT create a strategy, hypothesis scan, or predictor from Lofea concepts without separate explicit authorization and full P221F pre-registration.",
+    "Do NOT write DB / registry / production / data / recommendation logic.",
+    "Do NOT frame Lofea or any borrowed concept as improving win rate or predictability.",
+    "Do NOT produce betting advice.",
+    "Do NOT promote any candidate; do NOT restart P211; do NOT start OPT-C without separate authorization."
+  ],
+  "risks": [
+    "FALSE-PREDICTABILITY FRAMING: Lofea uses prediction-flavored language (pred*, tTarget*) and an anecdotal personal-play story; importing this risks an implied win-rate claim that violates governance.",
+    "DATA-SNOOPING / P-HACKING: many candidate features with no multiple-testing correction and no permutation/walk-forward validation; naive adoption inflates false positives. Must pass P221F gate.",
+    "TRAINING-DATA LEAKAGE: RelatedDrawId / within-N-draws / gap-trend labels span multiple draws; careless reimplementation could leak future draws into a historical window. Must enforce leakage-prevention rules.",
+    "STATISTICAL-UNIT MISMATCH: Lofea's unit is per-symbol-per-column in a 1/10 game; LotteryNew requires strict row/draw/bet-index/strategy labels for 6/49, 6/39, and 6+special games.",
+    "TAIWAN-LOTTERY DATA-SEMANTICS MISMATCH: Lofea assumes 1-out-of-10 positionally-ordered per-column draws; LotteryNew main games are main+bonus and the DB stores `numbers` as ASCENDING-SORTED arrays, so positional/per-column features do not transfer. 3_STAR/4_STAR are positional games but are also stored sorted (positional semantics lost in storage).",
+    "REDUNDANCY: LotteryNew already implements gap/cold/recency, frequency/midfreq, parity/odd-even, zone, and markov diagnostics; most Lofea features are duplicative (low marginal value).",
+    "CC-BY-NC LICENSE / VENDORING: NonCommercial license; vendoring/redistributing code (or derivatives) without separate commercial permission would breach the license. Prefer independent re-derivation of concepts.",
+    "SECURITY / SUPPLY-CHAIN: pulls a pinned author-published package (git+https://github.com/JeffMv/jmm-util-libs.git) and runs arbitrary CLI; introduces an unaudited dependency. Must not run in production.",
+    "DORMANCY / REPRODUCIBILITY: code/data appear ~2019-era and dormant; pinned external dependency could disappear, undermining reproducibility (counter to full-traceability principle).",
+    "PROMOTION-PRESSURE: risk a reader treats Lofea as a strategy; must be fenced as design-inspiration only with zero implied edge."
+  ],
+  "governance_checks": {
+    "historical_only_evidence": "respected — review treats Lofea as historical/descriptive inspiration only",
+    "no_betting_advice": "respected",
+    "no_predictability_or_winrate_claim": "respected — Lofea explicitly has no validated edge",
+    "p221f_anti_overfit_gate_required_for_any_reuse": true,
+    "multiple_testing_correction_required": true,
+    "walk_forward_or_oos_required_before_validation_use": true,
+    "statistical_unit_labels_required": "row/draw/bet-index/strategy",
+    "zero_db_registry_production_write": true,
+    "no_strategy_promotion": true,
+    "p211_held_by_user_unchanged": true,
+    "p234_design_only_unchanged": true
+  },
+  "db_baseline_observed": {
+    "head": "8b70aeeb32fe839aa90032ca3e139df08a510ea7",
+    "head_equals_origin_main": true,
+    "integrity": "ok",
+    "replay_rows": 94924,
+    "bet_index_nulls": 0,
+    "duplicate_keys": 0,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "verified_read_only": true
+  },
+  "recommendation": {
+    "adopt_now": "NO",
+    "design_only_future_consideration": "YES — note as design inspiration only for the already-demoted P2.4 read-only diagnostics layer; no build.",
+    "no_further_action_default": "Acceptable — LotteryNew already has equivalent diagnostics and an exhausted-signal reality; doing nothing is a valid outcome.",
+    "authorization_needed_for_any_next_step": "Any concept reuse requires: (1) separate explicit user authorization, (2) native re-derivation (no vendoring), (3) fresh P221F pre-registration with multiple-testing correction and walk-forward/OOS, (4) read-only / artifact-only scope with zero DB/registry/production writes."
+  },
+  "tests": {
+    "json_parse": "PASS (validated with python3 -m json.tool)",
+    "git_diff_check": "PASS",
+    "drift_guard_after": "PASS",
+    "full_pytest_suite": "NOT RUN (artifact-only task)"
+  },
+  "modified_files": [
+    "outputs/research/p235a_lofea_readonly_feasibility_review_20260604.md",
+    "outputs/research/p235a_lofea_readonly_feasibility_review_20260604.json"
+  ],
+  "final_classification": "P235A_LOFEA_FEASIBILITY_REVIEW_COMPLETE_DESIGN_INSPIRATION_ONLY"
+}

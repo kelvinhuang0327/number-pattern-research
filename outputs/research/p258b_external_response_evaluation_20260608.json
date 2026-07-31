@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P258B",
+  "classification": "P258B_READ_ONLY_PREREGISTRATION_CANDIDATE_SELECTED",
+  "generated_date": "2026-06-08",
+  "task_type": "Type B read-only evaluation artifact (no code, no DB write)",
+  "phase0_summary": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch_at_evaluation": "main",
+    "head_at_evaluation": "c02c70d67fbb8e4f520cb30e04012392a5f57d35",
+    "staged_files_before_task": 0,
+    "db_integrity": "ok",
+    "replay_rows": 94924,
+    "draw_rows_total": 64366,
+    "p258a_artifacts_verified": [
+      "outputs/research/p258a_prediction_accuracy_research_intake_protocol_20260608.json",
+      "outputs/research/p258a_prediction_accuracy_research_intake_protocol_20260608.md"
+    ],
+    "p258a_regression_tests": "22/22 PASS",
+    "p258a_state_marker": "P258A_PREDICTION_ACCURACY_RESEARCH_INTAKE_PROTOCOL_READY",
+    "external_response_present": true,
+    "external_response_source": "inline in task prompt"
+  },
+  "structure_check": {
+    "exactly_3_directions": true,
+    "direction_names": [
+      "CrossLotteryLaggedEntropyRegime",
+      "DrawSetGeometryResidualConformal",
+      "AdversarialNullSurvivorGate"
+    ],
+    "all_9_fields_present_d1": true,
+    "all_9_fields_present_d2": true,
+    "all_9_fields_present_d3": true,
+    "result": "PASS"
+  },
+  "evaluation_results": [
+    {
+      "direction_number": 1,
+      "method_name": "CrossLotteryLaggedEntropyRegime",
+      "classification": "REJECT_INSUFFICIENT_EVIDENCE",
+      "hard_rejected": false,
+      "hard_rejection_reasons": [],
+      "rejection_reasons": [
+        "Missing explicit P256A NULL risk boundary acknowledgement — P258A prompt required survival argument against P256A/L82/L91/L86/L89; not discharged.",
+        "Cross-lottery lagged signal is a closed line: L106 documents BL-PL (24 periods) and 539-BL (193 periods) cross-lottery Pearson tests all p>0.16, zero Bonferroni survivors; proposal gives no argument distinguishing D1 from this closed line.",
+        "Composite multi-dimensional regime classifier (entropy + dispersion + parity + residue + gap -> regime labels) over BIG_LOTTO canonical 2,114 draws and POWER_LOTTO 1,917 draws matches L86/L89 overfit pattern flagged by CEO risk framing as highest false-positive risk; no power analysis for per-regime samples provided.",
+        "Eligibility criterion 'explicit P256A NULL risk boundary' not met."
+      ],
+      "rubric_scores": {
+        "novelty_of_signal": 3,
+        "leakage_safety": 4,
+        "oos_feasibility": 3,
+        "mcnemar_paired_test_feasibility": 4,
+        "short_mid_long_stability": 2,
+        "multiple_testing_discipline": 4,
+        "drift_detectability": 4,
+        "implementation_cost_optional": 2
+      },
+      "rubric_notes": "Good methodological hygiene (timestamp filter, BH-FDR+Bonferroni, OOS, McNemar vs P257A) but dragged down by L106 pre-falsification and thin per-regime samples over low draw counts."
+    },
+    {
+      "direction_number": 2,
+      "method_name": "DrawSetGeometryResidualConformal",
+      "classification": "HARD_REJECT",
+      "hard_rejected": true,
+      "hard_rejection_reasons": [
+        "Rule 11 — failure to respect prior negative evidence: directly re-proposes the L82/L91-falsified set-geometry family (sum, span, sorted gap vector, odd-even structure, low-mid-high buckets, pairwise distance, modular residue) without any survival argument. These exact descriptors are covered by L73 (539 Zone/Sum white noise, Ljung-Box non-significant, ZPI permanently closed), L91 (BIG_LOTTO 6 randomness tests including pairwise correlation and permutation entropy all pass), L104 (539 residue/tail-digit = pool-structural artifact not exploitable, permanently closed), and L105 (539 gap/consecutive pattern rejected chi2=2.035 p=0.565).",
+        "Rule 11 (reinforcement) — conformal prediction wrapper provides coverage validity, not predictive power; a well-calibrated geometry band over proven-random draws still covers astronomically many combinations, yielding zero per-number edge.",
+        "Proposal's own concession ('may ultimately reduce to a null if lottery draw-set geometry is fully random') confirms awareness of the closed lines; the mandatory P258A survival argument is absent."
+      ],
+      "rubric_scores": null,
+      "rubric_notes": "Not scored — hard-rejected."
+    },
+    {
+      "direction_number": 3,
+      "method_name": "AdversarialNullSurvivorGate",
+      "classification": "ACCEPT_FOR_READ_ONLY_PREREGISTRATION",
+      "hard_rejected": false,
+      "hard_rejection_reasons": [],
+      "eligibility_check": {
+        "no_hard_rejection": true,
+        "explicit_p257a_baseline_comparison": true,
+        "explicit_p256a_null_risk_boundary": true,
+        "feasible_oos_and_paired_comparison_plan": true,
+        "no_production_recommendation_mutation": true
+      },
+      "rubric_scores": {
+        "novelty_of_signal": 4,
+        "leakage_safety": 5,
+        "oos_feasibility": 5,
+        "mcnemar_paired_test_feasibility": 5,
+        "short_mid_long_stability": 5,
+        "multiple_testing_discipline": 5,
+        "drift_detectability": 4,
+        "implementation_cost_optional": 3
+      },
+      "rubric_notes": "Passes all 12 hard-rejection rules. Uniquely institutionalises prior negative evidence (P256A/L82/L91/L86/L89) as the gate's core premise. Proposes no number-scoring rule; it is a meta-validation/selection gate — genuinely different category. Adds provenance+timestamp verification, empirical-null-percentile, BH-FDR+Bonferroni, observation-only constraints, and makes production-mutation an explicit failure criterion.",
+      "methodology_not_predictor_caveat": "D3 is a VALIDATION / ADVERSARIAL-NULL SURVIVOR GATE, not a number-prediction method. It cannot claim improved prediction accuracy. It can only be used to pre-register a stricter falsification gate for future candidate methods. All gate survivors remain read-only / observation-only. It must not touch recommendation logic, production, DB, registry, controlled_apply, or deployment without a separate explicit authorization."
+    }
+  ],
+  "selected_candidate": {
+    "method_name": "AdversarialNullSurvivorGate",
+    "direction_number": 3,
+    "rationale": "Only direction passing all five eligibility criteria. Its premise directly institutionalises the rejection discipline stated as this protocol's value: 'many prior apparent edges were null artifacts' mirrors P256A NULL/L82/L91/L86/L89. Selected as at-most-one candidate per decision rules.",
+    "methodology_not_predictor_caveat": "D3 is a validation/adversarial-null survivor gate, not a predictive signal or production edge. The next read-only pre-registration task (P258C) designs the gate methodology — not a number-prediction prototype.",
+    "human_gate_fork": "If CEO requires this round to yield a genuine predictive signal, the honest reading is that zero predictive-signal directions survived (D1 insufficient, D2 hard-rejected) and the round should be classified P258B_NO_ELIGIBLE_EXTERNAL_DIRECTION. This fork is surfaced for human ruling. Current classification selects D3 per the written decision rules (no 'must be predictive signal' criterion in the rules)."
+  },
+  "d1_resubmission_path": "D1 CrossLotteryLaggedEntropyRegime may be resubmitted with (a) explicit P256A/L82/L91 survival argument, (b) L106 differentiation argument, (c) per-regime power analysis for BIG_LOTTO 2,114 and POWER_LOTTO 1,917 draw counts.",
+  "recommended_next_task": {
+    "task_id": "P258C",
+    "title": "D3 AdversarialNullSurvivorGate read-only pre-registration design",
+    "precondition": "P258B closeout artifact merged",
+    "type": "Type B read-only design artifact — no prototype, no DB write, no recommendation mutation, no production change",
+    "scope": "Design the adversarial null-gating methodology: matched-null construction specification, correction family pre-declaration, endpoints, OOS schedule, provenance requirements, and evaluation criteria. Observation-only throughout.",
+    "strong_model_required": true,
+    "strong_model_reason": "Designing matched-null construction, correction family, endpoints, and OOS schedule for a meta-validation gate requires careful statistical reasoning and judgment on edge cases."
+  },
+  "no_db_write_confirmed": true,
+  "no_prototype_code_confirmed": true,
+  "no_strategy_implementation_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_recommendation_logic_change_confirmed": true,
+  "no_production_write_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "final_decision": "P258B_READ_ONLY_PREREGISTRATION_CANDIDATE_SELECTED"
+}

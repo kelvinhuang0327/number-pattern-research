@@ -1,0 +1,150 @@
+{
+  "task": "P173_POWER_LOTTO_NEW_STRATEGY_MINIMAL_PROTOTYPE_READ_ONLY",
+  "final_classification": "P173_POWER_LOTTO_R2_MINIMAL_PROTOTYPE_NULL_RESULT",
+  "date": "2026-06-01",
+  "branch": "claude/zen-gates-ff6802",
+  "authorization_phrase_detected": "YES start P173 POWER_LOTTO minimal prototype read-only",
+  "phase_0_verification": {
+    "result": "PASS",
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "db_rows": 94924,
+    "db_rows_unchanged": true,
+    "draws_table_power_lotto_rows": 1913,
+    "drift_guard": "PASS",
+    "p167_script": "PASS",
+    "p170_script": "PASS",
+    "p161_to_p172_tests": "673 PASSED"
+  },
+  "p172_summary": {
+    "classification": "P172_POWER_LOTTO_NEW_STRATEGY_PROTOTYPE_PLAN_READY",
+    "top_3_selected": [
+      "C01",
+      "C02",
+      "C04"
+    ],
+    "deferred": [
+      "C03",
+      "C05",
+      "C06",
+      "C07",
+      "C08_as_null_baseline"
+    ],
+    "r1_conclusion": "NO_DEFENSIBLE_EDGE_FOUND",
+    "edge_found_in_p172": false
+  },
+  "data_availability": {
+    "draws_table_power_lotto_rows": 1913,
+    "replay_db_rows": 94924,
+    "oos_draws_evaluated": 1413,
+    "initial_training_size": 500,
+    "all_features_from_existing_db": true
+  },
+  "candidate_configs": {
+    "C01": {
+      "decay_half_life_draws": 50,
+      "lookback_window_draws": 200,
+      "top_k": 6
+    },
+    "C02": {
+      "overdue_z_threshold": 1.5,
+      "geometric_mean_gap": 6.333,
+      "top_k": 6
+    },
+    "C04": {
+      "zone_low_range": "1-13",
+      "zone_mid_range": "14-25",
+      "zone_high_range": "26-38",
+      "zone_count_target_method": "empirical_mode_from_first_500_training_draws",
+      "zone_targets_computed": {
+        "low": 2,
+        "mid": 2,
+        "high": 2
+      },
+      "top_k": 6
+    }
+  },
+  "oos_protocol": {
+    "method": "expanding_window",
+    "initial_training_size": 500,
+    "evaluation_block_size": 50,
+    "no_shuffling": true,
+    "no_oos_refitting": true,
+    "total_draws": 1913,
+    "n_oos_draws": 1413
+  },
+  "candidate_results": {
+    "C01_weighted_recency_frequency": {
+      "mean_hit_count": 0.961076,
+      "vs_random_baseline": 0.013707,
+      "z_score": 0.6203,
+      "p_raw": 0.267528,
+      "p_bonferroni": 0.802584,
+      "p_bh": 0.267528,
+      "result_status": "FAIL_CORRECTED",
+      "n_oos_draws": 1413
+    },
+    "C02_gap_adjusted_overdue": {
+      "mean_hit_count": 0.963199,
+      "vs_random_baseline": 0.01583,
+      "z_score": 0.7164,
+      "p_raw": 0.236876,
+      "p_bonferroni": 0.710629,
+      "p_bh": 0.267528,
+      "result_status": "FAIL_CORRECTED",
+      "n_oos_draws": 1413
+    },
+    "C04_zone_balanced_frequency": {
+      "mean_hit_count": 0.963907,
+      "vs_random_baseline": 0.016538,
+      "z_score": 0.7484,
+      "p_raw": 0.227105,
+      "p_bonferroni": 0.681316,
+      "p_bh": 0.267528,
+      "result_status": "FAIL_CORRECTED",
+      "n_oos_draws": 1413
+    }
+  },
+  "baseline_comparisons": {
+    "B1_fair_random_36_of_38": 0.947368,
+    "B3_p161_pool_mean": 0.9674,
+    "C08_constrained_random": "C08_NOT_IMPLEMENTED_IN_P173 — constrained random (zone+parity) has same E[hit]=36/38 as unconstrained random under POWER_LOTTO fair draw; implementing Monte Carlo C08 would confirm same mean. Documented as C08_NOT_IMPLEMENTED."
+  },
+  "multiple_testing_correction": {
+    "method": "Bonferroni primary, BH secondary",
+    "family_size": 3,
+    "alpha": 0.05,
+    "bonferroni_threshold": 0.016667,
+    "hgeom_variance_per_draw": 0.689975,
+    "hgeom_sd_per_draw": 0.830648,
+    "test_type": "one-sided z-test (H0: mean=36/38, H1: mean>36/38)",
+    "se_mean": 0.022098
+  },
+  "null_reporting": {
+    "any_candidate_pass_corrected": false,
+    "null_result": true,
+    "null_honest_statement": "No candidate achieved p_bonferroni < 0.016667. C01, C02, C04 are statistically indistinguishable from fair-random 36/38 selection after Bonferroni correction. R2 NULL result confirmed for P173 Top 3 candidates. This is the expected outcome consistent with R1 findings.",
+    "r1_null_results_unchanged": true
+  },
+  "governance_confirmations": {
+    "db_rows_before": 94924,
+    "db_rows_after": 94924,
+    "db_unchanged": true,
+    "no_db_write": true,
+    "no_registry_mutation": true,
+    "no_strategy_implementation": true,
+    "no_controlled_apply": true,
+    "no_champion_promotion": true,
+    "no_betting_advice": true,
+    "no_win_guarantee_claim": true,
+    "no_stage": true,
+    "no_commit": true,
+    "no_push": true,
+    "r2_no_edge_found_yet": true,
+    "p161_to_p172_null_results_stand": true,
+    "main_zen_gates_split_still_unresolved": true
+  },
+  "next_task": "P174_POWER_LOTTO_R2_DECISION_REVIEW",
+  "next_task_blocked_by_user_authorization": true,
+  "next_task_authorization_required_phrase": "YES start P174 POWER_LOTTO R2 decision review"
+}

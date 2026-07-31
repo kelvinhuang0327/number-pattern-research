@@ -1,0 +1,41 @@
+{
+  "classification": "P4A2_RSM_WRITE_REFRESH_DRAFT_PR_READY",
+  "authorization": {
+    "approved": true,
+    "requested_lotteries": ["BIG_LOTTO", "DAILY_539", "POWER_LOTTO"],
+    "supported_lotteries": ["BIG_LOTTO", "POWER_LOTTO"],
+    "unsupported_lottery": "DAILY_539"
+  },
+  "pre_write": {
+    "drift_guard": "PASS",
+    "tests": "109/109 PASS",
+    "pre_guard_json": "outputs/replay/p4a2_pre_rsm_write_drift_guard_verify_20260516.json"
+  },
+  "commands_executed": [
+    "tools/rsm_bootstrap.py --lottery BIG_LOTTO --periods 50",
+    "tools/rsm_bootstrap.py --lottery POWER_LOTTO --periods 50",
+    "scripts/replay_lifecycle_drift_guard.py --strict --json-out outputs/replay/p4a2_post_rsm_write_drift_guard_verify_20260516.json",
+    "pytest tests/test_replay_strategy_lifecycle_registry.py tests/test_replay_lifecycle_drift_guard.py tests/test_replay_truth_level_contract.py tests/test_replay_api_contract.py -q --tb=short"
+  ],
+  "rsm_artifacts_changed": [
+    "data/rolling_monitor_BIG_LOTTO.json",
+    "data/rolling_monitor_POWER_LOTTO.json"
+  ],
+  "post_write": {
+    "drift_guard": "PASS",
+    "post_guard_json": "outputs/replay/p4a2_post_rsm_write_drift_guard_verify_20260516.json"
+  },
+  "validation": {
+    "tests": "109 passed",
+    "db_write_check": "PASS no forbidden DB/runtime artifact"
+  },
+  "safety": {
+    "db_writes": false,
+    "replay_row_inserts": false,
+    "prediction_items_updates": false,
+    "prediction_runs_updates": false,
+    "strategy_logic_changes": false,
+    "api_ui_backend_changes": false
+  },
+  "next_step_recommendation": "P4-B quick_predict dry-run"
+}

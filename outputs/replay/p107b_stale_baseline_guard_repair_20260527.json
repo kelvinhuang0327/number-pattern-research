@@ -1,0 +1,67 @@
+{
+  "classification": "P107B_STALE_BASELINE_GUARD_REPAIR_READY",
+  "final_classification": "P107B_STALE_BASELINE_GUARD_REPAIR_READY",
+  "task": "P107B",
+  "date": "20260527",
+  "generated_at": "2026-05-27T07:51:22.170456+00:00",
+  "repair_scope": "active_tests_only",
+  "historical_artifacts_rewritten": false,
+  "db_writes": false,
+  "replay_rows_before": 54462,
+  "replay_rows_after": 54462,
+  "accepted_current_baseline": {
+    "replay_rows": 54462,
+    "three_star_count": 4179,
+    "three_star_max_draw": "115000106",
+    "four_star_count": 2922,
+    "four_star_max_draw": "115000103",
+    "power_lotto_count": 1913,
+    "power_lotto_max_draw": "115000041"
+  },
+  "stale_baselines_repaired": {
+    "old_three_star_count": 4115,
+    "old_three_star_max_draw": "115000024",
+    "old_four_star_count": 0,
+    "source": "P98/P99 artifacts recorded pre-P104 DB state"
+  },
+  "repaired_tests": [
+    {
+      "file": "tests/test_p98_special3_oos_permutation_review.py",
+      "test": "test_11_no_4star_backtest_metrics",
+      "old_assertion": "assert star4_rows == 0",
+      "new_assertion": "assert star4_rows == 2922 (P104 accepted baseline)",
+      "rationale": "P104 ingested 2922 4_STAR rows; 4_STAR backtest remains unauthorized."
+    },
+    {
+      "file": "tests/test_p99_special3_prospective_dryrun_plan.py",
+      "test": "test_14_special4_data_gap_blocking",
+      "old_assertion": "assert star4_count == 0",
+      "new_assertion": "assert star4_count == 2922 (P104 accepted baseline)",
+      "rationale": "Historical artifact DATA_GAP_BLOCKING remains valid (P99 era). Live-DB cross-check updated to post-P104 accepted baseline."
+    }
+  ],
+  "current_db_snapshot": {
+    "replay_rows": 54462,
+    "three_star_count": 4179,
+    "three_star_max_draw": "115000106",
+    "four_star_count": 2922,
+    "four_star_max_draw": "115000103",
+    "power_lotto_count": 1913,
+    "power_lotto_max_draw": "115000041"
+  },
+  "governance_confirmations": {
+    "four_star_backtest_authorized": false,
+    "special3_promotion_authorized": false,
+    "lifecycle_mutation": false,
+    "source_unknown_caveat_preserved": true,
+    "p108_100draw_rerun_performed": false,
+    "historical_artifacts_rewritten": false
+  },
+  "references": {
+    "p105": "Accepted current DB for Special3 evaluation only (Option A)",
+    "p106": "Partial prospective evaluation — 5/6 P100 criteria, sum_band_frequency best",
+    "p107a": "Wait more draws monitoring gate — 63/100, 37 more needed",
+    "p107a_merge_commit": "782e261",
+    "p107a_pr": 236
+  }
+}

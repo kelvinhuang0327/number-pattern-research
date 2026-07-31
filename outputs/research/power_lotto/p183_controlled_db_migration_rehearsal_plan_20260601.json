@@ -1,0 +1,302 @@
+{
+  "task_id": "P183_CONTROLLED_DB_MIGRATION_REHEARSAL_PLAN_ONLY",
+  "final_classification": "P183_CONTROLLED_DB_MIGRATION_REHEARSAL_PLAN_READY",
+  "date": "2026-06-01",
+  "authorization_phrase_detected": "YES start P183 controlled DB migration rehearsal plan only",
+  "phase_0_verification": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "git_dir": ".git",
+    "is_worktree": false,
+    "main_db_rows_before": 54462,
+    "main_db_rows_after": 54462,
+    "main_bet_index": "ABSENT",
+    "source_worktree": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "source_branch": "claude/zen-gates-ff6802",
+    "zen_gates_db_rows": 94924,
+    "zen_gates_bet_index": "PRESENT",
+    "p182_classification": "P182_CODE_DOCS_TESTS_PARITY_BACKPORT_READY",
+    "p178a_p182_tests": "309 passed, 4 skipped",
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "status": "PASS"
+  },
+  "part_a_db_split_summary": {
+    "main_db_rows": 54462,
+    "main_bet_index": "ABSENT",
+    "main_unique_constraint": "UNIQUE(lottery_type, target_draw, strategy_id, replay_run_id)",
+    "zen_gates_db_rows": 94924,
+    "zen_gates_bet_index": "PRESENT",
+    "zen_gates_unique_constraint": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+    "row_delta": 40462,
+    "split_status": "UNRESOLVED",
+    "p182_backport_scope": "code/docs/tests only — no DB write performed",
+    "critical_schema_finding": "UNIQUE constraint changed across the split: main uses replay_run_id; zen-gates uses bet_index. ALTER TABLE ADD COLUMN is insufficient — table recreation required."
+  },
+  "part_b_rehearsal_plan": {
+    "plan_name": "Controlled DB Migration Rehearsal Plan (P184 design)",
+    "target": "main DB: 54462 rows / no bet_index → zen-gates equivalent: 94924 rows / bet_index PRESENT",
+    "authorization_required_for_execution": "YES start P184 controlled DB migration rehearsal on temp copy only",
+    "steps": {
+      "step_1_preflight_checks": {
+        "name": "Pre-flight verification",
+        "actions": [
+          "Confirm current repo = /Users/kelvin/Kelvin-WorkSpace/LotteryNew, branch = main",
+          "sqlite3 lottery_api/data/lottery_v2.db 'SELECT COUNT(*) FROM strategy_prediction_replays;' → expect 54462",
+          "Confirm bet_index ABSENT via PRAGMA table_info",
+          "Confirm UNIQUE constraint = (lottery_type, target_draw, strategy_id, replay_run_id)",
+          "Confirm drift guard PASS before migration",
+          "Confirm git status has no unstaged DB file changes that would be lost"
+        ],
+        "stop_if": "Any count mismatch or dirty DB state"
+      },
+      "step_2_immutable_backup": {
+        "name": "Immutable DB backup",
+        "actions": [
+          "cp lottery_api/data/lottery_v2.db lottery_api/data/lottery_v2.db.bak_p184_pre_migration_<timestamp>",
+          "Verify backup file size matches original",
+          "sqlite3 <backup> 'SELECT COUNT(*) FROM strategy_prediction_replays;' → expect 54462",
+          "Mark backup read-only: chmod 444 <backup>"
+        ],
+        "note": "Backup must be immutable before ANY migration step proceeds. No migration without confirmed backup.",
+        "stop_if": "Backup size mismatch or backup unreadable"
+      },
+      "step_3_temp_copy_design": {
+        "name": "Temp rehearsal DB path design",
+        "temp_db_path": "lottery_api/data/lottery_v2_migration_rehearsal_p184.db",
+        "actions": [
+          "cp lottery_api/data/lottery_v2.db <temp_db_path>",
+          "ALL migration steps execute ONLY against <temp_db_path>",
+          "Production DB (lottery_api/data/lottery_v2.db) must NOT be opened for write during rehearsal",
+          "Rehearsal uses: sqlite3 <temp_db_path> 'PRAGMA query_only=OFF;' — temp only"
+        ],
+        "note": "Rehearsal isolation: temp copy absorbs all migration risk. Production DB remains read-only throughout."
+      },
+      "step_4_schema_migration_design": {
+        "name": "Schema migration: add bet_index + change UNIQUE constraint",
+        "critical_finding": "ALTER TABLE ADD COLUMN bet_index is insufficient because the UNIQUE constraint must change from (lottery_type, target_draw, strategy_id, replay_run_id) to (lottery_type, target_draw, strategy_id, bet_index). SQLite does not support DROP CONSTRAINT. Full table recreation required.",
+        "safe_migration_sequence": [
+          "1. CREATE TABLE strategy_prediction_replays_new (... bet_index INTEGER NOT NULL DEFAULT 1, UNIQUE(lottery_type, target_draw, strategy_id, bet_index), ...)",
+          "2. INSERT INTO strategy_prediction_replays_new SELECT ..., 1 as bet_index FROM strategy_prediction_replays",
+          "3. Verify row count in _new table = 54462",
+          "4. DROP TABLE strategy_prediction_replays",
+          "5. ALTER TABLE strategy_prediction_replays_new RENAME TO strategy_prediction_replays",
+          "6. CREATE INDEX idx_spr_bet_index ON strategy_prediction_replays(bet_index)",
+          "7. VACUUM",
+          "8. PRAGMA integrity_check"
+        ],
+        "step_2_bet_index_default": "All existing rows get bet_index=1 (single-bet rows; this is correct for pre-multi-bet data)",
+        "uniqueness_risk": "If any (lottery_type, target_draw, strategy_id) combination appears more than once with the same replay_run_id but different rows, they will collide on (lottery_type, target_draw, strategy_id, bet_index=1). Rehearsal must verify this before proceeding.",
+        "duplicate_check_query": "SELECT lottery_type, target_draw, strategy_id, COUNT(*) FROM strategy_prediction_replays GROUP BY lottery_type, target_draw, strategy_id HAVING COUNT(*) > 1;"
+      },
+      "step_5_row_delta_reconciliation_design": {
+        "name": "Row delta reconciliation: insert 40462 missing multi-bet rows",
+        "row_delta": 40462,
+        "source": "zen-gates DB (read-only) — copy only rows with bet_index > 1 that do not exist in migrated main DB",
+        "approach": [
+          "1. Attach zen-gates DB as read-only: ATTACH 'file:<zen_gates_db>?mode=ro' AS zg",
+          "2. Identify missing rows: SELECT * FROM zg.strategy_prediction_replays WHERE bet_index > 1",
+          "3. Verify no overlap with existing main rows",
+          "4. INSERT OR IGNORE multi-bet rows into temp rehearsal DB",
+          "5. Verify final count = 54462 (schema-migrated single-bet) + 40462 (multi-bet) = 94924"
+        ],
+        "note": "INSERT must go into temp rehearsal DB only. Never into production DB in P184."
+      },
+      "step_6_duplicate_uniqueness_guard": {
+        "name": "Duplicate / uniqueness verification",
+        "queries": [
+          "SELECT lottery_type, target_draw, strategy_id, bet_index, COUNT(*) FROM strategy_prediction_replays GROUP BY lottery_type, target_draw, strategy_id, bet_index HAVING COUNT(*) > 1;",
+          "Expected result: 0 rows (no duplicates)"
+        ],
+        "action_if_duplicates_found": "STOP migration. Document duplicates. Determine resolution strategy before re-running."
+      },
+      "step_7_provenance_preservation": {
+        "name": "Provenance and controlled_apply_id preservation check",
+        "actions": [
+          "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id IS NOT NULL; → compare before/after",
+          "SELECT COUNT(*) FROM strategy_prediction_replays WHERE provenance_hash IS NOT NULL; → compare before/after",
+          "SELECT COUNT(*) FROM strategy_prediction_replays WHERE source IS NOT NULL; → compare before/after",
+          "SELECT COUNT(*) FROM strategy_prediction_replays WHERE truth_level IS NOT NULL; → compare before/after"
+        ],
+        "acceptance": "All provenance counts must match pre-migration values exactly"
+      },
+      "step_8_drift_guard_adaptation": {
+        "name": "replay_lifecycle_drift_guard adaptation for post-migration state",
+        "current_guard_expectation": "54462 rows, no bet_index",
+        "post_migration_expectation": "94924 rows, bet_index PRESENT",
+        "required_update": "scripts/replay_lifecycle_drift_guard.py row count guard must be updated from 54462 to 94924 AFTER migration is complete and verified. This update requires separate authorization.",
+        "note": "Do NOT update drift guard before migration is complete. Guard must flag mismatch as STOP condition until migration is verified."
+      },
+      "step_9_rollback_plan": {
+        "name": "Rollback plan",
+        "trigger_conditions": [
+          "Row count after migration != 94924",
+          "Duplicate rows detected",
+          "Provenance counts differ",
+          "PRAGMA integrity_check fails",
+          "Any test contract that was previously PASS now FAIL"
+        ],
+        "rollback_procedure": [
+          "1. STOP immediately — do not proceed with more migration steps",
+          "2. Remove or quarantine <temp_db_path>",
+          "3. Restore from immutable backup: cp <backup> lottery_api/data/lottery_v2.db",
+          "4. Verify restored DB: SELECT COUNT(*) → expect 54462",
+          "5. Run drift guard → expect PASS at 54462",
+          "6. Document failure in P184 artifact and STOP"
+        ],
+        "production_db_safety": "Production DB is never written during rehearsal. Rollback is instantaneous — restore from backup."
+      },
+      "step_10_post_rehearsal_acceptance": {
+        "name": "Post-rehearsal acceptance criteria",
+        "criteria": [
+          "temp rehearsal DB row count = 94924",
+          "PRAGMA integrity_check = ok",
+          "UNIQUE(lottery_type, target_draw, strategy_id, bet_index) — 0 duplicates",
+          "bet_index column present, NOT NULL DEFAULT 1",
+          "All provenance counts preserved",
+          "idx_spr_bet_index index created",
+          "P161 analysis script runs successfully against rehearsal DB",
+          "Drift guard (if adapted) shows PASS at 94924",
+          "No rows in temp DB that are not in zen-gates DB or main DB"
+        ],
+        "report": "P184 must produce a rehearsal report documenting each criterion pass/fail"
+      },
+      "step_11_production_migration_authorization_chain": {
+        "name": "Final production migration authorization chain",
+        "required_before_production_migration": [
+          "P184 temp-copy rehearsal completes with all 10 acceptance criteria PASS",
+          "P184 rehearsal report reviewed by CEO",
+          "Immutable backup confirmed present and readable",
+          "Explicit CEO authorization phrase provided for production migration step",
+          "Drift guard updated expectation confirmed",
+          "All P161-P182 DB-dependent contract tests verified against rehearsal DB"
+        ],
+        "production_migration_phrase_template": "YES start P185 production DB migration execution authorized — backup confirmed — rehearsal passed",
+        "note": "Production migration is a separate P185 (or later) task. P184 is rehearsal only."
+      }
+    }
+  },
+  "part_c_schema_migration_design": {
+    "main_schema": {
+      "unique_constraint": "UNIQUE(lottery_type, target_draw, strategy_id, replay_run_id)",
+      "bet_index": "ABSENT",
+      "bet_index_index": "ABSENT"
+    },
+    "zen_gates_schema": {
+      "unique_constraint": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+      "bet_index": "INTEGER NOT NULL DEFAULT 1",
+      "bet_index_index": "idx_spr_bet_index"
+    },
+    "migration_approach": "TABLE RECREATION (not ALTER TABLE)",
+    "reason": "SQLite does not support DROP CONSTRAINT. The UNIQUE constraint change from replay_run_id-based to bet_index-based requires full table recreation via CREATE TABLE ... AS SELECT / RENAME pattern.",
+    "risk": "Table recreation is atomic within a transaction but requires sufficient disk space for both old and new table simultaneously.",
+    "not_authorized_in_p183": true
+  },
+  "part_d_row_delta_reconciliation": {
+    "main_rows": 54462,
+    "zen_gates_rows": 94924,
+    "row_delta": 40462,
+    "delta_source_assumptions": {
+      "p128_migration_bet_index_schema": "P128 designed the bet_index schema and migration plan. The bet_index column and UNIQUE constraint change were defined here.",
+      "p126_tier_b_multi_bet": "P126 identified 5 Tier-B controlled_apply candidates generating multi-bet rows (bet_index 2-5). These are the primary source of delta rows.",
+      "p130_to_p135_replay_expansion": "P130-P135 replay expansion chain likely added additional multi-bet rows via controlled_apply execution.",
+      "p149_to_p159b_replay_product_chain": "P149-P159B replay product chain effects — provenance fields, lifecycle labels, truth_level assignments — contributed to the 94924 state.",
+      "p161_to_p181_research_artifacts": "P161-P181 are code/docs/tests artifacts only. They do not directly add DB rows. The DB was already at 94924 before P161.",
+      "exact_breakdown": "UNKNOWN / REQUIRES_P184_REHEARSAL_AUDIT — precise per-task row attribution requires P184 rehearsal audit of controlled_apply_id, source, and provenance_hash fields."
+    },
+    "delta_verification_queries": [
+      "SELECT source, COUNT(*) FROM strategy_prediction_replays WHERE bet_index > 1 GROUP BY source; -- zen-gates only",
+      "SELECT controlled_apply_id, COUNT(*) FROM strategy_prediction_replays WHERE bet_index > 1 GROUP BY controlled_apply_id; -- zen-gates only",
+      "SELECT lottery_type, bet_index, COUNT(*) FROM strategy_prediction_replays GROUP BY lottery_type, bet_index; -- zen-gates only"
+    ]
+  },
+  "part_e_risk_assessment": {
+    "schema_mismatch_risk": {
+      "level": "HIGH",
+      "description": "UNIQUE constraint change (replay_run_id→bet_index) requires table recreation. Any error in recreation DDL corrupts the table. Must be wrapped in a transaction with immediate rollback on error."
+    },
+    "row_count_drift_risk": {
+      "level": "HIGH",
+      "description": "If INSERT from zen-gates misses rows or inserts duplicates, final count will not equal 94924. Drift guard will flag STOP until guard is updated."
+    },
+    "duplicate_key_risk": {
+      "level": "MEDIUM",
+      "description": "Existing main rows may have (lottery_type, target_draw, strategy_id) combinations that are not unique when bet_index=1 is applied to all. Must be verified before table recreation."
+    },
+    "old_main_constraints_vs_zen_gates": {
+      "level": "HIGH",
+      "description": "Main uses replay_run_id uniqueness; zen-gates uses bet_index uniqueness. After migration, any code or test that enforces replay_run_id uniqueness will be semantically broken. All such code must be identified before production migration."
+    },
+    "stale_tests_vs_migrated_db": {
+      "level": "MEDIUM",
+      "description": "P161-P182 contract tests were written for zen-gates DB (94924 rows, bet_index). After main DB migration, DB-dependent tests currently marked requires_zen_gates_db should PASS instead of SKIP. Conftest markers may need updating."
+    },
+    "backup_rollback_risk": {
+      "level": "LOW",
+      "description": "If backup was created correctly (immutable, verified), rollback is instantaneous. Risk is that backup was not created before migration begins."
+    },
+    "accidental_production_db_write_risk": {
+      "level": "HIGH",
+      "description": "All migration steps must target temp_db only. Production DB must be opened with PRAGMA query_only=ON during rehearsal to enforce read-only. Any accidental write to production DB is irreversible without the backup."
+    }
+  },
+  "part_f_p184_authorization_options": [
+    {
+      "phrase": "YES start P184 controlled DB migration rehearsal on temp copy only",
+      "effect": "Execute all 11 rehearsal steps against a temp copy of main DB. No production DB write. Produces rehearsal report.",
+      "recommended": true
+    },
+    {
+      "phrase": "YES start P184 DB migration preflight audit only",
+      "effect": "Run read-only preflight checks only (steps 1, 6, 7). No migration, no backup, no schema change. Produces preflight report.",
+      "recommended": false
+    },
+    {
+      "phrase": "YES start P184 replay product UI backlog implementation plan only",
+      "effect": "Plan for multi-bet display (Bet 1-5), bet_index filter, lifecycle tooltips in replay UI. No DB migration.",
+      "recommended": false
+    },
+    {
+      "phrase": "YES start P184 maintain documented divergence and pause DB migration",
+      "effect": "Accept main/zen-gates split. No migration. Document reasons for deferral.",
+      "recommended": false
+    },
+    {
+      "phrase": "YES start P184 production DB migration authorization gate only",
+      "effect": "Define exact authorization phrase and checklist for future production migration. No execution.",
+      "recommended": false
+    }
+  ],
+  "part_g_cto_recommendation": {
+    "primary": "YES start P184 controlled DB migration rehearsal on temp copy only",
+    "rationale": "The schema change (UNIQUE constraint) is non-trivial and requires verified table recreation. A temp-copy rehearsal is mandatory before any production migration. The 40462 row delta provenance is UNKNOWN and must be audited in rehearsal.",
+    "do_not": [
+      "Do not perform production DB migration in P184",
+      "Do not copy zen-gates DB file over main DB (destroys P149-P159B production chain)",
+      "Do not run controlled_apply",
+      "Do not reopen POWER_LOTTO research (P178A closure active)",
+      "Keep P182 code/docs/tests parity intact",
+      "Production migration only after: rehearsal PASS + backup confirmed + exact CEO authorization phrase"
+    ]
+  },
+  "governance_confirmations": {
+    "db_write": 0,
+    "db_migration_performed": false,
+    "db_copy_performed": false,
+    "rehearsal_execution_performed": false,
+    "row_insertion": 0,
+    "schema_change": false,
+    "no_controlled_apply": true,
+    "no_registry_mutation": true,
+    "no_merge": true,
+    "no_rebase": true,
+    "no_cherry_pick": true,
+    "no_checkout": true,
+    "no_stage_commit_push": true,
+    "no_deployment": true,
+    "no_power_lotto_research_rerun": true,
+    "no_wagering_recommendation": true,
+    "no_win_guarantee": true,
+    "p178a_closure_policy": "ACTIVE — POWER_LOTTO research CLOSED",
+    "main_zen_gates_split": "STILL UNRESOLVED — DB migration deferred to P184+"
+  }
+}

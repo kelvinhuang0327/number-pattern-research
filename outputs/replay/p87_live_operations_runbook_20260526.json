@@ -1,0 +1,191 @@
+{
+  "phase": "P87",
+  "policy_version": "p87-v1",
+  "classification": "P87_LIVE_OPERATIONS_RUNBOOK_READY",
+  "date": "2026-05-26",
+  "system_status": "LAUNCH_READY",
+  "production_baseline": {
+    "replay_rows": 46962,
+    "power_lotto_max_draw": 115000041,
+    "power_lotto_max_draw_date": "2026/05/21",
+    "power_lotto_max_draw_numbers": [6, 14, 22, 28, 35, 38],
+    "power_lotto_max_draw_special": 1,
+    "batch_a_coverage_pct": 100.0,
+    "p79_sentinel_ids": [46961, 46962],
+    "p79_sentinel_truth_level": "POWERLOTTO_DRAW_EXT_VERIFIED",
+    "db_writes": false,
+    "replay_rows_inserted": 0
+  },
+  "backend": {
+    "port": 8002,
+    "port_warning": "port 8000 is an UNRELATED application — never use for replay operations",
+    "date_format": "YYYY/MM/DD",
+    "date_format_example": "2026/05/21",
+    "date_format_wrong": "2026-05-21 (hyphen returns no rows)"
+  },
+  "monitoring_cadence": {
+    "daily": [
+      {
+        "step": 1,
+        "name": "P86 source decision guard",
+        "command": "python scripts/p86_live_monitoring_source_decision_guard.py",
+        "expected_classification": "STABLE_NO_NEW_DRAW"
+      },
+      {
+        "step": 2,
+        "name": "P82 replay freshness guard",
+        "command": ".venv/bin/python scripts/p82_replay_freshness_guard.py --lottery POWER_LOTTO",
+        "expected_classification": "FRESHNESS_PASS"
+      },
+      {
+        "step": 3,
+        "name": "Lifecycle drift guard",
+        "command": ".venv/bin/python scripts/replay_lifecycle_drift_guard.py",
+        "expected_classification": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS"
+      },
+      {
+        "step": 4,
+        "name": "Replay row count verification",
+        "command": "python3 -c \"import sqlite3; con=sqlite3.connect('lottery_api/data/lottery_v2.db'); cur=con.cursor(); cur.execute('SELECT COUNT(*) FROM strategy_prediction_replays'); print(f'replay_rows={cur.fetchone()[0]}'); con.close()\"",
+        "expected_value": 46962
+      }
+    ],
+    "per_draw": [
+      {
+        "step": 1,
+        "name": "P86 with source snapshot",
+        "command": "python scripts/p86_live_monitoring_source_decision_guard.py --source-snapshot /path/to/snapshot.json",
+        "note": "If SOURCE_DECISION_REQUIRED: STOP. Explicit operator decision required before any ingestion."
+      }
+    ],
+    "weekly": [
+      {
+        "step": 1,
+        "name": "Browser smoke tests",
+        "command": ".venv/bin/pytest tests/test_replay_browser_smoke.py -v --tb=no -q",
+        "expected": "50/50 PASS"
+      },
+      {
+        "step": 2,
+        "name": "Full regression suite",
+        "command": ".venv/bin/pytest tests/test_p86_live_monitoring_source_decision_guard.py tests/test_p85_launch_closure_operator_release.py tests/test_p84_browser_e2e_launch_signoff.py -v --tb=short -q",
+        "expected": "all PASS"
+      }
+    ]
+  },
+  "expected_stable_outputs": {
+    "replay_rows": 46962,
+    "power_lotto_max_draw": 115000041,
+    "p86_classification": ["STABLE_NO_NEW_DRAW", "SOURCE_DECISION_REQUIRED"],
+    "p82_classification": "FRESHNESS_PASS",
+    "drift_guard_classification": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS"
+  },
+  "alert_criteria": [
+    {
+      "alert": "new_draw_detected",
+      "condition": "source_max_draw > DB max_draw",
+      "action": "SOURCE_DECISION_REQUIRED — STOP. Operator must decide before ingestion."
+    },
+    {
+      "alert": "replay_gap_detected",
+      "condition": "replay_gap_detected = true in P82",
+      "action": "Investigate before any apply. Prepare controlled apply plan."
+    },
+    {
+      "alert": "browser_smoke_failure",
+      "condition": "any of 50 browser smoke tests fail",
+      "action": "Investigate frontend / API regression."
+    },
+    {
+      "alert": "unexpected_replay_row_change",
+      "condition": "replay_rows != 46962 without approved phase",
+      "action": "STOP. Audit trail required. Do not continue."
+    },
+    {
+      "alert": "unexpected_max_draw_change",
+      "condition": "max_draw != 115000041 without source decision",
+      "action": "STOP. Investigate immediately."
+    },
+    {
+      "alert": "db_file_staged",
+      "condition": "lottery_v2.db appears in git staging index",
+      "action": "STOP. Do not commit. Unstage immediately."
+    },
+    {
+      "alert": "source_stale",
+      "condition": "source_max_draw < DB max_draw",
+      "action": "Investigate source provider. Verify as_of date."
+    }
+  ],
+  "decision_tree": {
+    "STABLE_NO_NEW_DRAW": {
+      "action": "HOLD",
+      "message": "No new draws. Continue monitoring."
+    },
+    "SOURCE_DECISION_REQUIRED": {
+      "action": "STOP",
+      "message": "New draws detected. Operator must choose a source decision.",
+      "allowed_decisions": [
+        "uploaded_source_provided_by_operator",
+        "official_api_explicitly_authorized",
+        "hold_no_action",
+        "manual_verification_required"
+      ]
+    },
+    "SOURCE_STALE": {
+      "action": "investigate_source",
+      "message": "Source behind DB. Check provider and as_of date."
+    },
+    "SOURCE_UNAVAILABLE": {
+      "action": "provide_source",
+      "message": "Provide --source-snapshot or --allow-network-read."
+    },
+    "replay_gap_detected": {
+      "action": "prepare_controlled_apply",
+      "message": "Do NOT auto-apply. Prepare controlled apply plan (P88+)."
+    }
+  },
+  "forbidden_actions": [
+    "direct_db_write (INSERT/UPDATE/DELETE without approved phase)",
+    "automatic_official_api_ingestion (without source decision)",
+    "replay_row_apply_without_plan_and_authorization",
+    "git_reset_hard",
+    "git_clean",
+    "force_push",
+    "staging_lottery_v2.db_or_bak_files",
+    "creating_new_tables_without_approved_schema_phase",
+    "modifying_lifecycle_champion_registry_strategy_metadata"
+  ],
+  "evidence_chain": {
+    "P77C": "Draw re-import",
+    "P79": "Batch A apply — sentinels id=46961,46962",
+    "P82": "Replay freshness guard",
+    "P83": "Stable baseline closure — PR #208, commit f019ae8",
+    "P84": "Browser E2E stabilized — PR #209, commit a18523d",
+    "P85": "Launch closure / operator release — PR #210, commit d386066",
+    "P86": "Source decision guard — PR #211, commit 34e7ea9",
+    "P87": "Live operations runbook — this artifact"
+  },
+  "next_controlled_phases": [
+    {
+      "trigger": "New POWER_LOTTO draws confirmed via source decision",
+      "next_phase": "P88 — New Draw Controlled Apply"
+    },
+    {
+      "trigger": "P82 replay gap detected",
+      "next_phase": "P88 — Gap Remediation Apply"
+    },
+    {
+      "trigger": "New strategy approved",
+      "next_phase": "New phase — Strategy Expansion Apply"
+    }
+  ],
+  "governance": {
+    "no_db_writes": true,
+    "no_replay_inserts": true,
+    "no_official_api_writes": true,
+    "no_new_tables": true,
+    "no_ingestion": true,
+    "read_only": true
+  }
+}

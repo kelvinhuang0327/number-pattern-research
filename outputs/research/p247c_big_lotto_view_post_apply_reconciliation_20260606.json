@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P247C",
+  "classification": "POST_APPLY_RECONCILIATION_READ_ONLY",
+  "p247b_merged_state_verified": true,
+  "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+  "read_only_confirmed": true,
+  "view_name": "draws_big_lotto_canonical_main",
+  "view_exists": true,
+  "view_row_count": 2113,
+  "raw_big_lotto_count": 22238,
+  "add_on_count": 19100,
+  "date_format_excluded": 375,
+  "small_pool_excluded": 650,
+  "no_hyphen_in_view": true,
+  "no_date_format_in_view": true,
+  "all_max_gt25": true,
+  "annotation_table_exists": false,
+  "db_integrity_result": "ok",
+  "db_write_performed": false,
+  "no_row_insert_update_delete": true,
+  "add_on_records_preserved": true,
+  "add_on_raw_accessible": true,
+  "obsolete_assertions_updated": [
+    "tests/test_p247a_big_lotto_canonical_view_annotation_dryrun_plan.py:test_p247a_canonical_view_not_in_db — updated to assert P247A dry-run state (sql_applied=False) rather than live DB view absence, since P247B legitimately created the view post-dry-run."
+  ],
+  "forbidden_actions_confirmed": {
+    "DB write": "NOT PERFORMED",
+    "DB migration": "NOT PERFORMED",
+    "CREATE TABLE annotation table": "NOT PERFORMED",
+    "DELETE rows": "NOT PERFORMED",
+    "UPDATE rows": "NOT PERFORMED",
+    "INSERT rows": "NOT PERFORMED",
+    "registry mutation": "NOT PERFORMED",
+    "production recommendation change": "NOT PERFORMED",
+    "strategy promotion": "NOT PERFORMED",
+    "deployment": "NOT PERFORMED"
+  },
+  "remaining_next_choices": [
+    "Option A: Type D apply annotation table (draw_row_family_annotations) — requires separate gate",
+    "Option B: Adopt draws_big_lotto_canonical_main VIEW in research consumers directly"
+  ],
+  "final_decision": "P247C post-apply reconciliation complete. View draws_big_lotto_canonical_main confirmed: 2113 canonical rows. Raw BIG_LOTTO rows: 22238 preserved. ADD_ON_PRIZE_EXCLUDED: 19100 raw-accessible. DB integrity: ok. Obsolete P247A dry-run assertion updated. No DB write performed. No rows deleted/updated/inserted. No annotation table. No registry mutation."
+}

@@ -1,0 +1,99 @@
+{
+  "task_id": "P268D4",
+  "name": "draw_order_h1_null_closeout_and_next_frontier_pointer",
+  "generated_at": "2026-06-11T00:00:00+00:00",
+  "type": "GOVERNANCE_CLOSEOUT_ARTIFACT",
+  "boundary": {
+    "description": "P268D4 is a closeout/governance artifact only. It performs no new statistical computation, does not execute analysis/p268d3_h1_draw_order_confirmatory_permutation_test.py, does not write to lottery_api/data/hypothesis_registry.jsonl, and does not open any database connection. All numeric results below are read directly from the already-merged P268D-3 artifacts (PR #411, merged into main).",
+    "p268d3_pr": "PR #411 (merged)",
+    "p268d3_source_artifacts": [
+      "outputs/research/p268d3_h1_draw_order_confirmatory_permutation_test_20260611.json",
+      "outputs/research/p268d3_h1_draw_order_confirmatory_permutation_test_20260611.md"
+    ],
+    "p268d3_script_executed_in_this_task": false,
+    "hypothesis_registry_write_in_this_task": false,
+    "db_write_in_this_task": false
+  },
+  "p268d3_result_summary": {
+    "registry_entry": {
+      "hypothesis_id": "HR-P268D3-H1-DRAW-ORDER-EXIT-RANK-001",
+      "status": "PRE_REGISTERED_BEFORE_TEST",
+      "registered_before_h1_computation": true,
+      "append_only_single_entry": true
+    },
+    "data_source": "P268D-1 full-history JSONL artifact only (no DB connection of any kind)",
+    "method": {
+      "null_model": "within_draw_permutation",
+      "n_permutations": 10000,
+      "seed": 42,
+      "estimation_holdout_split": "70% estimation / 30% holdout, chronological, per lottery_type",
+      "excluded_months": ["2026-04", "2026-05"],
+      "holdout_status": "SEALED_NOT_OPENED"
+    },
+    "primary_result": {
+      "game": "DAILY_539",
+      "role": "PRIMARY",
+      "n_estimation_draws": 4076,
+      "observed_statistic": 43.1695049944501,
+      "p_value_one_sided": 0.3050694930506949,
+      "alpha": 0.01,
+      "classification": "H1_PRIMARY_FAIL"
+    },
+    "secondary_results": [
+      {"game": "BIG_LOTTO", "role": "SECONDARY_EXPLORATORY", "p_value_one_sided": 0.7057294270572942, "observed_statistic": 43.086354353957894},
+      {"game": "POWER_LOTTO", "role": "SECONDARY_EXPLORATORY", "p_value_one_sided": 0.9854014598540146, "observed_statistic": 21.648206460400456},
+      {"game": "3_STAR", "role": "SECONDARY_EXPLORATORY", "p_value_one_sided": 0.32126787321267875, "observed_statistic": 10.316395378052906},
+      {"game": "4_STAR", "role": "SECONDARY_EXPLORATORY", "p_value_one_sided": 0.6838316168383162, "observed_statistic": 6.483781305395845}
+    ],
+    "h1_classification": "H1_PRIMARY_FAIL",
+    "h2_h3_run": false,
+    "db_write": false,
+    "strategy_generated": false,
+    "hit_rate_claim": false
+  },
+  "closeout_conclusion": {
+    "draw_order_line_classification": "DIAGNOSTICS_ONLY_NULL_CLOSURE",
+    "h1_conclusion": "Per-ball mean exit-rank heterogeneity in the official drawNumberAppear (draw-order) field was NOT detected for the primary game DAILY_539 in the chronological estimation window (n=4076 draws): observed statistic T_obs=43.1695 falls well within the within-draw-permutation null distribution (one-sided p=0.3051), far above the pre-registered alpha=0.01 threshold. Classification: H1_PRIMARY_FAIL.",
+    "secondary_games_status": "BIG_LOTTO (p=0.7057), POWER_LOTTO (p=0.9854), 3_STAR (p=0.3213), and 4_STAR (p=0.6838) were computed as SECONDARY_EXPLORATORY ONLY, per the P268D1 registry-freeze design. None approach significance, and per the pre-registered pass/fail rules, secondary-game results cannot alone promote H1 to PASS, change the H1 classification, or justify proceeding to H2/H3 or any strategy.",
+    "h1_holdout_status": "SEALED_NOT_OPENED. Because the primary DAILY_539 estimation-window criterion FAILED (p=0.3051 >= alpha=0.01), the H1_PASS condition (estimation pass AND holdout remains sealed for H2/H3 gating) was never met. The 30% holdout window for all 5 games remains unopened and unused.",
+    "h2_h3_authorization": {
+      "authorized": false,
+      "reason": "H2 (earliness score -> holdout inclusion frequency) and H3 (split-half stability) were both gated on H1 (and H1_holdout) PASS per the P268D1 registry-freeze design. H1 PRIMARY_FAIL means this gate was never satisfied. H2/H3 are NOT authorized for the draw-order (drawNumberAppear) line and MUST NOT be run as a continuation of P268D1-D3."
+    },
+    "strategy_authorization": {
+      "authorized": false,
+      "reason": "No strategy, betting recommendation, or number selection may be derived from the draw-order (drawNumberAppear) exit-rank line. H1 (the foundational hypothesis for this entire research line) failed at the pre-registered primary game and significance level."
+    },
+    "no_db_write": true,
+    "no_registry_write": true,
+    "no_strategy": true,
+    "no_hit_rate_improvement_claim": true,
+    "no_betting_recommendation": true
+  },
+  "next_frontier_pointer": {
+    "do_not_continue": [
+      "Draw-order (drawNumberAppear) H2 (earliness score / holdout inclusion frequency)",
+      "Draw-order (drawNumberAppear) H3 (split-half stability)",
+      "Any draw-order-derived strategy or number-selection method",
+      "Re-running analysis/p268d3_h1_draw_order_confirmatory_permutation_test.py against the same H1 hypothesis (would not change the FAIL outcome and is non-idempotent w.r.t. the registry)"
+    ],
+    "recommendation": "Future success-rate research should shift to a NEW external signal family distinct from the draw-order/exit-rank line closed by P268D1-P268D4 (e.g., a different external field or data source not yet scouted), rather than reusing or re-parameterizing this failed H1 hypothesis. Per L137/L91/L90 and related closed lines, repeated re-testing of an already-FAIL'd hypothesis family without a genuinely new signal source is expected to reproduce noise-level results and is not a productive use of research budget.",
+    "open_items": "The P268D-1 full-history drawNumberAppear JSONL artifact (21,682 records, 2007-01..2026-05, all 5 games) remains available as a read-only data asset for any FUTURE, separately pre-registered hypothesis that is not the H1 exit-rank-heterogeneity hypothesis closed here (e.g., a structurally different statistic on the same field). Any such future hypothesis requires its own Hypothesis Registry pre-registration and its own P221F gates; it is NOT a continuation of H1/H2/H3 as designed in P268C/P268D1."
+  },
+  "p268d3_pr_status": {
+    "pr_number": 411,
+    "merge_commit": "b3f1d4d159c90139e3f194e5da894464570c108a",
+    "merged": true
+  },
+  "tests_run_in_this_task": [
+    "./venv/bin/python -m pytest tests/test_p268d4_draw_order_h1_null_closeout.py -q",
+    "git diff --check"
+  ],
+  "browser_check": "NOT RUN",
+  "h2_h3_run": false,
+  "db_write": false,
+  "hypothesis_registry_write": false,
+  "strategy_generated": false,
+  "hit_rate_claim": false,
+  "final_classification": "P268D4_DRAW_ORDER_H1_NULL_CLOSEOUT_COMPLETE"
+}

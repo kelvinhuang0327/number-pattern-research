@@ -1,0 +1,221 @@
+{
+  "task_id": "P214C",
+  "classification": "P214C_3STAR_4STAR_STRAIGHT_PLAY_BONFERRONI_DIAGNOSTIC_SCAN_COMPLETE",
+  "task_type": "Type C",
+  "date": "2026-06-05",
+  "production_db_write": false,
+  "ingestion_performed": false,
+  "replay_generation_performed": false,
+  "strategy_scan_performed": false,
+  "source_status": "DATA_READY_NO_STRATEGY_PROMOTION_AUTHORIZED",
+  "draw_rows_total": 64361,
+  "star_rows_by_lottery": {
+    "3_STAR": 5850,
+    "4_STAR": 5850
+  },
+  "star_replay_rows_by_lottery": {
+    "3_STAR": 0,
+    "4_STAR": 0
+  },
+  "baselines": {
+    "3_STAR_exact_ordered": "1/1000 = 0.001 (MARGINAL — not tested)",
+    "4_STAR_exact_ordered": "1/10000 = 0.0001 (INOPERABLE — excluded)",
+    "per_position_digit_accuracy": "1/10 = 0.1"
+  },
+  "tests_run": [
+    {
+      "lottery_type": "3_STAR",
+      "test_id": "3_STAR_pos_0_chi2_uniformity",
+      "position": 0,
+      "n": 5850,
+      "chi2": 9.44274,
+      "df": 9,
+      "p_raw": 0.397449,
+      "family_size": 7,
+      "bonferroni_alpha": 0.00714286,
+      "bonferroni_pass": false,
+      "uncorrected_pass": false,
+      "classification": "NOT_SIGNIFICANT"
+    },
+    {
+      "lottery_type": "3_STAR",
+      "test_id": "3_STAR_pos_1_chi2_uniformity",
+      "position": 1,
+      "n": 5850,
+      "chi2": 6.33846,
+      "df": 9,
+      "p_raw": 0.705624,
+      "family_size": 7,
+      "bonferroni_alpha": 0.00714286,
+      "bonferroni_pass": false,
+      "uncorrected_pass": false,
+      "classification": "NOT_SIGNIFICANT"
+    },
+    {
+      "lottery_type": "3_STAR",
+      "test_id": "3_STAR_pos_2_chi2_uniformity",
+      "position": 2,
+      "n": 5850,
+      "chi2": 11.11111,
+      "df": 9,
+      "p_raw": 0.26817,
+      "family_size": 7,
+      "bonferroni_alpha": 0.00714286,
+      "bonferroni_pass": false,
+      "uncorrected_pass": false,
+      "classification": "NOT_SIGNIFICANT"
+    },
+    {
+      "lottery_type": "4_STAR",
+      "test_id": "4_STAR_pos_0_chi2_uniformity",
+      "position": 0,
+      "n": 5850,
+      "chi2": 13.41538,
+      "df": 9,
+      "p_raw": 0.144694,
+      "family_size": 7,
+      "bonferroni_alpha": 0.00714286,
+      "bonferroni_pass": false,
+      "uncorrected_pass": false,
+      "classification": "NOT_SIGNIFICANT"
+    },
+    {
+      "lottery_type": "4_STAR",
+      "test_id": "4_STAR_pos_1_chi2_uniformity",
+      "position": 1,
+      "n": 5850,
+      "chi2": 8.97436,
+      "df": 9,
+      "p_raw": 0.439644,
+      "family_size": 7,
+      "bonferroni_alpha": 0.00714286,
+      "bonferroni_pass": false,
+      "uncorrected_pass": false,
+      "classification": "NOT_SIGNIFICANT"
+    },
+    {
+      "lottery_type": "4_STAR",
+      "test_id": "4_STAR_pos_2_chi2_uniformity",
+      "position": 2,
+      "n": 5850,
+      "chi2": 19.03248,
+      "df": 9,
+      "p_raw": 0.024918,
+      "family_size": 7,
+      "bonferroni_alpha": 0.00714286,
+      "bonferroni_pass": false,
+      "uncorrected_pass": true,
+      "classification": "UNCORRECTED_WEAK"
+    },
+    {
+      "lottery_type": "4_STAR",
+      "test_id": "4_STAR_pos_3_chi2_uniformity",
+      "position": 3,
+      "n": 5850,
+      "chi2": 9.13504,
+      "df": 9,
+      "p_raw": 0.424903,
+      "family_size": 7,
+      "bonferroni_alpha": 0.00714286,
+      "bonferroni_pass": false,
+      "uncorrected_pass": false,
+      "classification": "NOT_SIGNIFICANT"
+    }
+  ],
+  "family_size": 7,
+  "alpha": 0.05,
+  "bonferroni_alpha": 0.00714286,
+  "findings_by_lottery": {
+    "3_STAR": {
+      "classification": "NULL_NO_SIGNIFICANCE_EXACT_MATCH_MARGINAL_NOT_TESTED",
+      "n_draws": 5850,
+      "n_positions_tested": 3,
+      "n_bonferroni_pass": 0,
+      "n_uncorrected_pass": 0,
+      "exact_match_excluded": false,
+      "exact_match_power": "MARGINAL"
+    },
+    "4_STAR": {
+      "classification": "UNCORRECTED_WEAK_1_POSITIONS_FAILS_BONFERRONI_EXACT_MATCH_EXCLUDED_INOPERABLE",
+      "n_draws": 5850,
+      "n_positions_tested": 4,
+      "n_bonferroni_pass": 0,
+      "n_uncorrected_pass": 1,
+      "exact_match_excluded": true,
+      "exact_match_power": "INOPERABLE"
+    }
+  },
+  "corrected_significant_findings": [],
+  "uncorrected_weak_findings": [
+    {
+      "lottery_type": "4_STAR",
+      "test_id": "4_STAR_pos_2_chi2_uniformity",
+      "position": 2,
+      "n": 5850,
+      "chi2": 19.03248,
+      "df": 9,
+      "p_raw": 0.024918,
+      "family_size": 7,
+      "bonferroni_alpha": 0.00714286,
+      "bonferroni_pass": false,
+      "uncorrected_pass": true,
+      "classification": "UNCORRECTED_WEAK"
+    }
+  ],
+  "oos_checks": {
+    "4_STAR_pos_2": {
+      "n_is": 4388,
+      "n_oos": 1462,
+      "most_deviant_digit": 6,
+      "is_rate": 0.11053,
+      "oos_rate": 0.11149,
+      "baseline": 0.1,
+      "is_above_baseline": true,
+      "oos_above_baseline": true,
+      "direction_consistent": true,
+      "note": "Walk-forward OOS check for most-deviant digit. DESCRIPTIVE ONLY — not a significance claim. Even if direction is consistent, this does not authorize strategy use."
+    }
+  },
+  "power_warnings": {
+    "3_STAR_exact_match": "3_STAR exact ordered match has MARGINAL power at N=5,850. No prediction model is available, so no exact-match significance test is run. Only per-position digit uniformity tests are performed.",
+    "4_STAR_exact_match": "4_STAR exact ordered match is INOPERABLE at N=5,850 (expected ~0.585 hits). Exact ordered significance test is excluded. Per-position tests only."
+  },
+  "leakage_guard": {
+    "family_pre_declared": true,
+    "family_size": 7,
+    "bonferroni_applied": true,
+    "walk_forward_oos_applied": true,
+    "no_post_hoc_window_selection": true,
+    "significance_tests_on_all_history": true
+  },
+  "multiple_testing_policy": {
+    "correction_method": "Bonferroni",
+    "alpha": 0.05,
+    "bonferroni_alpha": 0.00714286,
+    "n_bonferroni_significant": 0,
+    "n_uncorrected_weak": 1,
+    "uncorrected_weak_label": "EXPLORATORY_WEAK_SIGNAL_UNCONFIRMED — does not authorize strategy use"
+  },
+  "p227c_prior_context": "UNDERPOWERED_NO_SIGNAL for both 3_STAR and 4_STAR box-play",
+  "recommended_next_direction": "HOLD — no Bonferroni-significant digit bias detected. Result is NULL. Any new direction requires fresh explicit user authorization.",
+  "exact_authorization_phrase_for_next_direction": "No specific phrase offered — result is NULL. Any new straight-play or star-lottery research requires a new explicit authorization.",
+  "no_registry_mutation": true,
+  "no_production_recommendation_change": true,
+  "no_monitoring_change": true,
+  "no_strategy_authorization": true,
+  "no_betting_advice": true,
+  "no_recommended_numbers": true,
+  "p238b_interpretation": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY — observation only; no strategy, production, recommendation, monitoring, DB write, or betting implication.",
+  "tests": {
+    "command": "python3 -m unittest tests/test_p214c_3star_4star_straight_play_bonferroni_diagnostic_scan.py -v"
+  },
+  "final_state": {
+    "active_task_status": "WAITING_FOR_USER_AUTHORIZATION",
+    "production_db_rows_unchanged": true,
+    "draw_rows_unchanged_at": 64361,
+    "replay_rows_unchanged_at": 94924,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "p238b_remains": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+    "no_active_worker_after_completion": true
+  }
+}

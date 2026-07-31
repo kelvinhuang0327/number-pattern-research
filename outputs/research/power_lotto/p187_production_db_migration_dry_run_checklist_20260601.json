@@ -1,0 +1,257 @@
+{
+  "task_id": "P187_PRODUCTION_DB_MIGRATION_DRY_RUN_CHECKLIST_ONLY",
+  "final_classification": "P187_PRODUCTION_DB_MIGRATION_DRY_RUN_CHECKLIST_READY",
+  "date": "2026-06-01",
+  "authorization_phrase_detected": "YES start P187 production DB migration dry-run checklist only",
+  "phase_0_verification": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "git_dir": ".git",
+    "is_worktree": false,
+    "production_main_db_rows_before": 54462,
+    "production_main_bet_index_before": "ABSENT",
+    "zen_gates_db_rows": 94924,
+    "zen_gates_bet_index": "PRESENT",
+    "p186_classification": "P186_PRODUCTION_DB_MIGRATION_AUTHORIZATION_GATE_READY",
+    "p178a_to_p186_tests": "502 passed, 5 skipped",
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "status": "PASS"
+  },
+  "p186_classification_referenced": "P186_PRODUCTION_DB_MIGRATION_AUTHORIZATION_GATE_READY",
+  "p185_rehearsal_summary": {
+    "production_main_db_rows_unchanged": 54462,
+    "production_main_bet_index_unchanged": "ABSENT",
+    "temp_final_rows": 94924,
+    "dedup_dropped_rows": 160,
+    "dedup_dropped_provenance": "ALL NULL",
+    "imported_rows": 40622,
+    "per_lottery_match": true,
+    "bet_index_distribution_match": true,
+    "p185_classification": "P185_ROW_DELTA_IMPORT_REHEARSAL_TEMP_COPY_READY",
+    "destructive_exact_phrase_required": "YES execute P188 production DB migration from main 54462 to reconciled 94924 using P185 rehearsal SQL, approve MAX(id) dedup dropping 160 null-provenance duplicate rows, create timestamped backup, no controlled_apply",
+    "note": "This destructive phrase is listed as a NEXT OPTION only. It is NOT authorized in P187."
+  },
+  "dry_run_checklist": {
+    "description": "13-item checklist operator must complete IN ORDER before any production DB write. Each item is a STOP gate — if any item fails, migration does not proceed.",
+    "items": {
+      "DRC-01_dispatch": {
+        "name": "Dispatch verification",
+        "commands": [
+          "pwd  # must equal /Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+          "git rev-parse --show-toplevel  # must equal /Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+          "git branch --show-current  # must equal main",
+          "git rev-parse --git-dir  # must equal .git"
+        ],
+        "stop_if": "Any mismatch — report P188_STOPPED_ACTUAL_STATE_MISMATCH"
+      },
+      "DRC-02_clean_tree": {
+        "name": "Clean working tree check",
+        "commands": [
+          "git status --short",
+          "git diff --cached --name-only  # must be empty (nothing staged)",
+          "# Tolerated: pre-existing dirty DB/pid/monitor files (not staged)"
+        ],
+        "stop_if": "Any staged file — do not proceed"
+      },
+      "DRC-03_db_precheck": {
+        "name": "Production DB row/schema precheck",
+        "commands": [
+          "sqlite3 lottery_api/data/lottery_v2.db \"SELECT COUNT(*) FROM strategy_prediction_replays;\"  # expect 54462",
+          "sqlite3 lottery_api/data/lottery_v2.db \"PRAGMA table_info(strategy_prediction_replays);\" | grep bet_index  # expect: no output (ABSENT)"
+        ],
+        "stop_if": "Count != 54462 OR bet_index unexpectedly present"
+      },
+      "DRC-04_zen_gates_source": {
+        "name": "Zen-gates source DB verification",
+        "commands": [
+          "test -d /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802  # must exist",
+          "git -C /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802 branch --show-current  # must equal claude/zen-gates-ff6802",
+          "sqlite3 /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db \"SELECT COUNT(*) FROM strategy_prediction_replays;\"  # expect 94924"
+        ],
+        "stop_if": "Worktree absent, wrong branch, or row count != 94924"
+      },
+      "DRC-05_p185_artifact": {
+        "name": "P185 rehearsal artifact classification check",
+        "commands": [
+          "python3 -c \"import json; d=json.load(open('outputs/research/power_lotto/p185_row_delta_import_rehearsal_temp_copy_20260601.json')); assert d['final_classification']=='P185_ROW_DELTA_IMPORT_REHEARSAL_TEMP_COPY_READY', d['final_classification']; print('PASS')\""
+        ],
+        "stop_if": "Classification mismatch"
+      },
+      "DRC-06_exact_phrase": {
+        "name": "Exact destructive authorization phrase verification",
+        "required_phrase": "YES execute P188 production DB migration from main 54462 to reconciled 94924 using P185 rehearsal SQL, approve MAX(id) dedup dropping 160 null-provenance duplicate rows, create timestamped backup, no controlled_apply",
+        "check": "The exact phrase must appear verbatim in the P188 prompt. Operator must compare character-by-character.",
+        "stop_if": "Phrase absent or any character differs"
+      },
+      "DRC-07_sql_review": {
+        "name": "SQL script human review",
+        "sql_source": "outputs/research/power_lotto/p185_rehearsal/p185_row_delta_import_sql_log_20260601.sql",
+        "review_items": [
+          "Table recreation DDL matches zen-gates CREATE TABLE semantics",
+          "INSERT SELECT uses MAX(id) per (lottery_type, target_draw, strategy_id)",
+          "bet_index INTEGER NOT NULL DEFAULT 1 in new table definition",
+          "UNIQUE(lottery_type, target_draw, strategy_id, bet_index) present",
+          "INSERT from zen-gates uses WHERE bet_index > 1 filter",
+          "No extra rows or columns injected",
+          "Transaction boundaries wrap all DDL and DML",
+          "ATTACH uses read-only mode (file:...?mode=ro)"
+        ],
+        "stop_if": "Any review item fails human inspection"
+      },
+      "DRC-08_dedup_approval": {
+        "name": "MAX(id) dedup policy human confirmation",
+        "check": "Operator must confirm: exactly 160 rows will be permanently dropped. All 160 have NULL controlled_apply_id, NULL provenance_hash, NULL truth_level. This is irreversible without backup restore.",
+        "verification_query": "SELECT COUNT(*) FROM strategy_prediction_replays WHERE id NOT IN (SELECT MAX(id) FROM strategy_prediction_replays GROUP BY lottery_type, target_draw, strategy_id);  -- expect 160",
+        "stop_if": "Count != 160 or operator not confirmed"
+      },
+      "DRC-09_import_approval": {
+        "name": "40622-row import approval confirmation",
+        "check": "Operator must confirm: 40622 rows with bet_index > 1 will be inserted from zen-gates source. Verify zen-gates source count matches.",
+        "verification_query": "sqlite3 <zen-gates-db> \"SELECT COUNT(*) FROM strategy_prediction_replays WHERE bet_index > 1;\"  -- expect 40622",
+        "stop_if": "Count != 40622 or operator not confirmed"
+      },
+      "DRC-10_stop_api_writers": {
+        "name": "Production lock — stop all API writers",
+        "commands": [
+          "cat backend.pid 2>/dev/null | xargs kill -0 2>/dev/null && echo 'BACKEND_RUNNING_STOP_IT' || echo 'BACKEND_STOPPED'",
+          "cat frontend.pid 2>/dev/null | xargs kill -0 2>/dev/null && echo 'FRONTEND_RUNNING_STOP_IT' || echo 'FRONTEND_STOPPED'"
+        ],
+        "stop_if": "Any API writer still running"
+      },
+      "DRC-11_create_backup": {
+        "name": "Create timestamped immutable backup",
+        "commands": [
+          "TIMESTAMP=$(date +%Y%m%d_%H%M%S)",
+          "BACKUP=lottery_api/data/lottery_v2.db.bak_p188_pre_migration_${TIMESTAMP}",
+          "cp lottery_api/data/lottery_v2.db ${BACKUP}",
+          "sqlite3 ${BACKUP} \"SELECT COUNT(*) FROM strategy_prediction_replays;\"  # must equal 54462",
+          "chmod 444 ${BACKUP}",
+          "ls -la ${BACKUP}  # verify r--r--r--"
+        ],
+        "stop_if": "Backup row count != 54462 OR chmod fails OR file not read-only"
+      },
+      "DRC-12_drift_guard_pre": {
+        "name": "Pre-migration drift guard PASS at 54462",
+        "commands": [
+          "uv run python scripts/replay_lifecycle_drift_guard.py  # expect REPLAY_LIFECYCLE_DRIFT_GUARD_PASS"
+        ],
+        "stop_if": "Drift guard FAIL"
+      },
+      "DRC-13_go_no_go": {
+        "name": "Final go/no-go gate",
+        "checklist": [
+          "DRC-01 through DRC-12 all PASS",
+          "Backup verified and immutable",
+          "API writers stopped",
+          "SQL script reviewed and approved by operator",
+          "Exact authorization phrase confirmed verbatim",
+          "Operator is ready to monitor migration to completion"
+        ],
+        "decision": "If ALL items confirmed: proceed with migration SQL. If ANY item unconfirmed: STOP — do not execute migration.",
+        "stop_if": "Any unconfirmed item"
+      }
+    }
+  },
+  "sql_review_checklist": {
+    "source_file": "outputs/research/power_lotto/p185_rehearsal/p185_row_delta_import_sql_log_20260601.sql",
+    "items": [
+      {"id": "SRC-01", "item": "table_recreation", "check": "CREATE TABLE strategy_prediction_replays_new present with all required columns"},
+      {"id": "SRC-02", "item": "max_id_dedup", "check": "INSERT uses WHERE id IN (SELECT MAX(id) ... GROUP BY lottery_type, target_draw, strategy_id)"},
+      {"id": "SRC-03", "item": "bet_index_column", "check": "bet_index INTEGER NOT NULL DEFAULT 1 present in CREATE TABLE"},
+      {"id": "SRC-04", "item": "unique_constraint", "check": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index) present"},
+      {"id": "SRC-05", "item": "import_filter", "check": "INSERT from zen-gates uses WHERE bet_index > 1"},
+      {"id": "SRC-06", "item": "read_only_attach", "check": "ATTACH uses file:...?mode=ro for zen-gates DB"},
+      {"id": "SRC-07", "item": "row_count_verify", "check": "SELECT COUNT(*) after each major step — 54302 after dedup, 94924 after import"},
+      {"id": "SRC-08", "item": "duplicate_check", "check": "SELECT COUNT(*) for duplicates under new UNIQUE constraint — expect 0"},
+      {"id": "SRC-09", "item": "table_swap", "check": "DROP TABLE / ALTER TABLE RENAME present in correct order"},
+      {"id": "SRC-10", "item": "index_creation", "check": "CREATE INDEX idx_spr_bet_index present"},
+      {"id": "SRC-11", "item": "integrity_check", "check": "PRAGMA integrity_check present — expect ok"},
+      {"id": "SRC-12", "item": "transaction_boundaries", "check": "Migration wraps DDL/DML in implicit or explicit transaction; any error triggers rollback"}
+    ]
+  },
+  "backup_rollback_checklist": {
+    "backup": {
+      "path_format": "lottery_api/data/lottery_v2.db.bak_p188_pre_migration_<YYYYMMDD_HHMMSS>",
+      "verify_row_count": "sqlite3 <backup> \"SELECT COUNT(*) FROM strategy_prediction_replays;\"  -- expect 54462",
+      "verify_bet_index_absent": "sqlite3 <backup> \"PRAGMA table_info(strategy_prediction_replays);\" | grep bet_index  -- expect no output",
+      "make_immutable": "chmod 444 <backup>",
+      "verify_immutable": "ls -la <backup>  -- expect r--r--r--",
+      "stop_if_backup_fails": true
+    },
+    "rollback_triggers": [
+      "Post-migration row count != 94924",
+      "bet_index column absent after migration",
+      "PRAGMA integrity_check != ok",
+      "Duplicate check > 0",
+      "Any Python/sqlite3 exception during migration",
+      "Drift guard FAIL after migration"
+    ],
+    "rollback_procedure": [
+      "1. STOP all migration activity immediately",
+      "2. cp <backup_path> lottery_api/data/lottery_v2.db",
+      "3. sqlite3 lottery_api/data/lottery_v2.db \"SELECT COUNT(*);\"  -- verify 54462",
+      "4. sqlite3 lottery_api/data/lottery_v2.db \"PRAGMA table_info(strategy_prediction_replays);\" | grep bet_index  -- verify ABSENT",
+      "5. uv run python scripts/replay_lifecycle_drift_guard.py  -- verify PASS at 54462",
+      "6. Restart API writers",
+      "7. Document failure in P188 artifact"
+    ]
+  },
+  "go_no_go_gate": {
+    "all_13_drc_items_must_pass": true,
+    "operator_must_confirm_verbatim_phrase": true,
+    "backup_must_exist_and_be_verified": true,
+    "api_writers_must_be_stopped": true,
+    "sql_must_be_reviewed_not_ad_hoc": true,
+    "decision": "GO only if all conditions confirmed. NO-GO on any single failure."
+  },
+  "governance_confirmations": {
+    "production_main_db_rows_before": 54462,
+    "production_main_db_rows_after": 54462,
+    "production_main_bet_index_before": "ABSENT",
+    "production_main_bet_index_after": "ABSENT",
+    "production_main_db_unchanged": true,
+    "no_production_db_write": true,
+    "no_db_migration_executed": true,
+    "no_backup_created": true,
+    "no_schema_change": true,
+    "no_row_insert": true,
+    "no_db_copy_to_production": true,
+    "no_controlled_apply": true,
+    "no_registry_mutation": true,
+    "no_merge": true,
+    "no_rebase": true,
+    "no_cherry_pick": true,
+    "no_checkout_other_branch": true,
+    "no_stage": true,
+    "no_commit": true,
+    "no_push": true,
+    "power_lotto_research_closed": true,
+    "main_zen_gates_split_still_unresolved": true,
+    "p178a_closure_policy": "ACTIVE — POWER_LOTTO research CLOSED"
+  },
+  "next_task_options": [
+    {
+      "phrase": "YES execute P188 production DB migration from main 54462 to reconciled 94924 using P185 rehearsal SQL, approve MAX(id) dedup dropping 160 null-provenance duplicate rows, create timestamped backup, no controlled_apply",
+      "effect": "DESTRUCTIVE — Execute full production migration: backup → dedup → schema recreate → import 40622 rows → validate 94924 → update drift guard → run contract tests.",
+      "warning": "Irreversible without backup restore. All 13 DRC checklist items must pass before execution.",
+      "recommended": true,
+      "is_current_authorization": false
+    },
+    {
+      "phrase": "YES start P188 production DB migration risk review only",
+      "effect": "Independent risk review of P184+P185+P186+P187 results before committing to production migration.",
+      "recommended": false
+    },
+    {
+      "phrase": "YES start P188 maintain documented divergence and pause DB migration",
+      "effect": "Accept main/zen-gates DB split. Document decision. No migration.",
+      "recommended": false
+    },
+    {
+      "phrase": "YES start P188 replay product UI backlog implementation plan only",
+      "effect": "Plan multi-bet display in replay UI (Bet 1-5 filter, lifecycle tooltips). No DB migration.",
+      "recommended": false
+    }
+  ],
+  "next_task_blocked_by_user_authorization": true
+}

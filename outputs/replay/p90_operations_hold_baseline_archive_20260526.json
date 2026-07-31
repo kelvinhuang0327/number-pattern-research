@@ -1,0 +1,209 @@
+{
+  "phase": "P90",
+  "policy_version": "p90-v1",
+  "classification": "P90_OPERATIONS_HOLD_BASELINE_ARCHIVED",
+  "date": "2026-05-26",
+  "archive_run": "2026-05-26T00:00:00Z",
+  "system_status": "STABLE",
+  "launch_readiness": "READY",
+  "operator_recommendation": "HOLD",
+  "new_draw_detected": false,
+  "source_decision_required": false,
+  "immediate_development_action_required": false,
+  "production_baseline": {
+    "replay_rows": 46962,
+    "replay_rows_changed": 0,
+    "power_lotto_max_draw": 115000041,
+    "power_lotto_max_draw_date": "2026/05/21",
+    "power_lotto_max_draw_numbers": [6, 14, 22, 28, 35, 38],
+    "power_lotto_max_draw_special": 1,
+    "batch_a_coverage_pct": 100.0,
+    "p79_sentinels": [
+      {
+        "id": 46961,
+        "strategy_id": "fourier_rhythm_3bet",
+        "dry_run": 0,
+        "truth_level": "POWERLOTTO_DRAW_EXT_VERIFIED"
+      },
+      {
+        "id": 46962,
+        "strategy_id": "fourier30_markov30_2bet",
+        "dry_run": 0,
+        "truth_level": "POWERLOTTO_DRAW_EXT_VERIFIED"
+      }
+    ],
+    "db_writes": false,
+    "replay_row_changes": 0
+  },
+  "monitoring_checks": {
+    "p86_source_decision_guard": {
+      "classification": "SOURCE_UNAVAILABLE",
+      "db_max_draw": 115000041,
+      "source_max_draw": null,
+      "db_writes": false,
+      "note": "No external source provided. No network read. No evidence of draw > 115000041."
+    },
+    "p82_freshness_guard": {
+      "classification": "FRESHNESS_PASS",
+      "draw_gap_detected": false,
+      "replay_gap_detected": false,
+      "batch_a_coverage_pct": 100.0,
+      "batch_a_covered": ["fourier_rhythm_3bet", "fourier30_markov30_2bet"],
+      "batch_a_gap": []
+    },
+    "drift_guard": {
+      "classification": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+      "violations": 0
+    },
+    "browser_smoke": {
+      "classification": "BROWSER_SMOKE_PASS",
+      "total_tests": 50,
+      "passed": 50,
+      "failed": 0
+    }
+  },
+  "phase_ledger": {
+    "P83": {
+      "classification": "P83_STABLE_BASELINE_CLOSURE",
+      "description": "Stable baseline closure",
+      "pr": 208,
+      "commit": "f019ae8"
+    },
+    "P84": {
+      "classification": "P84_BROWSER_E2E_STABILIZED_LAUNCH_SIGNOFF_READY",
+      "description": "Browser E2E stabilized, launch sign-off ready",
+      "pr": 209,
+      "commit": "a18523d"
+    },
+    "P85": {
+      "classification": "P85_REPLAY_LAUNCH_CLOSURE_OPERATOR_PACKAGE_READY",
+      "description": "Launch closure and operator release package",
+      "pr": 210,
+      "commit": "d386066"
+    },
+    "P86": {
+      "classification": "P86_LIVE_MONITORING_SOURCE_DECISION_GUARD_READY",
+      "description": "Live monitoring / source decision guard",
+      "pr": 211,
+      "commit": "34e7ea9"
+    },
+    "P87": {
+      "classification": "P87_LIVE_OPERATIONS_RUNBOOK_READY",
+      "description": "Live operations runbook and monitoring cadence",
+      "pr": 212,
+      "commit": "0de6044"
+    },
+    "P88": {
+      "classification": "P88_STABLE_NO_NEW_DRAW_MONITORING_SNAPSHOT",
+      "description": "No-new-draw monitoring snapshot",
+      "pr": 213,
+      "commit": "d7a707f"
+    },
+    "P89": {
+      "classification": "P89_STEADY_STATE_MONITORING_PASS",
+      "description": "Steady-state monitoring evidence snapshot",
+      "pr": 214,
+      "commit": "c387c24"
+    },
+    "P90": {
+      "classification": "P90_OPERATIONS_HOLD_BASELINE_ARCHIVED",
+      "description": "Operations hold baseline archive — this artifact",
+      "pr": "TBD",
+      "commit": "TBD"
+    }
+  },
+  "future_trigger_policy": {
+    "description": "Next controlled path (P91) starts ONLY when one of these triggers fires",
+    "triggers": [
+      {
+        "id": "T1",
+        "event": "P86 returns SOURCE_DECISION_REQUIRED",
+        "action": "STOP. Operator must decide source.",
+        "expected_classification": "P91_SOURCE_DECISION_REQUIRED"
+      },
+      {
+        "id": "T2",
+        "event": "Source snapshot contains POWER_LOTTO draw > 115000041",
+        "action": "Run P86 with --source-snapshot. Expect SOURCE_DECISION_REQUIRED.",
+        "expected_classification": "P91_CONTROLLED_DRAW_REFRESH_READY"
+      },
+      {
+        "id": "T3",
+        "event": "Operator explicitly provides new uploaded source",
+        "action": "Begin controlled ingestion under governance review.",
+        "expected_classification": "P91_CONTROLLED_DRAW_REFRESH_READY"
+      },
+      {
+        "id": "T4",
+        "event": "Operator explicitly authorizes official API read / source decision",
+        "action": "Proceed with authorized API read under governance.",
+        "expected_classification": "P91_SOURCE_DECISION_REQUIRED"
+      },
+      {
+        "id": "T5",
+        "event": "P82 freshness guard detects real gap (draw_gap=true or replay_gap=true)",
+        "action": "STOP. Investigate immediately.",
+        "expected_classification": "P91_STABLE_HOLD_CONTINUES or INVESTIGATE"
+      },
+      {
+        "id": "T6",
+        "event": "Browser smoke regression (any test fails)",
+        "action": "STOP. Investigate immediately.",
+        "expected_classification": "P91_BROWSER_REGRESSION_INVESTIGATION"
+      }
+    ],
+    "recommended_future_classifications": [
+      "P91_SOURCE_DECISION_REQUIRED",
+      "P91_CONTROLLED_DRAW_REFRESH_READY",
+      "P91_BROWSER_REGRESSION_INVESTIGATION",
+      "P91_STABLE_HOLD_CONTINUES"
+    ]
+  },
+  "known_open_risks": [
+    {
+      "risk": "Future POWER_LOTTO draw > 115000041",
+      "likelihood": "Certain (next official draw will exceed this)",
+      "impact": "SOURCE_DECISION_REQUIRED will trigger",
+      "mitigation": "Daily P86 monitoring. When triggered, operator must choose: uploaded_source / official_api_authorized / manual_verify / hold.",
+      "forbidden_until_decision": [
+        "auto_ingest",
+        "insert_into_draws",
+        "create_replay_rows_without_authorization"
+      ]
+    }
+  ],
+  "operator_actions": {
+    "recommendation": "HOLD",
+    "reason": "No new draws. All guards pass. P83–P89 all merged. System stable.",
+    "daily_commands": [
+      "python scripts/p86_live_monitoring_source_decision_guard.py",
+      ".venv/bin/python scripts/p82_replay_freshness_guard.py --lottery POWER_LOTTO",
+      ".venv/bin/python scripts/replay_lifecycle_drift_guard.py",
+      ".venv/bin/pytest tests/test_replay_browser_smoke.py --tb=no -q"
+    ],
+    "forbidden_actions": [
+      "auto_ingest_without_source_decision",
+      "insert_into_draws_table",
+      "create_replay_rows_without_authorization",
+      "call_official_api_for_writes",
+      "create_new_tables",
+      "git_reset_hard",
+      "git_clean",
+      "force_push",
+      "stage_db_or_bak_files",
+      "modify_lifecycle_metadata",
+      "modify_champion_registry",
+      "modify_strategy_metadata"
+    ]
+  },
+  "governance": {
+    "no_db_writes": true,
+    "no_replay_inserts": true,
+    "no_official_api_writes": true,
+    "no_new_tables": true,
+    "no_ingestion": true,
+    "read_only": true,
+    "db_writes": false,
+    "replay_row_changes": 0
+  }
+}

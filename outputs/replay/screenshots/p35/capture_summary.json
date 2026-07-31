@@ -1,0 +1,41 @@
+{
+  "results": {
+    "01_replay_online_production.png": {
+      "status": "CAPTURED",
+      "file": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/outputs/replay/screenshots/p35/01_replay_online_production.png",
+      "body_snippet": "99000105\t2010/12/31\tbiglotto_triple_strike\t3822353843\t4927363839\t38\t1\tPREDICTED\t▶ 詳情"
+    },
+    "02_replay_rejected_display_only.png": {
+      "status": "CAPTURED",
+      "file": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/outputs/replay/screenshots/p35/02_replay_rejected_display_only.png",
+      "body_snippet": "此生命週期（REJECTED）策略目前無歷史回放資料，以下為已登錄策略目錄。 不代表預測成績、不構成下注建議。\n—\t—\tCatalog Example (REJECTED)\nexample_rejected_01\t—\t—\t—\t—\t🔴 已拒絕 (REJECTED)\t無歷史回放資料"
+    },
+    "03_replay_retired_display_only.png": {
+      "status": "CAPTURED",
+      "file": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/outputs/replay/screenshots/p35/03_replay_retired_display_only.png",
+      "body_snippet": "此生命週期（RETIRED）策略目前無歷史回放資料，以下為已登錄策略目錄。 不代表預測成績、不構成下注建議。\n—\t—\tCatalog Example (RETIRED)\nexample_retired_01\t—\t—\t—\t—\t⚪ 已退役 (RETIRED)\t無歷史回放資料"
+    },
+    "04_replay_observation_display_only.png": {
+      "status": "CAPTURED",
+      "file": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/outputs/replay/screenshots/p35/04_replay_observation_display_only.png",
+      "body_snippet": "此生命週期（OBSERVATION）策略目前無歷史回放資料，以下為已登錄策略目錄。 不代表預測成績、不構成下注建議。\n—\t—\tCatalog Example (OBSERVATION)\nexample_observation_01\t—\t—\t—\t—\t🟡 觀察中 (OBSERVATION)\t無歷史回放資料"
+    },
+    "05_replay_offline_coming_soon.png": {
+      "status": "CAPTURED",
+      "file": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/outputs/replay/screenshots/p35/05_replay_offline_coming_soon.png",
+      "body_snippet": "⚫ OFFLINE 策略目前無已登錄項目（coming soon）"
+    },
+    "06_fixture_mode_on_banner.png": {
+      "status": "CAPTURED",
+      "file": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/outputs/replay/screenshots/p35/06_fixture_mode_on_banner.png",
+      "fixture_indicator_in_body": true,
+      "body_snippet": "Lotto Insight Platform\n\nRESEARCH PLATFORM V2.0\n\n lottery_v2.db\nSTANDBY\n追蹤系統方差...\n數據上傳\n統計分析\n智能預測\n歷史記錄\n模擬測試\n聰明包牌\n自動學習\n最佳策略總覽\n預測追蹤\n歷史回放\n研究檢討\n任務編排\nCTO 審核報告\n🎬 策略歷史回放\n\n查詢各策略對每一期開獎的歷史回溯預測記錄（純粹稽核用途）。\n\n⚠️ 免責聲明： 本頁為歷史預測回放，只用於查詢與稽核；不代表提高中獎率，也不保證任何回放結果。\n📡 資料覆蓋狀態\n限制性 (LIMITED)\n⚠️ 系統偵測到舊 replay error records（已標記為"
+    },
+    "07_fixture_mode_off_clean.png": {
+      "status": "CAPTURED",
+      "file": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/outputs/replay/screenshots/p35/07_fixture_mode_off_clean.png"
+    }
+  },
+  "captured": 7,
+  "blocked": 0
+}

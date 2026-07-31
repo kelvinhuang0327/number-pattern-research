@@ -1,0 +1,70 @@
+{
+  "task": "P162_P161_RESULT_CLOSURE",
+  "date": "2026-05-31",
+  "p161_completed_evidence": {
+    "classification": "P161_POWER_LOTTO_EFFECTIVENESS_BASELINE_READY",
+    "db_row_count": 94924,
+    "db_row_count_unchanged": true,
+    "power_lotto_rows": 36104,
+    "power_lotto_distinct_strategies": 10,
+    "power_lotto_distinct_draws": 1551,
+    "statistical_unit": "distinct target_draw (n=1551)",
+    "pool_main_avg_hit_count": 0.967427,
+    "random_baseline_main": 0.9473684210526315,
+    "random_baseline_main_formula": "6 * 6/38 = 36/38",
+    "random_baseline_special": 0.125,
+    "random_baseline_special_formula": "1/8 (POWER_LOTTO special pool 1..8)",
+    "best_single_strategy": {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "lifecycle": "ONLINE",
+      "n_draws": 1500,
+      "mean_hit_count": 0.989556,
+      "p_raw": 0.007594,
+      "p_bonferroni": 0.30376,
+      "p_bh": 0.091493,
+      "beats_random_after_correction": false
+    },
+    "multiple_testing_family_size": 40,
+    "survivors_after_bonferroni_above_random": [],
+    "survivors_after_bh_above_random": [],
+    "any_strategy_beats_random_after_correction": false,
+    "corrected_p_value_conclusion": "After Bonferroni and Benjamini-Hochberg correction over a family of 40 tests, zero strategies beat the random baseline at alpha=0.05. The best raw p-value (midfreq_fourier_mk_3bet p_raw=0.0076) inflates to p_bonf=0.30376 and p_BH=0.0915 — both above 0.05. NULL result confirmed.",
+    "special_number_conclusion": "Special number prediction (n=9000 rows, predicted_special NOT NULL) shows a hit_rate of 0.118111 vs random baseline of 0.125. Delta = -0.006889 (BELOW random). No strategy beats random on special number after correction.",
+    "multi_bet_slot_conclusion": "Only one individual bet slot survives correction (midfreq_fourier_mk_3bet bet_index=1, p_bonf=0.010), but this is a full-history in-sample DESCRIPTIVE finding only. The 3-bet per-draw aggregate for the same strategy does NOT survive. No predictive claim is established; no walk-forward OOS was run.",
+    "leakage_safe_caveat": "All per-strategy rankings are DESCRIPTIVE_IN_SAMPLE (full replay history used). Predictive claims require walk-forward OOS evaluation over >=500 distinct draws (L101). Classification: NOT_ESTABLISHED_NO_WALK_FORWARD.",
+    "null_no_edge_conclusion": "POWER_LOTTO replay strategies are, in aggregate and individually after multiple-testing correction, statistically indistinguishable from a fair-random 6-of-38 process on main numbers, and at/below random on the special number. This is an EXPECTED, ACCEPTABLE NULL/at-random result. No strategy is shown to beat random out-of-sample. No win-guarantee claim and no real-money advice is made or implied.",
+    "governance": {
+      "db_writes": 0,
+      "registry_mutations": 0,
+      "controlled_apply": false,
+      "forbidden_actions_taken": "NONE"
+    },
+    "cross_lottery_mismatch": [
+      {
+        "strategy_id": "midfreq_fourier_2bet",
+        "registry_lottery_types": ["DAILY_539"],
+        "observed_lottery_type": "POWER_LOTTO",
+        "lifecycle": "RETIRED"
+      }
+    ]
+  },
+  "test_result": "PASS",
+  "test_note": "23/23 P161 tests passed. See tests/test_p161_power_lotto_effectiveness_baseline.py.",
+  "db_row_count": 94924,
+  "db_unchanged_confirmation": true,
+  "no_db_write_confirmation": true,
+  "no_registry_mutation_confirmation": true,
+  "no_champion_confirmation": true,
+  "no_controlled_apply_confirmation": true,
+  "final_classification": "P162_P161_RESULT_CLOSURE_READY",
+  "cto_recommendation": "P161 establishes POWER_LOTTO as at-random baseline. No edge detected after multiple comparison correction. Proceed to P163_RECONCILE_READINESS_AUDIT_ONLY. Do not promote champion, do not run controlled_apply, do not issue wagering recommendations.",
+  "next_recommended_task": "P163_RECONCILE_READINESS_AUDIT_ONLY",
+  "next_task_scope_note": "P163 is an audit/readiness-only task. It must not merge branches, write to DB, or mutate registry. It should assess whether the zen-gates worktree findings are reconcilable with the main branch baseline and identify any governance gaps.",
+  "main_zen_gates_baseline_split_risk": "The zen-gates-ff6802 worktree and the main branch may have diverged since P158/P159B. Any reconciliation must treat both as read-only baselines until a governed merge plan is authorized. This split is flagged as a governance risk.",
+  "forbidden_interpretations": [
+    "P161 NULL result does NOT indicate predictability or betting opportunity",
+    "The midfreq_fourier_mk_3bet bet_index=1 slot surviving correction is NOT a production signal",
+    "Pool mean 0.967 > random 0.947 is a small positive delta with no corrected significance",
+    "No win-promise, no real-money guidance is made or implied"
+  ]
+}

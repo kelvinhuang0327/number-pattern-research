@@ -1,0 +1,229 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P255C",
+  "classification": "INGEST_WRITE_GUARD_IMPLEMENTATION_COMPLETE",
+  "date": "2026-06-08",
+  "task_type": "Type C code-change",
+  "explicit_authorization": "Authorize P255C Ingest Write Guard Implementation",
+  "generated_at": "2026-06-08T04:47:20.601939+00:00",
+  "phase0_summary": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "p255c-ingest-write-guard-implementation",
+    "canonical_branch": "main",
+    "all_prs_merged": true,
+    "pr_360": "MERGED",
+    "pr_361": "MERGED",
+    "pr_362": "MERGED",
+    "pr_363": "MERGED",
+    "pr_364": "MERGED",
+    "stop_conditions_clear": true,
+    "dirty_items_tolerated": [
+      "backend.pid",
+      "frontend.pid",
+      "claude-code-showcase",
+      "data/lottery_v2.db (metadata touch only)",
+      "p252/p253 pre-existing research artifacts"
+    ]
+  },
+  "p255b_dependency_verified": true,
+  "p255b_dependency": {
+    "artifact": "outputs/research/p255b_ingest_write_guard_design_20260608.json",
+    "pr": 364,
+    "classification": "INGEST_WRITE_GUARD_DESIGN_COMPLETE",
+    "key_designs_adopted": [
+      "G01_default_dry_run_true",
+      "G02_server_side_confirm_token"
+    ]
+  },
+  "implemented_guardrails": {
+    "G01_default_dry_run_true": {
+      "id": "G01",
+      "priority": "P0",
+      "status": "IMPLEMENTED",
+      "file": "lottery_api/routes/ingest.py",
+      "change": "BackfillRequest.dry_run: bool = True (was False)",
+      "behavior_when_omitted": "Treated as dry_run=True — safe preview only, no DB write",
+      "source_audit": {
+        "implemented": true,
+        "evidence": "BackfillRequest.dry_run: bool = True (G01 comment present)"
+      }
+    },
+    "G02_server_side_confirm_token": {
+      "id": "G02",
+      "priority": "P0",
+      "status": "IMPLEMENTED",
+      "file": "lottery_api/routes/ingest.py",
+      "new_fields": [
+        "apply_confirmed: bool = False",
+        "confirm_token: Optional[str] = None",
+        "requested_by: str = 'unknown'",
+        "reason: str = ''",
+        "expected_insert_count: Optional[int] = None"
+      ],
+      "validation_function": "_validate_write_confirmation()",
+      "validation_order": [
+        "1. if dry_run=True: skip (safe path)",
+        "2. if apply_confirmed != True: 422 write_not_confirmed",
+        "3. if confirm_token is None/empty: 422 missing_confirm_token",
+        "4. if confirm_token != server token: 422 invalid_confirm_token",
+        "5. if requested_by empty/unknown: 422 missing_requested_by",
+        "6. if reason empty: 422 missing_reason",
+        "7. all checks pass: proceed to engine.run()"
+      ],
+      "token_implementation": "env var INGEST_WRITE_TOKEN with fallback 'p255-write-confirm'",
+      "token_future": "Full HMAC(secret, lottery_type+timestamp) deferred to P255D",
+      "called_before_engine": true,
+      "source_audit_g02": {
+        "implemented": true,
+        "fields_present": [
+          "apply_confirmed",
+          "confirm_token",
+          "requested_by",
+          "reason",
+          "expected_insert_count",
+          "_validate_write_confirmation"
+        ],
+        "fields_missing": []
+      },
+      "source_audit_endpoint": {
+        "implemented": true,
+        "called_before_engine": true,
+        "evidence": "Guard called before engine.run() in run_backfill body"
+      }
+    }
+  },
+  "deferred_guardrails": {
+    "G03_ui_confirmation": {
+      "id": "G03",
+      "priority": "P1",
+      "status": "DEFERRED",
+      "reason": "Frontend/UI changes out of P255C scope",
+      "next_task": "P255D"
+    },
+    "G04_audit_log": {
+      "id": "G04",
+      "priority": "P1",
+      "status": "DEFERRED",
+      "reason": "Extended ingest_log fields require fetcher changes (out of scope)",
+      "next_task": "P255D"
+    },
+    "G05_backup_sha_integrity": {
+      "id": "G05",
+      "priority": "P1",
+      "status": "DEFERRED",
+      "reason": "Pre/post SHA + backup requires backfill_engine.py changes (out of scope)",
+      "next_task": "P255D"
+    },
+    "G06_idempotency": {
+      "id": "G06",
+      "priority": "P1",
+      "status": "DEFERRED",
+      "reason": "Per-request idempotency key cache not trivially implementable within whitelist",
+      "next_task": "P255D"
+    },
+    "G07_cors_hardening": {
+      "id": "G07",
+      "priority": "P2",
+      "status": "DEFERRED",
+      "reason": "CORS changes in app.py out of P255C file whitelist",
+      "next_task": "P255D"
+    },
+    "G08_env_write_gate": {
+      "id": "G08",
+      "priority": "P2",
+      "status": "DEFERRED",
+      "reason": "INGEST_WRITE_ENABLED env gate not in minimal P0 scope; G02 token gate covers the critical path",
+      "next_task": "P255D"
+    }
+  },
+  "request_contract_actual": {
+    "endpoint": "POST /api/ingest/backfill",
+    "schema": {
+      "lottery_type": "str = 'BIG_LOTTO'",
+      "draw_list": "Optional[List[str]] = None",
+      "dry_run": "bool = True  ← G01 CHANGED",
+      "max_draws": "int = 30 (capped 1-500)",
+      "apply_confirmed": "bool = False  ← G02 NEW",
+      "confirm_token": "Optional[str] = None  ← G02 NEW",
+      "requested_by": "str = 'unknown'  ← G02 NEW",
+      "reason": "str = ''  ← G02 NEW",
+      "expected_insert_count": "Optional[int] = None  ← G02 NEW"
+    }
+  },
+  "response_contract_actual": {
+    "dry_run_response": {
+      "status": 200,
+      "body": {
+        "success": true,
+        "summary": "...existing engine dry-run summary..."
+      }
+    },
+    "blocked_write_response": {
+      "status": 422,
+      "body": {
+        "error": "write_not_confirmed|missing_confirm_token|invalid_confirm_token|missing_requested_by|missing_reason",
+        "message": "..."
+      }
+    },
+    "confirmed_write_response": {
+      "status": 200,
+      "body": {
+        "success": true,
+        "summary": "...existing engine write summary..."
+      }
+    }
+  },
+  "blocked_write_cases": [
+    "dry_run=False + no apply_confirmed → 422 write_not_confirmed",
+    "dry_run=False + apply_confirmed=True + no confirm_token → 422 missing_confirm_token",
+    "dry_run=False + apply_confirmed=True + wrong confirm_token → 422 invalid_confirm_token",
+    "dry_run=False + valid token + no requested_by/unknown → 422 missing_requested_by",
+    "dry_run=False + valid token + no reason → 422 missing_reason"
+  ],
+  "allowed_dry_run_cases": [
+    "omitted dry_run (defaults True) → dry-run preview, no DB write",
+    "dry_run=True explicit → dry-run preview, no DB write"
+  ],
+  "mocked_confirmed_write_case": {
+    "description": "Unit tests mock backfill_engine.run() and assert it is called only after all confirmation checks pass",
+    "mock_target": "lottery_api.routes.ingest._get_engine",
+    "confirmed_by_test": "test_valid_confirmed_write_calls_engine_mock",
+    "real_db_write_executed": false
+  },
+  "current_accepted_baseline": {
+    "source": "PR #360 ACCEPT_BACKFILL_DB_DRIFT_2026_0608",
+    "BIG_LOTTO_raw": 22239,
+    "BIG_LOTTO_canonical": 2114,
+    "BIG_LOTTO_add_on": 19100,
+    "POWER_LOTTO_raw": 1917,
+    "DAILY_539_raw": 5882,
+    "strategy_prediction_replays": 94924,
+    "db_observed_at_generation": {
+      "BIG_LOTTO_raw": 22239,
+      "BIG_LOTTO_canonical": 2114,
+      "POWER_LOTTO_raw": 1917,
+      "DAILY_539_raw": 5882,
+      "strategy_prediction_replays": 94924,
+      "query_mode": "read-only URI"
+    }
+  },
+  "all_guardrails_implemented": true,
+  "no_db_write_during_tests_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_strategy_promotion_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "non_actions": [
+    "No frontend/UI modified",
+    "No fetcher code modified (fetcher/* whitelist excluded)",
+    "No DB write during implementation or verification",
+    "No DB schema migration",
+    "No registry mutation",
+    "No strategy promotion",
+    "No betting advice",
+    "No P247G constants changed",
+    "No CORS changes (G07 deferred)",
+    "No env write gate (G08 deferred)",
+    "No idempotency layer (G06 deferred)"
+  ],
+  "final_decision": "COMPLETE. G01 (dry_run default True) and G02 (server-side confirm token) implemented in lottery_api/routes/ingest.py. All non-dry-run writes now require apply_confirmed=True + valid confirm_token + requested_by + reason. Deferred: G03-G08 for P255D+. No DB write occurred."
+}

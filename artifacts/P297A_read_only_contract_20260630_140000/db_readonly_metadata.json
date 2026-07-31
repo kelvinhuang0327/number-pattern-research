@@ -1,0 +1,1097 @@
+{
+  "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+  "open_mode": "sqlite3 URI mode=ro&immutable=1",
+  "queried": true,
+  "tables_and_views": [
+    {
+      "type": "index",
+      "name": "idx_agent_runs_runner",
+      "tbl_name": "agent_task_runs",
+      "sql": "CREATE INDEX idx_agent_runs_runner ON agent_task_runs(runner)"
+    },
+    {
+      "type": "index",
+      "name": "idx_agent_runs_tick",
+      "tbl_name": "agent_task_runs",
+      "sql": "CREATE INDEX idx_agent_runs_tick ON agent_task_runs(tick_at)"
+    },
+    {
+      "type": "index",
+      "name": "idx_agent_tasks_date",
+      "tbl_name": "agent_tasks",
+      "sql": "CREATE INDEX idx_agent_tasks_date ON agent_tasks(date_folder)"
+    },
+    {
+      "type": "index",
+      "name": "idx_agent_tasks_status",
+      "tbl_name": "agent_tasks",
+      "sql": "CREATE INDEX idx_agent_tasks_status ON agent_tasks(status)"
+    },
+    {
+      "type": "index",
+      "name": "idx_date",
+      "tbl_name": "draws",
+      "sql": "CREATE INDEX idx_date \n                ON draws(date DESC)\n            "
+    },
+    {
+      "type": "index",
+      "name": "idx_draw",
+      "tbl_name": "draws",
+      "sql": "CREATE INDEX idx_draw \n                ON draws(draw)\n            "
+    },
+    {
+      "type": "index",
+      "name": "idx_lottery_type",
+      "tbl_name": "draws",
+      "sql": "CREATE INDEX idx_lottery_type \n                ON draws(lottery_type)\n            "
+    },
+    {
+      "type": "index",
+      "name": "idx_pred_items_run",
+      "tbl_name": "prediction_items",
+      "sql": "CREATE INDEX idx_pred_items_run\n                ON prediction_items(run_id)\n            "
+    },
+    {
+      "type": "index",
+      "name": "idx_pred_items_status",
+      "tbl_name": "prediction_items",
+      "sql": "CREATE INDEX idx_pred_items_status\n                ON prediction_items(status)\n            "
+    },
+    {
+      "type": "index",
+      "name": "idx_pred_review_run",
+      "tbl_name": "prediction_review_status",
+      "sql": "CREATE INDEX idx_pred_review_run ON prediction_review_status(prediction_run_id)"
+    },
+    {
+      "type": "index",
+      "name": "idx_pred_review_session",
+      "tbl_name": "prediction_review_status",
+      "sql": "CREATE INDEX idx_pred_review_session ON prediction_review_status(review_session_id)"
+    },
+    {
+      "type": "index",
+      "name": "idx_pred_review_status",
+      "tbl_name": "prediction_review_status",
+      "sql": "CREATE INDEX idx_pred_review_status ON prediction_review_status(review_status)"
+    },
+    {
+      "type": "index",
+      "name": "idx_pred_runs_lottery",
+      "tbl_name": "prediction_runs",
+      "sql": "CREATE INDEX idx_pred_runs_lottery\n                ON prediction_runs(lottery_type)\n            "
+    },
+    {
+      "type": "index",
+      "name": "idx_review_actions_priority",
+      "tbl_name": "review_actions",
+      "sql": "CREATE INDEX idx_review_actions_priority ON review_actions(priority)"
+    },
+    {
+      "type": "index",
+      "name": "idx_review_actions_session",
+      "tbl_name": "review_actions",
+      "sql": "CREATE INDEX idx_review_actions_session ON review_actions(session_id)"
+    },
+    {
+      "type": "index",
+      "name": "idx_review_actions_status",
+      "tbl_name": "review_actions",
+      "sql": "CREATE INDEX idx_review_actions_status ON review_actions(status)"
+    },
+    {
+      "type": "index",
+      "name": "idx_review_findings_session",
+      "tbl_name": "review_findings",
+      "sql": "CREATE INDEX idx_review_findings_session ON review_findings(session_id)"
+    },
+    {
+      "type": "index",
+      "name": "idx_review_hypotheses_session",
+      "tbl_name": "review_hypotheses",
+      "sql": "CREATE INDEX idx_review_hypotheses_session ON review_hypotheses(session_id)"
+    },
+    {
+      "type": "index",
+      "name": "idx_review_hypotheses_status",
+      "tbl_name": "review_hypotheses",
+      "sql": "CREATE INDEX idx_review_hypotheses_status ON review_hypotheses(status)"
+    },
+    {
+      "type": "index",
+      "name": "idx_review_sessions_draw",
+      "tbl_name": "review_sessions",
+      "sql": "CREATE INDEX idx_review_sessions_draw ON review_sessions(draw)"
+    },
+    {
+      "type": "index",
+      "name": "idx_review_sessions_game",
+      "tbl_name": "review_sessions",
+      "sql": "CREATE INDEX idx_review_sessions_game ON review_sessions(game)"
+    },
+    {
+      "type": "index",
+      "name": "idx_review_sessions_status",
+      "tbl_name": "review_sessions",
+      "sql": "CREATE INDEX idx_review_sessions_status ON review_sessions(status)"
+    },
+    {
+      "type": "index",
+      "name": "idx_schedule_lottery",
+      "tbl_name": "snapshot_schedule",
+      "sql": "CREATE INDEX idx_schedule_lottery\n                ON snapshot_schedule(lottery_type, status)\n            "
+    },
+    {
+      "type": "index",
+      "name": "idx_shadow_experiments_game",
+      "tbl_name": "shadow_experiments",
+      "sql": "CREATE INDEX idx_shadow_experiments_game ON shadow_experiments(game)"
+    },
+    {
+      "type": "index",
+      "name": "idx_shadow_experiments_session",
+      "tbl_name": "shadow_experiments",
+      "sql": "CREATE INDEX idx_shadow_experiments_session ON shadow_experiments(session_id)"
+    },
+    {
+      "type": "index",
+      "name": "idx_shadow_experiments_status",
+      "tbl_name": "shadow_experiments",
+      "sql": "CREATE INDEX idx_shadow_experiments_status ON shadow_experiments(status)"
+    },
+    {
+      "type": "index",
+      "name": "idx_spr_bet_index",
+      "tbl_name": "strategy_prediction_replays",
+      "sql": "CREATE INDEX idx_spr_bet_index ON strategy_prediction_replays(bet_index)"
+    },
+    {
+      "type": "index",
+      "name": "idx_spr_draw",
+      "tbl_name": "strategy_prediction_replays",
+      "sql": "CREATE INDEX idx_spr_draw ON strategy_prediction_replays(target_draw)"
+    },
+    {
+      "type": "index",
+      "name": "idx_spr_hit",
+      "tbl_name": "strategy_prediction_replays",
+      "sql": "CREATE INDEX idx_spr_hit ON strategy_prediction_replays(hit_count)"
+    },
+    {
+      "type": "index",
+      "name": "idx_spr_lottery",
+      "tbl_name": "strategy_prediction_replays",
+      "sql": "CREATE INDEX idx_spr_lottery ON strategy_prediction_replays(lottery_type)"
+    },
+    {
+      "type": "index",
+      "name": "idx_spr_run",
+      "tbl_name": "strategy_prediction_replays",
+      "sql": "CREATE INDEX idx_spr_run ON strategy_prediction_replays(replay_run_id)"
+    },
+    {
+      "type": "index",
+      "name": "idx_spr_status",
+      "tbl_name": "strategy_prediction_replays",
+      "sql": "CREATE INDEX idx_spr_status ON strategy_prediction_replays(replay_status)"
+    },
+    {
+      "type": "index",
+      "name": "idx_spr_strategy",
+      "tbl_name": "strategy_prediction_replays",
+      "sql": "CREATE INDEX idx_spr_strategy ON strategy_prediction_replays(strategy_id)"
+    },
+    {
+      "type": "index",
+      "name": "idx_srr_lottery",
+      "tbl_name": "strategy_replay_runs",
+      "sql": "CREATE INDEX idx_srr_lottery ON strategy_replay_runs(lottery_type)"
+    },
+    {
+      "type": "index",
+      "name": "idx_srr_status",
+      "tbl_name": "strategy_replay_runs",
+      "sql": "CREATE INDEX idx_srr_status ON strategy_replay_runs(status)"
+    },
+    {
+      "type": "index",
+      "name": "sqlite_autoindex_agent_locks_1",
+      "tbl_name": "agent_locks",
+      "sql": null
+    },
+    {
+      "type": "index",
+      "name": "sqlite_autoindex_agent_tasks_1",
+      "tbl_name": "agent_tasks",
+      "sql": null
+    },
+    {
+      "type": "index",
+      "name": "sqlite_autoindex_draws_1",
+      "tbl_name": "draws",
+      "sql": null
+    },
+    {
+      "type": "index",
+      "name": "sqlite_autoindex_prediction_explanations_1",
+      "tbl_name": "prediction_explanations",
+      "sql": null
+    },
+    {
+      "type": "index",
+      "name": "sqlite_autoindex_prediction_results_1",
+      "tbl_name": "prediction_results",
+      "sql": null
+    },
+    {
+      "type": "index",
+      "name": "sqlite_autoindex_snapshot_schedule_1",
+      "tbl_name": "snapshot_schedule",
+      "sql": null
+    },
+    {
+      "type": "index",
+      "name": "sqlite_autoindex_strategy_prediction_replays_1",
+      "tbl_name": "strategy_prediction_replays",
+      "sql": null
+    },
+    {
+      "type": "table",
+      "name": "agent_locks",
+      "tbl_name": "agent_locks",
+      "sql": "CREATE TABLE agent_locks (\n                    runner TEXT PRIMARY KEY,\n                    pid INTEGER,\n                    task_id INTEGER,\n                    started_at TEXT,\n                    heartbeat_at TEXT,\n                    FOREIGN KEY (task_id) REFERENCES agent_tasks(id)\n                )"
+    },
+    {
+      "type": "table",
+      "name": "agent_task_runs",
+      "tbl_name": "agent_task_runs",
+      "sql": "CREATE TABLE agent_task_runs (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    runner TEXT NOT NULL,\n                    tick_at TEXT NOT NULL,\n                    outcome TEXT NOT NULL,\n                    task_id INTEGER,\n                    message TEXT,\n                    duration_ms INTEGER,\n                    FOREIGN KEY (task_id) REFERENCES agent_tasks(id)\n                )"
+    },
+    {
+      "type": "table",
+      "name": "agent_tasks",
+      "tbl_name": "agent_tasks",
+      "sql": "CREATE TABLE agent_tasks (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    slot_key TEXT UNIQUE NOT NULL,\n                    date_folder TEXT NOT NULL,\n                    title TEXT,\n                    slug TEXT,\n                    status TEXT NOT NULL DEFAULT 'QUEUED',\n                    previous_task_id INTEGER,\n                    prompt_file_path TEXT,\n                    prompt_text TEXT,\n                    completed_file_path TEXT,\n                    completed_text TEXT,\n                    changed_files_json TEXT,\n                    worker_pid INTEGER,\n                    started_at TEXT,\n                    completed_at TEXT,\n                    duration_seconds INTEGER,\n                    error_message TEXT,\n                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,\n                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,\n                    FOREIGN KEY (previous_task_id) REFERENCES agent_tasks(id)\n                )"
+    },
+    {
+      "type": "table",
+      "name": "draws",
+      "tbl_name": "draws",
+      "sql": "CREATE TABLE draws (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    draw TEXT NOT NULL,\n                    date TEXT NOT NULL,\n                    lottery_type TEXT NOT NULL,\n                    numbers TEXT NOT NULL,\n                    special INTEGER DEFAULT 0,\n                    created_at TEXT DEFAULT CURRENT_TIMESTAMP, jackpot_amount REAL DEFAULT NULL, sell_amount REAL DEFAULT NULL, total_amount REAL DEFAULT NULL, numbers_positional TEXT DEFAULT NULL,\n                    UNIQUE(draw, lottery_type)\n                )"
+    },
+    {
+      "type": "table",
+      "name": "prediction_explanations",
+      "tbl_name": "prediction_explanations",
+      "sql": "CREATE TABLE prediction_explanations (\n    id INTEGER PRIMARY KEY AUTOINCREMENT,\n    prediction_run_id INTEGER,\n    lottery_type TEXT NOT NULL,\n    profile TEXT NOT NULL DEFAULT 'balanced',\n    explanation_json TEXT NOT NULL,\n    created_at TEXT DEFAULT CURRENT_TIMESTAMP,\n    UNIQUE(prediction_run_id)\n)"
+    },
+    {
+      "type": "table",
+      "name": "prediction_items",
+      "tbl_name": "prediction_items",
+      "sql": "CREATE TABLE prediction_items (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    run_id INTEGER NOT NULL,\n                    bet_index INTEGER NOT NULL,\n                    numbers TEXT NOT NULL,\n                    special INTEGER,\n                    status TEXT DEFAULT 'PENDING',\n                    created_at TEXT DEFAULT CURRENT_TIMESTAMP, strategy_name TEXT, num_bets INTEGER, zone_coverage TEXT DEFAULT NULL,\n                    FOREIGN KEY (run_id) REFERENCES prediction_runs(id)\n                )"
+    },
+    {
+      "type": "table",
+      "name": "prediction_results",
+      "tbl_name": "prediction_results",
+      "sql": "CREATE TABLE prediction_results (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    item_id INTEGER NOT NULL UNIQUE,\n                    actual_draw TEXT NOT NULL,\n                    actual_date TEXT,\n                    actual_numbers TEXT NOT NULL,\n                    actual_special INTEGER,\n                    hit_count INTEGER NOT NULL,\n                    matched_numbers TEXT NOT NULL,\n                    special_hit INTEGER DEFAULT 0,\n                    resolved_at TEXT DEFAULT CURRENT_TIMESTAMP, researched TEXT DEFAULT '無', wq_score INTEGER DEFAULT NULL, split_risk TEXT DEFAULT NULL,\n                    FOREIGN KEY (item_id) REFERENCES prediction_items(id)\n                )"
+    },
+    {
+      "type": "table",
+      "name": "prediction_review_status",
+      "tbl_name": "prediction_review_status",
+      "sql": "CREATE TABLE prediction_review_status (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    prediction_run_id INTEGER,\n                    review_session_id INTEGER,\n                    review_status TEXT DEFAULT 'UNREVIEWED',\n                    resolved_at TEXT,\n                    notes TEXT,\n                    FOREIGN KEY (prediction_run_id) REFERENCES prediction_runs(id),\n                    FOREIGN KEY (review_session_id) REFERENCES review_sessions(id)\n                )"
+    },
+    {
+      "type": "table",
+      "name": "prediction_runs",
+      "tbl_name": "prediction_runs",
+      "sql": "CREATE TABLE prediction_runs (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    lottery_type TEXT NOT NULL,\n                    latest_known_draw TEXT NOT NULL,\n                    latest_known_date TEXT,\n                    strategy_name TEXT NOT NULL,\n                    notes TEXT,\n                    created_at TEXT DEFAULT CURRENT_TIMESTAMP\n                , snapshot_source TEXT DEFAULT 'VALID', analyzed TEXT DEFAULT '未研究', analysis_note TEXT, review_json TEXT)"
+    },
+    {
+      "type": "table",
+      "name": "review_actions",
+      "tbl_name": "review_actions",
+      "sql": "CREATE TABLE review_actions (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    session_id INTEGER NOT NULL,\n                    priority TEXT DEFAULT 'P2',\n                    action_title TEXT,\n                    action_description TEXT,\n                    expected_gain TEXT,\n                    cost_level TEXT,\n                    risk_level TEXT,\n                    validation_method TEXT,\n                    stop_condition TEXT,\n                    status TEXT DEFAULT 'OPEN',\n                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,\n                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,\n                    FOREIGN KEY (session_id) REFERENCES review_sessions(id)\n                )"
+    },
+    {
+      "type": "table",
+      "name": "review_findings",
+      "tbl_name": "review_findings",
+      "sql": "CREATE TABLE review_findings (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    session_id INTEGER NOT NULL,\n                    section_type TEXT NOT NULL,\n                    title TEXT,\n                    content TEXT,\n                    evidence_type TEXT DEFAULT 'UNSURE',\n                    sort_order INTEGER DEFAULT 0,\n                    FOREIGN KEY (session_id) REFERENCES review_sessions(id)\n                )"
+    },
+    {
+      "type": "table",
+      "name": "review_hypotheses",
+      "tbl_name": "review_hypotheses",
+      "sql": "CREATE TABLE review_hypotheses (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    session_id INTEGER NOT NULL,\n                    hypothesis_type TEXT DEFAULT 'other',\n                    description TEXT,\n                    expected_impact TEXT,\n                    validation_method TEXT,\n                    kill_condition TEXT,\n                    status TEXT DEFAULT 'PENDING',\n                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,\n                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,\n                    FOREIGN KEY (session_id) REFERENCES review_sessions(id)\n                )"
+    },
+    {
+      "type": "table",
+      "name": "review_sessions",
+      "tbl_name": "review_sessions",
+      "sql": "CREATE TABLE review_sessions (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    game TEXT NOT NULL,\n                    draw TEXT,\n                    draw_date TEXT,\n                    session_type TEXT NOT NULL DEFAULT 'daily_review',\n                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,\n                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,\n                    summary TEXT,\n                    final_decision TEXT DEFAULT 'NO_ACTION',\n                    confidence_level TEXT DEFAULT 'LOW',\n                    raw_report_text TEXT,\n                    parsed_successfully INTEGER DEFAULT 0,\n                    status TEXT DEFAULT 'OPEN'\n                )"
+    },
+    {
+      "type": "table",
+      "name": "shadow_experiments",
+      "tbl_name": "shadow_experiments",
+      "sql": "CREATE TABLE shadow_experiments (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    session_id INTEGER,\n                    game TEXT NOT NULL,\n                    experiment_name TEXT NOT NULL,\n                    base_strategy TEXT,\n                    experiment_strategy TEXT,\n                    experiment_config_json TEXT,\n                    status TEXT DEFAULT 'DRAFT',\n                    notes TEXT,\n                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,\n                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,\n                    FOREIGN KEY (session_id) REFERENCES review_sessions(id)\n                )"
+    },
+    {
+      "type": "table",
+      "name": "snapshot_schedule",
+      "tbl_name": "snapshot_schedule",
+      "sql": "CREATE TABLE snapshot_schedule (\n                    id INTEGER PRIMARY KEY AUTOINCREMENT,\n                    lottery_type TEXT NOT NULL,\n                    target_draw TEXT NOT NULL,\n                    target_date TEXT,\n                    scheduled_at TEXT DEFAULT CURRENT_TIMESTAMP,\n                    status TEXT DEFAULT 'SCHEDULED',\n                    run_id INTEGER,\n                    notes TEXT,\n                    UNIQUE(lottery_type, target_draw),\n                    FOREIGN KEY (run_id) REFERENCES prediction_runs(id)\n                )"
+    },
+    {
+      "type": "table",
+      "name": "sqlite_sequence",
+      "tbl_name": "sqlite_sequence",
+      "sql": "CREATE TABLE sqlite_sequence(name,seq)"
+    },
+    {
+      "type": "table",
+      "name": "strategy_prediction_replays",
+      "tbl_name": "strategy_prediction_replays",
+      "sql": "CREATE TABLE \"strategy_prediction_replays\" (\n  id INTEGER PRIMARY KEY AUTOINCREMENT, lottery_type TEXT NOT NULL,\n  target_draw TEXT NOT NULL, target_date TEXT, strategy_id TEXT NOT NULL,\n  strategy_name TEXT, strategy_version TEXT, history_cutoff_draw TEXT,\n  replay_status TEXT NOT NULL, reject_reason TEXT, predicted_numbers TEXT,\n  predicted_special INTEGER, actual_numbers TEXT, actual_special INTEGER,\n  hit_numbers TEXT, hit_count INTEGER DEFAULT 0, special_hit INTEGER DEFAULT 0,\n  replay_run_id TEXT, generated_at TEXT DEFAULT (datetime('now')),\n  truth_level TEXT DEFAULT NULL, controlled_apply_id TEXT DEFAULT NULL,\n  source TEXT DEFAULT NULL, provenance_hash TEXT DEFAULT NULL,\n  provenance_source TEXT DEFAULT NULL, dry_run INTEGER DEFAULT 0,\n  prediction_cutoff_date TEXT, prediction_generated_at TEXT,\n  bet_index INTEGER NOT NULL DEFAULT 1,\n  UNIQUE(lottery_type, target_draw, strategy_id, bet_index)\n)"
+    },
+    {
+      "type": "table",
+      "name": "strategy_replay_runs",
+      "tbl_name": "strategy_replay_runs",
+      "sql": "CREATE TABLE strategy_replay_runs (\n            id               INTEGER PRIMARY KEY AUTOINCREMENT,\n            lottery_type     TEXT NOT NULL,\n            strategy_scope   TEXT NOT NULL,\n            started_at       TEXT NOT NULL,\n            finished_at      TEXT,\n            status           TEXT NOT NULL DEFAULT 'RUNNING',\n            generator_version TEXT,\n            data_hash        TEXT,\n            notes            TEXT,\n            created_at       TEXT DEFAULT (datetime('now'))\n        )"
+    },
+    {
+      "type": "view",
+      "name": "draws_big_lotto_canonical_main",
+      "tbl_name": "draws_big_lotto_canonical_main",
+      "sql": "CREATE VIEW draws_big_lotto_canonical_main AS\nSELECT d.*\nFROM draws d\nWHERE d.lottery_type = 'BIG_LOTTO'\n  AND d.draw NOT LIKE '%-%'\n  AND NOT (LENGTH(d.draw) = 8 AND d.draw LIKE '20%')\n  AND (\n    SELECT MAX(CAST(j.value AS INTEGER))\n    FROM json_each(d.numbers) j\n  ) > 25"
+    }
+  ],
+  "views": [
+    "draws_big_lotto_canonical_main"
+  ],
+  "power_lotto_canonical_view_present": false,
+  "big_lotto_canonical_view_present": true,
+  "strategy_prediction_replays_columns": [
+    {
+      "cid": 0,
+      "name": "id",
+      "type": "INTEGER",
+      "notnull": 0,
+      "dflt_value": null,
+      "pk": 1
+    },
+    {
+      "cid": 1,
+      "name": "lottery_type",
+      "type": "TEXT",
+      "notnull": 1,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 2,
+      "name": "target_draw",
+      "type": "TEXT",
+      "notnull": 1,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 3,
+      "name": "target_date",
+      "type": "TEXT",
+      "notnull": 0,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 4,
+      "name": "strategy_id",
+      "type": "TEXT",
+      "notnull": 1,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 5,
+      "name": "strategy_name",
+      "type": "TEXT",
+      "notnull": 0,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 6,
+      "name": "strategy_version",
+      "type": "TEXT",
+      "notnull": 0,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 7,
+      "name": "history_cutoff_draw",
+      "type": "TEXT",
+      "notnull": 0,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 8,
+      "name": "replay_status",
+      "type": "TEXT",
+      "notnull": 1,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 9,
+      "name": "reject_reason",
+      "type": "TEXT",
+      "notnull": 0,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 10,
+      "name": "predicted_numbers",
+      "type": "TEXT",
+      "notnull": 0,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 11,
+      "name": "predicted_special",
+      "type": "INTEGER",
+      "notnull": 0,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 12,
+      "name": "actual_numbers",
+      "type": "TEXT",
+      "notnull": 0,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 13,
+      "name": "actual_special",
+      "type": "INTEGER",
+      "notnull": 0,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 14,
+      "name": "hit_numbers",
+      "type": "TEXT",
+      "notnull": 0,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 15,
+      "name": "hit_count",
+      "type": "INTEGER",
+      "notnull": 0,
+      "dflt_value": "0",
+      "pk": 0
+    },
+    {
+      "cid": 16,
+      "name": "special_hit",
+      "type": "INTEGER",
+      "notnull": 0,
+      "dflt_value": "0",
+      "pk": 0
+    },
+    {
+      "cid": 17,
+      "name": "replay_run_id",
+      "type": "TEXT",
+      "notnull": 0,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 18,
+      "name": "generated_at",
+      "type": "TEXT",
+      "notnull": 0,
+      "dflt_value": "datetime('now')",
+      "pk": 0
+    },
+    {
+      "cid": 19,
+      "name": "truth_level",
+      "type": "TEXT",
+      "notnull": 0,
+      "dflt_value": "NULL",
+      "pk": 0
+    },
+    {
+      "cid": 20,
+      "name": "controlled_apply_id",
+      "type": "TEXT",
+      "notnull": 0,
+      "dflt_value": "NULL",
+      "pk": 0
+    },
+    {
+      "cid": 21,
+      "name": "source",
+      "type": "TEXT",
+      "notnull": 0,
+      "dflt_value": "NULL",
+      "pk": 0
+    },
+    {
+      "cid": 22,
+      "name": "provenance_hash",
+      "type": "TEXT",
+      "notnull": 0,
+      "dflt_value": "NULL",
+      "pk": 0
+    },
+    {
+      "cid": 23,
+      "name": "provenance_source",
+      "type": "TEXT",
+      "notnull": 0,
+      "dflt_value": "NULL",
+      "pk": 0
+    },
+    {
+      "cid": 24,
+      "name": "dry_run",
+      "type": "INTEGER",
+      "notnull": 0,
+      "dflt_value": "0",
+      "pk": 0
+    },
+    {
+      "cid": 25,
+      "name": "prediction_cutoff_date",
+      "type": "TEXT",
+      "notnull": 0,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 26,
+      "name": "prediction_generated_at",
+      "type": "TEXT",
+      "notnull": 0,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 27,
+      "name": "bet_index",
+      "type": "INTEGER",
+      "notnull": 1,
+      "dflt_value": "1",
+      "pk": 0
+    }
+  ],
+  "draws_columns": [
+    {
+      "cid": 0,
+      "name": "id",
+      "type": "INTEGER",
+      "notnull": 0,
+      "dflt_value": null,
+      "pk": 1
+    },
+    {
+      "cid": 1,
+      "name": "draw",
+      "type": "TEXT",
+      "notnull": 1,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 2,
+      "name": "date",
+      "type": "TEXT",
+      "notnull": 1,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 3,
+      "name": "lottery_type",
+      "type": "TEXT",
+      "notnull": 1,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 4,
+      "name": "numbers",
+      "type": "TEXT",
+      "notnull": 1,
+      "dflt_value": null,
+      "pk": 0
+    },
+    {
+      "cid": 5,
+      "name": "special",
+      "type": "INTEGER",
+      "notnull": 0,
+      "dflt_value": "0",
+      "pk": 0
+    },
+    {
+      "cid": 6,
+      "name": "created_at",
+      "type": "TEXT",
+      "notnull": 0,
+      "dflt_value": "CURRENT_TIMESTAMP",
+      "pk": 0
+    },
+    {
+      "cid": 7,
+      "name": "jackpot_amount",
+      "type": "REAL",
+      "notnull": 0,
+      "dflt_value": "NULL",
+      "pk": 0
+    },
+    {
+      "cid": 8,
+      "name": "sell_amount",
+      "type": "REAL",
+      "notnull": 0,
+      "dflt_value": "NULL",
+      "pk": 0
+    },
+    {
+      "cid": 9,
+      "name": "total_amount",
+      "type": "REAL",
+      "notnull": 0,
+      "dflt_value": "NULL",
+      "pk": 0
+    },
+    {
+      "cid": 10,
+      "name": "numbers_positional",
+      "type": "TEXT",
+      "notnull": 0,
+      "dflt_value": "NULL",
+      "pk": 0
+    }
+  ],
+  "counts": {
+    "strategy_prediction_replays_total": 94924,
+    "draws_total": 64398,
+    "big_lotto_canonical_main_rows": 2120
+  },
+  "replay_rows_by_lottery": [
+    {
+      "lottery_type": "BIG_LOTTO",
+      "replay_rows": 24140,
+      "strategy_count": 11,
+      "distinct_target_draws": 1552,
+      "min_draw": 99000056,
+      "max_draw": 115000055,
+      "max_bet_index": 4
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "replay_rows": 34680,
+      "strategy_count": 15,
+      "distinct_target_draws": 1550,
+      "min_draw": 99000212,
+      "max_draw": 115000121,
+      "max_bet_index": 5
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "replay_rows": 36104,
+      "strategy_count": 10,
+      "distinct_target_draws": 1551,
+      "min_draw": 99000055,
+      "max_draw": 115000041,
+      "max_bet_index": 5
+    }
+  ],
+  "replay_rows_by_strategy": [
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 102000011,
+      "max_draw": 115000054,
+      "max_bet_index": 1,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "biglotto_deviation_2bet",
+      "replay_rows": 1570,
+      "distinct_target_draws": 1550,
+      "min_draw": 99000056,
+      "max_draw": 115000053,
+      "max_bet_index": 2,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "biglotto_echo_aware_3bet",
+      "replay_rows": 4500,
+      "distinct_target_draws": 1500,
+      "min_draw": 102000012,
+      "max_draw": 115000055,
+      "max_bet_index": 3,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "biglotto_triple_strike",
+      "replay_rows": 1570,
+      "distinct_target_draws": 1550,
+      "min_draw": 99000056,
+      "max_draw": 115000053,
+      "max_bet_index": 2,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "biglotto_ts3_markov_4bet_w30",
+      "replay_rows": 6000,
+      "distinct_target_draws": 1500,
+      "min_draw": 102000012,
+      "max_draw": 115000055,
+      "max_bet_index": 4,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "cold_complement_biglotto",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 102000011,
+      "max_draw": 115000054,
+      "max_bet_index": 1,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "coldpool15_biglotto",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 102000011,
+      "max_draw": 115000054,
+      "max_bet_index": 1,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "fourier30_markov30_biglotto",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 102000011,
+      "max_draw": 115000054,
+      "max_bet_index": 1,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "markov_2bet_biglotto",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 102000011,
+      "max_draw": 115000054,
+      "max_bet_index": 1,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "markov_single_biglotto",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 102000011,
+      "max_draw": 115000054,
+      "max_bet_index": 1,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "ts3_regime_3bet",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 102000010,
+      "max_draw": 115000053,
+      "max_bet_index": 1,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "539_3bet_orthogonal",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 110000190,
+      "max_draw": 115000121,
+      "max_bet_index": 1,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "acb_1bet",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 110000190,
+      "max_draw": 115000121,
+      "max_bet_index": 1,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "acb_markov_midfreq",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 110000190,
+      "max_draw": 115000121,
+      "max_bet_index": 1,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "replay_rows": 4500,
+      "distinct_target_draws": 1500,
+      "min_draw": 110000190,
+      "max_draw": 115000121,
+      "max_bet_index": 3,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "acb_single_539",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 110000190,
+      "max_draw": 115000121,
+      "max_bet_index": 1,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "daily539_f4cold",
+      "replay_rows": 1590,
+      "distinct_target_draws": 1550,
+      "min_draw": 99000212,
+      "max_draw": 115000121,
+      "max_bet_index": 3,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "daily539_f4cold_3bet",
+      "replay_rows": 4500,
+      "distinct_target_draws": 1500,
+      "min_draw": 110000190,
+      "max_draw": 115000121,
+      "max_bet_index": 3,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "daily539_f4cold_5bet",
+      "replay_rows": 7500,
+      "distinct_target_draws": 1500,
+      "min_draw": 110000190,
+      "max_draw": 115000121,
+      "max_bet_index": 5,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "daily539_markov_cold",
+      "replay_rows": 1590,
+      "distinct_target_draws": 1550,
+      "min_draw": 99000212,
+      "max_draw": 115000121,
+      "max_bet_index": 3,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "markov_1bet_539",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 110000190,
+      "max_draw": 115000121,
+      "max_bet_index": 1,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "midfreq_acb_2bet",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 110000190,
+      "max_draw": 115000121,
+      "max_bet_index": 1,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "midfreq_fourier_2bet",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 110000190,
+      "max_draw": 115000121,
+      "max_bet_index": 1,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "p0b_539_3bet_f_cold_fmid",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 110000190,
+      "max_draw": 115000121,
+      "max_bet_index": 1,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "p0c_539_3bet_f_cold_x2",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 110000190,
+      "max_draw": 115000121,
+      "max_bet_index": 1,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "zone_gap_3bet_539",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 110000190,
+      "max_draw": 115000121,
+      "max_bet_index": 1,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "cold_complement_2bet",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 101000002,
+      "max_draw": 115000040,
+      "max_bet_index": 1,
+      "predicted_special_rows": 1500
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "fourier30_markov30_2bet",
+      "replay_rows": 1501,
+      "distinct_target_draws": 1501,
+      "min_draw": 101000002,
+      "max_draw": 115000041,
+      "max_bet_index": 1,
+      "predicted_special_rows": 1500
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "fourier_rhythm_3bet",
+      "replay_rows": 4503,
+      "distinct_target_draws": 1501,
+      "min_draw": 101000002,
+      "max_draw": 115000041,
+      "max_bet_index": 3,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "midfreq_fourier_2bet",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 101000002,
+      "max_draw": 115000040,
+      "max_bet_index": 1,
+      "predicted_special_rows": 1500
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "replay_rows": 4500,
+      "distinct_target_draws": 1500,
+      "min_draw": 101000002,
+      "max_draw": 115000040,
+      "max_bet_index": 3,
+      "predicted_special_rows": 1500
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "power_fourier_rhythm_2bet",
+      "replay_rows": 3000,
+      "distinct_target_draws": 1500,
+      "min_draw": 101000003,
+      "max_draw": 115000041,
+      "max_bet_index": 2,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "power_orthogonal_5bet",
+      "replay_rows": 7550,
+      "distinct_target_draws": 1550,
+      "min_draw": 99000055,
+      "max_draw": 115000040,
+      "max_bet_index": 5,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "power_precision_3bet",
+      "replay_rows": 4550,
+      "distinct_target_draws": 1550,
+      "min_draw": 99000055,
+      "max_draw": 115000040,
+      "max_bet_index": 3,
+      "predicted_special_rows": 0
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "pp3_freqort_4bet",
+      "replay_rows": 6000,
+      "distinct_target_draws": 1500,
+      "min_draw": 101000002,
+      "max_draw": 115000040,
+      "max_bet_index": 4,
+      "predicted_special_rows": 1500
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "zonal_entropy_2bet",
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "min_draw": 101000002,
+      "max_draw": 115000040,
+      "max_bet_index": 1,
+      "predicted_special_rows": 1500
+    }
+  ],
+  "status_counts": [
+    {
+      "replay_status": "PREDICTED",
+      "dry_run": 0,
+      "rows": 94924
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "p_series": "P27A",
+  "title": "Replay Page UI Console 404 Cleanup",
+  "date": "20260521",
+  "final_classification": "P27A_REPLAY_UI_CONSOLE_404_CLEANUP_MERGED_TO_MAIN",
+  "dry_run_only": true,
+  "production_rows_verified": 12460,
+  "no_db_write": true,
+  "no_migrations": true,
+  "no_new_tables": true,
+  "no_strategy_execution": true,
+  "fixes": [
+    {
+      "id": "fix1",
+      "description": "Method description card: removed console.error for missing DOM elements",
+      "file": "src/core/App.js",
+      "change": "console.error demoted to silent return"
+    },
+    {
+      "id": "fix2",
+      "description": "/api/performance/regime: UIManager now uses apiClient.baseUrl absolute URL",
+      "file": "src/ui/UIManager.js",
+      "change": "bare relative /api/performance/regime -> ${apiClient.baseUrl}/api/performance/regime"
+    },
+    {
+      "id": "fix3",
+      "description": "Waterline error handler demoted console.error -> console.warn",
+      "file": "src/ui/UIManager.js",
+      "change": "console.error -> console.warn"
+    },
+    {
+      "id": "fix4",
+      "description": "window.API_BASE injected early in index.html head to fix all replay fetch calls hitting 8081 instead of 8002",
+      "file": "index.html",
+      "change": "Added window.API_BASE = '...8002' before replay IIFE"
+    },
+    {
+      "id": "fix5",
+      "description": "[P7] lifecycle registry load error demoted from console.error to console.warn",
+      "file": "index.html",
+      "change": "console.error -> console.warn"
+    }
+  ],
+  "tests": {
+    "file": "tests/test_p27a_replay_ui_console_404_cleanup.py",
+    "count": 13,
+    "result": "PASS"
+  }
+}

@@ -1,0 +1,1106 @@
+{
+  "blockers": [],
+  "candidate_results": [
+    {
+      "bet_index": 1,
+      "candidate_id": "bet2_fourier_expansion_biglotto:1",
+      "candidate_label": "大樂透 Fourier 2注 Expansion",
+      "chronological_split": {
+        "absolute_delta": 0.08,
+        "first_half_at_least_one_hit_rate": 0.56,
+        "first_half_rows": 25,
+        "second_half_at_least_one_hit_rate": 0.64,
+        "second_half_rows": 25,
+        "stability_label": "stable_descriptive"
+      },
+      "classification": {
+        "evidence": {
+          "above_baseline_threshold": 0.9,
+          "absolute_split_delta": 0.08,
+          "below_baseline_threshold": 0.1,
+          "empirical_percentile": 0.638,
+          "observed_at_least_one_hit_rate": 0.6,
+          "permutation_mean_at_least_one_hit_rate": 0.58234,
+          "row_count": 50,
+          "stability_label": "stable_descriptive"
+        },
+        "label": "pilot_near_permutation_baseline"
+      },
+      "lottery": "BIG_LOTTO",
+      "metrics": {
+        "at_least_one_hit_count": 30,
+        "at_least_one_hit_rate": 0.6,
+        "average_hit_count": 0.88,
+        "draw_range": {
+          "first": "115000005",
+          "first_date": "2026/01/16",
+          "last": "115000054",
+          "last_date": "2026/05/19"
+        },
+        "hit_count_distribution": {
+          "0": 20,
+          "1": 19,
+          "2": 8,
+          "3": 3
+        },
+        "row_count": 50,
+        "special_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        },
+        "zone2_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        }
+      },
+      "permutation_baseline": {
+        "at_least_one_hit_rate": {
+          "distribution": {
+            "max": 0.8,
+            "mean": 0.58234,
+            "min": 0.34
+          },
+          "empirical_percentile": 0.638,
+          "observed": 0.6,
+          "observed_at_or_above_permutation_count": 638,
+          "permutation_at_or_above_observed_count": 470
+        },
+        "average_hit_count": {
+          "distribution": {
+            "max": 1.14,
+            "mean": 0.78708,
+            "min": 0.4
+          },
+          "empirical_percentile": 0.834,
+          "observed": 0.88,
+          "observed_at_or_above_permutation_count": 834,
+          "permutation_at_or_above_observed_count": 219
+        },
+        "permutations": 1000,
+        "seed": 543010,
+        "special_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        },
+        "zone2_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        }
+      },
+      "strategy_id": "bet2_fourier_expansion_biglotto"
+    },
+    {
+      "bet_index": 1,
+      "candidate_id": "biglotto_deviation_2bet:1",
+      "candidate_label": "大樂透 Deviation 2注",
+      "chronological_split": {
+        "absolute_delta": 0.08,
+        "first_half_at_least_one_hit_rate": 0.68,
+        "first_half_rows": 25,
+        "second_half_at_least_one_hit_rate": 0.6,
+        "second_half_rows": 25,
+        "stability_label": "stable_descriptive"
+      },
+      "classification": {
+        "evidence": {
+          "above_baseline_threshold": 0.9,
+          "absolute_split_delta": 0.08,
+          "below_baseline_threshold": 0.1,
+          "empirical_percentile": 0.267,
+          "observed_at_least_one_hit_rate": 0.64,
+          "permutation_mean_at_least_one_hit_rate": 0.68894,
+          "row_count": 50,
+          "stability_label": "stable_descriptive"
+        },
+        "label": "pilot_near_permutation_baseline"
+      },
+      "lottery": "BIG_LOTTO",
+      "metrics": {
+        "at_least_one_hit_count": 32,
+        "at_least_one_hit_rate": 0.64,
+        "average_hit_count": 0.78,
+        "draw_range": {
+          "first": "115000004",
+          "first_date": "2026/01/13",
+          "last": "115000053",
+          "last_date": "2026/05/15"
+        },
+        "hit_count_distribution": {
+          "0": 18,
+          "1": 26,
+          "2": 5,
+          "3": 1
+        },
+        "row_count": 50,
+        "special_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        },
+        "zone2_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        }
+      },
+      "permutation_baseline": {
+        "at_least_one_hit_rate": {
+          "distribution": {
+            "max": 0.9,
+            "mean": 0.68894,
+            "min": 0.44
+          },
+          "empirical_percentile": 0.267,
+          "observed": 0.64,
+          "observed_at_or_above_permutation_count": 267,
+          "permutation_at_or_above_observed_count": 838
+        },
+        "average_hit_count": {
+          "distribution": {
+            "max": 1.38,
+            "mean": 0.97346,
+            "min": 0.62
+          },
+          "empirical_percentile": 0.051,
+          "observed": 0.78,
+          "observed_at_or_above_permutation_count": 51,
+          "permutation_at_or_above_observed_count": 965
+        },
+        "permutations": 1000,
+        "seed": 543010,
+        "special_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        },
+        "zone2_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        }
+      },
+      "strategy_id": "biglotto_deviation_2bet"
+    },
+    {
+      "bet_index": 1,
+      "candidate_id": "biglotto_echo_aware_3bet:1",
+      "candidate_label": "大樂透 Echo-Aware 混合 3注",
+      "chronological_split": {
+        "absolute_delta": 0.24,
+        "first_half_at_least_one_hit_rate": 0.72,
+        "first_half_rows": 25,
+        "second_half_at_least_one_hit_rate": 0.48,
+        "second_half_rows": 25,
+        "stability_label": "late_drop"
+      },
+      "classification": {
+        "evidence": {
+          "above_baseline_threshold": 0.9,
+          "absolute_split_delta": 0.24,
+          "below_baseline_threshold": 0.1,
+          "empirical_percentile": 0.399,
+          "observed_at_least_one_hit_rate": 0.6,
+          "permutation_mean_at_least_one_hit_rate": 0.6253,
+          "row_count": 50,
+          "stability_label": "late_drop"
+        },
+        "label": "chronologically_unstable"
+      },
+      "lottery": "BIG_LOTTO",
+      "metrics": {
+        "at_least_one_hit_count": 30,
+        "at_least_one_hit_rate": 0.6,
+        "average_hit_count": 0.88,
+        "draw_range": {
+          "first": "115000006",
+          "first_date": "2026/01/20",
+          "last": "115000055",
+          "last_date": "2026/05/22"
+        },
+        "hit_count_distribution": {
+          "0": 20,
+          "1": 18,
+          "2": 10,
+          "3": 2
+        },
+        "row_count": 50,
+        "special_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        },
+        "zone2_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        }
+      },
+      "permutation_baseline": {
+        "at_least_one_hit_rate": {
+          "distribution": {
+            "max": 0.86,
+            "mean": 0.6253,
+            "min": 0.42
+          },
+          "empirical_percentile": 0.399,
+          "observed": 0.6,
+          "observed_at_or_above_permutation_count": 399,
+          "permutation_at_or_above_observed_count": 703
+        },
+        "average_hit_count": {
+          "distribution": {
+            "max": 1.48,
+            "mean": 0.9437,
+            "min": 0.5
+          },
+          "empirical_percentile": 0.349,
+          "observed": 0.88,
+          "observed_at_or_above_permutation_count": 349,
+          "permutation_at_or_above_observed_count": 708
+        },
+        "permutations": 1000,
+        "seed": 543010,
+        "special_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        },
+        "zone2_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        }
+      },
+      "strategy_id": "biglotto_echo_aware_3bet"
+    },
+    {
+      "bet_index": 1,
+      "candidate_id": "biglotto_triple_strike:1",
+      "candidate_label": "大樂透 Triple Strike",
+      "chronological_split": {
+        "absolute_delta": 0.12,
+        "first_half_at_least_one_hit_rate": 0.56,
+        "first_half_rows": 25,
+        "second_half_at_least_one_hit_rate": 0.68,
+        "second_half_rows": 25,
+        "stability_label": "late_improvement"
+      },
+      "classification": {
+        "evidence": {
+          "above_baseline_threshold": 0.9,
+          "absolute_split_delta": 0.12,
+          "below_baseline_threshold": 0.1,
+          "empirical_percentile": 0.773,
+          "observed_at_least_one_hit_rate": 0.62,
+          "permutation_mean_at_least_one_hit_rate": 0.5815,
+          "row_count": 50,
+          "stability_label": "late_improvement"
+        },
+        "label": "chronologically_unstable"
+      },
+      "lottery": "BIG_LOTTO",
+      "metrics": {
+        "at_least_one_hit_count": 31,
+        "at_least_one_hit_rate": 0.62,
+        "average_hit_count": 0.9,
+        "draw_range": {
+          "first": "115000004",
+          "first_date": "2026/01/13",
+          "last": "115000053",
+          "last_date": "2026/05/15"
+        },
+        "hit_count_distribution": {
+          "0": 19,
+          "1": 20,
+          "2": 8,
+          "3": 3
+        },
+        "row_count": 50,
+        "special_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        },
+        "zone2_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        }
+      },
+      "permutation_baseline": {
+        "at_least_one_hit_rate": {
+          "distribution": {
+            "max": 0.8,
+            "mean": 0.5815,
+            "min": 0.38
+          },
+          "empirical_percentile": 0.773,
+          "observed": 0.62,
+          "observed_at_or_above_permutation_count": 773,
+          "permutation_at_or_above_observed_count": 338
+        },
+        "average_hit_count": {
+          "distribution": {
+            "max": 1.14,
+            "mean": 0.78362,
+            "min": 0.44
+          },
+          "empirical_percentile": 0.878,
+          "observed": 0.9,
+          "observed_at_or_above_permutation_count": 878,
+          "permutation_at_or_above_observed_count": 160
+        },
+        "permutations": 1000,
+        "seed": 543010,
+        "special_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        },
+        "zone2_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        }
+      },
+      "strategy_id": "biglotto_triple_strike"
+    },
+    {
+      "bet_index": 1,
+      "candidate_id": "biglotto_ts3_markov_4bet_w30:1",
+      "candidate_label": "大樂透 TS3+Markov(w30) 4注",
+      "chronological_split": {
+        "absolute_delta": 0.12,
+        "first_half_at_least_one_hit_rate": 0.56,
+        "first_half_rows": 25,
+        "second_half_at_least_one_hit_rate": 0.68,
+        "second_half_rows": 25,
+        "stability_label": "late_improvement"
+      },
+      "classification": {
+        "evidence": {
+          "above_baseline_threshold": 0.9,
+          "absolute_split_delta": 0.12,
+          "below_baseline_threshold": 0.1,
+          "empirical_percentile": 0.749,
+          "observed_at_least_one_hit_rate": 0.62,
+          "permutation_mean_at_least_one_hit_rate": 0.58362,
+          "row_count": 50,
+          "stability_label": "late_improvement"
+        },
+        "label": "chronologically_unstable"
+      },
+      "lottery": "BIG_LOTTO",
+      "metrics": {
+        "at_least_one_hit_count": 31,
+        "at_least_one_hit_rate": 0.62,
+        "average_hit_count": 0.92,
+        "draw_range": {
+          "first": "115000006",
+          "first_date": "2026/01/20",
+          "last": "115000055",
+          "last_date": "2026/05/22"
+        },
+        "hit_count_distribution": {
+          "0": 19,
+          "1": 19,
+          "2": 9,
+          "3": 3
+        },
+        "row_count": 50,
+        "special_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        },
+        "zone2_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        }
+      },
+      "permutation_baseline": {
+        "at_least_one_hit_rate": {
+          "distribution": {
+            "max": 0.8,
+            "mean": 0.58362,
+            "min": 0.38
+          },
+          "empirical_percentile": 0.749,
+          "observed": 0.62,
+          "observed_at_or_above_permutation_count": 749,
+          "permutation_at_or_above_observed_count": 350
+        },
+        "average_hit_count": {
+          "distribution": {
+            "max": 1.18,
+            "mean": 0.79064,
+            "min": 0.46
+          },
+          "empirical_percentile": 0.888,
+          "observed": 0.92,
+          "observed_at_or_above_permutation_count": 888,
+          "permutation_at_or_above_observed_count": 153
+        },
+        "permutations": 1000,
+        "seed": 543010,
+        "special_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        },
+        "zone2_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        }
+      },
+      "strategy_id": "biglotto_ts3_markov_4bet_w30"
+    },
+    {
+      "bet_index": 1,
+      "candidate_id": "coldpool15_biglotto:1",
+      "candidate_label": "大樂透 Cold Pool-15 Pick-6",
+      "chronological_split": {
+        "absolute_delta": 0.2,
+        "first_half_at_least_one_hit_rate": 0.64,
+        "first_half_rows": 25,
+        "second_half_at_least_one_hit_rate": 0.44,
+        "second_half_rows": 25,
+        "stability_label": "late_drop"
+      },
+      "classification": {
+        "evidence": {
+          "above_baseline_threshold": 0.9,
+          "absolute_split_delta": 0.2,
+          "below_baseline_threshold": 0.1,
+          "empirical_percentile": 0.066,
+          "observed_at_least_one_hit_rate": 0.54,
+          "permutation_mean_at_least_one_hit_rate": 0.65428,
+          "row_count": 50,
+          "stability_label": "late_drop"
+        },
+        "label": "chronologically_unstable"
+      },
+      "lottery": "BIG_LOTTO",
+      "metrics": {
+        "at_least_one_hit_count": 27,
+        "at_least_one_hit_rate": 0.54,
+        "average_hit_count": 0.74,
+        "draw_range": {
+          "first": "115000005",
+          "first_date": "2026/01/16",
+          "last": "115000054",
+          "last_date": "2026/05/19"
+        },
+        "hit_count_distribution": {
+          "0": 23,
+          "1": 19,
+          "2": 6,
+          "3": 2
+        },
+        "row_count": 50,
+        "special_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        },
+        "zone2_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        }
+      },
+      "permutation_baseline": {
+        "at_least_one_hit_rate": {
+          "distribution": {
+            "max": 0.84,
+            "mean": 0.65428,
+            "min": 0.44
+          },
+          "empirical_percentile": 0.066,
+          "observed": 0.54,
+          "observed_at_or_above_permutation_count": 66,
+          "permutation_at_or_above_observed_count": 963
+        },
+        "average_hit_count": {
+          "distribution": {
+            "max": 1.24,
+            "mean": 0.89988,
+            "min": 0.54
+          },
+          "empirical_percentile": 0.094,
+          "observed": 0.74,
+          "observed_at_or_above_permutation_count": 94,
+          "permutation_at_or_above_observed_count": 930
+        },
+        "permutations": 1000,
+        "seed": 543010,
+        "special_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        },
+        "zone2_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        }
+      },
+      "strategy_id": "coldpool15_biglotto"
+    },
+    {
+      "bet_index": 1,
+      "candidate_id": "fourier30_markov30_biglotto:1",
+      "candidate_label": "大樂透 Fourier30+Markov30",
+      "chronological_split": {
+        "absolute_delta": 0.24,
+        "first_half_at_least_one_hit_rate": 0.72,
+        "first_half_rows": 25,
+        "second_half_at_least_one_hit_rate": 0.48,
+        "second_half_rows": 25,
+        "stability_label": "late_drop"
+      },
+      "classification": {
+        "evidence": {
+          "above_baseline_threshold": 0.9,
+          "absolute_split_delta": 0.24,
+          "below_baseline_threshold": 0.1,
+          "empirical_percentile": 0.255,
+          "observed_at_least_one_hit_rate": 0.6,
+          "permutation_mean_at_least_one_hit_rate": 0.65028,
+          "row_count": 50,
+          "stability_label": "late_drop"
+        },
+        "label": "chronologically_unstable"
+      },
+      "lottery": "BIG_LOTTO",
+      "metrics": {
+        "at_least_one_hit_count": 30,
+        "at_least_one_hit_rate": 0.6,
+        "average_hit_count": 0.72,
+        "draw_range": {
+          "first": "115000005",
+          "first_date": "2026/01/16",
+          "last": "115000054",
+          "last_date": "2026/05/19"
+        },
+        "hit_count_distribution": {
+          "0": 20,
+          "1": 25,
+          "2": 4,
+          "3": 1
+        },
+        "row_count": 50,
+        "special_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        },
+        "zone2_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        }
+      },
+      "permutation_baseline": {
+        "at_least_one_hit_rate": {
+          "distribution": {
+            "max": 0.88,
+            "mean": 0.65028,
+            "min": 0.44
+          },
+          "empirical_percentile": 0.255,
+          "observed": 0.6,
+          "observed_at_or_above_permutation_count": 255,
+          "permutation_at_or_above_observed_count": 823
+        },
+        "average_hit_count": {
+          "distribution": {
+            "max": 1.42,
+            "mean": 0.986,
+            "min": 0.58
+          },
+          "empirical_percentile": 0.023,
+          "observed": 0.72,
+          "observed_at_or_above_permutation_count": 23,
+          "permutation_at_or_above_observed_count": 984
+        },
+        "permutations": 1000,
+        "seed": 543010,
+        "special_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        },
+        "zone2_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        }
+      },
+      "strategy_id": "fourier30_markov30_biglotto"
+    },
+    {
+      "bet_index": 1,
+      "candidate_id": "markov_2bet_biglotto:1",
+      "candidate_label": "大樂透 Markov 2注",
+      "chronological_split": {
+        "absolute_delta": 0.04,
+        "first_half_at_least_one_hit_rate": 0.52,
+        "first_half_rows": 25,
+        "second_half_at_least_one_hit_rate": 0.56,
+        "second_half_rows": 25,
+        "stability_label": "stable_descriptive"
+      },
+      "classification": {
+        "evidence": {
+          "above_baseline_threshold": 0.9,
+          "absolute_split_delta": 0.04,
+          "below_baseline_threshold": 0.1,
+          "empirical_percentile": 0.186,
+          "observed_at_least_one_hit_rate": 0.54,
+          "permutation_mean_at_least_one_hit_rate": 0.61146,
+          "row_count": 50,
+          "stability_label": "stable_descriptive"
+        },
+        "label": "pilot_near_permutation_baseline"
+      },
+      "lottery": "BIG_LOTTO",
+      "metrics": {
+        "at_least_one_hit_count": 27,
+        "at_least_one_hit_rate": 0.54,
+        "average_hit_count": 0.7,
+        "draw_range": {
+          "first": "115000005",
+          "first_date": "2026/01/16",
+          "last": "115000054",
+          "last_date": "2026/05/19"
+        },
+        "hit_count_distribution": {
+          "0": 23,
+          "1": 19,
+          "2": 8
+        },
+        "row_count": 50,
+        "special_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        },
+        "zone2_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        }
+      },
+      "permutation_baseline": {
+        "at_least_one_hit_rate": {
+          "distribution": {
+            "max": 0.86,
+            "mean": 0.61146,
+            "min": 0.36
+          },
+          "empirical_percentile": 0.186,
+          "observed": 0.54,
+          "observed_at_or_above_permutation_count": 186,
+          "permutation_at_or_above_observed_count": 884
+        },
+        "average_hit_count": {
+          "distribution": {
+            "max": 1.22,
+            "mean": 0.84562,
+            "min": 0.5
+          },
+          "empirical_percentile": 0.121,
+          "observed": 0.7,
+          "observed_at_or_above_permutation_count": 121,
+          "permutation_at_or_above_observed_count": 910
+        },
+        "permutations": 1000,
+        "seed": 543010,
+        "special_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        },
+        "zone2_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        }
+      },
+      "strategy_id": "markov_2bet_biglotto"
+    },
+    {
+      "bet_index": 1,
+      "candidate_id": "markov_single_biglotto:1",
+      "candidate_label": "大樂透 Markov Single 1注",
+      "chronological_split": {
+        "absolute_delta": 0.04,
+        "first_half_at_least_one_hit_rate": 0.52,
+        "first_half_rows": 25,
+        "second_half_at_least_one_hit_rate": 0.56,
+        "second_half_rows": 25,
+        "stability_label": "stable_descriptive"
+      },
+      "classification": {
+        "evidence": {
+          "above_baseline_threshold": 0.9,
+          "absolute_split_delta": 0.04,
+          "below_baseline_threshold": 0.1,
+          "empirical_percentile": 0.18,
+          "observed_at_least_one_hit_rate": 0.54,
+          "permutation_mean_at_least_one_hit_rate": 0.60952,
+          "row_count": 50,
+          "stability_label": "stable_descriptive"
+        },
+        "label": "pilot_near_permutation_baseline"
+      },
+      "lottery": "BIG_LOTTO",
+      "metrics": {
+        "at_least_one_hit_count": 27,
+        "at_least_one_hit_rate": 0.54,
+        "average_hit_count": 0.7,
+        "draw_range": {
+          "first": "115000005",
+          "first_date": "2026/01/16",
+          "last": "115000054",
+          "last_date": "2026/05/19"
+        },
+        "hit_count_distribution": {
+          "0": 23,
+          "1": 19,
+          "2": 8
+        },
+        "row_count": 50,
+        "special_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        },
+        "zone2_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        }
+      },
+      "permutation_baseline": {
+        "at_least_one_hit_rate": {
+          "distribution": {
+            "max": 0.8,
+            "mean": 0.60952,
+            "min": 0.4
+          },
+          "empirical_percentile": 0.18,
+          "observed": 0.54,
+          "observed_at_or_above_permutation_count": 180,
+          "permutation_at_or_above_observed_count": 885
+        },
+        "average_hit_count": {
+          "distribution": {
+            "max": 1.32,
+            "mean": 0.8468,
+            "min": 0.46
+          },
+          "empirical_percentile": 0.116,
+          "observed": 0.7,
+          "observed_at_or_above_permutation_count": 116,
+          "permutation_at_or_above_observed_count": 914
+        },
+        "permutations": 1000,
+        "seed": 543010,
+        "special_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        },
+        "zone2_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        }
+      },
+      "strategy_id": "markov_single_biglotto"
+    },
+    {
+      "bet_index": 1,
+      "candidate_id": "ts3_regime_3bet:1",
+      "candidate_label": "大樂透 TS3+Regime 3注",
+      "chronological_split": {
+        "absolute_delta": 0.12,
+        "first_half_at_least_one_hit_rate": 0.56,
+        "first_half_rows": 25,
+        "second_half_at_least_one_hit_rate": 0.68,
+        "second_half_rows": 25,
+        "stability_label": "late_improvement"
+      },
+      "classification": {
+        "evidence": {
+          "above_baseline_threshold": 0.9,
+          "absolute_split_delta": 0.12,
+          "below_baseline_threshold": 0.1,
+          "empirical_percentile": 0.777,
+          "observed_at_least_one_hit_rate": 0.62,
+          "permutation_mean_at_least_one_hit_rate": 0.57616,
+          "row_count": 50,
+          "stability_label": "late_improvement"
+        },
+        "label": "chronologically_unstable"
+      },
+      "lottery": "BIG_LOTTO",
+      "metrics": {
+        "at_least_one_hit_count": 31,
+        "at_least_one_hit_rate": 0.62,
+        "average_hit_count": 0.9,
+        "draw_range": {
+          "first": "115000004",
+          "first_date": "2026/01/13",
+          "last": "115000053",
+          "last_date": "2026/05/15"
+        },
+        "hit_count_distribution": {
+          "0": 19,
+          "1": 20,
+          "2": 8,
+          "3": 3
+        },
+        "row_count": 50,
+        "special_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        },
+        "zone2_hit": {
+          "available": false,
+          "eligible_rows": 0,
+          "hit_count": null,
+          "hit_rate": null
+        }
+      },
+      "permutation_baseline": {
+        "at_least_one_hit_rate": {
+          "distribution": {
+            "max": 0.82,
+            "mean": 0.57616,
+            "min": 0.34
+          },
+          "empirical_percentile": 0.777,
+          "observed": 0.62,
+          "observed_at_or_above_permutation_count": 777,
+          "permutation_at_or_above_observed_count": 314
+        },
+        "average_hit_count": {
+          "distribution": {
+            "max": 1.18,
+            "mean": 0.77562,
+            "min": 0.42
+          },
+          "empirical_percentile": 0.887,
+          "observed": 0.9,
+          "observed_at_or_above_permutation_count": 887,
+          "permutation_at_or_above_observed_count": 149
+        },
+        "permutations": 1000,
+        "seed": 543010,
+        "special_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        },
+        "zone2_hit_rate": {
+          "available": false,
+          "distribution": {
+            "max": null,
+            "mean": null,
+            "min": null
+          },
+          "observed": null
+        }
+      },
+      "strategy_id": "ts3_regime_3bet"
+    }
+  ],
+  "classification": "descriptive_contract_validation_pilot_only",
+  "classification_summary": {
+    "chronologically_unstable": 6,
+    "insufficient_or_unsupported": 0,
+    "pilot_above_permutation_baseline": 0,
+    "pilot_below_permutation_baseline": 0,
+    "pilot_near_permutation_baseline": 4
+  },
+  "contract_shape": {
+    "candidate_count": 10,
+    "candidate_linkage": "candidate_id = strategy_id:bet_index",
+    "chronological_fields_used": [
+      "draw_order",
+      "draw_id",
+      "draw_date"
+    ],
+    "row_count": 500,
+    "rows_per_candidate": {
+      "bet2_fourier_expansion_biglotto:1": 50,
+      "biglotto_deviation_2bet:1": 50,
+      "biglotto_echo_aware_3bet:1": 50,
+      "biglotto_triple_strike:1": 50,
+      "biglotto_ts3_markov_4bet_w30:1": 50,
+      "coldpool15_biglotto:1": 50,
+      "fourier30_markov30_biglotto:1": 50,
+      "markov_2bet_biglotto:1": 50,
+      "markov_single_biglotto:1": 50,
+      "ts3_regime_3bet:1": 50
+    }
+  },
+  "generated_at": "2026-07-10T00:00:00+08:00",
+  "limitations": [
+    "Candidate selection was pre-filtered before this pilot, so selection bias remains.",
+    "The rows are committed historical contract rows, not a prospectively held-out protocol.",
+    "Chronological half splits are descriptive and are not true out-of-sample evaluation.",
+    "Outcome shuffling is a fixed-seed descriptive baseline, not proof or a statistical significance claim.",
+    "No result establishes usefulness for betting, future performance, production readiness, or go-live readiness."
+  ],
+  "pilot_config": {
+    "above_baseline_percentile_threshold": 0.9,
+    "below_baseline_percentile_threshold": 0.1,
+    "permutations": 1000,
+    "seed": 543010,
+    "stability_delta_threshold": 0.1
+  },
+  "recommended_next_task": "Define and authorize a prospective, leakage-controlled evaluation protocol before any true out-of-sample claim.",
+  "safety": {
+    "betting_advice": false,
+    "database_opened": false,
+    "database_written": false,
+    "descriptive_only": true,
+    "future_prediction_claim": false,
+    "pilot_only": true,
+    "production_or_go_live_readiness": false,
+    "selection_bias_remains": true,
+    "true_oos_performed": false
+  },
+  "source_artifacts": [
+    {
+      "bytes": 515478,
+      "path": "outputs/research/p543c_candidate_per_draw_validation_contract_20260710.json",
+      "role": "primary_p543c_contract",
+      "sha256": "71be8549daddbc0e810e17e3e6afbd49eedc02eee402c017e562a834ef1448a5"
+    },
+    {
+      "bytes": 229734,
+      "path": "outputs/research/p543b_scoreboard_validation_feasibility_pilot_20260710.json",
+      "role": "optional_p543b",
+      "sha256": "78e13eb255dac6e283e0d61a88c217019c9a4a9cc6f85f8a2b911c542742767f"
+    },
+    {
+      "bytes": 987573,
+      "path": "outputs/research/p543a_scoreboard_stability_packet_20260710.json",
+      "role": "optional_p543a",
+      "sha256": "190fc9f9a8f2d4817a955204b5af1f5d9cf1fb186fa0695713202235f306e0e5"
+    },
+    {
+      "bytes": 1999750,
+      "path": "outputs/research/p542a_strategy_pick_combination_scoreboard_20260710.json",
+      "role": "optional_p542a",
+      "sha256": "c23a993c570de2f09c757f8ddbcf0e04b444d3312cd370c915222844ee927d5b"
+    }
+  ]
+}

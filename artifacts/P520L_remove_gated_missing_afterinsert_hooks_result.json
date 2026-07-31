@@ -1,0 +1,22 @@
+{
+  "active_completion_surface": [
+    "scheduler.load_data"
+  ],
+  "artifact_prefix": "P520L_remove_gated_missing_afterinsert_hooks",
+  "db_side_effects_avoided": true,
+  "disabled_missing_target_surface": [],
+  "draw_insert_executed": false,
+  "final_status": "PASS",
+  "migration_backfill_deploy_executed": false,
+  "missing_hook_residue_present": [],
+  "removed_missing_target_surface": [
+    "learning_integrator",
+    "refresh_hedge_fund_outputs",
+    "weight_adjuster"
+  ],
+  "runtime_import_avoided": true,
+  "scheduler_load_data_retained": true,
+  "scope": "P520L source-only removal evidence; scheduler.load_data remains active and historical missing-target hooks are removed from source.",
+  "source_path": "lottery_api/routes/ingest.py",
+  "source_sha256": "ccd103e48de4294cc2ebd9fc75172fd2aefa89f3deb0ed7d23a1909f43f2034a"
+}

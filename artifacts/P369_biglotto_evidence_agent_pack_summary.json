@@ -1,0 +1,141 @@
+{
+  "api_facade_availability": {
+    "available": true,
+    "p367_api_task": "P367_biglotto_evidence_api",
+    "supported_function_count": 9,
+    "supported_functions": [
+      "load_release_manifest",
+      "load_inventory",
+      "list_adapters",
+      "get_adapter",
+      "list_subsets",
+      "get_subset",
+      "compare_adapters",
+      "get_compact_shortlist",
+      "validate_evidence_stack"
+    ]
+  },
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "recommended_safe_next_task_categories": [
+    "read-only API exploration",
+    "no-DB artifact audit",
+    "no-DB dashboard smoke check",
+    "no-DB compatibility revalidation",
+    "no-DB CLI usage examples"
+  ],
+  "scope_statements": [
+    "Historical descriptive evidence only.",
+    "No future prediction guarantee.",
+    "No betting advice.",
+    "No DB open/write.",
+    "No production registry import.",
+    "No deploy.",
+    "No adapter calls.",
+    "No new scoring cohort.",
+    "No blended leaderboard.",
+    "Shape-only and blocked targets remain excluded."
+  ],
+  "snapshot_compatibility_status": {
+    "compatible": true,
+    "p367_validation_fail_count": 0,
+    "p368_contract_drift_fail_count": 0,
+    "p368_incompatible_row_count": 0
+  },
+  "source_artifacts": [
+    {
+      "path": "recovered_strategies/biglotto/no_db_evidence_api.py",
+      "sha256": "3a9c119a11cba8ee348934f0f1c43b88fc78e54d259219c0937685d83cced0c7",
+      "source_stage": "P367/P368"
+    },
+    {
+      "path": "recovered_strategies/biglotto/no_db_evidence_api_snapshots.py",
+      "sha256": "3869b70b362abc1b1399334bf0f00d4d274114b14e45b502ce69990f4d4d755e",
+      "source_stage": "P367/P368"
+    },
+    {
+      "path": "recovered_strategies/biglotto/no_db_evidence_release_bundle.py",
+      "sha256": "d2e1ece20eb693625e25fcb858f6c5353aadbc6a74f114a624f963ab4565a06f",
+      "source_stage": "P367/P368"
+    },
+    {
+      "path": "artifacts/P367_biglotto_evidence_api_contract.json",
+      "sha256": "3a4c2b7c50029b8085f33c9edc0dd80b56ef41e2f13111401ddd4476395ff509",
+      "source_stage": "P367/P368"
+    },
+    {
+      "path": "artifacts/P367_biglotto_evidence_api_examples.json",
+      "sha256": "34b22c276e050fa9f11ae930f37e228ee8de10cd72aeb9ce454811f3adbe7915",
+      "source_stage": "P367/P368"
+    },
+    {
+      "path": "artifacts/P367_biglotto_evidence_api_validation.csv",
+      "sha256": "f362dfe281c931ebed204b22edb719dfb8ad591c0b95378ca6837c3beaea80a5",
+      "source_stage": "P367/P368"
+    },
+    {
+      "path": "artifacts/P367_biglotto_evidence_api_manifest.csv",
+      "sha256": "b950756440d42017aa474c61b567dbd565e390e688d031860d04b62377283de2",
+      "source_stage": "P367/P368"
+    },
+    {
+      "path": "artifacts/P367_biglotto_evidence_api_readme.md",
+      "sha256": "63de70e989097b9a371048bd7f2c0bc2262581a3cdd1f1ec15251f0a0c70c39c",
+      "source_stage": "P367/P368"
+    },
+    {
+      "path": "artifacts/P368_biglotto_evidence_api_golden_snapshots.json",
+      "sha256": "e2d18dacfe5ecdbb2c4bdca6dc721b642312b34dd2ca193ab56300d63af6d0d5",
+      "source_stage": "P367/P368"
+    },
+    {
+      "path": "artifacts/P368_biglotto_evidence_api_compatibility_matrix.csv",
+      "sha256": "e3cea9338589972798d58b3adfee7bf97c8d93d8b555c5eff7a4b391198efd4e",
+      "source_stage": "P367/P368"
+    },
+    {
+      "path": "artifacts/P368_biglotto_evidence_api_contract_drift.csv",
+      "sha256": "7070d22662f6640671f93fc40d837fb8ff5d7dff1671efb951459054efa97eb0",
+      "source_stage": "P367/P368"
+    },
+    {
+      "path": "artifacts/P368_biglotto_evidence_api_cli_transcripts.json",
+      "sha256": "9f6fec7b3459360528f4d8a3a651ba8bddf3b21d34138c838ef4ea532a08216e",
+      "source_stage": "P367/P368"
+    },
+    {
+      "path": "artifacts/P368_biglotto_evidence_api_manifest.csv",
+      "sha256": "c3c1075236aeec19c701646807805e0072851c9e2fe1af92ee5419c458ff6c61",
+      "source_stage": "P367/P368"
+    },
+    {
+      "path": "artifacts/P368_biglotto_evidence_api_readme.md",
+      "sha256": "d00fef22cd03d243f8562a907520c264e997c18891181c9c1b4175717edab263",
+      "source_stage": "P367/P368"
+    },
+    {
+      "path": "tests/test_p368_biglotto_evidence_api_snapshots.py",
+      "sha256": "8017ad0ad80ea95a376ac5d250a4612b38cba21cd84cbe4d14222f52801dcdfb",
+      "source_stage": "P367/P368"
+    },
+    {
+      "path": "tests/test_p367_biglotto_evidence_api.py",
+      "sha256": "218d4c3482b573e241aebf679cef7000947da0ae4c7afd84c4e1a93047e777cc",
+      "source_stage": "P367/P368"
+    }
+  ],
+  "source_merge_baseline": "30942e1719f548f8fff2d2fb99c7351cc6f3c443",
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "blended_leaderboard": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "future_prediction_guarantee": false,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring_cohort": false,
+    "production_registry_imported": false,
+    "shape_only_and_blocked_targets_excluded": true
+  },
+  "task": "P369_biglotto_evidence_agent_pack"
+}

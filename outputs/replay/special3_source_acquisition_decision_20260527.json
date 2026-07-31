@@ -1,0 +1,128 @@
+{
+  "phase": "P103",
+  "task": "Special3 Source Acquisition Decision",
+  "generated_at": "2026-05-27",
+  "classification": "P103_SPECIAL3_SOURCE_ACQUISITION_DECISION_READY",
+  "decision_status": "READY",
+  "default_recommendation": "HOLD_AWAITING_USER_SOURCE",
+  "p102_artifact": "outputs/replay/special3_source_decision_audit_20260527.json",
+  "p102_classification": "P102_SPECIAL3_SOURCE_DECISION_HOLD_NO_LOCAL_SOURCE",
+  "p101_artifact": "outputs/replay/special3_actual_draw_monitor_20260527.json",
+  "p101_classification": "P101_SPECIAL3_ACTUAL_DRAW_MONITOR_HOLD",
+  "p100_artifact": "outputs/replay/special3_prospective_evaluation_20260527.json",
+  "p100_classification": "P100_SPECIAL3_PROSPECTIVE_EVALUATION_HOLD_NO_ACTUAL_DRAW",
+  "p102_input_summary": {
+    "history_end_draw": "115000024",
+    "current_db_max_3star_draw": "115000024",
+    "star3_draws_count": 4115,
+    "star4_draws_count": 0,
+    "fetcher_api_supports_3star": false,
+    "ingest_log_3star_entries": 0,
+    "backup_dbs_checked": 16,
+    "backup_dbs_with_new_draw": 0,
+    "sources_inspected_count": 10,
+    "sources_with_new_draw": 0,
+    "draw_greater_than_history_end_found_locally": false,
+    "special4_status": "DATA_GAP_BLOCKING"
+  },
+  "source_acquisition_options": [
+    {
+      "option": "A",
+      "name": "User uploads raw 3_STAR source file",
+      "description": "User provides a raw file containing 3_STAR draws with draw number > 115000024.",
+      "accepted_formats": ["CSV", "JSON", "XLSX"],
+      "required_fields": [
+        "draw number (integer or fixed-width string)",
+        "draw date (YYYY/MM/DD or YYYYMMDD)",
+        "3-digit result (must preserve leading zeros)"
+      ],
+      "leading_zero_preservation": "REQUIRED — 3_STAR results are 3-digit fixed-width; leading zeros (e.g. '007', '042') must be preserved as strings, not parsed as integers.",
+      "safety_level": "HIGHEST",
+      "authorized": "requires_user_to_provide_file",
+      "db_write_in_this_option": false,
+      "ingestion_in_this_option": false,
+      "next_phase": "P104_UPLOADED_SOURCE_VALIDATION",
+      "next_phase_action": "Validate file schema, draw range, leading-zero integrity, deduplication against DB before any ingestion planning.",
+      "blocker": "No file has been provided by user as of P103 decision date 2026-05-27."
+    },
+    {
+      "option": "B",
+      "name": "Add official 3_STAR API endpoint to fetcher",
+      "description": "Extend taiwan_lottery_fetcher.py SOURCE_CONFIG with a read-only 3_STAR endpoint to discover draws > 115000024.",
+      "required_authorization": "Explicit user authorization required before any code change to fetcher.",
+      "discovery_mode": "read_only — no DB writes in endpoint discovery phase",
+      "endpoint_discovery_constraints": [
+        "no DB writes during discovery",
+        "no ingest during discovery",
+        "read-only HTTP GET only",
+        "result must be logged to outputs/ for review before ingestion planning"
+      ],
+      "safety_level": "HIGH",
+      "authorized": "requires_explicit_user_authorization",
+      "db_write_in_this_option": false,
+      "ingestion_in_this_option": false,
+      "next_phase": "P104_OFFICIAL_ENDPOINT_DISCOVERY",
+      "next_phase_action": "Add read-only 3_STAR SOURCE_CONFIG entry, test endpoint discovery, log candidate draws to outputs/ — no ingestion.",
+      "blocker": "User has not authorized fetcher endpoint addition as of P103 decision date 2026-05-27."
+    },
+    {
+      "option": "C",
+      "name": "Keep HOLD — no data source available",
+      "description": "Maintain current HOLD state. P100/P101/P102 remain HOLD. Pipeline monitoring only. No ingestion, no endpoint work, no strategy promotion.",
+      "monitoring_scope": [
+        "DB baseline integrity (replay_rows=54462)",
+        "POWER_LOTTO max_draw stability",
+        "3_STAR max_draw unchanged at 115000024",
+        "4_STAR remains DATA_GAP_BLOCKING"
+      ],
+      "safety_level": "MAXIMUM",
+      "authorized": "always_available_no_authorization_required",
+      "db_write_in_this_option": false,
+      "ingestion_in_this_option": false,
+      "next_phase": "MONITORING_ONLY",
+      "next_phase_action": "Continue governance monitoring. Re-evaluate when user provides source or grants endpoint authorization.",
+      "blocker": null
+    }
+  ],
+  "decision_matrix_summary": {
+    "option_a_eligible": false,
+    "option_a_blocker": "No raw file provided by user",
+    "option_b_eligible": false,
+    "option_b_blocker": "No explicit fetcher endpoint authorization from user",
+    "option_c_eligible": true,
+    "option_c_blocker": null,
+    "default_recommendation": "C",
+    "default_recommendation_reason": "No source file and no endpoint authorization available. HOLD is the only authorized path."
+  },
+  "p104_recommendation": {
+    "if_option_a": "P104_UPLOADED_SOURCE_VALIDATION — validate file schema, draw range, leading-zero integrity, deduplication before ingestion planning",
+    "if_option_b": "P104_OFFICIAL_ENDPOINT_DISCOVERY — read-only endpoint discovery, log results, no ingestion",
+    "if_option_c": "P104 NOT_YET_ELIGIBLE — monitoring only until source or authorization provided"
+  },
+  "governance_statements": {
+    "db_writes": false,
+    "db_ingestion": false,
+    "replay_row_inserts": false,
+    "strategy_promotion": false,
+    "special3_production_promotion": false,
+    "star4_backtest": false,
+    "no_production_promotion": true
+  },
+  "replay_rows_checked": 54462,
+  "power_lotto_max_draw_checked": "115000041",
+  "star3_draws_count": 4115,
+  "star4_draws_count": 0,
+  "special4_status": "DATA_GAP_BLOCKING",
+  "p104_gate": "NOT_YET_ELIGIBLE",
+  "p104_gate_reason": "P104 requires user to choose Option A (provide raw file) or Option B (authorize fetcher endpoint). Option C keeps pipeline in HOLD.",
+  "phase_chain_summary": {
+    "P96": "Governance baseline repair — replay_rows updated 46962→54462",
+    "P97": "Special3/Special4 dry-run closure — 5 PROVISIONAL, 1 REJECT, 4_STAR DATA_GAP_BLOCKING",
+    "P98": "Special3 OOS + permutation review — 5 ADVANCE_TO_P99_CANDIDATE, ensemble_v2 PROCEED",
+    "P99": "Prospective dry-run planning — 6 strategies × 4 prediction sets, draw=NEXT_AFTER_CURRENT_MAX",
+    "P100": "Prospective evaluation gate — HOLD_NO_ACTUAL_DRAW (115000024 is history_end)",
+    "P101": "Actual draw availability monitor — HOLD_NO_ACTUAL_DRAW confirmed",
+    "P102": "Source decision audit — HOLD_NO_LOCAL_SOURCE (10 sources, 16 backups, 0 new draws)",
+    "P103": "Source acquisition decision — READY, default=HOLD_AWAITING_USER_SOURCE"
+  }
+}

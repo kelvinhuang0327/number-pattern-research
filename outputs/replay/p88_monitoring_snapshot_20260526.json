@@ -1,0 +1,93 @@
+{
+  "phase": "P88",
+  "policy_version": "p88-v1",
+  "classification": "P88_STABLE_NO_NEW_DRAW_MONITORING_SNAPSHOT",
+  "date": "2026-05-26",
+  "monitoring_run": "2026-05-26T00:00:00Z",
+  "system_status": "STABLE",
+  "source_status": "SOURCE_UNAVAILABLE",
+  "new_draw_detected": false,
+  "controlled_refresh_required": false,
+  "production_baseline": {
+    "replay_rows": 46962,
+    "replay_rows_changed": 0,
+    "power_lotto_max_draw": 115000041,
+    "power_lotto_max_draw_date": "2026/05/21",
+    "power_lotto_max_draw_numbers": [6, 14, 22, 28, 35, 38],
+    "power_lotto_max_draw_special": 1,
+    "batch_a_coverage_pct": 100.0,
+    "p79_sentinel_ids": [46961, 46962],
+    "p79_sentinel_truth_level": "POWERLOTTO_DRAW_EXT_VERIFIED"
+  },
+  "monitoring_checks": {
+    "p86_source_decision_guard": {
+      "classification": "SOURCE_UNAVAILABLE",
+      "db_max_draw": 115000041,
+      "source_max_draw": null,
+      "db_writes": false,
+      "note": "No source snapshot provided. No network read. No evidence of draw > 115000041."
+    },
+    "p82_freshness_guard": {
+      "classification": "FRESHNESS_PASS",
+      "draw_gap_detected": false,
+      "replay_gap_detected": false,
+      "batch_a_coverage_pct": 100.0
+    },
+    "drift_guard": {
+      "classification": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+      "violations": 0
+    }
+  },
+  "p88_classification_logic": {
+    "rule": "STABLE_NO_NEW_DRAW when no source shows draw > DB max_draw",
+    "evidence": [
+      "P86 returns SOURCE_UNAVAILABLE — no external source provided, no new draw evidence",
+      "P82 returns FRESHNESS_PASS — draw_gap_detected=false, replay_gap_detected=false",
+      "DB max_draw=115000041 unchanged",
+      "Drift guard: no violations"
+    ],
+    "decision": "STABLE_NO_NEW_DRAW — hold, continue monitoring"
+  },
+  "source_decision_policy": {
+    "current_decision": "HOLD — no new draws available",
+    "allowed_trigger_conditions": [
+      "source_max_draw > 115000041 from verified operator snapshot",
+      "official API read-only confirms draw > 115000041",
+      "manual operator verification confirms draw > 115000041"
+    ],
+    "forbidden_actions": [
+      "auto_ingest_without_source_decision",
+      "insert_into_draws_table",
+      "create_replay_rows_without_authorization",
+      "call_official_api_for_writes",
+      "create_new_tables",
+      "git_reset_hard",
+      "git_clean",
+      "force_push",
+      "stage_db_or_bak_files"
+    ]
+  },
+  "next_trigger": {
+    "condition": "source_max_draw > 115000041",
+    "action": "Re-run P88 with --source-snapshot. Classification becomes SOURCE_DECISION_REQUIRED. Operator must make explicit source decision before any ingestion.",
+    "next_classification": "P88_SOURCE_DECISION_REQUIRED"
+  },
+  "evidence_chain": {
+    "P83": "Stable baseline closure — PR #208, commit f019ae8",
+    "P84": "Browser E2E stabilized — PR #209, commit a18523d",
+    "P85": "Launch closure / operator release — PR #210, commit d386066",
+    "P86": "Source decision guard — PR #211, commit 34e7ea9",
+    "P87": "Live operations runbook — PR #212, commit 0de6044",
+    "P88": "New draw source decision gate — this artifact"
+  },
+  "governance": {
+    "no_db_writes": true,
+    "no_replay_inserts": true,
+    "no_official_api_writes": true,
+    "no_new_tables": true,
+    "no_ingestion": true,
+    "read_only": true,
+    "db_writes": false,
+    "replay_row_changes": 0
+  }
+}

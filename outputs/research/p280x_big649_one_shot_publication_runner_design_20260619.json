@@ -1,0 +1,157 @@
+{
+  "task_id": "P280X",
+  "final_classification": "P280X_BIG649_ONE_SHOT_DRY_RUN_RUNNER_PR_OPEN_NOT_ACTIVATED",
+  "status": "PR_OPEN_NOT_ACTIVATED",
+  "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+  "branch": "task/p280x-big649-one-shot-publication-runner-dry-run",
+  "canonical_branch": "main",
+  "origin_main": "4a7c534b5fa53425aa1bb1d4981ed2b830a62170",
+  "design_date": "2026-06-19",
+  "runner_contract": {
+    "path": "tools/big649_one_shot_publication_runner.py",
+    "mode": "DRY_RUN_ONLY",
+    "game": "BIG / 大樂透 / 6-49",
+    "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+    "primary_budget_n": 1,
+    "bet_index": 1,
+    "strategy_count": 11,
+    "strategy_ids": [
+      "bet2_fourier_expansion_biglotto",
+      "biglotto_deviation_2bet",
+      "biglotto_echo_aware_3bet",
+      "biglotto_triple_strike",
+      "biglotto_ts3_markov_4bet_w30",
+      "cold_complement_biglotto",
+      "coldpool15_biglotto",
+      "fourier30_markov30_biglotto",
+      "markov_2bet_biglotto",
+      "markov_single_biglotto",
+      "ts3_regime_3bet"
+    ],
+    "dry_run_target_label": "DRY_RUN_TARGET_DO_NOT_PUBLISH",
+    "dry_run_warning": "NOT_A_REAL_PREDICTION",
+    "publication_status": "NOT_PUBLISHED",
+    "publication_guard_state": "DRY_RUN_ONLY_NOT_PUBLISHED",
+    "real_target_selected": false,
+    "real_ticket_published": false,
+    "official_deadline_lookup": false,
+    "future_evaluation_started": false,
+    "zero_db_guard": true,
+    "no_github_publication_side_effect": true,
+    "manifest_sha256": "aaac655bf5a2dbd9de95b4fbdef56cb350fd95f5d2e6545cbbeceb2444810a6f",
+    "duplicate_check_result": {
+      "status": "NO_EXISTING_MANIFEST"
+    },
+    "idempotency_check_result": {
+      "status": "NO_EXISTING_MANIFEST"
+    },
+    "randomness_policy_result": {
+      "status": "RANDOMNESS_NOT_APPLICABLE",
+      "strategy_kind": "deterministic",
+      "seed_recorded": false,
+      "randomness_policy_present": false
+    }
+  },
+  "guardrails": {
+    "duplicate_guard": [
+      "NO_EXISTING_MANIFEST",
+      "ALREADY_PUBLISHED_SAME_MANIFEST",
+      "DUPLICATE_PUBLICATION_CONFLICT"
+    ],
+    "idempotency_guard": [
+      "NO_EXISTING_MANIFEST",
+      "IDEMPOTENCY_PASS",
+      "IDEMPOTENCY_FAIL_UNEXPLAINED",
+      "RANDOMNESS_ALLOWED_WITH_SEED",
+      "RANDOMNESS_POLICY_MISSING",
+      "STOP_UNEXPLAINED_NONDETERMINISM"
+    ],
+    "randomness_guard": [
+      "RANDOMNESS_NOT_APPLICABLE",
+      "RANDOMNESS_ALLOWED_WITH_SEED",
+      "RANDOMNESS_POLICY_MISSING"
+    ],
+    "stop_conditions": [
+      "missing strategy",
+      "extra strategy",
+      "invalid ticket",
+      "duplicate manifest conflict",
+      "unexplained deterministic rerun difference",
+      "randomness without a recorded seed or policy",
+      "any DB access attempt",
+      "any real target selection",
+      "any real publication action"
+    ]
+  },
+  "validation": {
+    "focused_p280x_tests": {
+      "status": "PASS",
+      "command": "pytest -q /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p280x/tests/test_p280x_big649_one_shot_publication_runner.py",
+      "passed": 10,
+      "failed": 0
+    },
+    "python_compile": {
+      "status": "PASS",
+      "command": "python3 -m py_compile /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p280x/tools/big649_one_shot_publication_runner.py /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p280x/tests/test_p280x_big649_one_shot_publication_runner.py"
+    },
+    "runner_source_scan": {
+      "status": "PASS"
+    },
+    "runbook_scan": {
+      "status": "PASS"
+    },
+    "publication_pr_scan": {
+      "status": "PASS",
+      "scope": "deliverables excluding the negative-assertion test harness"
+    },
+    "no_db_access_scan": {
+      "status": "PASS",
+      "scope": "deliverables excluding the negative-assertion test harness"
+    },
+    "db_stat": {
+      "status": "PASS",
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p280x/lottery-api/data/lottery_v2.db",
+      "size_bytes": 28672,
+      "mtime": 1781826459,
+      "ctime": 1781826459
+    },
+    "source_contract_tests": "NOT RUN",
+    "p280d_focused_tests": "NOT RUN",
+    "regressions": "NOT RUN",
+    "full_suite": "NOT RUN",
+    "dedicated_db": "SKIPPED",
+    "db_opened": "NO",
+    "db_queried": "NO",
+    "db_copied": "NO",
+    "db_written": "NO",
+    "negative_assertion_test_harness_note": "The test module intentionally names the forbidden tokens for negative assertions; the deliverable scans exclude that harness file."
+  },
+  "worktree_observation": {
+    "launch_repo": {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+      "branch": "task/p273a-prize-aware-inferential-validation",
+      "observed_status_snapshot": "dirty protected worktree remained unchanged during this task; current observed snapshot differs from the historical 23-file/fingerprint baseline and was not modified",
+      "historical_baseline_dirty_count": 23,
+      "historical_baseline_fingerprint": "6f8f18f9c2fcdb41501088bad1cec0fb40f1393e2d096fc079a557a14c543c80"
+    },
+    "p280k_worktree": {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p280k",
+      "branch": "task/p280k-big649-first-publication-readiness",
+      "status_snapshot": "clean"
+    },
+    "p280x_worktree": {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p280x",
+      "branch": "task/p280x-big649-one-shot-publication-runner-dry-run",
+      "status_snapshot": "clean except the five intended task files once artifacts are added"
+    }
+  },
+  "next_recommended_step": "P280L_BIG649_PUBLICATION_DRY_RUN_REHEARSAL_ONLY",
+  "notes": [
+    "Dry-run only.",
+    "No real target selected.",
+    "No official deadline lookup.",
+    "No real ticket published.",
+    "No future evaluation started.",
+    "Real publication remains unauthorized."
+  ]
+}

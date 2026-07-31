@@ -1,0 +1,101 @@
+{
+  "generated_date": "2026-05-14",
+  "v3_phase": "Phase 1 - Inventory",
+  "v3_target": "CODE_MISSING tombstone hardening",
+  "total_strategies": 16,
+  "strategy_summary": {
+    "executable_now": 6,
+    "artifact_only": 4,
+    "code_missing": 6
+  },
+  "code_missing_strategies": [
+    {
+      "strategy_id": "acb_1bet",
+      "lottery_type": "DAILY_539",
+      "status": "CODE_MISSING",
+      "registry_status": "_LifecycleStub",
+      "executable": false,
+      "rows_in_db": 0,
+      "reason": "No ACB implementation for DAILY_539",
+      "tombstone_reason": "Strategy executor code not available",
+      "expected_api_behavior": "Tombstone/unavailable status",
+      "expected_ui_behavior": "Not expandable, marked as unavailable"
+    },
+    {
+      "strategy_id": "acb_markov_midfreq",
+      "lottery_type": "DAILY_539",
+      "status": "CODE_MISSING",
+      "registry_status": "_LifecycleStub",
+      "executable": false,
+      "rows_in_db": 0,
+      "reason": "ACB + Markov + Midfrequency combination not implemented",
+      "tombstone_reason": "No strategy executor available",
+      "expected_api_behavior": "Explicit unavailable status",
+      "expected_ui_behavior": "Marked unavailable with clear reason"
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "DAILY_539",
+      "status": "CODE_MISSING",
+      "registry_status": "_LifecycleStub",
+      "executable": false,
+      "rows_in_db": 0,
+      "reason": "3-bet variant not implemented",
+      "tombstone_reason": "No code path available",
+      "expected_api_behavior": "Tombstone status",
+      "expected_ui_behavior": "Not expandable"
+    },
+    {
+      "strategy_id": "midfreq_acb_2bet",
+      "lottery_type": "DAILY_539",
+      "status": "CODE_MISSING",
+      "registry_status": "_LifecycleStub",
+      "executable": false,
+      "rows_in_db": 0,
+      "reason": "Midfrequency + ACB combination not executable",
+      "tombstone_reason": "Strategy source code not integrated",
+      "expected_api_behavior": "Unavailable marker",
+      "expected_ui_behavior": "Explicitly marked unavailable"
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "lottery_type": "DAILY_539",
+      "status": "CODE_MISSING",
+      "registry_status": "_LifecycleStub",
+      "executable": false,
+      "rows_in_db": 0,
+      "reason": "Midfrequency + Fourier + 2-bet combination not available",
+      "tombstone_reason": "No executor code",
+      "expected_api_behavior": "Explicit tombstone",
+      "expected_ui_behavior": "Unavailable status"
+    },
+    {
+      "strategy_id": "h6_gate_mk20_ew85",
+      "lottery_type": "POWER_LOTTO",
+      "status": "CODE_MISSING",
+      "registry_status": "_LifecycleStub",
+      "executable": false,
+      "rows_in_db": 0,
+      "reason": "H6 gate mk20→ew85 configuration not implemented",
+      "tombstone_reason": "Strategy code not available",
+      "expected_api_behavior": "Unavailable status",
+      "expected_ui_behavior": "Not available for selection"
+    }
+  ],
+  "v3_hardening_objectives": [
+    "Ensure API clearly exposes CODE_MISSING status",
+    "Ensure UI marks CODE_MISSING as unavailable (not silently absent)",
+    "Lock in expected behavior with tests",
+    "No DB modifications for CODE_MISSING rows",
+    "No registry mutations without explicit review",
+    "Clear tombstone reason documented and exposed in API/UI"
+  ],
+  "constraints": {
+    "no_strategy_mining": true,
+    "no_fake_rows": true,
+    "no_db_writes": "unless report/metadata only",
+    "no_registry_mutation": "unless explicitly reviewed",
+    "preserve_v1_rows": true,
+    "preserve_v2_rows": true
+  }
+}

@@ -663,16 +663,21 @@ async def predict_expert_certified_route(
     num_bets: int = Query(5, ge=1, le=10, description="要生成的注數 (建議 5 注以達到 TS3+ 完整增益)")
 ):
     """
-    👨‍🔬 專家認證預測 (Verified TS3+ Strategy)
-    
-    使用經 1500 期三階驗證的 Triple Strike Plus 策略：
+    👨‍🔬 [Legacy compatibility identifier] "expert-certified" 5-bet endpoint (TS3+ / Triple Strike Plus)
+
+    NOTE (2026-07-25 legacy-continuity correction): the "expert-certified" route
+    name is a legacy compatibility identifier only, not a current certification.
+    Uses the TS3+ chain:
     - Fourier Rhythm (TS3-B1)
     - Cold Numbers (TS3-B2)
     - Tail Balance (TS3-B3)
     - Markov Order-1 (w=30)
     - Frequency Orthogonal
-    
-    驗證結果: 1500p Edge +1.77% (Deterministic)
+
+    evidence_status=HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED.
+    No reliable predictive advantage is currently established. The historical
+    1500p "+1.77%" figure is retained only as a descriptive record — see
+    stability_report below.
     """
     try:
         lottery_type = normalize_lottery_type(lottery_type)
@@ -694,10 +699,13 @@ async def predict_expert_certified_route(
         return {
             "bets": final_bets,
             "stability_report": {
-                "verdict": "STABLE",
+                "verdict": "NOT_ESTABLISHED",
                 "edge_expected": result['edge_expected'],
                 "method_chain": [b['source'] for b in final_bets],
-                "verification": "1500p Three-Window Verified"
+                "verification": "HISTORICAL_RESEARCH_ONLY",
+                "evidence_status": result['evidence_status'],
+                "current_significance": result['current_significance'],
+                "warning": result['warning']
             },
             "analysis": {
                 "coverage_rate": result['coverage'],

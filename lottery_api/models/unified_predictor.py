@@ -13,10 +13,20 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 from .feature_analyzer import LotteryFeatureAnalyzer
 from .special_predictor import get_enhanced_special_prediction
-from .meta_stacking_predictor import MetaStackingPredictor 
-from .diffusion_predictor import LotteryDiffusionGenerator # Phase 56
 from .stability_profile import get_stability_profile # Stability Identification
 logger = logging.getLogger(__name__)
+
+try:
+    from .meta_stacking_predictor import MetaStackingPredictor
+except ImportError:
+    MetaStackingPredictor = None
+    logger.warning("MetaStackingPredictor disabled (torch missing)")
+
+try:
+    from .diffusion_predictor import LotteryDiffusionGenerator  # Phase 56
+except ImportError:
+    LotteryDiffusionGenerator = None
+    logger.warning("LotteryDiffusionGenerator disabled (torch missing)")
 
 try:
     from .sota_predictor import PatternAwareTransformerPredictor
@@ -229,12 +239,19 @@ class UnifiedPredictionEngine:
         import os
         model_dir = os.path.dirname(os.path.abspath(__file__)) + "/../data/models"
         model_path = model_dir + "/meta_stacker_power.pth"
-        from .meta_stacking_predictor import MetaStackingPredictor
-        self.meta_stacker = MetaStackingPredictor(strategy_names, model_path=model_path)
+        if MetaStackingPredictor is not None:
+            self.meta_stacker = MetaStackingPredictor(strategy_names, model_path=model_path)
+        else:
+            self.meta_stacker = None
+            logger.warning("meta_stacker disabled (torch missing)")
 
         # Phase 56: Diffusion Generative Predictor
         diffusion_model_path = model_dir + "/diffusion_power.pth"
-        self.diffusion_gen = LotteryDiffusionGenerator(max_num=38, model_path=diffusion_model_path)
+        if LotteryDiffusionGenerator is not None:
+            self.diffusion_gen = LotteryDiffusionGenerator(max_num=38, model_path=diffusion_model_path)
+        else:
+            self.diffusion_gen = None
+            logger.warning("diffusion_gen disabled (torch missing)")
 
         # Phase 2: MAB Ensemble Initialization
         if CONFIG_AVAILABLE:

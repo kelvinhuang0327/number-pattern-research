@@ -1,0 +1,3 @@
+Trying to load the allocator multiple times. This is *not* supported.
+321062 bytes written to file /Users/kelvin/Kelvin-WorkSpace/p329a_d5_pixel_browser_evidence_20260701_194515/screenshot_default_load.png
+[71238:125919:0701/194935.668381:ERROR:chrome/browser/web_applications/externally_managed_app_manager.cc:680] https://docs.google.com/document/installwebapp?usp=chrome_default from install source 1 failed to install with reason 21

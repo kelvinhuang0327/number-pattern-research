@@ -1,0 +1,51 @@
+{
+  "p45_version": "20260524",
+  "classification": "P45_ROADMAP_UPDATE_AFTER_P44_MERGED_TO_MAIN",
+  "review_date": "2026-05-24",
+  "production_rows": 37960,
+  "completed_phases": ["P41", "P42", "P43", "P44"],
+  "wave3_biglotto_status": "COMPLETE_MAINTENANCE_MODE",
+  "wave3_promotion_candidates": 0,
+  "wave3_best_p_value": 0.104,
+  "wave3_p_gate": 0.05,
+  "wave3_gate_result": "FAIL",
+  "l91_confirmed": true,
+  "biglotto_maintenance_trigger": "rule_change_or_draw_anomaly_or_new_signal_class_outside_H001_H010",
+  "biglotto_online_promotion_blocked": true,
+  "next_priorities": {
+    "P0": "P46 POWER_LOTTO expansion planning",
+    "P1": "P47 Wave 2 DAILY_539 live monitoring design",
+    "P2": "P48 Freshness cadence guard improvement",
+    "P3": "P49 Manual review resolution"
+  },
+  "row_backed_strategies": {
+    "ONLINE": 8,
+    "RETIRED": 5,
+    "DRY_RUN_DAILY_539": 6,
+    "DRY_RUN_BIG_LOTTO": 6,
+    "total": 25
+  },
+  "production_rows_before": 37960,
+  "production_rows_after": 37960,
+  "db_writes_in_p45": 0,
+  "ceo_goal": "1500-period replay x all executable strategies",
+  "files_updated": [
+    "00-Plan/roadmap/roadmap.md",
+    "00-Plan/roadmap/CTO-Analysis.md"
+  ],
+  "files_created": [
+    "outputs/replay/p45_roadmap_update_after_p44_20260524.json",
+    "docs/replay/p45_roadmap_update_after_p44_20260524.md"
+  ],
+  "governance_notes": [
+    "No production DB write in P45",
+    "No lifecycle change in P45",
+    "No _REGISTRY or _ALL_ADAPTERS mutation",
+    "No CEO-Decision.md modification",
+    "Drift guard PASS at start and end",
+    "Branch governance guard PASS at start"
+  ],
+  "drift_guard_pre": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+  "branch_governance_guard_pre": "BRANCH_GOVERNANCE_PASS",
+  "roadmap_marker": "CTO_ROADMAP_AFTER_P41_P42_P43_P44_P45_20260524"
+}

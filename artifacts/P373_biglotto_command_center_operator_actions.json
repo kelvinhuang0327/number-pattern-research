@@ -1,0 +1,108 @@
+{
+  "action_cards": [
+    {
+      "card_id": "run_command_center_status",
+      "local_command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --status",
+      "no_adapter_calls": true,
+      "no_db_open_write": true,
+      "no_deploy": true,
+      "no_new_scoring": true,
+      "no_production_registry_import": true,
+      "objective": "Inspect the committed P371 no-DB command center readiness summary.",
+      "operator_note": "This action card is a template only, not standing authorization. Stop before any DB open/write, adapter call, new scoring, production registry import, deploy, betting advice, or future-performance claim.",
+      "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Operator action cards are templates, not standing authorization.",
+      "template_not_standing_authorization": true,
+      "title": "Run command center status"
+    },
+    {
+      "card_id": "run_route_replay_validate",
+      "local_command": "python3 -m recovered_strategies.biglotto.no_db_command_center_route_replay --validate",
+      "no_adapter_calls": true,
+      "no_db_open_write": true,
+      "no_deploy": true,
+      "no_new_scoring": true,
+      "no_production_registry_import": true,
+      "objective": "Validate P372 route replay artifacts without opening DB files or calling adapters.",
+      "operator_note": "This action card is a template only, not standing authorization. Stop before any DB open/write, adapter call, new scoring, production registry import, deploy, betting advice, or future-performance claim.",
+      "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Operator action cards are templates, not standing authorization.",
+      "template_not_standing_authorization": true,
+      "title": "Run route replay validate"
+    },
+    {
+      "card_id": "inspect_failing_routes",
+      "local_command": "python3 -m recovered_strategies.biglotto.no_db_command_center_route_replay --health",
+      "no_adapter_calls": true,
+      "no_db_open_write": true,
+      "no_deploy": true,
+      "no_new_scoring": true,
+      "no_production_registry_import": true,
+      "objective": "Review route health rows and focus only on WARN/FAIL rows if present.",
+      "operator_note": "This action card is a template only, not standing authorization. Stop before any DB open/write, adapter call, new scoring, production registry import, deploy, betting advice, or future-performance claim.",
+      "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Operator action cards are templates, not standing authorization.",
+      "template_not_standing_authorization": true,
+      "title": "Inspect failing routes"
+    },
+    {
+      "card_id": "inspect_artifact_inventory",
+      "local_command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --list-artifacts",
+      "no_adapter_calls": true,
+      "no_db_open_write": true,
+      "no_deploy": true,
+      "no_new_scoring": true,
+      "no_production_registry_import": true,
+      "objective": "Review P371 source/output artifact inventory and SHA256 values.",
+      "operator_note": "This action card is a template only, not standing authorization. Stop before any DB open/write, adapter call, new scoring, production registry import, deploy, betting advice, or future-performance claim.",
+      "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Operator action cards are templates, not standing authorization.",
+      "template_not_standing_authorization": true,
+      "title": "Inspect artifact inventory"
+    },
+    {
+      "card_id": "rerun_regression_tests",
+      "local_command": "python3 -m pytest tests/test_p371_biglotto_evidence_command_center.py tests/test_p372_biglotto_command_center_route_replay.py tests/test_p373_biglotto_command_center_operator_console.py",
+      "no_adapter_calls": true,
+      "no_db_open_write": true,
+      "no_deploy": true,
+      "no_new_scoring": true,
+      "no_production_registry_import": true,
+      "objective": "Rerun focused no-DB command center regression coverage.",
+      "operator_note": "This action card is a template only, not standing authorization. Stop before any DB open/write, adapter call, new scoring, production registry import, deploy, betting advice, or future-performance claim.",
+      "scope_statement": "Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Operator action cards are templates, not standing authorization.",
+      "template_not_standing_authorization": true,
+      "title": "Rerun regression tests"
+    }
+  ],
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "scope_lines": [
+    "Historical descriptive evidence only.",
+    "No future prediction guarantee.",
+    "No betting advice.",
+    "No DB open/write.",
+    "No adapter calls.",
+    "No new scoring.",
+    "No new scoring cohort.",
+    "No production registry import.",
+    "No deploy.",
+    "No generated DB rows.",
+    "Operator action cards are templates, not standing authorization."
+  ],
+  "source_baseline": {
+    "p371_source_merge_baseline": "30e4120060e41e8a6f7cf529c28d9b490c01f70b",
+    "p372_source_baseline": "1a971bd14a11de3e6e5967cfb543ab7069e97100",
+    "required_origin_main_merge_commit": "269e50da43b0173809a44bc6010668ba92e488ca"
+  },
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "future_prediction_guarantee": false,
+    "generated_db_rows": false,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring": false,
+    "new_scoring_cohort": false,
+    "operator_action_cards_templates_not_standing_authorization": true,
+    "production_registry_imported": false
+  },
+  "task": "P373_biglotto_command_center_operator_console"
+}

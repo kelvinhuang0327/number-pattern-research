@@ -274,22 +274,29 @@ export class ChartManager {
         // 顯示熱門號碼
         const hotContainer = document.getElementById('hot-numbers');
         if (hotContainer) {
-            hotContainer.innerHTML = hotNumbers.map(item => `
-                <div class="number-badge hot" title="出現 ${item.frequency} 次 (${item.percentage}%)">
-                    ${item.number}
-                </div>
-            `).join('');
+            this.renderNumberBadges(hotContainer, hotNumbers, 'hot');
         }
 
         // 顯示冷門號碼
         const coldContainer = document.getElementById('cold-numbers');
         if (coldContainer) {
-            coldContainer.innerHTML = coldNumbers.map(item => `
-                <div class="number-badge cold" title="出現 ${item.frequency} 次 (${item.percentage}%)">
-                    ${item.number}
-                </div>
-            `).join('');
+            this.renderNumberBadges(coldContainer, coldNumbers, 'cold');
         }
+    }
+
+    renderNumberBadges(container, items, type) {
+        container.replaceChildren();
+
+        const fragment = document.createDocumentFragment();
+        items.forEach(item => {
+            const badge = document.createElement('div');
+            badge.className = `number-badge ${type}`;
+            badge.title = `出現 ${item.frequency} 次 (${item.percentage}%)`;
+            badge.textContent = item.number;
+            fragment.appendChild(badge);
+        });
+
+        container.appendChild(fragment);
     }
 
     /**

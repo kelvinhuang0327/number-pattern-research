@@ -1,0 +1,29 @@
+{
+  "task_id": "P321A_D5_COMBINATION_RESULTS_STATIC_UI_IMPORT",
+  "source_task_id": "P320A_D5_PER_DRAW_STRATEGY_COMBINATION_ANALYSIS_READ_ONLY",
+  "source_classification": "P320A_D5_COMBINATION_ANALYSIS_COMPLETE_WITH_RISKS",
+  "source_evidence_root": "/Users/kelvin/Kelvin-WorkSpace/p320a_d5_per_draw_combination_analysis_20260701_131917",
+  "source_manifest_sha256": "503bb58754b63576d69a8640cd3242f53761e068b424b6864f7e167f326f5596",
+  "copy_mode": "byte-for-byte unchanged static files",
+  "display_transform": "No metric recomputation. Pair/triple rows use the P320A shortlist. Single rows use exact P320A metric rows ordered client-side by the documented P320A descriptive display rule and limited to five per lottery/window.",
+  "artifacts": [
+    {
+      "path": "strategy_combination_metrics.csv",
+      "source_sha256": "0141b53f135a456fb3c2d02fe15f17aa5728a7ff8f47c88d26777c025e855ec5",
+      "copied_sha256": "0141b53f135a456fb3c2d02fe15f17aa5728a7ff8f47c88d26777c025e855ec5"
+    },
+    {
+      "path": "top_descriptive_candidates.csv",
+      "source_sha256": "e1b074aed742eab0306cdcd002082635899c215e289d2dd1208a61353087cabd",
+      "copied_sha256": "e1b074aed742eab0306cdcd002082635899c215e289d2dd1208a61353087cabd"
+    },
+    {
+      "path": "window_summary.csv",
+      "source_sha256": "63e72bf7362542e072e4244361a1bc9b70fd5dd01e0067ff64a697c8e785a985",
+      "copied_sha256": "63e72bf7362542e072e4244361a1bc9b70fd5dd01e0067ff64a697c8e785a985"
+    }
+  ],
+  "baseline_mode": "not_computed",
+  "inferential_status": "DESCRIPTIVE_ONLY",
+  "power_lotto_scoring": "NOT RUN"
+}

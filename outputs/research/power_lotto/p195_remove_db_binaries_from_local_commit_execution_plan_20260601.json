@@ -1,0 +1,328 @@
+{
+  "task": "P195_REMOVE_DB_BINARIES_FROM_LOCAL_COMMIT_EXECUTION_PLAN_ONLY",
+  "date": "2026-06-01",
+  "final_classification": "P195_REMOVE_DB_BINARIES_FROM_LOCAL_COMMIT_EXECUTION_PLAN_READY",
+  "authorization_phrase_detected": "YES start P195 remove DB binaries from local commit execution plan only",
+
+  "phase_0_verification": {
+    "status": "PASS",
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "git_dir": ".git",
+    "in_worktree": false,
+    "head_commit": "012d4a3f74a35a24c9f1518795bc79098897d7f5",
+    "head_message": "P188-P191: reconcile replay DB and post-migration governance",
+    "origin_main": "684bffcea3080f8f1f31c5b9acc3a572907ec4f3",
+    "origin_main_is_ancestor": true,
+    "commits_ahead": 6,
+    "staged_files": 0,
+    "production_db_rows": 94924,
+    "bet_index_null_count": 0,
+    "integrity_check": "ok",
+    "production_db_size_bytes": 99368960,
+    "production_db_sha256": "a5ac27a6887d8c1d8da97349dbc97c36e9429270dd45f81b3b67a8d5793c4f87",
+    "backup_exists": true,
+    "backup_sha256_exists": true,
+    "backup_size_bytes": 53374976,
+    "backup_sha256": "5eea53135fb65369a3dd90512e7f8bfc4411b756abadf00a03b2b9b7d4e24da9",
+    "p194_artifact_exists": true,
+    "p194_classification": "P194_REMOVE_DB_BINARIES_FROM_LOCAL_COMMIT_PLAN_READY",
+    "p178a_to_p194_tests": "933 passed, 0 failed, 0 skipped",
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "stop_conditions_triggered": []
+  },
+
+  "p194_classification_referenced": "P194_REMOVE_DB_BINARIES_FROM_LOCAL_COMMIT_PLAN_READY",
+
+  "current_state_summary": {
+    "p191_local_commit": "012d4a3f74a35a24c9f1518795bc79098897d7f5",
+    "p191_commit_contains_db_binaries": true,
+    "db_binary_paths_in_head": [
+      "lottery_api/data/lottery_v2.db",
+      "backups/p188_lottery_v2_backup_20260601_153821.db",
+      "backups/p188_lottery_v2_backup_20260601_153821.db.sha256"
+    ],
+    "p192_push_result": "REJECTED — GH006 branch protection + large binary",
+    "p193_status": "P193_PUSH_REJECTION_REMEDIATION_PLAN_READY",
+    "p194_status": "P194_REMOVE_DB_BINARIES_FROM_LOCAL_COMMIT_PLAN_READY",
+    "origin_main": "684bffce (6 commits behind local)",
+    "production_db_rows": 94924,
+    "backup_rows": 54462,
+    "p195_modifies_files": false
+  },
+
+  "p196_execution_plan": {
+    "summary": "P196 will rewrite the P191 local commit to exclude DB binaries, create a manifest, update .gitignore, and recommit. No push in P196. No DB deletion.",
+    "authorization_phrase_required": "YES execute P196 remove DB binaries from local commit using soft reset and recommit non-binary files, no push",
+
+    "pre_execution_checklist": [
+      "C-01: Confirm no staged files (git diff --cached --name-only = empty)",
+      "C-02: Confirm HEAD = 012d4a3 (P191 binary-heavy commit)",
+      "C-03: Export staged-file inventory: git show --name-only HEAD > /tmp/p191_committed_files.txt",
+      "C-04: Compute SHA256 of production DB: shasum -a 256 lottery_api/data/lottery_v2.db → must match a5ac27a6...",
+      "C-05: Compute SHA256 of backup: shasum -a 256 backups/p188_lottery_v2_backup_20260601_153821.db → must match 5eea5313...",
+      "C-06: Confirm DB rows: sqlite3 lottery_api/data/lottery_v2.db 'SELECT COUNT(*)...' = 94924",
+      "C-07: Confirm backup rows: sqlite3 backups/p188_lottery_v2_backup_20260601_153821.db 'SELECT COUNT(*)...' = 54462",
+      "C-08: Run full test suite — must be 933+ PASS, 0 FAIL",
+      "C-09: Run drift guard — must be PASS",
+      "C-10: Confirm repo is /Users/kelvin/Kelvin-WorkSpace/LotteryNew, branch = main"
+    ],
+
+    "step_1_preserve_evidence": {
+      "action": "Create DB migration manifest JSON before any git operation",
+      "command": "Write docs/db_migration_manifest_p188_p191.json (see manifest_design section)",
+      "purpose": "Preserve verifiable DB metadata as git-tracked text, replacing binary",
+      "output_path": "docs/db_migration_manifest_p188_p191.json",
+      "note": "This file must be created BEFORE the reset so it can be staged in the recommit"
+    },
+
+    "step_2_soft_reset": {
+      "action": "Undo P191 commit while keeping all staged files intact",
+      "command": "git reset --soft HEAD~1",
+      "what_it_does": [
+        "Moves HEAD pointer back to d1a6817 (P128 commit)",
+        "All 109 files from P191 remain in the staging area (index)",
+        "Local disk files are NOT touched — production DB stays at 94924 rows",
+        "backup DB stays at backups/p188_lottery_v2_backup_20260601_153821.db"
+      ],
+      "safety": "SAFE — only moves HEAD pointer; no file deletion",
+      "must_not": "Never use git reset --hard (deletes unstaged changes)"
+    },
+
+    "step_3_unstage_db_binaries": {
+      "action": "Remove DB binary blobs from the staging area (index)",
+      "commands": [
+        "git restore --staged lottery_api/data/lottery_v2.db",
+        "git restore --staged backups/p188_lottery_v2_backup_20260601_153821.db"
+      ],
+      "what_it_does": [
+        "Removes these two paths from the git index (staged set)",
+        "Local disk files remain completely intact — NOT deleted",
+        "backups/p188_lottery_v2_backup_20260601_153821.db.sha256 REMAINS staged (tiny text file)"
+      ],
+      "verify_after": [
+        "git diff --cached --name-only | grep 'lottery_v2.db' → must be EMPTY",
+        "git diff --cached --name-only | grep 'p188_lottery_v2_backup_20260601_153821.db$' → must be EMPTY",
+        "ls -lh lottery_api/data/lottery_v2.db → must still exist at ~96MB",
+        "ls -lh backups/p188_lottery_v2_backup_20260601_153821.db → must still exist at ~51MB"
+      ]
+    },
+
+    "step_4_update_gitignore": {
+      "action": "Append DB paths to .gitignore to prevent future accidental commits",
+      "lines_to_append": [
+        "# SQLite production DB — managed locally, not tracked in git",
+        "lottery_api/data/lottery_v2.db",
+        "lottery_api/data/lottery_v2.db-wal",
+        "lottery_api/data/lottery_v2.db-shm",
+        "lottery_api/data/*.bak_*",
+        "lottery_api/data/*.fuse_hidden*",
+        "",
+        "# DB backups — stored locally, not tracked in git",
+        "backups/*.db",
+        "backups/*.db-shm",
+        "backups/*.db-wal",
+        "",
+        "# Rehearsal temp DBs",
+        "outputs/research/power_lotto/p184_rehearsal/*.db",
+        "outputs/research/power_lotto/p184_rehearsal/*.db-wal",
+        "outputs/research/power_lotto/p184_rehearsal/*.db-shm",
+        "outputs/research/power_lotto/p185_rehearsal/*.db",
+        "outputs/research/power_lotto/p185_rehearsal/*.db-wal",
+        "outputs/research/power_lotto/p185_rehearsal/*.db-shm"
+      ],
+      "command": "Append lines above to .gitignore using a safe write (not overwrite existing .gitignore)",
+      "then": "git add .gitignore"
+    },
+
+    "step_5_stage_manifest": {
+      "action": "Stage the DB migration manifest",
+      "command": "git add docs/db_migration_manifest_p188_p191.json",
+      "purpose": "Include lightweight text evidence of DB migration in the commit"
+    },
+
+    "step_6_verify_staged_set": {
+      "action": "Confirm staged set is binary-free before committing",
+      "commands": [
+        "git diff --cached --name-only | sort > /tmp/p196_staged_list.txt",
+        "cat /tmp/p196_staged_list.txt | grep '\\.db$' → must be EMPTY",
+        "wc -l /tmp/p196_staged_list.txt → should be ~108 (original 109 minus 2 DB binaries + .gitignore + manifest)"
+      ]
+    },
+
+    "step_7_recommit": {
+      "action": "Create new local commit without DB binaries",
+      "command": "git commit -m 'P182-P191: reconcile replay governance (no DB binaries)'",
+      "full_body": [
+        "Backport P161-P181 code/docs/tests parity, reconcile replay DB migration",
+        "evidence (manifest + sha256 only; DB binaries excluded from git history),",
+        "update drift guard and stale tests, add P189-P195 governance artifacts.",
+        "No controlled_apply. POWER_LOTTO research remains closed.",
+        "",
+        "DB migration evidence: docs/db_migration_manifest_p188_p191.json",
+        "Production DB: 94924 rows, bet_index PRESENT (local only, not in git)",
+        "Backup DB: 54462 rows, sha256 in backups/p188_*.db.sha256 (local only)"
+      ],
+      "note": "This creates a NEW commit hash — the P191 binary-heavy commit is replaced locally. No force push to origin/main."
+    },
+
+    "step_8_post_commit_verification": {
+      "action": "Verify all safety conditions after recommit",
+      "checks": [
+        "git log -1 --oneline → new commit hash, new message",
+        "git show HEAD --name-only | grep '\\.db$' → must be EMPTY (no DB binary in new commit)",
+        "git diff --cached --name-only → must be EMPTY (nothing staged)",
+        "sqlite3 lottery_api/data/lottery_v2.db 'SELECT COUNT(*)...' → must be 94924",
+        "sqlite3 backups/p188_lottery_v2_backup_20260601_153821.db 'SELECT COUNT(*)...' → must be 54462",
+        "python3 -m pytest [full suite] → must pass",
+        "uv run python scripts/replay_lifecycle_drift_guard.py → must be PASS",
+        "git branch --show-current → must be main",
+        "git diff HEAD origin/main --name-only | grep '\\.db$' → should not show DB (not on remote)"
+      ]
+    },
+
+    "step_9_no_push": {
+      "action": "Stop — do NOT push in P196",
+      "reason": "Push requires: (1) verify new commit is push-safe, (2) branch protection requires PR+CI, (3) separate P197 authorization",
+      "next": "After P196 completes, P197 creates a feature branch and opens a PR"
+    }
+  },
+
+  "p196_safety_checks": {
+    "before_reset": [
+      "S-01: no staged files — git diff --cached --name-only = empty",
+      "S-02: HEAD = P191 binary-heavy commit (012d4a3)",
+      "S-03: export file inventory — git show --name-only HEAD",
+      "S-04: sha256 of production DB = a5ac27a6887d8c1d8da97349dbc97c36e9429270dd45f81b3b67a8d5793c4f87",
+      "S-05: sha256 of backup = 5eea53135fb65369a3dd90512e7f8bfc4411b756abadf00a03b2b9b7d4e24da9",
+      "S-06: DB rows = 94924",
+      "S-07: backup rows = 54462",
+      "S-08: full test suite PASS (933+)",
+      "S-09: drift guard PASS",
+      "S-10: repo = /Users/kelvin/Kelvin-WorkSpace/LotteryNew, branch = main"
+    ],
+    "after_unstage": [
+      "S-11: lottery_api/data/lottery_v2.db NOT in staged set",
+      "S-12: backups/p188_lottery_v2_backup_20260601_153821.db NOT in staged set",
+      "S-13: lottery_api/data/lottery_v2.db still exists on disk (ls -lh shows ~96MB)",
+      "S-14: backups/p188_lottery_v2_backup_20260601_153821.db still exists on disk (~51MB)",
+      "S-15: sqlite3 lottery_api/data/lottery_v2.db → still returns 94924"
+    ],
+    "after_commit": [
+      "S-16: no DB binary in new commit — git show HEAD --name-only | grep '.db$' = empty",
+      "S-17: git diff --cached --name-only = empty (nothing staged)",
+      "S-18: production DB still has 94924 rows",
+      "S-19: backup still has 54462 rows",
+      "S-20: full test suite PASS",
+      "S-21: drift guard PASS",
+      "S-22: branch still main",
+      "S-23: NO push performed",
+      "S-24: backups/p188_lottery_v2_backup_20260601_153821.db.sha256 IS in new commit (kept as evidence)"
+    ]
+  },
+
+  "manifest_design": {
+    "path": "docs/db_migration_manifest_p188_p191.json",
+    "purpose": "Text-based evidence of P188 DB migration. Replaces binary blobs in git history. Auditors can verify migration by running local DB queries against these values.",
+    "content": {
+      "schema_version": "1.0",
+      "created_at": "2026-06-01",
+      "migration_task": "P188_PRODUCTION_DB_MIGRATION_EXECUTED_RECONCILED_94924",
+      "production_db": {
+        "path": "lottery_api/data/lottery_v2.db",
+        "note": "NOT tracked in git — local only. Add path to .gitignore.",
+        "rows": 94924,
+        "bet_index_present": true,
+        "bet_index_definition": "INTEGER NOT NULL DEFAULT 1",
+        "integrity_check": "ok",
+        "sha256": "a5ac27a6887d8c1d8da97349dbc97c36e9429270dd45f81b3b67a8d5793c4f87",
+        "size_bytes": 99368960,
+        "schema_key_columns": [
+          "id INTEGER PK",
+          "lottery_type TEXT NOT NULL",
+          "target_draw TEXT NOT NULL",
+          "strategy_id TEXT NOT NULL",
+          "bet_index INTEGER NOT NULL DEFAULT 1",
+          "replay_status TEXT NOT NULL",
+          "provenance_hash TEXT",
+          "controlled_apply_id TEXT",
+          "truth_level TEXT"
+        ],
+        "migration_from_rows": 54462,
+        "dedup_dropped_rows": 160,
+        "imported_multi_bet_rows": 40622
+      },
+      "backup_db": {
+        "path": "backups/p188_lottery_v2_backup_20260601_153821.db",
+        "note": "NOT tracked in git — local only. Add path to .gitignore.",
+        "sha256": "5eea53135fb65369a3dd90512e7f8bfc4411b756abadf00a03b2b9b7d4e24da9",
+        "sha256_file_in_git": "backups/p188_lottery_v2_backup_20260601_153821.db.sha256",
+        "size_bytes": 53374976,
+        "rows": 54462,
+        "bet_index_present": false,
+        "note_2": "Pre-migration backup. Rollback reference. Keep locally until migration is fully validated."
+      },
+      "p188_sql_log": {
+        "path": "outputs/research/power_lotto/p188_production_db_migration_sql_log_20260601.sql",
+        "note": "SQL log of P188 migration steps — tracked in git as text evidence"
+      },
+      "external_storage_required": true,
+      "external_storage_note": "DB binaries are intentionally excluded from git. Store production DB and backup on local disk, secure backup, or data management system outside git. Do NOT delete local copies until external backup is confirmed.",
+      "no_controlled_apply": true,
+      "power_lotto_research_closed": true
+    }
+  },
+
+  "cto_recommendation": {
+    "primary": "Execute P196 soft-reset + recommit non-binary files, no push",
+    "execution_phrase": "YES execute P196 remove DB binaries from local commit using soft reset and recommit non-binary files, no push",
+    "rationale": [
+      "git reset --soft HEAD~1 is a well-understood, reversible local operation",
+      "It undoes only the P191 commit — local disk files (DB, backup) are untouched",
+      "Unstaging the two DB binary paths is explicit and auditable",
+      "The resulting commit is push-safe: research artifacts, tests, scripts, docs — all text",
+      "The manifest provides verifiable DB evidence without binary overhead"
+    ],
+    "after_p196": "P197 creates a feature branch from the new clean commit, pushes it, opens a PR, waits for replay-default-validation CI, then merges",
+    "critical_do_not": [
+      "Do NOT run git reset --hard (destroys unstaged changes)",
+      "Do NOT run git rm lottery_api/data/lottery_v2.db (deletes local file)",
+      "Do NOT push the current binary-heavy P191 commit",
+      "Do NOT force push",
+      "Do NOT disable branch protection",
+      "Do NOT delete the production DB or backup locally"
+    ]
+  },
+
+  "governance_confirmations": {
+    "no_db_write": true,
+    "no_db_delete": true,
+    "no_backup_delete": true,
+    "no_commit_rewrite": true,
+    "no_amend": true,
+    "no_reset": true,
+    "no_branch_creation": true,
+    "no_stage": true,
+    "no_commit": true,
+    "no_push": true,
+    "no_force_push": true,
+    "branch_protection_not_bypassed": true,
+    "no_checkout_other_branch": true,
+    "no_gitignore_modification": true,
+    "power_lotto_research_closed": true,
+    "migrated_db_local_state_preserved": true,
+    "production_db_rows": 94924,
+    "bet_index_present": true,
+    "p191_local_commit_intact": true
+  },
+
+  "next_task_options": [
+    "YES execute P196 remove DB binaries from local commit using soft reset and recommit non-binary files, no push",
+    "YES start P196 binary removal dry-run checklist only",
+    "YES start P196 create external DB manifest only",
+    "YES start P196 keep local binary commit unpushed and pause",
+    "YES start P196 rollback decision gate only"
+  ],
+
+  "next_task_blocked_by_user_authorization": true
+}

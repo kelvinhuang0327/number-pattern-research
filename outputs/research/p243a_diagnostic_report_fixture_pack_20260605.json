@@ -1,0 +1,106 @@
+{
+  "task_id": "P243A",
+  "classification": "P243A_DIAGNOSTIC_REPORT_FIXTURE_PACK_COMPLETE",
+  "task_type": "Type C",
+  "task_type_description": "Small additive fixture/test pack using P242 schema module, under P240D governance simplification rules",
+  "generated_at": "2026-06-05",
+  "source_authorization": "Authorize P243A diagnostic report fixture pack (read-only fixtures using P242 schema, no DB write, no production change)",
+  "source_module": "lottery_api.diagnostics.statistical_diagnostics_schema",
+
+  "fixture_count": 4,
+  "fixture_ids": [
+    "F1_nist_yellow",
+    "F2_power_lotto_null",
+    "F3_star_underpowered",
+    "F4_daily539_rejected"
+  ],
+
+  "fixtures": [
+    {
+      "fixture_id": "F1_nist_yellow",
+      "task_id": "P238B",
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": null,
+      "classification": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+      "nist_alert_level": "YELLOW",
+      "feature_bottleneck": "randomness_observation_only",
+      "evidence_source": "outputs/research/p238b_nist_randomness_audit_artifact_20260604.json — classification=RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY, predictability_claim=False, betting_advice=False, strategy_authorized=False",
+      "sample_size": 22238,
+      "p_value_raw": 0.0
+    },
+    {
+      "fixture_id": "F2_power_lotto_null",
+      "task_id": "P231B",
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "classification": "P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL",
+      "nist_alert_level": "NOT_RUN",
+      "feature_bottleneck": "backward_oos_not_confirmed_robustness_failed",
+      "evidence_source": "CURRENT_STATE.md P231B confirmed line — mean 0.96859 vs baseline 0.94737; p=0.3018; both robustness checks fail; block stability mixed",
+      "sample_size": 382,
+      "p_value_raw": 0.3018
+    },
+    {
+      "fixture_id": "F3_star_underpowered",
+      "task_id": "P227C",
+      "lottery_type": "3_STAR",
+      "strategy_id": "box_play_scan_f7_high_low",
+      "classification": "P227C_STAR_BOX_PLAY_UNDERPOWERED_NO_SIGNAL",
+      "nist_alert_level": "NOT_RUN",
+      "feature_bottleneck": "sample_too_small",
+      "evidence_source": "CURRENT_STATE.md P227C confirmed line — 120 hypotheses; 0 Bonferroni; 1 BH-FDR weak (F7_high_low/w750 p=0.0008, UNDERPOWERED); 3_STAR draws 4,179 (need >=10,000)",
+      "sample_size": 4179,
+      "p_value_raw": 0.0008
+    },
+    {
+      "fixture_id": "F4_daily539_rejected",
+      "task_id": "P230B1",
+      "lottery_type": "DAILY_539",
+      "strategy_id": "midfreq_fourier_2bet",
+      "classification": "REJECTED_BY_BACKWARD_OOS_HISTORICAL_ARTIFACT_DIRECTION",
+      "nist_alert_level": "NOT_RUN",
+      "feature_bottleneck": "historical_artifact_backward_oos_below_baseline",
+      "evidence_source": "CURRENT_STATE.md P230B1/P230C confirmed lines — backward-OOS 4,265 draws; mean 0.6375 < baseline 0.6410; p=0.626; all era/robustness checks fail",
+      "sample_size": 4265,
+      "p_value_raw": 0.626
+    }
+  ],
+
+  "omitted_candidates": [
+    {
+      "candidate": "BIG_LOTTO full strategy pipeline NULL",
+      "reason": "All 7 signals returned p>0.05 (best p=0.085 for ACB, p=0.14 for Fourier). No specific strategy_id/sample_size for a single fixture representative row found in governance artifacts. Omitted to avoid conflating 7 separate signal tests."
+    }
+  ],
+
+  "safety_attestation": "All 4 fixtures validated through P242 validate_diagnostic_report with zero errors. All safety booleans false. No prediction edge claim. No wagering recommendation. Historical research governance metadata only.",
+
+  "no_db_write": true,
+  "no_registry_mutation": true,
+  "no_production_change": true,
+  "no_monitoring_change": true,
+  "no_strategy_authorization": true,
+  "no_betting_advice": true,
+  "p211_restarted": false,
+  "p238b_interpretation": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+
+  "targeted_tests": {
+    "test_file": "tests/test_p243a_diagnostic_report_fixture_pack.py",
+    "total_tests": 55,
+    "result": "PASS"
+  },
+
+  "same_pr_closeout_allowed": true,
+  "same_pr_closeout_reason": "Type C: additive test/artifact files only; no production path modified; tests pass; governance changes <=4 files; git diff --check PASS",
+  "separate_closeout_pr_required": false,
+
+  "final_state": {
+    "active_task_status": "WAITING_FOR_USER_AUTHORIZATION",
+    "p211_status": "HELD_BY_USER",
+    "p238b_nist_status": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+    "db_rows": 94924,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "deployable_candidate_exists": false,
+    "separate_closeout_pr_needed": false
+  }
+}

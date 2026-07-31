@@ -1,0 +1,59 @@
+check_name,status,expected,actual,details
+required_artifact_exists:artifacts/P363_biglotto_evidence_pack_summary.csv,PASS,exists,True,P363 source evidence file is present.
+csv_artifact_parses:artifacts/P363_biglotto_evidence_pack_summary.csv,PASS,parseable csv,24,CSV parsed with csv.DictReader.
+required_artifact_exists:artifacts/P363_biglotto_evidence_pack_adapter_cards.csv,PASS,exists,True,P363 source evidence file is present.
+csv_artifact_parses:artifacts/P363_biglotto_evidence_pack_adapter_cards.csv,PASS,parseable csv,5,CSV parsed with csv.DictReader.
+required_artifact_exists:artifacts/P363_biglotto_evidence_pack_subset_cards.csv,PASS,exists,True,P363 source evidence file is present.
+csv_artifact_parses:artifacts/P363_biglotto_evidence_pack_subset_cards.csv,PASS,parseable csv,31,CSV parsed with csv.DictReader.
+required_artifact_exists:artifacts/P363_biglotto_evidence_pack_consistency_checks.csv,PASS,exists,True,P363 source evidence file is present.
+csv_artifact_parses:artifacts/P363_biglotto_evidence_pack_consistency_checks.csv,PASS,parseable csv,9,CSV parsed with csv.DictReader.
+required_artifact_exists:artifacts/P363_biglotto_evidence_pack_manifest.csv,PASS,exists,True,P363 source evidence file is present.
+csv_artifact_parses:artifacts/P363_biglotto_evidence_pack_manifest.csv,PASS,parseable csv,14,CSV parsed with csv.DictReader.
+required_artifact_exists:artifacts/P363_biglotto_evidence_pack_report.md,PASS,exists,True,P363 source evidence file is present.
+html_markdown_artifact_exists:artifacts/P363_biglotto_evidence_pack_report.md,PASS,exists,True,HTML/Markdown evidence artifact exists for local inspection.
+required_artifact_exists:artifacts/P364_biglotto_evidence_dashboard_index.json,PASS,exists,True,P364 source evidence file is present.
+json_artifact_parses:artifacts/P364_biglotto_evidence_dashboard_index.json,PASS,parseable json,dict,JSON parsed with json.load.
+required_artifact_exists:artifacts/P364_biglotto_evidence_dashboard_adapter_table.csv,PASS,exists,True,P364 source evidence file is present.
+csv_artifact_parses:artifacts/P364_biglotto_evidence_dashboard_adapter_table.csv,PASS,parseable csv,5,CSV parsed with csv.DictReader.
+required_artifact_exists:artifacts/P364_biglotto_evidence_dashboard_subset_table.csv,PASS,exists,True,P364 source evidence file is present.
+csv_artifact_parses:artifacts/P364_biglotto_evidence_dashboard_subset_table.csv,PASS,parseable csv,31,CSV parsed with csv.DictReader.
+required_artifact_exists:artifacts/P364_biglotto_evidence_dashboard.html,PASS,exists,True,P364 source evidence file is present.
+html_markdown_artifact_exists:artifacts/P364_biglotto_evidence_dashboard.html,PASS,exists,True,HTML/Markdown evidence artifact exists for local inspection.
+required_artifact_exists:artifacts/P364_biglotto_evidence_dashboard_manifest.csv,PASS,exists,True,P364 source evidence file is present.
+csv_artifact_parses:artifacts/P364_biglotto_evidence_dashboard_manifest.csv,PASS,parseable csv,12,CSV parsed with csv.DictReader.
+required_artifact_exists:artifacts/P365_biglotto_evidence_explorer_adapter_detail_cards.json,PASS,exists,True,P365 source evidence file is present.
+json_artifact_parses:artifacts/P365_biglotto_evidence_explorer_adapter_detail_cards.json,PASS,parseable json,list,JSON parsed with json.load.
+required_artifact_exists:artifacts/P365_biglotto_evidence_explorer_subset_detail_cards.json,PASS,exists,True,P365 source evidence file is present.
+json_artifact_parses:artifacts/P365_biglotto_evidence_explorer_subset_detail_cards.json,PASS,parseable json,list,JSON parsed with json.load.
+required_artifact_exists:artifacts/P365_biglotto_evidence_explorer_pairwise_comparison.csv,PASS,exists,True,P365 source evidence file is present.
+csv_artifact_parses:artifacts/P365_biglotto_evidence_explorer_pairwise_comparison.csv,PASS,parseable csv,10,CSV parsed with csv.DictReader.
+required_artifact_exists:artifacts/P365_biglotto_evidence_explorer_compact_shortlist.csv,PASS,exists,True,P365 source evidence file is present.
+csv_artifact_parses:artifacts/P365_biglotto_evidence_explorer_compact_shortlist.csv,PASS,parseable csv,8,CSV parsed with csv.DictReader.
+required_artifact_exists:artifacts/P365_biglotto_evidence_explorer_query_snapshots.json,PASS,exists,True,P365 source evidence file is present.
+json_artifact_parses:artifacts/P365_biglotto_evidence_explorer_query_snapshots.json,PASS,parseable json,dict,JSON parsed with json.load.
+required_artifact_exists:artifacts/P365_biglotto_evidence_explorer.html,PASS,exists,True,P365 source evidence file is present.
+html_markdown_artifact_exists:artifacts/P365_biglotto_evidence_explorer.html,PASS,exists,True,HTML/Markdown evidence artifact exists for local inspection.
+required_artifact_exists:artifacts/P365_biglotto_evidence_explorer_manifest.csv,PASS,exists,True,P365 source evidence file is present.
+csv_artifact_parses:artifacts/P365_biglotto_evidence_explorer_manifest.csv,PASS,parseable csv,20,CSV parsed with csv.DictReader.
+required_artifact_exists:artifacts/P366_biglotto_evidence_release_bundle_manifest.json,PASS,exists,True,P366 source evidence file is present.
+json_artifact_parses:artifacts/P366_biglotto_evidence_release_bundle_manifest.json,PASS,parseable json,dict,JSON parsed with json.load.
+required_artifact_exists:artifacts/P366_biglotto_evidence_release_bundle_inventory.csv,PASS,exists,True,P366 source evidence file is present.
+csv_artifact_parses:artifacts/P366_biglotto_evidence_release_bundle_inventory.csv,PASS,parseable csv,28,CSV parsed with csv.DictReader.
+required_artifact_exists:artifacts/P366_biglotto_evidence_release_bundle_smoke_results.csv,PASS,exists,True,P366 source evidence file is present.
+csv_artifact_parses:artifacts/P366_biglotto_evidence_release_bundle_smoke_results.csv,PASS,parseable csv,46,CSV parsed with csv.DictReader.
+required_artifact_exists:artifacts/P366_biglotto_evidence_release_bundle_cli_examples.json,PASS,exists,True,P366 source evidence file is present.
+json_artifact_parses:artifacts/P366_biglotto_evidence_release_bundle_cli_examples.json,PASS,parseable json,dict,JSON parsed with json.load.
+required_artifact_exists:artifacts/P366_biglotto_evidence_release_bundle_landing.html,PASS,exists,True,P366 source evidence file is present.
+html_markdown_artifact_exists:artifacts/P366_biglotto_evidence_release_bundle_landing.html,PASS,exists,True,HTML/Markdown evidence artifact exists for local inspection.
+required_artifact_exists:artifacts/P366_biglotto_evidence_release_bundle_readme.md,PASS,exists,True,P366 source evidence file is present.
+html_markdown_artifact_exists:artifacts/P366_biglotto_evidence_release_bundle_readme.md,PASS,exists,True,HTML/Markdown evidence artifact exists for local inspection.
+required_artifact_exists:recovered_strategies/biglotto/no_db_evidence_pack.py,PASS,exists,True,P363 source evidence file is present.
+required_artifact_exists:recovered_strategies/biglotto/no_db_evidence_dashboard.py,PASS,exists,True,P364 source evidence file is present.
+required_artifact_exists:recovered_strategies/biglotto/no_db_evidence_explorer.py,PASS,exists,True,P365 source evidence file is present.
+required_artifact_exists:recovered_strategies/biglotto/no_db_evidence_release_bundle.py,PASS,exists,True,P366 source evidence file is present.
+source_sha256_values_available,PASS,28 sha256 values,28,Every source artifact row has a SHA256 digest.
+adapter_count_matches_expected_evidence,PASS,5,5,P365 adapter detail evidence exposes the expected adapter count.
+subset_count_matches_expected_evidence,PASS,31,31,P365 subset detail evidence exposes the expected subset count.
+pairwise_count_matches_expected_evidence,PASS,10,10,P365 pairwise evidence exposes the expected size-2 comparison count.
+compact_shortlist_count_matches_expected_evidence,PASS,8,8,P365 compact shortlist evidence exposes the expected row count.
+generated_p367_forbidden_claim_phrases_absent,PASS,absent,absent,P367 generated contract/examples/readme contain no promotional or guarantee claim phrases.

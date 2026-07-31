@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P252D",
+  "classification": "CORRECTION_GATE_SSOT_IMPLEMENTED",
+  "generated_at": "2026-06-07T16:21:31.670721",
+  "p252b_dependency_verified": {
+    "found": true,
+    "path": "outputs/research/p252b_unified_external_method_coverage_audit_20260607.json",
+    "m6_priority": "P0",
+    "classification": "UNIFIED_EXTERNAL_METHOD_COVERAGE_AUDIT"
+  },
+  "p252c_dependency_verified": {
+    "found": true,
+    "path": "outputs/research/p252c_baseline_calculator_ssot_20260607.json",
+    "classification": "BASELINE_CALCULATOR_SSOT_IMPLEMENTED"
+  },
+  "implemented_module": "lottery_api/utils/correction_gate.py",
+  "implemented_functions": [
+    {
+      "name": "validate_p_values",
+      "signature": "(p_values) -> dict",
+      "description": "Validate input p-values; returns {valid, errors, n}; never raises",
+      "note": "Required gate before any correction — rejects empty, non-numeric, NaN, out-of-range"
+    },
+    {
+      "name": "bonferroni_correction",
+      "signature": "(p_values, alpha=0.05) -> dict",
+      "description": "Bonferroni: adjusted_p[i] = min(p[i] × m, 1.0); rejected ← adj < alpha",
+      "note": "Replaces ad-hoc alpha/K thresholds in P211R/P214C/P222/P227C; threshold = alpha/m"
+    },
+    {
+      "name": "benjamini_hochberg_fdr",
+      "signature": "(p_values, alpha=0.05) -> dict",
+      "description": "BH-FDR: step-down monotone q-values; rejected ← q < alpha",
+      "note": "Supersedes bh_fdr() in p227c (kept for reference); identical algorithm, structured output"
+    },
+    {
+      "name": "correction_summary",
+      "signature": "(raw_p, adj_p, rejected, method, alpha, family_label=None) -> dict",
+      "description": "Build standard correction summary from pre-computed results",
+      "note": "SSOT output shape; always includes no_edge_claim=True, correction_required=True"
+    },
+    {
+      "name": "correction_gate_summary",
+      "signature": "(p_values, alpha=0.05, methods=('bonferroni','bh_fdr'), family_label=None) -> dict",
+      "description": "Run one or more corrections and return combined canonical summary",
+      "note": "Primary entry point; families declared here match P221F pre-registration requirement"
+    }
+  ],
+  "module_safety": {
+    "exists": true,
+    "forbidden_imports_found": [],
+    "safe": true
+  },
+  "exercise_results": {
+    "validate_ok_valid": true,
+    "validate_ok_n": 3,
+    "validate_empty_valid": false,
+    "validate_empty_has_error": true,
+    "validate_bad_valid": false,
+    "bonf_n_tests": 7,
+    "bonf_threshold": 0.00714286,
+    "bonf_threshold_correct": true,
+    "bonf_survivor_count": 1,
+    "bonf_survivor_count_ok": true,
+    "bonf_rejected_index_2": true,
+    "bh_n_tests": 10,
+    "bh_survivor_count": 2,
+    "bh_survivor_count_ok": true,
+    "bh_rejected_0_001": true,
+    "bh_rejected_0_008": true,
+    "bh_not_rejected_0_039": true,
+    "bh_adj_monotone": true,
+    "bh_single_p_rejected": true,
+    "gate_no_edge_claim": true,
+    "gate_no_betting_advice": true,
+    "gate_correction_required": true,
+    "gate_has_bonferroni": true,
+    "gate_has_bh_fdr": true,
+    "gate_family_label": "P252D_TEST_FAMILY",
+    "gate_schema_version": "1.0",
+    "determinism_ok": true,
+    "correction_summary_no_edge_claim": true,
+    "correction_summary_schema_version": "1.0",
+    "correction_summary_gate_type": "multiple_testing_correction"
+  },
+  "correction_schema": {
+    "required_fields": [
+      "schema_version",
+      "gate_type",
+      "family_label",
+      "alpha",
+      "method",
+      "n_tests",
+      "raw_p_values",
+      "adjusted_p_values",
+      "rejected",
+      "survivor_count",
+      "null_count",
+      "correction_required",
+      "no_edge_claim",
+      "no_betting_advice",
+      "assumptions",
+      "limitations"
+    ],
+    "no_edge_claim_always_true": true,
+    "no_betting_advice_always_true": true,
+    "correction_required_always_true": true
+  },
+  "known_use_cases": [
+    "P222 cross-lottery scan: 35 strategies × 3 lotteries (Bonferroni per lottery family)",
+    "P227C 3_STAR/4_STAR: 120 hypotheses (10 features × 6 windows × 2 lotteries)",
+    "P214C straight-play: 7 position tests (Bonferroni α/7)",
+    "P211R IS-window: 75 tests per lottery (Bonferroni per lottery)",
+    "P219 external method sweep: 10-method family across 5 game types"
+  ],
+  "supersession_notes": {
+    "p227c_bh_fdr": "bh_fdr() in scripts/p227c_star_box_play_dryrun_scan.py — same algorithm, structured output added",
+    "p214c_apply_bonferroni": "apply_bonferroni() in p214c — same formula, now with schema and no_edge_claim",
+    "p211r_manual_bonf": "Manual alpha/K in p211r — replaced by bonferroni_correction()"
+  },
+  "no_db_write_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_strategy_promotion_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "final_decision": "P252D complete. correction_gate.py SSOT implemented at lottery_api/utils/correction_gate.py. 5 pure-Python functions cover M6 multiple testing correction gap from P252B. Bonferroni and BH-FDR verified against known examples. Deterministic, no DB access, no forbidden imports. No DB write. No registry mutation. No strategy promotion. No betting advice. Recommended next: P252E — implement M5 permutation_test.py SSOT (P0 priority)."
+}

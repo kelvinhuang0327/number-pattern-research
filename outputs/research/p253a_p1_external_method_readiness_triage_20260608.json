@@ -1,0 +1,173 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P253A",
+  "classification": "P1_EXTERNAL_METHOD_READINESS_TRIAGE_COMPLETE",
+  "generated_at": "2026-06-08T10:25:14.088494",
+  "phase0_summary": {
+    "branch": "p253a-p1-external-method-readiness-triage (from main)",
+    "head_eq_origin_main": true,
+    "p252i_visible": true,
+    "dirty_items": "backend.pid, frontend.pid, claude-code-showcase, data/lottery_v2.db — tolerated"
+  },
+  "p252i_dependency_verified": {
+    "found": true,
+    "path": "outputs/research/p252i_p0_ssot_governance_closure_20260608.json",
+    "classification": "P0_EXTERNAL_METHOD_SSOT_GOVERNANCE_CLOSURE_COMPLETE",
+    "all_artifacts_ok": true,
+    "all_modules_ok": true
+  },
+  "supporting_evidence": {
+    "m7_foundation_check": {
+      "rolling_window_exists": true,
+      "drift_detector_exists": true,
+      "psistatus_in_schema": true,
+      "m7_foundation_ready": true
+    },
+    "m1_star3_positional_check": {
+      "db_found": true,
+      "star3_with_positional": 5850,
+      "star3_total": 5850,
+      "positional_complete": true
+    }
+  },
+  "p1_candidate_matrix": [
+    {
+      "method_id": "M7",
+      "method_name": "Signal Stability Diagnostics",
+      "p252b_status": "CONFIRMED_PARTIAL",
+      "p252b_priority": "P1",
+      "readiness_status": "READY_FOR_NEXT_TASK",
+      "rationale": "Vocabulary gap (block/era/year/robustness) is purely definitional — no DB access, no new statistical logic required. P252F rolling_window.py already provides the rolling slice foundation. M7 adds: (a) stability vocabulary constants, (b) block-split helper, (c) threshold SSOT. Type C additive — small, low-risk, no edge-claim risk. rolling_window.py + stability_diagnostics.py form a natural pair.",
+      "evidence": [
+        "lottery_api/engine/drift_detector.py — production stability (PSI thresholds)",
+        "lottery_api/engine/rolling_strategy_monitor.py — uses 'STABLE'/'WARNING'/'DRIFT' labels",
+        "scripts/p114_temporal_stability_audit.py — temporal stability (completed artifact)",
+        "scripts/p230b1_daily539_backward_oos_dryrun.py — uses 'era' labels",
+        "scripts/p231b_powerlotto_first_zone_backward_oos_dryrun.py — 'block stability'",
+        "lottery_api/diagnostics/statistical_diagnostics_schema.py — PsiStatus enum",
+        "lottery_api/utils/rolling_window.py (P252F) — provides rolling slice foundation"
+      ],
+      "implementation_risk": "LOW",
+      "db_schema_risk": "NONE — pure Python, no DB access",
+      "edge_claim_risk": "NONE — interpretability only",
+      "expected_value": "Closes vocabulary inconsistency; enables consistent cross-script stability reporting",
+      "estimated_type": "Type C — small additive (like P252C-F)",
+      "blocking_issues": [],
+      "scope": [
+        "stability_vocabulary constants (block=era=year, robustness=subset exclusion)",
+        "stability threshold constants (STABLE/WARNING/DRIFT thresholds)",
+        "block_stability() helper — split hits into non-overlapping blocks",
+        "stability_summary() — structured output with no_edge_claim=True"
+      ],
+      "module_path": "lottery_api/utils/stability_diagnostics.py"
+    },
+    {
+      "method_id": "M1",
+      "method_name": "Historical Draw Parser",
+      "p252b_status": "CONFIRMED_PARTIAL",
+      "p252b_priority": "P1",
+      "readiness_status": "NEEDS_READONLY_INVENTORY",
+      "rationale": "Positional data for 3_STAR/4_STAR is now in the DB (P213H/L — 5,850 rows each with numbers_positional). The gap is a unified SSOT parser module, not data recovery. BIG_LOTTO/DAILY_539/POWER_LOTTO use ad-hoc upload scripts without a shared schema contract. Before implementing a parser SSOT, a read-only inventory of all per-lottery parsing scripts is needed to define the shared input/output schema. Type B design task needed first.",
+      "evidence": [
+        "scripts/p213g_3star_4star_dry_run_source_parser.py — dry-run parser (mock-only)",
+        "scripts/p213h_3star_4star_controlled_positional_backfill.py — positional backfill",
+        "scripts/p213i_3star_4star_real_source_dry_run_validation.py — source validation",
+        "scripts/p213l_3star_4star_controlled_missing_row_ingestion.py — ingestion complete",
+        "tools/upload_big_lotto_csv.py — ad-hoc BIG_LOTTO uploader",
+        "tools/upload_daily539_txt.py — ad-hoc DAILY_539 uploader",
+        "DB: 3_STAR 5,850 / 4_STAR 5,850 rows with numbers_positional CONFIRMED"
+      ],
+      "implementation_risk": "MEDIUM — parser SSOT touches data ingestion path",
+      "db_schema_risk": "LOW for read-only inventory; MEDIUM for actual SSOT requiring validation",
+      "edge_claim_risk": "NONE — data quality, not prediction",
+      "expected_value": "Unified parse contract prevents silent data drift on new draw ingestion",
+      "estimated_type": "Type B (inventory) → Type C (implementation, separate task)",
+      "blocking_issues": [
+        "No inventory of per-lottery format contracts yet",
+        "Source format for 3_STAR/4_STAR NEW draws unconfirmed (P213G validation was mock-only)"
+      ],
+      "scope": [
+        "Read-only inventory of existing per-lottery parse scripts",
+        "Define shared parser SSOT input schema (per-lottery)",
+        "Define post-parse count assertion contract"
+      ],
+      "module_path": "lottery_api/utils/draw_parser.py (future)"
+    },
+    {
+      "method_id": "M8",
+      "method_name": "Feature Bottleneck Report",
+      "p252b_status": "PARTIAL",
+      "p252b_priority": "P1",
+      "readiness_status": "DEFER",
+      "rationale": "No unified feature definition exists for this lottery system. 'Feature' in the bottleneck report context (mutual information per feature vs draw outcome) requires a pre-defined feature vocabulary that this project does not have as a SSOT. P219 diagnostic sweep has partial MI-style analysis but it is ad-hoc. statistical_diagnostics_schema.py has 'feature_bottleneck' as a REQUIRED_SCHEMA_FIELD but no implementation. M8 cannot be usefully implemented until: (a) a feature vocabulary is defined (which requires a separate design task), (b) the null baseline for MI under random draws is established. Risk: overclaiming features as 'predictive' when MI under random null is high. Recommend deferring until after M7 is complete and a separate feature design task is authorized.",
+      "evidence": [
+        "lottery_api/diagnostics/statistical_diagnostics_schema.py — 'feature_bottleneck' field",
+        "analysis/p219_external_method_diagnostic_sweep.py — partial MI-style analysis",
+        "outputs/research/p241b_p234_statistical_diagnostics_inventory_20260605.json — gap identified",
+        "outputs/research/p244c_diagnostics_integration_plan_20260605.json — blocker vocab"
+      ],
+      "implementation_risk": "HIGH — overclaim risk without feature vocabulary + null baseline",
+      "db_schema_risk": "NONE for design; MEDIUM for MI computation (needs feature vectors)",
+      "edge_claim_risk": "HIGH — mutual information can be misinterpreted as predictive signal; requires careful null comparison",
+      "expected_value": "Interpretability only; no prediction edge expected",
+      "estimated_type": "Type B (feature design) → Type C (implementation) — multi-step",
+      "blocking_issues": [
+        "No feature vocabulary SSOT defined",
+        "MI null baseline under random draws not established",
+        "Overclaim risk without proper null comparison framework"
+      ],
+      "scope": [],
+      "module_path": "lottery_api/utils/feature_bottleneck.py (future — deferred)"
+    }
+  ],
+  "readiness_decision": {
+    "winner": "M7",
+    "winner_method": "Signal Stability Diagnostics",
+    "rationale": "M7 is the most natural next P1 step: it directly extends P252F (rolling_window.py) already on main; Type C low-risk implementation; pure vocabulary/constants + block-split helper; no DB access; no edge-claim risk; closes the inconsistent block/era/year/robustness label gap. M1 needs a read-only inventory first (Type B preceding Type C). M8 is deferred due to missing feature vocabulary and overclaim risk.",
+    "ordered_recommendation": [
+      "M7",
+      "M1 (after inventory)",
+      "M8 (deferred)"
+    ]
+  },
+  "recommended_next_task": {
+    "task_id_proposal": "P253B",
+    "title": "Implement M7 Signal Stability Diagnostics SSOT",
+    "type": "Type C — additive code implementation",
+    "module": "lottery_api/utils/stability_diagnostics.py",
+    "scope": [
+      "STABILITY_VOCAB: BLOCK = ERA = YEAR (synonyms); ROBUSTNESS = subset-exclusion check",
+      "Threshold constants: STABLE / WARNING / UNSTABLE (aligned with DriftDetector PSI)",
+      "block_stability(hits, block_size) — split hit list into non-overlapping blocks, return per-block stats",
+      "stability_summary(hits, block_sizes, label) — structured output with no_edge_claim=True",
+      "Extends rolling_window.py (P252F) — can import rolling_slices internally"
+    ],
+    "non_scope": [
+      "Do not change DriftDetector or RSM production code",
+      "Do not add DB access",
+      "Do not claim stability implies prediction edge",
+      "Do not modify existing completed-task scripts"
+    ],
+    "authorization_required": "Explicit 'Authorize P253B M7 signal stability diagnostics SSOT'",
+    "estimated_effort": "Similar to P252C-F (1 module + analysis script + tests)"
+  },
+  "rejected_or_deferred_options": [
+    {
+      "method_id": "M1",
+      "decision": "NEEDS_READONLY_INVENTORY_FIRST",
+      "reason": "Type B design inventory needed before Type C implementation",
+      "unblock_condition": "Complete a read-only parser script inventory and define input/output schema"
+    },
+    {
+      "method_id": "M8",
+      "decision": "DEFERRED",
+      "reason": "Missing feature vocabulary + high overclaim risk without null MI baseline",
+      "unblock_condition": "Define feature vocabulary SSOT + establish MI null distribution under random draws. Authorize separately after M7 is complete."
+    }
+  ],
+  "no_db_write_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_strategy_promotion_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "final_decision": "P253A triage complete. M7 Signal Stability Diagnostics is the recommended next P1 task. M7 readiness: READY_FOR_NEXT_TASK — extends P252F rolling_window.py, Type C, no DB, no edge-claim risk. M1 readiness: NEEDS_READONLY_INVENTORY — parser script survey needed before implementation. M8 readiness: DEFER — missing feature vocabulary + overclaim risk. No deployable prediction edge. No betting advice. No strategy promotion. System remains WAITING_FOR_USER_AUTHORIZATION. Authorization phrase for next: 'Authorize P253B M7 signal stability diagnostics SSOT'."
+}

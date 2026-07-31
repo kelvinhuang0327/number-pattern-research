@@ -1,0 +1,296 @@
+{
+  "task_id": "P119_EVIDENCE_TRIGGER_MATRIX",
+  "classification": "P119_EVIDENCE_TRIGGER_MATRIX_READY",
+  "db_writes": false,
+  "replay_rows_before": 54462,
+  "replay_rows_after": 54462,
+  "no_strategy_promotion": true,
+  "no_lifecycle_mutation": true,
+  "no_registry_mutation": true,
+  "no_actual_quarantine_applied": true,
+  "no_replay_row_delete": true,
+  "no_4star_backtest": true,
+  "no_special3_p108_rerun": true,
+  "no_powerlotto_oos_execution": true,
+  "source_unknown_caveat_preserved": true,
+  "current_db_snapshot": {
+    "replay_rows": 54462,
+    "three_star_count": 4179,
+    "three_star_max_draw": "115000106",
+    "four_star_count": 2922,
+    "four_star_max_draw": "115000103",
+    "power_lotto_count": 1913,
+    "power_lotto_max_draw": "115000041"
+  },
+  "evidence_index": [
+    {
+      "phase_id": "P105",
+      "classification": "P105_DB_STATE_ACCEPTED_FOR_SPECIAL3_EVALUATION_ONLY",
+      "artifact_path": "outputs/replay/p105_db_state_acceptance_decision_20260527.json",
+      "pr": null,
+      "merge_commit": "ceea6e9",
+      "metadata_source": "git_log",
+      "key_conclusion": "DB state accepted for Special3 prospective evaluation only. 4_STAR source remains unknown. Source_unknown caveat propagated forward.",
+      "governance_constraints": [
+        "source_unknown_caveat_active",
+        "4_STAR_source_unresolved"
+      ]
+    },
+    {
+      "phase_id": "P106",
+      "classification": "P106_SPECIAL3_PROSPECTIVE_EVALUATION_PARTIAL",
+      "artifact_path": "outputs/replay/p106_special3_prospective_evaluation_rerun_20260527.json",
+      "pr": null,
+      "merge_commit": "bfa2653",
+      "metadata_source": "git_log",
+      "key_conclusion": "63 Special3 prospective draws after P99 cutoff found. 37 more needed for 100-draw re-evaluation. Partial evaluation only.",
+      "governance_constraints": [
+        "special3_p108_blocked_until_100_draws",
+        "source_unknown_caveat_active"
+      ]
+    },
+    {
+      "phase_id": "P107A",
+      "classification": "P107A_SPECIAL3_100DRAW_WAIT_MORE_DRAWS",
+      "artifact_path": "outputs/replay/p107a_special3_100draw_monitoring_gate_20260527.json",
+      "pr": null,
+      "merge_commit": "782e261",
+      "metadata_source": "git_log",
+      "key_conclusion": "Special3 100-draw re-evaluation (P108) blocked. WAIT_MORE_DRAWS gate established at 100 prospective draws.",
+      "governance_constraints": [
+        "special3_p108_blocked_until_100_draws",
+        "wait_more_draws_gate_active"
+      ]
+    },
+    {
+      "phase_id": "P107B",
+      "classification": "P107B_STALE_BASELINE_GUARD_REPAIR_READY",
+      "artifact_path": "outputs/replay/p107b_stale_baseline_guard_repair_20260527.json",
+      "pr": null,
+      "merge_commit": "e79b5e9",
+      "metadata_source": "git_log",
+      "key_conclusion": "Stale baseline guards repaired post-DB-acceptance. Guards updated to reflect replay_rows=54462 as accepted baseline.",
+      "governance_constraints": [
+        "guards_updated_no_other_changes",
+        "replay_rows_baseline_locked_54462"
+      ]
+    },
+    {
+      "phase_id": "P112",
+      "classification": "P112_CROSS_LOTTERY_HELPFULNESS_AUDIT_READY",
+      "artifact_path": "outputs/replay/p112_cross_lottery_prediction_helpfulness_audit_20260527.json",
+      "pr": "#238",
+      "merge_commit": "4db894a",
+      "metadata_source": "git_log",
+      "key_conclusion": "Cross-lottery prediction helpfulness audit completed. BIG_LOTTO and POWER_LOTTO strategies assessed for continued helpfulness.",
+      "governance_constraints": [
+        "no_promotion_from_audit",
+        "no_lifecycle_mutation"
+      ]
+    },
+    {
+      "phase_id": "P113",
+      "classification": "P113_P112_ACTION_DECISION_MATRIX_READY",
+      "artifact_path": "outputs/replay/p113_p112_action_decision_matrix_20260527.json",
+      "pr": "#239",
+      "merge_commit": "be3716e",
+      "metadata_source": "git_log",
+      "key_conclusion": "Action decision matrix from P112 audit completed. Governance decisions for each strategy documented.",
+      "governance_constraints": [
+        "no_promotion_from_matrix",
+        "no_lifecycle_mutation"
+      ]
+    },
+    {
+      "phase_id": "P114",
+      "classification": "P114_TEMPORAL_STABILITY_AUDIT_READY",
+      "artifact_path": "outputs/replay/p114_temporal_stability_audit_20260527.json",
+      "pr": "#240",
+      "merge_commit": "3ffae64",
+      "metadata_source": "git_log",
+      "key_conclusion": "Temporal stability audit completed. Strategy temporal drift checked across draw windows.",
+      "governance_constraints": [
+        "no_promotion_from_audit",
+        "temporal_review_only"
+      ]
+    },
+    {
+      "phase_id": "P116",
+      "classification": "P116_POWERLOTTO_OOS_MONITORING_DESIGN_READY",
+      "artifact_path": "outputs/replay/p116_powerlotto_oos_monitoring_design_20260527.json",
+      "pr": "#241",
+      "merge_commit": "f4b7ae4",
+      "metadata_source": "git_log",
+      "key_conclusion": "POWER_LOTTO OOS monitoring design ready. Two candidates: midfreq_fourier_mk_3bet (min 30 draws) and pp3_freqort_4bet (min 40 draws).",
+      "governance_constraints": [
+        "no_oos_execution",
+        "design_only",
+        "promotion_not_authorized"
+      ]
+    },
+    {
+      "phase_id": "P115",
+      "classification": "P115_BIGLOTTO_QUARANTINE_GOVERNANCE_READY",
+      "artifact_path": "outputs/replay/p115_biglotto_quarantine_governance_20260527.json",
+      "pr": "#242",
+      "merge_commit": "c4ce85e",
+      "metadata_source": "git_log",
+      "key_conclusion": "BIG_LOTTO quarantine governance design ready for fourier30_markov30_biglotto. Actual quarantine NOT applied. Requires explicit auth phrase.",
+      "governance_constraints": [
+        "actual_quarantine_not_applied",
+        "requires_explicit_auth_phrase",
+        "no_lifecycle_mutation"
+      ]
+    },
+    {
+      "phase_id": "P117",
+      "classification": "P117_POWERLOTTO_OOS_WAIT_MORE_DRAWS",
+      "artifact_path": "outputs/replay/p117_powerlotto_oos_monitoring_checkpoint_20260527.json",
+      "pr": "#243",
+      "merge_commit": "9765485",
+      "metadata_source": "git_log",
+      "key_conclusion": "POWER_LOTTO OOS checkpoint: 0 new draws after baseline 115000041. WAIT_MORE_DRAWS. No OOS conclusions, no promotion.",
+      "governance_constraints": [
+        "wait_more_draws",
+        "no_oos_conclusions",
+        "no_promotion"
+      ]
+    }
+  ],
+  "trigger_matrix": {
+    "P108_SPECIAL3_100DRAW_REEVALUATION": {
+      "trigger_type": "draw_count",
+      "condition": "Special3 prospective draws after P99 cutoff >= 100",
+      "current_value": 63,
+      "threshold": 100,
+      "remaining": 37,
+      "status": "BLOCKED",
+      "authorization_required": "separate branch / task required; no automatic promotion",
+      "blocked_reason": "Need 37 more Special3 prospective draws"
+    },
+    "P117_POWERLOTTO_OOS_RETRIGGER": {
+      "trigger_type": "draw_count",
+      "condition_partial": "New POWER_LOTTO draws after 115000041 >= 30",
+      "condition_full": "New POWER_LOTTO draws after 115000041 >= 40",
+      "current_value": 0,
+      "threshold_partial": 30,
+      "threshold_full": 40,
+      "remaining_for_partial": 30,
+      "remaining_for_full": 40,
+      "status": "BLOCKED",
+      "authorization_required": "promotion not authorized even after checkpoint",
+      "blocked_reason": "Need 30 more POWER_LOTTO draws for partial checkpoint"
+    },
+    "P118_BIGLOTTO_ACTUAL_QUARANTINE": {
+      "trigger_type": "explicit_authorization",
+      "condition": "User provides exact phrase: YES quarantine strategy fourier30_markov30_biglotto for stable negative evidence",
+      "exact_phrase_required": "YES quarantine strategy fourier30_markov30_biglotto for stable negative evidence",
+      "candidate_strategy": "fourier30_markov30_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "current_status": "BLOCKED_AWAITING_AUTHORIZATION",
+      "authorization_phrase_detected": false,
+      "status": "BLOCKED",
+      "blocked_reason": "Exact authorization phrase has not been provided",
+      "notes": "P115 created governance design only. Actual quarantine requires explicit phrase above plus a separate P118 task."
+    },
+    "P4STAR_PROVENANCE_AND_BACKTEST": {
+      "trigger_type": "source_decision",
+      "condition": "Source/provenance of 4_STAR rows must be confirmed in a separate decision artifact before backtest is authorized",
+      "current_4star_count": 2922,
+      "current_4star_max_draw": "115000103",
+      "source_status": "UNKNOWN",
+      "backtest_status": "NOT_AUTHORIZED",
+      "status": "BLOCKED",
+      "blocked_reason": "4_STAR source remains unknown; backtest cannot be authorized until source is confirmed in a separate artifact",
+      "authorization_required": "Source acceptance task + explicit backtest authorization"
+    }
+  },
+  "blocked_task_register": [
+    {
+      "task": "P108_SPECIAL3_100DRAW_REEVALUATION",
+      "status": "BLOCKED",
+      "blocked_reason": "Need 37 more Special3 prospective draws",
+      "unblock_condition": "Special3 prospective draws after P99 cutoff >= 100"
+    },
+    {
+      "task": "P117_POWERLOTTO_OOS_RETRIGGER",
+      "status": "BLOCKED",
+      "blocked_reason": "Need 30 more POWER_LOTTO draws for partial checkpoint",
+      "unblock_condition": "New POWER_LOTTO draws after 115000041 >= 30"
+    },
+    {
+      "task": "P118_BIGLOTTO_ACTUAL_QUARANTINE",
+      "status": "BLOCKED",
+      "blocked_reason": "Exact authorization phrase has not been provided",
+      "unblock_condition": "User provides exact phrase: YES quarantine strategy fourier30_markov30_biglotto for stable negative evidence"
+    },
+    {
+      "task": "P4STAR_PROVENANCE_AND_BACKTEST",
+      "status": "BLOCKED",
+      "blocked_reason": "4_STAR source remains unknown; backtest cannot be authorized until source is confirmed in a separate artifact",
+      "unblock_condition": "Source/provenance of 4_STAR rows must be confirmed in a separate decision artifact before backtest is authorized"
+    }
+  ],
+  "next_action_selector": {
+    "recommended_next_action": "WAIT_FOR_DATA_OR_AUTHORIZATION",
+    "rationale": "All trigger conditions are currently unmet. Nearest trigger: 37 more Special3 draws for P108, 30 more POWER_LOTTO draws for partial P117 checkpoint. Continue monitoring. No new analysis warranted until data changes.",
+    "selector_rules": [
+      {
+        "rule": "if Special3 prospective draws >= 100 \u2192 P108_SPECIAL3_100DRAW_REEVALUATION"
+      },
+      {
+        "rule": "elif new POWER_LOTTO draws >= 30 \u2192 P117_POWERLOTTO_OOS_RETRIGGER (partial)"
+      },
+      {
+        "rule": "elif new POWER_LOTTO draws >= 40 \u2192 P117_POWERLOTTO_OOS_RETRIGGER (full)"
+      },
+      {
+        "rule": "elif exact quarantine phrase present \u2192 P118_BIGLOTTO_ACTUAL_QUARANTINE"
+      },
+      {
+        "rule": "else \u2192 WAIT_FOR_DATA_OR_AUTHORIZATION"
+      }
+    ]
+  },
+  "explicit_authorization_phrases": [
+    {
+      "purpose": "BIG_LOTTO actual quarantine of fourier30_markov30_biglotto",
+      "required_phrase": "YES quarantine strategy fourier30_markov30_biglotto for stable negative evidence",
+      "task": "P118_BIGLOTTO_ACTUAL_QUARANTINE"
+    }
+  ],
+  "future_task_candidates": [
+    {
+      "task": "P108_SPECIAL3_100DRAW_REEVALUATION",
+      "condition": "Special3 prospective draws >= 100",
+      "current_progress": "63/100"
+    },
+    {
+      "task": "P117_POWERLOTTO_OOS_RETRIGGER_PARTIAL",
+      "condition": "New POWER_LOTTO draws after 115000041 >= 30",
+      "current_progress": "0/30"
+    },
+    {
+      "task": "P117_POWERLOTTO_OOS_RETRIGGER_FULL",
+      "condition": "New POWER_LOTTO draws after 115000041 >= 40",
+      "current_progress": "0/40"
+    },
+    {
+      "task": "P118_BIGLOTTO_ACTUAL_QUARANTINE",
+      "condition": "Explicit authorization phrase provided by user/operator",
+      "current_progress": "0/1 (phrase not yet provided)"
+    },
+    {
+      "task": "P4STAR_PROVENANCE_DECISION",
+      "condition": "4_STAR source confirmed in a separate decision artifact",
+      "current_progress": "source_unknown"
+    }
+  ],
+  "limitations": [
+    "P108/P109 through P111 artifacts not found in outputs/replay/ \u2014 these tasks may predate the current artifact naming convention or may not have produced JSON outputs; evidence index covers available artifacts only",
+    "P116 did not record explicit baseline draw field; P117 used fallback 115000041",
+    "new_3star_draws and new_pl_draws computed from DB at checkpoint time; recalculate at future trigger evaluation",
+    "This is documentation consolidation only; no live analysis was run"
+  ],
+  "final_classification": "P119_EVIDENCE_TRIGGER_MATRIX_READY"
+}

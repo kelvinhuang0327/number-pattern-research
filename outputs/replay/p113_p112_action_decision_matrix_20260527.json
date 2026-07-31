@@ -1,0 +1,558 @@
+{
+  "classification": "P113_P112_ACTION_DECISION_MATRIX_READY",
+  "task_id": "P113_P112_ACTION_DECISION_MATRIX",
+  "generated_date": "20260527",
+  "p112_reference": {
+    "classification": "P112_CROSS_LOTTERY_HELPFULNESS_AUDIT_READY",
+    "artifact_path": "outputs/replay/p112_cross_lottery_prediction_helpfulness_audit_20260527.json",
+    "task_id": "P112_CROSS_LOTTERY_PREDICTION_HELPFULNESS_AUDIT",
+    "audited_strategy_count": 36,
+    "audited_lotteries": [
+      "POWER_LOTTO",
+      "DAILY_539",
+      "BIG_LOTTO"
+    ]
+  },
+  "db_writes": false,
+  "replay_rows_before": 54462,
+  "replay_rows_after": 54462,
+  "no_strategy_promotion": true,
+  "no_lifecycle_mutation": true,
+  "no_registry_mutation": true,
+  "no_4star_backtest": true,
+  "no_special3_p108_rerun": true,
+  "source_unknown_caveat_preserved": true,
+  "action_definitions": {
+    "WATCHLIST_QUEUE": "Strategy has demonstrated prediction edge above baseline (PREDICTION_HELPFUL). Queue for controlled OOS monitoring design. Promotion NOT authorized from P112/P113 alone.",
+    "OBSERVATION_QUEUE": "Strategy shows positive edge vs baseline but requires more evidence (WATCHLIST_CANDIDATE). Continue accumulating data; eligible for Wave-N targeted observation planning.",
+    "CONTINUE_OBSERVATION": "Strategy is classified OBSERVE_MORE. Sample size or stability insufficient to judge. No action beyond passive monitoring.",
+    "DEMOTE_OR_QUARANTINE_CANDIDATE": "Strategy is SUB_BASELINE. Performs below random baseline. Candidate for demotion or quarantine in future governance task. Not auto-demoted here.",
+    "FALLBACK_DISCLOSURE_CANDIDATE": "Strategy is FALLBACK_EQUIVALENT. Statistically indistinguishable from random. Should be disclosed as fallback-only when used in production. No active promotion.",
+    "HOLD_FOR_MORE_DATA": "Strategy is INCONCLUSIVE or INSUFFICIENT_DATA. No action until sufficient prospective draws are available."
+  },
+  "action_summary_counts": {
+    "FALLBACK_DISCLOSURE_CANDIDATE": 11,
+    "OBSERVATION_QUEUE": 18,
+    "WATCHLIST_QUEUE": 2,
+    "DEMOTE_OR_QUARANTINE_CANDIDATE": 5
+  },
+  "per_lottery_decision_matrix": {
+    "POWER_LOTTO": {
+      "priority": "HIGH",
+      "reason": "2 PREDICTION_HELPFUL + 6 WATCHLIST_CANDIDATE strategies; highest observed edge.",
+      "recommended_next": "P114 temporal stability audit; design OOS monitoring for helpful strategies.",
+      "watchlist_queue_count": 2,
+      "observation_queue_count": 6,
+      "fallback_disclosure_count": 2,
+      "demote_quarantine_count": 0,
+      "baseline_main": 0.947368,
+      "max_helpful_edge": 0.079965
+    },
+    "DAILY_539": {
+      "priority": "MEDIUM",
+      "reason": "11 WATCHLIST_CANDIDATE strategies; cold-pool/orthogonal variants consistently outperform Markov. 1 SUB_BASELINE to quarantine.",
+      "recommended_next": "P114 temporal stability audit; P115 quarantine for zone_gap_3bet_539.",
+      "watchlist_queue_count": 0,
+      "observation_queue_count": 11,
+      "fallback_disclosure_count": 3,
+      "demote_quarantine_count": 1,
+      "baseline_main": 0.641026,
+      "max_helpful_edge": 0.036308
+    },
+    "BIG_LOTTO": {
+      "priority": "LOW_REPAIR_FIRST",
+      "reason": "Only 1 WATCHLIST_CANDIDATE; 4 SUB_BASELINE strategies. Strategy redesign needed before expansion.",
+      "recommended_next": "P115 quarantine for 4 sub-baseline strategies; strategy redesign before Wave-N expansion.",
+      "watchlist_queue_count": 0,
+      "observation_queue_count": 1,
+      "fallback_disclosure_count": 6,
+      "demote_quarantine_count": 4,
+      "baseline_main": 0.734694,
+      "max_helpful_edge": 0.022631
+    }
+  },
+  "per_strategy_action_matrix": [
+    {
+      "strategy_id": "cold_complement_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": -0.006702,
+      "rationale": "P112 classified this strategy as FALLBACK_EQUIVALENT. Performance is statistically indistinguishable from hypergeometric baseline. Must be disclosed as fallback when used in production context.",
+      "next_task_candidate": "P116_FALLBACK_DISCLOSURE_GOVERNANCE or NO_IMMEDIATE_ACTION"
+    },
+    {
+      "strategy_id": "fourier30_markov30_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "p113_action": "OBSERVATION_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.017322,
+      "rationale": "P112 classified this strategy as WATCHLIST_CANDIDATE with positive edge vs baseline. Edge is promising but insufficient sample size or window stability to authorize promotion. Accumulate more prospective draws before escalating.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or WAVE_N_TARGETED_OBSERVATION"
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "p113_action": "OBSERVATION_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.045303,
+      "rationale": "P112 classified this strategy as WATCHLIST_CANDIDATE with positive edge vs baseline. Edge is promising but insufficient sample size or window stability to authorize promotion. Accumulate more prospective draws before escalating.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or WAVE_N_TARGETED_OBSERVATION"
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "p113_action": "OBSERVATION_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.025298,
+      "rationale": "P112 classified this strategy as WATCHLIST_CANDIDATE with positive edge vs baseline. Edge is promising but insufficient sample size or window stability to authorize promotion. Accumulate more prospective draws before escalating.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or WAVE_N_TARGETED_OBSERVATION"
+    },
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "p112_classification": "PREDICTION_HELPFUL",
+      "p113_action": "WATCHLIST_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.079965,
+      "rationale": "P112 classified this strategy as PREDICTION_HELPFUL with measurable positive edge above hypergeometric baseline. Qualifies for controlled OOS monitoring design. Promotion requires separate governance authorization.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or P116_OOS_MONITORING_DESIGN"
+    },
+    {
+      "strategy_id": "power_fourier_rhythm_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "p113_action": "OBSERVATION_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.045298,
+      "rationale": "P112 classified this strategy as WATCHLIST_CANDIDATE with positive edge vs baseline. Edge is promising but insufficient sample size or window stability to authorize promotion. Accumulate more prospective draws before escalating.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or WAVE_N_TARGETED_OBSERVATION"
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "lottery_type": "POWER_LOTTO",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "p113_action": "OBSERVATION_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.044988,
+      "rationale": "P112 classified this strategy as WATCHLIST_CANDIDATE with positive edge vs baseline. Edge is promising but insufficient sample size or window stability to authorize promotion. Accumulate more prospective draws before escalating.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or WAVE_N_TARGETED_OBSERVATION"
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "p113_action": "OBSERVATION_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.044988,
+      "rationale": "P112 classified this strategy as WATCHLIST_CANDIDATE with positive edge vs baseline. Edge is promising but insufficient sample size or window stability to authorize promotion. Accumulate more prospective draws before escalating.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or WAVE_N_TARGETED_OBSERVATION"
+    },
+    {
+      "strategy_id": "pp3_freqort_4bet",
+      "lottery_type": "POWER_LOTTO",
+      "p112_classification": "PREDICTION_HELPFUL",
+      "p113_action": "WATCHLIST_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.054632,
+      "rationale": "P112 classified this strategy as PREDICTION_HELPFUL with measurable positive edge above hypergeometric baseline. Qualifies for controlled OOS monitoring design. Promotion requires separate governance authorization.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or P116_OOS_MONITORING_DESIGN"
+    },
+    {
+      "strategy_id": "zonal_entropy_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": -0.001368,
+      "rationale": "P112 classified this strategy as FALLBACK_EQUIVALENT. Performance is statistically indistinguishable from hypergeometric baseline. Must be disclosed as fallback when used in production context.",
+      "next_task_candidate": "P116_FALLBACK_DISCLOSURE_GOVERNANCE or NO_IMMEDIATE_ACTION"
+    },
+    {
+      "strategy_id": "539_3bet_orthogonal",
+      "lottery_type": "DAILY_539",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "p113_action": "OBSERVATION_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.030974,
+      "rationale": "P112 classified this strategy as WATCHLIST_CANDIDATE with positive edge vs baseline. Edge is promising but insufficient sample size or window stability to authorize promotion. Accumulate more prospective draws before escalating.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or WAVE_N_TARGETED_OBSERVATION"
+    },
+    {
+      "strategy_id": "acb_1bet",
+      "lottery_type": "DAILY_539",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "p113_action": "OBSERVATION_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.030974,
+      "rationale": "P112 classified this strategy as WATCHLIST_CANDIDATE with positive edge vs baseline. Edge is promising but insufficient sample size or window stability to authorize promotion. Accumulate more prospective draws before escalating.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or WAVE_N_TARGETED_OBSERVATION"
+    },
+    {
+      "strategy_id": "acb_markov_midfreq",
+      "lottery_type": "DAILY_539",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": -0.004359,
+      "rationale": "P112 classified this strategy as FALLBACK_EQUIVALENT. Performance is statistically indistinguishable from hypergeometric baseline. Must be disclosed as fallback when used in production context.",
+      "next_task_candidate": "P116_FALLBACK_DISCLOSURE_GOVERNANCE or NO_IMMEDIATE_ACTION"
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "DAILY_539",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "p113_action": "OBSERVATION_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.030974,
+      "rationale": "P112 classified this strategy as WATCHLIST_CANDIDATE with positive edge vs baseline. Edge is promising but insufficient sample size or window stability to authorize promotion. Accumulate more prospective draws before escalating.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or WAVE_N_TARGETED_OBSERVATION"
+    },
+    {
+      "strategy_id": "acb_single_539",
+      "lottery_type": "DAILY_539",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "p113_action": "OBSERVATION_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.030974,
+      "rationale": "P112 classified this strategy as WATCHLIST_CANDIDATE with positive edge vs baseline. Edge is promising but insufficient sample size or window stability to authorize promotion. Accumulate more prospective draws before escalating.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or WAVE_N_TARGETED_OBSERVATION"
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "lottery_type": "DAILY_539",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "p113_action": "OBSERVATION_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.034771,
+      "rationale": "P112 classified this strategy as WATCHLIST_CANDIDATE with positive edge vs baseline. Edge is promising but insufficient sample size or window stability to authorize promotion. Accumulate more prospective draws before escalating.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or WAVE_N_TARGETED_OBSERVATION"
+    },
+    {
+      "strategy_id": "daily539_f4cold_3bet",
+      "lottery_type": "DAILY_539",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "p113_action": "OBSERVATION_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.031641,
+      "rationale": "P112 classified this strategy as WATCHLIST_CANDIDATE with positive edge vs baseline. Edge is promising but insufficient sample size or window stability to authorize promotion. Accumulate more prospective draws before escalating.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or WAVE_N_TARGETED_OBSERVATION"
+    },
+    {
+      "strategy_id": "daily539_f4cold_5bet",
+      "lottery_type": "DAILY_539",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "p113_action": "OBSERVATION_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.031641,
+      "rationale": "P112 classified this strategy as WATCHLIST_CANDIDATE with positive edge vs baseline. Edge is promising but insufficient sample size or window stability to authorize promotion. Accumulate more prospective draws before escalating.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or WAVE_N_TARGETED_OBSERVATION"
+    },
+    {
+      "strategy_id": "daily539_markov_cold",
+      "lottery_type": "DAILY_539",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": -0.007268,
+      "rationale": "P112 classified this strategy as FALLBACK_EQUIVALENT. Performance is statistically indistinguishable from hypergeometric baseline. Must be disclosed as fallback when used in production context.",
+      "next_task_candidate": "P116_FALLBACK_DISCLOSURE_GOVERNANCE or NO_IMMEDIATE_ACTION"
+    },
+    {
+      "strategy_id": "markov_1bet_539",
+      "lottery_type": "DAILY_539",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": -0.007026,
+      "rationale": "P112 classified this strategy as FALLBACK_EQUIVALENT. Performance is statistically indistinguishable from hypergeometric baseline. Must be disclosed as fallback when used in production context.",
+      "next_task_candidate": "P116_FALLBACK_DISCLOSURE_GOVERNANCE or NO_IMMEDIATE_ACTION"
+    },
+    {
+      "strategy_id": "midfreq_acb_2bet",
+      "lottery_type": "DAILY_539",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "p113_action": "OBSERVATION_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.028308,
+      "rationale": "P112 classified this strategy as WATCHLIST_CANDIDATE with positive edge vs baseline. Edge is promising but insufficient sample size or window stability to authorize promotion. Accumulate more prospective draws before escalating.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or WAVE_N_TARGETED_OBSERVATION"
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "lottery_type": "DAILY_539",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "p113_action": "OBSERVATION_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.028308,
+      "rationale": "P112 classified this strategy as WATCHLIST_CANDIDATE with positive edge vs baseline. Edge is promising but insufficient sample size or window stability to authorize promotion. Accumulate more prospective draws before escalating.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or WAVE_N_TARGETED_OBSERVATION"
+    },
+    {
+      "strategy_id": "p0b_539_3bet_f_cold_fmid",
+      "lottery_type": "DAILY_539",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "p113_action": "OBSERVATION_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.036308,
+      "rationale": "P112 classified this strategy as WATCHLIST_CANDIDATE with positive edge vs baseline. Edge is promising but insufficient sample size or window stability to authorize promotion. Accumulate more prospective draws before escalating.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or WAVE_N_TARGETED_OBSERVATION"
+    },
+    {
+      "strategy_id": "p0c_539_3bet_f_cold_x2",
+      "lottery_type": "DAILY_539",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "p113_action": "OBSERVATION_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.036308,
+      "rationale": "P112 classified this strategy as WATCHLIST_CANDIDATE with positive edge vs baseline. Edge is promising but insufficient sample size or window stability to authorize promotion. Accumulate more prospective draws before escalating.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or WAVE_N_TARGETED_OBSERVATION"
+    },
+    {
+      "strategy_id": "zone_gap_3bet_539",
+      "lottery_type": "DAILY_539",
+      "p112_classification": "SUB_BASELINE",
+      "p113_action": "DEMOTE_OR_QUARANTINE_CANDIDATE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": -0.012359,
+      "rationale": "P112 classified this strategy as SUB_BASELINE. Performance is below hypergeometric baseline. Candidate for demotion/quarantine in future governance task (P115 or equivalent).",
+      "next_task_candidate": "P115_STRATEGY_QUARANTINE_GOVERNANCE"
+    },
+    {
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "p112_classification": "SUB_BASELINE",
+      "p113_action": "DEMOTE_OR_QUARANTINE_CANDIDATE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": -0.010694,
+      "rationale": "P112 classified this strategy as SUB_BASELINE. Performance is below hypergeometric baseline. Candidate for demotion/quarantine in future governance task (P115 or equivalent).",
+      "next_task_candidate": "P115_STRATEGY_QUARANTINE_GOVERNANCE"
+    },
+    {
+      "strategy_id": "biglotto_deviation_2bet",
+      "lottery_type": "BIG_LOTTO",
+      "p112_classification": "WATCHLIST_CANDIDATE",
+      "p113_action": "OBSERVATION_QUEUE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.022631,
+      "rationale": "P112 classified this strategy as WATCHLIST_CANDIDATE with positive edge vs baseline. Edge is promising but insufficient sample size or window stability to authorize promotion. Accumulate more prospective draws before escalating.",
+      "next_task_candidate": "P114_TEMPORAL_STABILITY_AUDIT or WAVE_N_TARGETED_OBSERVATION"
+    },
+    {
+      "strategy_id": "biglotto_echo_aware_3bet",
+      "lottery_type": "BIG_LOTTO",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.004639,
+      "rationale": "P112 classified this strategy as FALLBACK_EQUIVALENT. Performance is statistically indistinguishable from hypergeometric baseline. Must be disclosed as fallback when used in production context.",
+      "next_task_candidate": "P116_FALLBACK_DISCLOSURE_GOVERNANCE or NO_IMMEDIATE_ACTION"
+    },
+    {
+      "strategy_id": "biglotto_triple_strike",
+      "lottery_type": "BIG_LOTTO",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": -0.006668,
+      "rationale": "P112 classified this strategy as FALLBACK_EQUIVALENT. Performance is statistically indistinguishable from hypergeometric baseline. Must be disclosed as fallback when used in production context.",
+      "next_task_candidate": "P116_FALLBACK_DISCLOSURE_GOVERNANCE or NO_IMMEDIATE_ACTION"
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_4bet_w30",
+      "lottery_type": "BIG_LOTTO",
+      "p112_classification": "SUB_BASELINE",
+      "p113_action": "DEMOTE_OR_QUARANTINE_CANDIDATE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": -0.012694,
+      "rationale": "P112 classified this strategy as SUB_BASELINE. Performance is below hypergeometric baseline. Candidate for demotion/quarantine in future governance task (P115 or equivalent).",
+      "next_task_candidate": "P115_STRATEGY_QUARANTINE_GOVERNANCE"
+    },
+    {
+      "strategy_id": "cold_complement_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.000639,
+      "rationale": "P112 classified this strategy as FALLBACK_EQUIVALENT. Performance is statistically indistinguishable from hypergeometric baseline. Must be disclosed as fallback when used in production context.",
+      "next_task_candidate": "P116_FALLBACK_DISCLOSURE_GOVERNANCE or NO_IMMEDIATE_ACTION"
+    },
+    {
+      "strategy_id": "coldpool15_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": 0.000639,
+      "rationale": "P112 classified this strategy as FALLBACK_EQUIVALENT. Performance is statistically indistinguishable from hypergeometric baseline. Must be disclosed as fallback when used in production context.",
+      "next_task_candidate": "P116_FALLBACK_DISCLOSURE_GOVERNANCE or NO_IMMEDIATE_ACTION"
+    },
+    {
+      "strategy_id": "fourier30_markov30_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "p112_classification": "SUB_BASELINE",
+      "p113_action": "DEMOTE_OR_QUARANTINE_CANDIDATE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": -0.013361,
+      "rationale": "P112 classified this strategy as SUB_BASELINE. Performance is below hypergeometric baseline. Candidate for demotion/quarantine in future governance task (P115 or equivalent).",
+      "next_task_candidate": "P115_STRATEGY_QUARANTINE_GOVERNANCE"
+    },
+    {
+      "strategy_id": "markov_2bet_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": -0.006694,
+      "rationale": "P112 classified this strategy as FALLBACK_EQUIVALENT. Performance is statistically indistinguishable from hypergeometric baseline. Must be disclosed as fallback when used in production context.",
+      "next_task_candidate": "P116_FALLBACK_DISCLOSURE_GOVERNANCE or NO_IMMEDIATE_ACTION"
+    },
+    {
+      "strategy_id": "markov_single_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "p112_classification": "FALLBACK_EQUIVALENT",
+      "p113_action": "FALLBACK_DISCLOSURE_CANDIDATE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": -0.006694,
+      "rationale": "P112 classified this strategy as FALLBACK_EQUIVALENT. Performance is statistically indistinguishable from hypergeometric baseline. Must be disclosed as fallback when used in production context.",
+      "next_task_candidate": "P116_FALLBACK_DISCLOSURE_GOVERNANCE or NO_IMMEDIATE_ACTION"
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "lottery_type": "BIG_LOTTO",
+      "p112_classification": "SUB_BASELINE",
+      "p113_action": "DEMOTE_OR_QUARANTINE_CANDIDATE",
+      "promotion_authorized": false,
+      "edge_vs_baseline": -0.012694,
+      "rationale": "P112 classified this strategy as SUB_BASELINE. Performance is below hypergeometric baseline. Candidate for demotion/quarantine in future governance task (P115 or equivalent).",
+      "next_task_candidate": "P115_STRATEGY_QUARANTINE_GOVERNANCE"
+    }
+  ],
+  "wave_n_backlog": [
+    {
+      "priority": 1,
+      "lottery_type": "POWER_LOTTO",
+      "candidate_scope": [
+        "midfreq_fourier_mk_3bet",
+        "pp3_freqort_4bet"
+      ],
+      "wave_label": "WAVE_N_POWER_LOTTO_OOS_MONITORING",
+      "rationale": "Two PREDICTION_HELPFUL strategies with positive edge (+0.080 and +0.055) vs baseline. Highest priority for controlled OOS monitoring design. Requires separate P114/P116 authorization before any deployment.",
+      "required_authorization_before_execution": [
+        "P114 temporal stability audit PASS",
+        "OOS monitoring design review",
+        "Explicit promotion authorization (not granted by P112/P113)"
+      ]
+    },
+    {
+      "priority": 2,
+      "lottery_type": "POWER_LOTTO",
+      "candidate_scope": [
+        "fourier_rhythm_3bet",
+        "power_fourier_rhythm_2bet",
+        "power_orthogonal_5bet",
+        "power_precision_3bet",
+        "midfreq_fourier_2bet",
+        "fourier30_markov30_2bet"
+      ],
+      "wave_label": "WAVE_N_POWER_LOTTO_WATCHLIST_EXPANSION",
+      "rationale": "Six WATCHLIST_CANDIDATE strategies with positive edges (+0.017 to +0.045). Accumulate more prospective draws and assess temporal stability before deciding on targeted observation or demotion.",
+      "required_authorization_before_execution": [
+        "P114 temporal stability audit",
+        "Minimum prospective draw count TBD",
+        "Explicit promotion authorization (not granted by P112/P113)"
+      ]
+    },
+    {
+      "priority": 3,
+      "lottery_type": "DAILY_539",
+      "candidate_scope": [
+        "p0b_539_3bet_f_cold_fmid",
+        "p0c_539_3bet_f_cold_x2",
+        "daily539_f4cold",
+        "539_3bet_orthogonal",
+        "acb_1bet",
+        "acb_markov_midfreq_3bet",
+        "acb_single_539",
+        "daily539_f4cold_3bet",
+        "daily539_f4cold_5bet",
+        "midfreq_acb_2bet",
+        "midfreq_fourier_2bet"
+      ],
+      "wave_label": "WAVE_N_DAILY_539_OBSERVATION_EXPANSION",
+      "rationale": "Eleven WATCHLIST_CANDIDATE strategies with edges +0.028 to +0.036. Cold-pool and orthogonal variants consistently outperform Markov. Medium priority; needs temporal stability confirmation.",
+      "required_authorization_before_execution": [
+        "P114 temporal stability audit for DAILY_539",
+        "Explicit promotion authorization (not granted by P112/P113)"
+      ]
+    },
+    {
+      "priority": 4,
+      "lottery_type": "BIG_LOTTO",
+      "candidate_scope": [
+        "biglotto_deviation_2bet"
+      ],
+      "wave_label": "WAVE_N_BIG_LOTTO_SINGLE_WATCHLIST",
+      "rationale": "Only one WATCHLIST_CANDIDATE (biglotto_deviation_2bet, edge=+0.023). BIG_LOTTO is the hardest lottery to beat; 4 strategies are SUB_BASELINE. Low priority; strategy redesign for BIG_LOTTO should precede expansion.",
+      "required_authorization_before_execution": [
+        "P115 quarantine of sub-baseline BIG_LOTTO strategies",
+        "Strategy redesign for BIG_LOTTO context",
+        "Explicit promotion authorization (not granted by P112/P113)"
+      ]
+    },
+    {
+      "priority": 5,
+      "lottery_type": "BIG_LOTTO",
+      "candidate_scope": [
+        "bet2_fourier_expansion_biglotto",
+        "biglotto_ts3_markov_4bet_w30",
+        "fourier30_markov30_biglotto",
+        "ts3_regime_3bet"
+      ],
+      "wave_label": "WAVE_N_BIG_LOTTO_QUARANTINE_REVIEW",
+      "rationale": "Four SUB_BASELINE strategies in BIG_LOTTO context. Quarantine/demotion should be executed as a separate governance task (P115). Not auto-demoted in P113.",
+      "required_authorization_before_execution": [
+        "P115 strategy quarantine governance task authorization",
+        "Explicit demotion/quarantine decision (not granted by P112/P113)"
+      ]
+    }
+  ],
+  "explicit_holds": [
+    {
+      "hold_id": "SPECIAL3_P108_HOLD",
+      "description": "Special3 P108 100-draw re-evaluation is NOT executable.",
+      "reason": "Only 63 prospective draws available after P99 cutoff. 37 more draws required to reach 100-draw threshold.",
+      "unblock_condition": "37 additional 3_STAR draws completed.",
+      "current_count": 63,
+      "target_count": 100,
+      "remaining": 37
+    },
+    {
+      "hold_id": "FOUR_STAR_BACKTEST_HOLD",
+      "description": "4_STAR backtest remains NOT AUTHORIZED.",
+      "reason": "4_STAR row source/provenance is unknown. Source determination and acceptance must precede any backtest.",
+      "unblock_condition": "Source/provenance decision and explicit backtest authorization.",
+      "source_unknown_caveat_preserved": true
+    },
+    {
+      "hold_id": "NO_PRODUCTION_PROMOTION_FROM_P112_P113",
+      "description": "No strategy promotion from P112 or P113 findings alone.",
+      "reason": "P112 is an audit; P113 is a decision matrix. Neither authorizes production deployment or lifecycle mutation. Promotion requires separate governance authorization (P114+ chain).",
+      "unblock_condition": "Explicit promotion authorization task (P114/P116 equivalent)."
+    }
+  ],
+  "limitations": [
+    "P112 audit window covers only historical replay rows as of 2026-05-27; prospective performance may differ.",
+    "Edge estimates are point estimates from available replay data; no confidence intervals are computed in P113.",
+    "P113 decision matrix uses P112 classification as input; any P112 misclassification propagates here.",
+    "No temporal stability analysis is performed in P113; this is deferred to P114.",
+    "Promotion decisions require separate explicit governance authorization not present in P112/P113.",
+    "BIG_LOTTO strategies with FALLBACK_EQUIVALENT classification may still appear in live rotation; this audit does not modify live routing."
+  ],
+  "final_classification": "P113_P112_ACTION_DECISION_MATRIX_READY"
+}

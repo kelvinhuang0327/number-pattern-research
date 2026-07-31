@@ -1,0 +1,65 @@
+{
+  "p40_version": "20260523",
+  "classification": "P40_ROADMAP_UPDATE_AFTER_P39_MERGED_TO_MAIN",
+  "review_date": "2026-05-24",
+  "production_rows": 28960,
+  "completed_phases": ["P35", "P36", "P37", "P38", "P39"],
+  "wave2_daily539_status": "COMPLETE",
+  "wave2_lifecycle": "DRY_RUN",
+  "wave2_strategies": [
+    "acb_single_539",
+    "539_3bet_orthogonal",
+    "markov_1bet_539",
+    "zone_gap_3bet_539",
+    "p0b_539_3bet_f_cold_fmid",
+    "p0c_539_3bet_f_cold_x2"
+  ],
+  "wave2_rows_inserted": 9000,
+  "wave2_controlled_apply_id": "P37_DAILY539_WAVE2_9000_PROD_20260523",
+  "row_backed_strategies": {
+    "total": 19,
+    "online": 8,
+    "retired": 5,
+    "dry_run": 6
+  },
+  "p38_freshness_registry_audit": {
+    "ids_reviewed": [8, 9, 10],
+    "classification": "ACCEPTED_OPERATIONAL_REGISTRY_UPDATE"
+  },
+  "p39_ui_smoke": {
+    "console_errors": 0,
+    "all_wave2_strategies_queryable": true,
+    "status": "RESOLVED"
+  },
+  "preflight": {
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "branch_governance_guard": "BRANCH_GOVERNANCE_PASS",
+    "branch": "p40-roadmap-update-after-p39"
+  },
+  "next_priorities": {
+    "P0": "P41 Wave 3 BIG_LOTTO adapter bootstrap planning",
+    "P1": "P42 Wave 3 BIG_LOTTO dry-run + temp rehearsal",
+    "P2": "P43 Wave 2 live monitoring design (DRY_RUN to ONLINE after 200+ draws)",
+    "P3": "P44 Freshness cadence guard improvement",
+    "P4": "P45 POWER_LOTTO expansion planning",
+    "P5": "P46 Manual review resolution (cluster_pivot_biglotto etc.)",
+    "P6": "P47 Replay performance / pagination hardening",
+    "P7": "P48 Apply authorization governance hardening",
+    "P8": "P49 Artifact consolidation"
+  },
+  "ceo_goal": "1500-period replay x all executable strategies",
+  "governance_rules_verified": {
+    "no_production_db_write": true,
+    "no_production_apply": true,
+    "no_lifecycle_change": true,
+    "no_registry_mutation": true,
+    "no_ceo_decision_modification": true,
+    "no_forbidden_files_staged": true
+  },
+  "files_updated": [
+    "00-Plan/roadmap/roadmap.md",
+    "00-Plan/roadmap/CTO-Analysis.md",
+    "outputs/replay/p40_roadmap_update_after_p39_20260523.json",
+    "docs/replay/p40_roadmap_update_after_p39_20260523.md"
+  ]
+}

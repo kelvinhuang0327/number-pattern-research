@@ -1,0 +1,88 @@
+{
+  "task_id": "P123_SCHEDULED_TRIGGER_RECHECK_SETUP",
+  "classification": "P123_SCHEDULED_TRIGGER_RECHECK_SETUP_READY",
+  "final_classification": "P123_SCHEDULED_TRIGGER_RECHECK_SETUP_READY",
+  "p122_reference": {
+    "classification": "P122_ALL_TRIGGERS_STILL_BLOCKED",
+    "artifact_path": "outputs/replay/p122_trigger_recheck_contamination_guard_20260527.json",
+    "merge_commit": "9dcef2e"
+  },
+  "db_writes": false,
+  "replay_rows_before": 54462,
+  "replay_rows_after": 54462,
+  "no_strategy_promotion": true,
+  "no_lifecycle_mutation": true,
+  "no_registry_mutation": true,
+  "no_actual_quarantine_applied": true,
+  "no_replay_row_delete": true,
+  "no_4star_backtest": true,
+  "no_special3_p108_rerun": true,
+  "no_powerlotto_oos_execution": true,
+  "no_crontab_installed": true,
+  "no_launchd_plist_created": true,
+  "source_unknown_caveat_preserved": true,
+  "cross_project_contamination_guard": {
+    "project_lock": "LotteryNew",
+    "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "rejected_project_contexts": [
+      "Betting-pool",
+      "Stock-Prediction-System",
+      "Stock",
+      "Novel",
+      "SCB"
+    ],
+    "contamination_detected": false
+  },
+  "worktree_branch_guard": {
+    "git_dir_expected": ".git",
+    "worktree_branches_allowed": false,
+    "claude_codex_worktree_allowed": false,
+    "branch_prefixes_rejected": [
+      "claude/",
+      "codex/"
+    ]
+  },
+  "scheduled_recheck_design": {
+    "wrapper_script": "scripts/p123_scheduled_trigger_recheck.py",
+    "default_output_dir": "outputs/replay/trigger_rechecks",
+    "supports_json_out": true,
+    "supports_output_dir": true,
+    "supports_operator_input": true,
+    "supports_timestamp": true,
+    "installs_os_scheduler": false,
+    "mutates_crontab": false,
+    "creates_launchd_plist": false,
+    "replaces_p120_p121_p122_ad_hoc_prs": true,
+    "operator_manual_run": "python3 scripts/p123_scheduled_trigger_recheck.py",
+    "operator_scheduled_run": "python3 scripts/p123_scheduled_trigger_recheck.py --output-dir outputs/replay/trigger_rechecks"
+  },
+  "first_recheck_smoke_result": {
+    "artifact_path": "outputs/replay/trigger_rechecks/p123_trigger_recheck_smoke_20260527.json",
+    "classification": "P122_ALL_TRIGGERS_STILL_BLOCKED",
+    "p108_remaining": 37,
+    "p117_partial_remaining": 30,
+    "p117_full_remaining": 40,
+    "p118_authorization_present": false,
+    "four_star_provenance_trigger_met": false
+  },
+  "current_db_snapshot": {
+    "replay_rows": 54462,
+    "three_star_count": 4179,
+    "three_star_max_draw": "115000106",
+    "four_star_count": 2922,
+    "four_star_max_draw": "115000103",
+    "power_lotto_count": 1913,
+    "power_lotto_max_draw": "115000041"
+  },
+  "operator_manual_run_command": "cd /Users/kelvin/Kelvin-WorkSpace/LotteryNew && python3 scripts/p123_scheduled_trigger_recheck.py",
+  "optional_cron_example_not_installed": "# NOT INSTALLED — example only for future operator use:\n# 0 9 * * * cd /Users/kelvin/Kelvin-WorkSpace/LotteryNew && .venv/bin/python scripts/p123_scheduled_trigger_recheck.py >> outputs/replay/trigger_rechecks/cron.log 2>&1",
+  "limitations": [
+    "P118 authorization_present defaults to false unless --operator-input supplies the exact phrase",
+    "4_STAR provenance check is file-system based; no live provenance registry exists",
+    "P108 count uses P99 cutoff draw 115000024; if cutoff changes the count will differ",
+    "No change detected since P122: Special3=63, POWER_LOTTO new draws=0",
+    "Contamination check is keyword-based on operator_input only; does not scan staged files",
+    "This script does NOT install any OS scheduler; operator must install cron/launchd manually if desired",
+    "Worktree branch guard is informational; does not block script execution"
+  ]
+}

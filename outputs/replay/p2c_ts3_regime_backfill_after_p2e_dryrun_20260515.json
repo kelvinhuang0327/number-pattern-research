@@ -1,0 +1,113 @@
+{
+  "run_id": "p2c_ts3_regime_backfill_after_p2e_dryrun_20260515",
+  "generated_at": "2026-05-15T12:19:41Z",
+  "strategy_id": "ts3_regime_3bet",
+  "prediction_item_ids": [
+    1090,
+    1091,
+    1092
+  ],
+  "target_draw": "115000051",
+  "target_date": "2026/05/08",
+  "dry_run": true,
+  "db_written": false,
+  "overall_classification": "P2C_DRYRUN_ELIGIBLE_3_OF_3",
+  "safety": {
+    "db_written": false,
+    "prediction_items_promoted": false,
+    "replay_rows_generated": false
+  },
+  "summary": {
+    "eligible_count": 3,
+    "blocked_count": 0,
+    "total": 3
+  },
+  "items": [
+    {
+      "prediction_item_id": 1090,
+      "run_id": 174,
+      "bet_index": 0,
+      "predicted_numbers": [
+        3,
+        5,
+        22,
+        34,
+        38,
+        49
+      ],
+      "actual_draw": "115000051",
+      "actual_date": "2026/05/08",
+      "actual_numbers": [
+        10,
+        18,
+        25,
+        28,
+        39,
+        43
+      ],
+      "actual_special": 48,
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": false,
+      "status": "ELIGIBLE"
+    },
+    {
+      "prediction_item_id": 1091,
+      "run_id": 174,
+      "bet_index": 1,
+      "predicted_numbers": [
+        16,
+        23,
+        29,
+        33,
+        36,
+        45
+      ],
+      "actual_draw": "115000051",
+      "actual_date": "2026/05/08",
+      "actual_numbers": [
+        10,
+        18,
+        25,
+        28,
+        39,
+        43
+      ],
+      "actual_special": 48,
+      "hit_numbers": [],
+      "hit_count": 0,
+      "special_hit": false,
+      "status": "ELIGIBLE"
+    },
+    {
+      "prediction_item_id": 1092,
+      "run_id": 174,
+      "bet_index": 2,
+      "predicted_numbers": [
+        12,
+        18,
+        26,
+        27,
+        31,
+        46
+      ],
+      "actual_draw": "115000051",
+      "actual_date": "2026/05/08",
+      "actual_numbers": [
+        10,
+        18,
+        25,
+        28,
+        39,
+        43
+      ],
+      "actual_special": 48,
+      "hit_numbers": [
+        18
+      ],
+      "hit_count": 1,
+      "special_hit": false,
+      "status": "ELIGIBLE"
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "task_id": "P271K_TEMP_DB_MIGRATION_REHEARSAL",
+  "generated_at": "2026-06-13",
+  "repo_head_before_task": "3dc06f76a70ff13927b63491fb4580528ed86a3d",
+  "branch": "task/p271k-temp-db-migration-rehearsal",
+  "mode": "temporary_db_migration_rehearsal",
+  "p271j_merge_commit": "3dc06f76a70ff13927b63491fb4580528ed86a3d",
+  "p271j_classification": "P271J_TRANSACTION_OWNERSHIP_HARDENING_COMPLETE",
+  "rehearsal_only": true,
+  "temporary_sqlite_only": true,
+  "production_db_opened": false,
+  "production_db_copied": false,
+  "production_db_written": false,
+  "production_schema_modified": false,
+  "runtime_integration_added": false,
+  "production_migration_added": false,
+  "deployment_started": false,
+  "prospective_collection_activated": false,
+  "activation_timestamp_inserted": false,
+  "official_source_fetch_performed": false,
+  "source_verification_status": "MANUAL_VERIFICATION_REQUIRED",
+  "legacy_fixture_source_grounding": {
+    "source_file": "lottery_api/database.py",
+    "source_commit": "3dc06f76a70ff13927b63491fb4580528ed86a3d",
+    "tables": {
+      "draws": "database.py:70-81",
+      "prediction_runs": "database.py:112-121",
+      "prediction_items": "database.py:150-159",
+      "prediction_results": "database.py:164-177",
+      "strategy_replay_runs": "database.py:372-383",
+      "strategy_prediction_replays": "database.py:389-411"
+    },
+    "note": "Base CREATE statements reproduced verbatim; idempotent runtime ALTER migrations omitted (not required for additive non-interference). The legacy schema defines no global version-metadata table, so the P271J prospective_schema_meta marker cannot collide."
+  },
+  "rehearsal_script": "scripts/p271k_prospective_capture_ledger_migration_rehearsal.py",
+  "path_safety_contract": {
+    "explicit_path_required": true,
+    "canonical_production_realpath_rejected": true,
+    "symlink_to_canonical_rejected": true,
+    "repository_contained_path_rejected": true,
+    "memory_rejected_for_file_level_ops": true,
+    "environment_or_default_db_discovery": false,
+    "canonical_production_db_realpath": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db"
+  },
+  "migration_contract": {
+    "schema_owner": "lottery_api.prospective_capture_ledger.install_schema (merged P271J)",
+    "schema_redefined_or_mutated_by_rehearsal": false,
+    "install_is_additive_only": true,
+    "object_namespace": "prospective_* tables, idx_ledger_identity/idx_batch_cluster, trg_prospective_*",
+    "legacy_object_namespace_collision": false,
+    "atomic_install": "single BEGIN IMMEDIATE; COMMIT or ROLLBACK",
+    "ambient_transaction_policy": "reject_fail_closed (AmbientTransactionError)",
+    "savepoint_nesting": false
+  },
+  "schema_fingerprint_contract": {
+    "definition": "SHA-256 over sqlite_master(type,name,tbl_name,sql) for every object whose tbl_name is not prospective_% and name is not sqlite_%",
+    "excludes": "only newly authorized prospective_* objects"
+  },
+  "data_preservation_contract": {
+    "definition": "per legacy table {row_count, sha256(content ordered by rowid)} + PRAGMA foreign_key_check + PRAGMA integrity_check",
+    "compared": "before and after every scenario; must be identical for legacy tables"
+  },
+  "idempotence_result": {
+    "passed": true,
+    "second_install_version": "p271j_prospective_capture_ledger.v1",
+    "objects_identical": true,
+    "legacy_unchanged": true
+  },
+  "incompatible_version_result": {
+    "passed": true,
+    "raised": "SchemaVersionError",
+    "new_objects_created": [],
+    "legacy_unchanged": true
+  },
+  "injected_failure_rollback_result": {
+    "passed": true,
+    "raised": "OperationalError",
+    "prospective_objects_remaining": false,
+    "orphan_version_marker": null,
+    "legacy_unchanged": true,
+    "connection_left_in_transaction": false
+  },
+  "ambient_transaction_result": {
+    "passed": true,
+    "raised": "AmbientTransactionError",
+    "caller_tx_open_after_rejection": true,
+    "observer_saw_uncommitted_row": false,
+    "observer_saw_prospective_object": false,
+    "caller_rollback_effective": true
+  },
+  "locked_database_result": {
+    "passed": true,
+    "raised": "OperationalError",
+    "lock_message_is_locked": true,
+    "prospective_objects_after_lock": false,
+    "installer_left_in_transaction": false
+  },
+  "backup_restore_result": {
+    "passed": true,
+    "restored_matches_pre_install": true,
+    "restored_has_prospective_objects": false,
+    "note": "Temporary-DB backup/restore only; NOT production rollback approval."
+  },
+  "foreign_key_result": {
+    "clean_install_violations": [],
+    "foreign_keys_on_after_install": true,
+    "passed": true
+  },
+  "integrity_check_result": {
+    "clean_install": "ok",
+    "passed": true
+  },
+  "append_only_result": {
+    "update_blocked": true,
+    "delete_blocked": true,
+    "passed": true
+  },
+  "semantic_uniqueness_result": {
+    "unique_identity_index_present": true,
+    "duplicate_identity_insert_rejected": true,
+    "passed": true
+  },
+  "legacy_non_interference_result": {
+    "schema_unchanged": true,
+    "data_unchanged": true,
+    "unrelated_table_draws_preserved": true,
+    "passed": true
+  },
+  "temporary_database_paths": {
+    "modes": [
+      "pytest tmp_path",
+      "OS temp dir outside repo (tempfile.mkdtemp)",
+      "sqlite3 :memory:"
+    ],
+    "all_outside_repository": true,
+    "production_db_used": false
+  },
+  "production_db_sha256_before": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+  "production_db_sha256_after": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+  "production_db_unchanged": true,
+  "artifacts_unchanged": true,
+  "focused_tests": "tests/test_p271k_prospective_capture_ledger_migration_rehearsal.py: 37 passed",
+  "combined_tests": "P271I+P271J+P271K: 149 passed",
+  "full_repo_suite": "NOT RUN",
+  "modified_files": [
+    "scripts/p271k_prospective_capture_ledger_migration_rehearsal.py",
+    "tests/test_p271k_prospective_capture_ledger_migration_rehearsal.py",
+    "outputs/research/p271k_prospective_capture_ledger_migration_rehearsal_20260613.json",
+    "outputs/research/p271k_prospective_capture_ledger_migration_rehearsal_20260613.md",
+    "00-Plan/roadmap/active_task.md",
+    "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md"
+  ],
+  "limitations": [
+    "Temporary-DB rehearsal only; representative legacy fixture is a source-grounded subset of the real schema (base CREATE statements; runtime idempotent ALTER migrations omitted).",
+    "Concurrency exercised with two local file-DB connections and one EXCLUSIVE lock; production locking/busy-timeout tuning and WAL-mode behavior are deferred to an authorized P271L rehearsal.",
+    "Backup/restore demonstrated on temporary DBs only and does NOT constitute production rollback approval.",
+    "A temporary-DB PASS does not establish production readiness; P271L deployment risks remain (real schema breadth, live concurrency, backup orchestration, operational rollback)."
+  ],
+  "p271l_started": false,
+  "p271m_started": false,
+  "p271n_started": false,
+  "p270c_allowed": false,
+  "p270a_p270b_reopened": false,
+  "final_classification": "P271K_TEMPORARY_DB_MIGRATION_REHEARSAL_COMPLETE"
+}

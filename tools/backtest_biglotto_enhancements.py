@@ -31,8 +31,6 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
-from lottery_api.database import DatabaseManager
-
 # ============================================================
 # Constants
 # ============================================================
@@ -166,6 +164,24 @@ def generate_base_ts3m4(history):
     ts3_used = set(bet1) | set(bet2) | set(bet3)
     bet4 = markov_orthogonal_bet(history, exclude=ts3_used, markov_window=30)
     return [bet1, bet2, bet3, bet4]
+
+
+def ts3_regime_candidates(history, window=500):
+    """P280AJ deterministic publication candidates for ts3_regime_3bet.
+
+    Candidate 0 is the frozen bet-1 identity (``fourier_rhythm_bet`` at the same
+    window); the bet-1 output is left byte-for-byte unchanged so the P280D
+    semantic goldens hold. The alternates are the next TS3 sequence bets
+    (cold-frequency, then tail balance), each orthogonal to the prior bets,
+    derived only from the existing TS3 scoring/ranking logic above. No DB, no
+    network, no outcome access, no fabricated output. The no-DB adapter picks the
+    first non-duplicate candidate so ts3_regime can rebind off the shared fourier
+    bet-1 when it structurally duplicates a sibling strategy.
+    """
+    bet1 = fourier_rhythm_bet(history, window=window)
+    bet2 = cold_numbers_bet(history, exclude=set(bet1))
+    bet3 = tail_balance_bet(history, exclude=set(bet1) | set(bet2))
+    return [sorted(bet1), sorted(bet2), sorted(bet3)]
 
 
 # ============================================================
@@ -731,6 +747,8 @@ def run_backtest(draws, strategy_func, n_bets, n_periods, seed=42, label=""):
 # Main
 # ============================================================
 def main():
+    from lottery_api.database import DatabaseManager
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--only', type=str, default=None,
                        help='Only run specific test (e.g., P1-A)')

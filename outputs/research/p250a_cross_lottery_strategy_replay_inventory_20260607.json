@@ -1,0 +1,1410 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P250A",
+  "classification": "CROSS_LOTTERY_STRATEGY_REPLAY_INVENTORY",
+  "phase0_expected_state": {
+    "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "canonical_branch": "p252b-unified-external-method-coverage-audit",
+    "head_short": "9131353",
+    "origin_main_short": "9131353",
+    "head_matches_origin_main": true,
+    "p249b_merge_visible": false,
+    "active_task_status": "WAITING_FOR_USER_AUTHORIZATION",
+    "tolerated_dirty_items": [
+      "backend.pid",
+      "frontend.pid",
+      "claude-code-showcase",
+      "claude-code-showcase.worktrees/",
+      "runtime/",
+      "data/lottery_v2.db metadata-only same-size touch"
+    ],
+    "canonical_db_path": "lottery_api/data/lottery_v2.db",
+    "canonical_db_is_ssot": true,
+    "root_db_dirty_note": {
+      "path": "data/lottery_v2.db",
+      "git_status": "M data/lottery_v2.db",
+      "size_bytes": 217088,
+      "canonical_db_path": "lottery_api/data/lottery_v2.db"
+    },
+    "no_db_write": true,
+    "no_registry_mutation": true,
+    "no_strategy_logic_change": true,
+    "no_production_recommendation_change": true
+  },
+  "phase0_snapshot": {
+    "repo_root": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "p252b-unified-external-method-coverage-audit",
+    "head_short": "9131353",
+    "origin_main_short": "9131353",
+    "status_short": "M backend.pid\n M claude-code-showcase\n M data/lottery_v2.db\n M frontend.pid\n?? analysis/p252b_unified_external_method_coverage_audit.py\n?? claude-code-showcase.worktrees/\n?? outputs/research/p252b_unified_external_method_coverage_audit_20260607.json\n?? outputs/research/p252b_unified_external_method_coverage_audit_20260607.md\n?? runtime/\n?? tests/test_p252b_unified_external_method_coverage_audit.py",
+    "status_sb": "## p252b-unified-external-method-coverage-audit\n M backend.pid\n M claude-code-showcase\n M data/lottery_v2.db\n M frontend.pid\n?? analysis/p252b_unified_external_method_coverage_audit.py\n?? claude-code-showcase.worktrees/\n?? outputs/research/p252b_unified_external_method_coverage_audit_20260607.json\n?? outputs/research/p252b_unified_external_method_coverage_audit_20260607.md\n?? runtime/\n?? tests/test_p252b_unified_external_method_coverage_audit.py",
+    "git_log": "9131353 Merge pull request #342 from kelvinhuang0327/p251e-evidence-dashboard-runtime-smoke-governance-closure\n905089e P251E close evidence dashboard API runtime smoke\n6770e91 P251D implement evidence dashboard read-only API route\n8b87ee1 P251D implement evidence dashboard read-only API route\n4c621ed P251C plan evidence dashboard API payload contract\n01598ff P251C plan evidence dashboard API payload contract\n69d9fb0 P251B build cross-lottery evidence dashboard data artifact\nd4cd856 P251B build cross-lottery evidence dashboard data artifact\na255b87 Merge pull request #338 from kelvinhuang0327/p251a-cross-lottery-evidence-dashboard-dryrun-plan\nae1f9aa P251A plan cross-lottery evidence dashboard\ndd6f795 Merge pull request #337 from kelvinhuang0327/p250b-publish-p250a-inventory\ne7630ad P250A inventory cross-lottery strategies and replays",
+    "p249b_merge_visible": false,
+    "active_task_status": "WAITING_FOR_USER_AUTHORIZATION",
+    "root_db_dirty_note": {
+      "path": "data/lottery_v2.db",
+      "git_status": "M data/lottery_v2.db",
+      "size_bytes": 217088,
+      "canonical_db_path": "lottery_api/data/lottery_v2.db"
+    }
+  },
+  "db_read_status": {
+    "read_only": true,
+    "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+    "integrity_check": "ok",
+    "replay_rows_total": 94924,
+    "draw_rows_total": 64361,
+    "canonical_big_lotto_rows": 2113,
+    "rows_by_lottery": [
+      {
+        "lottery_type": "BIG_LOTTO",
+        "replay_rows": 24140,
+        "strategy_count": 11,
+        "distinct_draws": 1552
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "replay_rows": 34680,
+        "strategy_count": 15,
+        "distinct_draws": 1550
+      },
+      {
+        "lottery_type": "POWER_LOTTO",
+        "replay_rows": 36104,
+        "strategy_count": 10,
+        "distinct_draws": 1551
+      }
+    ]
+  },
+  "tables_found": [
+    {
+      "type": "table",
+      "name": "agent_locks"
+    },
+    {
+      "type": "table",
+      "name": "agent_task_runs"
+    },
+    {
+      "type": "table",
+      "name": "agent_tasks"
+    },
+    {
+      "type": "table",
+      "name": "draws"
+    },
+    {
+      "type": "table",
+      "name": "prediction_explanations"
+    },
+    {
+      "type": "table",
+      "name": "prediction_items"
+    },
+    {
+      "type": "table",
+      "name": "prediction_results"
+    },
+    {
+      "type": "table",
+      "name": "prediction_review_status"
+    },
+    {
+      "type": "table",
+      "name": "prediction_runs"
+    },
+    {
+      "type": "table",
+      "name": "review_actions"
+    },
+    {
+      "type": "table",
+      "name": "review_findings"
+    },
+    {
+      "type": "table",
+      "name": "review_hypotheses"
+    },
+    {
+      "type": "table",
+      "name": "review_sessions"
+    },
+    {
+      "type": "table",
+      "name": "shadow_experiments"
+    },
+    {
+      "type": "table",
+      "name": "snapshot_schedule"
+    },
+    {
+      "type": "table",
+      "name": "sqlite_sequence"
+    },
+    {
+      "type": "table",
+      "name": "strategy_prediction_replays"
+    },
+    {
+      "type": "table",
+      "name": "strategy_replay_runs"
+    },
+    {
+      "type": "view",
+      "name": "draws_big_lotto_canonical_main"
+    }
+  ],
+  "inventory_granularity": "(strategy_id, lottery_type)",
+  "inventory_counts": {
+    "current_registry_entries": 38,
+    "historical_inventory_entries": 41,
+    "artifact_only_entries": 3,
+    "current_registry_lifecycle_counts": {
+      "OBSERVATION": 1,
+      "ONLINE": 8,
+      "REJECTED": 16,
+      "RETIRED": 13
+    }
+  },
+  "strategy_inventory": [
+    {
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "strategy_name": "bet2_fourier_expansion_biglotto",
+      "strategy_version": "unknown",
+      "lottery_type": "BIG_LOTTO",
+      "current_lifecycle_status": "REJECTED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "rejected",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=REJECTED"
+    },
+    {
+      "strategy_id": "biglotto_deviation_2bet",
+      "strategy_name": "大樂透 Deviation 2注",
+      "strategy_version": "v0.1",
+      "lottery_type": "BIG_LOTTO",
+      "current_lifecycle_status": "ONLINE",
+      "historical_snapshot_lifecycle_status": "ONLINE",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "MAIN_REGISTRY",
+      "replay_presence": true,
+      "replay_rows": 1570,
+      "distinct_target_draws": 1550,
+      "bet_index_values": [
+        1,
+        2
+      ],
+      "historical_replay_classification": "WEAK_OBSERVATION_ONLY",
+      "latest_classification": "active",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": null
+    },
+    {
+      "strategy_id": "biglotto_echo_aware_3bet",
+      "strategy_name": "biglotto_echo_aware_3bet",
+      "strategy_version": "unknown",
+      "lottery_type": "BIG_LOTTO",
+      "current_lifecycle_status": "RETIRED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 4500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1,
+        2,
+        3
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "retired",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=RETIRED"
+    },
+    {
+      "strategy_id": "biglotto_triple_strike",
+      "strategy_name": "大樂透 Triple Strike",
+      "strategy_version": "v0.1",
+      "lottery_type": "BIG_LOTTO",
+      "current_lifecycle_status": "ONLINE",
+      "historical_snapshot_lifecycle_status": "ONLINE",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "MAIN_REGISTRY",
+      "replay_presence": true,
+      "replay_rows": 1570,
+      "distinct_target_draws": 1550,
+      "bet_index_values": [
+        1,
+        2
+      ],
+      "historical_replay_classification": "NULL_OR_BASELINE_LIKE",
+      "latest_classification": "active",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": null
+    },
+    {
+      "strategy_id": "biglotto_ts3_acb_4bet",
+      "strategy_name": "大樂透 TS3+ACB 4注",
+      "strategy_version": "v0.0",
+      "lottery_type": "BIG_LOTTO",
+      "current_lifecycle_status": "REJECTED",
+      "historical_snapshot_lifecycle_status": "REJECTED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "MAIN_REGISTRY",
+      "replay_presence": false,
+      "replay_rows": 0,
+      "distinct_target_draws": 0,
+      "bet_index_values": null,
+      "historical_replay_classification": "NO_REPLAY_ROWS",
+      "latest_classification": "no-data",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": null
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_4bet_w30",
+      "strategy_name": "biglotto_ts3_markov_4bet_w30",
+      "strategy_version": "unknown",
+      "lottery_type": "BIG_LOTTO",
+      "current_lifecycle_status": "RETIRED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 6000,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "retired",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=RETIRED"
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_freq_5bet",
+      "strategy_name": "大樂透 TS3+Markov 頻率正交 5注",
+      "strategy_version": "v0.0",
+      "lottery_type": "BIG_LOTTO",
+      "current_lifecycle_status": "REJECTED",
+      "historical_snapshot_lifecycle_status": "REJECTED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "MAIN_REGISTRY",
+      "replay_presence": false,
+      "replay_rows": 0,
+      "distinct_target_draws": 0,
+      "bet_index_values": null,
+      "historical_replay_classification": "NO_REPLAY_ROWS",
+      "latest_classification": "no-data",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": null
+    },
+    {
+      "strategy_id": "cold_complement_biglotto",
+      "strategy_name": "cold_complement_biglotto",
+      "strategy_version": "unknown",
+      "lottery_type": "BIG_LOTTO",
+      "current_lifecycle_status": "REJECTED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "rejected",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=REJECTED"
+    },
+    {
+      "strategy_id": "coldpool15_biglotto",
+      "strategy_name": "coldpool15_biglotto",
+      "strategy_version": "unknown",
+      "lottery_type": "BIG_LOTTO",
+      "current_lifecycle_status": "REJECTED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "rejected",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=REJECTED"
+    },
+    {
+      "strategy_id": "fourier30_markov30_biglotto",
+      "strategy_name": "fourier30_markov30_biglotto",
+      "strategy_version": "unknown",
+      "lottery_type": "BIG_LOTTO",
+      "current_lifecycle_status": "REJECTED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "rejected",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=REJECTED"
+    },
+    {
+      "strategy_id": "markov_2bet_biglotto",
+      "strategy_name": "markov_2bet_biglotto",
+      "strategy_version": "unknown",
+      "lottery_type": "BIG_LOTTO",
+      "current_lifecycle_status": "REJECTED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "rejected",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=REJECTED"
+    },
+    {
+      "strategy_id": "markov_single_biglotto",
+      "strategy_name": "markov_single_biglotto",
+      "strategy_version": "unknown",
+      "lottery_type": "BIG_LOTTO",
+      "current_lifecycle_status": "REJECTED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "rejected",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=REJECTED"
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "strategy_name": "大樂透 TS3+Regime 3注",
+      "strategy_version": "v0.1",
+      "lottery_type": "BIG_LOTTO",
+      "current_lifecycle_status": "ONLINE",
+      "historical_snapshot_lifecycle_status": "ONLINE",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "MAIN_REGISTRY",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "NULL_OR_BASELINE_LIKE",
+      "latest_classification": "active",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": null
+    },
+    {
+      "strategy_id": "539_3bet_orthogonal",
+      "strategy_name": "539_3bet_orthogonal",
+      "strategy_version": "unknown",
+      "lottery_type": "DAILY_539",
+      "current_lifecycle_status": "REJECTED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "rejected",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=REJECTED"
+    },
+    {
+      "strategy_id": "acb_1bet",
+      "strategy_name": "今彩539 ACB 1注",
+      "strategy_version": "v0.0",
+      "lottery_type": "DAILY_539",
+      "current_lifecycle_status": "RETIRED",
+      "historical_snapshot_lifecycle_status": "RETIRED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "MAIN_REGISTRY",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "WEAK_OBSERVATION_ONLY",
+      "latest_classification": "retired",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": null
+    },
+    {
+      "strategy_id": "acb_markov_midfreq",
+      "strategy_name": "今彩539 ACB+Markov 中頻",
+      "strategy_version": "v0.0",
+      "lottery_type": "DAILY_539",
+      "current_lifecycle_status": "RETIRED",
+      "historical_snapshot_lifecycle_status": "RETIRED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "MAIN_REGISTRY",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "NULL_OR_BASELINE_LIKE",
+      "latest_classification": "retired",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": null
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "strategy_name": "今彩539 ACB+Markov 中頻 3注",
+      "strategy_version": "v0.0",
+      "lottery_type": "DAILY_539",
+      "current_lifecycle_status": "RETIRED",
+      "historical_snapshot_lifecycle_status": "RETIRED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "MAIN_REGISTRY",
+      "replay_presence": true,
+      "replay_rows": 4500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1,
+        2,
+        3
+      ],
+      "historical_replay_classification": "WEAK_OBSERVATION_ONLY",
+      "latest_classification": "retired",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": null
+    },
+    {
+      "strategy_id": "acb_single_539",
+      "strategy_name": "acb_single_539",
+      "strategy_version": "unknown",
+      "lottery_type": "DAILY_539",
+      "current_lifecycle_status": "REJECTED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "rejected",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=REJECTED"
+    },
+    {
+      "strategy_id": "daily539_f4cold",
+      "strategy_name": "今彩539 F4 Cold",
+      "strategy_version": "v0.1",
+      "lottery_type": "DAILY_539",
+      "current_lifecycle_status": "ONLINE",
+      "historical_snapshot_lifecycle_status": "ONLINE",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "MAIN_REGISTRY",
+      "replay_presence": true,
+      "replay_rows": 1590,
+      "distinct_target_draws": 1550,
+      "bet_index_values": [
+        1,
+        2,
+        3
+      ],
+      "historical_replay_classification": "WEAK_OBSERVATION_ONLY",
+      "latest_classification": "active",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": null
+    },
+    {
+      "strategy_id": "daily539_f4cold_3bet",
+      "strategy_name": "daily539_f4cold_3bet",
+      "strategy_version": "unknown",
+      "lottery_type": "DAILY_539",
+      "current_lifecycle_status": "RETIRED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 4500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1,
+        2,
+        3
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "retired",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=RETIRED"
+    },
+    {
+      "strategy_id": "daily539_f4cold_5bet",
+      "strategy_name": "daily539_f4cold_5bet",
+      "strategy_version": "unknown",
+      "lottery_type": "DAILY_539",
+      "current_lifecycle_status": "RETIRED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 7500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "retired",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=RETIRED"
+    },
+    {
+      "strategy_id": "daily539_markov_cold",
+      "strategy_name": "今彩539 Markov Cold",
+      "strategy_version": "v0.1",
+      "lottery_type": "DAILY_539",
+      "current_lifecycle_status": "ONLINE",
+      "historical_snapshot_lifecycle_status": "ONLINE",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "MAIN_REGISTRY",
+      "replay_presence": true,
+      "replay_rows": 1590,
+      "distinct_target_draws": 1550,
+      "bet_index_values": [
+        1,
+        2,
+        3
+      ],
+      "historical_replay_classification": "NULL_OR_BASELINE_LIKE",
+      "latest_classification": "active",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": null
+    },
+    {
+      "strategy_id": "markov_1bet_539",
+      "strategy_name": "markov_1bet_539",
+      "strategy_version": "unknown",
+      "lottery_type": "DAILY_539",
+      "current_lifecycle_status": "REJECTED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "rejected",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=REJECTED"
+    },
+    {
+      "strategy_id": "midfreq_acb_2bet",
+      "strategy_name": "今彩539 中頻 ACB 2注",
+      "strategy_version": "v0.0",
+      "lottery_type": "DAILY_539",
+      "current_lifecycle_status": "RETIRED",
+      "historical_snapshot_lifecycle_status": "RETIRED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "MAIN_REGISTRY",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "WEAK_OBSERVATION_ONLY",
+      "latest_classification": "retired",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": null
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "strategy_name": "今彩539 中頻 Fourier 2注",
+      "strategy_version": "v0.0",
+      "lottery_type": "DAILY_539",
+      "current_lifecycle_status": "RETIRED",
+      "historical_snapshot_lifecycle_status": "RETIRED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "MAIN_REGISTRY",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "WEAK_OBSERVATION_ONLY",
+      "latest_classification": "retired",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": null
+    },
+    {
+      "strategy_id": "p0b_539_3bet_f_cold_fmid",
+      "strategy_name": "p0b_539_3bet_f_cold_fmid",
+      "strategy_version": "unknown",
+      "lottery_type": "DAILY_539",
+      "current_lifecycle_status": "REJECTED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "rejected",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=REJECTED"
+    },
+    {
+      "strategy_id": "p0c_539_3bet_f_cold_x2",
+      "strategy_name": "p0c_539_3bet_f_cold_x2",
+      "strategy_version": "unknown",
+      "lottery_type": "DAILY_539",
+      "current_lifecycle_status": "REJECTED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "rejected",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=REJECTED"
+    },
+    {
+      "strategy_id": "p1_deviation_2bet_539",
+      "strategy_name": "今彩539 P1鄰號+偏差互補 2注",
+      "strategy_version": "v0.0",
+      "lottery_type": "DAILY_539",
+      "current_lifecycle_status": "REJECTED",
+      "historical_snapshot_lifecycle_status": "REJECTED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "MAIN_REGISTRY",
+      "replay_presence": false,
+      "replay_rows": 0,
+      "distinct_target_draws": 0,
+      "bet_index_values": null,
+      "historical_replay_classification": "NO_REPLAY_ROWS",
+      "latest_classification": "no-data",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": null
+    },
+    {
+      "strategy_id": "zone_gap_3bet_539",
+      "strategy_name": "zone_gap_3bet_539",
+      "strategy_version": "unknown",
+      "lottery_type": "DAILY_539",
+      "current_lifecycle_status": "REJECTED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "rejected",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=REJECTED"
+    },
+    {
+      "strategy_id": "cold_complement_2bet",
+      "strategy_name": "cold_complement_2bet",
+      "strategy_version": "unknown",
+      "lottery_type": "POWER_LOTTO",
+      "current_lifecycle_status": "RETIRED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "retired",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=RETIRED"
+    },
+    {
+      "strategy_id": "fourier30_markov30_2bet",
+      "strategy_name": "fourier30_markov30_2bet",
+      "strategy_version": "unknown",
+      "lottery_type": "POWER_LOTTO",
+      "current_lifecycle_status": "RETIRED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 1501,
+      "distinct_target_draws": 1501,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "retired",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=RETIRED"
+    },
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "strategy_version": "v0.1",
+      "lottery_type": "POWER_LOTTO",
+      "current_lifecycle_status": "ONLINE",
+      "historical_snapshot_lifecycle_status": "ONLINE",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "MAIN_REGISTRY",
+      "replay_presence": true,
+      "replay_rows": 4503,
+      "distinct_target_draws": 1501,
+      "bet_index_values": [
+        1,
+        2,
+        3
+      ],
+      "historical_replay_classification": "WEAK_OBSERVATION_ONLY",
+      "latest_classification": "active",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": null
+    },
+    {
+      "strategy_id": "h6_gate_mk20_ew85",
+      "strategy_name": "威力彩 H6 Gate mk20 ew85",
+      "strategy_version": "v0.0",
+      "lottery_type": "POWER_LOTTO",
+      "current_lifecycle_status": "OBSERVATION",
+      "historical_snapshot_lifecycle_status": "OBSERVATION",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "MAIN_REGISTRY",
+      "replay_presence": false,
+      "replay_rows": 0,
+      "distinct_target_draws": 0,
+      "bet_index_values": null,
+      "historical_replay_classification": "NO_REPLAY_ROWS",
+      "latest_classification": "no-data",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": null
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "strategy_name": "威力彩 MidFreq+Fourier 2注",
+      "strategy_version": "v0.1-p47",
+      "lottery_type": "POWER_LOTTO",
+      "current_lifecycle_status": "ARTIFACT_ONLY",
+      "historical_snapshot_lifecycle_status": "DRY_RUN",
+      "current_registry_presence": false,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "P47_WAVE4",
+      "catalog_source_snapshot": "P47_WAVE4",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "WEAK_OBSERVATION_ONLY",
+      "latest_classification": "artifact-only",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json (P47_WAVE4 artifact-only snapshot)",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=DRY_RUN; current registry=ARTIFACT_ONLY"
+    },
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "strategy_name": "威力彩 MidFreq+Fourier+Markov 3注",
+      "strategy_version": "v0.1-p47",
+      "lottery_type": "POWER_LOTTO",
+      "current_lifecycle_status": "ARTIFACT_ONLY",
+      "historical_snapshot_lifecycle_status": "DRY_RUN",
+      "current_registry_presence": false,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "P47_WAVE4",
+      "catalog_source_snapshot": "P47_WAVE4",
+      "replay_presence": true,
+      "replay_rows": 4500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1,
+        2,
+        3
+      ],
+      "historical_replay_classification": "WEAK_OBSERVATION_ONLY",
+      "latest_classification": "artifact-only",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json (P47_WAVE4 artifact-only snapshot)",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=DRY_RUN; current registry=ARTIFACT_ONLY"
+    },
+    {
+      "strategy_id": "power_fourier_rhythm_2bet",
+      "strategy_name": "power_fourier_rhythm_2bet",
+      "strategy_version": "unknown",
+      "lottery_type": "POWER_LOTTO",
+      "current_lifecycle_status": "RETIRED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 3000,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1,
+        2
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "retired",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=RETIRED"
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "strategy_name": "威力彩 Orthogonal 5注",
+      "strategy_version": "v0.1",
+      "lottery_type": "POWER_LOTTO",
+      "current_lifecycle_status": "ONLINE",
+      "historical_snapshot_lifecycle_status": "ONLINE",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "MAIN_REGISTRY",
+      "replay_presence": true,
+      "replay_rows": 7550,
+      "distinct_target_draws": 1550,
+      "bet_index_values": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "historical_replay_classification": "NULL_OR_BASELINE_LIKE",
+      "latest_classification": "active",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": null
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "strategy_name": "威力彩 Precision 3注",
+      "strategy_version": "v0.1",
+      "lottery_type": "POWER_LOTTO",
+      "current_lifecycle_status": "ONLINE",
+      "historical_snapshot_lifecycle_status": "ONLINE",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "MAIN_REGISTRY",
+      "replay_presence": true,
+      "replay_rows": 4550,
+      "distinct_target_draws": 1550,
+      "bet_index_values": [
+        1,
+        2,
+        3
+      ],
+      "historical_replay_classification": "NULL_OR_BASELINE_LIKE",
+      "latest_classification": "active",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": null
+    },
+    {
+      "strategy_id": "power_shlc_midfreq",
+      "strategy_name": "威力彩 SHLC 中頻指標",
+      "strategy_version": "v0.0",
+      "lottery_type": "POWER_LOTTO",
+      "current_lifecycle_status": "REJECTED",
+      "historical_snapshot_lifecycle_status": "REJECTED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "MAIN_REGISTRY",
+      "replay_presence": false,
+      "replay_rows": 0,
+      "distinct_target_draws": 0,
+      "bet_index_values": null,
+      "historical_replay_classification": "NO_REPLAY_ROWS",
+      "latest_classification": "no-data",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": null
+    },
+    {
+      "strategy_id": "pp3_freqort_4bet",
+      "strategy_name": "威力彩 PP3+FreqOrt 4注",
+      "strategy_version": "v0.1-p47",
+      "lottery_type": "POWER_LOTTO",
+      "current_lifecycle_status": "ARTIFACT_ONLY",
+      "historical_snapshot_lifecycle_status": "DRY_RUN",
+      "current_registry_presence": false,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "P47_WAVE4",
+      "catalog_source_snapshot": "P47_WAVE4",
+      "replay_presence": true,
+      "replay_rows": 6000,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "historical_replay_classification": "WEAK_OBSERVATION_ONLY",
+      "latest_classification": "artifact-only",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json (P47_WAVE4 artifact-only snapshot)",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=DRY_RUN; current registry=ARTIFACT_ONLY"
+    },
+    {
+      "strategy_id": "zonal_entropy_2bet",
+      "strategy_name": "zonal_entropy_2bet",
+      "strategy_version": "unknown",
+      "lottery_type": "POWER_LOTTO",
+      "current_lifecycle_status": "RETIRED",
+      "historical_snapshot_lifecycle_status": "LIFECYCLE_UNRESOLVED",
+      "current_registry_presence": true,
+      "historical_scoreboard_presence": true,
+      "current_lifecycle_source": "MAIN_REGISTRY",
+      "catalog_source_snapshot": "DB_ONLY",
+      "replay_presence": true,
+      "replay_rows": 1500,
+      "distinct_target_draws": 1500,
+      "bet_index_values": [
+        1
+      ],
+      "historical_replay_classification": "LIFECYCLE_UNRESOLVED",
+      "latest_classification": "retired",
+      "included_in_historical_replay_or_catalog_views": true,
+      "evidence_source": [
+        "lottery_api/models/replay_strategy_registry.py",
+        "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json"
+      ],
+      "status_note": "historical snapshot=LIFECYCLE_UNRESOLVED; current registry=RETIRED"
+    }
+  ],
+  "replay_coverage_by_lottery": [
+    {
+      "lottery_type": "BIG_LOTTO",
+      "developed_strategy_entries": 13,
+      "replay_strategy_entries": 11,
+      "replay_rows": 24140,
+      "draw_rows": 22238,
+      "distinct_replay_draws": 1552,
+      "canonical_rows": 2113,
+      "row_semantics": "replay_rows = rows in strategy_prediction_replays; draw_rows = rows in draws table; canonical_rows = canonical main-draw rows when a canonical view exists",
+      "notes": [
+        "replay rows are strategy_prediction_replays rows, not draw rows",
+        "raw BIG_LOTTO draw rows remain 22,238; canonical main-draw rows are 2,113",
+        "19,100 add-on/special-prize rows stay raw-accessible and are excluded from canonical 6/49 research",
+        "P249B fixes the replay-row vs draw-row label ambiguity"
+      ],
+      "live_db_rows_by_lottery": {
+        "lottery_type": "BIG_LOTTO",
+        "replay_rows": 24140,
+        "strategy_count": 11,
+        "distinct_draws": 1552
+      }
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "developed_strategy_entries": 16,
+      "replay_strategy_entries": 15,
+      "replay_rows": 34680,
+      "draw_rows": 5879,
+      "distinct_replay_draws": 1550,
+      "canonical_rows": null,
+      "row_semantics": "replay_rows = rows in strategy_prediction_replays; draw_rows = rows in draws table; canonical_rows = canonical main-draw rows when a canonical view exists",
+      "notes": [
+        "replay rows are strategy_prediction_replays rows, not draw rows",
+        "no canonical/raw split currently tracked beyond the draw table count",
+        "P230C closed the prior DAILY_539 survivor as rejected/historical artifact"
+      ],
+      "live_db_rows_by_lottery": {
+        "lottery_type": "DAILY_539",
+        "replay_rows": 34680,
+        "strategy_count": 15,
+        "distinct_draws": 1550
+      }
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "developed_strategy_entries": 12,
+      "replay_strategy_entries": 10,
+      "replay_rows": 36104,
+      "draw_rows": 1916,
+      "distinct_replay_draws": 1551,
+      "canonical_rows": null,
+      "row_semantics": "replay_rows = rows in strategy_prediction_replays; draw_rows = rows in draws table; canonical_rows = canonical main-draw rows when a canonical view exists",
+      "notes": [
+        "replay rows are strategy_prediction_replays rows, not draw rows",
+        "three P47 artifact-only strategies remain in the historical inventory",
+        "current registry has no active deployable candidate"
+      ],
+      "live_db_rows_by_lottery": {
+        "lottery_type": "POWER_LOTTO",
+        "replay_rows": 36104,
+        "strategy_count": 10,
+        "distinct_draws": 1551
+      }
+    }
+  ],
+  "research_state": {
+    "big_lotto": {
+      "status": "GREEN_CANONICAL_RANDOMNESS_NO_PREDICTION_EDGE",
+      "note": "P246K canonical NIST audit is GREEN on 2,113 canonical rows; this is a data-quality result, not a strategy signal."
+    },
+    "daily_539": {
+      "status": "REJECTED_BY_BACKWARD_OOS",
+      "note": "P230C closed the prior survivor; no active candidate remains."
+    },
+    "power_lotto": {
+      "status": "NULL_OR_BASELINE_LIKE",
+      "note": "P231B first-zone backward-OOS dry-run was NULL; any new hypothesis would require fresh pre-registration."
+    },
+    "star_3_4": {
+      "status": "UNDERPOWERED_NO_SIGNAL_AND_STRAIGHT_PLAY_BLOCKED",
+      "note": "P227C box-play was underpowered; P214C straight-play was NULL and positional order is lost in sorted storage."
+    },
+    "inventory_note": "Current registry is the live SSOT; P232A historical scoreboard is retained as a replay snapshot and is reconciled here rather than used as the sole current-state source."
+  },
+  "candidate_next_directions": [
+    {
+      "rank": 1,
+      "title": "Cross-lottery null/positive evidence dashboard",
+      "value": "High — one place to compare active / rejected / retired / artifact-only rows, replay coverage, and historical classifications.",
+      "risk": "Low — read-only reporting and view composition only.",
+      "urgency": "Medium — the current inventory spans multiple lifecycle labels and benefits from a single honest view.",
+      "prerequisites": "Read-only access to current registry + replay snapshot; no DB write."
+    },
+    {
+      "rank": 2,
+      "title": "Replay/catalog lifecycle badge and filter refresh",
+      "value": "High — makes lifecycle visible without hiding historical replay rows.",
+      "risk": "Low-medium — UI/API behavior change only if surfaced to users.",
+      "urgency": "Medium — current state already contains active, rejected, retired, observation, and artifact-only entries.",
+      "prerequisites": "Define the exact badge vocabulary and keep historical rows visible by default."
+    },
+    {
+      "rank": 3,
+      "title": "Canonical replay refresh and stale-label cleanup",
+      "value": "Medium-high — rebuild the current scoreboard from the current registry so the historical snapshot is not mistaken for live state.",
+      "risk": "Low — read-only unless a new artifact is written.",
+      "urgency": "Medium — the 20260604 scoreboard is historically useful but stale relative to the current registry.",
+      "prerequisites": "Use the current registry as SSOT; keep P232A as historical evidence only."
+    },
+    {
+      "rank": 4,
+      "title": "Raw history add-on labeling for user-facing views",
+      "value": "Medium — clarifies the BIG_LOTTO raw/canonical split and similar label semantics.",
+      "risk": "Medium — touches UI/API display behavior.",
+      "urgency": "Low-medium — useful for truthfulness, but not required for current research governance.",
+      "prerequisites": "Frontend/API authorization and explicit display contract."
+    },
+    {
+      "rank": 5,
+      "title": "Archived script reactivation / migration only when a script is revived",
+      "value": "Low-medium — keeps dormant code aligned with canonical helpers when reactivated.",
+      "risk": "Low — narrow code migration, but only worth doing when a script is truly in use again.",
+      "urgency": "Low — no active deployable candidate depends on it today.",
+      "prerequisites": "Explicit reactivation decision for the specific archived script."
+    },
+    {
+      "rank": 6,
+      "title": "Annotation table Type D only if a downstream consumer appears",
+      "value": "Low-medium — would label row families without mutating strategy logic.",
+      "risk": "Medium — requires a controlled DB write and backup discipline.",
+      "urgency": "Low — the current inventory does not require it.",
+      "prerequisites": "Explicit Type D authorization and a concrete consumer need."
+    }
+  ],
+  "source_artifacts": {
+    "current_registry": "lottery_api/models/replay_strategy_registry.py",
+    "historical_scoreboard": "outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json",
+    "current_state": "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md",
+    "roadmap": "00-Plan/roadmap/roadmap.md",
+    "active_task": "00-Plan/roadmap/active_task.md"
+  },
+  "compliance": {
+    "read_only": true,
+    "no_db_write": true,
+    "no_registry_mutation": true,
+    "no_strategy_logic_change": true,
+    "no_production_recommendation_change": true,
+    "no_betting_advice": true
+  }
+}

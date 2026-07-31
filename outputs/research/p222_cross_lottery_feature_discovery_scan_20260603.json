@@ -1,0 +1,5328 @@
+{
+  "task_id": "P222",
+  "title": "Cross-Lottery Feature Discovery Read-Only Scan",
+  "date": "2026-06-03",
+  "status": "COMPLETE",
+  "classification": "P222_CANDIDATES_FOUND_NEED_MORE_OOS",
+  "governance": {
+    "authorized_by": "User explicit task prompt 2026-06-03",
+    "frozen_protocol": "P221F protocol merged via PR #256",
+    "db_write": false,
+    "registry_write": false,
+    "production_write": false,
+    "strategy_promotion": false,
+    "special_zone_scoring_promotion": false,
+    "null_accepted_as_success": true,
+    "historical_replay_evidence_only": true
+  },
+  "phase_0": {
+    "repo_root": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "git_dir": ".git",
+    "head": "9a3abf3213ceb710b58355009741f38c00db4d83",
+    "origin_main": "9a3abf3213ceb710b58355009741f38c00db4d83",
+    "staged_files": [],
+    "db_counts": {
+      "total": 94924,
+      "big_lotto": 24140,
+      "daily_539": 34680,
+      "power_lotto": 36104,
+      "bet_index_nulls": 0,
+      "duplicate_keys": 0,
+      "integrity_check": "ok"
+    },
+    "drift_guard": "Drift guard checked at: 2026-06-03T05:58:39.183139Z\nDB: /Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db\n\nRow counts — V1=0  V2=0  legacy=420  total=94924\nV3 tombstone strategies with 0 rows: 1/1\ntruth_level — REGENERATED=0  ARTIFACT=0  null=420\n\nNo violations found.\n\nFinal classification: REPLAY_LIFECYCLE_DRIFT_GUARD_PASS\nStatus: PASS",
+    "p221f_artifacts_tracked": [
+      "outputs/research/p221_cross_lottery_feature_discovery_protocol_20260603.md",
+      "outputs/research/p221_cross_lottery_feature_discovery_protocol_20260603.json"
+    ],
+    "status": {
+      "repo_root_ok": true,
+      "branch_ok": true,
+      "git_dir_ok": true,
+      "head_matches_origin_main": true,
+      "staged_empty": true,
+      "rows_ok": true,
+      "big_ok": true,
+      "daily_ok": true,
+      "power_ok": true,
+      "bet_nulls_ok": true,
+      "dup_ok": true,
+      "integrity_ok": true,
+      "drift_ok": true,
+      "p221f_tracked": true
+    }
+  },
+  "universe_inventory": {
+    "replay_lottery_types": [
+      "BIG_LOTTO",
+      "DAILY_539",
+      "POWER_LOTTO"
+    ],
+    "draw_lottery_types": [
+      "38_LOTTO",
+      "39_LOTTO",
+      "3_STAR",
+      "49_LOTTO",
+      "4_STAR",
+      "BIG_LOTTO",
+      "BIG_LOTTO_BONUS",
+      "DAILY_539",
+      "DOUBLE_WIN",
+      "LOTTO_6_38",
+      "POWER_LOTTO"
+    ],
+    "registry": {
+      "total_registered_strategies": 18,
+      "lifecycle_counts": {
+        "ONLINE": 8,
+        "REJECTED": 4,
+        "OBSERVATION": 1,
+        "RETIRED": 5
+      },
+      "executable_strategy_ids": [
+        "biglotto_deviation_2bet",
+        "biglotto_triple_strike",
+        "daily539_f4cold",
+        "daily539_markov_cold",
+        "fourier_rhythm_3bet",
+        "power_orthogonal_5bet",
+        "power_precision_3bet",
+        "ts3_regime_3bet"
+      ],
+      "non_executable_strategy_ids": [
+        "acb_1bet",
+        "acb_markov_midfreq",
+        "acb_markov_midfreq_3bet",
+        "biglotto_ts3_acb_4bet",
+        "biglotto_ts3_markov_freq_5bet",
+        "h6_gate_mk20_ew85",
+        "midfreq_acb_2bet",
+        "midfreq_fourier_2bet",
+        "p1_deviation_2bet_539",
+        "power_shlc_midfreq"
+      ]
+    },
+    "replay_strategy_inventory": {
+      "total_strategy_ids": 35,
+      "lifecycle_resolved_strategy_ids": [
+        "acb_1bet",
+        "acb_markov_midfreq",
+        "acb_markov_midfreq_3bet",
+        "biglotto_deviation_2bet",
+        "biglotto_triple_strike",
+        "daily539_f4cold",
+        "daily539_markov_cold",
+        "fourier_rhythm_3bet",
+        "midfreq_acb_2bet",
+        "midfreq_fourier_2bet",
+        "power_orthogonal_5bet",
+        "power_precision_3bet",
+        "ts3_regime_3bet"
+      ],
+      "lifecycle_unresolved_strategy_ids": [
+        "539_3bet_orthogonal",
+        "acb_single_539",
+        "bet2_fourier_expansion_biglotto",
+        "biglotto_echo_aware_3bet",
+        "biglotto_ts3_markov_4bet_w30",
+        "cold_complement_2bet",
+        "cold_complement_biglotto",
+        "coldpool15_biglotto",
+        "daily539_f4cold_3bet",
+        "daily539_f4cold_5bet",
+        "fourier30_markov30_2bet",
+        "fourier30_markov30_biglotto",
+        "markov_1bet_539",
+        "markov_2bet_biglotto",
+        "markov_single_biglotto",
+        "midfreq_fourier_mk_3bet",
+        "p0b_539_3bet_f_cold_fmid",
+        "p0c_539_3bet_f_cold_x2",
+        "power_fourier_rhythm_2bet",
+        "pp3_freqort_4bet",
+        "zonal_entropy_2bet",
+        "zone_gap_3bet_539"
+      ],
+      "zero_row_registry_strategies": [
+        "biglotto_ts3_acb_4bet",
+        "biglotto_ts3_markov_freq_5bet",
+        "power_shlc_midfreq",
+        "p1_deviation_2bet_539",
+        "h6_gate_mk20_ew85"
+      ],
+      "replay_lifecycle_labels": [
+        "LIFECYCLE_UNRESOLVED",
+        "ONLINE",
+        "RETIRED"
+      ],
+      "row_counts_by_lifecycle": {
+        "LIFECYCLE_UNRESOLVED": 22,
+        "ONLINE": 8,
+        "RETIRED": 5
+      },
+      "strategy_rows": [
+        {
+          "strategy_id": "539_3bet_orthogonal",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "DAILY_539",
+          "row_count": 1500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1
+          ]
+        },
+        {
+          "strategy_id": "acb_1bet",
+          "lifecycle": "RETIRED",
+          "lottery_type": "DAILY_539",
+          "row_count": 1500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1
+          ]
+        },
+        {
+          "strategy_id": "acb_markov_midfreq",
+          "lifecycle": "RETIRED",
+          "lottery_type": "DAILY_539",
+          "row_count": 1500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1
+          ]
+        },
+        {
+          "strategy_id": "acb_markov_midfreq_3bet",
+          "lifecycle": "RETIRED",
+          "lottery_type": "DAILY_539",
+          "row_count": 4500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "strategy_id": "acb_single_539",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "DAILY_539",
+          "row_count": 1500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1
+          ]
+        },
+        {
+          "strategy_id": "bet2_fourier_expansion_biglotto",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "BIG_LOTTO",
+          "row_count": 1500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1
+          ]
+        },
+        {
+          "strategy_id": "biglotto_deviation_2bet",
+          "lifecycle": "ONLINE",
+          "lottery_type": "BIG_LOTTO",
+          "row_count": 1570,
+          "distinct_draws": 1550,
+          "bet_indexes": [
+            1,
+            2
+          ]
+        },
+        {
+          "strategy_id": "biglotto_echo_aware_3bet",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "BIG_LOTTO",
+          "row_count": 4500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "strategy_id": "biglotto_triple_strike",
+          "lifecycle": "ONLINE",
+          "lottery_type": "BIG_LOTTO",
+          "row_count": 1570,
+          "distinct_draws": 1550,
+          "bet_indexes": [
+            1,
+            2
+          ]
+        },
+        {
+          "strategy_id": "biglotto_ts3_markov_4bet_w30",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "BIG_LOTTO",
+          "row_count": 6000,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "strategy_id": "cold_complement_2bet",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "POWER_LOTTO",
+          "row_count": 1500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1
+          ]
+        },
+        {
+          "strategy_id": "cold_complement_biglotto",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "BIG_LOTTO",
+          "row_count": 1500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1
+          ]
+        },
+        {
+          "strategy_id": "coldpool15_biglotto",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "BIG_LOTTO",
+          "row_count": 1500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1
+          ]
+        },
+        {
+          "strategy_id": "daily539_f4cold",
+          "lifecycle": "ONLINE",
+          "lottery_type": "DAILY_539",
+          "row_count": 1590,
+          "distinct_draws": 1550,
+          "bet_indexes": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "strategy_id": "daily539_f4cold_3bet",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "DAILY_539",
+          "row_count": 4500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "strategy_id": "daily539_f4cold_5bet",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "DAILY_539",
+          "row_count": 7500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "strategy_id": "daily539_markov_cold",
+          "lifecycle": "ONLINE",
+          "lottery_type": "DAILY_539",
+          "row_count": 1590,
+          "distinct_draws": 1550,
+          "bet_indexes": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "strategy_id": "fourier30_markov30_2bet",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "POWER_LOTTO",
+          "row_count": 1501,
+          "distinct_draws": 1501,
+          "bet_indexes": [
+            1
+          ]
+        },
+        {
+          "strategy_id": "fourier30_markov30_biglotto",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "BIG_LOTTO",
+          "row_count": 1500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1
+          ]
+        },
+        {
+          "strategy_id": "fourier_rhythm_3bet",
+          "lifecycle": "ONLINE",
+          "lottery_type": "POWER_LOTTO",
+          "row_count": 4503,
+          "distinct_draws": 1501,
+          "bet_indexes": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "strategy_id": "markov_1bet_539",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "DAILY_539",
+          "row_count": 1500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1
+          ]
+        },
+        {
+          "strategy_id": "markov_2bet_biglotto",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "BIG_LOTTO",
+          "row_count": 1500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1
+          ]
+        },
+        {
+          "strategy_id": "markov_single_biglotto",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "BIG_LOTTO",
+          "row_count": 1500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1
+          ]
+        },
+        {
+          "strategy_id": "midfreq_acb_2bet",
+          "lifecycle": "RETIRED",
+          "lottery_type": "DAILY_539",
+          "row_count": 1500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1
+          ]
+        },
+        {
+          "strategy_id": "midfreq_fourier_2bet",
+          "lifecycle": "RETIRED",
+          "lottery_type": "DAILY_539",
+          "row_count": 3000,
+          "distinct_draws": 2543,
+          "bet_indexes": [
+            1
+          ]
+        },
+        {
+          "strategy_id": "midfreq_fourier_mk_3bet",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "POWER_LOTTO",
+          "row_count": 4500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "strategy_id": "p0b_539_3bet_f_cold_fmid",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "DAILY_539",
+          "row_count": 1500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1
+          ]
+        },
+        {
+          "strategy_id": "p0c_539_3bet_f_cold_x2",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "DAILY_539",
+          "row_count": 1500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1
+          ]
+        },
+        {
+          "strategy_id": "power_fourier_rhythm_2bet",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "POWER_LOTTO",
+          "row_count": 3000,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1,
+            2
+          ]
+        },
+        {
+          "strategy_id": "power_orthogonal_5bet",
+          "lifecycle": "ONLINE",
+          "lottery_type": "POWER_LOTTO",
+          "row_count": 7550,
+          "distinct_draws": 1550,
+          "bet_indexes": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "strategy_id": "power_precision_3bet",
+          "lifecycle": "ONLINE",
+          "lottery_type": "POWER_LOTTO",
+          "row_count": 4550,
+          "distinct_draws": 1550,
+          "bet_indexes": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "strategy_id": "pp3_freqort_4bet",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "POWER_LOTTO",
+          "row_count": 6000,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "strategy_id": "ts3_regime_3bet",
+          "lifecycle": "ONLINE",
+          "lottery_type": "BIG_LOTTO",
+          "row_count": 1500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1
+          ]
+        },
+        {
+          "strategy_id": "zonal_entropy_2bet",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "POWER_LOTTO",
+          "row_count": 1500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1
+          ]
+        },
+        {
+          "strategy_id": "zone_gap_3bet_539",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "lottery_type": "DAILY_539",
+          "row_count": 1500,
+          "distinct_draws": 1500,
+          "bet_indexes": [
+            1
+          ]
+        }
+      ]
+    },
+    "bet_indexes": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "window_inventory": {
+    "short": [
+      100,
+      125,
+      150
+    ],
+    "mid": [
+      500,
+      750,
+      1000
+    ],
+    "all_history": "baseline/reference only",
+    "rules": [
+      "window set frozen before scan starts",
+      "no post-hoc best-window selection",
+      "optional sensitivity windows are future follow-up only",
+      "all-history is reference only"
+    ]
+  },
+  "feature_inventory": {
+    "frequency_recency": [
+      "hot number frequency",
+      "cold number frequency",
+      "frequency delta short vs mid",
+      "frequency delta mid vs all-history",
+      "EWMA frequency",
+      "overdue / gap length",
+      "last-seen distance"
+    ],
+    "distribution_structure": [
+      "odd/even balance",
+      "high/low balance",
+      "sum range",
+      "span",
+      "consecutive count",
+      "repeated last digit",
+      "modulo bucket",
+      "prime count",
+      "number-zone coverage"
+    ],
+    "co_occurrence": [
+      "pair frequency",
+      "triple frequency",
+      "number cluster stability",
+      "co-hit patterns by strategy"
+    ],
+    "strategy_behavior": [
+      "strategy_id",
+      "lifecycle",
+      "bet_index",
+      "strategy family",
+      "prediction concentration",
+      "prediction entropy",
+      "strategy diversity",
+      "consensus between strategies"
+    ],
+    "time_stability": [
+      "draw era",
+      "rolling-window stability",
+      "OOS block stability",
+      "monthly drift if dates exist",
+      "yearly drift if dates exist",
+      "cross-year validation if enough data exists"
+    ],
+    "special_zone": [
+      "POWER_LOTTO second-zone remains display-only",
+      "special-zone metrics reported separately",
+      "special-zone metrics must not affect scoring",
+      "special-zone metrics must not affect recommendation promotion"
+    ]
+  },
+  "metrics": {
+    "replay_row_summary_by_lottery_type": {
+      "BIG_LOTTO": {
+        "n_rows": 24140,
+        "n_distinct_draws": 1552,
+        "n_strategies": 11,
+        "mean_hit_count": 0.7347141673570837,
+        "mean_hit_count_ci": [
+          0.7251063869557721,
+          0.7443219477583953
+        ],
+        "sd_hit_count": 0.7616292419719665,
+        "baseline_mean_hit_count": 0.7346938775510204,
+        "mean_diff_vs_baseline": 2.028980606327835e-05,
+        "p_value_vs_baseline": 0.996697508258501,
+        "m1_plus_rate": 0.5654515327257663,
+        "m2_plus_rate": 0.14751449875724937,
+        "m3_plus_rate": 0.020173985086992544,
+        "exact_hit_rate": 0.0
+      },
+      "DAILY_539": {
+        "n_rows": 34680,
+        "n_distinct_draws": 1550,
+        "n_strategies": 15,
+        "mean_hit_count": 0.6570934256055363,
+        "mean_hit_count_ci": [
+          0.6494983913134544,
+          0.6646884598976182
+        ],
+        "sd_hit_count": 0.7216409880324494,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": 0.016067784579895217,
+        "p_value_vs_baseline": 3.37699154649747e-05,
+        "m1_plus_rate": 0.5208189158016148,
+        "m2_plus_rate": 0.12494232987312572,
+        "m3_plus_rate": 0.011216839677047289,
+        "exact_hit_rate": 0.0
+      },
+      "POWER_LOTTO": {
+        "n_rows": 36104,
+        "n_distinct_draws": 1551,
+        "n_strategies": 10,
+        "mean_hit_count": 0.9674274318635054,
+        "mean_hit_count_ci": [
+          0.9588090670192984,
+          0.9760457967077125
+        ],
+        "sd_hit_count": 0.83551537193205,
+        "baseline_mean_hit_count": 0.9473684210526315,
+        "mean_diff_vs_baseline": 0.020059010810873912,
+        "p_value_vs_baseline": 5.0725860936774584e-06,
+        "m1_plus_rate": 0.6822235763350322,
+        "m2_plus_rate": 0.23941945490804342,
+        "m3_plus_rate": 0.04348548637270109,
+        "exact_hit_rate": 0.0,
+        "special_hit": {
+          "n_rows": 9000,
+          "mean": 0.11811111111111111,
+          "ci": [
+            0.1114433635490017,
+            0.12477885867322053
+          ],
+          "sd": 0.3227396420386096,
+          "baseline": 0.125,
+          "mean_diff_vs_baseline": -0.006888888888888889,
+          "p_value_vs_baseline": 0.04287067068437696
+        }
+      }
+    },
+    "strategy_summary": [
+      {
+        "strategy_id": "539_3bet_orthogonal",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "DAILY_539",
+        "supported_lottery_types": [
+          "DAILY_539"
+        ],
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.672,
+        "mean_hit_count_ci": [
+          0.6361535738433083,
+          0.7078464261566918
+        ],
+        "sd_hit_count": 0.7083426666051773,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": 0.030974358974358962,
+        "p_value_vs_baseline": 0.09034598254512331,
+        "m1_plus_rate": 0.542,
+        "m2_plus_rate": 0.11933333333333333,
+        "m3_plus_rate": 0.010666666666666666,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.6733333333333333,
+            "mean_hit_count_ci": [
+              0.5557403337777564,
+              0.7909263328889102
+            ],
+            "sd_hit_count": 0.7348166815985845,
+            "p_value_vs_baseline": 0.5902431561963857,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.6266666666666667,
+            "mean_hit_count_ci": [
+              0.5450180531286335,
+              0.7083152802046999
+            ],
+            "sd_hit_count": 0.7215415595946101,
+            "p_value_vs_baseline": 0.7303310097267055,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.636,
+            "mean_hit_count_ci": [
+              0.5725804595023165,
+              0.6994195404976835
+            ],
+            "sd_hit_count": 0.7235357627650482,
+            "p_value_vs_baseline": 0.8765721272039205,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.28109019604341967,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "acb_1bet",
+        "lifecycle": "RETIRED",
+        "lottery_type": "DAILY_539",
+        "supported_lottery_types": [
+          "DAILY_539"
+        ],
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.672,
+        "mean_hit_count_ci": [
+          0.6361535738433083,
+          0.7078464261566918
+        ],
+        "sd_hit_count": 0.7083426666051773,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": 0.030974358974358962,
+        "p_value_vs_baseline": 0.09034598254512331,
+        "m1_plus_rate": 0.542,
+        "m2_plus_rate": 0.11933333333333333,
+        "m3_plus_rate": 0.010666666666666666,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.6733333333333333,
+            "mean_hit_count_ci": [
+              0.5557403337777564,
+              0.7909263328889102
+            ],
+            "sd_hit_count": 0.7348166815985845,
+            "p_value_vs_baseline": 0.5902431561963857,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.6266666666666667,
+            "mean_hit_count_ci": [
+              0.5450180531286335,
+              0.7083152802046999
+            ],
+            "sd_hit_count": 0.7215415595946101,
+            "p_value_vs_baseline": 0.7303310097267055,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.636,
+            "mean_hit_count_ci": [
+              0.5725804595023165,
+              0.6994195404976835
+            ],
+            "sd_hit_count": 0.7235357627650482,
+            "p_value_vs_baseline": 0.8765721272039205,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.28109019604341967,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "acb_markov_midfreq",
+        "lifecycle": "RETIRED",
+        "lottery_type": "DAILY_539",
+        "supported_lottery_types": [
+          "DAILY_539"
+        ],
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.6366666666666667,
+        "mean_hit_count_ci": [
+          0.600338632532725,
+          0.6729947008006084
+        ],
+        "sd_hit_count": 0.7178594724750954,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": -0.004358974358974366,
+        "p_value_vs_baseline": 0.8140731797781091,
+        "m1_plus_rate": 0.5093333333333333,
+        "m2_plus_rate": 0.11333333333333333,
+        "m3_plus_rate": 0.013333333333333334,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.54,
+            "mean_hit_count_ci": [
+              0.44464193868717317,
+              0.6353580613128269
+            ],
+            "sd_hit_count": 0.5958747071882365,
+            "p_value_vs_baseline": 0.037851990962040685,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.6333333333333333,
+            "mean_hit_count_ci": [
+              0.5544823838183164,
+              0.7121842828483502
+            ],
+            "sd_hit_count": 0.6968181653455624,
+            "p_value_vs_baseline": 0.8483654809196686,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.64,
+            "mean_hit_count_ci": [
+              0.5778719240356387,
+              0.7021280759643613
+            ],
+            "sd_hit_count": 0.708801805866774,
+            "p_value_vs_baseline": 0.9741881067879441,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.9191148803946393,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "acb_markov_midfreq_3bet",
+        "lifecycle": "RETIRED",
+        "lottery_type": "DAILY_539",
+        "supported_lottery_types": [
+          "DAILY_539"
+        ],
+        "n_rows": 4500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 3,
+        "bet_indexes": [
+          1,
+          2,
+          3
+        ],
+        "mean_hit_count": 0.66,
+        "mean_hit_count_ci": [
+          0.6389319206419981,
+          0.681068079358002
+        ],
+        "sd_hit_count": 0.7210794377567257,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": 0.01897435897435895,
+        "p_value_vs_baseline": 0.07753265834621867,
+        "m1_plus_rate": 0.5242222222222223,
+        "m2_plus_rate": 0.124,
+        "m3_plus_rate": 0.011555555555555555,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.6466666666666666,
+            "mean_hit_count_ci": [
+              0.5371318693153405,
+              0.7562014640179927
+            ],
+            "sd_hit_count": 0.6844624817248122,
+            "p_value_vs_baseline": 0.9195997955065495,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.6433333333333333,
+            "mean_hit_count_ci": [
+              0.5604782099848907,
+              0.7261884566817759
+            ],
+            "sd_hit_count": 0.7322036753678735,
+            "p_value_vs_baseline": 0.9564657535525811,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.678,
+            "mean_hit_count_ci": [
+              0.6127407924097774,
+              0.7432592075902227
+            ],
+            "sd_hit_count": 0.7445240090151559,
+            "p_value_vs_baseline": 0.26679641870365467,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.28109019604341967,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "acb_single_539",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "DAILY_539",
+        "supported_lottery_types": [
+          "DAILY_539"
+        ],
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.672,
+        "mean_hit_count_ci": [
+          0.6361535738433083,
+          0.7078464261566918
+        ],
+        "sd_hit_count": 0.7083426666051773,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": 0.030974358974358962,
+        "p_value_vs_baseline": 0.09034598254512331,
+        "m1_plus_rate": 0.542,
+        "m2_plus_rate": 0.11933333333333333,
+        "m3_plus_rate": 0.010666666666666666,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.6733333333333333,
+            "mean_hit_count_ci": [
+              0.5557403337777564,
+              0.7909263328889102
+            ],
+            "sd_hit_count": 0.7348166815985845,
+            "p_value_vs_baseline": 0.5902431561963857,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.6266666666666667,
+            "mean_hit_count_ci": [
+              0.5450180531286335,
+              0.7083152802046999
+            ],
+            "sd_hit_count": 0.7215415595946101,
+            "p_value_vs_baseline": 0.7303310097267055,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.636,
+            "mean_hit_count_ci": [
+              0.5725804595023165,
+              0.6994195404976835
+            ],
+            "sd_hit_count": 0.7235357627650482,
+            "p_value_vs_baseline": 0.8765721272039205,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.28109019604341967,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "bet2_fourier_expansion_biglotto",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "BIG_LOTTO",
+        "supported_lottery_types": [
+          "BIG_LOTTO"
+        ],
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.724,
+        "mean_hit_count_ci": [
+          0.6850687141654386,
+          0.7629312858345614
+        ],
+        "sd_hit_count": 0.769300981411047,
+        "baseline_mean_hit_count": 0.7346938775510204,
+        "mean_diff_vs_baseline": -0.01069387755102047,
+        "p_value_vs_baseline": 0.590318468718364,
+        "m1_plus_rate": 0.5573333333333333,
+        "m2_plus_rate": 0.14,
+        "m3_plus_rate": 0.024,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.76,
+            "mean_hit_count_ci": [
+              0.6310720389290929,
+              0.8889279610709071
+            ],
+            "sd_hit_count": 0.8056467381344423,
+            "p_value_vs_baseline": 0.700456810310778,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.7233333333333334,
+            "mean_hit_count_ci": [
+              0.6376419120947804,
+              0.8090247545718864
+            ],
+            "sd_hit_count": 0.757268483138943,
+            "p_value_vs_baseline": 0.7949854068824365,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.72,
+            "mean_hit_count_ci": [
+              0.6520143893676082,
+              0.7879856106323917
+            ],
+            "sd_hit_count": 0.7756287771866126,
+            "p_value_vs_baseline": 0.6718493355496374,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.8608811002142809,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "biglotto_deviation_2bet",
+        "lifecycle": "ONLINE",
+        "lottery_type": "BIG_LOTTO",
+        "supported_lottery_types": [
+          "BIG_LOTTO"
+        ],
+        "n_rows": 1570,
+        "n_distinct_draws": 1550,
+        "n_bet_indexes": 2,
+        "bet_indexes": [
+          1,
+          2
+        ],
+        "mean_hit_count": 0.7573248407643313,
+        "mean_hit_count_ci": [
+          0.7194072075412282,
+          0.7952424739874343
+        ],
+        "sd_hit_count": 0.766554357091894,
+        "baseline_mean_hit_count": 0.7346938775510204,
+        "mean_diff_vs_baseline": 0.022630963213310817,
+        "p_value_vs_baseline": 0.24208331623146498,
+        "m1_plus_rate": 0.5802547770700637,
+        "m2_plus_rate": 0.15286624203821655,
+        "m3_plus_rate": 0.02356687898089172,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.8733333333333333,
+            "mean_hit_count_ci": [
+              0.750346858595837,
+              0.9963198080708295
+            ],
+            "sd_hit_count": 0.7685195002224877,
+            "p_value_vs_baseline": 0.027145688019883724,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.8266666666666667,
+            "mean_hit_count_ci": [
+              0.737329503812252,
+              0.9160038295210813
+            ],
+            "sd_hit_count": 0.7894864716313313,
+            "p_value_vs_baseline": 0.04361346290208437,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.828,
+            "mean_hit_count_ci": [
+              0.7555918103722679,
+              0.9004081896277321
+            ],
+            "sd_hit_count": 0.8260847414157945,
+            "p_value_vs_baseline": 0.011548948382570938,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.5648610712067516,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "biglotto_echo_aware_3bet",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "BIG_LOTTO",
+        "supported_lottery_types": [
+          "BIG_LOTTO"
+        ],
+        "n_rows": 4500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 3,
+        "bet_indexes": [
+          1,
+          2,
+          3
+        ],
+        "mean_hit_count": 0.7477777777777778,
+        "mean_hit_count_ci": [
+          0.7250593578615735,
+          0.770496197693982
+        ],
+        "sd_hit_count": 0.7775642564055437,
+        "baseline_mean_hit_count": 0.7346938775510204,
+        "mean_diff_vs_baseline": 0.013083900226757317,
+        "p_value_vs_baseline": 0.2589929697542633,
+        "m1_plus_rate": 0.5642222222222222,
+        "m2_plus_rate": 0.16044444444444445,
+        "m3_plus_rate": 0.021777777777777778,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.7533333333333333,
+            "mean_hit_count_ci": [
+              0.6294615879981742,
+              0.8772050786684924
+            ],
+            "sd_hit_count": 0.7740513907716693,
+            "p_value_vs_baseline": 0.7680524839842006,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.7033333333333334,
+            "mean_hit_count_ci": [
+              0.6190076265197522,
+              0.7876590401469146
+            ],
+            "sd_hit_count": 0.745199451302953,
+            "p_value_vs_baseline": 0.46605899348078006,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.74,
+            "mean_hit_count_ci": [
+              0.6725362289020366,
+              0.8074637710979634
+            ],
+            "sd_hit_count": 0.7696752561957543,
+            "p_value_vs_baseline": 0.8774883261101218,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.5665471213374509,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "biglotto_triple_strike",
+        "lifecycle": "ONLINE",
+        "lottery_type": "BIG_LOTTO",
+        "supported_lottery_types": [
+          "BIG_LOTTO"
+        ],
+        "n_rows": 1570,
+        "n_distinct_draws": 1550,
+        "n_bet_indexes": 2,
+        "bet_indexes": [
+          1,
+          2
+        ],
+        "mean_hit_count": 0.7280254777070063,
+        "mean_hit_count_ci": [
+          0.690101143206541,
+          0.7659498122074716
+        ],
+        "sd_hit_count": 0.7666898321446188,
+        "baseline_mean_hit_count": 0.7346938775510204,
+        "mean_diff_vs_baseline": -0.006668399844014128,
+        "p_value_vs_baseline": 0.730373339679582,
+        "m1_plus_rate": 0.5617834394904458,
+        "m2_plus_rate": 0.1394904458598726,
+        "m3_plus_rate": 0.024840764331210193,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.7666666666666667,
+            "mean_hit_count_ci": [
+              0.6380878948796934,
+              0.89524543845364
+            ],
+            "sd_hit_count": 0.8034647195462633,
+            "p_value_vs_baseline": 0.6259957133052421,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.7133333333333334,
+            "mean_hit_count_ci": [
+              0.6293245764393155,
+              0.7973420902273513
+            ],
+            "sd_hit_count": 0.742398515324186,
+            "p_value_vs_baseline": 0.6182362531990893,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.706,
+            "mean_hit_count_ci": [
+              0.6395017984502739,
+              0.772498201549726
+            ],
+            "sd_hit_count": 0.758659343842808,
+            "p_value_vs_baseline": 0.3977080606812803,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.8736313760084152,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "biglotto_ts3_markov_4bet_w30",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "BIG_LOTTO",
+        "supported_lottery_types": [
+          "BIG_LOTTO"
+        ],
+        "n_rows": 6000,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 4,
+        "bet_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "mean_hit_count": 0.733,
+        "mean_hit_count_ci": [
+          0.7136682395624618,
+          0.7523317604375381
+        ],
+        "sd_hit_count": 0.764009816690859,
+        "baseline_mean_hit_count": 0.7346938775510204,
+        "mean_diff_vs_baseline": -0.0016938775510204618,
+        "p_value_vs_baseline": 0.8636459045315908,
+        "m1_plus_rate": 0.564,
+        "m2_plus_rate": 0.14566666666666667,
+        "m3_plus_rate": 0.021666666666666667,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.7333333333333333,
+            "mean_hit_count_ci": [
+              0.6098342876662438,
+              0.8568323790004228
+            ],
+            "sd_hit_count": 0.771722460186015,
+            "p_value_vs_baseline": 0.9827732454260036,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.7333333333333333,
+            "mean_hit_count_ci": [
+              0.6474851540537004,
+              0.8191815126129661
+            ],
+            "sd_hit_count": 0.7586537784494028,
+            "p_value_vs_baseline": 0.9752200805108309,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.744,
+            "mean_hit_count_ci": [
+              0.677104387729287,
+              0.8108956122707129
+            ],
+            "sd_hit_count": 0.7631932913751274,
+            "p_value_vs_baseline": 0.7851156518811186,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.9446127080814275,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "cold_complement_2bet",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "POWER_LOTTO",
+        "supported_lottery_types": [
+          "POWER_LOTTO"
+        ],
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.9406666666666667,
+        "mean_hit_count_ci": [
+          0.8996430949723234,
+          0.9816902383610099
+        ],
+        "sd_hit_count": 0.8106455589357301,
+        "baseline_mean_hit_count": 0.9473684210526315,
+        "mean_diff_vs_baseline": -0.006701754385964875,
+        "p_value_vs_baseline": 0.7488268937214988,
+        "m1_plus_rate": 0.682,
+        "m2_plus_rate": 0.21933333333333332,
+        "m3_plus_rate": 0.03666666666666667,
+        "exact_hit_rate": 0.0,
+        "special": {
+          "n_rows": 1500,
+          "mean": 0.114,
+          "ci": [
+            0.09791682645898953,
+            0.13008317354101048
+          ],
+          "sd": 0.317811264746862,
+          "baseline": 0.125,
+          "mean_diff_vs_baseline": -0.010999999999999996,
+          "p_value_vs_baseline": 0.1800806283470952,
+          "tail_oos": {
+            "150": {
+              "n": 150,
+              "mean_hit_count": 0.13333333333333333,
+              "mean_hit_count_ci": [
+                0.0789334615093974,
+                0.18773320515726927
+              ],
+              "sd_hit_count": 0.339934634239519,
+              "p_value_vs_baseline": 0.7639938761058095,
+              "direction": "above"
+            },
+            "300": {
+              "n": 300,
+              "mean_hit_count": 0.13333333333333333,
+              "mean_hit_count_ci": [
+                0.09486681507094924,
+                0.17179985159571742
+              ],
+              "sd_hit_count": 0.339934634239519,
+              "p_value_vs_baseline": 0.6711254583898127,
+              "direction": "above"
+            },
+            "500": {
+              "n": 500,
+              "mean_hit_count": 0.122,
+              "mean_hit_count_ci": [
+                0.0933126612235477,
+                0.1506873387764523
+              ],
+              "sd_hit_count": 0.32728580781940425,
+              "p_value_vs_baseline": 0.8375997002384876,
+              "direction": "below"
+            }
+          }
+        },
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.9333333333333333,
+            "mean_hit_count_ci": [
+              0.8005091814456992,
+              1.0661574852209674
+            ],
+            "sd_hit_count": 0.8299933065325822,
+            "p_value_vs_baseline": 0.8359295008315586,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.9033333333333333,
+            "mean_hit_count_ci": [
+              0.810894329357725,
+              0.9957723373089417
+            ],
+            "sd_hit_count": 0.8168979264401534,
+            "p_value_vs_baseline": 0.3504760360973363,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.92,
+            "mean_hit_count_ci": [
+              0.850450269971638,
+              0.9895497300283621
+            ],
+            "sd_hit_count": 0.7934733769950949,
+            "p_value_vs_baseline": 0.44055117676221844,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.8736313760084152,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "cold_complement_biglotto",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "BIG_LOTTO",
+        "supported_lottery_types": [
+          "BIG_LOTTO"
+        ],
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.7353333333333333,
+        "mean_hit_count_ci": [
+          0.6976003680203384,
+          0.7730662986463281
+        ],
+        "sd_hit_count": 0.7456215900546037,
+        "baseline_mean_hit_count": 0.7346938775510204,
+        "mean_diff_vs_baseline": 0.0006394557823128366,
+        "p_value_vs_baseline": 0.9735029280686832,
+        "m1_plus_rate": 0.5706666666666667,
+        "m2_plus_rate": 0.14933333333333335,
+        "m3_plus_rate": 0.014666666666666666,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.7466666666666667,
+            "mean_hit_count_ci": [
+              0.6324767634354176,
+              0.8608565698979158
+            ],
+            "sd_hit_count": 0.7135513685471815,
+            "p_value_vs_baseline": 0.8371800590384016,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.7733333333333333,
+            "mean_hit_count_ci": [
+              0.6870091709734464,
+              0.8596574956932203
+            ],
+            "sd_hit_count": 0.7628601153262343,
+            "p_value_vs_baseline": 0.3803252592021429,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.782,
+            "mean_hit_count_ci": [
+              0.7141911376120534,
+              0.8498088623879466
+            ],
+            "sd_hit_count": 0.7736123060034658,
+            "p_value_vs_baseline": 0.1715163275614847,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.9735029280686833,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "coldpool15_biglotto",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "BIG_LOTTO",
+        "supported_lottery_types": [
+          "BIG_LOTTO"
+        ],
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.7353333333333333,
+        "mean_hit_count_ci": [
+          0.6976003680203384,
+          0.7730662986463281
+        ],
+        "sd_hit_count": 0.7456215900546037,
+        "baseline_mean_hit_count": 0.7346938775510204,
+        "mean_diff_vs_baseline": 0.0006394557823128366,
+        "p_value_vs_baseline": 0.9735029280686832,
+        "m1_plus_rate": 0.5706666666666667,
+        "m2_plus_rate": 0.14933333333333335,
+        "m3_plus_rate": 0.014666666666666666,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.7466666666666667,
+            "mean_hit_count_ci": [
+              0.6324767634354176,
+              0.8608565698979158
+            ],
+            "sd_hit_count": 0.7135513685471815,
+            "p_value_vs_baseline": 0.8371800590384016,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.7733333333333333,
+            "mean_hit_count_ci": [
+              0.6870091709734464,
+              0.8596574956932203
+            ],
+            "sd_hit_count": 0.7628601153262343,
+            "p_value_vs_baseline": 0.3803252592021429,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.782,
+            "mean_hit_count_ci": [
+              0.7141911376120534,
+              0.8498088623879466
+            ],
+            "sd_hit_count": 0.7736123060034658,
+            "p_value_vs_baseline": 0.1715163275614847,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.9735029280686833,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "daily539_f4cold",
+        "lifecycle": "ONLINE",
+        "lottery_type": "DAILY_539",
+        "supported_lottery_types": [
+          "DAILY_539"
+        ],
+        "n_rows": 1590,
+        "n_distinct_draws": 1550,
+        "n_bet_indexes": 3,
+        "bet_indexes": [
+          1,
+          2,
+          3
+        ],
+        "mean_hit_count": 0.6786163522012578,
+        "mean_hit_count_ci": [
+          0.642915944454533,
+          0.7143167599479826
+        ],
+        "sd_hit_count": 0.7263127157020364,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": 0.03759071117561674,
+        "p_value_vs_baseline": 0.0390421605106769,
+        "m1_plus_rate": 0.5320754716981132,
+        "m2_plus_rate": 0.13836477987421383,
+        "m3_plus_rate": 0.008176100628930818,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.6533333333333333,
+            "mean_hit_count_ci": [
+              0.5379535066521097,
+              0.7687131600145569
+            ],
+            "sd_hit_count": 0.720986977845108,
+            "p_value_vs_baseline": 0.8343924212517095,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.6733333333333333,
+            "mean_hit_count_ci": [
+              0.5922617984647062,
+              0.7544048682019605
+            ],
+            "sd_hit_count": 0.7164418251951019,
+            "p_value_vs_baseline": 0.4347658983617611,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.664,
+            "mean_hit_count_ci": [
+              0.5996424702762531,
+              0.728357529723747
+            ],
+            "sd_hit_count": 0.7342370189523272,
+            "p_value_vs_baseline": 0.4841345481828291,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.272206631958813,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "daily539_f4cold_3bet",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "DAILY_539",
+        "supported_lottery_types": [
+          "DAILY_539"
+        ],
+        "n_rows": 4500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 3,
+        "bet_indexes": [
+          1,
+          2,
+          3
+        ],
+        "mean_hit_count": 0.6557777777777778,
+        "mean_hit_count_ci": [
+          0.6345750662581662,
+          0.6769804892973894
+        ],
+        "sd_hit_count": 0.7256873795509373,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": 0.014752136752136713,
+        "p_value_vs_baseline": 0.1726691465531317,
+        "m1_plus_rate": 0.5166666666666667,
+        "m2_plus_rate": 0.12777777777777777,
+        "m3_plus_rate": 0.011333333333333334,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.6,
+            "mean_hit_count_ci": [
+              0.48167847508740935,
+              0.7183215249125906
+            ],
+            "sd_hit_count": 0.7393691004272944,
+            "p_value_vs_baseline": 0.49677130970157884,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.6366666666666667,
+            "mean_hit_count_ci": [
+              0.5541832857711522,
+              0.7191500475621813
+            ],
+            "sd_hit_count": 0.7289185292076352,
+            "p_value_vs_baseline": 0.9175045442448602,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.63,
+            "mean_hit_count_ci": [
+              0.5679523567723991,
+              0.6920476432276009
+            ],
+            "sd_hit_count": 0.7078841713161836,
+            "p_value_vs_baseline": 0.7276310484427522,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.43167286638282926,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "daily539_f4cold_5bet",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "DAILY_539",
+        "supported_lottery_types": [
+          "DAILY_539"
+        ],
+        "n_rows": 7500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 5,
+        "bet_indexes": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "mean_hit_count": 0.6492,
+        "mean_hit_count_ci": [
+          0.6327923029958552,
+          0.6656076970041448
+        ],
+        "sd_hit_count": 0.7249869148244448,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": 0.00817435897435892,
+        "p_value_vs_baseline": 0.32883688167251934,
+        "m1_plus_rate": 0.5134666666666666,
+        "m2_plus_rate": 0.1228,
+        "m3_plus_rate": 0.012666666666666666,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.64,
+            "mean_hit_count_ci": [
+              0.5198456995955442,
+              0.7601543004044559
+            ],
+            "sd_hit_count": 0.7508217720160579,
+            "p_value_vs_baseline": 0.9866517614950752,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.6466666666666666,
+            "mean_hit_count_ci": [
+              0.5633722539928334,
+              0.7299610793404998
+            ],
+            "sd_hit_count": 0.7360857437977061,
+            "p_value_vs_baseline": 0.89440179172905,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.658,
+            "mean_hit_count_ci": [
+              0.592580876562825,
+              0.7234191234371751
+            ],
+            "sd_hit_count": 0.7463484440929719,
+            "p_value_vs_baseline": 0.6110651433623056,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.6394050476965654,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "daily539_markov_cold",
+        "lifecycle": "ONLINE",
+        "lottery_type": "DAILY_539",
+        "supported_lottery_types": [
+          "DAILY_539"
+        ],
+        "n_rows": 1590,
+        "n_distinct_draws": 1550,
+        "n_bet_indexes": 3,
+        "bet_indexes": [
+          1,
+          2,
+          3
+        ],
+        "mean_hit_count": 0.6327044025157232,
+        "mean_hit_count_ci": [
+          0.597201897517592,
+          0.6682069075138545
+        ],
+        "sd_hit_count": 0.7222864512460232,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": -0.008321238509917839,
+        "p_value_vs_baseline": 0.6459575252958614,
+        "m1_plus_rate": 0.49937106918238994,
+        "m2_plus_rate": 0.1220125786163522,
+        "m3_plus_rate": 0.011320754716981131,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.5733333333333334,
+            "mean_hit_count_ci": [
+              0.46192847675876736,
+              0.6847381899078994
+            ],
+            "sd_hit_count": 0.6961481323843527,
+            "p_value_vs_baseline": 0.2336842404841392,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.6533333333333333,
+            "mean_hit_count_ci": [
+              0.5707077700636252,
+              0.7359588966030415
+            ],
+            "sd_hit_count": 0.7301750170716302,
+            "p_value_vs_baseline": 0.770323923826979,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.664,
+            "mean_hit_count_ci": [
+              0.6020760553058234,
+              0.7259239446941766
+            ],
+            "sd_hit_count": 0.7064729294176813,
+            "p_value_vs_baseline": 0.4671249739716145,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.8736313760084152,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "fourier30_markov30_2bet",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "POWER_LOTTO",
+        "supported_lottery_types": [
+          "POWER_LOTTO"
+        ],
+        "n_rows": 1501,
+        "n_distinct_draws": 1501,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.9646902065289806,
+        "mean_hit_count_ci": [
+          0.9228417152125421,
+          1.0065386978454192
+        ],
+        "sd_hit_count": 0.8272219713217642,
+        "baseline_mean_hit_count": 0.9473684210526315,
+        "mean_diff_vs_baseline": 0.017321785476349105,
+        "p_value_vs_baseline": 0.41721543433548075,
+        "m1_plus_rate": 0.6855429713524317,
+        "m2_plus_rate": 0.23584277148567623,
+        "m3_plus_rate": 0.04063957361758828,
+        "exact_hit_rate": 0.0,
+        "special": {
+          "n_rows": 1500,
+          "mean": 0.12466666666666666,
+          "ci": [
+            0.10794943469923281,
+            0.1413838986341005
+          ],
+          "sd": 0.33034056500661385,
+          "baseline": 0.125,
+          "mean_diff_vs_baseline": -0.00033333333333333826,
+          "p_value_vs_baseline": 0.9688260388037419,
+          "tail_oos": {
+            "150": {
+              "n": 150,
+              "mean_hit_count": 0.1,
+              "mean_hit_count_ci": [
+                0.051990883236446905,
+                0.1480091167635531
+              ],
+              "sd_hit_count": 0.3,
+              "p_value_vs_baseline": 0.3074341659273954,
+              "direction": "below"
+            },
+            "300": {
+              "n": 300,
+              "mean_hit_count": 0.14333333333333334,
+              "mean_hit_count_ci": [
+                0.10368115977771544,
+                0.18298550688895124
+              ],
+              "sd_hit_count": 0.3504124553849205,
+              "p_value_vs_baseline": 0.3648316929913417,
+              "direction": "above"
+            },
+            "500": {
+              "n": 500,
+              "mean_hit_count": 0.13,
+              "mean_hit_count_ci": [
+                0.10052224592610538,
+                0.15947775407389464
+              ],
+              "sd_hit_count": 0.33630343441600474,
+              "p_value_vs_baseline": 0.7395510106625869,
+              "direction": "above"
+            }
+          }
+        },
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 1.0666666666666667,
+            "mean_hit_count_ci": [
+              0.9390876585989848,
+              1.1942456747343484
+            ],
+            "sd_hit_count": 0.7972173828734266,
+            "p_value_vs_baseline": 0.06683994706939667,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 1.0166666666666666,
+            "mean_hit_count_ci": [
+              0.9263955618284451,
+              1.1069377715048883
+            ],
+            "sd_hit_count": 0.797739862918288,
+            "p_value_vs_baseline": 0.13242648674781904,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 1.006,
+            "mean_hit_count_ci": [
+              0.9336157942200669,
+              1.078384205779933
+            ],
+            "sd_hit_count": 0.8258111164182763,
+            "p_value_vs_baseline": 0.11238113835373939,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.7301270100870914,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "fourier30_markov30_biglotto",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "BIG_LOTTO",
+        "supported_lottery_types": [
+          "BIG_LOTTO"
+        ],
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.7213333333333334,
+        "mean_hit_count_ci": [
+          0.6838366198528882,
+          0.7588300468137785
+        ],
+        "sd_hit_count": 0.7409531399188181,
+        "baseline_mean_hit_count": 0.7346938775510204,
+        "mean_diff_vs_baseline": -0.013360544217687065,
+        "p_value_vs_baseline": 0.48495240757195124,
+        "m1_plus_rate": 0.5653333333333334,
+        "m2_plus_rate": 0.14,
+        "m3_plus_rate": 0.014,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.7333333333333333,
+            "mean_hit_count_ci": [
+              0.6199235752139616,
+              0.846743091452705
+            ],
+            "sd_hit_count": 0.7086763875156433,
+            "p_value_vs_baseline": 0.9812409702188557,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.73,
+            "mean_hit_count_ci": [
+              0.6481051877578677,
+              0.8118948122421322
+            ],
+            "sd_hit_count": 0.7237172560238333,
+            "p_value_vs_baseline": 0.910556075730039,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.73,
+            "mean_hit_count_ci": [
+              0.6677052032617072,
+              0.7922947967382927
+            ],
+            "sd_hit_count": 0.7107038764492565,
+            "p_value_vs_baseline": 0.8825936012507749,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.7732308011853388,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "fourier_rhythm_3bet",
+        "lifecycle": "ONLINE",
+        "lottery_type": "POWER_LOTTO",
+        "supported_lottery_types": [
+          "POWER_LOTTO"
+        ],
+        "n_rows": 4503,
+        "n_distinct_draws": 1501,
+        "n_bet_indexes": 3,
+        "bet_indexes": [
+          1,
+          2,
+          3
+        ],
+        "mean_hit_count": 0.9749056184765712,
+        "mean_hit_count_ci": [
+          0.9504297358377904,
+          0.999381501115352
+        ],
+        "sd_hit_count": 0.8379946472649675,
+        "baseline_mean_hit_count": 0.9473684210526315,
+        "mean_diff_vs_baseline": 0.027537197423939674,
+        "p_value_vs_baseline": 0.027446658518932864,
+        "m1_plus_rate": 0.6855429713524317,
+        "m2_plus_rate": 0.24206084832334,
+        "m3_plus_rate": 0.045081057073062404,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.9,
+            "mean_hit_count_ci": [
+              0.7645244059331688,
+              1.0354755940668312
+            ],
+            "sd_hit_count": 0.8465616732800196,
+            "p_value_vs_baseline": 0.4931594067687899,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.9166666666666666,
+            "mean_hit_count_ci": [
+              0.8245236507891889,
+              1.0088096825441444
+            ],
+            "sd_hit_count": 0.8142822333537405,
+            "p_value_vs_baseline": 0.5137216917304428,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.94,
+            "mean_hit_count_ci": [
+              0.8666439128904196,
+              1.0133560871095801
+            ],
+            "sd_hit_count": 0.8368990381163071,
+            "p_value_vs_baseline": 0.8439268489071392,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.2587845414898435,
+        "bonferroni_q_value": 0.9606330481626503
+      },
+      {
+        "strategy_id": "markov_1bet_539",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "DAILY_539",
+        "supported_lottery_types": [
+          "DAILY_539"
+        ],
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.634,
+        "mean_hit_count_ci": [
+          0.5975527260657737,
+          0.6704472739342263
+        ],
+        "sd_hit_count": 0.7202157084281533,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": -0.007025641025641072,
+        "p_value_vs_baseline": 0.7055746223467436,
+        "m1_plus_rate": 0.502,
+        "m2_plus_rate": 0.12066666666666667,
+        "m3_plus_rate": 0.011333333333333334,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.5733333333333334,
+            "mean_hit_count_ci": [
+              0.46192847675876736,
+              0.6847381899078994
+            ],
+            "sd_hit_count": 0.6961481323843527,
+            "p_value_vs_baseline": 0.2336842404841392,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.6533333333333333,
+            "mean_hit_count_ci": [
+              0.5707077700636252,
+              0.7359588966030415
+            ],
+            "sd_hit_count": 0.7301750170716302,
+            "p_value_vs_baseline": 0.770323923826979,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.664,
+            "mean_hit_count_ci": [
+              0.6020760553058234,
+              0.7259239446941766
+            ],
+            "sd_hit_count": 0.7064729294176813,
+            "p_value_vs_baseline": 0.4671249739716145,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.8736313760084152,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "markov_2bet_biglotto",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "BIG_LOTTO",
+        "supported_lottery_types": [
+          "BIG_LOTTO"
+        ],
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.728,
+        "mean_hit_count_ci": [
+          0.6901519051084231,
+          0.7658480948915769
+        ],
+        "sd_hit_count": 0.7478966060448017,
+        "baseline_mean_hit_count": 0.7346938775510204,
+        "mean_diff_vs_baseline": -0.006693877551020466,
+        "p_value_vs_baseline": 0.7288598993560789,
+        "m1_plus_rate": 0.5666666666666667,
+        "m2_plus_rate": 0.144,
+        "m3_plus_rate": 0.015333333333333332,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.6866666666666666,
+            "mean_hit_count_ci": [
+              0.5725515456280951,
+              0.8007817877052382
+            ],
+            "sd_hit_count": 0.7130840685984289,
+            "p_value_vs_baseline": 0.4094381170727822,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.7066666666666667,
+            "mean_hit_count_ci": [
+              0.623464543211817,
+              0.7898687901215163
+            ],
+            "sd_hit_count": 0.7352701695446526,
+            "p_value_vs_baseline": 0.5091078938738015,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.692,
+            "mean_hit_count_ci": [
+              0.6277600463089774,
+              0.7562399536910225
+            ],
+            "sd_hit_count": 0.7328956269483398,
+            "p_value_vs_baseline": 0.19271402342744168,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.8736313760084152,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "markov_single_biglotto",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "BIG_LOTTO",
+        "supported_lottery_types": [
+          "BIG_LOTTO"
+        ],
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.728,
+        "mean_hit_count_ci": [
+          0.6901519051084231,
+          0.7658480948915769
+        ],
+        "sd_hit_count": 0.7478966060448017,
+        "baseline_mean_hit_count": 0.7346938775510204,
+        "mean_diff_vs_baseline": -0.006693877551020466,
+        "p_value_vs_baseline": 0.7288598993560789,
+        "m1_plus_rate": 0.5666666666666667,
+        "m2_plus_rate": 0.144,
+        "m3_plus_rate": 0.015333333333333332,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.6866666666666666,
+            "mean_hit_count_ci": [
+              0.5725515456280951,
+              0.8007817877052382
+            ],
+            "sd_hit_count": 0.7130840685984289,
+            "p_value_vs_baseline": 0.4094381170727822,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.7066666666666667,
+            "mean_hit_count_ci": [
+              0.623464543211817,
+              0.7898687901215163
+            ],
+            "sd_hit_count": 0.7352701695446526,
+            "p_value_vs_baseline": 0.5091078938738015,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.692,
+            "mean_hit_count_ci": [
+              0.6277600463089774,
+              0.7562399536910225
+            ],
+            "sd_hit_count": 0.7328956269483398,
+            "p_value_vs_baseline": 0.19271402342744168,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.8736313760084152,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "midfreq_acb_2bet",
+        "lifecycle": "RETIRED",
+        "lottery_type": "DAILY_539",
+        "supported_lottery_types": [
+          "DAILY_539"
+        ],
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.6693333333333333,
+        "mean_hit_count_ci": [
+          0.6322378119868975,
+          0.7064288546797691
+        ],
+        "sd_hit_count": 0.7330253898892058,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": 0.028307692307692256,
+        "p_value_vs_baseline": 0.1347438958828743,
+        "m1_plus_rate": 0.524,
+        "m2_plus_rate": 0.13266666666666665,
+        "m3_plus_rate": 0.012666666666666666,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.76,
+            "mean_hit_count_ci": [
+              0.6378725906502487,
+              0.8821274093497513
+            ],
+            "sd_hit_count": 0.7631513611335565,
+            "p_value_vs_baseline": 0.05621538384300442,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.7566666666666667,
+            "mean_hit_count_ci": [
+              0.6721791417288822,
+              0.8411541916044513
+            ],
+            "sd_hit_count": 0.7466294633588709,
+            "p_value_vs_baseline": 0.007303677010809312,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.71,
+            "mean_hit_count_ci": [
+              0.6457143764181855,
+              0.7742856235818144
+            ],
+            "sd_hit_count": 0.7334166619323561,
+            "p_value_vs_baseline": 0.03547312240167484,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.3627720273769693,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "midfreq_fourier_2bet",
+        "lifecycle": "RETIRED",
+        "lottery_type": "DAILY_539",
+        "supported_lottery_types": [
+          "DAILY_539"
+        ],
+        "n_rows": 3000,
+        "n_distinct_draws": 2543,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.821,
+        "mean_hit_count_ci": [
+          0.7924260448338138,
+          0.8495739551661861
+        ],
+        "sd_hit_count": 0.7985146627749967,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": 0.17997435897435887,
+        "p_value_vs_baseline": 5.1884185373427e-35,
+        "m1_plus_rate": 0.6066666666666667,
+        "m2_plus_rate": 0.184,
+        "m3_plus_rate": 0.029666666666666668,
+        "exact_hit_rate": 0.0,
+        "special": {
+          "n_rows": 1500,
+          "mean": 0.11866666666666667,
+          "ci": [
+            0.10230087828696968,
+            0.13503245504636366
+          ],
+          "sd": 0.3233958702409307,
+          "baseline": 0.125,
+          "mean_diff_vs_baseline": -0.00633333333333333,
+          "p_value_vs_baseline": 0.44816433744056416,
+          "tail_oos": {
+            "150": {
+              "n": 150,
+              "mean_hit_count": 0.10666666666666667,
+              "mean_hit_count_ci": [
+                0.057267048399830864,
+                0.1560662849335025
+              ],
+              "sd_hit_count": 0.30868898407440604,
+              "p_value_vs_baseline": 0.4669885078370437,
+              "direction": "below"
+            },
+            "300": {
+              "n": 300,
+              "mean_hit_count": 0.10333333333333333,
+              "mean_hit_count_ci": [
+                0.06888857073313516,
+                0.13777809593353152
+              ],
+              "sd_hit_count": 0.30439375084839626,
+              "p_value_vs_baseline": 0.2176245745435643,
+              "direction": "below"
+            },
+            "500": {
+              "n": 500,
+              "mean_hit_count": 0.124,
+              "mean_hit_count_ci": [
+                0.09511143399408414,
+                0.15288856600591585
+              ],
+              "sd_hit_count": 0.3295815528818323,
+              "p_value_vs_baseline": 0.9459084917120603,
+              "direction": "below"
+            }
+          }
+        },
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.8666666666666667,
+            "mean_hit_count_ci": [
+              0.7351341903789248,
+              0.9981991429544086
+            ],
+            "sd_hit_count": 0.8219218670625302,
+            "p_value_vs_baseline": 0.0007730325127715696,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.9566666666666667,
+            "mean_hit_count_ci": [
+              0.860551426674463,
+              1.0527819066588702
+            ],
+            "sd_hit_count": 0.8493853987181293,
+            "p_value_vs_baseline": 1.222656984141232e-10,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.974,
+            "mean_hit_count_ci": [
+              0.8969196224574053,
+              1.0510803775425945
+            ],
+            "sd_hit_count": 0.8793884238492112,
+            "p_value_vs_baseline": 2.524061220195455e-17,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 1.815946488069945e-33,
+        "bonferroni_q_value": 1.815946488069945e-33
+      },
+      {
+        "strategy_id": "midfreq_fourier_mk_3bet",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "POWER_LOTTO",
+        "supported_lottery_types": [
+          "POWER_LOTTO"
+        ],
+        "n_rows": 4500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 3,
+        "bet_indexes": [
+          1,
+          2,
+          3
+        ],
+        "mean_hit_count": 0.9895555555555555,
+        "mean_hit_count_ci": [
+          0.9647847707371815,
+          1.0143263403739295
+        ],
+        "sd_hit_count": 0.8478088242458531,
+        "baseline_mean_hit_count": 0.9473684210526315,
+        "mean_diff_vs_baseline": 0.042187134502923995,
+        "p_value_vs_baseline": 0.0008437903535141857,
+        "m1_plus_rate": 0.6868888888888889,
+        "m2_plus_rate": 0.25422222222222224,
+        "m3_plus_rate": 0.04533333333333334,
+        "exact_hit_rate": 0.0,
+        "special": {
+          "n_rows": 1500,
+          "mean": 0.11866666666666667,
+          "ci": [
+            0.10230087828696968,
+            0.13503245504636366
+          ],
+          "sd": 0.3233958702409307,
+          "baseline": 0.125,
+          "mean_diff_vs_baseline": -0.00633333333333333,
+          "p_value_vs_baseline": 0.44816433744056416,
+          "tail_oos": {
+            "150": {
+              "n": 150,
+              "mean_hit_count": 0.10666666666666667,
+              "mean_hit_count_ci": [
+                0.057267048399830864,
+                0.1560662849335025
+              ],
+              "sd_hit_count": 0.30868898407440604,
+              "p_value_vs_baseline": 0.4669885078370437,
+              "direction": "below"
+            },
+            "300": {
+              "n": 300,
+              "mean_hit_count": 0.10333333333333333,
+              "mean_hit_count_ci": [
+                0.06888857073313516,
+                0.13777809593353152
+              ],
+              "sd_hit_count": 0.30439375084839626,
+              "p_value_vs_baseline": 0.2176245745435643,
+              "direction": "below"
+            },
+            "500": {
+              "n": 500,
+              "mean_hit_count": 0.124,
+              "mean_hit_count_ci": [
+                0.09511143399408414,
+                0.15288856600591585
+              ],
+              "sd_hit_count": 0.3295815528818323,
+              "p_value_vs_baseline": 0.9459084917120603,
+              "direction": "below"
+            }
+          }
+        },
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.9933333333333333,
+            "mean_hit_count_ci": [
+              0.8496066007114708,
+              1.1370600659551957
+            ],
+            "sd_hit_count": 0.8981214963590518,
+            "p_value_vs_baseline": 0.5307827872074731,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.9666666666666667,
+            "mean_hit_count_ci": [
+              0.8693970886932992,
+              1.0639362446400342
+            ],
+            "sd_hit_count": 0.8595864638818418,
+            "p_value_vs_baseline": 0.6973826164789647,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.97,
+            "mean_hit_count_ci": [
+              0.8959818362151967,
+              1.0440181637848032
+            ],
+            "sd_hit_count": 0.8444524853418338,
+            "p_value_vs_baseline": 0.548990916515727,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.01476633118649825,
+        "bonferroni_q_value": 0.0295326623729965
+      },
+      {
+        "strategy_id": "p0b_539_3bet_f_cold_fmid",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "DAILY_539",
+        "supported_lottery_types": [
+          "DAILY_539"
+        ],
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.6773333333333333,
+        "mean_hit_count_ci": [
+          0.6403336674776372,
+          0.7143329991890295
+        ],
+        "sd_hit_count": 0.7311312391690625,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": 0.03630769230769226,
+        "p_value_vs_baseline": 0.0544413263917626,
+        "m1_plus_rate": 0.528,
+        "m2_plus_rate": 0.14066666666666666,
+        "m3_plus_rate": 0.008666666666666666,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.6533333333333333,
+            "mean_hit_count_ci": [
+              0.5379535066521097,
+              0.7687131600145569
+            ],
+            "sd_hit_count": 0.720986977845108,
+            "p_value_vs_baseline": 0.8343924212517095,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.69,
+            "mean_hit_count_ci": [
+              0.6088802184430392,
+              0.7711197815569607
+            ],
+            "sd_hit_count": 0.7168681887209112,
+            "p_value_vs_baseline": 0.2366954388187092,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.674,
+            "mean_hit_count_ci": [
+              0.6096054735161394,
+              0.7383945264838607
+            ],
+            "sd_hit_count": 0.7346591046192785,
+            "p_value_vs_baseline": 0.315554911749093,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.272206631958813,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "p0c_539_3bet_f_cold_x2",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "DAILY_539",
+        "supported_lottery_types": [
+          "DAILY_539"
+        ],
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.6773333333333333,
+        "mean_hit_count_ci": [
+          0.6403336674776372,
+          0.7143329991890295
+        ],
+        "sd_hit_count": 0.7311312391690625,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": 0.03630769230769226,
+        "p_value_vs_baseline": 0.0544413263917626,
+        "m1_plus_rate": 0.528,
+        "m2_plus_rate": 0.14066666666666666,
+        "m3_plus_rate": 0.008666666666666666,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.6533333333333333,
+            "mean_hit_count_ci": [
+              0.5379535066521097,
+              0.7687131600145569
+            ],
+            "sd_hit_count": 0.720986977845108,
+            "p_value_vs_baseline": 0.8343924212517095,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.69,
+            "mean_hit_count_ci": [
+              0.6088802184430392,
+              0.7711197815569607
+            ],
+            "sd_hit_count": 0.7168681887209112,
+            "p_value_vs_baseline": 0.2366954388187092,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.674,
+            "mean_hit_count_ci": [
+              0.6096054735161394,
+              0.7383945264838607
+            ],
+            "sd_hit_count": 0.7346591046192785,
+            "p_value_vs_baseline": 0.315554911749093,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.272206631958813,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "power_fourier_rhythm_2bet",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "POWER_LOTTO",
+        "supported_lottery_types": [
+          "POWER_LOTTO"
+        ],
+        "n_rows": 3000,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 2,
+        "bet_indexes": [
+          1,
+          2
+        ],
+        "mean_hit_count": 0.9633333333333334,
+        "mean_hit_count_ci": [
+          0.9332382108623607,
+          0.993428455804306
+        ],
+        "sd_hit_count": 0.8410245075039265,
+        "baseline_mean_hit_count": 0.9473684210526315,
+        "mean_diff_vs_baseline": 0.01596491228070185,
+        "p_value_vs_baseline": 0.2984676533252953,
+        "m1_plus_rate": 0.6773333333333333,
+        "m2_plus_rate": 0.23833333333333334,
+        "m3_plus_rate": 0.04533333333333334,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.9,
+            "mean_hit_count_ci": [
+              0.7645244059331688,
+              1.0354755940668312
+            ],
+            "sd_hit_count": 0.8465616732800196,
+            "p_value_vs_baseline": 0.4931594067687899,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.8833333333333333,
+            "mean_hit_count_ci": [
+              0.7921214707722873,
+              0.9745451958943793
+            ],
+            "sd_hit_count": 0.8060534859562498,
+            "p_value_vs_baseline": 0.16882522175133252,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.936,
+            "mean_hit_count_ci": [
+              0.8630901827752456,
+              1.0089098172247544
+            ],
+            "sd_hit_count": 0.8318076700776448,
+            "p_value_vs_baseline": 0.7599044612712738,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.6144922274344315,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "power_orthogonal_5bet",
+        "lifecycle": "ONLINE",
+        "lottery_type": "POWER_LOTTO",
+        "supported_lottery_types": [
+          "POWER_LOTTO"
+        ],
+        "n_rows": 7550,
+        "n_distinct_draws": 1550,
+        "n_bet_indexes": 5,
+        "bet_indexes": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "mean_hit_count": 0.9633112582781457,
+        "mean_hit_count_ci": [
+          0.9445180262950698,
+          0.9821044902612216
+        ],
+        "sd_hit_count": 0.8331570229990196,
+        "baseline_mean_hit_count": 0.9473684210526315,
+        "mean_diff_vs_baseline": 0.01594283722551415,
+        "p_value_vs_baseline": 0.09637378150060102,
+        "m1_plus_rate": 0.6813245033112583,
+        "m2_plus_rate": 0.23682119205298013,
+        "m3_plus_rate": 0.04291390728476821,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.9333333333333333,
+            "mean_hit_count_ci": [
+              0.7992299466089361,
+              1.0674367200577306
+            ],
+            "sd_hit_count": 0.8379870059984357,
+            "p_value_vs_baseline": 0.8374726628868918,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.9433333333333334,
+            "mean_hit_count_ci": [
+              0.8429604100713575,
+              1.0437062565953092
+            ],
+            "sd_hit_count": 0.8870112112532113,
+            "p_value_vs_baseline": 0.9371977247249469,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.904,
+            "mean_hit_count_ci": [
+              0.8315722895649902,
+              0.9764277104350099
+            ],
+            "sd_hit_count": 0.8263074488348753,
+            "p_value_vs_baseline": 0.24055869853746686,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.28109019604341967,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "power_precision_3bet",
+        "lifecycle": "ONLINE",
+        "lottery_type": "POWER_LOTTO",
+        "supported_lottery_types": [
+          "POWER_LOTTO"
+        ],
+        "n_rows": 4550,
+        "n_distinct_draws": 1550,
+        "n_bet_indexes": 3,
+        "bet_indexes": [
+          1,
+          2,
+          3
+        ],
+        "mean_hit_count": 0.958021978021978,
+        "mean_hit_count_ci": [
+          0.9338571428348403,
+          0.9821868132091156
+        ],
+        "sd_hit_count": 0.831651633243996,
+        "baseline_mean_hit_count": 0.9473684210526315,
+        "mean_diff_vs_baseline": 0.010653556969346445,
+        "p_value_vs_baseline": 0.38753855355760625,
+        "m1_plus_rate": 0.6784615384615384,
+        "m2_plus_rate": 0.23582417582417584,
+        "m3_plus_rate": 0.04131868131868132,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.94,
+            "mean_hit_count_ci": [
+              0.8014342580457026,
+              1.0785657419542973
+            ],
+            "sd_hit_count": 0.8658714300248815,
+            "p_value_vs_baseline": 0.9169917946342356,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.9233333333333333,
+            "mean_hit_count_ci": [
+              0.8288303034713053,
+              1.0178363631953613
+            ],
+            "sd_hit_count": 0.8351380458077309,
+            "p_value_vs_baseline": 0.6181454942343545,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.938,
+            "mean_hit_count_ci": [
+              0.8647615193437148,
+              1.011238480656285
+            ],
+            "sd_hit_count": 0.8355572990525545,
+            "p_value_vs_baseline": 0.8020367623007054,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.7138868091850641,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "pp3_freqort_4bet",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "POWER_LOTTO",
+        "supported_lottery_types": [
+          "POWER_LOTTO"
+        ],
+        "n_rows": 6000,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 4,
+        "bet_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "mean_hit_count": 0.971,
+        "mean_hit_count_ci": [
+          0.949711962863577,
+          0.992288037136423
+        ],
+        "sd_hit_count": 0.8413237585297747,
+        "baseline_mean_hit_count": 0.9473684210526315,
+        "mean_diff_vs_baseline": 0.023631578947368448,
+        "p_value_vs_baseline": 0.029575376170267825,
+        "m1_plus_rate": 0.6811666666666667,
+        "m2_plus_rate": 0.242,
+        "m3_plus_rate": 0.04566666666666667,
+        "exact_hit_rate": 0.0,
+        "special": {
+          "n_rows": 1500,
+          "mean": 0.11866666666666667,
+          "ci": [
+            0.10230087828696968,
+            0.13503245504636366
+          ],
+          "sd": 0.3233958702409307,
+          "baseline": 0.125,
+          "mean_diff_vs_baseline": -0.00633333333333333,
+          "p_value_vs_baseline": 0.44816433744056416,
+          "tail_oos": {
+            "150": {
+              "n": 150,
+              "mean_hit_count": 0.10666666666666667,
+              "mean_hit_count_ci": [
+                0.057267048399830864,
+                0.1560662849335025
+              ],
+              "sd_hit_count": 0.30868898407440604,
+              "p_value_vs_baseline": 0.4669885078370437,
+              "direction": "below"
+            },
+            "300": {
+              "n": 300,
+              "mean_hit_count": 0.10333333333333333,
+              "mean_hit_count_ci": [
+                0.06888857073313516,
+                0.13777809593353152
+              ],
+              "sd_hit_count": 0.30439375084839626,
+              "p_value_vs_baseline": 0.2176245745435643,
+              "direction": "below"
+            },
+            "500": {
+              "n": 500,
+              "mean_hit_count": 0.124,
+              "mean_hit_count_ci": [
+                0.09511143399408414,
+                0.15288856600591585
+              ],
+              "sd_hit_count": 0.3295815528818323,
+              "p_value_vs_baseline": 0.9459084917120603,
+              "direction": "below"
+            }
+          }
+        },
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.9333333333333333,
+            "mean_hit_count_ci": [
+              0.8018008570455915,
+              1.0648658096210752
+            ],
+            "sd_hit_count": 0.8219218670625302,
+            "p_value_vs_baseline": 0.8343415350583345,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.9633333333333334,
+            "mean_hit_count_ci": [
+              0.8654230089279444,
+              1.0612436577387223
+            ],
+            "sd_hit_count": 0.8652488402509162,
+            "p_value_vs_baseline": 0.749283085677214,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.906,
+            "mean_hit_count_ci": [
+              0.8345129366247545,
+              0.9774870633752456
+            ],
+            "sd_hit_count": 0.815575870167822,
+            "p_value_vs_baseline": 0.2567107339575052,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.2587845414898435,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "ts3_regime_3bet",
+        "lifecycle": "ONLINE",
+        "lottery_type": "BIG_LOTTO",
+        "supported_lottery_types": [
+          "BIG_LOTTO"
+        ],
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.722,
+        "mean_hit_count_ci": [
+          0.6833473546338095,
+          0.7606526453661905
+        ],
+        "sd_hit_count": 0.7637949113909221,
+        "baseline_mean_hit_count": 0.7346938775510204,
+        "mean_diff_vs_baseline": -0.012693877551020472,
+        "p_value_vs_baseline": 0.5197895385155129,
+        "m1_plus_rate": 0.5586666666666666,
+        "m2_plus_rate": 0.13733333333333334,
+        "m3_plus_rate": 0.024,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.7666666666666667,
+            "mean_hit_count_ci": [
+              0.6380878948796934,
+              0.89524543845364
+            ],
+            "sd_hit_count": 0.8034647195462633,
+            "p_value_vs_baseline": 0.6259957133052421,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.7133333333333334,
+            "mean_hit_count_ci": [
+              0.6293245764393155,
+              0.7973420902273513
+            ],
+            "sd_hit_count": 0.742398515324186,
+            "p_value_vs_baseline": 0.6182362531990893,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.706,
+            "mean_hit_count_ci": [
+              0.6395017984502739,
+              0.772498201549726
+            ],
+            "sd_hit_count": 0.758659343842808,
+            "p_value_vs_baseline": 0.3977080606812803,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.7909840803496936,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "zonal_entropy_2bet",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "POWER_LOTTO",
+        "supported_lottery_types": [
+          "POWER_LOTTO"
+        ],
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.946,
+        "mean_hit_count_ci": [
+          0.9047915066953333,
+          0.9872084933046666
+        ],
+        "sd_hit_count": 0.8142996991280299,
+        "baseline_mean_hit_count": 0.9473684210526315,
+        "mean_diff_vs_baseline": -0.0013684210526315743,
+        "p_value_vs_baseline": 0.9481063003415834,
+        "m1_plus_rate": 0.678,
+        "m2_plus_rate": 0.23066666666666666,
+        "m3_plus_rate": 0.03666666666666667,
+        "exact_hit_rate": 0.0,
+        "special": {
+          "n_rows": 1500,
+          "mean": 0.114,
+          "ci": [
+            0.09791682645898953,
+            0.13008317354101048
+          ],
+          "sd": 0.317811264746862,
+          "baseline": 0.125,
+          "mean_diff_vs_baseline": -0.010999999999999996,
+          "p_value_vs_baseline": 0.1800806283470952,
+          "tail_oos": {
+            "150": {
+              "n": 150,
+              "mean_hit_count": 0.13333333333333333,
+              "mean_hit_count_ci": [
+                0.0789334615093974,
+                0.18773320515726927
+              ],
+              "sd_hit_count": 0.339934634239519,
+              "p_value_vs_baseline": 0.7639938761058095,
+              "direction": "above"
+            },
+            "300": {
+              "n": 300,
+              "mean_hit_count": 0.13333333333333333,
+              "mean_hit_count_ci": [
+                0.09486681507094924,
+                0.17179985159571742
+              ],
+              "sd_hit_count": 0.339934634239519,
+              "p_value_vs_baseline": 0.6711254583898127,
+              "direction": "above"
+            },
+            "500": {
+              "n": 500,
+              "mean_hit_count": 0.122,
+              "mean_hit_count_ci": [
+                0.0933126612235477,
+                0.1506873387764523
+              ],
+              "sd_hit_count": 0.32728580781940425,
+              "p_value_vs_baseline": 0.8375997002384876,
+              "direction": "below"
+            }
+          }
+        },
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 1.0333333333333334,
+            "mean_hit_count_ci": [
+              0.9021257627940753,
+              1.1645409038725916
+            ],
+            "sd_hit_count": 0.8198915917499229,
+            "p_value_vs_baseline": 0.1990949944234434,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.9833333333333333,
+            "mean_hit_count_ci": [
+              0.8911903174558555,
+              1.075476349210811
+            ],
+            "sd_hit_count": 0.8142822333537405,
+            "p_value_vs_baseline": 0.444268147764189,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.962,
+            "mean_hit_count_ci": [
+              0.8888454896768843,
+              1.0351545103231157
+            ],
+            "sd_hit_count": 0.8345993050560251,
+            "p_value_vs_baseline": 0.695050136391945,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.9735029280686833,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "strategy_id": "zone_gap_3bet_539",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "lottery_type": "DAILY_539",
+        "supported_lottery_types": [
+          "DAILY_539"
+        ],
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "n_bet_indexes": 1,
+        "bet_indexes": [
+          1
+        ],
+        "mean_hit_count": 0.6286666666666667,
+        "mean_hit_count_ci": [
+          0.593895058522085,
+          0.6634382748112484
+        ],
+        "sd_hit_count": 0.6871037443905801,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": -0.012358974358974373,
+        "p_value_vs_baseline": 0.4860307893164987,
+        "m1_plus_rate": 0.5166666666666667,
+        "m2_plus_rate": 0.10466666666666667,
+        "m3_plus_rate": 0.007333333333333333,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.6933333333333334,
+            "mean_hit_count_ci": [
+              0.5810127213684319,
+              0.8056539452982349
+            ],
+            "sd_hit_count": 0.7018705167067657,
+            "p_value_vs_baseline": 0.361371443681932,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.64,
+            "mean_hit_count_ci": [
+              0.5629413101637628,
+              0.7170586898362372
+            ],
+            "sd_hit_count": 0.6809796864322264,
+            "p_value_vs_baseline": 0.9791880554440312,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.616,
+            "mean_hit_count_ci": [
+              0.5567750901083847,
+              0.6752249098916153
+            ],
+            "sd_hit_count": 0.6756803978213368,
+            "p_value_vs_baseline": 0.4075640823982533,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.7732308011853388,
+        "bonferroni_q_value": 1.0
+      }
+    ],
+    "bet_index_summary": [
+      {
+        "lottery_type": "BIG_LOTTO",
+        "bet_index": 1,
+        "n_rows": 16600,
+        "n_distinct_draws": 1552,
+        "mean_hit_count": 0.7309036144578314,
+        "mean_hit_count_ci": [
+          0.7193804628926362,
+          0.7424267660230265
+        ],
+        "sd_hit_count": 0.7574905640107004,
+        "baseline_mean_hit_count": 0.7346938775510204,
+        "mean_diff_vs_baseline": -0.0037902630931890835,
+        "p_value_vs_baseline": 0.5191326782670956,
+        "m1_plus_rate": 0.565,
+        "m2_plus_rate": 0.14487951807228916,
+        "m3_plus_rate": 0.019397590361445782,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.72,
+            "mean_hit_count_ci": [
+              0.5931546734952429,
+              0.8468453265047571
+            ],
+            "sd_hit_count": 0.792632743877432,
+            "p_value_vs_baseline": 0.8203895254216863,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.7333333333333333,
+            "mean_hit_count_ci": [
+              0.6455189103043575,
+              0.8211477563623091
+            ],
+            "sd_hit_count": 0.7760297817881877,
+            "p_value_vs_baseline": 0.975774752672029,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.806,
+            "mean_hit_count_ci": [
+              0.7339136010914686,
+              0.8780863989085315
+            ],
+            "sd_hit_count": 0.8224135212896247,
+            "p_value_vs_baseline": 0.0525319121778051,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.7267857495739338,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "lottery_type": "BIG_LOTTO",
+        "bet_index": 2,
+        "n_rows": 3040,
+        "n_distinct_draws": 1520,
+        "mean_hit_count": 0.7638157894736842,
+        "mean_hit_count_ci": [
+          0.736081973248326,
+          0.7915496056990424
+        ],
+        "sd_hit_count": 0.780186325763652,
+        "baseline_mean_hit_count": 0.7346938775510204,
+        "mean_diff_vs_baseline": 0.02912191192266378,
+        "p_value_vs_baseline": 0.03958423325264099,
+        "m1_plus_rate": 0.5773026315789473,
+        "m2_plus_rate": 0.15986842105263158,
+        "m3_plus_rate": 0.025657894736842105,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.6733333333333333,
+            "mean_hit_count_ci": [
+              0.5572012940926743,
+              0.7894653725739924
+            ],
+            "sd_hit_count": 0.7256874135757229,
+            "p_value_vs_baseline": 0.3003963599952104,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.7,
+            "mean_hit_count_ci": [
+              0.6165895165279872,
+              0.7834104834720127
+            ],
+            "sd_hit_count": 0.7371114795831993,
+            "p_value_vs_baseline": 0.41494051741745575,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.734,
+            "mean_hit_count_ci": [
+              0.6661476433784643,
+              0.8018523566215356
+            ],
+            "sd_hit_count": 0.7741085195242331,
+            "p_value_vs_baseline": 0.9840089501822623,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.13854481638424346,
+        "bonferroni_q_value": 0.5541792655369738
+      },
+      {
+        "lottery_type": "BIG_LOTTO",
+        "bet_index": 3,
+        "n_rows": 3000,
+        "n_distinct_draws": 1500,
+        "mean_hit_count": 0.7356666666666667,
+        "mean_hit_count_ci": [
+          0.7082786786515198,
+          0.7630546546818135
+        ],
+        "sd_hit_count": 0.7653721680042693,
+        "baseline_mean_hit_count": 0.7346938775510204,
+        "mean_diff_vs_baseline": 0.0009727891156462443,
+        "p_value_vs_baseline": 0.9444996080655452,
+        "m1_plus_rate": 0.563,
+        "m2_plus_rate": 0.15133333333333332,
+        "m3_plus_rate": 0.019666666666666666,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.7066666666666667,
+            "mean_hit_count_ci": [
+              0.5934377053716855,
+              0.8198956279616478
+            ],
+            "sd_hit_count": 0.7075466219424853,
+            "p_value_vs_baseline": 0.6275743733174792,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.7633333333333333,
+            "mean_hit_count_ci": [
+              0.6786036606627344,
+              0.8480630060039323
+            ],
+            "sd_hit_count": 0.7487693607216814,
+            "p_value_vs_baseline": 0.507659199750127,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.754,
+            "mean_hit_count_ci": [
+              0.6862473589883965,
+              0.8217526410116035
+            ],
+            "sd_hit_count": 0.7729708920780911,
+            "p_value_vs_baseline": 0.5765084991202367,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.9467989225617204,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "lottery_type": "BIG_LOTTO",
+        "bet_index": 4,
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "mean_hit_count": 0.716,
+        "mean_hit_count_ci": [
+          0.6775257300357589,
+          0.754474269964241
+        ],
+        "sd_hit_count": 0.7602701274327873,
+        "baseline_mean_hit_count": 0.7346938775510204,
+        "mean_diff_vs_baseline": -0.018693877551020477,
+        "p_value_vs_baseline": 0.3409411753688941,
+        "m1_plus_rate": 0.5513333333333333,
+        "m2_plus_rate": 0.144,
+        "m3_plus_rate": 0.018666666666666668,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.7933333333333333,
+            "mean_hit_count_ci": [
+              0.6745845061833146,
+              0.9120821604833521
+            ],
+            "sd_hit_count": 0.7420392322662073,
+            "p_value_vs_baseline": 0.3331185774027654,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.72,
+            "mean_hit_count_ci": [
+              0.6382747505178875,
+              0.8017252494821124
+            ],
+            "sd_hit_count": 0.7222188034107115,
+            "p_value_vs_baseline": 0.7245429549738039,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.744,
+            "mean_hit_count_ci": [
+              0.6775653734868445,
+              0.8104346265131555
+            ],
+            "sd_hit_count": 0.7579340340689287,
+            "p_value_vs_baseline": 0.7836615437462631,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.5966470568955647,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "bet_index": 1,
+        "n_rows": 22600,
+        "n_distinct_draws": 1550,
+        "mean_hit_count": 0.662212389380531,
+        "mean_hit_count_ci": [
+          0.6528215983253622,
+          0.6716031804356997
+        ],
+        "sd_hit_count": 0.7202915271570886,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": 0.021186748354889873,
+        "p_value_vs_baseline": 9.783072127617287e-06,
+        "m1_plus_rate": 0.5250442477876106,
+        "m2_plus_rate": 0.1268141592920354,
+        "m3_plus_rate": 0.010309734513274335,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.6933333333333334,
+            "mean_hit_count_ci": [
+              0.5722354476793158,
+              0.8144312189873509
+            ],
+            "sd_hit_count": 0.7567180599286779,
+            "p_value_vs_baseline": 0.3972193891398403,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.58,
+            "mean_hit_count_ci": [
+              0.5013079952030771,
+              0.6586920047969228
+            ],
+            "sd_hit_count": 0.6954135460285484,
+            "p_value_vs_baseline": 0.1285230767150676,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.662,
+            "mean_hit_count_ci": [
+              0.5976035645827725,
+              0.7263964354172275
+            ],
+            "sd_hit_count": 0.734680883105039,
+            "p_value_vs_baseline": 0.5232304726917334,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 6.848150489332101e-05,
+        "bonferroni_q_value": 0.00013696300978664202
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "bet_index": 2,
+        "n_rows": 4540,
+        "n_distinct_draws": 1520,
+        "mean_hit_count": 0.6403083700440528,
+        "mean_hit_count_ci": [
+          0.6192401038063877,
+          0.661376636281718
+        ],
+        "sd_hit_count": 0.7242835695008448,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": -0.0007172709815882472,
+        "p_value_vs_baseline": 0.9467989225617204,
+        "m1_plus_rate": 0.505726872246696,
+        "m2_plus_rate": 0.1222466960352423,
+        "m3_plus_rate": 0.012114537444933921,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.5133333333333333,
+            "mean_hit_count_ci": [
+              0.4108861049513667,
+              0.6157805617152999
+            ],
+            "sd_hit_count": 0.6401735875699827,
+            "p_value_vs_baseline": 0.014568201583512966,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.6,
+            "mean_hit_count_ci": [
+              0.5184001922640961,
+              0.6815998077359039
+            ],
+            "sd_hit_count": 0.7211102550927979,
+            "p_value_vs_baseline": 0.32442565414137353,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.578,
+            "mean_hit_count_ci": [
+              0.5157782584125307,
+              0.6402217415874693
+            ],
+            "sd_hit_count": 0.7098704107088842,
+            "p_value_vs_baseline": 0.04711259991567713,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.9467989225617204,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "bet_index": 3,
+        "n_rows": 4540,
+        "n_distinct_draws": 1520,
+        "mean_hit_count": 0.6601321585903084,
+        "mean_hit_count_ci": [
+          0.6390773412771076,
+          0.6811869759035092
+        ],
+        "sd_hit_count": 0.7238212231973079,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": 0.019106517564667302,
+        "p_value_vs_baseline": 0.07530545587818793,
+        "m1_plus_rate": 0.5229074889867842,
+        "m2_plus_rate": 0.12466960352422908,
+        "m3_plus_rate": 0.012555066079295154,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.6666666666666666,
+            "mean_hit_count_ci": [
+              0.5517613306592456,
+              0.7815720026740877
+            ],
+            "sd_hit_count": 0.7180219742846006,
+            "p_value_vs_baseline": 0.6618472022423845,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.68,
+            "mean_hit_count_ci": [
+              0.5975468105218914,
+              0.7624531894781087
+            ],
+            "sd_hit_count": 0.7286517229330713,
+            "p_value_vs_baseline": 0.3542148002246815,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.682,
+            "mean_hit_count_ci": [
+              0.6194727867430582,
+              0.7445272132569419
+            ],
+            "sd_hit_count": 0.7133554513704932,
+            "p_value_vs_baseline": 0.199011456413305,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.1757127303824385,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "bet_index": 4,
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "mean_hit_count": 0.606,
+        "mean_hit_count_ci": [
+          0.5703081762663545,
+          0.6416918237336454
+        ],
+        "sd_hit_count": 0.705287648173897,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": -0.0350256410256411,
+        "p_value_vs_baseline": 0.05443215076962987,
+        "m1_plus_rate": 0.488,
+        "m2_plus_rate": 0.10666666666666667,
+        "m3_plus_rate": 0.011333333333333334,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.7133333333333334,
+            "mean_hit_count_ci": [
+              0.591686843526499,
+              0.8349798231401677
+            ],
+            "sd_hit_count": 0.7601461847712072,
+            "p_value_vs_baseline": 0.2440112993155083,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.6866666666666666,
+            "mean_hit_count_ci": [
+              0.6033722539928335,
+              0.7699610793404998
+            ],
+            "sd_hit_count": 0.7360857437977061,
+            "p_value_vs_baseline": 0.28284115297143264,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.648,
+            "mean_hit_count_ci": [
+              0.5855207256610738,
+              0.7104792743389262
+            ],
+            "sd_hit_count": 0.712808529690828,
+            "p_value_vs_baseline": 0.8268179763462292,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.15241002215496363,
+        "bonferroni_q_value": 0.7620501107748182
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "bet_index": 5,
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "mean_hit_count": 0.6726666666666666,
+        "mean_hit_count_ci": [
+          0.6351981483369316,
+          0.7101351849964017
+        ],
+        "sd_hit_count": 0.7403959901446132,
+        "baseline_mean_hit_count": 0.6410256410256411,
+        "mean_diff_vs_baseline": 0.031641025641025555,
+        "p_value_vs_baseline": 0.09789812010991422,
+        "m1_plus_rate": 0.5293333333333333,
+        "m2_plus_rate": 0.124,
+        "m3_plus_rate": 0.018,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.7133333333333334,
+            "mean_hit_count_ci": [
+              0.5959728652724379,
+              0.8306938013942289
+            ],
+            "sd_hit_count": 0.7333636357375666,
+            "p_value_vs_baseline": 0.22721436930954822,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.62,
+            "mean_hit_count_ci": [
+              0.5377022556223952,
+              0.7022977443776048
+            ],
+            "sd_hit_count": 0.7272780302836965,
+            "p_value_vs_baseline": 0.6165564551531382,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.636,
+            "mean_hit_count_ci": [
+              0.5728232127568063,
+              0.6991767872431938
+            ],
+            "sd_hit_count": 0.7207662589217118,
+            "p_value_vs_baseline": 0.8761016856949204,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.19579624021982842,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "lottery_type": "POWER_LOTTO",
+        "bet_index": 1,
+        "n_rows": 15102,
+        "n_distinct_draws": 1551,
+        "mean_hit_count": 0.9825188716726262,
+        "mean_hit_count_ci": [
+          0.969143551081581,
+          0.9958941922636714
+        ],
+        "sd_hit_count": 0.8386356928542927,
+        "baseline_mean_hit_count": 0.9473684210526315,
+        "mean_diff_vs_baseline": 0.035150450619994666,
+        "p_value_vs_baseline": 2.5937602257053535e-07,
+        "m1_plus_rate": 0.6887167262614223,
+        "m2_plus_rate": 0.24639120646272017,
+        "m3_plus_rate": 0.04555687988345915,
+        "exact_hit_rate": 0.0,
+        "special": {
+          "n_rows": 9000,
+          "mean": 0.11811111111111111,
+          "ci": [
+            0.1114433635490017,
+            0.12477885867322053
+          ],
+          "sd": 0.3227396420386096,
+          "baseline": 0.125,
+          "mean_diff_vs_baseline": -0.006888888888888889,
+          "p_value_vs_baseline": 0.04287067068437696,
+          "tail_oos": {
+            "150": {
+              "n": 150,
+              "mean_hit_count": 0.09333333333333334,
+              "mean_hit_count_ci": [
+                0.04678065478653047,
+                0.13988601188013622
+              ],
+              "sd_hit_count": 0.29089898972361905,
+              "p_value_vs_baseline": 0.18245564264569916,
+              "direction": "below"
+            },
+            "300": {
+              "n": 300,
+              "mean_hit_count": 0.11,
+              "mean_hit_count_ci": [
+                0.07459384147044684,
+                0.14540615852955316
+              ],
+              "sd_hit_count": 0.31288975694324034,
+              "p_value_vs_baseline": 0.4063416281520725,
+              "direction": "below"
+            },
+            "500": {
+              "n": 500,
+              "mean_hit_count": 0.092,
+              "mean_hit_count_ci": [
+                0.06666622396698413,
+                0.11733377603301587
+              ],
+              "sd_hit_count": 0.289025950392002,
+              "p_value_vs_baseline": 0.010677914838758806,
+              "direction": "below"
+            }
+          }
+        },
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.8666666666666667,
+            "mean_hit_count_ci": [
+              0.7377563633320707,
+              0.9955769700012627
+            ],
+            "sd_hit_count": 0.8055363982396382,
+            "p_value_vs_baseline": 0.21982378663376959,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.9233333333333333,
+            "mean_hit_count_ci": [
+              0.8279312675472859,
+              1.0187353991193808
+            ],
+            "sd_hit_count": 0.843082966788494,
+            "p_value_vs_baseline": 0.6214595288775896,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.95,
+            "mean_hit_count_ci": [
+              0.871625943997456,
+              1.028374056002544
+            ],
+            "sd_hit_count": 0.8941476388158726,
+            "p_value_vs_baseline": 0.9475290607828581,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 3.631264315987495e-06,
+        "bonferroni_q_value": 3.631264315987495e-06
+      },
+      {
+        "lottery_type": "POWER_LOTTO",
+        "bet_index": 2,
+        "n_rows": 9001,
+        "n_distinct_draws": 1501,
+        "mean_hit_count": 0.9787801355404955,
+        "mean_hit_count_ci": [
+          0.9613018186548911,
+          0.9962584524260999
+        ],
+        "sd_hit_count": 0.8460516928271581,
+        "baseline_mean_hit_count": 0.9473684210526315,
+        "mean_diff_vs_baseline": 0.03141171448786395,
+        "p_value_vs_baseline": 0.00042763936227556177,
+        "m1_plus_rate": 0.6837018109098989,
+        "m2_plus_rate": 0.24475058326852572,
+        "m3_plus_rate": 0.0482168647928008,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.9133333333333333,
+            "mean_hit_count_ci": [
+              0.7827518479542869,
+              1.04391481871238
+            ],
+            "sd_hit_count": 0.815979302569754,
+            "p_value_vs_baseline": 0.6094561251105692,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.94,
+            "mean_hit_count_ci": [
+              0.8411518137505071,
+              1.038848186249493
+            ],
+            "sd_hit_count": 0.8735368719559963,
+            "p_value_vs_baseline": 0.8838414890799129,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.942,
+            "mean_hit_count_ci": [
+              0.8697926285170193,
+              1.0142073714829805
+            ],
+            "sd_hit_count": 0.8237936634861912,
+            "p_value_vs_baseline": 0.8841440312260264,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.001995650357285955,
+        "bonferroni_q_value": 0.005986951071857865
+      },
+      {
+        "lottery_type": "POWER_LOTTO",
+        "bet_index": 3,
+        "n_rows": 7501,
+        "n_distinct_draws": 1501,
+        "mean_hit_count": 0.9400079989334755,
+        "mean_hit_count_ci": [
+          0.9214414252396357,
+          0.9585745726273154
+        ],
+        "sd_hit_count": 0.8204332586130514,
+        "baseline_mean_hit_count": 0.9473684210526315,
+        "mean_diff_vs_baseline": -0.007360422119155996,
+        "p_value_vs_baseline": 0.43716085157281337,
+        "m1_plus_rate": 0.6747100386615118,
+        "m2_plus_rate": 0.22516997733635516,
+        "m3_plus_rate": 0.03719504066124517,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 1.0533333333333332,
+            "mean_hit_count_ci": [
+              0.9140833928778953,
+              1.1925832737887712
+            ],
+            "sd_hit_count": 0.8701468586138523,
+            "p_value_vs_baseline": 0.13583757098396362,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 1.0133333333333334,
+            "mean_hit_count_ci": [
+              0.9134057770049471,
+              1.1132608896617198
+            ],
+            "sd_hit_count": 0.8830754340497884,
+            "p_value_vs_baseline": 0.19572559260241865,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.948,
+            "mean_hit_count_ci": [
+              0.874806641423764,
+              1.021193358576236
+            ],
+            "sd_hit_count": 0.8350425138877661,
+            "p_value_vs_baseline": 0.9865065371153191,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.6800279913354874,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "lottery_type": "POWER_LOTTO",
+        "bet_index": 4,
+        "n_rows": 3000,
+        "n_distinct_draws": 1500,
+        "mean_hit_count": 0.9393333333333334,
+        "mean_hit_count_ci": [
+          0.9094589079761942,
+          0.9692077586904725
+        ],
+        "sd_hit_count": 0.8348570070510412,
+        "baseline_mean_hit_count": 0.9473684210526315,
+        "mean_diff_vs_baseline": -0.008035087719298173,
+        "p_value_vs_baseline": 0.5980852616993739,
+        "m1_plus_rate": 0.664,
+        "m2_plus_rate": 0.234,
+        "m3_plus_rate": 0.038,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 1.1333333333333333,
+            "mean_hit_count_ci": [
+              0.9917971317146069,
+              1.2748695349520598
+            ],
+            "sd_hit_count": 0.8844332774281066,
+            "p_value_vs_baseline": 0.010018110735259487,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 1.0333333333333334,
+            "mean_hit_count_ci": [
+              0.9378351250107,
+              1.1288315416559669
+            ],
+            "sd_hit_count": 0.8439325934114775,
+            "p_value_vs_baseline": 0.07768035088174012,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 1,
+            "mean_hit_count_ci": [
+              0.9268746919431704,
+              1.0731253080568295
+            ],
+            "sd_hit_count": 0.8342661445845684,
+            "p_value_vs_baseline": 0.15834064631296949,
+            "direction": "above"
+          }
+        },
+        "bh_q_value": 0.7611994239810213,
+        "bonferroni_q_value": 1.0
+      },
+      {
+        "lottery_type": "POWER_LOTTO",
+        "bet_index": 5,
+        "n_rows": 1500,
+        "n_distinct_draws": 1500,
+        "mean_hit_count": 0.9406666666666667,
+        "mean_hit_count_ci": [
+          0.8996430949723234,
+          0.9816902383610099
+        ],
+        "sd_hit_count": 0.8106455589357301,
+        "baseline_mean_hit_count": 0.9473684210526315,
+        "mean_diff_vs_baseline": -0.006701754385964875,
+        "p_value_vs_baseline": 0.7488268937214988,
+        "m1_plus_rate": 0.682,
+        "m2_plus_rate": 0.21933333333333332,
+        "m3_plus_rate": 0.03666666666666667,
+        "exact_hit_rate": 0.0,
+        "special": null,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.9333333333333333,
+            "mean_hit_count_ci": [
+              0.8005091814456992,
+              1.0661574852209674
+            ],
+            "sd_hit_count": 0.8299933065325822,
+            "p_value_vs_baseline": 0.8359295008315586,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.9033333333333333,
+            "mean_hit_count_ci": [
+              0.810894329357725,
+              0.9957723373089417
+            ],
+            "sd_hit_count": 0.8168979264401534,
+            "p_value_vs_baseline": 0.3504760360973363,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.92,
+            "mean_hit_count_ci": [
+              0.850450269971638,
+              0.9895497300283621
+            ],
+            "sd_hit_count": 0.7934733769950949,
+            "p_value_vs_baseline": 0.44055117676221844,
+            "direction": "below"
+          }
+        },
+        "bh_q_value": 0.8736313760084152,
+        "bonferroni_q_value": 1.0
+      }
+    ],
+    "draw_side_structural_summary": {
+      "38_LOTTO": {
+        "n_draws": 1774,
+        "draw_size": 6,
+        "max_number": 38,
+        "mean_odd_count": 2.968432919954904,
+        "mean_low_count": 3.0073280721533258,
+        "mean_prime_count": 1.8844419391206313,
+        "mean_span": 27.914317925591885,
+        "mean_consecutive_pairs": 0.7688838782412627,
+        "mean_repeated_last_digit_pairs": 0.19052987598647125,
+        "mean_zone_coverage": 3.3793686583990983,
+        "mean_sum": 116.63923337091319
+      },
+      "39_LOTTO": {
+        "n_draws": 4890,
+        "draw_size": 5,
+        "max_number": 39,
+        "mean_odd_count": 2.5625766871165645,
+        "mean_low_count": 2.445398773006135,
+        "mean_prime_count": 1.5431492842535788,
+        "mean_span": 26.685480572597136,
+        "mean_consecutive_pairs": 0.5057259713701432,
+        "mean_repeated_last_digit_pairs": 0.19611451942740285,
+        "mean_zone_coverage": 3.138445807770961,
+        "mean_sum": 99.79693251533742
+      },
+      "3_STAR": {
+        "n_draws": 4179,
+        "draw_size": 3,
+        "max_number": 9,
+        "mean_odd_count": 1.494376645130414,
+        "mean_low_count": 1.4958123953098827,
+        "mean_prime_count": 1.1943048576214406,
+        "mean_span": 5.555635319454415,
+        "mean_consecutive_pairs": 0.5740607800909309,
+        "mean_repeated_last_digit_pairs": 0,
+        "mean_zone_coverage": 1,
+        "mean_sum": 13.509212730318257
+      },
+      "49_LOTTO": {
+        "n_draws": 2130,
+        "draw_size": 6,
+        "max_number": 49,
+        "mean_odd_count": 3.091549295774648,
+        "mean_low_count": 2.932394366197183,
+        "mean_prime_count": 1.8629107981220658,
+        "mean_span": 35.7169014084507,
+        "mean_consecutive_pairs": 0.6262910798122066,
+        "mean_repeated_last_digit_pairs": 0.24788732394366197,
+        "mean_zone_coverage": 3.768075117370892,
+        "mean_sum": 150.07276995305165
+      },
+      "4_STAR": {
+        "n_draws": 2922,
+        "draw_size": 4,
+        "max_number": 9,
+        "mean_odd_count": 2.0034223134839153,
+        "mean_low_count": 2.0061601642710474,
+        "mean_prime_count": 1.5951403148528405,
+        "mean_span": 6.590349075975359,
+        "mean_consecutive_pairs": 1.2026009582477755,
+        "mean_repeated_last_digit_pairs": 0,
+        "mean_zone_coverage": 1,
+        "mean_sum": 17.958247775496236
+      },
+      "BIG_LOTTO": {
+        "n_draws": 22237,
+        "draw_size": 6,
+        "max_number": 49,
+        "mean_odd_count": 3.0732113144758735,
+        "mean_low_count": 3.1062643342177454,
+        "mean_prime_count": 1.9326347978594234,
+        "mean_span": 35.393263479785944,
+        "mean_consecutive_pairs": 0.5915366281422854,
+        "mean_repeated_last_digit_pairs": 0.22390610244187614,
+        "mean_zone_coverage": 3.760399334442596,
+        "mean_sum": 145.9886225659936
+      },
+      "BIG_LOTTO_BONUS": {
+        "n_draws": 11941,
+        "draw_size": 6,
+        "max_number": 49,
+        "mean_odd_count": 3.1657315132735953,
+        "mean_low_count": 3.065739887781593,
+        "mean_prime_count": 1.7703709907042962,
+        "mean_span": 35.29042793735868,
+        "mean_consecutive_pairs": 0.530692571811406,
+        "mean_repeated_last_digit_pairs": 0.26915668704463613,
+        "mean_zone_coverage": 3.863411774558245,
+        "mean_sum": 147.72230131479776
+      },
+      "DAILY_539": {
+        "n_draws": 5876,
+        "draw_size": 5,
+        "max_number": 39,
+        "mean_odd_count": 2.570285908781484,
+        "mean_low_count": 2.440946221919673,
+        "mean_prime_count": 1.5468005445881552,
+        "mean_span": 26.738257317903336,
+        "mean_consecutive_pairs": 0.5088495575221239,
+        "mean_repeated_last_digit_pairs": 0.19264805990469708,
+        "mean_zone_coverage": 3.1381892443839345,
+        "mean_sum": 99.89465622872703
+      },
+      "DOUBLE_WIN": {
+        "n_draws": 1782,
+        "draw_size": 12,
+        "max_number": 24,
+        "mean_odd_count": 5.946127946127946,
+        "mean_low_count": 5.97979797979798,
+        "mean_prime_count": 4.473625140291807,
+        "mean_span": 21.17732884399551,
+        "mean_consecutive_pairs": 5.475869809203142,
+        "mean_repeated_last_digit_pairs": 0.0016835016835016834,
+        "mean_zone_coverage": 2.9590347923681257,
+        "mean_sum": 150.22109988776654
+      },
+      "LOTTO_6_38": {
+        "n_draws": 111,
+        "draw_size": 6,
+        "max_number": 38,
+        "mean_odd_count": 2.945945945945946,
+        "mean_low_count": 2.936936936936937,
+        "mean_prime_count": 1.9189189189189189,
+        "mean_span": 28.054054054054053,
+        "mean_consecutive_pairs": 0.8468468468468469,
+        "mean_repeated_last_digit_pairs": 0.18018018018018017,
+        "mean_zone_coverage": 3.4414414414414414,
+        "mean_sum": 117.55855855855856
+      },
+      "POWER_LOTTO": {
+        "n_draws": 1915,
+        "draw_size": 6,
+        "max_number": 38,
+        "mean_odd_count": 2.98798955613577,
+        "mean_low_count": 3.0140992167101825,
+        "mean_prime_count": 1.8913838120104438,
+        "mean_span": 27.925848563968668,
+        "mean_consecutive_pairs": 0.7577023498694517,
+        "mean_repeated_last_digit_pairs": 0.18955613577023497,
+        "mean_zone_coverage": 3.3801566579634463,
+        "mean_sum": 116.71853785900784
+      }
+    },
+    "baseline_comparisons": {
+      "BIG_LOTTO": [
+        {
+          "baseline": "all_history",
+          "n_eval_draws": 1552,
+          "mean_hit_count": 0.7416237113402062,
+          "mean_hit_count_ci": [
+            0.7046455032782921,
+            0.7786019194021203
+          ],
+          "sd_hit_count": 0.7432649086202213,
+          "p_value_vs_random_mean": 0.7133926557389687,
+          "m1_plus_rate": 0.5805412371134021,
+          "m2_plus_rate": 0.14304123711340205,
+          "m3_plus_rate": 0.01675257731958763,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "w100",
+          "n_eval_draws": 1552,
+          "mean_hit_count": 0.7480670103092784,
+          "mean_hit_count_ci": [
+            0.7108501411539034,
+            0.7852838794646533
+          ],
+          "sd_hit_count": 0.7480620154872009,
+          "p_value_vs_random_mean": 0.48126240134349574,
+          "m1_plus_rate": 0.5786082474226805,
+          "m2_plus_rate": 0.15399484536082475,
+          "m3_plus_rate": 0.014819587628865979,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "w125",
+          "n_eval_draws": 1552,
+          "mean_hit_count": 0.7538659793814433,
+          "mean_hit_count_ci": [
+            0.7167030873403724,
+            0.7910288714225142
+          ],
+          "sd_hit_count": 0.7469770712177662,
+          "p_value_vs_random_mean": 0.3119527446471794,
+          "m1_plus_rate": 0.5844072164948454,
+          "m2_plus_rate": 0.15270618556701032,
+          "m3_plus_rate": 0.01675257731958763,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "w150",
+          "n_eval_draws": 1552,
+          "mean_hit_count": 0.7467783505154639,
+          "mean_hit_count_ci": [
+            0.7100144061493455,
+            0.7835422948815823
+          ],
+          "sd_hit_count": 0.7389581913772015,
+          "p_value_vs_random_mean": 0.5194140271647094,
+          "m1_plus_rate": 0.5869845360824743,
+          "m2_plus_rate": 0.1411082474226804,
+          "m3_plus_rate": 0.018685567010309278,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "w500",
+          "n_eval_draws": 1552,
+          "mean_hit_count": 0.7235824742268041,
+          "mean_hit_count_ci": [
+            0.6862816520590985,
+            0.7608832963945097
+          ],
+          "sd_hit_count": 0.749749477679362,
+          "p_value_vs_random_mean": 0.5593236648269799,
+          "m1_plus_rate": 0.5612113402061856,
+          "m2_plus_rate": 0.14497422680412372,
+          "m3_plus_rate": 0.01610824742268041,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "w750",
+          "n_eval_draws": 1552,
+          "mean_hit_count": 0.7222938144329897,
+          "mean_hit_count_ci": [
+            0.6849739333673699,
+            0.7596136954986095
+          ],
+          "sd_hit_count": 0.7501325630358192,
+          "p_value_vs_random_mean": 0.5149006047113908,
+          "m1_plus_rate": 0.5637886597938144,
+          "m2_plus_rate": 0.13724226804123713,
+          "m3_plus_rate": 0.01997422680412371,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "w1000",
+          "n_eval_draws": 1552,
+          "mean_hit_count": 0.7345360824742269,
+          "mean_hit_count_ci": [
+            0.6978341160162516,
+            0.7712380489322022
+          ],
+          "sd_hit_count": 0.7377124305183924,
+          "p_value_vs_random_mean": 0.993276628204546,
+          "m1_plus_rate": 0.5786082474226805,
+          "m2_plus_rate": 0.13917525773195877,
+          "m3_plus_rate": 0.014819587628865979,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "consensus",
+          "n_eval_draws": 1552,
+          "mean_hit_count": 0.7545103092783505,
+          "mean_hit_count_ci": [
+            0.7164675388750856,
+            0.7925530796816154
+          ],
+          "sd_hit_count": 0.7646626959343006,
+          "p_value_vs_random_mean": 0.3072815403224191,
+          "m1_plus_rate": 0.5779639175257731,
+          "m2_plus_rate": 0.15399484536082475,
+          "m3_plus_rate": 0.02190721649484536,
+          "exact_hit_rate": 0.0
+        }
+      ],
+      "DAILY_539": [
+        {
+          "baseline": "all_history",
+          "n_eval_draws": 1550,
+          "mean_hit_count": 0.6251612903225806,
+          "mean_hit_count_ci": [
+            0.5903654714947075,
+            0.6599571091504537
+          ],
+          "sd_hit_count": 0.6989479235192586,
+          "p_value_vs_random_mean": 0.3715357569904394,
+          "m1_plus_rate": 0.5096774193548387,
+          "m2_plus_rate": 0.10387096774193548,
+          "m3_plus_rate": 0.011612903225806452,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "w100",
+          "n_eval_draws": 1550,
+          "mean_hit_count": 0.6096774193548387,
+          "mean_hit_count_ci": [
+            0.5755863804895309,
+            0.6437684582201464
+          ],
+          "sd_hit_count": 0.6847909210986567,
+          "p_value_vs_random_mean": 0.07150234179075791,
+          "m1_plus_rate": 0.5012903225806452,
+          "m2_plus_rate": 0.10129032258064516,
+          "m3_plus_rate": 0.0070967741935483875,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "w125",
+          "n_eval_draws": 1550,
+          "mean_hit_count": 0.6135483870967742,
+          "mean_hit_count_ci": [
+            0.5795827925821487,
+            0.6475139816113996
+          ],
+          "sd_hit_count": 0.6822711048856713,
+          "p_value_vs_random_mean": 0.11283955671193269,
+          "m1_plus_rate": 0.5058064516129033,
+          "m2_plus_rate": 0.10129032258064516,
+          "m3_plus_rate": 0.0064516129032258064,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "w150",
+          "n_eval_draws": 1550,
+          "mean_hit_count": 0.6290322580645161,
+          "mean_hit_count_ci": [
+            0.5936785756220905,
+            0.6643859405069418
+          ],
+          "sd_hit_count": 0.7101537990564128,
+          "p_value_vs_random_mean": 0.5061156281461024,
+          "m1_plus_rate": 0.5077419354838709,
+          "m2_plus_rate": 0.10709677419354839,
+          "m3_plus_rate": 0.014193548387096775,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "w500",
+          "n_eval_draws": 1550,
+          "mean_hit_count": 0.6470967741935484,
+          "mean_hit_count_ci": [
+            0.6119183651974204,
+            0.6822751831896764
+          ],
+          "sd_hit_count": 0.7066330596266609,
+          "p_value_vs_random_mean": 0.7351725394136174,
+          "m1_plus_rate": 0.5219354838709678,
+          "m2_plus_rate": 0.11548387096774193,
+          "m3_plus_rate": 0.00903225806451613,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "w750",
+          "n_eval_draws": 1550,
+          "mean_hit_count": 0.635483870967742,
+          "mean_hit_count_ci": [
+            0.6005543658812147,
+            0.6704133760542692
+          ],
+          "sd_hit_count": 0.7016332959587357,
+          "p_value_vs_random_mean": 0.7558312302324313,
+          "m1_plus_rate": 0.515483870967742,
+          "m2_plus_rate": 0.10967741935483871,
+          "m3_plus_rate": 0.01032258064516129,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "w1000",
+          "n_eval_draws": 1550,
+          "mean_hit_count": 0.6225806451612903,
+          "mean_hit_count_ci": [
+            0.5878540308861895,
+            0.6573072594363911
+          ],
+          "sd_hit_count": 0.6975578030942298,
+          "p_value_vs_random_mean": 0.2978605515710644,
+          "m1_plus_rate": 0.5070967741935484,
+          "m2_plus_rate": 0.10516129032258065,
+          "m3_plus_rate": 0.01032258064516129,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "consensus",
+          "n_eval_draws": 1550,
+          "mean_hit_count": 0.68,
+          "mean_hit_count_ci": [
+            0.6436740439570847,
+            0.7163259560429154
+          ],
+          "sd_hit_count": 0.7296839793207874,
+          "p_value_vs_random_mean": 0.035478153761110874,
+          "m1_plus_rate": 0.5387096774193548,
+          "m2_plus_rate": 0.12516129032258064,
+          "m3_plus_rate": 0.016129032258064516,
+          "exact_hit_rate": 0.0
+        }
+      ],
+      "POWER_LOTTO": [
+        {
+          "baseline": "all_history",
+          "n_eval_draws": 1551,
+          "mean_hit_count": 0.9464861379754996,
+          "mean_hit_count_ci": [
+            0.9045640572732824,
+            0.9884082186777169
+          ],
+          "sd_hit_count": 0.842365628070871,
+          "p_value_vs_random_mean": 0.9670974067310847,
+          "m1_plus_rate": 0.6673114119922631,
+          "m2_plus_rate": 0.23339780786589298,
+          "m3_plus_rate": 0.041908446163765316,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "w100",
+          "n_eval_draws": 1551,
+          "mean_hit_count": 0.9426176660219213,
+          "mean_hit_count_ci": [
+            0.9018673843675046,
+            0.9833679476763381
+          ],
+          "sd_hit_count": 0.8188199637255159,
+          "p_value_vs_random_mean": 0.8192600473291546,
+          "m1_plus_rate": 0.6782720825274017,
+          "m2_plus_rate": 0.22437137330754353,
+          "m3_plus_rate": 0.0367504835589942,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "w125",
+          "n_eval_draws": 1551,
+          "mean_hit_count": 0.9342359767891683,
+          "mean_hit_count_ci": [
+            0.8934974706208314,
+            0.9749744829575051
+          ],
+          "sd_hit_count": 0.8185833517882882,
+          "p_value_vs_random_mean": 0.5275090780703714,
+          "m1_plus_rate": 0.6711798839458414,
+          "m2_plus_rate": 0.2256608639587363,
+          "m3_plus_rate": 0.03417150225660864,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "w150",
+          "n_eval_draws": 1551,
+          "mean_hit_count": 0.9226305609284333,
+          "mean_hit_count_ci": [
+            0.8816298075874012,
+            0.9636313142694655
+          ],
+          "sd_hit_count": 0.8238528422486122,
+          "p_value_vs_random_mean": 0.23698875668541117,
+          "m1_plus_rate": 0.6627981947130883,
+          "m2_plus_rate": 0.2192134107027724,
+          "m3_plus_rate": 0.037395228884590584,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "w500",
+          "n_eval_draws": 1551,
+          "mean_hit_count": 0.9445519019987105,
+          "mean_hit_count_ci": [
+            0.9022379166505284,
+            0.9868658873468926
+          ],
+          "sd_hit_count": 0.85024040426786,
+          "p_value_vs_random_mean": 0.8962026227888878,
+          "m1_plus_rate": 0.6569954867827208,
+          "m2_plus_rate": 0.2437137330754352,
+          "m3_plus_rate": 0.039974210186976146,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "w750",
+          "n_eval_draws": 1551,
+          "mean_hit_count": 0.935525467440361,
+          "mean_hit_count_ci": [
+            0.8921617564545863,
+            0.9788891784261358
+          ],
+          "sd_hit_count": 0.8713331740254936,
+          "p_value_vs_random_mean": 0.5924556906930396,
+          "m1_plus_rate": 0.6408768536428111,
+          "m2_plus_rate": 0.24242424242424243,
+          "m3_plus_rate": 0.04964539007092199,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "w1000",
+          "n_eval_draws": 1551,
+          "mean_hit_count": 0.9381044487427466,
+          "mean_hit_count_ci": [
+            0.8951011814244458,
+            0.9811077160610473
+          ],
+          "sd_hit_count": 0.8640905622264127,
+          "p_value_vs_random_mean": 0.6728608371738705,
+          "m1_plus_rate": 0.647324306898775,
+          "m2_plus_rate": 0.24113475177304963,
+          "m3_plus_rate": 0.04642166344294004,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "baseline": "consensus",
+          "n_eval_draws": 1551,
+          "mean_hit_count": 1.0006447453255964,
+          "mean_hit_count_ci": [
+            0.9578846254292276,
+            1.0434048652219652
+          ],
+          "sd_hit_count": 0.8592048545669019,
+          "p_value_vs_random_mean": 0.014606653767783466,
+          "m1_plus_rate": 0.6847195357833655,
+          "m2_plus_rate": 0.26305609284332687,
+          "m3_plus_rate": 0.05222437137330754,
+          "exact_hit_rate": 0.0
+        }
+      ]
+    },
+    "candidate_stability": [
+      {
+        "kind": "strategy",
+        "strategy_id": "midfreq_fourier_2bet",
+        "lottery_type": "DAILY_539",
+        "lifecycle": "RETIRED",
+        "overall_mean_hit_count": 0.821,
+        "overall_p_value": 5.1884185373427e-35,
+        "bonferroni_q_value": 1.815946488069945e-33,
+        "bh_q_value": 1.815946488069945e-33,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.8666666666666667,
+            "mean_hit_count_ci": [
+              0.7351341903789248,
+              0.9981991429544086
+            ],
+            "sd_hit_count": 0.8219218670625302,
+            "p_value_vs_baseline": 0.0007730325127715696,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.9566666666666667,
+            "mean_hit_count_ci": [
+              0.860551426674463,
+              1.0527819066588702
+            ],
+            "sd_hit_count": 0.8493853987181293,
+            "p_value_vs_baseline": 1.222656984141232e-10,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.974,
+            "mean_hit_count_ci": [
+              0.8969196224574053,
+              1.0510803775425945
+            ],
+            "sd_hit_count": 0.8793884238492112,
+            "p_value_vs_baseline": 2.524061220195455e-17,
+            "direction": "above"
+          }
+        }
+      },
+      {
+        "kind": "strategy",
+        "strategy_id": "midfreq_fourier_mk_3bet",
+        "lottery_type": "POWER_LOTTO",
+        "lifecycle": "LIFECYCLE_UNRESOLVED",
+        "overall_mean_hit_count": 0.9895555555555555,
+        "overall_p_value": 0.0008437903535141857,
+        "bonferroni_q_value": 0.0295326623729965,
+        "bh_q_value": 0.01476633118649825,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.9933333333333333,
+            "mean_hit_count_ci": [
+              0.8496066007114708,
+              1.1370600659551957
+            ],
+            "sd_hit_count": 0.8981214963590518,
+            "p_value_vs_baseline": 0.5307827872074731,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.9666666666666667,
+            "mean_hit_count_ci": [
+              0.8693970886932992,
+              1.0639362446400342
+            ],
+            "sd_hit_count": 0.8595864638818418,
+            "p_value_vs_baseline": 0.6973826164789647,
+            "direction": "above"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.97,
+            "mean_hit_count_ci": [
+              0.8959818362151967,
+              1.0440181637848032
+            ],
+            "sd_hit_count": 0.8444524853418338,
+            "p_value_vs_baseline": 0.548990916515727,
+            "direction": "above"
+          }
+        }
+      },
+      {
+        "kind": "bet_index",
+        "lottery_type": "DAILY_539",
+        "bet_index": 1,
+        "overall_mean_hit_count": 0.662212389380531,
+        "overall_p_value": 9.783072127617287e-06,
+        "bonferroni_q_value": 0.00013696300978664202,
+        "bh_q_value": 6.848150489332101e-05,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.6933333333333334,
+            "mean_hit_count_ci": [
+              0.5722354476793158,
+              0.8144312189873509
+            ],
+            "sd_hit_count": 0.7567180599286779,
+            "p_value_vs_baseline": 0.3972193891398403,
+            "direction": "above"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.58,
+            "mean_hit_count_ci": [
+              0.5013079952030771,
+              0.6586920047969228
+            ],
+            "sd_hit_count": 0.6954135460285484,
+            "p_value_vs_baseline": 0.1285230767150676,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.662,
+            "mean_hit_count_ci": [
+              0.5976035645827725,
+              0.7263964354172275
+            ],
+            "sd_hit_count": 0.734680883105039,
+            "p_value_vs_baseline": 0.5232304726917334,
+            "direction": "above"
+          }
+        },
+        "special_tail_oos": {}
+      },
+      {
+        "kind": "bet_index",
+        "lottery_type": "POWER_LOTTO",
+        "bet_index": 1,
+        "overall_mean_hit_count": 0.9825188716726262,
+        "overall_p_value": 2.5937602257053535e-07,
+        "bonferroni_q_value": 3.631264315987495e-06,
+        "bh_q_value": 3.631264315987495e-06,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.8666666666666667,
+            "mean_hit_count_ci": [
+              0.7377563633320707,
+              0.9955769700012627
+            ],
+            "sd_hit_count": 0.8055363982396382,
+            "p_value_vs_baseline": 0.21982378663376959,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.9233333333333333,
+            "mean_hit_count_ci": [
+              0.8279312675472859,
+              1.0187353991193808
+            ],
+            "sd_hit_count": 0.843082966788494,
+            "p_value_vs_baseline": 0.6214595288775896,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.95,
+            "mean_hit_count_ci": [
+              0.871625943997456,
+              1.028374056002544
+            ],
+            "sd_hit_count": 0.8941476388158726,
+            "p_value_vs_baseline": 0.9475290607828581,
+            "direction": "above"
+          }
+        },
+        "special_tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.09333333333333334,
+            "mean_hit_count_ci": [
+              0.04678065478653047,
+              0.13988601188013622
+            ],
+            "sd_hit_count": 0.29089898972361905,
+            "p_value_vs_baseline": 0.18245564264569916,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.11,
+            "mean_hit_count_ci": [
+              0.07459384147044684,
+              0.14540615852955316
+            ],
+            "sd_hit_count": 0.31288975694324034,
+            "p_value_vs_baseline": 0.4063416281520725,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.092,
+            "mean_hit_count_ci": [
+              0.06666622396698413,
+              0.11733377603301587
+            ],
+            "sd_hit_count": 0.289025950392002,
+            "p_value_vs_baseline": 0.010677914838758806,
+            "direction": "below"
+          }
+        }
+      },
+      {
+        "kind": "bet_index",
+        "lottery_type": "POWER_LOTTO",
+        "bet_index": 2,
+        "overall_mean_hit_count": 0.9787801355404955,
+        "overall_p_value": 0.00042763936227556177,
+        "bonferroni_q_value": 0.005986951071857865,
+        "bh_q_value": 0.001995650357285955,
+        "tail_oos": {
+          "150": {
+            "n": 150,
+            "mean_hit_count": 0.9133333333333333,
+            "mean_hit_count_ci": [
+              0.7827518479542869,
+              1.04391481871238
+            ],
+            "sd_hit_count": 0.815979302569754,
+            "p_value_vs_baseline": 0.6094561251105692,
+            "direction": "below"
+          },
+          "300": {
+            "n": 300,
+            "mean_hit_count": 0.94,
+            "mean_hit_count_ci": [
+              0.8411518137505071,
+              1.038848186249493
+            ],
+            "sd_hit_count": 0.8735368719559963,
+            "p_value_vs_baseline": 0.8838414890799129,
+            "direction": "below"
+          },
+          "500": {
+            "n": 500,
+            "mean_hit_count": 0.942,
+            "mean_hit_count_ci": [
+              0.8697926285170193,
+              1.0142073714829805
+            ],
+            "sd_hit_count": 0.8237936634861912,
+            "p_value_vs_baseline": 0.8841440312260264,
+            "direction": "below"
+          }
+        },
+        "special_tail_oos": {}
+      }
+    ],
+    "yearly_stability_samples": {
+      "midfreq_fourier_2bet": {
+        "2012": {
+          "n_rows": 104,
+          "mean_hit_count": 1.0384615384615385,
+          "mean_hit_count_ci": [
+            0.8809595649767124,
+            1.1959635119463647
+          ],
+          "p_value_vs_baseline": 7.58644591898026e-07
+        },
+        "2013": {
+          "n_rows": 104,
+          "mean_hit_count": 0.9230769230769231,
+          "mean_hit_count_ci": [
+            0.7616346502976636,
+            1.0845191958561826
+          ],
+          "p_value_vs_baseline": 0.0006166161075037397
+        },
+        "2014": {
+          "n_rows": 104,
+          "mean_hit_count": 0.8653846153846154,
+          "mean_hit_count_ci": [
+            0.7168545606578515,
+            1.0139146701113793
+          ],
+          "p_value_vs_baseline": 0.003070576788195041
+        },
+        "2015": {
+          "n_rows": 105,
+          "mean_hit_count": 1.0285714285714285,
+          "mean_hit_count_ci": [
+            0.8781779746906926,
+            1.1789648824521644
+          ],
+          "p_value_vs_baseline": 4.4044581653209595e-07
+        },
+        "2016": {
+          "n_rows": 104,
+          "mean_hit_count": 1.2019230769230769,
+          "mean_hit_count_ci": [
+            1.0346729157176693,
+            1.3691732381284845
+          ],
+          "p_value_vs_baseline": 4.930459720717026e-11
+        },
+        "2017": {
+          "n_rows": 104,
+          "mean_hit_count": 0.9038461538461539,
+          "mean_hit_count_ci": [
+            0.7518614500111158,
+            1.055830857681192
+          ],
+          "p_value_vs_baseline": 0.0007007637706137606
+        },
+        "2018": {
+          "n_rows": 105,
+          "mean_hit_count": 0.9619047619047619,
+          "mean_hit_count_ci": [
+            0.8104339929976736,
+            1.1133755308118503
+          ],
+          "p_value_vs_baseline": 3.2953578121629e-05
+        },
+        "2019": {
+          "n_rows": 104,
+          "mean_hit_count": 0.8942307692307693,
+          "mean_hit_count_ci": [
+            0.7559526971544204,
+            1.0325088413071182
+          ],
+          "p_value_vs_baseline": 0.0003320139303914079
+        },
+        "2020": {
+          "n_rows": 105,
+          "mean_hit_count": 0.9523809523809523,
+          "mean_hit_count_ci": [
+            0.7953596593676544,
+            1.1094022453942503
+          ],
+          "p_value_vs_baseline": 0.0001017480970253961
+        },
+        "2021": {
+          "n_rows": 228,
+          "mean_hit_count": 0.7631578947368421,
+          "mean_hit_count_ci": [
+            0.663199678919794,
+            0.8631161105538903
+          ],
+          "p_value_vs_baseline": 0.01663175482857185
+        },
+        "2022": {
+          "n_rows": 417,
+          "mean_hit_count": 0.750599520383693,
+          "mean_hit_count_ci": [
+            0.6730737199928283,
+            0.8281253207745578
+          ],
+          "p_value_vs_baseline": 0.005602435543842808
+        },
+        "2023": {
+          "n_rows": 416,
+          "mean_hit_count": 0.7596153846153846,
+          "mean_hit_count_ci": [
+            0.6830689290356539,
+            0.8361618401951153
+          ],
+          "p_value_vs_baseline": 0.0023935959576757535
+        },
+        "2024": {
+          "n_rows": 419,
+          "mean_hit_count": 0.7279236276849642,
+          "mean_hit_count_ci": [
+            0.6523551937949068,
+            0.8034920615750216
+          ],
+          "p_value_vs_baseline": 0.02420809663049972
+        },
+        "2025": {
+          "n_rows": 420,
+          "mean_hit_count": 0.7238095238095238,
+          "mean_hit_count_ci": [
+            0.6524303733369361,
+            0.7951886742821115
+          ],
+          "p_value_vs_baseline": 0.023018903727379865
+        },
+        "2026": {
+          "n_rows": 161,
+          "mean_hit_count": 0.84472049689441,
+          "mean_hit_count_ci": [
+            0.7235216445750112,
+            0.9659193492138087
+          ],
+          "p_value_vs_baseline": 0.0009875637413586215
+        }
+      },
+      "midfreq_fourier_mk_3bet": {
+        "2012": {
+          "n_rows": 312,
+          "mean_hit_count": 1,
+          "mean_hit_count_ci": [
+            0.9081032010821641,
+            1.0918967989178359
+          ],
+          "p_value_vs_baseline": 0.2616413880916634
+        },
+        "2013": {
+          "n_rows": 312,
+          "mean_hit_count": 0.9358974358974359,
+          "mean_hit_count_ci": [
+            0.8438466137439221,
+            1.0279482580509498
+          ],
+          "p_value_vs_baseline": 0.8070430567070548
+        },
+        "2014": {
+          "n_rows": 312,
+          "mean_hit_count": 0.9166666666666666,
+          "mean_hit_count_ci": [
+            0.8287569652240268,
+            1.0045763681093065
+          ],
+          "p_value_vs_baseline": 0.49365846813956693
+        },
+        "2015": {
+          "n_rows": 315,
+          "mean_hit_count": 1.0063492063492063,
+          "mean_hit_count_ci": [
+            0.9161850229730837,
+            1.096513389725329
+          ],
+          "p_value_vs_baseline": 0.19980478578385014
+        },
+        "2016": {
+          "n_rows": 312,
+          "mean_hit_count": 1.1538461538461537,
+          "mean_hit_count_ci": [
+            1.0626789693503387,
+            1.2450133383419688
+          ],
+          "p_value_vs_baseline": 9.03880049295975e-06
+        },
+        "2017": {
+          "n_rows": 312,
+          "mean_hit_count": 0.9391025641025641,
+          "mean_hit_count_ci": [
+            0.8459596615878145,
+            1.0322454666173138
+          ],
+          "p_value_vs_baseline": 0.8619167890522813
+        },
+        "2018": {
+          "n_rows": 315,
+          "mean_hit_count": 0.9650793650793651,
+          "mean_hit_count_ci": [
+            0.8685632852330911,
+            1.061595444925639
+          ],
+          "p_value_vs_baseline": 0.7191026547976364
+        },
+        "2019": {
+          "n_rows": 312,
+          "mean_hit_count": 1.0737179487179487,
+          "mean_hit_count_ci": [
+            0.970246153194393,
+            1.1771897442415042
+          ],
+          "p_value_vs_baseline": 0.01669693296506416
+        },
+        "2020": {
+          "n_rows": 315,
+          "mean_hit_count": 0.9936507936507937,
+          "mean_hit_count_ci": [
+            0.8952731283684991,
+            1.0920284589330882
+          ],
+          "p_value_vs_baseline": 0.3564884080605943
+        },
+        "2021": {
+          "n_rows": 312,
+          "mean_hit_count": 1.0544871794871795,
+          "mean_hit_count_ci": [
+            0.9543550693434083,
+            1.1546192896309506
+          ],
+          "p_value_vs_baseline": 0.036018448050226456
+        },
+        "2022": {
+          "n_rows": 312,
+          "mean_hit_count": 0.9326923076923077,
+          "mean_hit_count_ci": [
+            0.8435006448572255,
+            1.0218839705273899
+          ],
+          "p_value_vs_baseline": 0.7470710303365002
+        },
+        "2023": {
+          "n_rows": 312,
+          "mean_hit_count": 0.9743589743589743,
+          "mean_hit_count_ci": [
+            0.8808034909343857,
+            1.067914457783563
+          ],
+          "p_value_vs_baseline": 0.5717708908067439
+        },
+        "2024": {
+          "n_rows": 315,
+          "mean_hit_count": 0.9809523809523809,
+          "mean_hit_count_ci": [
+            0.8903815451244821,
+            1.0715232167802797
+          ],
+          "p_value_vs_baseline": 0.46737237363422424
+        },
+        "2025": {
+          "n_rows": 312,
+          "mean_hit_count": 0.9423076923076923,
+          "mean_hit_count_ci": [
+            0.8510656203205421,
+            1.0335497642948426
+          ],
+          "p_value_vs_baseline": 0.9134332017311504
+        },
+        "2026": {
+          "n_rows": 120,
+          "mean_hit_count": 0.95,
+          "mean_hit_count_ci": [
+            0.7953097054200216,
+            1.1046902945799784
+          ],
+          "p_value_vs_baseline": 0.9734012624067926
+        }
+      }
+    }
+  },
+  "corrected_results": {
+    "strategy_level": {
+      "family_size": 35,
+      "bonferroni_threshold": 0.0014285714285714286,
+      "bh_fdr_threshold": 0.05,
+      "significant_candidates": [
+        {
+          "strategy_id": "midfreq_fourier_2bet",
+          "lottery_type": "DAILY_539",
+          "lifecycle": "RETIRED",
+          "n_rows": 3000,
+          "mean_hit_count": 0.821,
+          "baseline_mean_hit_count": 0.6410256410256411,
+          "p_value": 5.1884185373427e-35,
+          "bonferroni_q_value": 1.815946488069945e-33,
+          "bh_q_value": 1.815946488069945e-33
+        },
+        {
+          "strategy_id": "midfreq_fourier_mk_3bet",
+          "lottery_type": "POWER_LOTTO",
+          "lifecycle": "LIFECYCLE_UNRESOLVED",
+          "n_rows": 4500,
+          "mean_hit_count": 0.9895555555555555,
+          "baseline_mean_hit_count": 0.9473684210526315,
+          "p_value": 0.0008437903535141857,
+          "bonferroni_q_value": 0.0295326623729965,
+          "bh_q_value": 0.01476633118649825
+        }
+      ]
+    },
+    "bet_index_level": {
+      "family_size": 14,
+      "bonferroni_threshold": 0.0035714285714285718,
+      "bh_fdr_threshold": 0.05,
+      "significant_candidates": [
+        {
+          "lottery_type": "DAILY_539",
+          "bet_index": 1,
+          "n_rows": 22600,
+          "mean_hit_count": 0.662212389380531,
+          "baseline_mean_hit_count": 0.6410256410256411,
+          "p_value": 9.783072127617287e-06,
+          "bonferroni_q_value": 0.00013696300978664202,
+          "bh_q_value": 6.848150489332101e-05
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "bet_index": 1,
+          "n_rows": 15102,
+          "mean_hit_count": 0.9825188716726262,
+          "baseline_mean_hit_count": 0.9473684210526315,
+          "p_value": 2.5937602257053535e-07,
+          "bonferroni_q_value": 3.631264315987495e-06,
+          "bh_q_value": 3.631264315987495e-06
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "bet_index": 2,
+          "n_rows": 9001,
+          "mean_hit_count": 0.9787801355404955,
+          "baseline_mean_hit_count": 0.9473684210526315,
+          "p_value": 0.00042763936227556177,
+          "bonferroni_q_value": 0.005986951071857865,
+          "bh_q_value": 0.001995650357285955
+        }
+      ]
+    },
+    "row_level_lottery_type": {
+      "family_size": 3,
+      "bonferroni_threshold": 0.016666666666666666,
+      "bh_fdr_threshold": 0.05,
+      "significant_candidates": [
+        {
+          "lottery_type": "DAILY_539",
+          "n_rows": 34680,
+          "n_distinct_draws": 1550,
+          "n_strategies": 15,
+          "mean_hit_count": 0.6570934256055363,
+          "mean_hit_count_ci": [
+            0.6494983913134544,
+            0.6646884598976182
+          ],
+          "sd_hit_count": 0.7216409880324494,
+          "baseline_mean_hit_count": 0.6410256410256411,
+          "mean_diff_vs_baseline": 0.016067784579895217,
+          "p_value_vs_baseline": 3.37699154649747e-05,
+          "m1_plus_rate": 0.5208189158016148,
+          "m2_plus_rate": 0.12494232987312572,
+          "m3_plus_rate": 0.011216839677047289,
+          "exact_hit_rate": 0.0
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "n_rows": 36104,
+          "n_distinct_draws": 1551,
+          "n_strategies": 10,
+          "mean_hit_count": 0.9674274318635054,
+          "mean_hit_count_ci": [
+            0.9588090670192984,
+            0.9760457967077125
+          ],
+          "sd_hit_count": 0.83551537193205,
+          "baseline_mean_hit_count": 0.9473684210526315,
+          "mean_diff_vs_baseline": 0.020059010810873912,
+          "p_value_vs_baseline": 5.0725860936774584e-06,
+          "m1_plus_rate": 0.6822235763350322,
+          "m2_plus_rate": 0.23941945490804342,
+          "m3_plus_rate": 0.04348548637270109,
+          "exact_hit_rate": 0.0,
+          "special_hit": {
+            "n_rows": 9000,
+            "mean": 0.11811111111111111,
+            "ci": [
+              0.1114433635490017,
+              0.12477885867322053
+            ],
+            "sd": 0.3227396420386096,
+            "baseline": 0.125,
+            "mean_diff_vs_baseline": -0.006888888888888889,
+            "p_value_vs_baseline": 0.04287067068437696
+          }
+        }
+      ]
+    }
+  },
+  "candidate_classification": "CANDIDATES_FOUND_NEED_MORE_OOS",
+  "null_findings": [
+    "No cross-year confirmed positive signal survived the tail-window check.",
+    "BIG_LOTTO row-level mean hit_count is effectively baseline-equivalent.",
+    "POWER_LOTTO special-zone remains display-only and does not justify scoring promotion.",
+    "3_STAR and 4_STAR have draw-side data but no replay coverage in the strategy universe, so replay-based signal discovery is insufficient for those types.",
+    "The strongest in-sample strategy-level candidates fail tail OOS confirmation."
+  ],
+  "warnings": [
+    "Results are historical replay evidence only and are not betting advice.",
+    "A corrected in-sample candidate does not equal deployable signal without stable OOS evidence.",
+    "Lifecycle labels must remain visible; zero-row and unresolved strategies are intentionally retained."
+  ],
+  "required_completion_check": [
+    "是否真的完成",
+    "測試結果 PASS / FAIL / NOT RUN",
+    "仍卡住的唯一問題",
+    "修改檔案清單",
+    "staged / commit / push 狀態",
+    "是否允許進入下一輪",
+    "Final Classification"
+  ]
+}

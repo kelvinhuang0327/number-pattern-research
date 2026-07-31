@@ -7,11 +7,14 @@
   注2: Cold Numbers (冷號逆向, window=100)
   注3: Tail Balance (尾數平衡覆蓋, window=100)
 
-驗證結果 (1500期, 2026-02-23 更新):
-  - 1500期 Edge: +1.46% (ROBUST, 三窗口全正)
-  - 150p=+1.86%, 500p=+2.12%, 1500p=+1.46%
+歷史回測紀錄 (1500期, 2026-02-23 更新; 2026-07-25 legacy-continuity 訂正):
+  - 歷史數字: 150p=+1.86%, 500p=+2.12%, 1500p=+1.46%（另一輪回測曾記錄 1500p=+0.98%，
+    兩者互相矛盾，皆不作為目前已確立的優勢依據）
   - 注2 (Cold) 改用 pool=12 + Sum-Range Constraint (均值回歸 Lift=1.495x)
   - 零重疊, 覆蓋 18/49 號碼
+
+evidence_status=HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED
+⚠️ No reliable predictive advantage is currently established for this strategy.
 
 用法:
     python3 tools/predict_biglotto_triple_strike.py
@@ -26,8 +29,6 @@ from scipy.fft import fft, fftfreq
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
-
-from lottery_api.database import DatabaseManager
 
 MAX_NUM = 49
 _SUM_WIN = 300   # sum 統計動態窗口
@@ -91,7 +92,8 @@ def cold_numbers_bet(history, window=100, exclude=None,
     1. 取近 window 期頻率最低的 pool_size 個冷號候選池
     2. 從候選池枚舉 C(pool_size, 6) 組合，
        選出 sum 最接近「前期結構預測目標範圍」中點的組合
-    驗證: 1500期 Edge +1.46% (vs 原版 +1.06%), ROBUST, 三窗口全正
+    歷史回測紀錄: 1500期 Edge +1.46% (vs 原版 +1.06%) — evidence_status=
+    HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED
     """
     exclude = exclude or set()
     recent = history[-window:] if len(history) >= window else history
@@ -173,6 +175,8 @@ def generate_triple_strike(history):
 
 
 def main():
+    from lottery_api.database import DatabaseManager
+
     db_path = os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db')
     db = DatabaseManager(db_path)
     draws = sorted(db.get_all_draws('BIG_LOTTO'), key=lambda x: (x['date'], x['draw']))
@@ -190,7 +194,8 @@ def main():
     print(f"  大樂透 Triple Strike 3注預測 — 第 {next_draw} 期")
     print("=" * 70)
     print(f"  策略: Triple Strike (Fourier + Cold + Tail)")
-    print(f"  驗證: 1500期 Edge +0.98%, STABLE")
+    print(f"  evidence_status: HISTORICAL_RESEARCH_ONLY, current_significance: NOT_ESTABLISHED")
+    print(f"  警告: No reliable predictive advantage is currently established.")
     print(f"  上期: {last_draw['draw']} → {last_draw['numbers']} 特:{last_draw.get('special', '?')}")
     print("=" * 70)
     print()
@@ -219,7 +224,8 @@ def main():
     print("=" * 70)
     print(f"  費用: 3注 × $100 = $300")
     print(f"  基準 M3+: 5.49% (3注隨機)")
-    print(f"  實測 M3+: 6.95% (Edge +1.46%, 注2 Sum-Constrained)")
+    print(f"  歷史回測 M3+: 6.95% (Edge +1.46%, 注2 Sum-Constrained) — HISTORICAL_RESEARCH_ONLY")
+    print(f"  警告: No reliable predictive advantage is currently established.")
     print("=" * 70)
 
 

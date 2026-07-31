@@ -1,0 +1,5 @@
+hook_name,expected,present,status,line,evidence_type,evidence,notes
+scheduler.load_data,True,True,PASS,164,call,scheduler.load_data(),expected live hook reference present
+refresh_hedge_fund_outputs,False,False,PASS,,call_or_name,,removed / no longer part of active or disabled surface
+weight_adjuster,False,False,PASS,,import_from,,removed / no longer part of active or disabled surface
+learning_integrator,False,False,PASS,,import_from,,removed / no longer part of active or disabled surface

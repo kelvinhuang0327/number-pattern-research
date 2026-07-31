@@ -1,0 +1,1725 @@
+[
+  {
+    "adapter_subset": "adapt_predict_biglotto_echo_mixed_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [
+        "best_subset_for_size",
+        "smallest_within_1_hit_of_full_cohort",
+        "smallest_within_3_hit_of_full_cohort",
+        "best_subset_for_size",
+        "best_subset_for_size",
+        "best_subset_for_size"
+      ],
+      "windows": [
+        "30",
+        "30",
+        "30",
+        "150",
+        "750",
+        "1500"
+      ]
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "104",
+      "best_subset_for_size": "true",
+      "coverage_rate": "0.06423718",
+      "duplicate_hit_events": "0",
+      "mean_pairwise_jaccard": "",
+      "period_count": "1619",
+      "rank_within_subset_size": "1",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "14.0000",
+      "rank_variance_by_coverage_rate": "67.5000",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+      "top_1_window_count": "1",
+      "top_3_window_count": "1",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "1"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "1"
+  },
+  {
+    "adapter_subset": "adapt_predict_biglotto_echo_phase2_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "96",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.05929586",
+      "duplicate_hit_events": "0",
+      "mean_pairwise_jaccard": "",
+      "period_count": "1619",
+      "rank_within_subset_size": "2",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "16.5000",
+      "rank_variance_by_coverage_rate": "90.7500",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "1",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "1"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "1"
+  },
+  {
+    "adapter_subset": "adapt_biglotto_p0_2bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "73",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.04508956",
+      "duplicate_hit_events": "0",
+      "mean_pairwise_jaccard": "",
+      "period_count": "1619",
+      "rank_within_subset_size": "3",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "29.5000",
+      "rank_variance_by_coverage_rate": "2.2500",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "1"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "1"
+  },
+  {
+    "adapter_subset": "adapt_predict_biglotto_echo_2bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "71",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.04385423",
+      "duplicate_hit_events": "0",
+      "mean_pairwise_jaccard": "",
+      "period_count": "1619",
+      "rank_within_subset_size": "4",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "28.0000",
+      "rank_variance_by_coverage_rate": "3.5000",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "1"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "1"
+  },
+  {
+    "adapter_subset": "adapt_predict_biglotto_echo_phase2_2bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "67",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.04138357",
+      "duplicate_hit_events": "0",
+      "mean_pairwise_jaccard": "",
+      "period_count": "1619",
+      "rank_within_subset_size": "5",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "29.0000",
+      "rank_variance_by_coverage_rate": "3.5000",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "1"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "1"
+  },
+  {
+    "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_mixed_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [
+        "best_subset_for_size",
+        "p361_compact_pair_check",
+        "best_subset_for_size",
+        "p361_compact_pair_check",
+        "smallest_within_1_hit_of_full_cohort",
+        "smallest_within_3_hit_of_full_cohort",
+        "best_subset_for_size",
+        "p361_compact_pair_check",
+        "smallest_within_1_hit_of_full_cohort",
+        "smallest_within_3_hit_of_full_cohort",
+        "best_subset_for_size",
+        "p361_compact_pair_check",
+        "smallest_within_3_hit_of_full_cohort"
+      ],
+      "windows": [
+        "30",
+        "30",
+        "150",
+        "150",
+        "150",
+        "150",
+        "750",
+        "750",
+        "750",
+        "750",
+        "1500",
+        "1500",
+        "1500"
+      ]
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "168",
+      "best_subset_for_size": "true",
+      "coverage_rate": "0.10376776",
+      "duplicate_hit_events": "9",
+      "mean_pairwise_jaccard": "0.05357143",
+      "period_count": "1619",
+      "rank_within_subset_size": "1",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "4.0000",
+      "rank_variance_by_coverage_rate": "5.0000",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 4 window(s).",
+      "top_1_window_count": "1",
+      "top_3_window_count": "2",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "4"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "2"
+  },
+  {
+    "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_phase2_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "159",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.09820877",
+      "duplicate_hit_events": "10",
+      "mean_pairwise_jaccard": "0.06289308",
+      "period_count": "1619",
+      "rank_within_subset_size": "2",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "6.5000",
+      "rank_variance_by_coverage_rate": "13.2500",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 3 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "1",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "3"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "2"
+  },
+  {
+    "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "135",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.08338481",
+      "duplicate_hit_events": "9",
+      "mean_pairwise_jaccard": "0.06666667",
+      "period_count": "1619",
+      "rank_within_subset_size": "3",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "19.7500",
+      "rank_variance_by_coverage_rate": "39.6875",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "1"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "2"
+  },
+  {
+    "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_phase2_2bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "130",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.08029648",
+      "duplicate_hit_events": "10",
+      "mean_pairwise_jaccard": "0.07692308",
+      "period_count": "1619",
+      "rank_within_subset_size": "4",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "20.7500",
+      "rank_variance_by_coverage_rate": "39.6875",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "1"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "2"
+  },
+  {
+    "adapter_subset": "adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "108",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.06670784",
+      "duplicate_hit_events": "92",
+      "mean_pairwise_jaccard": "0.85185185",
+      "period_count": "1619",
+      "rank_within_subset_size": "5",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "16.0000",
+      "rank_variance_by_coverage_rate": "4.5000",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "1"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "2"
+  },
+  {
+    "adapter_subset": "adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_mixed_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "107",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.06609018",
+      "duplicate_hit_events": "64",
+      "mean_pairwise_jaccard": "0.59813084",
+      "period_count": "1619",
+      "rank_within_subset_size": "6",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "16.5000",
+      "rank_variance_by_coverage_rate": "33.2500",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "1"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "2"
+  },
+  {
+    "adapter_subset": "adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_mixed_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "104",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.06423718",
+      "duplicate_hit_events": "71",
+      "mean_pairwise_jaccard": "0.68269231",
+      "period_count": "1619",
+      "rank_within_subset_size": "7",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "16.0000",
+      "rank_variance_by_coverage_rate": "49.0000",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "1"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "2"
+  },
+  {
+    "adapter_subset": "adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "103",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.06361952",
+      "duplicate_hit_events": "64",
+      "mean_pairwise_jaccard": "0.62135922",
+      "period_count": "1619",
+      "rank_within_subset_size": "8",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "17.7500",
+      "rank_variance_by_coverage_rate": "58.1875",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "1"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "2"
+  },
+  {
+    "adapter_subset": "adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_phase2_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "96",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.05929586",
+      "duplicate_hit_events": "67",
+      "mean_pairwise_jaccard": "0.69791667",
+      "period_count": "1619",
+      "rank_within_subset_size": "9",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "19.7500",
+      "rank_variance_by_coverage_rate": "58.1875",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "1"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "2"
+  },
+  {
+    "adapter_subset": "adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_2bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "74",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.04570723",
+      "duplicate_hit_events": "64",
+      "mean_pairwise_jaccard": "0.86486486",
+      "period_count": "1619",
+      "rank_within_subset_size": "10",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "29.7500",
+      "rank_variance_by_coverage_rate": "0.6875",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "1"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "2"
+  },
+  {
+    "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [
+        "best_subset_for_size",
+        "best_subset_for_size",
+        "smallest_within_1_hit_of_full_cohort"
+      ],
+      "windows": [
+        "750",
+        "1500",
+        "1500"
+      ]
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "171",
+      "best_subset_for_size": "true",
+      "coverage_rate": "0.10562075",
+      "duplicate_hit_events": "102",
+      "mean_pairwise_jaccard": "0.32277212",
+      "period_count": "1619",
+      "rank_within_subset_size": "1",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "6.2500",
+      "rank_variance_by_coverage_rate": "37.6875",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 4 window(s).",
+      "top_1_window_count": "2",
+      "top_3_window_count": "2",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "4"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "3"
+  },
+  {
+    "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_mixed_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "170",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.10500309",
+      "duplicate_hit_events": "74",
+      "mean_pairwise_jaccard": "0.24287512",
+      "period_count": "1619",
+      "rank_within_subset_size": "2",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "7.0000",
+      "rank_variance_by_coverage_rate": "6.0000",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 4 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "4"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "3"
+  },
+  {
+    "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_mixed_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [
+        "best_subset_for_size",
+        "best_subset_for_size"
+      ],
+      "windows": [
+        "30",
+        "150"
+      ]
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "168",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.10376776",
+      "duplicate_hit_events": "80",
+      "mean_pairwise_jaccard": "0.26764347",
+      "period_count": "1619",
+      "rank_within_subset_size": "3",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "6.5000",
+      "rank_variance_by_coverage_rate": "5.2500",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 4 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "1",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "4"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "3"
+  },
+  {
+    "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "166",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.10253243",
+      "duplicate_hit_events": "74",
+      "mean_pairwise_jaccard": "0.25030632",
+      "period_count": "1619",
+      "rank_within_subset_size": "4",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "8.2500",
+      "rank_variance_by_coverage_rate": "6.1875",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 3 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "3"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "3"
+  },
+  {
+    "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_phase2_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "159",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.09820877",
+      "duplicate_hit_events": "77",
+      "mean_pairwise_jaccard": "0.27924428",
+      "period_count": "1619",
+      "rank_within_subset_size": "5",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "10.2500",
+      "rank_variance_by_coverage_rate": "6.1875",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 3 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "3"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "3"
+  },
+  {
+    "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_2bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "137",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.08462014",
+      "duplicate_hit_events": "74",
+      "mean_pairwise_jaccard": "0.33615154",
+      "period_count": "1619",
+      "rank_within_subset_size": "6",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "21.2500",
+      "rank_variance_by_coverage_rate": "54.1875",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "1"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "3"
+  },
+  {
+    "adapter_subset": "adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "108",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.06670784",
+      "duplicate_hit_events": "163",
+      "mean_pairwise_jaccard": "0.71863446",
+      "period_count": "1619",
+      "rank_within_subset_size": "8",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "19.0000",
+      "rank_variance_by_coverage_rate": "3.5000",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "1"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "3"
+  },
+  {
+    "adapter_subset": "adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "108",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.06670784",
+      "duplicate_hit_events": "159",
+      "mean_pairwise_jaccard": "0.71596645",
+      "period_count": "1619",
+      "rank_within_subset_size": "7",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "19.5000",
+      "rank_variance_by_coverage_rate": "5.2500",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "1"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "3"
+  },
+  {
+    "adapter_subset": "adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_mixed_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "107",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.06609018",
+      "duplicate_hit_events": "135",
+      "mean_pairwise_jaccard": "0.71522934",
+      "period_count": "1619",
+      "rank_within_subset_size": "9",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "19.5000",
+      "rank_variance_by_coverage_rate": "11.2500",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "1"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "3"
+  },
+  {
+    "adapter_subset": "adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_phase2_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "103",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.06361952",
+      "duplicate_hit_events": "131",
+      "mean_pairwise_jaccard": "0.72804692",
+      "period_count": "1619",
+      "rank_within_subset_size": "10",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "22.0000",
+      "rank_variance_by_coverage_rate": "21.0000",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "1"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "3"
+  },
+  {
+    "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [
+        "best_subset_for_size"
+      ],
+      "windows": [
+        "750"
+      ]
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "171",
+      "best_subset_for_size": "true",
+      "coverage_rate": "0.10562075",
+      "duplicate_hit_events": "173",
+      "mean_pairwise_jaccard": "0.38983909",
+      "period_count": "1619",
+      "rank_within_subset_size": "2",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "9.0000",
+      "rank_variance_by_coverage_rate": "57.5000",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 4 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "2",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "4"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "4"
+  },
+  {
+    "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [
+        "best_subset_for_size"
+      ],
+      "windows": [
+        "1500"
+      ]
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "171",
+      "best_subset_for_size": "true",
+      "coverage_rate": "0.10562075",
+      "duplicate_hit_events": "169",
+      "mean_pairwise_jaccard": "0.39021449",
+      "period_count": "1619",
+      "rank_within_subset_size": "1",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "9.5000",
+      "rank_variance_by_coverage_rate": "64.2500",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 4 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "2",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "4"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "4"
+  },
+  {
+    "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_mixed_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [
+        "best_subset_for_size",
+        "best_subset_for_size"
+      ],
+      "windows": [
+        "30",
+        "150"
+      ]
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "170",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.10500309",
+      "duplicate_hit_events": "145",
+      "mean_pairwise_jaccard": "0.39047486",
+      "period_count": "1619",
+      "rank_within_subset_size": "3",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "9.7500",
+      "rank_variance_by_coverage_rate": "18.1875",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 4 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "4"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "4"
+  },
+  {
+    "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_phase2_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "166",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.10253243",
+      "duplicate_hit_events": "141",
+      "mean_pairwise_jaccard": "0.39843726",
+      "period_count": "1619",
+      "rank_within_subset_size": "4",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "12.2500",
+      "rank_variance_by_coverage_rate": "12.1875",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 3 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "3"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "4"
+  },
+  {
+    "adapter_subset": "adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [],
+      "windows": []
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "108",
+      "best_subset_for_size": "false",
+      "coverage_rate": "0.06670784",
+      "duplicate_hit_events": "230",
+      "mean_pairwise_jaccard": "0.71946929",
+      "period_count": "1619",
+      "rank_within_subset_size": "5",
+      "subset_is_full_cohort": "false"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "21.2500",
+      "rank_variance_by_coverage_rate": "5.1875",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "1"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "4"
+  },
+  {
+    "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet",
+    "caveats": [
+      "Historical descriptive evidence only.",
+      "No future prediction guarantee.",
+      "No betting advice.",
+      "No DB open/write.",
+      "No production registry import.",
+      "No deploy.",
+      "No new scoring cohort.",
+      "No adapter calls.",
+      "No blended leaderboard.",
+      "Shape-only and blocked targets remain excluded."
+    ],
+    "compact_candidate_flags": {
+      "row_types": [
+        "best_subset_for_size",
+        "best_subset_for_size",
+        "best_subset_for_size",
+        "best_subset_for_size"
+      ],
+      "windows": [
+        "30",
+        "150",
+        "750",
+        "1500"
+      ]
+    },
+    "p361_coverage_utility": {
+      "any_hit_count": "171",
+      "best_subset_for_size": "true",
+      "coverage_rate": "0.10562075",
+      "duplicate_hit_events": "240",
+      "mean_pairwise_jaccard": "0.45768700",
+      "period_count": "1619",
+      "rank_within_subset_size": "1",
+      "subset_is_full_cohort": "true"
+    },
+    "p362_stability": {
+      "average_rank_by_coverage_rate": "11.0000",
+      "rank_variance_by_coverage_rate": "67.0000",
+      "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 4 window(s).",
+      "top_1_window_count": "0",
+      "top_3_window_count": "0",
+      "windows_evaluated": "4",
+      "within_3_hits_window_count": "4"
+    },
+    "scope": {
+      "adapter_calls": false,
+      "betting_advice": false,
+      "blended_leaderboard": false,
+      "db_opened": false,
+      "db_written": false,
+      "deployed": false,
+      "future_prediction_guarantee": false,
+      "historical_descriptive_evidence_only": true,
+      "new_scoring_cohort": false,
+      "production_registry_imported": false,
+      "shape_only_and_blocked_targets_excluded": true
+    },
+    "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+    "subset_size": "5"
+  }
+]

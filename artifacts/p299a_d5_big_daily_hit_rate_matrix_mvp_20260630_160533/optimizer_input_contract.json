@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "D5HitRateMatrixMVPOptimizerInput",
+  "type": "object",
+  "required": [
+    "lottery",
+    "strategy_id",
+    "window_segment",
+    "top_k",
+    "sample_size_draws",
+    "sample_size_rows",
+    "metric_family",
+    "readiness_status",
+    "baseline_mode"
+  ],
+  "properties": {
+    "lottery": {
+      "type": "string",
+      "enum": [
+        "BIG_LOTTO",
+        "DAILY_539"
+      ]
+    },
+    "strategy_id": {
+      "type": "string"
+    },
+    "window_segment": {
+      "type": "string",
+      "minLength": 1
+    },
+    "top_k": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "metric_family": {
+      "type": "string",
+      "enum": [
+        "main_number_hit_count"
+      ]
+    },
+    "sample_size_draws": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "sample_size_rows": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "m1_rate": {
+      "type": [
+        "number",
+        "string"
+      ]
+    },
+    "m2_rate": {
+      "type": [
+        "number",
+        "string"
+      ]
+    },
+    "m3_rate": {
+      "type": [
+        "number",
+        "string"
+      ]
+    },
+    "m3plus_hit_rate": {
+      "type": [
+        "number",
+        "string"
+      ]
+    },
+    "baseline_mode": {
+      "type": "string"
+    },
+    "baseline_value": {
+      "type": [
+        "number",
+        "string",
+        "null"
+      ]
+    },
+    "delta": {
+      "type": [
+        "number",
+        "string",
+        "null"
+      ]
+    },
+    "delta_pp": {
+      "type": [
+        "number",
+        "string",
+        "null"
+      ]
+    },
+    "inferential_status": {
+      "type": "string"
+    },
+    "readiness_status": {
+      "type": "string"
+    },
+    "eligibility_status": {
+      "type": "string"
+    },
+    "exclusion_reason": {
+      "type": "string"
+    },
+    "source_artifact": {
+      "type": "string"
+    }
+  },
+  "readiness_gates": [
+    "Do not consume rows with inferential_status NULL or NOT_READY as edge.",
+    "Do not consume rows with readiness_status NOT_READY.",
+    "Do not consume POWER_LOTTO full prize-aware rows in this MVP.",
+    "Require explicit sample_size_draws, sample_size_rows, window_segment, and top_k.",
+    "Require baseline_mode other than not_computed before interpreting delta or delta_pp.",
+    "Retrospective hit rates are display/research inputs only and are not future prediction claims."
+  ]
+}

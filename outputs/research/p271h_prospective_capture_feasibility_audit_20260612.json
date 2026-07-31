@@ -1,0 +1,564 @@
+{
+  "task_id": "P271H",
+  "generated_at": "2026-06-12T16:01:03Z",
+  "repo_head_before_task": "369354787009ffe65f3f99ca47d8f00f7a693c23",
+  "branch": "task/p271h-prospective-capture-feasibility-audit",
+  "mode": "prospective_capture_feasibility_audit",
+  "design_and_audit_only": true,
+  "p271g_merge_commit": "369354787009ffe65f3f99ca47d8f00f7a693c23",
+  "p271g_source_commit": "1ff4fc385a81a20feeefaff5ebc03287087da6c4",
+  "p271g_merged_at": "2026-06-12T15:47:00Z",
+  "prospective_collection_activated": false,
+  "prospective_prediction_start_at": "PENDING_SEPARATE_ACTIVATION_TASK",
+  "p271g_pending_marker_changed": false,
+  "baseline_executed": false,
+  "scorer_executed": false,
+  "adapter_executed": false,
+  "p271f_evaluation_rerun": false,
+  "strategy_comparison_or_ranking_started": false,
+  "db_access": true,
+  "db_open_mode": "sqlite_uri_mode_ro",
+  "db_write": false,
+  "db_sha256_before": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+  "db_sha256_after": "3209a533b15e7b12bb8336a6f0cf92114d18dc0ae544de71f04954bdaa1d430e",
+  "db_hash_unchanged": true,
+  "row_level_records_read": false,
+  "outcome_values_read": false,
+  "outcome_metrics_calculated": false,
+  "phase_0": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "starting_branch": "main",
+    "head_equals_origin_main": true,
+    "head_contains_p271g_merge": true,
+    "staged_files_before_task": [],
+    "requested_branch_absent_before_creation": true,
+    "p271g_files_present_and_clean": true,
+    "governance_p271g_complete_and_hold": true,
+    "prospective_collection_active_before_task": false,
+    "baseline_active_before_task": false,
+    "result": "PASS"
+  },
+  "p271g_file_integrity": {
+    "outputs/research/p271g_prize_aware_null_prospective_preregistration_20260612.json": "8ff20a9969e2e4bca3ace8fc0a6899cbafda5a31be2a9201df755704cba38092",
+    "outputs/research/p271g_prize_aware_null_prospective_preregistration_20260612.md": "4ab9ef261303b5ac9beb11077e998977bcc9358b1bbee4fa9aea70d153f12ef9",
+    "tests/test_p271g_prize_aware_null_prospective_preregistration.py": "24cf0a5163610ed78a32ca8634629a2381ff772fbef0777dc39a6e6e1ebb0645"
+  },
+  "inspected_source_paths": [
+    "lottery_api/app.py",
+    "lottery_api/database.py",
+    "lottery_api/routes/ingest.py",
+    "lottery_api/routes/prediction.py",
+    "lottery_api/utils/scheduler.py",
+    "tools/quick_predict.py",
+    "scripts/p4c3_supported_prediction_apply.py",
+    "scripts/p6_next_draw_watcher_readonly.py",
+    "scripts/p16a_replay_prediction_timestamp_schema_check.py",
+    "scripts/p17b_p14d_timestamp_backfill.py",
+    "scripts/p3ba_resolve_stale_prediction_items_dryrun.py",
+    "scripts/special3_prospective_dryrun_plan.py",
+    "lottery_api/engine/prediction_tracker.py at commit 1e56c7b46b41723ef2fb3a32dcb8690325cd04f0",
+    "lottery_api/engine/snapshot_scheduler.py at commit 1e56c7b46b41723ef2fb3a32dcb8690325cd04f0",
+    "outputs/research/p271g_prize_aware_null_prospective_preregistration_20260612.json",
+    "outputs/research/p271g_prize_aware_null_prospective_preregistration_20260612.md"
+  ],
+  "inspected_schema_objects": {
+    "prediction_runs": {
+      "present": true,
+      "useful_fields": [
+        "lottery_type",
+        "latest_known_draw",
+        "strategy_name",
+        "created_at",
+        "snapshot_source",
+        "review_json"
+      ],
+      "blocking_absences": [
+        "target_draw",
+        "draw_close_at",
+        "preregistration_version",
+        "prospective_protocol_version",
+        "activation_version",
+        "source_version",
+        "immutable_eligibility_status",
+        "ineligibility_reason"
+      ],
+      "prospective_unique_constraint": false
+    },
+    "prediction_items": {
+      "present": true,
+      "useful_fields": [
+        "run_id",
+        "bet_index",
+        "special",
+        "created_at",
+        "strategy_name"
+      ],
+      "unique_run_id_bet_index": false,
+      "power_second_zone_not_null_enforced": false,
+      "append_only_enforced": false
+    },
+    "prediction_results": {
+      "present": true,
+      "separate_from_prediction_payload": true,
+      "unique_item_id": true,
+      "prospective_membership_fixed_before_join": false
+    },
+    "snapshot_schedule": {
+      "present": true,
+      "unique_lottery_type_target_draw": true,
+      "draw_close_at_present": false,
+      "timezone_present": false,
+      "authoritative_schedule_version_present": false,
+      "mutable": true
+    },
+    "strategy_prediction_replays": {
+      "present": true,
+      "retrospective_store": true,
+      "target_draw_present": true,
+      "bet_index_present": true,
+      "prediction_timestamp_columns_present": true,
+      "prospective_protocol_fields_present": false,
+      "prediction_and_actual_payloads_co_located": true,
+      "append_only_enforced": false
+    },
+    "draws": {
+      "present": true,
+      "unique_lottery_type_draw": true,
+      "draw_date_present": true,
+      "draw_close_at_present": false
+    },
+    "triggers": {
+      "prospective_immutability_triggers": [],
+      "post_close_amendment_guards": []
+    },
+    "bounded_structural_observations": {
+      "prediction_run_created_at_nulls": 0,
+      "prediction_item_created_at_nulls": 0,
+      "prediction_item_bet_index_nulls": 0,
+      "prediction_run_semantic_duplicate_groups_at_observed_shape": 0,
+      "prediction_item_run_bet_duplicate_groups": 0,
+      "power_prediction_item_count": 245,
+      "power_prediction_item_second_zone_nulls": 236,
+      "snapshot_target_draw_missing": 0
+    }
+  },
+  "executed_sql_statements": [
+    "SELECT name, type, tbl_name, sql FROM sqlite_master WHERE type IN (\"table\",\"index\",\"trigger\") AND (name IN (\"prediction_runs\",\"prediction_items\",\"prediction_results\",\"snapshot_schedule\",\"strategy_prediction_replays\",\"draws\") OR tbl_name IN (\"prediction_runs\",\"prediction_items\",\"prediction_results\",\"snapshot_schedule\",\"strategy_prediction_replays\",\"draws\")) ORDER BY type, name",
+    "SELECT COUNT(*) AS row_count, SUM(CASE WHEN created_at IS NULL THEN 1 ELSE 0 END) AS created_at_nulls, MIN(created_at) AS min_created_at, MAX(created_at) AS max_created_at FROM prediction_runs",
+    "SELECT COUNT(*) AS duplicate_group_count FROM (SELECT lottery_type, latest_known_draw, strategy_name, created_at, COUNT(*) AS n FROM prediction_runs GROUP BY lottery_type, latest_known_draw, strategy_name, created_at HAVING COUNT(*) > 1)",
+    "SELECT COUNT(*) AS row_count, SUM(CASE WHEN created_at IS NULL THEN 1 ELSE 0 END) AS created_at_nulls, SUM(CASE WHEN bet_index IS NULL THEN 1 ELSE 0 END) AS bet_index_nulls FROM prediction_items",
+    "SELECT COUNT(*) AS duplicate_group_count FROM (SELECT run_id, bet_index, COUNT(*) AS n FROM prediction_items GROUP BY run_id, bet_index HAVING COUNT(*) > 1)",
+    "SELECT COUNT(*) AS power_item_count, SUM(CASE WHEN pi.special IS NULL THEN 1 ELSE 0 END) AS power_special_nulls FROM prediction_items pi JOIN prediction_runs pr ON pr.id=pi.run_id WHERE pr.lottery_type=\"POWER_LOTTO\"",
+    "SELECT COUNT(*) AS row_count, SUM(CASE WHEN resolved_at IS NULL THEN 1 ELSE 0 END) AS resolved_at_nulls FROM prediction_results",
+    "SELECT COUNT(*) AS row_count, SUM(CASE WHEN scheduled_at IS NULL THEN 1 ELSE 0 END) AS scheduled_at_nulls, SUM(CASE WHEN target_draw IS NULL OR target_draw=\"\" THEN 1 ELSE 0 END) AS target_draw_missing FROM snapshot_schedule",
+    "SELECT COUNT(*) AS row_count, SUM(CASE WHEN generated_at IS NULL THEN 1 ELSE 0 END) AS generated_at_nulls, SUM(CASE WHEN history_cutoff_draw IS NULL OR history_cutoff_draw=\"\" THEN 1 ELSE 0 END) AS history_cutoff_missing, SUM(CASE WHEN predicted_special IS NULL THEN 1 ELSE 0 END) AS predicted_special_nulls FROM strategy_prediction_replays",
+    "SELECT COUNT(*) AS duplicate_group_count FROM (SELECT lottery_type, target_draw, strategy_id, replay_run_id, COUNT(*) AS n FROM strategy_prediction_replays GROUP BY lottery_type, target_draw, strategy_id, replay_run_id HAVING COUNT(*) > 1)",
+    "PRAGMA table_info(prediction_runs)",
+    "PRAGMA index_list(prediction_runs)",
+    "PRAGMA foreign_key_list(prediction_runs)",
+    "PRAGMA table_info(prediction_items)",
+    "PRAGMA index_list(prediction_items)",
+    "PRAGMA foreign_key_list(prediction_items)",
+    "PRAGMA table_info(prediction_results)",
+    "PRAGMA index_list(prediction_results)",
+    "PRAGMA foreign_key_list(prediction_results)",
+    "PRAGMA table_info(snapshot_schedule)",
+    "PRAGMA index_list(snapshot_schedule)",
+    "PRAGMA foreign_key_list(snapshot_schedule)",
+    "PRAGMA table_info(strategy_prediction_replays)",
+    "PRAGMA index_list(strategy_prediction_replays)",
+    "PRAGMA foreign_key_list(strategy_prediction_replays)",
+    "PRAGMA table_info(draws)",
+    "PRAGMA index_list(draws)",
+    "PRAGMA foreign_key_list(draws)"
+  ],
+  "current_prediction_flow": [
+    {
+      "entry_point": "POST /api/predict and POST /api/predict-from-backend",
+      "behavior": "Generates and returns a prediction response without persisting an auditable prospective record.",
+      "prospective_status": "BLOCKED"
+    },
+    {
+      "entry_point": "tools/quick_predict.py --dry-run",
+      "behavior": "Reads history through SQLite URI mode=ro, derives a next-draw label by numeric suffix increment, and writes an artifact outside the database.",
+      "prospective_status": "PARTIAL"
+    },
+    {
+      "entry_point": "scripts/p4c3_supported_prediction_apply.py --apply",
+      "behavior": "Validates quick-predict artifacts, opens a read-only preflight connection, then uses BEGIN IMMEDIATE to insert prediction_runs and prediction_items after an explicit legacy apply id.",
+      "prospective_status": "PARTIAL",
+      "gaps": [
+        "No target_draw column on the persisted prediction.",
+        "No authoritative draw-close comparison.",
+        "No protocol or activation membership.",
+        "Duplicate check is a preflight search over notes/review_json rather than an atomic semantic unique key.",
+        "The apply id is historical and is not a prospective activation mechanism."
+      ]
+    },
+    {
+      "entry_point": "Historical engine.prediction_tracker and engine.snapshot_scheduler",
+      "behavior": "The last tracked implementation created snapshots and inferred the target from latest-known draw plus one, but both modules are deleted from the current tree while ingest.py still imports them.",
+      "prospective_status": "BLOCKED"
+    },
+    {
+      "entry_point": "Replay apply and backfill scripts",
+      "behavior": "Populate the retrospective strategy_prediction_replays store and include repair, update, rollback, and reconstructed paths.",
+      "prospective_status": "NOT_AN_ELIGIBLE_PROSPECTIVE_STORE"
+    }
+  ],
+  "current_result_ingestion_flow": [
+    {
+      "step": "Official draw ingestion",
+      "path": "lottery_api/routes/ingest.py",
+      "behavior": "A fetched draw can be inserted into draws, after which refresh and schedule hooks are attempted."
+    },
+    {
+      "step": "Result resolution",
+      "path": "engine.prediction_tracker.resolve_pending",
+      "behavior": "The route imports this resolver, but the module is absent from the current tree. Its last tracked implementation selected the first draw numerically after latest_known_draw, inserted a separate prediction_results row, and changed item status."
+    },
+    {
+      "step": "Separation finding",
+      "behavior": "Prediction payload and result payload use separate tables, but prospective membership is not frozen before resolution and target identity is not stored on prediction rows."
+    }
+  ],
+  "readiness_by_dimension": {
+    "identity": {
+      "status": "BLOCKED",
+      "evidence": "prediction_runs has no target_draw, source_version, protocol version, activation version, or immutable identity. target_draw exists only in snapshot_schedule or nested artifact metadata.",
+      "remediation": "Persist an immutable batch and ticket identity with canonical lottery_type, target_draw, source/version, strategy/version, bet_index, prediction_created_at, activation_version, and a deterministic content hash."
+    },
+    "timestamp availability": {
+      "status": "PARTIAL",
+      "evidence": "created_at fields exist, but are nullable SQLite defaults and are not explicitly defined as prediction_created_at with causal semantics.",
+      "remediation": "Require an application-supplied normalized UTC prediction_created_at, validate it before insert, and retain the database insertion time separately."
+    },
+    "authoritative draw-close resolution": {
+      "status": "BLOCKED",
+      "evidence": "No draw_close_at field or official-source-backed resolver exists; only draw dates and inferred weekday schedules were found.",
+      "remediation": "Implement a versioned, official-source-verified lottery calendar resolver that produces draw_close_at and fails closed for holidays, exceptions, or unknown schedules."
+    },
+    "timezone normalization": {
+      "status": "BLOCKED",
+      "evidence": "SQLite CURRENT_TIMESTAMP, local astimezone output, naive draw dates, and mixed timestamp formats coexist without a single comparison contract.",
+      "remediation": "Resolve source schedules in Asia/Taipei, convert both prediction_created_at and draw_close_at to canonical UTC instants, and reject naive or ambiguous input."
+    },
+    "database uniqueness": {
+      "status": "PARTIAL",
+      "evidence": "snapshot_schedule and replay rows have useful unique constraints, but prediction_runs and prediction_items lack a prospective semantic unique key and target_draw is absent.",
+      "remediation": "Add an atomic unique constraint over activation, lottery, target draw, source/version, strategy/version, and ticket identity."
+    },
+    "application duplicate prevention": {
+      "status": "PARTIAL",
+      "evidence": "The controlled apply script checks a fingerprint in notes/review_json before writing, but the check and insert are not protected by a matching database unique constraint.",
+      "remediation": "Use one transaction plus a database unique key; treat uniqueness conflicts as idempotent rejection and never create a second eligible prediction."
+    },
+    "immutability": {
+      "status": "BLOCKED",
+      "evidence": "No append-only trigger or repository boundary prevents UPDATE or DELETE of prediction payloads.",
+      "remediation": "Use append-only prospective tables with database triggers rejecting UPDATE and DELETE and a separate immutable amendment event stream."
+    },
+    "update/amendment protection": {
+      "status": "BLOCKED",
+      "evidence": "Existing code includes status updates, metadata updates, replay timestamp backfills, rollback deletes, and broad administrative deletion capability; no post-close payload guard exists.",
+      "remediation": "Forbid payload mutation, represent corrections as new ineligible amendment events, and automatically invalidate affected clusters without replacing originals."
+    },
+    "outcome separation": {
+      "status": "PARTIAL",
+      "evidence": "prediction_results is separate and prediction generation does not require the result table, but membership and target identity are not frozen before outcome resolution; replay rows co-locate prediction and actual payloads.",
+      "remediation": "Freeze eligibility in the prediction ledger before any outcome join and keep outcome linkage in a separate table keyed to immutable ticket identity."
+    },
+    "POWER second zone": {
+      "status": "BLOCKED",
+      "evidence": "prediction_items.special is nullable, no conditional constraint exists, and the last scheduler implementation stored one shared second-zone value only on the first POWER ticket.",
+      "remediation": "Require a prediction-time second-zone value on every eligible POWER ticket, record its source/version, and reject the whole affected cluster when absent."
+    },
+    "prospective membership": {
+      "status": "BLOCKED",
+      "evidence": "No preregistration_version, prospective_protocol_version, activation_version, immutable eligibility decision, or rejection reason is persisted.",
+      "remediation": "Create a prospective batch/ticket ledger that computes and stores eligibility once at insert, before outcomes, with fail-closed rejection reasons."
+    },
+    "draw clustering": {
+      "status": "PARTIAL",
+      "evidence": "snapshot_schedule and replay rows can group by lottery_type and target_draw, but production prediction rows cannot do so without a non-authoritative derivation from latest_known_draw.",
+      "remediation": "Persist a canonical target_draw directly on every batch and ticket, validate it against the authoritative schedule, and use lottery_type plus target_draw as the cluster key."
+    },
+    "audit trail": {
+      "status": "PARTIAL",
+      "evidence": "created_at, notes, review_json, hashes, and schedule rows provide fragments of provenance, but there is no immutable event log, actor identity, deployment version, or activation artifact reference.",
+      "remediation": "Record append-only capture events with actor/service identity, source artifact hash, code/deployment commit, schedule version, transaction id, and activation artifact commit."
+    },
+    "backfill exclusion": {
+      "status": "BLOCKED",
+      "evidence": "The historical scheduler explicitly supported RECONSTRUCTED snapshots and replay scripts support backfill and repair; no schema rule prevents those records from being labelled prospective.",
+      "remediation": "Allow eligible membership only for LIVE_PRE_CLOSE capture mode after activation; permanently reject MANUAL, RECONSTRUCTED, BACKFILL, and post-close records."
+    },
+    "concurrent-write safety": {
+      "status": "PARTIAL",
+      "evidence": "The controlled apply path uses BEGIN IMMEDIATE, but its duplicate preflight occurs on a separate read-only connection and no semantic unique constraint closes the race.",
+      "remediation": "Perform validation and insert under one write transaction with busy timeout, foreign keys, an atomic unique constraint, and deterministic conflict handling."
+    },
+    "activation mechanism": {
+      "status": "BLOCKED",
+      "evidence": "No activation ledger, deployment gate, feature flag, or merged activation artifact exists. The P271G marker remains intentionally unresolved.",
+      "remediation": "After implementation and migration verification, merge a separate activation artifact whose merge timestamp is the earliest allowed prospective start and whose deployment checks fail closed."
+    }
+  },
+  "prediction_identity_assessment": {
+    "status": "BLOCKED",
+    "current_key": "No prospective key. prediction_items has an id and run_id/bet_index; prediction_runs lacks target_draw and source version.",
+    "database_enforcement": "Insufficient for prospective identity.",
+    "manual_override_risk": "High because metadata can be stored in mutable text fields and prediction records have no append-only guard.",
+    "required_identity": "activation_version + lottery_type + target_draw + source_id/source_version + strategy_id/strategy_version + bet_index, with prediction_created_at and content hash retained immutably."
+  },
+  "timestamp_assessment": {
+    "status": "PARTIAL",
+    "finding": "Storage timestamps exist, but they do not prove prediction creation before close and are not consistently timezone-aware.",
+    "fail_closed_today": false
+  },
+  "draw_close_assessment": {
+    "status": "BLOCKED",
+    "finding": "The repository has date and weekday inference only; it has no authoritative closing instant, exception calendar, or source verification record."
+  },
+  "timezone_assessment": {
+    "status": "BLOCKED",
+    "finding": "No single Asia/Taipei-to-UTC normalization contract is enforced across persisted timestamps and schedule dates."
+  },
+  "immutability_assessment": {
+    "status": "BLOCKED",
+    "finding": "Current stores are mutable and no trigger or repository policy protects original predicted payloads after creation or close."
+  },
+  "duplicate_prevention_assessment": {
+    "status": "PARTIAL",
+    "finding": "Some schedule/replay uniqueness and one application fingerprint guard exist, but no atomic prospective semantic key exists."
+  },
+  "outcome_separation_assessment": {
+    "status": "PARTIAL",
+    "finding": "The prediction tracker schema separates prediction and result tables, but current target/membership binding is insufficient and the live resolver module is absent."
+  },
+  "power_second_zone_assessment": {
+    "status": "BLOCKED",
+    "finding": "The field is nullable and not required per eligible POWER ticket; missing values cannot be repaired prospectively after the fact."
+  },
+  "prospective_membership_assessment": {
+    "status": "BLOCKED",
+    "preferred_model": "Separate append-only prospective batch, ticket, and event ledger rather than repurposing the retrospective replay table.",
+    "schema_change_required": true
+  },
+  "draw_cluster_assessment": {
+    "status": "PARTIAL",
+    "cluster_key": [
+      "lottery_type",
+      "target_draw"
+    ],
+    "finding": "The key is available in schedule/replay stores but not directly on persisted production predictions."
+  },
+  "audit_trail_assessment": {
+    "status": "PARTIAL",
+    "finding": "Existing timestamps and free-form provenance are useful but neither append-only nor complete enough for confirmatory evidence."
+  },
+  "backfill_risk_assessment": {
+    "status": "BLOCKED",
+    "finding": "Reconstructed and manual paths exist historically, and no eligibility field or constraint excludes them from a future population."
+  },
+  "concurrency_assessment": {
+    "status": "PARTIAL",
+    "finding": "BEGIN IMMEDIATE is useful, but the preflight/insert split and missing semantic unique key leave a race."
+  },
+  "activation_mechanism_assessment": {
+    "status": "BLOCKED",
+    "p271g_merge_is_context_only": true,
+    "future_contract": [
+      "Implementation and additive migration must be separately authorized, merged, deployed, and verified first.",
+      "A later activation artifact must name the deployed implementation commit and migration verification evidence.",
+      "prospective_prediction_start_at must be no earlier than the activation artifact merge timestamp.",
+      "All predictions created before activation remain retrospective.",
+      "Activation must fail closed if the capture worker, schedule resolver, database constraints, or immutability guards are not verified."
+    ]
+  },
+  "schema_change_required": true,
+  "runtime_code_change_required": true,
+  "identified_gaps": [
+    "No authoritative draw_close_at or exception-aware official schedule resolver.",
+    "No normalized timezone-aware causality comparison.",
+    "No target_draw on persisted prediction runs or tickets.",
+    "No prospective protocol, preregistration, activation, eligibility, or rejection fields.",
+    "No append-only database enforcement or post-close amendment guard.",
+    "No atomic prospective semantic unique key.",
+    "POWER second-zone value is not required on every eligible ticket.",
+    "No immutable prospective audit event log.",
+    "No hard exclusion for reconstructed, manual, backfill, or post-close records.",
+    "Current ingest hooks reference deleted prediction tracker and snapshot scheduler modules.",
+    "No deployed capture worker or activation mechanism."
+  ],
+  "required_implementation_controls": [
+    {
+      "id": "C01",
+      "control": "Add separate append-only prospective batch, ticket, and event tables; do not reuse strategy_prediction_replays as the confirmatory population."
+    },
+    {
+      "id": "C02",
+      "control": "Persist canonical target_draw, prediction_created_at_utc, draw_close_at_utc, source/version, strategy/version, bet_index, protocol versions, activation version, eligibility, rejection reason, and content hash."
+    },
+    {
+      "id": "C03",
+      "control": "Add a semantic database unique key and perform capture in one BEGIN IMMEDIATE transaction with deterministic conflict handling."
+    },
+    {
+      "id": "C04",
+      "control": "Add database triggers rejecting UPDATE and DELETE on prospective prediction payloads and events."
+    },
+    {
+      "id": "C05",
+      "control": "Implement an official-source-verified, versioned Asia/Taipei draw-close resolver with holiday/exception handling and fail-closed unknown states."
+    },
+    {
+      "id": "C06",
+      "control": "Require prediction_created_at_utc < draw_close_at_utc using timezone-aware instants before insertion."
+    },
+    {
+      "id": "C07",
+      "control": "Require a prediction-time second-zone value on every eligible POWER ticket; never fill it from results or a later fallback."
+    },
+    {
+      "id": "C08",
+      "control": "Freeze prospective eligibility before outcome ingestion and keep outcome linkage in a separate table."
+    },
+    {
+      "id": "C09",
+      "control": "Reject MANUAL, RECONSTRUCTED, BACKFILL, post-close, ambiguous-time, duplicate, and unknown-schedule captures with immutable reasons."
+    },
+    {
+      "id": "C10",
+      "control": "Record source artifact hash, code/deployment commit, actor/service identity, schedule version, activation artifact commit, and transaction id."
+    },
+    {
+      "id": "C11",
+      "control": "Add synthetic temp-database tests for uniqueness races, immutable triggers, timestamp boundaries, POWER enforcement, and backfill exclusion before any production migration."
+    },
+    {
+      "id": "C12",
+      "control": "Use a separate merged activation artifact after deployment verification; do not derive activation from the P271G merge alone."
+    }
+  ],
+  "proposed_next_task_scope": {
+    "name": "SEPARATE_PROSPECTIVE_CAPTURE_IMPLEMENTATION_TASK_PENDING_USER_AUTHORIZATION",
+    "status": "PROPOSED_NOT_AUTHORIZED",
+    "objective": "Implement and test an append-only prospective capture ledger, authoritative draw-close resolver, and fail-closed one-shot capture worker without activating collection.",
+    "excluded": [
+      "Production DB migration execution",
+      "Prospective activation",
+      "Baseline or statistical execution",
+      "Scorer or adapter execution",
+      "Outcome analysis",
+      "Strategy comparison or ranking",
+      "API or frontend exposure"
+    ],
+    "completion_gate": "Synthetic/temp-copy tests and deployment design must pass before a separately authorized migration task; activation remains a later task."
+  },
+  "proposed_next_allowed_files": [
+    {
+      "path": "lottery_api/database.py",
+      "purpose": "Define additive prospective ledger schema for new databases.",
+      "production_or_db_file": true,
+      "separate_explicit_authorization_required": true
+    },
+    {
+      "path": "lottery_api/engine/prospective_capture.py",
+      "purpose": "New fail-closed capture service; no activation in the implementation task.",
+      "production_or_db_file": true,
+      "separate_explicit_authorization_required": true
+    },
+    {
+      "path": "lottery_api/engine/draw_close_resolver.py",
+      "purpose": "Versioned authoritative schedule and timezone resolver.",
+      "production_or_db_file": true,
+      "separate_explicit_authorization_required": true
+    },
+    {
+      "path": "scripts/p271_prospective_capture_schema_migration.py",
+      "purpose": "Additive migration implementation tested only against synthetic or temporary database copies in the implementation task.",
+      "production_or_db_file": true,
+      "separate_explicit_authorization_required": true
+    },
+    {
+      "path": "scripts/p271_prospective_capture_worker.py",
+      "purpose": "One-shot capture worker with default no-write preflight; live write and scheduling remain unauthorized.",
+      "production_or_db_file": true,
+      "separate_explicit_authorization_required": true
+    },
+    {
+      "path": "config/prospective_draw_schedule.json",
+      "purpose": "Versioned schedule source metadata and exception declarations, pending manual official verification.",
+      "production_or_db_file": true,
+      "separate_explicit_authorization_required": true
+    },
+    {
+      "path": "tests/test_p271_prospective_capture_contract.py",
+      "purpose": "Synthetic contract tests for causality, uniqueness, immutability, POWER, and contamination guards.",
+      "production_or_db_file": false,
+      "separate_explicit_authorization_required": true
+    },
+    {
+      "path": "tests/test_p271_prospective_capture_concurrency.py",
+      "purpose": "Synthetic concurrent writer and idempotency tests.",
+      "production_or_db_file": false,
+      "separate_explicit_authorization_required": true
+    },
+    {
+      "path": "outputs/research/p271_prospective_capture_implementation.{json,md}",
+      "purpose": "Implementation evidence and no-activation declarations.",
+      "production_or_db_file": false,
+      "separate_explicit_authorization_required": true
+    },
+    {
+      "path": "00-Plan/roadmap/active_task.md",
+      "purpose": "Minimal governance status update.",
+      "production_or_db_file": false,
+      "separate_explicit_authorization_required": true
+    },
+    {
+      "path": "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md",
+      "purpose": "Minimal governance state update.",
+      "production_or_db_file": false,
+      "separate_explicit_authorization_required": true
+    }
+  ],
+  "tests_result": {
+    "focused": {
+      "command": "./venv/bin/python -m pytest tests/test_p271h_prospective_capture_feasibility_audit.py -q",
+      "status": "PASS",
+      "passed": 50
+    },
+    "combined_p271a_through_h": {
+      "command": "./venv/bin/python -m pytest tests/test_p271a_prize_aware_endpoint_scoring_spec.py tests/test_p271b_official_prize_rule_scoring_engine_design.py tests/test_p271c_prize_aware_scorer.py tests/test_p271d_prize_aware_replay_input_feasibility_audit.py tests/test_p271e_prize_aware_replay_adapter.py tests/test_p271f_prize_aware_full_history_descriptive_evaluation.py tests/test_p271g_prize_aware_null_prospective_preregistration.py tests/test_p271h_prospective_capture_feasibility_audit.py -q",
+      "status": "PASS",
+      "passed": 596
+    },
+    "git_diff_check": "PASS",
+    "full_repo_suite": "NOT_RUN_NOT_REQUIRED"
+  },
+  "modified_files": [
+    "outputs/research/p271h_prospective_capture_feasibility_audit_20260612.json",
+    "outputs/research/p271h_prospective_capture_feasibility_audit_20260612.md",
+    "tests/test_p271h_prospective_capture_feasibility_audit.py",
+    "00-Plan/roadmap/active_task.md",
+    "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md"
+  ],
+  "source_verification_status": "MANUAL_VERIFICATION_REQUIRED",
+  "p270c_allowed": false,
+  "temporal_window_research_started": false,
+  "feature_mining_started": false,
+  "production_integration_added": false,
+  "current_governance": "HOLD / WAITING_FOR_USER_AUTHORIZATION",
+  "next_round_allowed": false,
+  "single_blocker": "A separately authorized schema/runtime implementation and verified authoritative draw-close causality layer are required before activation can be considered.",
+  "final_classification": "P271H_PROSPECTIVE_CAPTURE_BLOCKED_SCHEMA_OR_CAUSALITY_GAP",
+  "limitations": [
+    "This audit inspected source, git history, schema metadata, and bounded structural aggregates only.",
+    "No official closing-time source was machine-verified; official source status remains MANUAL_VERIFICATION_REQUIRED.",
+    "No row-level prediction or result record was selected or exported.",
+    "No performance, prize, overlap, M3+, win-rate, or baseline metric was calculated.",
+    "The proposed future whitelist is not authorization to modify production code, migrate a database, deploy a worker, or activate collection."
+  ]
+}

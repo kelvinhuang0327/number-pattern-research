@@ -1,0 +1,70 @@
+# commands.log
+Evidence root: /Users/kelvin/Kelvin-WorkSpace/p298a_powerlotto_canonical_view_audit_20260630_155049
+Started: 2026-06-30 15:50:49 CST
+
+## Commands run before evidence root creation
+- sed -n '1,240p' /Users/kelvin/.codex/attachments/49577d49-c0a7-4cbf-aaf6-ee4582809772/pasted-text.txt
+- pwd && rg --files | sed -n '1,200p'
+
+## Commands run after evidence root creation
+- ROOT="/Users/kelvin/Kelvin-WorkSpace/p298a_powerlotto_canonical_view_audit_20260630_155049"; mkdir -p "/Users/kelvin/Kelvin-WorkSpace/p298a_powerlotto_canonical_view_audit_20260630_155049"; initialize commands.log
+
+### Phase 0 state capture
+COMMAND: TZ=Asia/Taipei date; pwd; git branch/status metadata; P297 evidence existence; DB sidecar pre-snapshot
+
+### Phase 0 state capture retry
+COMMAND: Capture date, git state, P297 evidence state, and DB sidecar before snapshot with optional LotteryNew-main path guarded.
+NOTE: Previous phase0 capture command exited nonzero because optional LotteryNew-main path was absent under strict shell/pipefail handling.
+
+### Inspect P297A evidence inputs
+COMMAND: sed/head/rg over /Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000 required evidence files
+
+### SQLite immutable metadata inspection
+COMMAND: python3 sqlite3 immutable read-only schema/count inspection over DB candidates from db_sidecars_before.tsv
+SQLite URI pattern: file:<dbpath>?mode=ro&immutable=1
+
+### Diagnose failed SQLite metadata inspection
+COMMAND: ls and sed partial sqlite metadata artifacts after failed inspection
+
+### BSD-compatible DB sidecar pre-snapshot
+COMMAND: find DB and SQLite sidecar files with macOS stat before any actual SQLite open
+
+### Review DB sidecar pre-snapshot
+COMMAND: sed -n 1,200p db_sidecars_before.tsv
+
+### Extract P297A evidence keywords
+COMMAND: rg P297 evidence excerpt for DB path, POWER_LOTTO, predicted_special, canonical, status
+
+### SQLite immutable metadata inspection retry on inferred replay DB
+COMMAND: python3 sqlite3 immutable read-only schema/count inspection for /Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db
+SQLite URI: file:/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db?mode=ro&immutable=1
+
+### Review immutable metadata facts
+COMMAND: rg selected sections from sqlite_metadata_inspection.txt and diff db sidecars
+
+### Extract full POWER_LOTTO metadata sections
+COMMAND: sed selected line ranges from sqlite_metadata_inspection.txt
+
+### Repo text scan for POWER_LOTTO canonical/source references
+COMMAND: rg -n POWER_LOTTO/canonical/draws/source terms across repo excluding node_modules/coverage/.git
+
+### Inspect database canonical helper source
+COMMAND: rg/sed lottery_api/database.py get_canonical_draws and canonical view constants
+
+### Inspect database canonical helper body
+COMMAND: sed -n 700,845p lottery_api/database.py
+
+### Final artifact generation, validation capture, and manifest creation
+COMMAND: python3 inline script to parse P297A/immutable metadata outputs, write required P298A artifacts, capture final git state, mark prohibited commands NOT RUN, and create manifest.json
+
+### Prohibited/skipped commands
+NOT RUN: commit
+NOT RUN: push
+NOT RUN: pull request
+NOT RUN: merge
+NOT RUN: DB write
+NOT RUN: migration
+NOT RUN: checkpoint
+NOT RUN: registry publication
+NOT RUN: future-ticket creation
+NOT RUN: production apply

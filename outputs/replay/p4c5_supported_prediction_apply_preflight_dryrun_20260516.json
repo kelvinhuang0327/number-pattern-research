@@ -1,0 +1,138 @@
+{
+  "schema_version": "p4c3.0",
+  "script_version": "p4c3.0",
+  "generated_at": "2026-05-17T11:30:59.377426+08:00",
+  "controlled_apply_id": "P4C3_20260516",
+  "mode": "dry-run",
+  "final_classification": "P4C3_SUPPORTED_PREDICTION_APPLY_PATH_READY",
+  "db_written": false,
+  "db_hash_before": "27f8f060dfb2641f29e4ad4fa62deef413ab69131f1548dac83a2e721f536acf",
+  "db_hash_after": "27f8f060dfb2641f29e4ad4fa62deef413ab69131f1548dac83a2e721f536acf",
+  "db_hash_unchanged": true,
+  "supported_lotteries": [
+    "BIG_LOTTO",
+    "POWER_LOTTO"
+  ],
+  "excluded_lotteries": [
+    "DAILY_539"
+  ],
+  "source_results": [
+    {
+      "source_path": "outputs/replay/p4c_quick_predict_dryrun_big_lotto_20260516.json",
+      "lottery_type": "BIG_LOTTO",
+      "source_final_classification": "P4B_QUICK_PREDICT_DRYRUN_READY",
+      "summary_prediction_count": 1,
+      "source_sha256": "9501d3d7b75f3debf231af3b79641a55b784f28a1038cb5f47bd2b73250aa424",
+      "apply_fingerprint": "a81e8366344b1173ebd68d6c2d7d1f7c8c622dc180fc949af3355ad15a10f756",
+      "validated": true
+    },
+    {
+      "source_path": "outputs/replay/p4c_quick_predict_dryrun_power_lotto_20260516.json",
+      "lottery_type": "POWER_LOTTO",
+      "source_final_classification": "P4B_QUICK_PREDICT_DRYRUN_READY",
+      "summary_prediction_count": 1,
+      "source_sha256": "37bbfc0e5eb76ae3e02e6daf5b6b25c02f8e129576e8e6e964630a44149d0fca",
+      "apply_fingerprint": "652ee0caa5c3d9218e6f5444aad7f23ce4e79dc8ec669dd1704bdf3fbcd9e577",
+      "validated": true
+    }
+  ],
+  "planned_prediction_runs": [
+    {
+      "lottery_type": "BIG_LOTTO",
+      "latest_known_draw": "115000052",
+      "latest_known_date": "2026/05/12",
+      "strategy_name": "Triple Strike",
+      "source_path": "outputs/replay/p4c_quick_predict_dryrun_big_lotto_20260516.json",
+      "source_sha256": "9501d3d7b75f3debf231af3b79641a55b784f28a1038cb5f47bd2b73250aa424",
+      "apply_fingerprint": "a81e8366344b1173ebd68d6c2d7d1f7c8c622dc180fc949af3355ad15a10f756",
+      "planned_prediction_items": 3,
+      "bets": [
+        {
+          "bet_index": 1,
+          "numbers": "[7, 8, 15, 23, 37, 40]",
+          "special": null,
+          "status": "PENDING",
+          "strategy_name": "Triple Strike",
+          "num_bets": 3,
+          "zone_coverage": "{\"covered_numbers\": 18, \"max_numbers\": 49, \"coverage_rate\": 36.7}"
+        },
+        {
+          "bet_index": 2,
+          "numbers": "[3, 21, 30, 31, 34, 49]",
+          "special": null,
+          "status": "PENDING",
+          "strategy_name": "Triple Strike",
+          "num_bets": 3,
+          "zone_coverage": "{\"covered_numbers\": 18, \"max_numbers\": 49, \"coverage_rate\": 36.7}"
+        },
+        {
+          "bet_index": 3,
+          "numbers": "[14, 20, 22, 25, 39, 41]",
+          "special": null,
+          "status": "PENDING",
+          "strategy_name": "Triple Strike",
+          "num_bets": 3,
+          "zone_coverage": "{\"covered_numbers\": 18, \"max_numbers\": 49, \"coverage_rate\": 36.7}"
+        }
+      ]
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "latest_known_draw": "115000035",
+      "latest_known_date": "2026/04/30",
+      "strategy_name": "Power Precision (Edge +2.23%)",
+      "source_path": "outputs/replay/p4c_quick_predict_dryrun_power_lotto_20260516.json",
+      "source_sha256": "37bbfc0e5eb76ae3e02e6daf5b6b25c02f8e129576e8e6e964630a44149d0fca",
+      "apply_fingerprint": "652ee0caa5c3d9218e6f5444aad7f23ce4e79dc8ec669dd1704bdf3fbcd9e577",
+      "planned_prediction_items": 3,
+      "bets": [
+        {
+          "bet_index": 1,
+          "numbers": "[14, 15, 16, 22, 33, 37]",
+          "special": 2,
+          "status": "PENDING",
+          "strategy_name": "Power Precision (Edge +2.23%)",
+          "num_bets": 3,
+          "zone_coverage": "{\"covered_numbers\": 18, \"max_numbers\": 38, \"coverage_rate\": 47.4}"
+        },
+        {
+          "bet_index": 2,
+          "numbers": "[11, 18, 24, 26, 29, 35]",
+          "special": 2,
+          "status": "PENDING",
+          "strategy_name": "Power Precision (Edge +2.23%)",
+          "num_bets": 3,
+          "zone_coverage": "{\"covered_numbers\": 18, \"max_numbers\": 38, \"coverage_rate\": 47.4}"
+        },
+        {
+          "bet_index": 3,
+          "numbers": "[2, 6, 8, 27, 30, 38]",
+          "special": 2,
+          "status": "PENDING",
+          "strategy_name": "Power Precision (Edge +2.23%)",
+          "num_bets": 3,
+          "zone_coverage": "{\"covered_numbers\": 18, \"max_numbers\": 38, \"coverage_rate\": 47.4}"
+        }
+      ]
+    }
+  ],
+  "planned_prediction_runs_count": 2,
+  "planned_prediction_items_count": 6,
+  "prediction_runs_inserted": false,
+  "prediction_items_inserted": false,
+  "replay_rows_inserted": false,
+  "inserted_prediction_run_ids": [],
+  "inserted_prediction_item_ids": [],
+  "duplicate_rows": [],
+  "warnings": [
+    "DAILY_539 intentionally excluded from the supported production prediction scope"
+  ],
+  "safety": {
+    "db_written": false,
+    "prediction_runs_inserted": false,
+    "prediction_items_inserted": false,
+    "replay_rows_inserted": false,
+    "strategy_logic_changed": false,
+    "api_ui_backend_changed": false
+  }
+}

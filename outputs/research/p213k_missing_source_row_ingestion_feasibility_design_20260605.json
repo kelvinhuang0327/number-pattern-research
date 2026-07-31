@@ -1,0 +1,121 @@
+{
+  "task_id": "P213K",
+  "classification": "P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE",
+  "task_type": "Type B",
+  "source_status": "REAL_SOURCE_PRESENT_POSITIONAL_ROWS_VALIDATED_SOURCE_ONLY_GAP_CONFIRMED",
+  "production_db_write": false,
+  "ingestion_performed": false,
+  "source_rows_total": 11700,
+  "existing_db_matched_rows": 7101,
+  "missing_source_rows_total": 4599,
+  "missing_source_rows_by_lottery": {
+    "3_STAR": 1671,
+    "4_STAR": 2928
+  },
+  "missing_source_rows_by_year": {
+    "2007": 223,
+    "2008": 210,
+    "2009": 199,
+    "2010": 204,
+    "2011": 245,
+    "2012": 251,
+    "2013": 256,
+    "2014": 247,
+    "2015": 245,
+    "2016": 258,
+    "2017": 248,
+    "2018": 233,
+    "2019": 236,
+    "2020": 236,
+    "2021": 238,
+    "2022": 244,
+    "2023": 249,
+    "2024": 258,
+    "2025": 247,
+    "2026": 72
+  },
+  "db_schema_summary": {
+    "table": "draws",
+    "columns": [
+      "id INTEGER PRIMARY KEY AUTOINCREMENT",
+      "draw TEXT NOT NULL",
+      "date TEXT NOT NULL",
+      "lottery_type TEXT NOT NULL",
+      "numbers TEXT NOT NULL",
+      "special INTEGER DEFAULT 0",
+      "created_at TEXT DEFAULT CURRENT_TIMESTAMP",
+      "jackpot_amount REAL DEFAULT NULL",
+      "sell_amount REAL DEFAULT NULL",
+      "total_amount REAL DEFAULT NULL",
+      "numbers_positional TEXT DEFAULT NULL"
+    ],
+    "unique_constraints": [
+      "UNIQUE(draw, lottery_type)"
+    ],
+    "indexes": [
+      "idx_lottery_type ON draws(lottery_type)",
+      "idx_date ON draws(date DESC)",
+      "idx_draw ON draws(draw)",
+      "sqlite_autoindex_draws_1 UNIQUE(draw, lottery_type)"
+    ]
+  },
+  "unique_key_assumption": "Safe insertion must key every candidate by (draw, lottery_type). Any future Type D operation must prove that all 4599 candidate keys are absent before insert and that no source duplicate keys exist.",
+  "insertion_feasibility": "FEASIBLE_ONLY_UNDER_FUTURE_TYPE_D_GATE",
+  "risk_level": "LOW_FOR_READ_ONLY_DESIGN_HIGH_FOR_DB_WRITE_WITHOUT_GATE",
+  "required_pre_ingestion_gates": [
+    "Fresh Phase 0 on canonical repo main with HEAD equal origin/main and staged files equal 0.",
+    "Production DB integrity ok, strategy_prediction_replays rows 94924, bet_index nulls 0, duplicate replay keys 0, drift guard PASS.",
+    "Fresh immutable backup of lottery_api/data/lottery_v2.db plus sha256 and backup integrity check before any write.",
+    "Re-parse P213I source files and confirm exactly 11700 source rows, 7101 existing matches, 4599 source-only missing rows, and 0 mismatches unless a new source artifact explicitly explains drift.",
+    "Confirm source duplicate (lottery_type, draw) keys equal 0.",
+    "Confirm every insertion candidate has no existing DB row for (lottery_type, draw) and no same-lottery same-date substitute row.",
+    "Validate lottery_type is only 3_STAR or 4_STAR; positional digit count is 3 or 4; every digit is 0-9; canonical numbers equal sorted positional_numbers.",
+    "Dry-run the exact INSERT set and require inserted_count would equal 4599, duplicate_count would equal 0, mismatch_count would equal 0.",
+    "Prohibit strategy scan, recommendation, registry mutation, monitoring, controlled_apply, and betting advice in the ingestion task."
+  ],
+  "required_backup_plan": {
+    "required": true,
+    "backup_path_pattern": "backups/p213l_lottery_v2_backup_YYYYMMDD_HHMMSS.db",
+    "checksum": "sha256 file required",
+    "integrity_check": "sqlite PRAGMA integrity_check on backup must return ok before write"
+  },
+  "required_rollback_plan": {
+    "required": true,
+    "instruction": "Restore the pre-ingestion backup over lottery_api/data/lottery_v2.db only with separate explicit rollback authorization.",
+    "post_rollback_checks": [
+      "PRAGMA integrity_check returns ok",
+      "strategy_prediction_replays remains 94924",
+      "draw rows return to pre-ingestion count",
+      "drift guard PASS"
+    ]
+  },
+  "straight_play_dependency": {
+    "missing_row_ingestion_should_precede_full_historical_scan": true,
+    "existing_rows_only_dry_run_safe": "Only as a clearly labeled partial-coverage design or smoke dry-run. It is not recommended as historical evidence because 4599 trusted source rows remain outside DB.",
+    "scan_authorized": false
+  },
+  "recommended_next_direction": "Future Type D controlled missing-row ingestion gate before any full straight-play scan; otherwise HOLD.",
+  "exact_authorization_phrase_for_next_direction": "Authorize P213L controlled missing source-row ingestion gate for 3_STAR/4_STAR (Type D DB write, backup required, insert source-only rows only, no strategy scan, no recommendation change)",
+  "no_registry_mutation": true,
+  "no_production_recommendation_change": true,
+  "no_monitoring_change": true,
+  "no_strategy_authorization": true,
+  "no_betting_advice": true,
+  "p238b_interpretation": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY - observation only; no strategy, production, recommendation, monitoring, DB write, or betting implication.",
+  "tests": {
+    "command": "python3 -m unittest discover -s tests -p 'test_p213k_missing_source_row_ingestion_feasibility_design.py'",
+    "result": "PASS",
+    "targeted_test_count": 13
+  },
+  "final_state": {
+    "active_task_status": "WAITING_FOR_USER_AUTHORIZATION",
+    "production_db_rows_before": 94924,
+    "production_db_rows_after": 94924,
+    "draw_rows_before": 59762,
+    "draw_rows_after": 59762,
+    "numbers_positional_populated_total": 7101,
+    "missing_source_rows_inserted": false,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "p211_status_wording_inconsistency_noted_not_fixed": true
+  }
+}

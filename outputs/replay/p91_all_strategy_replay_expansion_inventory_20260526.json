@@ -1,0 +1,172 @@
+{
+  "task": "P91",
+  "title": "All-Strategy Replay Expansion Inventory Refresh",
+  "date": "2026-05-26",
+  "final_classification": "P91_ALL_STRATEGY_REPLAY_EXPANSION_INVENTORY_READY",
+  "status": "EVIDENCE_ONLY",
+  "db_writes": false,
+  "replay_row_changes": 0,
+  "lifecycle_promotions": 0,
+  "production_rows_before": 46962,
+  "production_rows_after": 46962,
+  "power_lotto_max_draw_before": "115000041",
+  "power_lotto_max_draw_after": "115000041",
+  "strategy_universe_count": 512,
+  "row_backed_count": 31,
+  "non_row_backed_count": 481,
+  "p0_universe_breakdown": {
+    "DAILY_539": 67,
+    "BIG_LOTTO": 163,
+    "POWER_LOTTO": 80,
+    "UNSPECIFIED": 187,
+    "CROSS_GAME": 15,
+    "total": 512
+  },
+  "tier_counts": {
+    "tier_a_row_backed": 31,
+    "tier_b_online_code_backed": 70,
+    "tier_c_retired_adapter_backed": 0,
+    "tier_d_rejected_replay_only": 70,
+    "tier_e_reconstruction_candidates": 41,
+    "tier_f_unsupported_no_data": 305
+  },
+  "tier_a_strategies": [
+    {"strategy_id": "acb_1bet", "display_name": "今彩539 ACB 1注", "lottery_type": "DAILY_539", "rows": 1500, "truth_level": "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "PRODUCTION", "performance": "RETIRED"},
+    {"strategy_id": "acb_single_539", "display_name": "今彩539 ACB Single 1注", "lottery_type": "DAILY_539", "rows": 1500, "truth_level": "DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "REJECTED", "performance": "WAVE2"},
+    {"strategy_id": "acb_markov_midfreq", "display_name": "今彩539 ACB+Markov 中頻", "lottery_type": "DAILY_539", "rows": 1500, "truth_level": "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "NOT_IN_P0", "performance": "RETIRED"},
+    {"strategy_id": "acb_markov_midfreq_3bet", "display_name": "今彩539 ACB+Markov 中頻 3注", "lottery_type": "DAILY_539", "rows": 1500, "truth_level": "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "PRODUCTION", "performance": "RETIRED"},
+    {"strategy_id": "539_3bet_orthogonal", "display_name": "今彩539 ACB+Markov+Fourier 正交 3注", "lottery_type": "DAILY_539", "rows": 1500, "truth_level": "DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "REJECTED", "performance": "WAVE2_ACTIVE"},
+    {"strategy_id": "daily539_f4cold", "display_name": "今彩539 F4 Cold", "lottery_type": "DAILY_539", "rows": 1590, "truth_level": "DAILY539_BACKFILL_VERIFIED_1500_PLUS_LEGACY_90", "p0_lifecycle": "PRODUCTION", "performance": "ONLINE_LEGACY"},
+    {"strategy_id": "p0b_539_3bet_f_cold_fmid", "display_name": "今彩539 Fourier4正交 cold+midfreq 3注", "lottery_type": "DAILY_539", "rows": 1500, "truth_level": "DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "REJECTED", "performance": "WAVE2_ACTIVE"},
+    {"strategy_id": "p0c_539_3bet_f_cold_x2", "display_name": "今彩539 Fourier4正交 x2 cold 3注", "lottery_type": "DAILY_539", "rows": 1500, "truth_level": "DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "REJECTED", "performance": "WAVE2_ACTIVE"},
+    {"strategy_id": "markov_1bet_539", "display_name": "今彩539 Markov 1注", "lottery_type": "DAILY_539", "rows": 1500, "truth_level": "DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "REJECTED", "performance": "WAVE2_ACTIVE"},
+    {"strategy_id": "daily539_markov_cold", "display_name": "今彩539 Markov Cold", "lottery_type": "DAILY_539", "rows": 1590, "truth_level": "DAILY539_BACKFILL_VERIFIED_1500_PLUS_LEGACY_90", "p0_lifecycle": "PRODUCTION", "performance": "ONLINE_LEGACY"},
+    {"strategy_id": "zone_gap_3bet_539", "display_name": "今彩539 Zone+Gap 3注", "lottery_type": "DAILY_539", "rows": 1500, "truth_level": "DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "REJECTED", "performance": "WAVE2_ACTIVE"},
+    {"strategy_id": "midfreq_acb_2bet", "display_name": "今彩539 中頻 ACB 2注", "lottery_type": "DAILY_539", "rows": 1500, "truth_level": "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "PRODUCTION", "performance": "RETIRED"},
+    {"strategy_id": "midfreq_fourier_2bet", "display_name": "今彩539 中頻 Fourier 2注", "lottery_type": "DAILY_539", "rows": 1500, "truth_level": "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "PRODUCTION", "performance": "RETIRED"},
+    {"strategy_id": "cold_complement_biglotto", "display_name": "大樂透 Cold Complement 2注", "lottery_type": "BIG_LOTTO", "rows": 1500, "truth_level": "BIGLOTTO_WAVE3_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "REJECTED", "performance": "COVERAGE_ONLY_L91"},
+    {"strategy_id": "coldpool15_biglotto", "display_name": "大樂透 Cold Pool-15 Pick-6", "lottery_type": "BIG_LOTTO", "rows": 1500, "truth_level": "BIGLOTTO_WAVE3_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "REJECTED", "performance": "COVERAGE_ONLY_L91"},
+    {"strategy_id": "biglotto_deviation_2bet", "display_name": "大樂透 Deviation 2注", "lottery_type": "BIG_LOTTO", "rows": 1570, "truth_level": "BIGLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED_PLUS_LEGACY_70", "p0_lifecycle": "PRODUCTION", "performance": "COVERAGE_ONLY_L91"},
+    {"strategy_id": "bet2_fourier_expansion_biglotto", "display_name": "大樂透 Fourier 2注 Expansion", "lottery_type": "BIG_LOTTO", "rows": 1500, "truth_level": "BIGLOTTO_WAVE3_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "REJECTED", "performance": "COVERAGE_ONLY_L91"},
+    {"strategy_id": "fourier30_markov30_biglotto", "display_name": "大樂透 Fourier30+Markov30", "lottery_type": "BIG_LOTTO", "rows": 1500, "truth_level": "BIGLOTTO_WAVE3_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "REJECTED", "performance": "COVERAGE_ONLY_L91"},
+    {"strategy_id": "markov_2bet_biglotto", "display_name": "大樂透 Markov 2注", "lottery_type": "BIG_LOTTO", "rows": 1500, "truth_level": "BIGLOTTO_WAVE3_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "REJECTED", "performance": "COVERAGE_ONLY_L91"},
+    {"strategy_id": "markov_single_biglotto", "display_name": "大樂透 Markov Single 1注", "lottery_type": "BIG_LOTTO", "rows": 1500, "truth_level": "BIGLOTTO_WAVE3_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "REJECTED", "performance": "COVERAGE_ONLY_L91"},
+    {"strategy_id": "ts3_regime_3bet", "display_name": "大樂透 TS3+Regime 3注", "lottery_type": "BIG_LOTTO", "rows": 1500, "truth_level": "BIGLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "PRODUCTION", "performance": "COVERAGE_ONLY_L91"},
+    {"strategy_id": "biglotto_triple_strike", "display_name": "大樂透 Triple Strike", "lottery_type": "BIG_LOTTO", "rows": 1570, "truth_level": "BIGLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED_PLUS_LEGACY_70", "p0_lifecycle": "PRODUCTION", "performance": "COVERAGE_ONLY_L91"},
+    {"strategy_id": "fourier30_markov30_2bet", "display_name": "威力彩 fourier30_markov30_2bet", "lottery_type": "POWER_LOTTO", "rows": 1501, "truth_level": "POWER_LOTTO_WAVE5_CONTROLLED_APPLY_VERIFIED_PLUS_DRAW_EXT", "p0_lifecycle": "PRODUCTION", "performance": "prediction-helpful (M3+ 4.07% > 3.87% baseline)"},
+    {"strategy_id": "fourier_rhythm_3bet", "display_name": "威力彩 Fourier Rhythm 3注", "lottery_type": "POWER_LOTTO", "rows": 1501, "truth_level": "POWERLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED_PLUS_DRAW_EXT", "p0_lifecycle": "PRODUCTION", "performance": "ACTIVE_PRODUCTION"},
+    {"strategy_id": "midfreq_fourier_2bet", "display_name": "威力彩 MidFreq+Fourier 2注", "lottery_type": "POWER_LOTTO", "rows": 1500, "truth_level": "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "PRODUCTION", "performance": "ACTIVE_PRODUCTION"},
+    {"strategy_id": "midfreq_fourier_mk_3bet", "display_name": "威力彩 MidFreq+Fourier+Markov 3注", "lottery_type": "POWER_LOTTO", "rows": 1500, "truth_level": "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "NOT_IN_P0", "performance": "ACTIVE_PRODUCTION"},
+    {"strategy_id": "power_orthogonal_5bet", "display_name": "威力彩 Orthogonal 5注", "lottery_type": "POWER_LOTTO", "rows": 1570, "truth_level": "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED_PLUS_LEGACY_70", "p0_lifecycle": "PRODUCTION", "performance": "ONLINE_LEGACY"},
+    {"strategy_id": "pp3_freqort_4bet", "display_name": "威力彩 PP3+FreqOrt 4注", "lottery_type": "POWER_LOTTO", "rows": 1500, "truth_level": "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED", "p0_lifecycle": "PRODUCTION", "performance": "ACTIVE_PRODUCTION"},
+    {"strategy_id": "power_precision_3bet", "display_name": "威力彩 Precision 3注", "lottery_type": "POWER_LOTTO", "rows": 1570, "truth_level": "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED_PLUS_LEGACY_70", "p0_lifecycle": "PRODUCTION", "performance": "ONLINE_LEGACY"},
+    {"strategy_id": "zonal_entropy_2bet", "display_name": "威力彩 Zonal Entropy 2注", "lottery_type": "POWER_LOTTO", "rows": 1500, "truth_level": "POWER_LOTTO_WAVE6_CONTROLLED_APPLY_VERIFIED", "p0_lifecycle": "NOT_IN_P0", "performance": "fallback-equivalent (M3+ 3.67%)"},
+    {"strategy_id": "cold_complement_2bet", "display_name": "威力彩 冷號互補 2注", "lottery_type": "POWER_LOTTO", "rows": 1500, "truth_level": "POWER_LOTTO_WAVE6_CONTROLLED_APPLY_VERIFIED", "p0_lifecycle": "NOT_IN_P0", "performance": "sub-baseline (M3+ 3.67%)"}
+  ],
+  "tier_b_strategies": {
+    "description": "PRODUCTION/WATCHING/PROVISIONAL lifecycle in P0, no replay rows yet",
+    "count": 70,
+    "sub_classifications": {
+      "rsm_current_strategies": {
+        "count": 9,
+        "examples": ["f4cold_3bet", "f4cold_5bet", "deviation_complement_2bet", "echo_aware_3bet", "fourier_rhythm_2bet", "triple_strike_3bet", "ts3_markov_4bet_w30", "ts3_markov_freq_5bet_w30", "orthogonal_5bet"],
+        "priority": "HIGHEST — active RSM monitoring, likely have adapter code"
+      },
+      "strategy_package_active": {
+        "count": 9,
+        "examples": ["biglotto_2bet_deviation_complement", "biglotto_2bet_fourier_rhythm", "biglotto_3bet_triple_strike_v2", "biglotto_4bet_ts3_markov_w30", "biglotto_5bet_ts3_markov_freq"],
+        "priority": "MEDIUM — package code exists but adapter needs writing"
+      },
+      "lesson_reference_only": {
+        "count": 31,
+        "examples": ["power_lotto_fourier_rhythm_3bet", "power_lotto_pp3_sum_regime", "pp3_freqort_3bet", "power_lotto_watch", "pp3"],
+        "priority": "LOW — lesson reference only, code existence uncertain"
+      },
+      "tools_candidate_only": {
+        "count": 21,
+        "examples": ["bl_cold_numbers_bet", "bl_fourier_rhythm_bet", "bl_markov_orthogonal_bet", "calculate_max_gap", "detect_regime"],
+        "priority": "LOW — tools scan only, adapter not written"
+      }
+    }
+  },
+  "tier_c_strategies": {
+    "description": "Retired/offline with adapter code (replayable, must stay offline)",
+    "count": 0,
+    "note": "All retired wave-1 strategies (acb_1bet, acb_markov_midfreq, midfreq_acb_2bet, midfreq_fourier_2bet[DAILY_539]) already have replay rows and are classified in Tier A"
+  },
+  "tier_d_strategies": {
+    "description": "REJECTED lifecycle in P0, not yet row-backed — display-only candidates",
+    "count": 70,
+    "sub_classifications": {
+      "rejected_artifact": 42,
+      "lesson_reference": 21,
+      "other_rejected_evidence": 7
+    },
+    "note": "12 P0 REJECTED strategies already have replay rows (classified as Tier A). Tier D = 82 REJECTED - 12 already row-backed = 70.",
+    "replay_policy": "May add replay rows for display-only history. MUST NOT be promoted to ONLINE lifecycle. Display label: Rejected/Archived."
+  },
+  "tier_e_strategies": {
+    "description": "EXPERIMENTAL/UNKNOWN lifecycle with lesson/artifact evidence — reconstruction candidates",
+    "count": 41,
+    "sub_classifications": {
+      "UNKNOWN_with_lesson_or_source": 41
+    },
+    "examples": ["predict_539_5bet_f4cold", "bet_deviation_complement", "bet_fourier_rhythm", "core_satellite", "bl_ts3_m4_fo", "fcf_vs_ts3"],
+    "reconstruction_effort": "4-8 hours per strategy — code archaeology + adapter writing",
+    "recommended_phase": "P93+"
+  },
+  "tier_f_summary": {
+    "count": 305,
+    "sub_classifications": {
+      "EXPERIMENTAL_tools_candidate": 244,
+      "EXPERIMENTAL_UNKNOWN_no_evidence": 61
+    },
+    "top_blockers": ["no_adapter_code", "tools_candidate_only_no_validation", "insufficient_data", "never_implemented"],
+    "description": "Not viable for near-term history display. Show 'No historical data available' in UI."
+  },
+  "product_question": "Can all 512 strategy universe entries be made clickable with prediction-vs-actual history?",
+  "product_answer_summary": "31 clickable now (Tier A). Up to 9 priority candidates clickable after P92 dry-run (Tier B RSM subset). 70 display-only rejected possible after P92+ (Tier D). 41 reconstruction effort (Tier E, P93+). 305 not viable near-term (Tier F — show 'No historical data available').",
+  "product_answer_detail": {
+    "clickable_now": 31,
+    "clickable_after_p92_best_case": 9,
+    "display_only_rejected_possible": 70,
+    "reconstruction_candidates_p93": 41,
+    "not_viable_near_term": 305,
+    "tier_c_count": 0
+  },
+  "no_data_policy": "Tier F strategies (305) show 'No historical data available' in UI — do NOT insert placeholder rows",
+  "rejected_offline_replay_policy": "Tier C/D may have replay rows for display ONLY — must NOT be promoted to ONLINE lifecycle",
+  "performance_disclosures": {
+    "fourier30_markov30_2bet": {"label": "prediction-helpful", "m3_hit_rate": 0.0407, "baseline": 0.0387},
+    "cold_complement_2bet": {"label": "sub-baseline", "m3_hit_rate": 0.0367, "baseline": 0.0387},
+    "zonal_entropy_2bet": {"label": "fallback-equivalent", "m3_hit_rate": 0.0367, "baseline": 0.0387, "regime_chaotic_pct": 1.0},
+    "BIG_LOTTO_all": {"label": "COVERAGE_ONLY", "reason": "L91: 49C6 signal space exhausted, indistinguishable from fair random"},
+    "DAILY_539_all": {"label": "signal-exhausted", "reason": "L82: H001-H008 all REJECT, only ACB/MidFreq/Fourier validated"}
+  },
+  "recommended_p92_scope": {
+    "tier": "B",
+    "sub_tier": "rsm_current_strategies",
+    "description": "Tier B RSM current strategies (9 candidates) — dry-run replay expansion",
+    "estimated_strategies": 9,
+    "estimated_new_rows": 13500,
+    "strategy_candidates": ["f4cold_3bet", "f4cold_5bet", "deviation_complement_2bet", "echo_aware_3bet", "fourier_rhythm_2bet", "triple_strike_3bet", "ts3_markov_4bet_w30", "ts3_markov_freq_5bet_w30", "orthogonal_5bet"],
+    "precondition": "Adapter code audit required before dry-run to confirm adapter function exists for each candidate",
+    "note": "Actual P92 scope may be smaller after adapter audit"
+  },
+  "recommended_p93_scope": {
+    "tier": "E",
+    "description": "Tier E reconstruction candidates (41 strategies)",
+    "estimated_effort": "4-8 hours per strategy"
+  },
+  "governance": {
+    "drift_guard": "PASS",
+    "branch_governance_guard": "PASS",
+    "p82_freshness_guard": "SKIP_NOT_FOUND",
+    "p86_source_decision_guard": "SKIP_NOT_FOUND",
+    "project_context_lock": "LotteryNew",
+    "p90_classification": "P90_OPERATIONS_HOLD_BASELINE_ARCHIVED",
+    "head_commit_at_branch": "333b592",
+    "branch": "p91-all-strategy-replay-expansion-inventory",
+    "generated_at": "2026-05-26"
+  }
+}

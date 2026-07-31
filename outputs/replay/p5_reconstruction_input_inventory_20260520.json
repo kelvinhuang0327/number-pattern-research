@@ -1,0 +1,138 @@
+{
+  "phase": "P5",
+  "generated_at": "2026-05-20T04:45:13.584025Z",
+  "strategies": [
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_state": "ONLINE",
+      "artifact_source_type": "PREDICTION_LOG",
+      "source_tier": "TIER_1_DB_PREDICTION_PAYLOAD",
+      "has_db_prediction_items": true,
+      "db_draw_count": 12,
+      "lifecycle_warning": null,
+      "p1_has_historical_predictions": true
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_state": "ONLINE",
+      "artifact_source_type": "PREDICTION_LOG",
+      "source_tier": "TIER_1_DB_PREDICTION_PAYLOAD",
+      "has_db_prediction_items": true,
+      "db_draw_count": 16,
+      "lifecycle_warning": null,
+      "p1_has_historical_predictions": true
+    },
+    {
+      "strategy_id": "biglotto_ts3_acb_4bet",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_state": "REJECTED",
+      "artifact_source_type": "CODE_SCAN",
+      "source_tier": "TIER_4_CODE_SCAN_ONLY",
+      "has_db_prediction_items": false,
+      "db_draw_count": 0,
+      "lifecycle_warning": "strategy 'biglotto_ts3_acb_4bet' lifecycle='REJECTED'; P7 apply will create historical-only rows — human review required",
+      "p1_has_historical_predictions": false
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_freq_5bet",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_state": "REJECTED",
+      "artifact_source_type": "CODE_SCAN",
+      "source_tier": "TIER_4_CODE_SCAN_ONLY",
+      "has_db_prediction_items": false,
+      "db_draw_count": 0,
+      "lifecycle_warning": "strategy 'biglotto_ts3_markov_freq_5bet' lifecycle='REJECTED'; P7 apply will create historical-only rows — human review required",
+      "p1_has_historical_predictions": false
+    },
+    {
+      "strategy_id": "power_shlc_midfreq",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_state": "REJECTED",
+      "artifact_source_type": "CODE_SCAN",
+      "source_tier": "TIER_4_CODE_SCAN_ONLY",
+      "has_db_prediction_items": false,
+      "db_draw_count": 0,
+      "lifecycle_warning": "strategy 'power_shlc_midfreq' lifecycle='REJECTED'; P7 apply will create historical-only rows — human review required",
+      "p1_has_historical_predictions": false
+    },
+    {
+      "strategy_id": "p1_deviation_2bet_539",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "REJECTED",
+      "artifact_source_type": "REJECTED_JSON",
+      "source_tier": "TIER_5_REJECTED_JSON_ONLY",
+      "has_db_prediction_items": false,
+      "db_draw_count": 0,
+      "lifecycle_warning": "strategy 'p1_deviation_2bet_539' lifecycle='REJECTED'; P7 apply will create historical-only rows — human review required",
+      "p1_has_historical_predictions": false
+    },
+    {
+      "strategy_id": "acb_1bet",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "artifact_source_type": "PREDICTION_LOG",
+      "source_tier": "TIER_1_DB_PREDICTION_PAYLOAD",
+      "has_db_prediction_items": true,
+      "db_draw_count": 31,
+      "lifecycle_warning": "strategy 'acb_1bet' lifecycle='RETIRED'; P7 apply will create historical-only rows — human review required",
+      "p1_has_historical_predictions": true
+    },
+    {
+      "strategy_id": "acb_markov_midfreq",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "artifact_source_type": "CODE_SCAN",
+      "source_tier": "TIER_4_CODE_SCAN_ONLY",
+      "has_db_prediction_items": false,
+      "db_draw_count": 0,
+      "lifecycle_warning": "strategy 'acb_markov_midfreq' lifecycle='RETIRED'; P7 apply will create historical-only rows — human review required",
+      "p1_has_historical_predictions": false
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "artifact_source_type": "PREDICTION_LOG",
+      "source_tier": "TIER_1_DB_PREDICTION_PAYLOAD",
+      "has_db_prediction_items": true,
+      "db_draw_count": 31,
+      "lifecycle_warning": "strategy 'acb_markov_midfreq_3bet' lifecycle='RETIRED'; P7 apply will create historical-only rows — human review required",
+      "p1_has_historical_predictions": true
+    },
+    {
+      "strategy_id": "midfreq_acb_2bet",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "artifact_source_type": "PREDICTION_LOG",
+      "source_tier": "TIER_1_DB_PREDICTION_PAYLOAD",
+      "has_db_prediction_items": true,
+      "db_draw_count": 31,
+      "lifecycle_warning": "strategy 'midfreq_acb_2bet' lifecycle='RETIRED'; P7 apply will create historical-only rows — human review required",
+      "p1_has_historical_predictions": true
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "lottery_type": "DAILY_539",
+      "lifecycle_state": "RETIRED",
+      "artifact_source_type": "CODE_SCAN",
+      "source_tier": "TIER_4_CODE_SCAN_ONLY",
+      "has_db_prediction_items": false,
+      "db_draw_count": 0,
+      "lifecycle_warning": "strategy 'midfreq_fourier_2bet' lifecycle='RETIRED'; P7 apply will create historical-only rows — human review required",
+      "p1_has_historical_predictions": false
+    },
+    {
+      "strategy_id": "h6_gate_mk20_ew85",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_state": "OBSERVATION",
+      "artifact_source_type": "CODE_SCAN",
+      "source_tier": "TIER_4_CODE_SCAN_ONLY",
+      "has_db_prediction_items": false,
+      "db_draw_count": 0,
+      "lifecycle_warning": "strategy 'h6_gate_mk20_ew85' is in OBSERVATION shadow mode",
+      "p1_has_historical_predictions": false
+    }
+  ]
+}

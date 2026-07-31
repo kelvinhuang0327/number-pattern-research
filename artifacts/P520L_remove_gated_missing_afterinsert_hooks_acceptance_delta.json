@@ -1,0 +1,24 @@
+{
+  "active_completion_surface_after": [
+    "scheduler.load_data"
+  ],
+  "active_completion_surface_before": [
+    "scheduler.load_data"
+  ],
+  "artifact_prefix": "P520L_remove_gated_missing_afterinsert_hooks_acceptance_delta",
+  "disabled_missing_target_surface_after": [],
+  "disabled_missing_target_surface_before": [
+    "learning_integrator",
+    "refresh_hedge_fund_outputs",
+    "weight_adjuster"
+  ],
+  "missing_hook_residue_present_after": [],
+  "p520k_final_status_after": "PASS",
+  "p520k_final_status_before": "WARN",
+  "removed_missing_target_surface_after": [
+    "learning_integrator",
+    "refresh_hedge_fund_outputs",
+    "weight_adjuster"
+  ],
+  "scheduler_load_data_retained": true
+}

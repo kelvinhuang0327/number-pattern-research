@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P64a",
+  "strategy_id": "cold_complement_2bet",
+  "run_id": "p64_cold_complement_wave6_dryrun_rehearsal_20260525",
+  "generated_at": "2026-05-25T08:41:36.777652+00:00",
+  "temp_db_path": "/tmp/p64_cold_complement_temp.db",
+  "marker": "P64_COLD_COMPLEMENT_WAVE6_DRYRUN_REHEARSAL_20260525",
+  "governance": {
+    "db_writes": false,
+    "online_promotions": false,
+    "champion_replacement": false,
+    "registry_mutation": false,
+    "production_apply": false,
+    "production_rows_before": 43960,
+    "production_rows_after": 43960,
+    "drift_guard": "PASS",
+    "branch_governance_guard": "PASS"
+  },
+  "adapter": {
+    "class": "ColdComplement2BetAdapter",
+    "file": "lottery_api/models/p56_wave5_powerlotto_adapters.py",
+    "strategy_version": "v0.1-p56",
+    "deterministic": true,
+    "no_random_seed": true,
+    "algorithm": "cold_reversion_100w",
+    "mechanism": "6 coldest numbers by frequency over last 100 draws",
+    "pool": "1-38 first zone",
+    "pick": 6,
+    "special_pool": "1-8"
+  },
+  "dry_run": {
+    "window_periods": 1500,
+    "lifecycle": "DRY_RUN",
+    "temp_db": "/tmp/p64_cold_complement_temp.db"
+  },
+  "metrics": {
+    "total_rows": 1500,
+    "predicted_rows": 1500,
+    "insufficient_history_rows": 0,
+    "error_rows": 0,
+    "hit_distribution": {
+      "0": 478,
+      "1": 693,
+      "2": 274,
+      "3": 51,
+      "4": 4
+    },
+    "m3plus_count": 55,
+    "m3plus_rate_pct": 3.6667,
+    "theoretical_m3plus_baseline_pct": 3.87,
+    "vs_baseline_pp": -0.2033,
+    "special_hit_count": 178,
+    "special_hit_rate_pct": 11.8667,
+    "avg_hit_count": 0.94,
+    "target_draw_min": 101000003,
+    "target_draw_max": 115000041,
+    "duplicate_target_draws": 0,
+    "idempotency_row_count_before": 1500
+  },
+  "semantic_validations": {
+    "all_pass": true,
+    "checks": {
+      "pick_6_unique_numbers": {
+        "pass": true,
+        "violations": 0,
+        "detail": "All predicted_numbers must have exactly 6 elements"
+      },
+      "numbers_in_range_1_38": {
+        "pass": true,
+        "violations": 0,
+        "detail": "All predicted_numbers must be in [1, 38]"
+      },
+      "special_in_range_1_8": {
+        "pass": true,
+        "violations": 0,
+        "detail": "predicted_special must be in [1, 8]"
+      },
+      "no_duplicate_numbers": {
+        "pass": true,
+        "violations": 0,
+        "detail": "No duplicate numbers within a prediction"
+      },
+      "hit_count_integrity": {
+        "pass": true,
+        "violations": 0,
+        "detail": "hit_count must equal len(hit_numbers) and be \u2264 6"
+      },
+      "no_leakage_indicators": {
+        "pass": true,
+        "violations": 0,
+        "detail": "hit_count must never exceed 6 (leakage indicator)"
+      }
+    }
+  },
+  "leakage_validation": {
+    "leakage_violations": 0,
+    "null_cutoff_rows": 0,
+    "leakage_free": true,
+    "detail": "Causal ordering: prediction_cutoff_date < draw_date for all rows"
+  },
+  "idempotency_check": {
+    "idempotent": true,
+    "count_before": 1500,
+    "count_after": 1500,
+    "detail": "Re-insert produced no new rows (INSERT OR IGNORE)"
+  },
+  "rollback_check": {
+    "production_rows": 43960,
+    "production_rows_ok": true,
+    "cold_complement_production_rows": 0,
+    "cold_complement_production_rows_ok": true,
+    "detail": "Production DB untouched"
+  },
+  "readiness": {
+    "classification": "READY_FOR_P65_WITH_CAUTION",
+    "rationale": "M3+=3.67% vs baseline 3.87% (-0.20pp), within 2SE noise band. P57 precedent: -0.20pp. Caution: watch live performance.",
+    "p57_m3plus_pct": 3.67,
+    "p57_baseline_pct": 3.87,
+    "p57_delta_pp": -0.2,
+    "p57_mcnemar_p": 0.656
+  },
+  "p65_proposal": {
+    "proposed_strategy_id": "cold_complement_2bet",
+    "proposed_apply_rows": 1500,
+    "expected_production_rows_after": 45460,
+    "caid_template": "P64_POWERLOTTO_WAVE6_COLD_COMPLEMENT_1500_PROD_20260525",
+    "required_duplicate_check": "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id='cold_complement_2bet'",
+    "expected_before_apply": 0,
+    "backup_required": true,
+    "backup_table": "strategy_prediction_replays_backup_before_p65_cold_complement",
+    "rollback_sql": "DELETE FROM strategy_prediction_replays WHERE strategy_id='cold_complement_2bet'",
+    "explicit_production_apply_authorization_required": "YES apply cold_complement_2bet 1500 rows to production for P65",
+    "caution_notes": "M3+ rate below theoretical baseline by < 1.0pp. P57 precedent: \u22120.20pp (McNemar p=0.656, not significant). Recommend monitoring first 50 draws post-apply."
+  },
+  "preceding_task": "P63",
+  "next_task": "P64b (lag_reversion_2bet mini-backtest)",
+  "base_commit": "cc05a10",
+  "classification": "P64_COLD_COMPLEMENT_WAVE6_DRYRUN_REHEARSAL_COMPLETED"
+}

@@ -3,9 +3,10 @@ import json
 import requests
 import sys
 from datetime import datetime
+from lottery_api.canonical_db_path import resolve_db_path
 
 # Configuration
-DB_PATH = "data/lottery_v2.db"
+DB_PATH = resolve_db_path()
 API_URL = "http://localhost:8002/api/predict"
 LOTTERY_TYPE = "BIG_LOTTO"
 BACKTEST_ROUNDS = 5  # Number of past draws to test

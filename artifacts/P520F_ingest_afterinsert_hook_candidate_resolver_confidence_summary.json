@@ -1,0 +1,18 @@
+{
+  "artifact_prefix": "P520F_ingest_afterinsert_hook_candidate_resolver",
+  "best_confidence_by_hook": {},
+  "by_hook": {},
+  "candidate_count": 0,
+  "candidate_count_by_hook": {},
+  "confidence_counts": {
+    "HIGH": 0,
+    "LOW": 0,
+    "MEDIUM": 0
+  },
+  "final_status": "WARN",
+  "no_high_confidence_hooks": [],
+  "reference_count": 0,
+  "reference_count_by_hook": {},
+  "target_confirmed_by_hook": {},
+  "unresolved_hook_count": 0
+}

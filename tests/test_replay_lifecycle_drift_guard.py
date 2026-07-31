@@ -1,59 +1,235 @@
-"""Lifecycle drift guard tests for Replay Lifecycle UI."""
-from __future__ import annotations
+"""
+test_replay_lifecycle_drift_guard.py
+=====================================
+Deterministic tests for the read-only Post-V3 replay lifecycle drift guard.
 
-import os
+These tests:
+  - Do NOT require the backend to be running
+  - Do NOT write to the DB
+  - Run the drift guard script via subprocess and parse its JSON output
+
+Baseline (updated 2026-05-23 after P31B production apply):
+  legacy=460  v1=0  v2=0  p2b=0  p2f=0  p3bc=0  p14d=1500  p16=3000  p19b=1500  p20=3000  p21b=3000  p31b=7500  total=19960
+  P14D applied 1500 ts3_regime_3bet BIG_LOTTO rows (controlled_apply_id=P14D_BIGLOTTO_TS3_1500_PROD_20260520).
+  Legacy 460 rows retain truth_level=null; P14D rows have BIGLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED.
+  V3 tombstone strategies: 0 rows each (acb_markov_midfreq_3bet promoted out of tombstone list)
+  truth_level: REGENERATED_RETROSPECTIVE / ARTIFACT_RECONSTRUCTED_RETROSPECTIVE / OFFICIAL /
+               OFFICIAL_DRAW_RESULT / BIGLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED / NULL
+  Final classification: REPLAY_LIFECYCLE_DRIFT_GUARD_PASS
+"""
+
 import json
+import pathlib
+import subprocess
 import sys
-from pathlib import Path
 
 import pytest
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
-SCRIPTS_DIR = REPO_ROOT / "scripts"
+REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
+SCRIPT_PATH = REPO_ROOT / "scripts" / "replay_lifecycle_drift_guard.py"
 
-if str(SCRIPTS_DIR) not in sys.path:
-    sys.path.insert(0, str(SCRIPTS_DIR))
+# Known V3 tombstone strategy IDs — must have 0 rows in replay table
+# acb_markov_midfreq_3bet removed: 3 replay rows inserted via P3BC_RESOLVE_20260516
+# acb_1bet, acb_markov_midfreq, midfreq_acb_2bet, midfreq_fourier_2bet removed: P31B applied 1500 rows each (2026-05-23)
+V3_CODE_MISSING_STRATEGY_IDS = [
+    "h6_gate_mk20_ew85",
+]
 
-import check_replay_lifecycle_drift as drift  # noqa: E402
+ALLOWED_TRUTH_LEVELS = {
+    "REGENERATED_RETROSPECTIVE",
+    "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE",
+    "OFFICIAL",
+    "OFFICIAL_DRAW_RESULT",
+    # P14D Big Lotto production backfill (2026-05-20)
+    "BIGLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED",
+    # P16 Big Lotto remaining strategies backfill (2026-05-20)
+    "BIGLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED",
+    # P19B Power Lotto fourier_rhythm_3bet production backfill (2026-05-20)
+    "POWERLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED",
+    "POWERLOTTO_REMAINING_STRATEGIES_BACKFILL_VERIFIED",
+    # P21B Daily 539 production backfill (2026-05-21)
+    "DAILY539_BACKFILL_VERIFIED",
+    # P31B Daily 539 Wave 1 RETIRED strategies production apply (2026-05-23)
+    "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED",
+    # P37 Daily 539 Wave 2 DRY_RUN strategies production apply (2026-05-23)
+    "DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED",
+    # P43 BIG_LOTTO Wave 3 DRY_RUN strategies production apply (2026-05-24)
+    "BIGLOTTO_WAVE3_STRATEGY_BACKFILL_VERIFIED",
+    # P48 POWER_LOTTO Wave 4 DRY_RUN strategies production apply (2026-05-24)
+    "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED",
+    # P59 POWER_LOTTO Wave 5 controlled production apply (2026-05-25)
+    "POWER_LOTTO_WAVE5_CONTROLLED_APPLY_VERIFIED",
+    # P66 POWER_LOTTO Wave 6 controlled production apply (2026-05-25)
+    "POWER_LOTTO_WAVE6_CONTROLLED_APPLY_VERIFIED",
+    # P79 POWER_LOTTO Batch A draw-ext apply — draw 115000041 (2026-05-26)
+    "POWERLOTTO_DRAW_EXT_VERIFIED",
+    # P94 Tier B Controlled Apply (2026-05-26)
+    "TIERB_DRYRUN_VALIDATED",
+    "null",
+}
 
-DB_PATH = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
+
+# ---------------------------------------------------------------------------
+# Helper
+# ---------------------------------------------------------------------------
+
+def _run_drift_guard(tmp_path: pathlib.Path) -> tuple:
+    """Run the drift guard script with --strict --json-out and return (exit_code, result_dict)."""
+    json_out = tmp_path / "drift_guard_result.json"
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT_PATH),
+            "--strict",
+            "--json-out",
+            str(json_out),
+        ],
+        capture_output=True,
+        text=True,
+        cwd=str(REPO_ROOT),
+    )
+    if json_out.exists():
+        result = json.loads(json_out.read_text())
+    else:
+        result = {}
+    return proc.returncode, result
 
 
-def _resolve_db_path() -> Path:
-    override = os.environ.get("LOTTERY_TEST_DB_PATH")
-    if override:
-        return Path(override)
-    return DB_PATH
+# ---------------------------------------------------------------------------
+# Tests
+# ---------------------------------------------------------------------------
 
+class TestDriftGuardScript:
+    """Test suite for replay_lifecycle_drift_guard.py."""
 
-DB_PATH = _resolve_db_path()
+    def test_script_compiles(self):
+        """The drift guard script must compile without syntax errors."""
+        proc = subprocess.run(
+            [sys.executable, "-m", "py_compile", str(SCRIPT_PATH)],
+            capture_output=True,
+            text=True,
+        )
+        assert proc.returncode == 0, (
+            f"Script failed to compile:\n{proc.stderr}"
+        )
 
+    def test_strict_mode_passes(self, tmp_path):
+        """In --strict mode, the script must exit 0 and report status=PASS."""
+        exit_code, result = _run_drift_guard(tmp_path)
+        assert exit_code == 0, (
+            f"Drift guard exited {exit_code} (expected 0).\n"
+            f"Violations: {result.get('violations', 'no JSON output')}"
+        )
+        assert result.get("status") == "PASS", (
+            f"Expected status=PASS, got {result.get('status')}.\n"
+            f"Violations: {result.get('violations', [])}"
+        )
 
-@pytest.mark.requires_db
-@pytest.mark.skipif(not DB_PATH.exists(), reason="Replay DB not found")
-class TestReplayLifecycleDriftGuard:
-    def test_drift_report_is_traceable(self):
-        report = drift.collect_drift_report(DB_PATH)
+    def test_json_output_schema(self, tmp_path):
+        """Output JSON must contain all required top-level keys."""
+        _, result = _run_drift_guard(tmp_path)
+        required_keys = [
+            "status",
+            "checked_at",
+            "db_path",
+            "row_counts",
+            "lifecycle_counts",
+            "truth_level_counts",
+            "controlled_apply_id_counts",
+            "violations",
+            "final_classification",
+        ]
+        for key in required_keys:
+            assert key in result, f"Missing required key '{key}' in JSON output"
 
-        assert report["status"] in {"PASS", "BLOCKED"}
-        if report["status"] == "PASS":
-            assert report["unknown_strategy_ids"] == []
-            assert report["missing_lifecycle_status_strategy_ids"] == []
-        else:
-            assert report["unknown_strategy_ids"]
-        assert set(report["registry_by_lifecycle"]) <= set(drift.LIFECYCLE_STATUSES)
-        assert set(report["replay_rows_by_lifecycle"]) <= set(drift.LIFECYCLE_STATUSES)
+        # row_counts sub-keys
+        row_counts = result["row_counts"]
+        for sub in ("v1", "v2", "legacy", "total"):
+            assert sub in row_counts, f"Missing row_counts.{sub}"
 
-    def test_drift_report_json_serializes(self):
-        report = drift.collect_drift_report(DB_PATH)
-        encoded = json.dumps(report, ensure_ascii=False)
-        decoded = json.loads(encoded)
+        # lifecycle_counts sub-keys
+        lc = result["lifecycle_counts"]
+        assert "v3_code_missing_zero_row_strategies" in lc
+        assert "v3_fake_row_violations" in lc
+        assert isinstance(lc["v3_fake_row_violations"], list)
 
-        assert decoded["status"] in {"PASS", "BLOCKED"}
-        assert decoded["traceable_row_count"] <= decoded["replay_row_count"]
-        if decoded["status"] == "BLOCKED":
-            assert decoded["unknown_strategy_ids"]
+    def test_no_v3_fake_rows(self, tmp_path):
+        """All known V3 CODE_MISSING strategy IDs must have 0 rows in the replay table."""
+        _, result = _run_drift_guard(tmp_path)
+        fake_violations = result.get("lifecycle_counts", {}).get("v3_fake_row_violations", [])
+        assert fake_violations == [], (
+            f"V3 tombstone strategies with unexpected rows: {fake_violations}"
+        )
+        assert result["lifecycle_counts"]["v3_code_missing_zero_row_strategies"] == len(
+            V3_CODE_MISSING_STRATEGY_IDS
+        ), (
+            f"Expected {len(V3_CODE_MISSING_STRATEGY_IDS)} zero-row V3 strategies, "
+            f"got {result['lifecycle_counts']['v3_code_missing_zero_row_strategies']}"
+        )
 
-    def test_registry_statuses_remain_canonical(self):
-        statuses = {entry["strategy_lifecycle_status"] for entry in drift.list_strategies()}
-        assert statuses <= set(drift.LIFECYCLE_STATUSES)
+    def test_truth_level_enum_clean(self, tmp_path):
+        """No unexpected truth_level values must exist in the replay table."""
+        _, result = _run_drift_guard(tmp_path)
+        truth_level_counts = result.get("truth_level_counts", {})
+        unexpected = set(truth_level_counts.keys()) - ALLOWED_TRUTH_LEVELS
+        assert unexpected == set(), (
+            f"Unexpected truth_level values found: {unexpected}"
+        )
+        # Pre-backfill state: all 460 legacy rows carry truth_level=null, which is a valid
+        # accepted condition before Phase-1 backfill is applied.  Populated enum values
+        # (REGENERATED_RETROSPECTIVE, ARTIFACT_RECONSTRUCTED_RETROSPECTIVE, OFFICIAL) are
+        # expected only after the controlled backfill apply is executed.  This test validates
+        # enum integrity (no unexpected values), not backfill completeness.
+
+    def test_db_counts_match_baseline(self, tmp_path):
+        """DB row counts must match the P94 post-apply baseline: legacy=460, total=54462.
+
+        Updated 2026-05-27 (P96): Updated total from 46962 to 54462.
+        P94 (2026-05-26): Added 7500 Tier B Controlled Apply rows (TIERB_DRYRUN_VALIDATED).
+        P79 (2026-05-26): Added 2 Batch A draw-ext rows for POWER_LOTTO draw 115000041.
+        P66 (2026-05-25): Added 1500 cold_complement_2bet + 1500 zonal_entropy_2bet = 3000 rows.
+        """
+        _, result = _run_drift_guard(tmp_path)
+        rc = result.get("row_counts", {})
+        # Legacy rows unchanged
+        assert rc.get("legacy") == 460, f"legacy count mismatch: {rc.get('legacy')} != 460"
+        # P14D applied 1500 rows
+        assert rc.get("p14d") == 1500, f"P14D count mismatch: {rc.get('p14d')} != 1500"
+        # P16 applied 3000 rows
+        assert rc.get("p16") == 3000, f"P16 count mismatch: {rc.get('p16')} != 3000"
+        # P19B applied 1500 POWER_LOTTO rows
+        assert rc.get("p19b") == 1500, f"P19B count mismatch: {rc.get('p19b')} != 1500"
+        # P20 applied 3000 POWER_LOTTO rows (power_precision_3bet + power_orthogonal_5bet)
+        assert rc.get("p20") == 3000, f"P20 count mismatch: {rc.get('p20')} != 3000"
+        # P21B applied 3000 DAILY_539 rows (daily539_f4cold + daily539_markov_cold)
+        assert rc.get("p21b") == 3000, f"P21B count mismatch: {rc.get('p21b')} != 3000"
+        # P31B applied 7500 DAILY_539 RETIRED rows (5 Wave 1 strategies × 1500)
+        assert rc.get("p31b") == 7500, f"P31B count mismatch: {rc.get('p31b')} != 7500"
+        # P37 applied 9000 DAILY_539 Wave 2 DRY_RUN rows (6 strategies × 1500)
+        assert rc.get("p37") == 9000, f"P37 count mismatch: {rc.get('p37')} != 9000"
+        # P43 applied 9000 BIG_LOTTO Wave 3 DRY_RUN rows (6 strategies × 1500)
+        assert rc.get("p43") == 9000, f"P43 count mismatch: {rc.get('p43')} != 9000"
+        # P48 applied 4500 POWER_LOTTO Wave 4 DRY_RUN rows (3 strategies × 1500)
+        assert rc.get("p48") == 4500, f"P48 count mismatch: {rc.get('p48')} != 4500"
+        # P59 applied 1500 POWER_LOTTO Wave 5 rows (fourier30_markov30_2bet, 2026-05-25)
+        assert rc.get("p59") == 1500, f"P59 count mismatch: {rc.get('p59')} != 1500"
+        # P66 applied 3000 POWER_LOTTO Wave 6 rows (cold_complement_2bet + zonal_entropy_2bet, 2026-05-25)
+        assert rc.get("p66_cold") == 1500, f"P66-cold count mismatch: {rc.get('p66_cold')} != 1500"
+        assert rc.get("p66_zonal") == 1500, f"P66-zonal count mismatch: {rc.get('p66_zonal')} != 1500"
+        # P79 applied 2 Batch A draw-ext rows for POWER_LOTTO draw 115000041 (2026-05-26)
+        assert rc.get("p79_fourier_rhythm") == 1, f"P79-fourier-rhythm count mismatch: {rc.get('p79_fourier_rhythm')} != 1"
+        assert rc.get("p79_fourier30_markov30") == 1, f"P79-fourier30-markov30 count mismatch: {rc.get('p79_fourier30_markov30')} != 1"
+        # P94 applied 7500 Tier B Controlled Apply rows (2026-05-26)
+        assert rc.get("p94") == 7500, f"P94 count mismatch: {rc.get('p94')} != 7500"
+        # New total = 46962 (pre-P94) + 7500 (P94 Tier B) = 54462
+        assert rc.get("total") == 54462, f"total count mismatch: {rc.get('total')} != 54462"
+        # V1/V2/P2B/P2F/P3BC remain 0
+        assert rc.get("v1") == 0, f"V1 count mismatch: {rc.get('v1')} != 0"
+        assert rc.get("v2") == 0, f"V2 count mismatch: {rc.get('v2')} != 0"
+        assert rc.get("p2b") == 0, f"P2B count mismatch: {rc.get('p2b')} != 0"
+        assert rc.get("p2f") == 0, f"P2F count mismatch: {rc.get('p2f')} != 0"
+        assert rc.get("p3bc") == 0, f"P3BC count mismatch: {rc.get('p3bc')} != 0"
+        # Final classification must always be PASS
+        assert result.get("final_classification") == "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS", (
+            f"Unexpected final_classification: {result.get('final_classification')}"
+        )

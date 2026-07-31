@@ -1,0 +1,153 @@
+{
+  "task_id": "P213C",
+  "classification": "P213C_SOURCE_AUDIT_SOURCE_CANDIDATE_FOUND_NEEDS_VALIDATION",
+  "final_task_classification": "P213C_3STAR_4STAR_SOURCE_AUDIT_COMPLETE",
+  "task_type": "Type B",
+  "source_authorization": "Authorize P213C 3_STAR/4_STAR source audit (read-only API inspection, no DB write)",
+  "lottery_scope": ["3_STAR", "4_STAR"],
+  "date": "2026-06-05",
+
+  "confirmed_current_state": {
+    "db_stores_sorted_arrays": true,
+    "positional_order_lost_in_db": true,
+    "db_row_count_3star": 4179,
+    "db_row_count_4star": 2922,
+    "database_sorting_root_cause": "lottery_api/database.py:463 — json.dumps(sorted(numbers)) sorts regardless of isPermutation flag",
+    "lottery_types_json_ispermutation_3star": true,
+    "lottery_types_json_ispermutation_4star": true,
+    "csv_validator_preserves_permutation_order": true,
+    "csv_validator_permutation_logic_location": "lottery_api/utils/csv_validator.py:286 and :451-452",
+    "csv_validator_permutation_logic": "final_numbers = numbers if is_permutation else sorted(numbers)",
+    "mock_debug_source_format_evidence": {
+      "found": true,
+      "files": [
+        "lottery_api/tools/debug_validator.py",
+        "lottery_api/tools/debug_comprehensive.py"
+      ],
+      "format_fields": {
+        "大小順序": "sorted draw order",
+        "開出順序": "actual draw order (positional)"
+      }
+    },
+    "no_3star_4star_api_endpoint_in_fetcher": true,
+    "fetcher_supports": ["BIG_LOTTO", "POWER_LOTTO", "DAILY_539"]
+  },
+
+  "source_audit_findings": {
+    "csv_upload_route_exists": true,
+    "csv_upload_route_location": "lottery_api/routes/data.py:53-104",
+    "import_path_confirmed": "CSV/TXT upload → csv_validator (preserves order) → database.py (re-sorts — order lost)",
+    "original_csv_files_found_in_repo": false,
+    "backfill_engine_supports_3star_4star": false,
+    "taiwan_lottery_source_format_known": true,
+    "taiwan_lottery_source_format_evidence": "mock/debug content confirms 開出順序 field present in raw TXT format",
+    "external_source_audited": false,
+    "external_source_audit_note": "No live API call made; local repo evidence sufficient for this audit scope"
+  },
+
+  "source_candidates_found": [
+    {
+      "name": "lottery_types.json isPermutation metadata",
+      "location": "lottery_api/data/lottery_types.json:45,54",
+      "has_positional_order": false,
+      "purpose": "Confirms games require positional data; not a source of draw data"
+    },
+    {
+      "name": "csv_validator.py permutation-order preservation",
+      "location": "lottery_api/utils/csv_validator.py:286,451-452",
+      "has_positional_order": true,
+      "purpose": "Parser correctly preserves order from raw CSV/TXT; ready for fix if database.py is corrected"
+    },
+    {
+      "name": "debug_validator.py mock source format",
+      "location": "lottery_api/tools/debug_validator.py",
+      "has_positional_order": true,
+      "purpose": "Confirms raw TXT format includes 開出順序 field; represents source format, not actual data"
+    },
+    {
+      "name": "debug_comprehensive.py mock source format",
+      "location": "lottery_api/tools/debug_comprehensive.py",
+      "has_positional_order": true,
+      "purpose": "Confirms 3_STAR and 4_STAR format separately; mock only"
+    }
+  ],
+
+  "source_candidates_missing": [
+    {
+      "name": "Original 3_STAR/4_STAR historical CSV/TXT import files",
+      "status": "NOT FOUND in repo working tree",
+      "note": "Files likely existed at import time but not tracked in git or retained locally"
+    },
+    {
+      "name": "Taiwan Lottery external source (API or website)",
+      "status": "NOT audited — outside local repo scope",
+      "note": "Live API call or external web inspection not performed; requires separate authorization"
+    }
+  ],
+
+  "source_classification": "P213C_SOURCE_AUDIT_SOURCE_CANDIDATE_FOUND_NEEDS_VALIDATION",
+  "source_classification_reason": "Raw source format is known and confirmed to include 開出順序; csv_validator is already correct; but original CSV files not in repo and external source not audited",
+
+  "recoverability_status": "possible_but_source_requires_external_validation",
+  "confidence_level": "medium_high",
+  "confidence_reason": "Source format known from mock evidence; parser already correct; single-line bug identified; but original data files absent",
+
+  "required_next_evidence": [
+    "External Taiwan Lottery source availability for historical 3_STAR/4_STAR draws",
+    "Confirmation that 開出順序 in production source files matches mock format",
+    "Sample validation of draw order against known results before any DB write"
+  ],
+
+  "future_path_options": [
+    {
+      "option": "HOLD",
+      "description": "No action; remain WAITING_FOR_USER_AUTHORIZATION",
+      "authorization_phrase": null
+    },
+    {
+      "option": "P213D_read_only_schema_fix_design",
+      "description": "Design the database.py fix (check isPermutation before sorting) and schema approach (new numbers_positional column) as a read-only design doc; no DB write",
+      "authorization_phrase": "Authorize P213D 3_STAR/4_STAR positional schema and code fix design (read-only design doc, no DB write)"
+    },
+    {
+      "option": "P213E_external_source_download_dry_run",
+      "description": "Re-download historical 3_STAR/4_STAR CSV/TXT from Taiwan Lottery and run dry-run parser; no DB write to production",
+      "authorization_phrase": "Authorize P213E 3_STAR/4_STAR historical draw re-download and dry-run ingestion (no DB write to production)"
+    },
+    {
+      "option": "P213F_controlled_db_write_recovery",
+      "description": "Full positional data re-ingestion with DB write; requires backup confirmed, dry-run passed, separate explicit authorization",
+      "authorization_phrase": "Authorize 3_STAR/4_STAR positional data re-ingestion (DB write authorized, backup confirmed, dry-run passed)"
+    }
+  ],
+
+  "recommended_next_direction": "P213D_read_only_schema_fix_design",
+  "recommended_next_direction_rationale": "Bug is precisely identified (one line), parser is already correct, source format is known — schema fix design is low-risk and bounded next step",
+  "exact_authorization_phrase_for_next_direction": "Authorize P213D 3_STAR/4_STAR positional schema and code fix design (read-only design doc, no DB write)",
+
+  "no_code_changes": true,
+  "no_db_write": true,
+  "no_schema_change": true,
+  "no_ingestion": true,
+  "no_registry_mutation": true,
+  "no_production_change": true,
+  "no_monitoring_change": true,
+  "no_strategy_authorization": true,
+  "no_betting_advice": true,
+  "same_pr_closeout": true,
+
+  "p238b_interpretation": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY — observation only; not a strategy signal; not betting advice; not a production change",
+
+  "targeted_tests": "tests/test_p213c_3star_4star_source_audit.py",
+
+  "final_state": {
+    "classification": "P213C_3STAR_4STAR_SOURCE_AUDIT_COMPLETE",
+    "db_rows_unchanged": 94924,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "p213b_remains_complete": true,
+    "p238b_remains_observation_only": true,
+    "active_task_status": "WAITING_FOR_USER_AUTHORIZATION",
+    "no_active_worker": true,
+    "separate_closeout_pr_needed": false
+  }
+}

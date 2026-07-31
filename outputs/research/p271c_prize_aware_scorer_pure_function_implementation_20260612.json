@@ -1,0 +1,115 @@
+{
+  "task_id": "P271C",
+  "generated_at": "2026-06-12T00:00:00Z",
+  "repo_head_before_task": "687cff5989b5b84df871655f2cfa8f797de954b8",
+  "branch": "task/p271c-prize-aware-scorer-pure-function",
+  "mode": "prize_aware_scorer_pure_function_implementation",
+
+  "implementation_file": "lottery_api/prize_aware_scorer.py",
+  "test_file": "tests/test_p271c_prize_aware_scorer.py",
+  "source_contract_files": [
+    "outputs/research/p271a_prize_aware_endpoint_scoring_spec_20260611.json",
+    "outputs/research/p271b_official_prize_rule_scoring_engine_design_20260611.json"
+  ],
+
+  "source_verification_status": "MANUAL_VERIFICATION_REQUIRED",
+  "scoring_version": "prize_aware_v1",
+  "supported_lottery_types": ["POWER_LOTTO", "BIG_LOTTO", "DAILY_539"],
+
+  "public_contract": {
+    "primary_function": "score_prize_aware_ticket(lottery_type, predicted_main_numbers, actual_main_numbers, predicted_second_zone=None, actual_second_zone=None, actual_special_number=None) -> dict",
+    "supporting_functions": [
+      "classify_power_lotto_tier(hit_count, special_hit) -> str",
+      "classify_big_lotto_tier(hit_count, special_hit) -> str",
+      "classify_daily_539_tier(hit_count) -> str",
+      "classify_tier(lottery_type, hit_count, special_hit) -> str",
+      "is_any_prize_aware_win(lottery_type, hit_count, special_hit) -> bool",
+      "score_replay_row(lottery_type, hit_count, special_hit) -> dict"
+    ],
+    "module_level_path": "lottery_api/prize_aware_scorer.py (flat module, no package/__init__.py, per task whitelist; differs from the P271B-proposed lottery_api/research/prize_aware_scoring/ package path — file-structure choice only, semantics unchanged)",
+    "output_dict_keys": [
+      "scoring_version", "lottery_type", "main_hit_count", "special_hit",
+      "second_zone_hit", "any_prize_aware_win", "prize_tier", "tier_class",
+      "is_prize_aware_win", "is_m3_plus", "endpoint_flags",
+      "source_verification_status", "parallel_feature",
+      "existing_m3_replay_scoring_changed"
+    ]
+  },
+
+  "validation_contract": {
+    "lottery_type": "must be one of POWER_LOTTO/BIG_LOTTO/DAILY_539, else ValueError",
+    "number_lists": "predicted/actual main number lists must be sequences of distinct, non-bool ints within game range, exact required length (6 for POWER_LOTTO/BIG_LOTTO, 5 for DAILY_539), else ValueError",
+    "power_lotto_second_zone": "predicted_second_zone and actual_second_zone both required (1-8 ints); actual_special_number must be None",
+    "big_lotto_special_number": "actual_special_number required (int in main-number range, not overlapping actual_main_numbers); predicted_second_zone/actual_second_zone must be None",
+    "daily_539_aux_fields": "predicted_second_zone, actual_second_zone, actual_special_number must all be None",
+    "hit_count_special_hit": "score_replay_row validates hit_count in [0, max_pick_count] and special_hit in {0,1}, both non-bool ints",
+    "immutability": "input lists/tuples are never mutated (read via set()/list() copies only)"
+  },
+
+  "tier_mapping_traceability": {
+    "POWER_LOTTO": "10 tiers (POWER_FIRST_PRIZE .. POWER_CONSOLATION_PRIZE, POWER_NO_PRIZE) — exact match to P271B tier_mapping_by_lottery.POWER_LOTTO",
+    "BIG_LOTTO": "8 tiers (BIG_FIRST_PRIZE .. BIG_CONSOLATION_PRIZE, BIG_NO_PRIZE) — exact match to P271B tier_mapping_by_lottery.BIG_LOTTO",
+    "DAILY_539": "4 tiers (D539_FIRST_PRIZE .. D539_FOURTH_PRIZE, D539_NO_PRIZE) — exact match to P271B tier_mapping_by_lottery.DAILY_539"
+  },
+
+  "p271b_fixture_count": 33,
+  "p271c_executable_fixture_count": 33,
+  "fixture_coverage": {
+    "POWER_LOTTO": "14/14",
+    "BIG_LOTTO": "13/13",
+    "DAILY_539": "6/6",
+    "total": "33/33",
+    "traceability_test": "test_p271b_fixture_matrix_traceability reads outputs/research/p271b_official_prize_rule_scoring_engine_design_20260611.json directly and asserts each fixture's (hit_count, special_hit) -> (tier_class, any_prize_aware_win, is_m3_plus) against score_replay_row()"
+  },
+
+  "parallel_feature_design": {
+    "principle": "Prize-aware scoring is a NEW PARALLEL evaluation feature alongside existing M3+/replay scoring. It does not replace, override, migrate, deprecate, or change existing M3+/replay scoring semantics.",
+    "is_m3_plus_always_present": true,
+    "existing_m3_definition_unchanged": "hit_count >= 3, special_hit excluded (P265A SSOT)",
+    "module_isolation": "No imports of replay.py, DB/repository modules, strategy-selection modules; no registry/API/replay-pipeline registration; pure function, no I/O"
+  },
+
+  "existing_m3_replay_scoring_changed": false,
+  "replay_integration_added": false,
+  "production_api_integration_added": false,
+  "db_access": false,
+  "db_write": false,
+  "registry_write": false,
+  "network_access": false,
+  "file_io": false,
+  "backtest_run": false,
+  "replay_evaluation_run": false,
+  "strategy_generated": false,
+  "hit_rate_improvement_claimed": false,
+  "prize_amount_logic_added": false,
+  "ev_roi_logic_added": false,
+  "replacement_migration_authorized": false,
+  "p270c_allowed": false,
+  "p271d_started": false,
+
+  "tests_result": {
+    "focused": "98/98 PASS (tests/test_p271c_prize_aware_scorer.py)",
+    "combined": "208/208 PASS (test_p271a_prize_aware_endpoint_scoring_spec.py + test_p271b_official_prize_rule_scoring_engine_design.py + test_p271c_prize_aware_scorer.py)",
+    "git_diff_check": "PASS (clean)"
+  },
+
+  "modified_files": [
+    "lottery_api/prize_aware_scorer.py",
+    "tests/test_p271c_prize_aware_scorer.py",
+    "outputs/research/p271c_prize_aware_scorer_pure_function_implementation_20260612.json",
+    "outputs/research/p271c_prize_aware_scorer_pure_function_implementation_20260612.md",
+    "00-Plan/roadmap/active_task.md",
+    "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md"
+  ],
+
+  "next_recommended_task": "HOLD / WAITING_FOR_USER_AUTHORIZATION. Standalone prize-aware scorer pure-function module is complete and tested. No replay integration, no batch scoring, no production/API wiring. Any future connection of prize_aware_scorer.py to the replay pipeline, production API, or strategy selection requires a new explicit P271D (or later) authorization with its own STOP conditions.",
+
+  "final_classification": "P271C_PRIZE_AWARE_SCORER_PURE_FUNCTION_COMPLETE",
+
+  "limitations": [
+    "Official Taiwan Lottery prize-table pages remain MANUAL_VERIFICATION_REQUIRED (JS SPAs, not machine-readable). Tier mappings are sourced from internal repo documentation (lottery_api/CLAUDE.md calc_prize docstrings, calculate_win_probability.py) per the P271B design artifact, not from a machine-verified official source.",
+    "Module placed at lottery_api/prize_aware_scorer.py (flat module per this task's explicit file whitelist) rather than the P271B-proposed lottery_api/research/prize_aware_scoring/ package path, to avoid creating __init__.py/package configuration (a STOP condition for this task). Function names, signatures, and tier semantics are unchanged from the P271B design.",
+    "POWER_LOTTO predicted_special is only ~25% populated in the replay DB (per P271A/P271B); this module performs no DB access and simply requires the caller to supply predicted_second_zone/actual_second_zone explicitly — NULL-to-0 mapping for unpopulated rows remains the caller's responsibility and is out of scope here.",
+    "This is a standalone pure-function module with no replay/DB/API/strategy integration. It does not constitute betting advice, a prediction-success claim, or an approved production feature."
+  ]
+}

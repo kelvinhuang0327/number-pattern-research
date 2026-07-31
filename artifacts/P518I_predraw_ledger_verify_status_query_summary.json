@@ -1,0 +1,29 @@
+{
+  "acceptance_final_status": "PASS",
+  "artifact_prefix": "P518I_predraw_ledger_verify_status",
+  "canonical_db_open_write_status": "PASS",
+  "canonical_db_refusal_status": "PASS",
+  "db_invariant_status": "PASS",
+  "edge_passed": 7,
+  "edge_total": 7,
+  "failed_missing_case_count": 0,
+  "final_compact_status": "PASS",
+  "no_betting_future_prediction_claims": true,
+  "no_canonical_db_open_write": true,
+  "no_deploy": true,
+  "no_migration_backfill": true,
+  "not_production_release_approval": true,
+  "notices": [
+    "no canonical DB open/write",
+    "no migration/backfill",
+    "no deploy",
+    "synthetic fixture evidence only",
+    "not production release approval",
+    "no betting/future prediction claims"
+  ],
+  "smoke_passed": 5,
+  "smoke_total": 5,
+  "source": "committed P518H acceptance artifacts only",
+  "synthetic_fixture_evidence_only": true,
+  "warning_count": 0
+}

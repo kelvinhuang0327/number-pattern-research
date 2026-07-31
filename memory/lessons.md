@@ -5,6 +5,511 @@
 
 ---
 
+## L126 — P249B 治理文件列標清理 (2026-06-06)
+
+**來源：** P249B Type B doc-only governance sync
+
+**CURRENT_STATE.md 行計數語義：**
+- `BIG_LOTTO rows | 24,140` 原來是 **replay rows**（strategy_prediction_replays 表）
+- 24,140 + 34,680 + 36,104 = **94,924 = 全部 replay rows** ✓
+- BIG_LOTTO **raw draw rows** = 22,238（draws 表）
+- BIG_LOTTO **canonical research rows** = 2,113（draws_big_lotto_canonical_main view）
+- DAILY_539 **draw rows** = 5,879（不是 34,680！那是 replay rows）
+- POWER_LOTTO **draw rows** = 1,916（不是 36,104！那是 replay rows）
+- 修正後標籤：replay rows 與 draw rows 分開記錄
+
+**roadmap.md 同步：**
+- 加入 P246B–P249B 弧的 phase table entry 和 §0.7 bullet
+- 更新 roadmap marker code block（P249B 置於最上方）
+- Last Updated 從 2026-06-05 更新為 2026-06-06
+
+**原則：**
+- 治理文件中的行計數標籤必須明確區分 "replay rows"、"draw rows"、"canonical rows"
+- 三者含義完全不同，混用會導致未來 agent 誤解資料規模
+
+---
+
+## L127 — P250A 現況 registry 與歷史 scoreboard 分層 (2026-06-06)
+
+**來源：** P250A cross-lottery strategy replay inventory
+
+**重要區分：**
+- `lottery_api/models/replay_strategy_registry.py` 是現況 SSOT，提供 38 個 current registry entries
+- `outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.json` 是歷史 replay 快照，保留 41 個歷史 inventory entries
+- 其中 3 個 POWER_LOTTO artifact-only entries 仍需出現在 replay/catalog view 中，不能因 lifecycle 標籤不在 current registry 就被隱藏
+
+**統一原則：**
+- lifecycle 只做 badge / filter，不做排除條件
+- current lifecycle status 與 historical snapshot status 可以同時存在，避免把舊快照誤當現況
+- replay coverage 應同時說明 replay rows、draw rows、canonical rows，並標示 BIG_LOTTO raw vs canonical 的語義差異
+
+**P250A 盤點結論：**
+- current registry entries = 38
+- historical inventory entries = 41
+- artifact-only entries = 3
+- BIG_LOTTO replay rows = 24,140; raw draw rows = 22,238; canonical rows = 2,113
+- DAILY_539 replay rows = 34,680; POWER_LOTTO replay rows = 36,104
+- current inventory 仍然沒有任何 active deployable candidate
+
+---
+
+## L128 — P251A evidence dashboard contract dry-run (2026-06-06)
+
+**來源：** P251A cross-lottery evidence dashboard dry-run plan
+
+**重要設計原則：**
+- P250A inventory 是 dashboard 的 evidence source，不是 UI 實作
+- `global_summary` 必須把 current registry 與 historical snapshot 分開呈現
+- `lifecycle_badge_vocabulary` 只能做 badge / filter，不可做排除條件
+- `strategy_table_columns` 與 `evidence_state_columns` 必須同時保留 current lifecycle 與 historical snapshot lifecycle
+
+**固定欄位區塊：**
+- `global_summary`
+- `lottery_summary`
+- `lifecycle_badge_vocabulary`
+- `strategy_table_columns`
+- `evidence_state_columns`
+- `filter_semantics`
+- `no_exclusion_rules`
+- `stale_snapshot_warning`
+- `no_betting_advice_notice`
+- `implementation_candidates_for_future`
+
+**展示原則：**
+- current registry = live SSOT
+- P232A = historical snapshot
+- artifact-only rows remain visible by default
+- BIG_LOTTO replay / draw / canonical counts must stay separated
+- no active deployable candidate is a required headline, not an inference
+
+---
+
+## L125 — P249A 後隔離 roadmap triage 重點發現 (2026-06-06)
+
+**來源：** P249A post-isolation roadmap triage
+
+**關鍵發現：**
+- CURRENT_STATE.md 的 "BIG_LOTTO rows | 24,140" 是 **replay rows**（不是 draw rows）
+  - 24,140 + 34,680 + 36,104 = 94,924 = 全部 replay rows ✓
+  - 實際 BIG_LOTTO draw rows = 22,238（lottery_type='BIG_LOTTO' 的 draws 表）
+  - 此混淆不會影響目前運作，但未來 agent 可能誤解
+- 所有主要研究線全部關閉或 NULL：
+  - DAILY_539: P230C REJECTED（已無 WAIT_FOR_OOS 候選）
+  - POWER_LOTTO: P231B NULL（p=0.3018）
+  - 3_STAR/4_STAR box-play: P227C UNDERPOWERED_NO_SIGNAL
+  - 3_STAR/4_STAR straight-play: P214C NULL（0 Bonferroni significant）
+  - BIG_LOTTO: L90/L91 信號空間窮盡 + P246-P248A canonical 隔離完成
+- P224B 的 "≥300 new DAILY_539 draws" gate 已不適用：DAILY_539 候選已被 P230C REJECTED（非 WAIT_FOR_OOS）
+- **推薦下一步：T1+T2 — roadmap.md sync + CURRENT_STATE label fix（Type B doc-only）**
+  - roadmap.md 未反映 P246-P248A 18 個任務
+  - CURRENT_STATE "BIG_LOTTO rows" 標籤需釐清為 replay rows
+
+---
+
+## L124 — P248A BIG_LOTTO canonical 隔離 governance closure (2026-06-06)
+
+**來源：** P248A governance closure — P246B–P247G 弧完整結案
+
+**治理文件更新：**
+- `CURRENT_STATE.md`：狀態標記更新為 `P248A_BIG_LOTTO_CANONICAL_ISOLATION_GOVERNANCE_CLOSURE_COMPLETE`
+- `active_task.md`：P246B–P248A 完成記錄、WAITING_FOR_USER_AUTHORIZATION
+
+**關鍵不過度宣稱原則（no-overclaim）：**
+- P246K canonical NIST 審計 GREEN = 資料品質確認（2,113 筆正規主開獎與公平隨機相容）
+- GREEN ≠ 可利用預測信號；GREEN ≠ 授權任何策略/生產/投注建議
+- 預測研究需要 pre-registration + corrected-multiple-testing + walk-forward OOS + P245B bias gate
+
+**Artifact 日期後綴注意：**
+- P246B–P246I 用 `20260605`（在前一天完成）
+- P246J–P247G、P248A 用 `20260606`
+- 在 P248A 掃描 dependency artifacts 時需正確對應日期後綴
+
+**P246–P248A 弧完整記錄：**
+- 17 個任務 / 17 個 artifact → 全部 OK
+- 22,238 raw / 19,100 ADD_ON raw-accessible / 2,113 canonical
+- 15 active paths 受 regression guard 保護
+
+---
+
+## L123 — P247G BIG_LOTTO canonical 隔離最終驗證與 regression guard (2026-06-06)
+
+**來源：** P247G final guard — P247 弧（A→G）完成
+
+**最終狀態確認：**
+- View `draws_big_lotto_canonical_main` = 2,113 rows ✅
+- `get_canonical_draws('BIG_LOTTO')` = 2,113 rows (view-backed) ✅
+- Raw BIG_LOTTO = 22,238 rows (preserved) ✅
+- ADD_ON_PRIZE_EXCLUDED = 19,100 rows (raw-accessible) ✅
+- 15 個 active 研究路徑全部 canonical ✅
+- DB integrity: ok ✅
+
+**Regression Guard 設計：**
+- `test_p247g_big_lotto_canonical_isolation_final_guard.py` 含 30 個 parametrize 測試
+- 每個 active 路徑：(1) 確認不含 `get_all_draws('BIG_LOTTO')` (2) 確認含 canonical pattern
+- 未來任何 active 研究腳本若重新使用 raw BIG_LOTTO 呼叫，guard 測試立即失敗
+
+**P247 弧（A→G）完整歷程：**
+```
+A: dry-run 計畫（2026-06-06）
+B: CREATE VIEW Type D apply → 2,113 rows
+C: post-apply 核對 + P247A test cleanup
+D: consumer audit → 21 路徑分類
+E: get_canonical_draws() 採用 view → 單一真相來源
+F: 9 工具遷移 → get_canonical_draws()
+G: 最終驗證 + regression guard（本任務）
+```
+
+**SQLite note：** `sqlite3.connect(f"file:{db}?mode=ro", uri=True)` 在 WAL 環境下可能失敗；使用直接路徑連線即可。
+
+---
+
+## L122 — P247F BIG_LOTTO 分析工具遷移至 canonical helper (2026-06-06)
+
+**來源：** P247F Phase 3 analysis tool migration
+
+**執行摘要：**
+- 9 個 BIG_LOTTO 研究/分析工具從 `get_all_draws('BIG_LOTTO')` 遷移至 `get_canonical_draws('BIG_LOTTO')`
+- 全部 9 個工具已使用正確的 canonical DB 路徑，只需更換一行方法呼叫
+- 變更最小：單行 diff，不改動任何邏輯、常數、或函式簽章
+
+**遷移工具清單：**
+1. tools/analyze_banker_accuracy.py
+2. tools/analyze_banker_plus_kill.py
+3. tools/analyze_biglotto_special.py（special 指特別獎號，非加開；正確使用 canonical）
+4. tools/analyze_market_temperature.py
+5. tools/analyze_top_n_for_2.py
+6. tools/audit_big_lotto_3bet.py
+7. tools/audit_big_lotto_baseline.py
+8. tools/audit_big_lotto_hyper.py
+9. tools/audit_big_lotto_rigorous.py
+
+**未遷移（保留原因）：**
+- `lottery_api/routes/*.py` (RAW_HISTORY_ALLOWED)：API display 需要完整 raw rows
+- `lottery_api/backtest_*.py` (DEFERRED_ARCHIVED)：一次性歷史回測腳本，非 active pipeline
+- `lottery_api/predict_*.py` (DEFERRED_ARCHIVED)：歸檔的單次預測腳本
+
+**P247 完整弧（A→F）：** 已全部完成
+- A: dry-run 計畫 → B: CREATE VIEW → C: 後置核對 → D: consumer audit → E: helper 採用 view → F: 工具遷移
+
+---
+
+## L121 — P247E get_canonical_draws 採用 DB view (2026-06-06)
+
+**來源：** P247E database.py helper view adoption
+
+**實作模式：**
+- 在 `DatabaseManager` 加入 `_CANONICAL_VIEW_BIG_LOTTO` class constant 和 `_big_lotto_canonical_view_exists(cursor)` method
+- `get_canonical_draws("BIG_LOTTO")` 優先查詢 VIEW，view 缺席時降級為原 SQL+Python 雙層過濾（fallback）
+- Return shape 完全不變：`{'draw','date','lotteryType','numbers','special','jackpot_amount'}`
+- limit 行為保留
+- 非 BIG_LOTTO 路徑不受影響
+
+**重要發現：**
+- `DatabaseManager()` 預設路徑為 `data/lottery_v2.db`（小 217KB），非正規 DB
+- 正規 DB 為 `lottery_api/data/lottery_v2.db`（99MB），必須明確傳入：`DatabaseManager(str(DB_PATH))`
+- `get_all_draws("BIG_LOTTO")` 在測試環境（無 apscheduler）會拋錯；改用直接 SQLite 查詢驗證 raw access
+- fallback 可用 tmp_path 無 view 的測試 DB 測試，確認 ADD_ON 和 SMALL_POOL 過濾仍有效
+
+**P247 弧總結（A→E 完成）：**
+- P247A: dry-run 計畫（SQL 未執行）
+- P247B: CREATE VIEW Type D apply
+- P247C: post-apply 核對 + P247A test fix
+- P247D: consumer adoption audit（21 路徑分類）
+- P247E: database.py helper 採用 view（Phase 2 完成）
+
+---
+
+## L120 — P247D canonical view 消費者採用審計 (2026-06-06)
+
+**來源：** P247D consumer adoption audit
+
+**關鍵發現：**
+- 生產預測管線（backtest_framework, rsm_bootstrap, quick_predict）已全部使用 `get_canonical_draws()` — 不需要改動
+- 3 個路徑直接使用 VIEW（P247B/C tests + analysis），3 個路徑必須保持 raw（API display）
+- `get_canonical_draws()` 與 VIEW 語義等效（均返回 2,113 筆），但實作不同：helper 使用 SQL+Python 雙層過濾，VIEW 全部在 SQL 層完成
+- `lottery_api/database.py get_canonical_draws()` 可在未來更新為內部查詢 VIEW — 消除 Python 層 SMALL_POOL_ALIEN 過濾，單一真相來源；但需要 database.py 授權（P247D 範圍外）
+- 6+ 個 BIG_LOTTO 分析工具仍使用 `get_all_draws()` → FUTURE_SCOPE
+
+**SQLite URI read-only 模式注意事項：**
+- `sqlite3.connect(f"file:{path}?mode=ro", uri=True)` 需要使用 `path.resolve()` 確保絕對路徑
+- 未 resolve 的相對路徑（含 `..`）在 URI 模式下會失敗：`unable to open database file`
+
+**分類原則：**
+- RAW_HISTORY_ALLOWED：API display/history 路徑必須保持 raw（ADD_ON_PRIZE_EXCLUDED 需要顯示）
+- ALREADY_HELPER_CANONICAL：已使用 helper = 不需要改動（helper 與 view 等效）
+- FUTURE_SCOPE：不在 P247D 範圍內的修改一律標記，不允許在審計任務中執行
+
+---
+
+## L119 — P247C 後置核對與 P247A dry-run 測試清理 (2026-06-06)
+
+**來源：** P247C post-apply reconciliation
+
+**關鍵發現：**
+- P247B VIEW 後，P247A dry-run 的 `test_p247a_canonical_view_not_in_db` 必然失敗（view 已存在）
+- 正確修法：改為驗證 P247A 自身的 `sql_applied=False` / `db_write_performed=False`（從 artifact），而非查詢 live DB 的 view 是否存在
+- P247A artifact 本身不需修改；只需更新測試邏輯（從 live DB 查詢改為 artifact 驗證）
+- dry_run_validation.canonical_view_already_exists=False 是 P247A 快照時的歷史事實，可作為 anchor
+
+**Post-apply 計數確認（P247C）：**
+- View `draws_big_lotto_canonical_main` = 2,113 ✅
+- Raw BIG_LOTTO = 22,238 ✅（19,100 + 375 + 650 + 2,113 = 22,238 ✅ sum check）
+- ADD_ON_PRIZE_EXCLUDED raw-accessible = 19,100 ✅
+- DB integrity: ok ✅
+
+**原則：** 歷史 dry-run 測試驗證 artifact 狀態，不驗證 live DB 狀態（live DB 會隨後續 apply 改變）
+
+---
+
+## L118 — P247B BIG_LOTTO canonical view 正式建立 (2026-06-06)
+
+**來源：** P247B Type D controlled DB apply
+
+**關鍵執行結果：**
+- `CREATE VIEW draws_big_lotto_canonical_main` 成功建立於 `lottery_api/data/lottery_v2.db`
+- View 返回 2,113 筆正規主開獎（驗證：no hyphen, no date-format, all max>25）
+- 原始 BIG_LOTTO 22,238 筆完整保留；ADD_ON_PRIZE_EXCLUDED 19,100 筆原始可存取
+- Backup: `backups/p247b_lottery_v2_backup_20260606_113816.db` + SHA256 ✅
+- DB integrity check: ok ✅
+- 31 個 P247B 測試全部通過
+
+**重要教訓：**
+- Python 的 `json_each` 是 table-valued function，必須用 `FROM json_each(...)` 語法，不能用 `SELECT json_each(...)`（直接呼叫無效）
+- P247A dry-run 的 `test_p247a_canonical_view_not_in_db` 在 P247B apply 後會失敗（屬預期的歷史狀態測試）；這不是 regression，而是 P247B 刻意改變 DB 狀態的結果
+- Type D 執行清單完成：backup → CREATE VIEW → post-verify → 文物生成 → 測試 PASS
+
+**完成後狀態：**
+- `draws_big_lotto_canonical_main` VIEW 已存在於生產 DB
+- 下一步建議：annotation table（Type D 需另行授權）或直接使用 VIEW 於研究
+
+---
+
+## L117 — P247A DB 級隔離 dry-run 要點 (2026-06-06)
+
+**來源：** P247A DB 級正規分離 dry-run 計畫
+
+**關鍵發現：**
+- SQLite JSON1/json_each 可用 → 可在 VIEW 中直接過濾 SMALL_POOL_ALIEN（max>25），不需 Python 後置過濾
+- Proposed canonical view SQL dry-run 驗證：返回 2,113 筆（與 get_canonical_draws() 一致）
+- VIEW 是非破壞性增補（原始 draws 表保持 22,238 筆不變）
+- 22238 = 19100(ADD_ON) + 375(DATE_FMT) + 650(SMALL_POOL) + 2113(CANONICAL) ✅
+
+**Proposed canonical view SQL（dry-run only，未執行）：**
+```sql
+CREATE VIEW IF NOT EXISTS draws_big_lotto_canonical_main AS
+SELECT d.* FROM draws d
+WHERE d.lottery_type = 'BIG_LOTTO'
+  AND d.draw NOT LIKE '%-%'
+  AND NOT (LENGTH(d.draw) = 8 AND d.draw LIKE '20%')
+  AND (SELECT MAX(CAST(j.value AS INTEGER)) FROM json_each(d.numbers) j) > 25;
+```
+
+**Type D 執行清單：** backup + SHA256 → CREATE VIEW → CREATE TABLE (annotation) → post-apply 驗證 → 更新 test_p238b → 確認 GATE_RED 維持
+
+---
+
+## L116 — P246K 大樂透正規族群隨機性審計：GREEN（P238B YELLOW 係污染假訊號）(2026-06-06)
+
+**來源：** P246K 正規族群 NIST 重新審計
+
+**結論：** 大樂透正規 6/49 主開獎（2,113 期）通過全部 5 項隨機性測試（p 均 > 0.05）：
+- Draw-sum KS test: p=0.2458 ✅
+- Number frequency chi-square: p=0.7720 ✅
+- Runs test: p=0.9569 ✅
+- Ljung-Box lag-10: p=0.4129 ✅
+- Shannon entropy normalized: 0.999584 ✅
+
+**P238B YELLOW 係假訊號：** P238B 在混合 22,238 筆族群執行，YELLOW 由 DATE_FORMAT_ALIEN 和 SMALL_POOL_ALIEN 造成。在正規族群上 YELLOW 不成立。
+
+**重要限制：** GREEN 隨機性 ≠ 可利用信號。大樂透預測研究仍受 L91 結論限制（信號空間窮盡）。GATE_RED for predictive research 維持。
+
+**後續建議：** P247 Type D DB 級隔離（需另行授權）。
+
+---
+
+## L115 — P246J BIG_LOTTO 加碼隔離弧結案要點 (2026-06-06)
+
+**來源：** P246J 弧結案
+
+**結案摘要（P246B-I，9 個任務）：**
+- P246B：SIM_HYPHEN → ADD_ON_PRIZE_EXCLUDED（加碼/特別獎記錄，非偽造）
+- P246C-D：影響審計 + 隔離設計（保留優先，Phase 1/2/3 分階）
+- P246E：新增 `get_canonical_draws()`；`quick_predict.py` 更新
+- P246F：`rsm_bootstrap.py` + `core_satellite.py` 更新
+- P246G：`drift_detector._load_draws()` + `backtest_framework.py` 更新
+- P246H：`scheduler.get_data()` 在回傳時過濾，所有 advanced_learning 路徑受益
+- P246I：`test_p238b` + `test_p243a` 加 inline comment 區分 raw (22,238) vs canonical (2,113)
+
+**整體結果：**
+- 6 個確認生產研究路徑已 canonical 化
+- 加碼記錄保留於原始 DB 且可存取
+- 未執行任何 DB 寫入/刪除/遷移
+- GATE_RED 持續生效，待 P247 Type D + 正規審計後解除
+
+**建議後續：P246K**（正規族群 NIST 重新審計，無需 DB 寫入）
+
+---
+
+## L114 — P246I 測試/文物人口斷言清理規則 (2026-06-06)
+
+**來源：** P246I 清理
+
+**規則：** 測試斷言中 `>= 22238` 反映的是 BIG_LOTTO 原始 DB 總列數（含加碼記錄），NOT 正規研究族群 (~2,113)。
+兩者必須明確區分。修改方式：加 inline comment，不改斷言值（目前 DB 仍含 22,238 筆）。
+
+**斷言政策：**
+- 測試原始 DB 列數：`>= 22238` + 「raw total including add-on」注解
+- 測試正規研究族群：`>= 2100 and <= 2200`（或驗證後 == 2113）
+- 歷史文物：保留原始值，加 P246I 注解，在 P246I 報告中記錄修訂說明
+
+**P238B 後續：** P238B NIST 審計在 22,238 筆混合族群執行，結果仍為 YELLOW OBSERVATION_ONLY。
+正規族群重新審計（~2,113 筆）需在 P247 Type D 後另行授權。
+
+---
+
+## L113 — P246H 排程器快取的 canonical 化模式 (2026-06-05)
+
+**來源：** P246H advanced_learning scheduler 追蹤
+
+**關鍵發現：**
+- `scheduler.get_data(lottery_type)` 是所有進階學習/優化路由的資料消費點
+- `scheduler.data_by_type['BIG_LOTTO']` 由 `optimization.py:90` 的 `db.get_all_draws()` 填入（22,238 筆，含加碼記錄）
+- `advanced_learning.py` 本身無 DB 匯入；以 scheduler 參數接收資料
+
+**修正模式：在消費點（get_data）套用 canonical filter，而非修改資料填入端**
+```python
+def get_data(self, lottery_type: str) -> list:
+    data = self.data_by_type.get(lottery_type, [])
+    if lottery_type == 'BIG_LOTTO':
+        # filter at return time — non-destructive
+        return [d for d in data
+                if '-' not in str(d.get('draw',''))
+                and not (len(str(d.get('draw',''))) == 8 and str(d.get('draw','')).startswith('20'))
+                and (not d.get('numbers') or max(d['numbers']) > 25)]
+    return data
+```
+
+**優點：** 非破壞性（原始快取保留）、所有 get_data() 呼叫端自動受益
+
+**P246E-H 總計：** 6 個確認研究呼叫端已完成 canonical 化
+
+---
+
+## L112 — P246G 直接 SQL 路徑的 canonical 化方式 (2026-06-05)
+
+**來源：** P246G 剩餘研究呼叫端處理
+
+**結論：** `drift_detector._load_draws()` 使用直接 SQLite（非 DatabaseManager），無法直接呼叫 `get_canonical_draws()`。正確做法：在 SQL 中加入 BIG_LOTTO 分支，附加 `AND draw NOT LIKE '%-%' AND NOT (LENGTH(draw)=8 AND draw LIKE '20%')`，加上 Python 後置過濾 `max(parsed) > 25`。
+
+**5 個確認研究呼叫端已完成 canonical 化（P246E–G）：**
+1. `tools/quick_predict.py:169`（P246E）
+2. `tools/rsm_bootstrap.py:118`（P246F）
+3. `lottery_api/engine/core_satellite.py:373`（P246F）
+4. `lottery_api/engine/drift_detector._load_draws()`（P246G）
+5. `lottery_api/backtest_framework.BacktestEngine.backtest():69`（P246G）
+
+**仍延後：** `advanced_learning.py` scheduler.get_data() 路徑需獨立追蹤；60+ 歷史腳本非即時生產路徑
+
+---
+
+## L111 — P246F 研究呼叫端 canonical 化掃描要點 (2026-06-05)
+
+**來源：** P246F 研究呼叫端掃描
+
+**結論：** 已完成 3 個確認研究/策略呼叫端的 canonical 化：
+1. `tools/quick_predict.py:169`（P246E）
+2. `tools/rsm_bootstrap.py:118`（P246F）— RSM 策略 bootstrap，直接餵入 RollingStrategyMonitor
+3. `lottery_api/engine/core_satellite.py:373`（P246F）— 從歷史生成策略注數
+
+**仍需後續處理（P246G）：**
+- `lottery_api/engine/drift_detector._load_draws()` — 使用直接 SQLite，非 DatabaseManager，需獨立修改 SQL
+- `lottery_api/routes/advanced_learning.py` — scheduler.get_data() 路徑尚未追蹤
+- `lottery_api/backtest_framework.py` + 60+ 歷史/探索腳本 — 批量掃描超出最小範圍
+
+**重要：**
+- `get_all_draws()` 和 `get_draws()` 保持不變（展示/歷史用途合法）
+- 任何新 BIG_LOTTO 研究呼叫端都必須使用 `get_canonical_draws()` 而非 `get_all_draws()`
+
+---
+
+## L110 — P246E get_canonical_draws() 實作要點 (2026-06-05)
+
+**來源：** P246E Phase 1 實作
+
+**結論：** `database.py` 新增 `get_canonical_draws()` helper，BIG_LOTTO 三層過濾：
+1. SQL: `draw NOT LIKE '%-%'`（排除 ADD_ON_PRIZE_EXCLUDED，19,100 筆）
+2. SQL: `NOT (LENGTH(draw)=8 AND draw LIKE '20%')`（排除 DATE_FORMAT_ALIEN，375 筆）
+3. Python: `max(numbers) > 25`（排除 SMALL_POOL_ALIEN，~650 筆）
+結果：canonical 2,113 筆（與預期完全一致）。
+
+**注意事項：**
+- 非 BIG_LOTTO 類型使用直接 `lottery_type=?` 查詢，**不呼叫** `get_related_lottery_types()`，避免觸發 `apscheduler` 重量級匯入
+- `get_all_draws()` 和 `get_draws()` **不修改**，繼續傳回全 22,238 筆（展示/歷史用途）
+- `quick_predict.py` `load_history()` 改為呼叫 `get_canonical_draws()`
+- Phase 2（DB View）和 Phase 3（Annotation Table）仍需 Type D 授權
+
+---
+
+## L109 — P246D BIG_LOTTO 加碼記錄隔離設計原則 (2026-06-05)
+
+**來源：** P246D 隔離設計
+
+**結論：** 隔離 BIG_LOTTO 加碼記錄的正確方式是過濾（filter/view），而非刪除。
+P219 的 `draw NOT LIKE '%-%'` filter 是已驗證的黃金標準。資料庫目前無任何 canonical view，需新增。
+
+**正確隔離路徑（分四階段）：**
+1. **Phase 1（無需 DB 寫入）**: 在 `database.py` 新增 `get_canonical_draws()` helper，過濾 BIG_LOTTO 的加碼記錄（draw NOT LIKE '%-%' 且非 DATE_FORMAT_ALIEN）。更新研究/策略/回放呼叫端（key: `quick_predict.py:169`）。
+2. **Phase 2（Type D）**: 建立 `draws_big_lotto_canonical_main` SQL view
+3. **Phase 3（Type D）**: 建立 `draw_row_family_annotations` 標記表，Python 驅動偵測 SMALL_POOL_ALIEN（max(numbers)<=25）
+4. **Phase 4**: 重新執行受影響文物/測試（P238B NIST、test_p238b >= 22238 → >= 2113）
+
+**關鍵規則：**
+- ADD_ON_PRIZE_EXCLUDED 列必須保留，任何 DELETE 操作均被拒絕
+- 展示/歷史 API（`get_draws`、`get_all_draws`）可傳回全部記錄，但須標示加碼記錄類型
+- `SMALL_POOL_ALIEN` 無法單靠 SQL 過濾，需 Python 判斷 max(numbers)>25
+
+---
+
+## L108 — P246C database.py 無 canonical filter 傳回混合族群 (2026-06-05)
+
+**來源：** P246C 影響範圍審計
+
+**結論：** `lottery_api/database.py` 的 `get_all_draws()` 與 `get_draws()` 以 `lottery_type IN (...)` 查詢，**不過濾 draw LIKE '%-%'**，傳回全部 22,238 筆 BIG_LOTTO 列（含 19,100 筆 ADD_ON_PRIZE_EXCLUDED）。
+
+**影響：**
+- 任何透過這兩個函數取得 BIG_LOTTO 資料的路徑，均使用混合族群
+- `analysis/p219_*.py` 已正確使用 `draw NOT LIKE '%-%'` 過濾 — 不受影響
+- P238B NIST 審計以 sample_size=22238 建立（含加碼記錄）— 歷史文物標記為 YELLOW
+- 兩個測試硬編碼 `>= 22238`（test_p238b / test_p243a）— 隔離後需更新為 >= 2113
+
+**適用原則：**
+- 任何新 BIG_LOTTO 研究查詢必須加 `draw NOT LIKE '%-%'` filter（加碼記錄族群不匹配）
+- 資料庫 API 路徑（顯示用途）可傳回全部記錄，但須標示記錄類型
+- 測試斷言若依賴 BIG_LOTTO 總列數，需等 P247 Type D 隔離後再更新
+
+---
+
+## L107 — P246B 資料污染 vs 研究族群不匹配 (2026-06-05)
+
+**來源：** P246B 用戶/領域指正
+
+**結論：** P246 將 19,100 筆連字號 BIG_LOTTO 列（如 103000009-01）標記為 SIM_HYPHEN（模擬/合成資料），此標記錯誤。
+用戶/領域指正：連字號 ID 為加碼或特別獎記錄，屬於真實彩券相關資料，非偽造資料。
+
+**修正：**
+- 舊標籤 `SIM_HYPHEN` → 正確標籤 `ADD_ON_PRIZE_EXCLUDED`
+- 排除理由：**族群不匹配**（加碼/特別獎記錄類型與正規 6/49 主開獎不可比較），非資料偽造
+- 這些記錄須**保留**（不得刪除），可移至隔離/審計表但須保留全部欄位與值
+- 描述這些記錄為 fake / simulated / synthetic / invalid / contaminated 一律視為錯誤
+
+**適用原則：**
+- 資料污染（data contamination）= 數值與遊戲規則不符或來源錯誤（適用 DATE_FORMAT_ALIEN / SMALL_POOL_ALIEN）
+- 族群不匹配（population mismatch）= 資料本身有效但與目標研究族群不同類型（適用 ADD_ON_PRIZE_EXCLUDED）
+- 隔離計畫語言應用 segregation/exclusion/separation，勿用 quarantine contaminated rows
+- ADD_ON_PRIZE_EXCLUDED 保留政策必須明示；Type D 才可執行 DB 操作
+
+---
+
 ## 115000027 期驗證結論 (2026-02-26)
 
 **L_027_A — Sum公式修正：統一目標 [mu-0.5σ, mu+0.5σ] 優於條件式目標**
@@ -1270,3 +1775,72 @@ T4 promotion (2026-05-05)
 
 - REPLAY_GOLIVE_READY_20260508
   - Evidence: tests/test_replay_api_contract.py 25 passed; tests/test_replay_freshness_cadence.py 8 passed; docs/REPLAY_OPERATION_SOP.md; scripts/snapshot_replay_db.py. Recorded in memory/lessons.md under REPLA  - Evidence: tests/test_replay_api_contract.py 25 passed; tests/test_replay_freshnessEE_DELTA_RELEASE_HANDOFF_FREEZE_VERIFIED
+
+---
+
+## P219 外部10法診斷掃描 (2026-06-05)
+
+**L_P219_A — 外部10法掃描全 predictive-NULL（再次確認 L82/L91/P178A/P236A）**
+- 10 method families × 5 games = 44 multiplicity-corrected tests，pre-registered（P221F），統計單位=distinct real draws，全 MC/permutation 經驗 p。
+- 三個 forward-predictive 家族（M5 Dirichlet / M8 freq-generator / M9 conformal）在所有 5 遊戲全 NULL：最佳 edge=BIG_LOTTO +0.49pp p=0.226（且在污染資料上），539/POWER edge 為負（L101 unconditional dilution），conformal set 比 trivial 還大。
+- M10 bottleneck：MI(trailing-freq→next-hit) 在 clean 遊戲 ≈ 8.8e-6 bits（539）/ 1.6e-5（POWER），遠低於 min-detectable-edge（~1.7–2.2pp）。channel 為空，無 bottleneck 可拓寬。
+- Evidence: analysis/p219_external_method_diagnostic_sweep.py; outputs/research/p219_external_method_diagnostic_sweep_20260605.{md,json}; tests/ 10/10 PASS.
+
+**L_P219_B — BIG_LOTTO `draws` 表嚴重資料污染（核心發現，非預測信號）**
+- BIG_LOTTO 22,238 列中僅 ~2,113 為可信 6/49（吻合 canonical「≈2,118 期」）。污染來源 ≥3：19,100 模擬列（hyphen 複合 ID `103000009-01..-100`）、375 date-format 異種（sum 74.7±2.4, max≤24, ID `20YYMMDD`）、~650 小池異種（2011-2014, max≤25, sum dip 至 ~100）。
+- 任何 BIG_LOTTO 分析若用 raw `draws` 將被污染；統計單位必須 = distinct real 6/49 draws。
+- Evidence: outputs/research/p219_..._20260605.md §4；read-only DB 重現（clean-set re-run + block trajectory + 539 control）。
+
+**L_P219_C — drift/changepoint 偵測到的是「資料管線斷點」而非「彩票偏差」（anomaly≠predictor 實證）**
+- 唯一通過 Bonferroni/BH 的 test 全在 BIG_LOTTO（M1 overlap, M4 CUSUM 11×null, M2 gap 4×, M3 drift 4×, M6 entropy/compression）+ 1 個弱 DAILY_539:M3_drift（BH-only, Bonferroni-FAIL, 1.2×, 無 M1/M4 佐證 → borderline false positive）。
+- 移除 375 date 列後信號仍在（剩 650 小池列）→ 證明多重污染源。DAILY_539 為 clean+stationary 對照（10 blocks sum~100/max~33 全平）→ 方法不會在乾淨資料上製造假信號。
+- 教訓：M3/M4 類偵測器對 mixed-source / non-stationary 歷史紀錄會「正確地」觸發，但偵測的是資料異質性，對下一期號碼零預測力。掃描出 corrected-significant ≠ 可利用 edge（L76 再確認）。
+
+**L_P245B_A — P245B 確立偏差閘門架構（sequential e-value + BOCD + 多重校正 + 資料完整性）**
+- 依賴 P236A/P237C/P238B/P219；P245A 缺席（不依賴）。
+- 當前閘門狀態：539/POWER/3_STAR/4_STAR = GATE_YELLOW_OBSERVATION_ONLY（P238B），BIG_LOTTO = GATE_RED_DATA_CONTAMINATION（P219）。
+- GATE_OPEN 需 e-value K≥100 + BOCD 同位確認 + 乾淨資料稽核 + ≥500 clean OOS draws + 獨立複驗窗口 + Bonferroni 通過 + 人類明確授權 + 研究任務預先登記——當前零條件達成。
+- anomaly detection is NOT prediction；GATE_OPEN 仍不授權生產建議/下注建議/registry mutation。
+- Evidence: outputs/research/p245b_bias_gate_layer_20260605.{md,json}; tests/ 24/24 PASS.
+
+---
+
+## P246 BIG_LOTTO Data-Integrity Audit (2026-06-05)
+
+**L_P246_A — BIG_LOTTO draws table confirmed ~90.5% contaminated (3 families, fully quantified)**
+- Total: 22,238 rows. Canonical plausible: 2,113 (≈2,118 expected; delta −5). Contaminated: 20,125 (90.5%).
+- Family 1 — SIM_HYPHEN: 19,100 rows (85.9%). Hyphen composite IDs (103000009-01…-100). Excluded by P219 NOT LIKE '%-%' filter.
+- Family 2 — DATE_FORMAT_ALIEN: 375 rows (1.7%). YYYYMMDD date-literal IDs (20090727). sum~74.7, max≤24 — NOT 6/49.
+- Family 3 — SMALL_POOL_ALIEN: 650 rows (2.9%). Serial IDs but max(numbers)≤25 (~23.5% of serial rows). Likely 6/38 or older format mislabeled. Primary driver of all P219 structural-break signals.
+- Evidence: analysis/p246_big_lotto_data_integrity_audit.py; outputs/research/p246_…20260605.{md,json}; 23/23 tests PASS.
+
+**L_P246_B — All P219 BIG_LOTTO corrected-significant signals fully explained by contamination**
+- M4 CUSUM (11× null): draw-sum jumps between ~75 (DATE_FORMAT) / ~100 (SMALL_POOL) and ~148 (real 6/49).
+- M3 drift (4×) / M2 gap (4×): numbers 26–49 absent during alien eras → L1 drift and gap overdispersion.
+- M1 markov / M6 entropy: restricted pool in alien blocks inflates consecutive overlap, lowers entropy.
+- Anomaly is NOT predictor. GATE_RED_DATA_CONTAMINATION remains until Type D quarantine authorized and re-audit passes.
+
+## P251C evidence dashboard API payload contract planning (2026-06-06)
+- Future-only dashboard payload contracts fit best under the existing `/api/replay/*` read-only audit namespace when no route is implemented yet.
+- `/api/replay/evidence-dashboard` is a clean convention fit because it matches the replay family, remains read-only, and avoids colliding with the existing `/api/replay/strategy-catalog` endpoint.
+- Lesson: if a test calls `main()` on a published artifact builder, it may rewrite timestamp-only markdown outputs from earlier tasks; restore those artifacts before diff-checking the new task.
+
+## P251D read-only evidence dashboard API route (2026-06-06)
+- Artifact-backed replay endpoints can stay extremely small: load the published JSON, validate basic structure, and return it unchanged instead of re-computing or touching DB state.
+- For this repo, direct-calling the async replay route function is the safest test pattern because it avoids FastAPI startup side effects and keeps DB-free read-only routes easy to verify.
+
+## P251E evidence dashboard API runtime smoke + governance closure (2026-06-06)
+- The repo-level `.venv` can support a true FastAPI `TestClient` smoke even when system `python3` lacks `fastapi`; verify both so environment gaps do not get misreported as product failures.
+- For governance closeout tasks, keep the dashboard arc explicit end-to-end: contract artifact, dashboard artifact, API payload contract, read-only route, then runtime smoke and governance closure.
+
+## P254A–P254B Fetcher repair + governance closure (2026-06-08)
+- **L_P254_01 — Separate DB baseline acceptance from fetcher code repair.** When a fetcher endpoint is repaired, the first non-dry-run UI call can insert legitimately missing draws before the regression gate runs — silently shifting DB counts. Code repair and DB drift acceptance MUST be separate commits/PRs. Always use `dry_run=true` during regression checks; block non-dry-run calls until gate is complete. If baseline counts change unexpectedly, STOP and classify as `OUT_OF_SCOPE_DB_WRITE`.
+- **L_P254_02 — Stale BIG_LOTTO counts 22238/2113 invalidated 2026-06-08.** Accepted baseline: raw=22,239, canonical=2,114. Any test/artifact referencing 22238 or 2113 as current counts is stale. P247G guard updated in PR #360.
+- **L_P254_03 — ADD_ON draw IDs (hyphenated) must not be passed to int().** Draw IDs like `103000009-01` crash with `ValueError` if passed to `int(draw[-6:])`. Always guard with `draw.isdigit()` before numeric conversion. Fix location: `lottery_api/fetcher/missing_issue_detector._detect_internal_gaps()`.
+
+
+## P255A–P255D Ingest Write Guard Arc (2026-06-08)
+- **L_P255_01 — Omitted dry_run is now safe by default (G01).** `BackfillRequest.dry_run` defaults to `True` as of PR #365. Any POST to `/api/ingest/backfill` that omits `dry_run` now runs a preview-only dry-run. The critical silent-write path is closed. Old default was `False` — any caller that relied on it must now explicitly set `dry_run=False` with G02 confirmation.
+- **L_P255_02 — Non-dry-run backfill requires server-side confirmation (G02).** `dry_run=False` now requires all of: `apply_confirmed=True`, valid `confirm_token` (env `INGEST_WRITE_TOKEN`, fallback `p255-write-confirm`), non-empty `requested_by`, and non-empty `reason`. Missing/invalid any field → 422 before the engine is called. This is enforced in `_validate_write_confirmation()` inside `lottery_api/routes/ingest.py` and cannot be bypassed via UI alone.
+- **L_P255_03 — UI confirmation gate is not sufficient alone.** The frontend `bfConfirmCheck` checkbox can be left persistent across sessions and doesn't prevent direct API calls. Server-side G02 token validation is the only authoritative gate. G03 UI modal is deferred to P255E.
+- **L_P255_04 — starlette < 0.40 TestClient incompatibility.** System python3 has starlette 0.27.0 which fails `TestClient(app)` with `unexpected keyword argument 'app'` (internal `super().__init__` signature mismatch). Repo `.venv` has starlette 0.49.3 which works. Always use `.venv/bin/python3` for analysis scripts requiring TestClient, and run pytest via the `.venv`-linked pytest binary.

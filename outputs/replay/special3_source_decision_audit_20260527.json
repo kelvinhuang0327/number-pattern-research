@@ -1,0 +1,99 @@
+{
+  "phase": "P102",
+  "task": "Special3 Draw Source Decision Audit",
+  "generated_at": "2026-05-27",
+  "classification": "P102_SPECIAL3_SOURCE_DECISION_HOLD_NO_LOCAL_SOURCE",
+  "audit_status": "HOLD",
+  "draw_greater_than_history_end_found_locally": false,
+  "history_end_draw": "115000024",
+  "current_db_max_3star_draw": "115000024",
+  "p101_artifact": "outputs/replay/special3_actual_draw_monitor_20260527.json",
+  "p101_classification": "P101_SPECIAL3_ACTUAL_DRAW_MONITOR_HOLD",
+  "p100_artifact": "outputs/replay/special3_prospective_evaluation_20260527.json",
+  "p100_classification": "P100_SPECIAL3_PROSPECTIVE_EVALUATION_HOLD_NO_ACTUAL_DRAW",
+  "sources_inspected": [
+    {
+      "path": "lottery_api/fetcher/taiwan_lottery_fetcher.py",
+      "classification": "script_only",
+      "supports_3star": false,
+      "note": "SOURCE_CONFIG covers BIG_LOTTO, POWER_LOTTO, DAILY_539 only. No 3_STAR API endpoint defined. Cannot fetch 3_STAR draws without adding new endpoint + authorization."
+    },
+    {
+      "path": "lottery_api/data/ingest_log.jsonl",
+      "classification": "artifact_only_not_source",
+      "supports_3star": false,
+      "note": "Ingest log has 0 entries for lottery_type=3_STAR. 3_STAR has never been ingested via the fetcher pipeline."
+    },
+    {
+      "path": "lottery_api/data/lottery_v2.db (live DB)",
+      "classification": "artifact_only_not_source",
+      "supports_3star": false,
+      "note": "3_STAR max_draw=115000024 (4115 draws). No draw > 115000024 present. This is the current DB baseline — not a source for new draws."
+    },
+    {
+      "path": "backups/ (16 backup DBs)",
+      "classification": "artifact_only_not_source",
+      "supports_3star": false,
+      "note": "All 16 backup DBs inspected. All have 3_STAR max=115000024, count=4115. No backup contains a draw > 115000024."
+    },
+    {
+      "path": "research/3_star_analysis/",
+      "classification": "historical_report",
+      "supports_3star": false,
+      "note": "Contains analysis scripts (analyze_real_data.py, system_core.py, etc.) and research reports. No raw draw CSV/JSON source data. Scripts operate on DB data, not standalone source."
+    },
+    {
+      "path": "scripts/special3_*.py (4 scripts)",
+      "classification": "script_only",
+      "supports_3star": false,
+      "note": "special3_baseline_dryrun.py, special3_oos_permutation_review.py, special3_prospective_dryrun_plan.py, special3_prospective_evaluation.py. All read from DB. None contain raw draw source data."
+    },
+    {
+      "path": "data/rolling_monitor_DAILY_539.json",
+      "classification": "artifact_only_not_source",
+      "supports_3star": false,
+      "note": "Contains DAILY_539 draw IDs up to 115000030+. Not 3_STAR draws. Lottery type mismatch."
+    },
+    {
+      "path": "archive/data/*.csv, data/*.csv, tests/*.csv",
+      "classification": "artifact_only_not_source",
+      "supports_3star": false,
+      "note": "CSV files: 大樂透加開獎項_2025.csv (BIG_LOTTO supplement draws), lotto649_realistic_data.csv, sample-data.csv, converted_2024.csv. None contain 3_STAR draw records."
+    },
+    {
+      "path": "rejected/*.json",
+      "classification": "historical_report",
+      "supports_3star": false,
+      "note": "Strategy rejection records. Draw references (115000027 etc.) are DAILY_539/other type context. lottery_type fields absent or unknown. Not a 3_STAR draw source."
+    },
+    {
+      "path": "outputs/replay/special3_*.json (4 artifacts)",
+      "classification": "artifact_only_not_source",
+      "supports_3star": false,
+      "note": "P97/P98/P99/P100/P101 phase artifacts. Research and governance outputs only. Not raw draw source data."
+    }
+  ],
+  "sources_inspected_count": 10,
+  "sources_with_new_draw": 0,
+  "db_writes": false,
+  "db_ingestion": false,
+  "replay_row_inserts": false,
+  "strategy_promotion": false,
+  "special3_production_promotion": false,
+  "star4_backtest": false,
+  "no_production_promotion": true,
+  "replay_rows_checked": 54462,
+  "power_lotto_max_draw_checked": "115000041",
+  "star3_draws_count": 4115,
+  "star4_draws_count": 0,
+  "special4_status": "DATA_GAP_BLOCKING",
+  "fetcher_api_supports_3star": false,
+  "ingest_log_3star_entries": 0,
+  "backup_dbs_checked": 16,
+  "backup_dbs_with_new_draw": 0,
+  "hold_reason": "No local source contains a new 3_STAR draw > 115000024. The official fetcher (taiwan_lottery_fetcher.py) has no 3_STAR API endpoint. All 16 backup DBs have max=115000024. Ingest log shows 0 historical 3_STAR ingestion events. No CSV/XLSX raw draw files found. User must provide an authorized external source or authorize adding a 3_STAR API endpoint to the fetcher.",
+  "recommended_next_action": "User must provide source or authorize official/source ingestion audit. Options: (A) Provide a raw 3_STAR draw CSV/JSON file with draws > 115000024 for controlled ingestion planning (P103). (B) Authorize adding a 3_STAR API endpoint to lottery_api/fetcher/taiwan_lottery_fetcher.py and an ingestion plan (P103). Without explicit source authorization, evaluation pipeline remains blocked.",
+  "p103_gate": "NOT_YET_ELIGIBLE",
+  "p103_gate_reason": "P103 requires either: (A) user-provided raw source file, or (B) explicit authorization to add 3_STAR API endpoint. Neither is currently available.",
+  "p102_gate_status": "HOLD_PENDING_USER_SOURCE_DECISION"
+}

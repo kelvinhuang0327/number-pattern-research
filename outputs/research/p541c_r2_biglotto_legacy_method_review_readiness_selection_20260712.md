@@ -1,0 +1,82 @@
+# P541C_R2 — BIG_LOTTO Legacy Method Review & Replay-Readiness Selection
+
+> generated_at: 2026-07-12T00:00:00+00:00
+> task_id: P541C_R2_BIG_LOTTO_LEGACY_METHOD_REVIEW_READINESS_SELECTION_REPLACEMENT
+> selector_version: p541c-r2-selector-v4
+
+**Disclaimer:** Historical legacy method review and replay-readiness selection only; not a prediction, betting edge, future-winning, or production-readiness claim.
+
+## Supersedes
+
+- task_id: `P541C_BIG_LOTTO_LEGACY_METHOD_REVIEW_AND_REPLAY_READINESS_SELECTION`
+- overwrite_policy: HISTORICAL_ARTIFACTS_PRESERVED
+- reason: Pre-R2 P541C consumed the retired boolean-only P541B v1 evidence schema, which has no unknown state and coerces missing/absent evidence flags to low risk. Cross-checked against P541B_R2: 135/140 (96%) of its shortlist- eligible pool and 19/20 of its published shortlist are no longer confirmed low-risk under the fail-closed P541B_R2 audit.
+
+## Summary
+
+| Metric | Count |
+|---|---|
+| total_reviewed_from_p541b_r2 | 580 |
+| ready_for_replay_readiness_now | 0 |
+| needs_adapter_before_readiness | 12 |
+| needs_refactor_before_readiness | 0 |
+| needs_cto_review | 458 |
+| exclude_from_replay | 110 |
+
+## Contract Reconciliation
+
+- task_id: `P541C_R2_PR686_ATOMIC_PINNED_INPUT_BINDING_REPAIR_R4`
+- status: **PASS**
+- reconciled_invariant: Ready requires both low safety risk and explicit historical adapter readiness; summary, bucket partitions, and shortlist must be exact canonical projections of the reviewed decisions. source_path is an identifier inherited from the pinned P541B_R2 input, not a checkout probe. The pinned upstream input is read once into bytes; byte size, SHA-256, strict UTF-8 decoding, and strict JSON parsing are all applied to the same immutable byte buffer.
+- prior_drift: Earlier revisions coupled selection to mutable checkout source files and then verified and parsed the pinned input through separate path reads. The selector now consumes one verified immutable input buffer only.
+
+## Verified Input Provenance
+
+- Implementation base commit: `137dbff5938a74117bb33a4a3db5ccc5de2e8454`
+- Input: `outputs/research/p541b_r2_biglotto_legacy_method_classification_audit_20260711.json` — 10,478,598 bytes, SHA-256 `9c9a28d871113c63f3de024f056d7a4e2d6949e934e76da161a9c891e662103f`, verification **PASS**
+- Upstream contract: schema `p541b-r2-evidence-v1`, detector `p541b-r2-detector-v4`, manifest `ca0f84b23f1a3f6613c5f78d6020ec954a3e28fb702152fbf1fa1fb53dbf4e40`, records 580
+- Atomic input binding: The pinned upstream input is read once into bytes; byte size, SHA-256, strict UTF-8 decoding, and strict JSON parsing are all applied to the same immutable byte buffer.
+- Fail-closed behavior: any input hash, schema, record, or contract mismatch aborts generation.
+
+## Bucket Definitions
+
+- **ready_for_replay_readiness_now**: P541B_R2 risk_level=low, historical identity confirmed, and historical runnable_status=runnable_with_existing_adapter. No readiness change remains.
+- **needs_adapter_before_readiness**: Confirmed method whose historical runnable_status requires an adapter wrapper or parameterization. Low-risk/high-confidence members alone may enter the shortlist.
+- **needs_refactor_before_readiness**: Confirmed method whose historical runnable_status requires pure-function or DB-safety refactoring. High safety risk remains excluded.
+- **needs_cto_review**: P541B_R2 risk_level=unknown (any identity), unresolved historical identity at low/medium risk, a medium-risk method otherwise adapter-ready, or a confirmed method with a non-actionable readiness status. Unresolved or non-low risk is never resolved to ready.
+- **exclude_from_replay**: P541B_R2 risk_level=high (any identity, safety-blocking regardless of confidence), OR P541B historical recommended_action is mark_duplicate/mark_not_strategy/mark_deprecated, OR risk_level=low/medium with is_actual_prediction_method=False (not a prediction method).
+
+## Shortlist Rule
+
+needs_adapter_before_readiness members only with P541B_R2 risk_level=low, confirmed method identity, and historical confidence=high; deduplicated by method_id, round-robin diversified across method_family, capped at 20, sorted deterministically by method_id within each family. Never padded: if fewer candidates qualify, the shortlist is exactly that smaller set.
+
+## Shortlist (n=5)
+
+| method_id | method_family | source_path | reason |
+|---|---|---|---|
+| tools/advanced_prediction_engine.py | ML_like | tools/advanced_prediction_engine.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method with runnable_status=needs_adapter_wrapper. Readiness requirement preserved as adapter_wrapper. |
+| lottery_api/models/social_wisdom_predictor.py | folklore | lottery_api/models/social_wisdom_predictor.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method with runnable_status=needs_adapter_wrapper. Readiness requirement preserved as adapter_wrapper. |
+| tools/quick_ml_predict.py | frequency | tools/quick_ml_predict.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method with runnable_status=needs_adapter_wrapper. Readiness requirement preserved as adapter_wrapper. |
+| tools/big_lotto_exhaustive_audit.py | report | tools/big_lotto_exhaustive_audit.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method with runnable_status=needs_adapter_wrapper. Readiness requirement preserved as adapter_wrapper. |
+| lottery_api/models/zone_split.py | zone | lottery_api/models/zone_split.py | P541B_R2: risk_level=low (STATIC_LOW_RISK_ELIGIBLE); P541B historical: confirmed actual prediction method with runnable_status=needs_adapter_wrapper. Readiness requirement preserved as adapter_wrapper. |
+
+## Recommended Next Task
+
+`P541D_R2_BIG_LOTTO_ADAPTER_DESIGN_OR_CTO_REVIEW_NO_DB_WRITE`
+
+## Provenance and Limits
+
+- **method**: Static, read-only re-bucketing of exactly one pinned P541B_R2 artifact (which already embeds historical P541B v1 identity fields per record). The pinned upstream input is read once into bytes; byte size, SHA-256, strict UTF-8 decoding, and strict JSON parsing are all applied to the same immutable byte buffer. Strict JSON rejects duplicate keys and non-finite values. source_path is retained only as an identifier from that pinned input; no reviewed source is resolved, opened, statted, hashed, imported or executed. No DB access, replay generation, or scoring/promotion gate.
+- **p541b_r2_artifact_consumed**:
+  - outputs/research/p541b_r2_biglotto_legacy_method_classification_audit_20260711.json
+- **not_performed_by_this_task**:
+  - No DB write, migration, backfill, or replay row generation.
+  - No OOS evaluator or strategy scoring/promotion gate.
+  - No recomputation of P536-P541B_R2 artifacts.
+  - No route/API/UI changes.
+  - No adapter code was written; only the decision to route a method to needs_adapter_before_readiness / needs_refactor_before_readiness / needs_cto_review.
+- **known_limits**:
+  - needs_cto_review records (from unknown risk, unresolved identity, or a non-actionable safety/readiness combination) were not further resolved; P541B_R2's own evidence already represents the limit of static analysis.
+  - No current-checkout source existence or identity claim is made; source_path stability is inherited from the pinned P541B_R2 artifact contract.
+  - Bucket/priority assignment is a deterministic function of P541B_R2's risk evidence plus P541B's historical identity, runnable_status, and confidence fields; it is a triage aid for the next task, not a safety guarantee.
+- **disclaimer**: Historical legacy method review and replay-readiness selection only; not a prediction, betting edge, future-winning, or production-readiness claim.

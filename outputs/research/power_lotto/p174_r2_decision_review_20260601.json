@@ -1,0 +1,241 @@
+{
+  "task": "P174_POWER_LOTTO_R2_DECISION_REVIEW",
+  "final_classification": "P174_POWER_LOTTO_R2_DECISION_REVIEW_READY",
+  "date": "2026-06-01",
+  "branch": "claude/zen-gates-ff6802",
+  "authorization_phrase_detected": "YES start P174 POWER_LOTTO R2 decision review",
+  "phase_0_verification": {
+    "result": "PASS",
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "head": "c8b423d0c1de26253be4cec79ae6de77719d1074",
+    "db_rows": 94924,
+    "db_rows_unchanged": true,
+    "draws_table_power_lotto_rows": 1913,
+    "drift_guard": "PASS",
+    "p167_script": "PASS",
+    "p170_script": "PASS",
+    "p173_script": "PASS",
+    "p161_to_p173_tests": "747 PASSED (P161:23 standalone + P162-P173:724)"
+  },
+  "p173_summary": {
+    "classification": "P173_POWER_LOTTO_R2_MINIMAL_PROTOTYPE_NULL_RESULT",
+    "candidates_evaluated": ["C01", "C02", "C04"],
+    "all_fail_corrected": true,
+    "results": {
+      "C01_weighted_recency_frequency": {
+        "mean_hit_count": 0.961076,
+        "vs_random_baseline": 0.013708,
+        "p_bonferroni": 0.802584,
+        "result_status": "FAIL_CORRECTED"
+      },
+      "C02_gap_adjusted_overdue": {
+        "mean_hit_count": 0.963199,
+        "vs_random_baseline": 0.015831,
+        "p_bonferroni": 0.710629,
+        "result_status": "FAIL_CORRECTED"
+      },
+      "C04_zone_balanced_frequency": {
+        "mean_hit_count": 0.963907,
+        "vs_random_baseline": 0.016539,
+        "p_bonferroni": 0.681316,
+        "result_status": "FAIL_CORRECTED"
+      }
+    },
+    "n_oos": 1413,
+    "bonferroni_threshold": 0.016667,
+    "random_baseline": 0.947368,
+    "db_unchanged": true,
+    "no_edge_found": true,
+    "is_process_failure": false,
+    "honest_assessment": "P173 NULL is a valid scientific result. Top 3 feature-based strategies show slightly above-random mean hits (0.961-0.964 vs 0.947) but the differences are well within random sampling variation. No corrected statistical evidence of predictive edge."
+  },
+  "decision_context": {
+    "user_goal": "Exhaust all possible methods to find success-rate improvement. Not just combining old strategies, but starting from feature engineering or new strategies.",
+    "r1_summary": "P161-P170 found no defensible edge in existing 10 POWER_LOTTO strategies using Fourier, Markov, MidFreq, Orthogonal, FreqOrt, PP3, Precision, Zonal Entropy, Cold Number signals.",
+    "r2_summary_so_far": "P171 inventoried 10 feature families and 8 candidates. P172 selected Top 3 (C01/C02/C04). P173 evaluated Top 3 with n_oos=1413: all FAIL_CORRECTED. R2 deferred candidates (C03/C05/C06/C07) have NOT yet been evaluated.",
+    "deferred_candidates_remaining": ["C03 co-occurrence pair graph", "C05 entropy/dispersion controlled", "C06 regime-adaptive window", "C07 hybrid rank aggregation"],
+    "new_draws_available": 0,
+    "prior_probability_of_edge": "LOW — consistent with R1 results and L91 (BIG_LOTTO, 6-item randomness test all pass). POWER_LOTTO shows no detectable departure from fair random in 1913 draws."
+  },
+  "options_reviewed": [
+    {
+      "option_id": "A",
+      "name": "Halt R2 and archive POWER_LOTTO research",
+      "description": "Accept cumulative NULL result across R1 (P161-P170) and R2 Top 3 (P173). Archive all findings. No further POWER_LOTTO strategy research until new structural data becomes available.",
+      "pros": [
+        "Consistent with cumulative evidence (R1 + R2 Top 3 = no edge)",
+        "Avoids multiple-testing inflation from continued candidate evaluation",
+        "Conserves research bandwidth",
+        "Honest about difficulty of finding edge in 38-number pool"
+      ],
+      "cons": [
+        "Does not fulfill user stated goal of exhaustive search",
+        "4 deferred candidates (C03/C05/C06/C07) have not been evaluated",
+        "May leave genuinely different approaches untried"
+      ],
+      "recommendation_status": "AVAILABLE_BUT_NOT_RECOMMENDED_GIVEN_USER_GOAL"
+    },
+    {
+      "option_id": "B",
+      "name": "Proceed to advanced deferred candidates plan-only (C03/C05/C06/C07)",
+      "description": "Design a P175 plan-only artifact for the 4 deferred candidates. Do not implement prototype yet. P175 would define feature extraction specs, OOS protocol, and Bonferroni correction strategy for C03 (co-occurrence graph), C05 (dispersion), C06 (CUSUM regime-adaptive), C07 (hybrid aggregation).",
+      "pros": [
+        "Fulfills user goal of exhaustive feature-engineering exploration",
+        "Plan-only is low risk — no implementation, no DB write",
+        "C03 (co-occurrence graph) and C06 (CUSUM) are genuinely different from C01/C02/C04 and from R1 signals",
+        "Preserves scientific rigor: P175 plan declares configs before any prototype"
+      ],
+      "cons": [
+        "C03 has HIGH overfitting risk (703 edges, aggressive Bonferroni family required)",
+        "C06 has HIGH overfitting risk (CUSUM threshold + multiple regime parameters)",
+        "C07 requires 4 feature families individually validated first (not done)",
+        "Diminishing returns expected given cumulative NULL evidence",
+        "More testing without prior evidence inflates Type I error risk"
+      ],
+      "recommendation_status": "PRIMARY_RECOMMENDATION",
+      "reason": "User explicitly wants exhaustive search. Plan-only carries minimal risk. The deferred candidates (especially C03/C06) are genuinely novel compared to R1 and to P173 Top 3. A plan-only step preserves governance without committing to implementation."
+    },
+    {
+      "option_id": "C",
+      "name": "Wait for new POWER_LOTTO draws only",
+      "description": "Pause all R2 research until at least 200 new POWER_LOTTO draws are available (draws after 115000041). Then re-evaluate C01/C02/C04 with larger OOS window before advancing to deferred candidates.",
+      "pros": [
+        "More data improves statistical power without adding multiple testing burden",
+        "Cleaner null hypothesis: if C01/C02/C04 show signal with 200+ new draws, re-evaluation justified"
+      ],
+      "cons": [
+        "Currently 0 new draws available (last draw is 115000041 = 2026-05-21)",
+        "n_oos=1413 already provides substantial statistical power",
+        "Waiting does not address the deferred candidates",
+        "Passive — doesn't fulfill exhaustive search goal"
+      ],
+      "recommendation_status": "DEFERRED — no new draws currently available"
+    },
+    {
+      "option_id": "D",
+      "name": "Redirect R2 to different lottery type with stronger empirical anomalies",
+      "description": "Apply R2 feature engineering framework to DAILY_539 or BIG_LOTTO instead of POWER_LOTTO.",
+      "pros": [
+        "DAILY_539 has smaller pool (1-39, choose 5) potentially easier signal detection",
+        "Different pool size may yield different feature efficacy"
+      ],
+      "cons": [
+        "DAILY_539 signal space exhausted in R1 (L82: H001-H008 all REJECTED)",
+        "BIG_LOTTO signal space exhausted in R1 (L91: 6 randomness tests all PASS, at-random confirmed)",
+        "Cross-lottery transfer history mixed: MidFreq/Fourier transferred to POWER_LOTTO (L83), ACB did not (L84)",
+        "Applying new feature types to exhausted games is unlikely to yield different result"
+      ],
+      "recommendation_status": "NOT_RECOMMENDED — both alternative games have exhausted signal spaces per R1"
+    },
+    {
+      "option_id": "E",
+      "name": "Meta-feature/ML feasibility audit only, no training",
+      "description": "Perform a read-only feasibility analysis of whether POWER_LOTTO draw sequences show any departure from randomness that could motivate ML/deep-learning approaches. No model training. Output: randomness audit report.",
+      "pros": [
+        "Read-only, no risk of overfitting",
+        "Can be done in parallel with Option B planning",
+        "Provides principled upper-bound estimate of predictability before committing to complex models"
+      ],
+      "cons": [
+        "P161 signal boundary research (L91-equivalent analysis) already performed for similar purpose",
+        "May duplicate existing L91/signal_boundary_report analysis",
+        "Does not add new candidates"
+      ],
+      "recommendation_status": "OPTIONAL_PAIR — can be done alongside Option B if scope remains read-only"
+    }
+  ],
+  "recommended_option": {
+    "primary": "B",
+    "label": "Proceed to advanced deferred candidates plan-only (C03/C05/C06/C07)",
+    "secondary": "E (optional, read-only pair)",
+    "rationale": "User has explicitly stated the goal is to exhaust all possibilities through feature engineering. The 4 deferred candidates — especially C03 (co-occurrence graph) and C06 (CUSUM regime-adaptive window) — represent genuinely novel approaches not evaluated in R1 or P173. Plan-only (P175) carries minimal governance risk. P175 must design all candidate configs, OOS protocols, and multiple-testing correction strategies before any prototype is authorized. This preserves user goal while maintaining scientific rigor.",
+    "conservative_caveat": "Option B plan-only does NOT represent a finding of edge or likelihood of success. The prior probability remains LOW given cumulative R1+R2 NULL evidence. P175 must honestly report NULL if deferred candidates also fail corrected thresholds.",
+    "not_recommending_A_because": "User goal is exhaustive search; Option A would leave 4 evaluated candidates on the table.",
+    "not_recommending_C_because": "Zero new draws currently available; waiting is passive and does not address deferred candidates.",
+    "not_recommending_D_because": "Both DAILY_539 and BIG_LOTTO have exhausted signal spaces per R1 findings (L82, L91).",
+    "e_is_optional_pair": true
+  },
+  "p175_scope_boundary": {
+    "task_name": "P175_POWER_LOTTO_R2_ADVANCED_FEATURE_CANDIDATE_PLAN_ONLY",
+    "candidate_set": ["C03 co-occurrence pair graph", "C05 entropy/dispersion controlled", "C06 regime-adaptive window (CUSUM)", "C07 hybrid rank aggregation"],
+    "scope": "plan-only — no prototype script, no DB write, no training, no deployment",
+    "allowed_in_p175": [
+      "plan artifact (JSON + MD) defining candidate specs",
+      "OOS protocol design for each candidate",
+      "pre-declared candidate configs",
+      "multiple-testing correction strategy (Bonferroni family = 4)",
+      "leakage and overfitting risk assessment per candidate",
+      "data availability check for each candidate"
+    ],
+    "forbidden_in_p175": [
+      "any analysis or prototype script",
+      "DB write of any kind",
+      "model training",
+      "registry mutation",
+      "replay row insertion",
+      "champion promotion",
+      "controlled_apply",
+      "deployment",
+      "wagering recommendations"
+    ],
+    "p175_authorization_required": true,
+    "p175_blocked_by_user_authorization": true,
+    "p175_authorization_phrase": "YES start P175 POWER_LOTTO R2 advanced feature candidate plan"
+  },
+  "risk_assessment_deferred_candidates": {
+    "C03_co_occurrence_pair_graph": {
+      "overfitting_risk": "HIGH",
+      "multiple_testing_burden": "C(38,2)=703 edges — Bonferroni family must account for pair space",
+      "min_oos_draws_required": 300,
+      "leakage_risk": "LOW if using pre-target draws only",
+      "genuinely_novel": true
+    },
+    "C05_entropy_dispersion_controlled": {
+      "overfitting_risk": "MEDIUM",
+      "multiple_testing_burden": "MODERATE — fewer free parameters than C03/C06",
+      "min_oos_draws_required": 200,
+      "leakage_risk": "LOW",
+      "genuinely_novel": true
+    },
+    "C06_regime_adaptive_cusum": {
+      "overfitting_risk": "HIGH",
+      "multiple_testing_burden": "HIGH — CUSUM threshold + window size per regime",
+      "min_oos_draws_required": 300,
+      "leakage_risk": "MEDIUM — one-sided causal CUSUM requires careful implementation",
+      "genuinely_novel": true,
+      "p170_motivation": "P170 confirmed non-stationarity supports regime-based approach but also means regime signal itself may be non-stationary"
+    },
+    "C07_hybrid_rank_aggregation": {
+      "overfitting_risk": "HIGH",
+      "multiple_testing_burden": "HIGH — weight grid over 4 feature families",
+      "min_oos_draws_required": 300,
+      "leakage_risk": "LOW",
+      "genuinely_novel": true,
+      "dependency": "Requires C01/C02/C04 components; P173 NULL suggests components are weak individually"
+    }
+  },
+  "governance_confirmations": {
+    "db_rows_before": 94924,
+    "db_rows_after": 94924,
+    "db_unchanged": true,
+    "no_db_write": true,
+    "no_registry_mutation": true,
+    "no_strategy_implementation": true,
+    "no_controlled_apply": true,
+    "no_champion_promotion": true,
+    "no_wagering_recommendations": true,
+    "no_win_guarantee_claim": true,
+    "no_stage": true,
+    "no_commit": true,
+    "no_push": true,
+    "no_checkout_branch": true,
+    "no_merge_rebase_reset": true,
+    "p173_null_result_stands": true,
+    "p161_to_p173_null_results_unchanged": true,
+    "main_zen_gates_split_still_unresolved": true
+  },
+  "next_task": "P175_POWER_LOTTO_R2_ADVANCED_FEATURE_CANDIDATE_PLAN_ONLY",
+  "next_task_blocked_by_user_authorization": true,
+  "next_task_authorization_required_phrase": "YES start P175 POWER_LOTTO R2 advanced feature candidate plan"
+}

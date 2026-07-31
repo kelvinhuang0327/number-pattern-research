@@ -23,10 +23,11 @@ export class ApiClient {
         const baseDelay = 1000; // 1 second
 
         for (let attempt = 0; attempt <= maxRetries; attempt++) {
+            let timeoutId = null;
             try {
                 // 創建超時控制
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), this.requestTimeout);
+                timeoutId = setTimeout(() => controller.abort(), this.requestTimeout);
 
                 const response = await fetch(url, {
                     ...options,
@@ -36,8 +37,6 @@ export class ApiClient {
                     },
                     signal: controller.signal
                 });
-
-                clearTimeout(timeoutId);
 
                 if (!response.ok) {
                     const error = await response.json().catch(() => ({ detail: response.statusText }));
@@ -53,7 +52,7 @@ export class ApiClient {
                     throw new Error(error.detail || `HTTP ${response.status}`);
                 }
 
-                return await response.json();
+                return await this._parseResponseBody(response);
             } catch (error) {
                 if (error.name === 'AbortError') {
                     console.error(`API request timeout: ${endpoint}`);
@@ -81,6 +80,10 @@ export class ApiClient {
 
                 console.error(`API request failed: ${endpoint}`, error);
                 throw error;
+            } finally {
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
             }
         }
     }
@@ -89,9 +92,19 @@ export class ApiClient {
      * GET 請求
      */
     async get(endpoint, params = {}) {
-        const queryString = new URLSearchParams(params).toString();
+        const queryString = this._buildQueryString(params);
         const fullEndpoint = queryString ? `${endpoint}?${queryString}` : endpoint;
         return this.request(fullEndpoint, { method: 'GET' });
+    }
+
+    _buildQueryString(params = {}) {
+        const queryParams = {};
+        Object.entries(params || {}).forEach(([key, value]) => {
+            if (value !== null && value !== undefined) {
+                queryParams[key] = value;
+            }
+        });
+        return new URLSearchParams(queryParams).toString();
     }
 
     /**
@@ -109,6 +122,22 @@ export class ApiClient {
      */
     async delete(endpoint) {
         return this.request(endpoint, { method: 'DELETE' });
+    }
+
+    /**
+     * Parse successful response bodies while accepting no-content success.
+     */
+    async _parseResponseBody(response) {
+        if (response.status === 204 || response.status === 205) {
+            return null;
+        }
+
+        const body = await response.text();
+        if (!body.trim()) {
+            return null;
+        }
+
+        return JSON.parse(body);
     }
 
     // ===== 數據管理 API =====

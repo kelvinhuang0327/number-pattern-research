@@ -3,13 +3,29 @@ import os
 import sys
 import sqlite3
 import json
+from pathlib import Path
 
-project_root = os.getcwd()
-sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
+
+def _repo_root():
+    return Path(__file__).resolve().parent.parent
+
+
+def _canonical_db_path():
+    return _repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+
+
+def _resolve_db_path(db_path=None):
+    candidate = _canonical_db_path() if db_path is None else Path(db_path)
+    if db_path is not None and not candidate.is_absolute():
+        raise ValueError("db_path must be absolute; use None for the canonical lottery_v2.db")
+    if not candidate.exists():
+        raise FileNotFoundError(f"Lottery DB path does not exist: {candidate}")
+    if not candidate.is_file():
+        raise FileNotFoundError(f"Lottery DB path is not a regular file: {candidate}")
+    return str(candidate)
 
 def fix_db():
-    db_path = os.path.join(project_root, 'lottery_api', 'data', 'lottery.db')
+    db_path = _resolve_db_path()
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
     

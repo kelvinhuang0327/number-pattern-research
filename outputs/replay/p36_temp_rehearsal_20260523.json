@@ -1,0 +1,136 @@
+{
+  "phase": "P36_WAVE2_DAILY539_DRY_RUN",
+  "run_id": "p36_wave2_dryrun_20260523",
+  "started_at": "2026-05-23T09:27:27.134425+00:00",
+  "finished_at": "2026-05-23T09:27:35.207063+00:00",
+  "temp_db_path": "/tmp/p36_temp.db",
+  "prod_rows_before": 19960,
+  "prod_rows_after": 19960,
+  "prod_rows_unchanged": true,
+  "total_dry_run_rows": 9000,
+  "expected_dry_run_rows": 9000,
+  "row_count_ok": true,
+  "schema_validation": {
+    "total_rows": 9000,
+    "errors": [],
+    "valid": true
+  },
+  "r1": {
+    "r1_inserted": 9000,
+    "r1_total_after": 9000,
+    "r1_expected": 9000,
+    "r1_ok": true
+  },
+  "r2": {
+    "r2_before": 9000,
+    "r2_duplicate_inserted": 0,
+    "r2_after": 9000,
+    "r2_idempotent": true
+  },
+  "r3": {
+    "r3_before": 9000,
+    "r3_after": 0,
+    "r3_rollback_ok": true
+  },
+  "per_strategy_counts": {
+    "markov_1bet_539": 1500,
+    "acb_single_539": 1500,
+    "zone_gap_3bet_539": 1500,
+    "539_3bet_orthogonal": 1500,
+    "p0b_539_3bet_f_cold_fmid": 1500,
+    "p0c_539_3bet_f_cold_x2": 1500
+  },
+  "hit_stats": {
+    "markov_1bet_539": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 17,
+      "hit_3plus_rate": 0.0113,
+      "hit_breakdown": {
+        "0": 747,
+        "1": 572,
+        "2": 164,
+        "3": 17,
+        "4": 0,
+        "5": 0
+      }
+    },
+    "acb_single_539": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 16,
+      "hit_3plus_rate": 0.0107,
+      "hit_breakdown": {
+        "0": 687,
+        "1": 634,
+        "2": 163,
+        "3": 16,
+        "4": 0,
+        "5": 0
+      }
+    },
+    "zone_gap_3bet_539": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 11,
+      "hit_3plus_rate": 0.0073,
+      "hit_breakdown": {
+        "0": 725,
+        "1": 618,
+        "2": 146,
+        "3": 11,
+        "4": 0,
+        "5": 0
+      }
+    },
+    "539_3bet_orthogonal": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 16,
+      "hit_3plus_rate": 0.0107,
+      "hit_breakdown": {
+        "0": 687,
+        "1": 634,
+        "2": 163,
+        "3": 16,
+        "4": 0,
+        "5": 0
+      }
+    },
+    "p0b_539_3bet_f_cold_fmid": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 13,
+      "hit_3plus_rate": 0.0087,
+      "hit_breakdown": {
+        "0": 708,
+        "1": 581,
+        "2": 198,
+        "3": 13,
+        "4": 0,
+        "5": 0
+      }
+    },
+    "p0c_539_3bet_f_cold_x2": {
+      "predicted": 1500,
+      "errors": 0,
+      "total": 1500,
+      "hit_3plus": 13,
+      "hit_3plus_rate": 0.0087,
+      "hit_breakdown": {
+        "0": 708,
+        "1": 581,
+        "2": 198,
+        "3": 13,
+        "4": 0,
+        "5": 0
+      }
+    }
+  },
+  "all_rehearsals_pass": true
+}

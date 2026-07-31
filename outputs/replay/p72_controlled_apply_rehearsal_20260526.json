@@ -1,0 +1,310 @@
+{
+  "project_context_lock": "LotteryNew",
+  "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+  "branch": "p72-controlled-apply-rehearsal",
+  "head": "80201f7",
+  "task": "P72_CONTROLLED_APPLY_REHEARSAL",
+  "authorization_mode": "REHEARSAL_ONLY",
+  "production_rows_before": 46960,
+  "production_rows_after": 46960,
+  "no_db_write": true,
+  "no_force_push": true,
+  "no_lifecycle_promotion": true,
+  "no_champion_replacement": true,
+  "no_registry_mutation": true,
+  "no_production_apply": true,
+  "requires_future_explicit_apply_authorization": true,
+  "p71_summary": {
+    "pr": 193,
+    "head": "80201f7",
+    "classification": "P71_CONTROLLED_APPLY_READINESS_GATE_MERGED_TO_MAIN",
+    "production_rows": 46960,
+    "authorization_mode": "READINESS_ONLY",
+    "tests_passed": 100
+  },
+  "candidate_count": 8,
+  "batches": {
+    "batch_A": {
+      "sequence": 1,
+      "lottery_type": "POWER_LOTTO",
+      "strategies": ["fourier_rhythm_3bet", "fourier30_markov30_2bet"],
+      "p71_readiness": "READY_FOR_CONTROLLED_APPLY",
+      "temp_rehearsal_required": false,
+      "lifecycle": "ONLINE/ACTIVE"
+    },
+    "batch_B1": {
+      "sequence": 2,
+      "lottery_type": "DAILY_539",
+      "strategies": ["539_3bet_orthogonal", "acb_single_539"],
+      "p71_readiness": "READY_FOR_CONTROLLED_APPLY",
+      "temp_rehearsal_required": false,
+      "lifecycle": "ACTIVE"
+    },
+    "batch_B2": {
+      "sequence": 3,
+      "lottery_type": "DAILY_539",
+      "strategies": ["midfreq_acb_2bet", "midfreq_fourier_2bet"],
+      "p71_readiness": "READY_AFTER_TEMP_REHEARSAL",
+      "temp_rehearsal_required": true,
+      "lifecycle": "RETIRED",
+      "dual_strategy_id_risk": "midfreq_fourier_2bet"
+    },
+    "batch_B3": {
+      "sequence": 4,
+      "lottery_type": "DAILY_539",
+      "strategies": ["acb_1bet", "acb_markov_midfreq_3bet"],
+      "p71_readiness": "READY_AFTER_TEMP_REHEARSAL",
+      "temp_rehearsal_required": true,
+      "lifecycle": "RETIRED"
+    }
+  },
+  "rehearsal_results_by_batch": {
+    "batch_A": {
+      "gate_result": "REHEARSAL_READY",
+      "duplicate_risk": "LOW",
+      "lifecycle_gate": "PASS",
+      "temp_rehearsal_required": false,
+      "proposed_new_rows": 3000,
+      "proposed_rows_after_apply": 49960,
+      "rollback_requirement": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id LIKE 'P72_POWERLOTTO_BATCHA_%'"
+    },
+    "batch_B1": {
+      "gate_result": "REHEARSAL_READY",
+      "duplicate_risk": "LOW",
+      "lifecycle_gate": "PASS",
+      "temp_rehearsal_required": false,
+      "proposed_new_rows": 3000,
+      "proposed_rows_after_apply": 49960,
+      "rollback_requirement": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id LIKE 'P72_539_BATCHB1_%'"
+    },
+    "batch_B2": {
+      "gate_result": "REHEARSAL_READY",
+      "duplicate_risk": "LOW",
+      "lifecycle_gate": "RETIRED_PROMOTION_REQUIRED_BEFORE_PRODUCTION",
+      "temp_rehearsal_required": true,
+      "proposed_new_rows": 3000,
+      "proposed_rows_after_apply": 49960,
+      "dual_id_mitigation": "lottery_type='DAILY_539' filter enforced; POWER_LOTTO midfreq_fourier_2bet rows remain 1500 unaffected",
+      "rollback_requirement": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id LIKE 'P72_539_BATCHB2_%'"
+    },
+    "batch_B3": {
+      "gate_result": "REHEARSAL_READY",
+      "duplicate_risk": "LOW",
+      "lifecycle_gate": "RETIRED_PROMOTION_REQUIRED_BEFORE_PRODUCTION",
+      "temp_rehearsal_required": true,
+      "proposed_new_rows": 3000,
+      "proposed_rows_after_apply": 49960,
+      "rollback_requirement": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id LIKE 'P72_539_BATCHB3_%'"
+    }
+  },
+  "rehearsal_results_by_strategy": {
+    "fourier_rhythm_3bet": {
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle": "ONLINE",
+      "existing_rows": 1500,
+      "p71_readiness": "READY_FOR_CONTROLLED_APPLY",
+      "gate_result": "REHEARSAL_READY",
+      "proposed_rows": 1500,
+      "proposed_controlled_apply_id": "P72_POWERLOTTO_BATCHA_FOURIER_RHYTHM_3BET_1500_REHEARSAL_20260526",
+      "duplicate_risk": "LOW",
+      "rollback": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id = 'P72_POWERLOTTO_BATCHA_FOURIER_RHYTHM_3BET_1500_REHEARSAL_20260526'"
+    },
+    "fourier30_markov30_2bet": {
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle": "ACTIVE",
+      "existing_rows": 1500,
+      "p71_readiness": "READY_FOR_CONTROLLED_APPLY",
+      "gate_result": "REHEARSAL_READY",
+      "proposed_rows": 1500,
+      "proposed_controlled_apply_id": "P72_POWERLOTTO_BATCHA_FOURIER30_MARKOV30_2BET_1500_REHEARSAL_20260526",
+      "duplicate_risk": "LOW",
+      "rollback": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id = 'P72_POWERLOTTO_BATCHA_FOURIER30_MARKOV30_2BET_1500_REHEARSAL_20260526'"
+    },
+    "539_3bet_orthogonal": {
+      "lottery_type": "DAILY_539",
+      "lifecycle": "ACTIVE",
+      "existing_rows": 1500,
+      "p71_readiness": "READY_FOR_CONTROLLED_APPLY",
+      "gate_result": "REHEARSAL_READY",
+      "proposed_rows": 1500,
+      "proposed_controlled_apply_id": "P72_539_BATCHB1_539_3BET_ORTHOGONAL_1500_REHEARSAL_20260526",
+      "duplicate_risk": "LOW",
+      "rollback": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id = 'P72_539_BATCHB1_539_3BET_ORTHOGONAL_1500_REHEARSAL_20260526'"
+    },
+    "acb_single_539": {
+      "lottery_type": "DAILY_539",
+      "lifecycle": "ACTIVE",
+      "existing_rows": 1500,
+      "p71_readiness": "READY_FOR_CONTROLLED_APPLY",
+      "gate_result": "REHEARSAL_READY",
+      "proposed_rows": 1500,
+      "proposed_controlled_apply_id": "P72_539_BATCHB1_ACB_SINGLE_539_1500_REHEARSAL_20260526",
+      "duplicate_risk": "LOW",
+      "rollback": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id = 'P72_539_BATCHB1_ACB_SINGLE_539_1500_REHEARSAL_20260526'"
+    },
+    "midfreq_acb_2bet": {
+      "lottery_type": "DAILY_539",
+      "lifecycle": "RETIRED",
+      "existing_rows": 1500,
+      "p71_readiness": "READY_AFTER_TEMP_REHEARSAL",
+      "gate_result": "REHEARSAL_READY",
+      "proposed_rows": 1500,
+      "proposed_controlled_apply_id": "P72_539_BATCHB2_MIDFREQ_ACB_2BET_1500_REHEARSAL_20260526",
+      "duplicate_risk": "LOW",
+      "lifecycle_gate": "RETIRED_PROMOTION_REQUIRED_BEFORE_PRODUCTION",
+      "rollback": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id = 'P72_539_BATCHB2_MIDFREQ_ACB_2BET_1500_REHEARSAL_20260526'"
+    },
+    "midfreq_fourier_2bet": {
+      "lottery_type": "DAILY_539",
+      "lifecycle": "RETIRED",
+      "existing_rows": 1500,
+      "p71_readiness": "READY_AFTER_TEMP_REHEARSAL",
+      "gate_result": "REHEARSAL_READY",
+      "proposed_rows": 1500,
+      "proposed_controlled_apply_id": "P72_539_BATCHB2_MIDFREQ_FOURIER_2BET_1500_REHEARSAL_20260526",
+      "duplicate_risk": "LOW",
+      "lifecycle_gate": "RETIRED_PROMOTION_REQUIRED_BEFORE_PRODUCTION",
+      "dual_strategy_id_risk": true,
+      "power_lotto_rows_current": 1500,
+      "lottery_type_filter_enforced": "DAILY_539",
+      "rollback": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id = 'P72_539_BATCHB2_MIDFREQ_FOURIER_2BET_1500_REHEARSAL_20260526'"
+    },
+    "acb_1bet": {
+      "lottery_type": "DAILY_539",
+      "lifecycle": "RETIRED",
+      "existing_rows": 1500,
+      "p71_readiness": "READY_AFTER_TEMP_REHEARSAL",
+      "gate_result": "REHEARSAL_READY",
+      "proposed_rows": 1500,
+      "proposed_controlled_apply_id": "P72_539_BATCHB3_ACB_1BET_1500_REHEARSAL_20260526",
+      "duplicate_risk": "LOW",
+      "lifecycle_gate": "RETIRED_PROMOTION_REQUIRED_BEFORE_PRODUCTION",
+      "rollback": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id = 'P72_539_BATCHB3_ACB_1BET_1500_REHEARSAL_20260526'"
+    },
+    "acb_markov_midfreq_3bet": {
+      "lottery_type": "DAILY_539",
+      "lifecycle": "RETIRED",
+      "existing_rows": 1500,
+      "p71_readiness": "READY_AFTER_TEMP_REHEARSAL",
+      "gate_result": "REHEARSAL_READY",
+      "proposed_rows": 1500,
+      "proposed_controlled_apply_id": "P72_539_BATCHB3_ACB_MARKOV_MIDFREQ_3BET_1500_REHEARSAL_20260526",
+      "duplicate_risk": "LOW",
+      "lifecycle_gate": "RETIRED_PROMOTION_REQUIRED_BEFORE_PRODUCTION",
+      "rollback": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id = 'P72_539_BATCHB3_ACB_MARKOV_MIDFREQ_3BET_1500_REHEARSAL_20260526'"
+    }
+  },
+  "excluded_strategies": [
+    {
+      "strategy_id": "BIG_LOTTO_all",
+      "reason": "BIG_LOTTO_excluded_per_P71",
+      "classification": "EXCLUDED_BIG_LOTTO"
+    },
+    {
+      "strategy_id": "cold_complement_2bet",
+      "reason": "sub_baseline",
+      "classification": "EXCLUDED_SUB_BASELINE"
+    },
+    {
+      "strategy_id": "zonal_entropy_2bet",
+      "reason": "fallback_equivalent",
+      "classification": "EXCLUDED_FALLBACK_EQUIVALENT"
+    },
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "reason": "deferred_pending_oos_gates",
+      "classification": "EXCLUDED_DEFERRED_OOS"
+    }
+  ],
+  "proposed_row_impact": {
+    "no_db_write_in_p72": true,
+    "rehearsal_only": true,
+    "production_rows_before": 46960,
+    "production_rows_after_p72_rehearsal": 46960,
+    "if_all_8_applied_at_1500": {
+      "total_new_rows": 12000,
+      "production_rows_after": 58960
+    },
+    "if_only_active_lifecycle_4_applied": {
+      "total_new_rows": 6000,
+      "production_rows_after": 52960
+    }
+  },
+  "duplicate_prevention_plan": {
+    "unique_controlled_apply_id_per_run": true,
+    "pre_apply_duplicate_check_sql": "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id=? AND target_draw=? AND lottery_type=?",
+    "abort_on_duplicate": true,
+    "post_apply_row_count_verification": true,
+    "controlled_apply_id_uniqueness_check": "SELECT COUNT(*) FROM strategy_prediction_replays WHERE controlled_apply_id=?; -- must be 0 before apply"
+  },
+  "controlled_apply_id_naming_scheme": {
+    "rehearsal_pattern": "P72_<LOTTERY>_<BATCH>_<STRATEGY>_<ROWS>_REHEARSAL_<YYYYMMDD>",
+    "production_pattern": "P72_<LOTTERY>_<BATCH>_<STRATEGY>_<ROWS>_PROD_<YYYYMMDD>",
+    "examples": {
+      "batch_A_rehearsal_1": "P72_POWERLOTTO_BATCHA_FOURIER_RHYTHM_3BET_1500_REHEARSAL_20260526",
+      "batch_A_rehearsal_2": "P72_POWERLOTTO_BATCHA_FOURIER30_MARKOV30_2BET_1500_REHEARSAL_20260526",
+      "batch_A_production_1": "P72_POWERLOTTO_BATCHA_FOURIER_RHYTHM_3BET_1500_PROD_20260526",
+      "batch_A_production_2": "P72_POWERLOTTO_BATCHA_FOURIER30_MARKOV30_2BET_1500_PROD_20260526",
+      "batch_B1_rehearsal_1": "P72_539_BATCHB1_539_3BET_ORTHOGONAL_1500_REHEARSAL_20260526",
+      "batch_B1_rehearsal_2": "P72_539_BATCHB1_ACB_SINGLE_539_1500_REHEARSAL_20260526",
+      "batch_B2_rehearsal_1": "P72_539_BATCHB2_MIDFREQ_ACB_2BET_1500_REHEARSAL_20260526",
+      "batch_B2_rehearsal_2": "P72_539_BATCHB2_MIDFREQ_FOURIER_2BET_1500_REHEARSAL_20260526",
+      "batch_B3_rehearsal_1": "P72_539_BATCHB3_ACB_1BET_1500_REHEARSAL_20260526",
+      "batch_B3_rehearsal_2": "P72_539_BATCHB3_ACB_MARKOV_MIDFREQ_3BET_1500_REHEARSAL_20260526"
+    }
+  },
+  "rollback_plan": {
+    "pre_apply_backup": "cp lottery_api/data/lottery_v2.db lottery_api/data/lottery_v2.db.bak_p72_<timestamp>",
+    "rollback_all": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id LIKE 'P72_%'",
+    "rollback_by_batch": {
+      "batch_A": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id LIKE 'P72_POWERLOTTO_BATCHA_%'",
+      "batch_B1": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id LIKE 'P72_539_BATCHB1_%'",
+      "batch_B2": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id LIKE 'P72_539_BATCHB2_%'",
+      "batch_B3": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id LIKE 'P72_539_BATCHB3_%'"
+    },
+    "verification_after_rollback": "SELECT COUNT(*) FROM strategy_prediction_replays; -- must be 46960"
+  },
+  "batch_B2_dual_strategy_id_mitigation": {
+    "strategy_id": "midfreq_fourier_2bet",
+    "daily_539_rows_current": 1500,
+    "power_lotto_rows_current": 1500,
+    "required_insert_filter": "lottery_type = 'DAILY_539'",
+    "post_apply_verification": "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id='midfreq_fourier_2bet' AND lottery_type='POWER_LOTTO'; -- must still be 1500",
+    "risk_level": "MANAGED"
+  },
+  "batch_B2_B3_lifecycle_gate_notes": {
+    "lifecycle_status": "RETIRED",
+    "retirement_source": "P31B",
+    "rehearsal_allowed": true,
+    "production_apply_requires_lifecycle_promotion": true,
+    "reason": "RETIRED strategies require explicit lifecycle promotion authorization before production apply",
+    "required_future_gate": "lifecycle_promotion_authorized_in_future_task"
+  },
+  "required_future_apply_gates": {
+    "all_batches": [
+      "explicit_apply_authorization_phrase_YES_apply_P71_controlled_replay_rows",
+      "temp_db_rehearsal_pass",
+      "duplicate_check_pass",
+      "rollback_plan_confirmed",
+      "drift_guard_pass",
+      "branch_governance_pass",
+      "post_apply_row_count_verified",
+      "api_verification_pass"
+    ],
+    "batch_B2_B3_additional": [
+      "lifecycle_promotion_gate",
+      "temp_rehearsal_evidence_committed",
+      "retired_strategies_promotion_authorized"
+    ],
+    "batch_B2_midfreq_fourier_2bet_additional": [
+      "lottery_type_filter_confirmed_DAILY_539",
+      "post_apply_power_lotto_rows_still_1500"
+    ]
+  },
+  "guard_results": {
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "branch_governance": "BRANCH_GOVERNANCE_PASS",
+    "cross_project_contamination": "CLEAN"
+  },
+  "final_classification": "P72_CONTROLLED_APPLY_REHEARSAL_MERGED_TO_MAIN"
+}

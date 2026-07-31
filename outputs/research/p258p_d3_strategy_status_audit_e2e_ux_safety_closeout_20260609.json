@@ -1,0 +1,104 @@
+{
+  "task_id": "P258P",
+  "task_name": "D3 Strategy Status Audit — E2E / UX / Safety Closeout",
+  "artifact_date": "2026-06-09",
+  "task_status": "P258P_D3_STRATEGY_STATUS_AUDIT_E2E_UX_SAFETY_CLOSEOUT_READY",
+  "final_classification": "P258P_D3_STRATEGY_STATUS_AUDIT_E2E_UX_SAFETY_CLOSEOUT_READY",
+
+  "arc_closed": "P258L → P258M → P258N → P258O → P258P",
+  "arc_description": "D3 Strategy Status / Contract Audit read-only display arc. Page plan → API contract → API route → UI display → E2E/safety closeout.",
+
+  "validation_results": {
+    "api_route_responds": true,
+    "api_route_path": "GET /api/replay/d3-strategy-status-audit",
+    "api_returns_200": true,
+    "api_payload_parses": true,
+    "api_row_count": 14,
+    "api_all_required_top_level_fields_present": true,
+    "api_all_required_row_fields_present": true,
+    "api_only_allowed_d3_statuses": true,
+    "api_forbidden_d3_statuses_absent": true,
+    "api_safety_disclaimers_present": true,
+    "api_forbidden_actions_confirmed_block_present": true
+  },
+
+  "ui_validation_results": {
+    "nav_button_exists": true,
+    "nav_section_id": "p258-d3-audit",
+    "section_element_id": "p258-d3-audit-section",
+    "section_renders_without_crash": true,
+    "safety_disclaimer_banner_present": true,
+    "disclaimer_banner_id": "p258-disclaimer-banner",
+    "all_five_disclaimers_in_html": true,
+    "lifecycle_evidence_column_group_present": true,
+    "d3_contract_column_group_present": true,
+    "d3_column_labeled_non_approval": true,
+    "d3_non_approval_label": "D3 合約狀態（非核准）",
+    "filters_present": true,
+    "filters_implemented": ["lottery_type", "lifecycle_status", "d3_contract_status"],
+    "summary_bar_present": true,
+    "allowed_d3_statuses_only_in_js": true,
+    "forbidden_d3_statuses_absent_from_js": true,
+    "forbidden_d3_statuses_absent_from_html": true,
+    "no_approval_language": true,
+    "no_recommendation_language": true,
+    "no_betting_advice_language": true,
+    "no_prediction_claim_language": true,
+    "no_improved_accuracy_claim": true,
+    "empty_state_safe": true,
+    "error_state_safe": true,
+    "no_db_query_in_js": true,
+    "no_d3_execution_in_js": true
+  },
+
+  "safety_disclaimers_verified": [
+    "D3 不是預測模型。",
+    "合約驗證不是策略評估。",
+    "NOT_YET_REJECTED 不是核准（NOT_YET_REJECTED is not approval）。",
+    "通過合約驗證不代表提升預測準確性。",
+    "本頁為歷史唯讀資料，不作為下注建議。"
+  ],
+
+  "forbidden_vocabulary_verified_absent": {
+    "in_js": ["APPROVED", "PROMOTED", "PRODUCTION_READY", "RECOMMENDED", "PREDICTIVE_EDGE_CONFIRMED"],
+    "in_html_section": ["APPROVED", "PROMOTED", "PRODUCTION_READY", "RECOMMENDED", "PREDICTIVE_EDGE_CONFIRMED"],
+    "in_filter_options": ["APPROVED", "PROMOTED", "PRODUCTION_READY", "RECOMMENDED", "PREDICTIVE_EDGE_CONFIRMED"]
+  },
+
+  "no_db_query_proof": "The P258O JS block calls only fetch('/api/replay/d3-strategy-status-audit'). No sqlite3, DatabaseManager, or direct DB connection is used. The API route itself is artifact-backed (P258N).",
+  "no_d3_execution_proof": "JS calls no D3 gate functions: no run_contract_validation_flow(), gate_statistics, gate_orchestrator, null_factory, or candidate_ingest. The API route serves a static JSON artifact.",
+  "no_strategy_evaluation_proof": "UI renders rows as display-only. No scoring, ranking, or promotion logic exists. D3 column is explicitly labeled 非核准.",
+  "no_recommendation_production_registry_proof": "index.html JS contains no backend imports, DB writes, registry mutations, recommendation logic, or deployment calls.",
+
+  "p258_arc_final_status": {
+    "P258L": "MERGED — D3 Strategy Status Audit page plan (PR #383)",
+    "P258M": "MERGED — Artifact-backed API contract (PR #384)",
+    "P258N": "MERGED — Read-only artifact-backed API route (PR #385)",
+    "P258O0": "MERGED — Pre-existing dirty file isolation cleanup (PR #386)",
+    "P258O": "MERGED — Read-only UI display (PR #387)",
+    "P258P": "COMPLETE — E2E/UX/safety closeout"
+  },
+
+  "governance": {
+    "d3_is_not_approval_gate": true,
+    "d3_is_not_prediction_model": true,
+    "contract_validation_is_not_strategy_evaluation": true,
+    "not_yet_rejected_is_not_approval": true,
+    "p258_d3_arc_closed": true
+  },
+
+  "recommended_next_state": "HOLD / WAITING_FOR_USER_AUTHORIZATION",
+
+  "future_task_split": {
+    "optional_next_task": "P258Q: read-only UX polish / export / index enhancement only, if explicitly authorized",
+    "running_d3_on_real_candidate_methods": "FORBIDDEN — requires separate future task and explicit authorization",
+    "executable_gate_evaluation": "FORBIDDEN",
+    "null_generation": "FORBIDDEN",
+    "p_value_paired_tests_backtests": "FORBIDDEN",
+    "production_integration": "FORBIDDEN",
+    "recommendation_mutation": "FORBIDDEN",
+    "db_write": "FORBIDDEN",
+    "treating_not_yet_rejected_as_approved": "FORBIDDEN",
+    "each_future_task_requires_separate_explicit_authorization": true
+  }
+}

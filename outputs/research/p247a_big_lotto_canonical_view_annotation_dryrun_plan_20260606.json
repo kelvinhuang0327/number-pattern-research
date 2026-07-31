@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P247A",
+  "classification": "P247A_BIG_LOTTO_CANONICAL_DB_SEPARATION_DRYRUN_PLAN_COMPLETE",
+  "p246k_merged_pr": "PR #326 merged 2026-06-06T02:54:07Z",
+  "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+  "read_only_confirmed": true,
+  "raw_population_count": 22238,
+  "canonical_population_count": 2113,
+  "row_family_counts": {
+    "BIG_LOTTO_total": 22238,
+    "ADD_ON_PRIZE_EXCLUDED": 19100,
+    "DATE_FORMAT_ALIEN": 375,
+    "SMALL_POOL_ALIEN": 650,
+    "CANONICAL_MAIN_DRAW_dry_run": 2113
+  },
+  "dry_run_validation": {
+    "db_read": true,
+    "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+    "read_only_confirmed": true,
+    "db_write_performed": false,
+    "raw_count": 22238,
+    "add_on_count": 19100,
+    "date_format_alien_count": 375,
+    "small_pool_alien_count": 650,
+    "canonical_view_dry_run_count": 2113,
+    "replay_rows": 94924,
+    "json1_available": true,
+    "canonical_view_already_exists": false,
+    "existing_views": [],
+    "dry_run_matches_expected": true
+  },
+  "json1_available": true,
+  "proposed_view_sql": "-- P247A Option A: Canonical BIG_LOTTO Research View\n-- DO NOT EXECUTE without explicit Type D authorization\n-- Dry-run validated: returns 2,113 rows on current DB\n\nCREATE VIEW IF NOT EXISTS draws_big_lotto_canonical_main AS\nSELECT d.*\nFROM draws d\nWHERE d.lottery_type = 'BIG_LOTTO'\n  AND d.draw NOT LIKE '%-%'\n  AND NOT (LENGTH(d.draw) = 8 AND d.draw LIKE '20%')\n  AND (\n    SELECT MAX(CAST(j.value AS INTEGER))\n    FROM json_each(d.numbers) j\n  ) > 25;",
+  "proposed_annotation_table_sql": "-- P247A Option B: Row-family Annotation Table\n-- DO NOT EXECUTE without explicit Type D authorization\n\nCREATE TABLE IF NOT EXISTS draw_row_family_annotations (\n    id            INTEGER PRIMARY KEY AUTOINCREMENT,\n    lottery_type  TEXT    NOT NULL,\n    draw          TEXT    NOT NULL,\n    row_family    TEXT    NOT NULL,\n    reason        TEXT,\n    source_task   TEXT,\n    created_at    TEXT    DEFAULT (datetime('now')),\n    UNIQUE(lottery_type, draw)\n);\n\n-- Index for fast research queries\nCREATE INDEX IF NOT EXISTS idx_drfa_type_family\n    ON draw_row_family_annotations(lottery_type, row_family);",
+  "proposed_annotation_populate_sql": "-- Populate annotation table (requires Python for SMALL_POOL_ALIEN detection)\n-- Step 1: Label ADD_ON_PRIZE_EXCLUDED\nINSERT OR IGNORE INTO draw_row_family_annotations\n    (lottery_type, draw, row_family, reason, source_task)\nSELECT 'BIG_LOTTO', draw,\n    'ADD_ON_PRIZE_EXCLUDED',\n    'Hyphenated draw ID — add-on/special prize record, valid but excluded from 6/49 main-draw research',\n    'P247A'\nFROM draws\nWHERE lottery_type='BIG_LOTTO' AND draw LIKE '%-%';\n\n-- Step 2: Label DATE_FORMAT_ALIEN\nINSERT OR IGNORE INTO draw_row_family_annotations\n    (lottery_type, draw, row_family, reason, source_task)\nSELECT 'BIG_LOTTO', draw,\n    'DATE_FORMAT_ALIEN',\n    '8-digit YYYYMMDD draw ID — numbers inconsistent with 6/49 pool',\n    'P247A'\nFROM draws\nWHERE lottery_type='BIG_LOTTO'\n  AND LENGTH(draw)=8 AND draw LIKE '20%' AND draw NOT LIKE '%-%';\n\n-- Step 3: Label SMALL_POOL_ALIEN — requires Python json_each or application-level\n-- Python snippet:\n--   for row in conn.execute(\"SELECT id, draw, numbers FROM draws WHERE lottery_type='BIG_LOTTO' ...\"):\n--       if max(json.loads(row[2])) <= 25:\n--           INSERT INTO draw_row_family_annotations ...\n\n-- Step 4: Label CANONICAL_MAIN_DRAW (everything else)\n-- After Steps 1-3 complete, all remaining serial draws with max(numbers)>25\n-- are CANONICAL_MAIN_DRAW.",
+  "sql_applied": false,
+  "sql_dry_run_only": true,
+  "recommended_apply_strategy": {
+    "preferred_approach": "Option A (canonical view) first, Option B (annotation table) second",
+    "phase_1_backup": "cp lottery_api/data/lottery_v2.db backups/p247a_big_lotto_canonical_separation_backup_YYYYMMDD_HHMMSS.db && sha256sum backups/p247a_*.db",
+    "phase_2_create_view": "Execute PROPOSED_VIEW_SQL to create draws_big_lotto_canonical_main. JSON1 is available — SMALL_POOL_ALIEN can be filtered in the view directly.",
+    "phase_3_create_annotation_table": "Execute PROPOSED_ANNOTATION_TABLE_SQL and populate via Python script (Python handles SMALL_POOL_ALIEN detection via json.loads).",
+    "phase_4_post_apply_validation": {
+      "step_1_view_count": "SELECT COUNT(*) FROM draws_big_lotto_canonical_main;  -- expect 2113",
+      "step_2_raw_count": "SELECT COUNT(*) FROM draws WHERE lottery_type='BIG_LOTTO';  -- expect 22238",
+      "step_3_annotation_families": "SELECT row_family, COUNT(*) FROM draw_row_family_annotations WHERE lottery_type='BIG_LOTTO' GROUP BY row_family;  -- expect: ADD_ON_PRIZE_EXCLUDED=19100, DATE_FORMAT_ALIEN=375, SMALL_POOL_ALIEN=650, CANONICAL_MAIN_DRAW=2113",
+      "step_4_replay_rows": "SELECT COUNT(*) FROM strategy_prediction_replays;  -- must remain 94924",
+      "step_5_non_biglotto": "SELECT lottery_type, COUNT(*) FROM draws WHERE lottery_type != 'BIG_LOTTO' GROUP BY lottery_type;  -- must be unchanged",
+      "step_6_integrity": "PRAGMA integrity_check;  -- must return 'ok'"
+    },
+    "phase_5_update_test_p238b": "After DB-level separation: update test_p238b assertion from >= 22238 (raw) to >= 2113 (canonical view count).",
+    "no_deletion": true,
+    "no_migration_of_existing_rows": true,
+    "preserves_add_on_records": true
+  },
+  "required_type_d_authorization_phrase": "Explicit Type D human gate authorization required before any DB write. No CREATE VIEW, CREATE TABLE, INSERT, UPDATE, or DELETE may be executed without a separate explicit authorization from the user/governance.",
+  "db_write_performed": false,
+  "forbidden_actions_confirmed": [
+    "DB_write_without_Type_D_authorization",
+    "CREATE_VIEW_without_authorization",
+    "CREATE_TABLE_without_authorization",
+    "row_deletion",
+    "row_movement",
+    "migration_apply",
+    "registry_mutation",
+    "production_recommendation_change",
+    "strategy_promotion",
+    "betting_advice",
+    "GATE_OPEN_for_BIG_LOTTO_predictive_research"
+  ],
+  "add_on_records_status": {
+    "preserved": true,
+    "is_fake": false,
+    "accessible_via": "get_all_draws('BIG_LOTTO') / raw draws table",
+    "excluded_from_research_by": "view filter + get_canonical_draws() helper"
+  },
+  "remaining_required_steps": [
+    "1. Obtain explicit Type D human gate authorization",
+    "2. Create timestamped DB backup with SHA256",
+    "3. Execute CREATE VIEW draws_big_lotto_canonical_main",
+    "4. Execute CREATE TABLE draw_row_family_annotations + populate",
+    "5. Run post-apply validation checklist",
+    "6. Update test_p238b assertion from >= 22238 to >= 2113 (canonical view count)",
+    "7. Confirm GATE_RED remains until explicit re-authorization after validation"
+  ],
+  "final_decision": "P247A dry-run plan complete. Proposed canonical view SQL validated: returns exactly 2,113 rows on current DB. JSON1/json_each is available — SMALL_POOL_ALIEN can be filtered directly in view SQL. No DB write performed. No CREATE VIEW/TABLE executed. ADD_ON_PRIZE_EXCLUDED records (19,100) are preserved and raw-accessible. Type D apply requires separate explicit human gate authorization. After apply: raw draws table unchanged (22,238 rows), view returns 2,113, replay_rows must remain 94,924."
+}

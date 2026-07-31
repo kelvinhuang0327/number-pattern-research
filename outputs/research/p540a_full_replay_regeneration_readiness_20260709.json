@@ -1,0 +1,322 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P540A",
+  "upstream_task_ids": [
+    "P539B",
+    "P539A",
+    "P538A",
+    "P537A",
+    "P536K",
+    "P536C"
+  ],
+  "generated_at": "2026-07-09T06:56:31.155052+00:00",
+  "classification": "P540A_FULL_REPLAY_REGENERATION_READINESS_READY",
+  "summary": "Readiness/dry-run inventory only. No repo entrypoint today can safely regenerate strategy_prediction_replays for the currently-missing draws across all three lotteries in one parameterized, dry-run-capable, idempotent call. Existing write-capable scripts are frozen to already-applied historical batches or bound to one fixed input artifact. Incremental generation (not full-history rerun) is recommended once a new generator is authored and separately authorized; DAILY_539 is the only lottery whose current gap alone would clear the minimum support floor.",
+  "current_db_readonly_snapshot": {
+    "BIG_LOTTO": {
+      "raw_draws_count": 3148,
+      "raw_draws_latest_draw": "115000068",
+      "raw_draws_latest_date": "2026/07/07",
+      "strategy_prediction_replays_count": 24140,
+      "strategy_prediction_replays_latest_target_draw": "115000055",
+      "distinct_strategy_ids_in_replays": 11,
+      "distinct_bet_index_in_replays": 4,
+      "gap_count_raw_draws_newer_than_latest_replayed_target_draw": 13,
+      "meets_minimum_support_draws_floor_if_gap_replayed": false
+    },
+    "DAILY_539": {
+      "raw_draws_count": 5909,
+      "raw_draws_latest_draw": "115000165",
+      "raw_draws_latest_date": "2026/07/08",
+      "strategy_prediction_replays_count": 34680,
+      "strategy_prediction_replays_latest_target_draw": "115000121",
+      "distinct_strategy_ids_in_replays": 15,
+      "distinct_bet_index_in_replays": 5,
+      "gap_count_raw_draws_newer_than_latest_replayed_target_draw": 44,
+      "meets_minimum_support_draws_floor_if_gap_replayed": true
+    },
+    "POWER_LOTTO": {
+      "raw_draws_count": 1926,
+      "raw_draws_latest_draw": "115000054",
+      "raw_draws_latest_date": "2026/07/06",
+      "strategy_prediction_replays_count": 36104,
+      "strategy_prediction_replays_latest_target_draw": "115000041",
+      "distinct_strategy_ids_in_replays": 10,
+      "distinct_bet_index_in_replays": 5,
+      "gap_count_raw_draws_newer_than_latest_replayed_target_draw": 13,
+      "meets_minimum_support_draws_floor_if_gap_replayed": false
+    }
+  },
+  "p539b_context": {
+    "source_path": "outputs/research/p539b_oos_availability_ingest_gap_gate_20260709.json",
+    "source_generated_at": "2026-07-09T05:49:21.717221+00:00",
+    "source_classification": "P539B_OOS_AVAILABILITY_INGEST_GAP_GATE_READY",
+    "oos_feasibility_summary": {
+      "feasible_now": false,
+      "classification": "blocked_needs_readonly_ingest_gap_audit",
+      "closest_predefined_category_caveat": "P539A's own readiness.new_draws_found_since_last_replay_cutoff=false is accurate only for the strategy_prediction_replays table; it should not be read as 'no new lottery draws have occurred' -- see new_draw_availability_by_lottery for the draws-table cross-check.",
+      "note": "Rolling/OOS evaluation is NOT feasible today for any candidate. New official draws already exist in the raw draws table beyond every candidate's recovered replay cutoff for at least one lottery, but zero of those draws have been run through strategy replay/prediction generation, so P539A's per-draw source table (strategy_prediction_replays) still has no post-cutoff rows. The primary blocker is therefore a replay-generation gap between the raw draws table and the strategy_prediction_replays table, not an absence of new lottery draws.",
+      "any_new_official_draws_beyond_cutoff": true,
+      "any_lottery_meets_minimum_support_draws_if_replayed": true,
+      "per_lottery": {
+        "BIG_LOTTO": {
+          "feasible_now": false,
+          "classification": "blocked_needs_readonly_ingest_gap_audit",
+          "note": "12 new official draw(s) already exist beyond the replay cutoff but have never been run through strategy replay/prediction generation; even after generation, this is short of P536C's minimum_support_draws floor -- both replay generation and further new draws are needed."
+        },
+        "DAILY_539": {
+          "feasible_now": false,
+          "classification": "blocked_needs_readonly_ingest_gap_audit",
+          "note": "42 new official draw(s) already exist beyond the replay cutoff and already meet P536C's minimum_support_draws floor, but none have been run through strategy replay/prediction generation yet -- the blocker is a replay-generation gap, not a shortage of new draws."
+        },
+        "POWER_LOTTO": {
+          "feasible_now": false,
+          "classification": "blocked_needs_readonly_ingest_gap_audit",
+          "note": "13 new official draw(s) already exist beyond the replay cutoff but have never been run through strategy replay/prediction generation; even after generation, this is short of P536C's minimum_support_draws floor -- both replay generation and further new draws are needed."
+        }
+      }
+    },
+    "recommended_next_single_worker_task": {
+      "proposed_task_id": "P539C (proposed, not yet authorized)",
+      "title": "Read-write strategy replay/prediction generation for existing new draws",
+      "scope": "For each lottery with new_official_draws_beyond_all_candidates_cutoff > 0 (see new_draw_availability_by_lottery), run the existing replay/prediction generation pipeline for the shortlisted candidate strategy_ids against the specific new target_draw values already present in the `draws` table, writing new rows into strategy_prediction_replays. This is a DB-write task and requires its own explicit canonical-DB-write authorization; it is proposed here, not executed.",
+      "why_smallest_next_step": "This task (P539B) already establishes that the blocker is a replay-generation gap, not missing official draws, for at least one lottery. Generating replay rows for the draws that already exist is the smallest step that could make a first OOS window possible, and is strictly narrower than building a rolling/OOS evaluator.",
+      "not_run_in_this_task": true,
+      "excluded_from_this_proposed_task": [
+        "Any lottery still below minimum_support_draws even after replay generation (see minimum_data_needed_for_p539c_or_oos_evaluator) -- those still need to wait for more official draws regardless of replay generation.",
+        "cross_lottery_review_candidate / insufficient_context_candidate groups (excluded upstream by P538A/P539A; unchanged by this gate)."
+      ]
+    },
+    "denominator_caveat": "P539B's new_official_draws_beyond_all_candidates_cutoff figures are scoped to each strategy candidate's own recovered replay cutoff at P539B's generated_at timestamp. This task's current_db_readonly_snapshot instead measures gap_count against the table-wide MAX(target_draw) per lottery_type at this task's own read time, which can differ slightly from P539B's per-candidate figures both due to denominator choice and any official draws ingested between the two runs. Reconciling the exact denominator (per-candidate vs table-wide vs bet_index=1-only) is listed as a blocker for P540B, not decided by this task -- per this repo's RUNBOOK, replay/evidence dashboard denominator/scope semantics are user-visible and must not be changed unilaterally."
+  },
+  "replay_generation_entrypoints": [
+    {
+      "path": "lottery_api/routes/replay.py",
+      "category": "api_route",
+      "lottery_scope": "ALL (query param)",
+      "purpose": "Every route here is GET (history/summary/freshness/history-overview/etc). Pure read/query.",
+      "dry_run_supported": "not_applicable",
+      "reason": "No write path exists in this file; it never inserts into strategy_prediction_replays.",
+      "write_scope": [],
+      "idempotency_evidence": "not_applicable (no writes)"
+    },
+    {
+      "path": "lottery_api/routes/ingest.py",
+      "category": "api_route",
+      "lottery_scope": "ALL (query param)",
+      "purpose": "POST /api/ingest/fetch-latest and /api/ingest/backfill write only to the `draws` table via db_manager.insert_draws. Does not write strategy_prediction_replays.",
+      "dry_run_supported": "true",
+      "reason": "backfill defaults dry_run=True; non-dry-run write requires apply_confirmed=True + confirm_token + requested_by + reason (_validate_write_confirmation).",
+      "write_scope": [
+        "draws"
+      ],
+      "idempotency_evidence": "UNIQUE(draw, lottery_type) on draws table."
+    },
+    {
+      "path": "scripts/p16_biglotto_remaining_strategies_backfill.py",
+      "category": "frozen_per_wave_backfill_script",
+      "lottery_scope": "BIG_LOTTO",
+      "purpose": "One-shot historical backfill for a fixed, already-applied strategy batch.",
+      "dry_run_supported": "true",
+      "reason": "argparse modes: --dry-run (default) / --temp-rehearsal / --apply / --rollback.",
+      "write_scope": [
+        "strategy_prediction_replays"
+      ],
+      "idempotency_evidence": "In-script `existing_keys` dedup set + self-run-twice idempotency check (idempotency_pass = rerun_inserted==0)."
+    },
+    {
+      "path": "scripts/p20_powerlotto_remaining_strategies_backfill.py",
+      "category": "frozen_per_wave_backfill_script",
+      "lottery_scope": "POWER_LOTTO",
+      "purpose": "One-shot historical backfill for a fixed, already-applied strategy batch.",
+      "dry_run_supported": "true",
+      "reason": "Same 4-mode argparse pattern as p16; test asserts rejection against production DB without an explicit flag.",
+      "write_scope": [
+        "strategy_prediction_replays"
+      ],
+      "idempotency_evidence": "Same dedup pattern as p16; test_script_rejects_production_db_without_flag."
+    },
+    {
+      "path": "scripts/v2_artifact_only_apply_rows.py",
+      "category": "generic_apply_tool_bound_to_frozen_input",
+      "lottery_scope": "Generic (lottery_type comes from a fixed input JSONL file)",
+      "purpose": "Closest thing to a reusable/generic apply tool in the repo, but bound to one frozen candidate-row artifact (outputs/replay/v2_artifact_only_candidate_rows_20260514.jsonl), not a live generator that can target arbitrary new draws.",
+      "dry_run_supported": "true",
+      "reason": "argparse: --dry-run / --apply / --rollback <id>.",
+      "write_scope": [
+        "strategy_prediction_replays"
+      ],
+      "idempotency_evidence": "would_skip_existing / skipped_existing counters before insert."
+    },
+    {
+      "path": "scripts/backfill_replay_history_cutoff.py",
+      "category": "metadata_repair_tool",
+      "lottery_scope": "ALL / BIG_LOTTO / POWER_LOTTO / DAILY_539 / 3_STAR (parameterized)",
+      "purpose": "UPDATE-only repair of history_cutoff_draw on EXISTING rows. Does not insert new replay rows. The one script in the repo genuinely written to be lottery-type-generic.",
+      "dry_run_supported": "true",
+      "reason": "--dry-run is the default; --apply required to write.",
+      "write_scope": [
+        "strategy_prediction_replays.history_cutoff_draw (UPDATE only)"
+      ],
+      "idempotency_evidence": "Not applicable to new-row generation; out of scope for regeneration."
+    },
+    {
+      "path": "tools/audit_p262a_replay_strategy_coverage.py",
+      "category": "readonly_coverage_audit",
+      "lottery_scope": "ALL",
+      "purpose": "Reports which (strategy, lottery_type) cells are missing from strategy_prediction_replays. Explicitly documented as NOT a backfill/generator.",
+      "dry_run_supported": "not_applicable",
+      "reason": "Read-only; no write path exists.",
+      "write_scope": [],
+      "idempotency_evidence": "not_applicable (no writes)"
+    }
+  ],
+  "frozen_wave_script_families_not_individually_profiled": [
+    "scripts/p31a_*/p31b_* (DAILY_539 wave1)",
+    "scripts/p36_*/p37_* (DAILY_539 wave2)",
+    "scripts/p42_*/p43_* (BIG_LOTTO wave3)",
+    "scripts/p47_*/p48_* (POWER_LOTTO wave4)",
+    "scripts/p56_*/p57_*/p58_*/p59_* (POWER_LOTTO wave5)",
+    "scripts/p64_*/p64b_*/p64c_*/p65_*/p66_* (POWER_LOTTO wave6)",
+    "scripts/p74_batch_a_controlled_apply.py (POWER_LOTTO)",
+    "scripts/p93_tierb_dryrun_rehearsal.py / scripts/p94_tierb_controlled_apply.py (mixed lotteries; p94 has NO CLI dry-run flag, relies on internal _pre_apply_guard)",
+    "scripts/p7_controlled_replay_row_apply.py + *_dry_run.py (mixed; writes prediction_runs, not strategy_replay_runs)",
+    "scripts/p2b_controlled_replay_backfill_apply.py (BIG_LOTTO, ts3_regime_3bet only)"
+  ],
+  "dry_run_support": {
+    "existing_frozen_per_wave_scripts": {
+      "dry_run_supported": "true (per-script)",
+      "evidence": "p16/p20 and the p31/p36/p42/p47/p56/p64/p74/p2b family expose --dry-run (often default) / --temp-rehearsal / --apply / --rollback argparse modes, and several tests assert the rerun-after-dry-run inserts 0 new rows (idempotency).",
+      "caveat": "p94_tierb_controlled_apply.py has NO CLI dry-run flag; it writes unconditionally when run directly, relying only on an internal _pre_apply_guard precondition check and the operational convention that p93 (dry-run) runs first."
+    },
+    "reusable_full_or_incremental_regenerator_for_currently_missing_draws": {
+      "dry_run_supported": "unknown",
+      "reason": "No such tool currently exists. Every write-capable script found is either scoped to one already-applied historical batch (frozen), or bound to one fixed input artifact file (v2_artifact_only_apply_rows.py). Building a new incremental generator that targets exactly the current gap draws would need to be written before its dry-run behavior could be evaluated -- that authoring work is itself out of scope for this readiness task."
+    },
+    "true_readonly_dry_run_note": "For the scripts that do support --dry-run, dry-run mode reads the DB but does not open it for write and performs no INSERT; this matches the read-only DB stance required by this task's own gates.",
+    "scoped_by_lottery": "true (every existing write-capable script is already single-lottery or single-artifact scoped)",
+    "scoped_full_history_vs_incremental": "unknown for a from-scratch full-history rerun; no script in the repo attempts that. Existing scripts only ever targeted a specific fixed batch of draws/strategies."
+  },
+  "full_vs_incremental_regeneration_recommendation": {
+    "recommendation": "incremental",
+    "reasoning": [
+      "strategy_prediction_replays already holds 94,924 rows across the three lotteries (BIG_LOTTO 24,140 + DAILY_539 34,680 + POWER_LOTTO 36,104 at this task's read time); a full-history rerun would re-touch all of them with no new draws to justify it, for pure runtime/DB-growth/duplicate-row risk and no readiness benefit.",
+      "Most existing rows carry replay_run_id=NULL and rely on application-level dedup (SELECT-before-insert), not the DB UNIQUE constraint, for duplicate protection during reruns -- unique key is (lottery_type, target_draw, strategy_id, bet_index). A full rerun multiplies the surface area where that application-level dedup must hold.",
+      "Per lottery, only the incremental gap needs generation: see current_db_readonly_snapshot for exact gap_count per lottery. Only DAILY_539's gap already clears the MINIMUM_SUPPORT_DRAWS_FLOOR (30) on its own; BIG_LOTTO and POWER_LOTTO would still be short of that floor even after generating every currently-available new draw, so full-history rerun would not change their readiness outcome either.",
+      "docs/REPLAY_OPERATION_SOP.md already forbids unscoped DELETE against production strategy_prediction_replays and forbids running apply without a prior --dry-run pass -- both are easier to honor for a narrowly-scoped incremental run than a full rerun."
+    ],
+    "per_lottery_incremental_scope": {
+      "BIG_LOTTO": {
+        "new_draws_to_generate": 13,
+        "meets_minimum_support_draws_floor_if_replayed": false
+      },
+      "DAILY_539": {
+        "new_draws_to_generate": 44,
+        "meets_minimum_support_draws_floor_if_replayed": true
+      },
+      "POWER_LOTTO": {
+        "new_draws_to_generate": 13,
+        "meets_minimum_support_draws_floor_if_replayed": false
+      }
+    }
+  },
+  "future_write_scope": {
+    "tables_that_would_be_inserted": [
+      {
+        "table": "strategy_prediction_replays",
+        "columns_likely_populated": [
+          "lottery_type",
+          "target_draw",
+          "target_date",
+          "strategy_id",
+          "strategy_name",
+          "strategy_version",
+          "history_cutoff_draw",
+          "replay_status",
+          "predicted_numbers",
+          "predicted_special",
+          "actual_numbers",
+          "actual_special",
+          "hit_numbers",
+          "hit_count",
+          "special_hit",
+          "replay_run_id",
+          "generated_at",
+          "truth_level",
+          "controlled_apply_id",
+          "source",
+          "provenance_hash",
+          "provenance_source",
+          "dry_run",
+          "prediction_cutoff_date",
+          "prediction_generated_at",
+          "bet_index"
+        ],
+        "unique_key": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+        "scope": "New rows only, for target_draw values already in `draws` beyond each lottery's current MAX(target_draw) in strategy_prediction_replays, for the specific shortlisted strategy_ids under review (not all historical strategies)."
+      },
+      {
+        "table": "strategy_replay_runs",
+        "columns_likely_populated": [
+          "lottery_type",
+          "strategy_scope",
+          "started_at",
+          "finished_at",
+          "status",
+          "generator_version",
+          "data_hash",
+          "notes"
+        ],
+        "scope": "One new run-metadata row per regeneration invocation, per the existing pattern of recording generator_version/data_hash/notes for provenance."
+      }
+    ],
+    "tables_that_would_be_updated_or_deleted": "None expected for an incremental run. A full-history rerun would additionally raise the question of whether to DELETE and regenerate existing rows -- docs/REPLAY_OPERATION_SOP.md forbids unscoped DELETE against production strategy_prediction_replays, so this is a further reason to prefer incremental (insert-only) over full rerun.",
+    "dedupe_guard_expected": "SELECT COUNT(*) FROM strategy_prediction_replays WHERE lottery_type=? AND target_draw=? AND strategy_id=? AND bet_index=? must be 0 before each insert (matches p16/p20/p31-p94 convention); the DB UNIQUE constraint is a backstop, not the primary guard, since most existing rows use replay_run_id=NULL."
+  },
+  "safety_requirements_for_p540b": [
+    "Follow the existing per-wave script convention: default to --dry-run, require an explicit --apply flag to write, and require a --rollback path that documents (but does not auto-run) the exact DELETE ... WHERE controlled_apply_id=? needed to undo the run.",
+    "Run a rehearsal pass against a temp/throwaway DB copy first (R1 insert / R2 duplicate-rerun producing 0 new inserts / R3 rollback), matching the p36/p42/p47/p56 rehearsal pattern, before touching the canonical DB.",
+    "Record replay_run_id/controlled_apply_id, provenance_hash, provenance_source, and generator_version/data_hash on strategy_replay_runs for the new run, per this repo's own provenance convention.",
+    "Take a DB snapshot via scripts/snapshot_replay_db.py immediately before any --apply run.",
+    "Confirm DB hash/mtime before and after the write; the write should only change strategy_prediction_replays (and strategy_replay_runs), nothing else.",
+    "Require Owner named authorization for the specific DB write, following the same shape as ingest.py's _validate_write_confirmation (apply_confirmed + confirm_token + requested_by + reason) -- a task spec's self-declared authorization line is not sufficient on its own.",
+    "Reconcile the exact gap-count denominator (per-candidate cutoff vs table-wide MAX vs bet_index=1-only) before scoping which target_draw values P540B actually generates -- see p539b_context.denominator_caveat in this artifact.",
+    "Scope P540B to the shortlisted candidate strategy_ids already reviewed by P536-P538, not to every historical strategy_id, to keep the write narrow and reviewable.",
+    "Do not delete or overwrite any existing strategy_prediction_replays row; incremental generation should be insert-only for target_draw values not yet present for that (lottery_type, strategy_id, bet_index)."
+  ],
+  "blockers_or_unknowns": [
+    "No generic, reusable, dry-run-capable generator currently exists for the currently-missing draws across all three lotteries; every write-capable script found is either frozen to an already-applied historical batch or bound to one fixed input artifact file. Building such a generator is itself new production code and would need its own plan-mode review, tests, and 1500-period three-window validation gate per this repo's CLAUDE.md before any strategy it touches could be considered validated.",
+    "p94_tierb_controlled_apply.py has no CLI dry-run flag at all; if any future work reuses code from it, that gap must be closed first.",
+    "The exact gap-count denominator differs slightly between this task's table-wide MAX query and P539B's per-candidate-cutoff query (see p539b_context.denominator_caveat); this must be reconciled before P540B scopes an exact target_draw list.",
+    "BIG_LOTTO: even after generating all 13 currently-available new draws, this lottery would still be short of the MINIMUM_SUPPORT_DRAWS_FLOOR (30) needed for a first OOS window.",
+    "POWER_LOTTO: even after generating all 13 currently-available new draws, this lottery would still be short of the MINIMUM_SUPPORT_DRAWS_FLOOR (30) needed for a first OOS window."
+  ],
+  "recommended_next_single_worker_task": {
+    "proposed_task_id": "P540B_DAILY539_INCREMENTAL_REPLAY_GENERATION_DB_WRITE_MANIFESTED",
+    "why": "DAILY_539 is the only lottery whose currently-available gap (44 draws) already clears the MINIMUM_SUPPORT_DRAWS_FLOOR (30) once replayed, matching P539B's own conclusion (proposed as 'P539C' there). BIG_LOTTO and POWER_LOTTO would still be short of the floor even after generation, so incremental generation for them alone would not yet unlock a first OOS window.",
+    "not_run_in_this_task": true
+  },
+  "provenance_and_limits": {
+    "db_access": {
+      "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+      "tables": [
+        "draws",
+        "strategy_prediction_replays"
+      ],
+      "db_open_mode": "sqlite3 URI mode=ro + PRAGMA query_only=ON",
+      "purpose": "Read-only COUNT/MAX over `draws` and `strategy_prediction_replays`, grouped by lottery_type, to build current_db_readonly_snapshot. No row-level prediction data is read or exported by this task.",
+      "db_sha256_before": "b1899b4995f4a1705648787269c7fc4dd68ef62693e585999705c4993622754d",
+      "db_sha256_after": "b1899b4995f4a1705648787269c7fc4dd68ef62693e585999705c4993622754d",
+      "db_unchanged": true
+    },
+    "source_inspection_method": "Static source inspection (grep/read) of scripts/, tools/, lottery_api/, analysis/, tests/, and docs/replay/ for replay/prediction-generation entrypoints. No script was executed as part of building this inventory.",
+    "limitations": [
+      "Entrypoint inventory reflects source as of this task's generated_at; a later commit could add or change entrypoints.",
+      "Frozen wave-script families are listed by name only, not individually profiled; treat their dry-run/idempotency claims as inferred from the closely-matching p16/p20 pattern, not independently verified per script.",
+      "Does not estimate exact strategy count or replay-row count for a future regeneration beyond what current_db_readonly_snapshot already reports; per-strategy row estimates would require reading the shortlist artifacts (P536K/P537A/P538A), which is out of scope for this readiness pass.",
+      "Does not compute any rolling/out-of-sample statistical test, and does not rank, score, or promote any strategy."
+    ],
+    "disclaimer_en": "Historical replay regeneration readiness only; not a prediction, betting edge, future-winning, or production-readiness claim."
+  },
+  "disclaimer_en": "Historical replay regeneration readiness only; not a prediction, betting edge, future-winning, or production-readiness claim."
+}

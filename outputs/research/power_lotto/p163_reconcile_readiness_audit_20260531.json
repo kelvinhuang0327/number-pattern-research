@@ -1,0 +1,180 @@
+{
+  "task": "P163_RECONCILE_READINESS_AUDIT",
+  "date": "2026-05-31",
+  "final_classification": "P163_RECONCILE_READINESS_AUDIT_READY",
+  "phase_0_verification": {
+    "all_checks_passed": true,
+    "worktree_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "head_commit": "c8b423d0c1de26253be4cec79ae6de77719d1074",
+    "git_status_short": " M 00-Plan/roadmap/CTO-Analysis.md\n M 00-Plan/roadmap/roadmap.md\n?? 00-Plan/roadmap/active_task.md\n?? analysis/\n?? backups/\n?? outputs/research/\n?? tests/test_p161_power_lotto_effectiveness_baseline.py\n?? tests/test_p162_p161_result_closure_contract.py",
+    "db_rows": 94924,
+    "drift_guard": "PASS",
+    "p161_test": "PASS",
+    "p161_test_detail": "23/23 passed",
+    "p162_test": "PASS",
+    "p162_test_detail": "14/14 passed",
+    "p162_artifacts_present": {
+      "json": "outputs/research/power_lotto/p162_p161_result_closure_20260531.json",
+      "md": "outputs/research/power_lotto/p162_p161_result_closure_20260531.md"
+    }
+  },
+  "zen_gates_state": {
+    "branch": "claude/zen-gates-ff6802",
+    "head_commit": "c8b423d0c1de26253be4cec79ae6de77719d1074",
+    "git_status": "modified: roadmap.md, CTO-Analysis.md; untracked: active_task.md, analysis/, backups/, outputs/research/, tests/test_p161*, tests/test_p162*",
+    "db_rows_total": 94924,
+    "db_rows_power_lotto": 36104,
+    "schema_bet_index_present": true,
+    "schema_columns": 27,
+    "artifacts_in_outputs_research_power_lotto": [
+      "p161_effectiveness_baseline_20260531.json",
+      "p161_effectiveness_baseline_20260531.md",
+      "p162_p161_result_closure_20260531.json",
+      "p162_p161_result_closure_20260531.md"
+    ],
+    "p149_to_p162_tests_present": true,
+    "test_count_p140_p162": 36,
+    "scripts_unique_to_zen_gates": [
+      "p126a-p126g", "p127", "p128 (x2)", "p129-p141a", "p142-p143",
+      "p144a-p148c", "p149-p159b", "p16x series", "replay_lifecycle_drift_guard.py"
+    ],
+    "analysis_directory_present": true,
+    "drift_guard_classification": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS"
+  },
+  "main_state": {
+    "branch": "main",
+    "head_commit": "d1a6817c47ee5378d3eb5b1c03c5514c99f46531",
+    "git_status": "modified: backend.pid, claude-code-showcase, data/rolling_monitor_*.json, docs/replay/p126*, frontend.pid, lottery_api/data/lottery_history.json, lottery_api/data/lottery_v2.db, outputs/replay/p126*, outputs/replay/p12*, outputs/replay/p2*",
+    "db_rows_total": 54462,
+    "db_rows_power_lotto": 15142,
+    "schema_bet_index_present": false,
+    "schema_columns": 26,
+    "artifacts_in_outputs_research_power_lotto": "NOT FOUND — directory does not exist",
+    "p140_p162_tests_present": false,
+    "roadmap_last_updated": "2026-05-28 Asia/Taipei (P128 native multi-bet storage design)",
+    "roadmap_db_row_baseline": 54462
+  },
+  "diff_summary": {
+    "db_row_count_difference": {
+      "zen_gates": 94924,
+      "main": 54462,
+      "delta": 40462,
+      "explanation": "zen-gates applied P129B bet_index migration + P130-P141 Wave2 multi-bet controlled_apply + P142-P159B replay governance chain, adding ~40462 rows. Main stopped at P128 (design only, no migration, no apply)."
+    },
+    "schema_difference": {
+      "bet_index_column": "PRESENT in zen-gates (column 27, INTEGER NOT NULL DEFAULT 1), ABSENT in main (26 columns only)",
+      "unique_constraint": "zen-gates has UNIQUE(lottery_type, target_draw, strategy_id, bet_index); main has UNIQUE(lottery_type, target_draw, strategy_id)",
+      "impact": "HIGH — applying zen-gates code to main DB without migration would fail on UNIQUE constraint violations and missing column"
+    },
+    "artifact_differences": {
+      "zen_gates_only_outputs_research": [
+        "outputs/research/power_lotto/p161_effectiveness_baseline_20260531.json",
+        "outputs/research/power_lotto/p161_effectiveness_baseline_20260531.md",
+        "outputs/research/power_lotto/p162_p161_result_closure_20260531.json",
+        "outputs/research/power_lotto/p162_p161_result_closure_20260531.md"
+      ],
+      "zen_gates_only_tests": "36 test files (test_p140*.py through test_p162*.py) not present in main",
+      "zen_gates_only_scripts": "~30+ scripts (p126a-p159b series) not present in main",
+      "zen_gates_only_analysis": "analysis/ directory not present in main"
+    },
+    "roadmap_differences": {
+      "zen_gates_roadmap_last_updated": "2026-05-30 Asia/Taipei (Replay Product Governance Chain CLOSED P158)",
+      "main_roadmap_last_updated": "2026-05-28 Asia/Taipei (P125 adapter gap plan)",
+      "zen_gates_roadmap_db_baseline": 94924,
+      "main_roadmap_db_baseline": 54462,
+      "phases_only_in_zen_gates": "P129B migration, P130-P141 Wave2 apply, P142-P159B replay governance chain, P161-P162 effectiveness baseline, R1 research track"
+    },
+    "governance_risk": "zen-gates branch has diverged significantly from main. It is NOT a simple ahead-of-main branch — it contains irreversible DB mutations (schema migration + 40462 row inserts) that main does not have. A naive merge would either fail or silently leave main DB in inconsistent state."
+  },
+  "risk_classification": {
+    "LOW": [
+      "docs/report/test-only reconcile: 36 test files (test_p140-p162) are docs/test artifacts, no DB impact",
+      "Roadmap and active_task.md reconcile: markdown files only, no code impact",
+      "CTO-Analysis.md update: documentation only",
+      "outputs/research/power_lotto/ artifacts: JSON/MD research outputs, no DB impact",
+      "Analysis scripts p126a-p159b: read-only or temp-DB scripts"
+    ],
+    "MEDIUM": [
+      "Strategy registry source code changes (lifecycle labels, new strategies registered in P150/P156C) — code reconcile needed",
+      "API endpoint additions (/api/replay/all-strategy-catalog from P150) — code reconcile",
+      "UI (index.html) multi-bet, provenance, lifecycle badge additions (P151-P152/P159) — code reconcile",
+      "lottery_api/engine/ changes including winning_quality.py, replay lifecycle guards — code reconcile"
+    ],
+    "HIGH": [
+      "DB schema migration: bet_index column added in P129B (zen-gates only). Main DB lacks this column. Migration script exists at scripts/p129b_execute_bet_index_schema_migration.py but requires explicit authorization to execute on main.",
+      "DB row count gap: 40462 rows present in zen-gates but not in main. These were inserted via controlled_apply in P126B-P141 series. Re-applying requires authorization per strategy.",
+      "UNIQUE constraint change: zen-gates has UNIQUE(lottery_type, target_draw, strategy_id, bet_index) while main has UNIQUE(lottery_type, target_draw, strategy_id). Schema incompatibility — cannot use zen-gates code against main DB without migration."
+    ],
+    "BLOCKED": [
+      "DB write to main without explicit user authorization: any attempt to migrate main DB or insert rows requires exact authorization phrases not present in this audit",
+      "Registry mutation to main without review: P156C registry changes require explicit authorization",
+      "Merge of zen-gates to main: would require merge plan, conflict resolution, and DB migration sequencing — cannot be done autonomously",
+      "Champion promotion: P147 BLOCKED, requires LIVE_MONITORING_VERIFIED evidence",
+      "Destructive git operations: reset, force-push, checkout main — all forbidden without explicit user instruction"
+    ]
+  },
+  "no_db_write_confirmation": true,
+  "no_merge_confirmation": true,
+  "no_commit_confirmation": true,
+  "no_push_confirmation": true,
+  "no_registry_mutation_confirmation": true,
+  "no_champion_confirmation": true,
+  "no_controlled_apply_confirmation": true,
+  "recommended_options": {
+    "option_a": {
+      "description": "Merge code/docs/tests only from zen-gates to main, leave main DB untouched at 54462 rows and without bet_index schema. Accept that zen-gates code will not be fully functional against main DB (API/UI multi-bet features will fail without bet_index).",
+      "pros": [
+        "Preserves main DB integrity — no risky schema migration on main",
+        "Allows CI/test artifacts to be merged to main branch without DB risk",
+        "Lower authorization burden — code merge only, no DB authorization needed",
+        "Research artifacts (P161/P162) become part of main branch history"
+      ],
+      "cons": [
+        "Main DB and code become permanently inconsistent — bet_index column absent means any API code referencing bet_index will error against main DB",
+        "Multi-bet UI features (P151 bet_index badges, P150 all-strategy-catalog) broken on main until DB migrated separately",
+        "Large divergence: 30+ scripts and 36 tests reference bet_index or multi-bet rows that main DB cannot satisfy",
+        "Creates technical debt: future work must know which DB is being targeted"
+      ],
+      "required_authorization": "Explicit user instruction to merge zen-gates code/docs/tests to main, accepting known DB incompatibility. No DB authorization required for this option.",
+      "stop_guard": "If any script in the merge set writes to main DB (e.g., auto-migration on import), STOP immediately. Verify: 'SELECT COUNT(*) FROM strategy_prediction_replays' on main DB must remain 54462 before and after code merge."
+    },
+    "option_b": {
+      "description": "Formally designate zen-gates worktree as the canonical research and production dataset. Archive main branch's DB as legacy baseline. All future work proceeds from zen-gates DB (94924 rows, bet_index schema).",
+      "pros": [
+        "Eliminates the split — one canonical DB with full multi-bet schema and 40462 additional rows",
+        "All zen-gates tests and scripts immediately valid against canonical DB",
+        "P161/P162 effectiveness baseline and all future research runs against correct full dataset",
+        "No schema migration risk — zen-gates DB already migrated and validated"
+      ],
+      "cons": [
+        "Main branch becomes stale/archived — any CI/CD pipelines pointing to main branch DB will need updating",
+        "Requires policy decision: worktree branches are currently not supposed to be canonical (per roadmap Repo Policy)",
+        "Worktree lifecycle: git worktrees can be removed; the DB lives in the worktree directory which may not persist long-term",
+        "No formal git history linking main and zen-gates research DBs"
+      ],
+      "required_authorization": "Explicit user instruction: 'designate zen-gates as canonical dataset' or equivalent. Should include policy update to roadmap.md removing the 'no worktree canonical' rule.",
+      "stop_guard": "If zen-gates worktree is removed or pruned before DB is copied to a permanent location, 40462 rows are lost. Guard: verify worktree still at /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802 before any work."
+    },
+    "option_c": {
+      "description": "Controlled DB/data migration plan: formally migrate main DB to match zen-gates state. Steps: (1) backup main DB, (2) run P129B bet_index schema migration on main, (3) re-run P130-P141 controlled_apply scripts against main DB in order, (4) verify drift guard PASS at 94924 rows on main, (5) merge code/tests/docs to main.",
+      "pros": [
+        "Achieves full consistency: main branch DB and zen-gates DB reach identical state",
+        "All tests become valid against main DB",
+        "Single canonical branch going forward — no split",
+        "Fully auditable: each controlled_apply step has its own authorization and drift guard"
+      ],
+      "cons": [
+        "Highest complexity and risk: requires running 12+ controlled_apply scripts against production main DB in correct order",
+        "Each of the 5 Tier-B strategies (P126B-P126F) plus Wave2 strategies (P131-P141) requires independent authorization phrase",
+        "Risk of partial failure mid-migration leaving main DB in inconsistent state",
+        "Time-consuming: sequential authorization gates for each strategy apply",
+        "Irreversible without backup: once rows are inserted, removing them requires explicit DELETE authorization"
+      ],
+      "required_authorization": "Multiple explicit authorization phrases required: (1) schema migration phrase for P129B on main DB, (2) per-strategy authorization for each of the ~10 controlled_apply scripts (P126B, P126C, P126D, P126E, P126F, P131, P132, P133, P134, P136-P141 series). Full list documented in scripts/p126a_controlled_apply_authorization_gate.py and related gate scripts.",
+      "stop_guard": "Before each apply step: verify drift guard PASS on main DB with expected row count. If row count deviates from expected intermediate value, STOP immediately. Do not proceed without reconciliation. Backup must exist before step (1)."
+    }
+  },
+  "next_task": "P164_RECONCILE_PLAN_DECISION_GATE",
+  "next_task_note": "Requires explicit user authorization to choose option A/B/C. No merge, no DB write, no registry change without explicit authorization. P164 is a decision gate only — no autonomous execution."
+}

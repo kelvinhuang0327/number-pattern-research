@@ -1,0 +1,251 @@
+{
+  "run_id": "p2d_official_draw_ingestion_dryrun_20260515",
+  "generated_at": "2026-05-15T12:04:25Z",
+  "overall_classification": "P2D_OFFICIAL_DRAW_INGESTION_DRYRUN_PARTIAL_READY",
+  "safety": {
+    "db_written": false,
+    "replay_rows_generated": false,
+    "draw_rows_inserted": false,
+    "prediction_items_promoted": false,
+    "strategy_logic_changed": false,
+    "api_ui_backend_changed": false
+  },
+  "config": {
+    "lottery_type": "BIG_LOTTO",
+    "db_path": "lottery_api/data/lottery_v2.db",
+    "target_draws": [
+      "115000051",
+      "115000052",
+      "115000053"
+    ],
+    "dry_run": true
+  },
+  "p2c_unblock_status": "READY_PENDING_IMPORT",
+  "p2c_ready_draws": [
+    "115000051",
+    "115000052"
+  ],
+  "db_preflight": {
+    "db_path": "lottery_api/data/lottery_v2.db",
+    "existence_by_draw": {
+      "115000051": false,
+      "115000052": false,
+      "115000053": false
+    }
+  },
+  "draw_results": [
+    {
+      "source_url": "https://api.taiwanlottery.com/TLCAPIWeB/Lottery/Lotto649Result?period=115000051",
+      "draw": "115000051",
+      "lottery_type": "BIG_LOTTO",
+      "fetch_status": "FETCHED",
+      "date": "2026/05/08",
+      "numbers": [
+        10,
+        18,
+        25,
+        28,
+        39,
+        43
+      ],
+      "special": 48,
+      "raw_content": {
+        "period": 115000051,
+        "lotteryDate": "2026-05-08T00:00:00",
+        "redeemableDate": "2026-08-10T00:00:00",
+        "drawNumberSize": [
+          10,
+          18,
+          25,
+          28,
+          39,
+          43,
+          48
+        ],
+        "drawNumberAppear": [
+          18,
+          43,
+          10,
+          25,
+          28,
+          39,
+          48
+        ],
+        "totalAmount": 132717788,
+        "sellAmount": 95773700,
+        "jackpotAssign": {
+          "prize": 22645671,
+          "lastPrize": 77731921,
+          "winnerCount": 1,
+          "perPrize": 100377592
+        },
+        "secondAssign": {
+          "prize": 1795083,
+          "lastPrize": 1352595,
+          "winnerCount": 0,
+          "perPrize": 0
+        },
+        "thirdAssign": {
+          "prize": 1933167,
+          "lastPrize": 0,
+          "winnerCount": 23,
+          "perPrize": 84050
+        },
+        "fourthAssign": {
+          "prize": 1242750,
+          "lastPrize": 0,
+          "winnerCount": 50,
+          "perPrize": 24855
+        },
+        "fifthAssign": {
+          "prize": 3368000,
+          "lastPrize": 0,
+          "winnerCount": 1684,
+          "perPrize": 2000
+        },
+        "sixthAssign": {
+          "prize": 2097000,
+          "lastPrize": 0,
+          "winnerCount": 2097,
+          "perPrize": 1000
+        },
+        "seventhAssign": {
+          "prize": 8286800,
+          "lastPrize": 0,
+          "winnerCount": 20717,
+          "perPrize": 400
+        },
+        "normalAssign": {
+          "prize": 12264800,
+          "lastPrize": 0,
+          "winnerCount": 30662,
+          "perPrize": 400
+        }
+      },
+      "error": null,
+      "period_from_api": "115000051",
+      "validation": {
+        "passed": true,
+        "issues": []
+      },
+      "exists_in_db": false
+    },
+    {
+      "source_url": "https://api.taiwanlottery.com/TLCAPIWeB/Lottery/Lotto649Result?period=115000052",
+      "draw": "115000052",
+      "lottery_type": "BIG_LOTTO",
+      "fetch_status": "FETCHED",
+      "date": "2026/05/12",
+      "numbers": [
+        6,
+        12,
+        18,
+        19,
+        32,
+        36
+      ],
+      "special": 34,
+      "raw_content": {
+        "period": 115000052,
+        "lotteryDate": "2026-05-12T00:00:00",
+        "redeemableDate": "2026-08-12T00:00:00",
+        "drawNumberSize": [
+          6,
+          12,
+          18,
+          19,
+          32,
+          36,
+          34
+        ],
+        "drawNumberAppear": [
+          36,
+          6,
+          12,
+          19,
+          18,
+          32,
+          34
+        ],
+        "totalAmount": 56524442,
+        "sellAmount": 95315650,
+        "jackpotAssign": {
+          "prize": 19902518,
+          "lastPrize": 0,
+          "winnerCount": 0,
+          "perPrize": 0
+        },
+        "secondAssign": {
+          "prize": 1577638,
+          "lastPrize": 3147678,
+          "winnerCount": 1,
+          "perPrize": 4725316
+        },
+        "thirdAssign": {
+          "prize": 1698995,
+          "lastPrize": 0,
+          "winnerCount": 37,
+          "perPrize": 45918
+        },
+        "fourthAssign": {
+          "prize": 1092211,
+          "lastPrize": 0,
+          "winnerCount": 84,
+          "perPrize": 13002
+        },
+        "fifthAssign": {
+          "prize": 4202000,
+          "lastPrize": 0,
+          "winnerCount": 2101,
+          "perPrize": 2000
+        },
+        "sixthAssign": {
+          "prize": 2205000,
+          "lastPrize": 0,
+          "winnerCount": 2205,
+          "perPrize": 1000
+        },
+        "seventhAssign": {
+          "prize": 8998400,
+          "lastPrize": 0,
+          "winnerCount": 22496,
+          "perPrize": 400
+        },
+        "normalAssign": {
+          "prize": 13700000,
+          "lastPrize": 0,
+          "winnerCount": 34250,
+          "perPrize": 400
+        }
+      },
+      "error": null,
+      "period_from_api": "115000052",
+      "validation": {
+        "passed": true,
+        "issues": []
+      },
+      "exists_in_db": false
+    },
+    {
+      "source_url": "https://api.taiwanlottery.com/TLCAPIWeB/Lottery/Lotto649Result?period=115000053",
+      "draw": "115000053",
+      "lottery_type": "BIG_LOTTO",
+      "fetch_status": "BLOCKED_NO_TARGET_DRAWS_FOUND",
+      "date": null,
+      "numbers": null,
+      "special": null,
+      "raw_content": {
+        "totalSize": 0,
+        "lotto649Res": []
+      },
+      "error": null,
+      "validation": {
+        "passed": false,
+        "issues": [
+          "not_fetched"
+        ]
+      },
+      "exists_in_db": false
+    }
+  ]
+}

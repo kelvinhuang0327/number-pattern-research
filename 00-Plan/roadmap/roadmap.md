@@ -1,0 +1,1033 @@
+# Lottery Replay Roadmap
+
+**Last Updated:** 2026-06-18 Asia/Taipei (P279 disjoint-block falsification arc COMPLETE — PR #454 MERGED at merge commit `46962007` / `2026-06-18T04:50:40Z`; canonical digest `88e57394...`; FALSIFIED=1 (daily539_f4cold_3bet); INCONCLUSIVE=2; RETAINED=0; `prediction_success_claim=false`; P279F governance closeout PR OPEN. Prior: P278 hit-spectrum data contract arc COMPLETE — PR #452 MERGED at merge commit `f20b3acd` / `2026-06-18T01:37:51Z`; canonical digest `4ad80e9c...`; 36 strategy cells × 3 windows = 108 rows; 96 SOURCE_GAP_HIT_BUCKETS + 12 SOURCE_GAP_ENDPOINT_MAPPING; zero full/partial spectrum identities; `prediction_success_claim=false`; hit-spectrum page/DB extraction NOT AUTHORIZED; P278H/J governance closeout MERGED (PR #453 MERGED at `8004c32c` / `2026-06-18T02:47:50Z`). Prior: P277 historical observation-status reclassification arc COMPLETE — PR #450 MERGED at merge commit `eb032ac` / `2026-06-17T08:47:07Z`; canonical payload digest `d75f8383...`; 36 cells / 8 portfolios / 3 endpoints / 18 source artifacts; OBSERVATION_SUPPORTED_ABOVE_RANDOM=3, OBSERVATION_POTENTIAL_ABOVE_RANDOM=12, NO_EVIDENCE_OVER_RANDOM=15; P277F governance closeout PR OPEN; hit-spectrum NOT AUTHORIZED. Prior: P276B fixed-N cross-strategy coverage/complementarity research COMPLETE on `main` via PR #448 merged at `74913fc` / `2026-06-17T04:45:46Z`; canonical payload digest `438dca...`; scientific verdict `NO_RETROSPECTIVE_COMPLEMENTARITY_EVIDENCE`; future confirmation pending. P276G governance package is prepared on branch `task/p276g-p276b-governance-closeout`, but PR #449 remains OPEN and UNMERGED pending independent audit and explicit Owner merge authorization. Prior: P275B unified prize-aware success matrix COMPLETE - PR #445 merged at `80b7e99`; 108 rows / 36 frozen cells / windows 50/300/750; digest `c1b99e...`; no candidate promoted. Prior: P274C exhaustive G1 design complete; G2 and activation remain separately gated; P271 unactivated; production apply `NOT_READY_FOR_APPLY`.)
+**Owner:** CTO agent
+**Primary Goal:** Keep LotteryNew replay, research, and product evidence truthful, reproducible, and governed. The current maturity bottleneck has shifted from migration rehearsal to short/mid-window strategy protocol design, anti-overfit validation, canonical repo dispatch safety, and honest product disclosure.
+**Repo Policy:** Use `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` only. Do not create a new repo. Production DB, registry, and data writes require explicit governed authorization. CTO roadmap updates are limited to this file and `00-Plan/roadmap/CTO-Analysis.md`. CTO must not write `CEO-Decision.md`, `active_task.md`, `production/*`, `registry/*`, `data/*`, or any new repo.
+
+---
+
+## 0. Current Roadmap Override — 2026-06-03 (updated; originally authored 2026-06-02)
+
+This section is the current source of truth. The 2026-06-01 sections and P186-P196 appendices below are retained for history and are superseded where they conflict with this section.
+
+### 0.0-HIST-2026-06-30 D5 Direction — Historical Record
+
+The 2026-06-30 CTO review recorded Owner direction D5: a per-strategy hit-rate matrix plus strategy-combination analysis. This is preserved as historical context, not as a current task, status, completion claim, or authorization statement. See the dated historical entries in `CTO-Analysis.md` and `CEO-Decision.md`; current status must be re-established from canonical evidence and explicit Owner direction.
+
+Any combination claim must use an equal-ticket-budget and diversified-random baseline; raw gains from larger combinations may be ticket-budget artifacts. A retrospective `HISTORICAL_WINDOW_PASS` is descriptive, not predictive, and requires separately preregistered, multiplicity-controlled validation before promotion. UI/API wording must remain descriptive and avoid “best,” “recommend,” and “prediction” claims.
+
+### 0.0-P291AB 2026-06-25 P291 Accepted-Batch Governance Closeout — COMPLETE (Owner integration decision RESOLVED 2026-06-29 via P292J prospective acceptance + local commit `1548934…`; not pushed)
+
+Under the Owner closeout decision `FORMAL_P291_CLOSEOUT_ACCEPT_ACCEPTED_BATCHES_ONLY`, the independently verified P291U-A/B/C/D mechanical Policy-A `sqlite3.connect` remediation batches are recorded as **governance-closed (accepted-batches-only)**.
+
+| Batch | Accepted | Independent acceptance |
+|---|---|---|
+| P291U-A | 76 records / 76 files | P291V |
+| P291U-B | 2 records / 2 files | P291W-R2 |
+| P291U-C | 24 records / 9 files | P291X-R2 |
+| P291U-D | 18 records / 18 files | P291Z-R1 |
+| **Accepted total** | **120 records / 105 distinct files** | no cross-batch overlap |
+
+The remaining **57 records / 23 files** are an Owner-policy semantics-controlled population (apply 9 / temporary 10 / ingestion 3 / repair 1) and remain **explicitly deferred — not accepted, not remediated, not waived, and not safe-by-default**. Acceptance basis = static census + determinism + independent verification (repository tests NOT RUN); source count 1,597; P291-lineage `sqlite3.connect` AST count 900 (exact-name 899; the +1 is the alias-aware `_sqlite3.connect` in `tests/test_p36_wave2_daily539_dryrun_rehearsal.py:280`; the P291U-D 18-file AST delta is 0); automatic protected-primary / S1–S4 / CWD / unresolved-non-owner counts all 0. The audit-local designated DB remained invariant under filesystem-only verification and is not a permanent DB rebaseline. As of this 2026-06-25 closeout, only the four governance files were edited; the 145 modified Python files plus untracked `lottery_api/canonical_db_path.py` were uncommitted, with no source integration commit, push, PR, merge, or worktree cleanup performed. **Updated 2026-06-29 (P292J/P292K):** P292J prospectively accepted the exact current 150-path P291 change-set (150 PASS / 0 CONFLICT) as a new Owner policy decision and committed it locally on `main` as `1548934cacb399f568b299fa72dbf8b6c20105db` (parent `17bcb8f3eaeb8271e434a3371f6bf0a26ac0bf61`); `origin/main` remains `17bcb8f3eaeb8271e434a3371f6bf0a26ac0bf61` — no push, PR, or merge occurred (local-only, ahead 1). This was a prospective acceptance of the change-set as-is, not a recovery of the historic 105-file / 23-file accepted/deferred mapping and not the semantic remediation of the deferred 57 records / 23 files.
+
+**Remaining Owner-policy decision (the deferred 57 records / 23 files):** the Owner must still choose **either** a separately authorized Owner-policy semantic remediation of the deferred 57 records / 23 files, **or** an explicit documented exclusion / no-change decision for them. The P292J prospective acceptance + local commit `1548934…` did **not** resolve or infer this semantic decision (it accepted the change-set as-is); the earlier framing of this decision as a precondition before any commit was superseded by that prospective-acceptance decision. BIG649 research is **not** scheduled by this closeout and remains a separate Owner authorization.
+
+### 0.0-P279B 2026-06-18 Disjoint-Block Diversified-Baseline Falsification — COMPLETE
+
+**PR #454 MERGED** at merge commit `46962007789fa73cf2b92ea0fd942a8c8bc319e9` (`2026-06-18T04:50:40Z`); merge parent 1 `8004c32c47cb99576ef5689f967c05306a83670c`, parent 2 `d4aa3dde814eadaee4c728be7dc9fb55eaa80baf`. The arc spanned six sub-tasks: P279A selected the frozen DAILY_539 disjoint-block diversified-baseline falsification study; P279B created the deterministic retrospective falsification artifact; P279C independently audited and classified PR #454 as merge-ready; P279D merged PR #454 and completed post-merge verification; P279E safely removed the P279B worktree while retaining branches; P279F records the governance closeout.
+
+The canonical artifact is `outputs/research/p279b_disjoint_block_diversified_baseline_falsification_20260618.{json,md}`, canonical payload digest `88e573947825c321bc8513f06dcfbe9b860445c688a30cbb32002900b604775e`.
+
+| Dimension | Value |
+|---|---|
+| Frozen GO candidates evaluated | 3 |
+| N=3 exact diversified baseline | 187563/575757 ≈ 0.325767641557115 (stored reduced 62521/191919) |
+| N=5 exact diversified baseline | 297105/575757 ≈ 0.516024989709200 (stored reduced 99035/191919) |
+| acb_markov_midfreq_3bet decision | INCONCLUSIVE |
+| daily539_f4cold_3bet decision | FALSIFIED |
+| daily539_f4cold_5bet decision | INCONCLUSIVE |
+| Retained | 0 |
+| Inconclusive | 2 |
+| Falsified | 1 |
+
+Research verdict: `ONE_FALSIFIED_TWO_INCONCLUSIVE_ZERO_RETAINED`.
+
+Scientific boundaries: This is a retrospective study only — it is not OOS confirmation. The FALSIFIED verdict is scoped to the P279B disjoint-block rule with N-block constraint as specified and does not generalize beyond that rule. INCONCLUSIVE results are not retained or promoted; zero candidates passed the retain gate. Non-blocking observations (not remediated): (1) aggregate-only analysis cannot verify the draw-level disjoint property; (2) no negative mutation cases were tested. No prediction-success claim was established. No strategy was promoted.
+
+Tests: P279B targeted **22 PASS**. Regression **216 PASS**. Dedicated-DB CI lane **SKIPPED** (workflow_dispatch-gated, not counted as PASS). Full repository suite **NOT RUN**. `prediction_success_claim=false`; `strategy_promoted=false`; `database_opened=false`; `database_write=false`. No registry mutation, ONLINE classification, deployment, or production write occurred.
+
+**P279E worktree cleanup:** P279B worktree safely removed by non-force `git worktree remove`. Local branch `task/p279b-frozen-daily539-disjoint-block-diversified-baseline-falsification` and remote `origin/task/p279b-frozen-daily539-disjoint-block-diversified-baseline-falsification` both retained at HEAD `d4aa3dde814eadaee4c728be7dc9fb55eaa80baf`. P279F worktree cleanup requires separate authorization after this governance PR is merged and verified.
+
+**Authorization boundaries remain in effect:** P279F PR is OPEN and UNMERGED. Merging requires separate Owner authorization. No next research/product direction is automatically selected. All production, activation, DB, API, registry, and deployment remain unauthorized. P274D/PR #444 remains outside scope.
+
+### 0.0-P278A 2026-06-18 Hit-Spectrum Data Contract — COMPLETE
+
+**PR #452 MERGED** at merge commit `f20b3acd43325c1b47a0c9a76aabb1745098a0ca` (`2026-06-18T01:37:51Z`); merge parent 1 `8ece9c6b078c6e90a0bc2c340b727c9b7f7909fe`, parent 2 `7607bc2822f071294e310daf4bb1a57761caba25`. The arc spanned seven sub-tasks: P278A created the deterministic committed-artifact-only hit-spectrum contract; P278B independent audit identified a false Markdown claim and classified the artifact FAIL_NOT_MERGE_READY; P278C corrected the POWER second-zone narrative while keeping the JSON byte-identical and digest unchanged; P278D post-remediation audit passed merge-readiness, noting one non-blocking tautological test; P278E replaced the tautological M-spectrum test with a real-field check and added substantive in-memory tamper validation without changing the artifact; P278F fresh final independent audit passed; P278G merged PR #452 and completed post-merge verification. P278H records the governance closeout.
+
+The canonical artifact is `outputs/research/p278a_hit_spectrum_data_contract_20260617.{json,md}`, canonical digest `4ad80e9c84b70a3382161587fabf150da134c8bf416bd7be28fab19c2419062e`.
+
+| Dimension | Count |
+|---|---|
+| Strategy cells (P277 universe) | 36 |
+| Primary windows per cell | 3 |
+| Total (cell × window) rows | 108 |
+| Rows: SOURCE_GAP_HIT_BUCKETS | 96 |
+| Rows: SOURCE_GAP_ENDPOINT_MAPPING | 12 |
+| Truthful full-spectrum identities (M0/M1/M2/M3+) | 0 |
+| Truthful partial-spectrum identities | 0 |
+
+Scientific boundaries: The current committed evidence does not provide a matching exact per-strategy, per-window M0/M1/M2/M3+ hit-spectrum for the 36-cell universe. Binary ANY_PRIZE_AWARE_WIN evidence must not be described as an exact hit spectrum. POWER second-zone missing-prediction exclusions exist; four POWER strategies produce the 12 SOURCE_GAP_ENDPOINT_MAPPING rows. No prediction-success claim was established. No strategy was promoted. UI readiness does not imply recommendation, deployment, or future predictive success. Strategies beating an appropriate random baseline may remain observational research candidates, but this contract does not create new performance evidence; future-only confirmation remains required for stronger claims.
+
+Tests: P278A targeted **38 PASS**. Related regression **268 PASS**. Dedicated-DB CI lane **SKIPPED** (workflow_dispatch-gated, not counted as PASS). Full repository suite **NOT RUN**. `prediction_success_claim=false`; `strategy_promoted=false`; `database_opened=false`; `database_write=false`. No registry mutation, ONLINE classification, deployment, or production write occurred.
+
+**P278I/P278J governance remediation:** P278I independently audited PR #453, found governance-document omissions plus one historical Markdown structural issue, and classified PR #453 as not merge-ready. It found no defect in any research artifact, digest, strategy result, DB state, or P278A scientific conclusion. P278J performs only this four-document remediation.
+
+**PR #453 gate:** **PR #453 MERGED** at merge commit `8004c32c47cb99576ef5689f967c05306a83670c` (`2026-06-18T02:47:50Z`); base = `main`; head branch = `task/p278h-p278-governance-closeout-sync`.
+
+**Missing-value semantics:** Unsupported or unavailable M-spectrum, prize-tier, special-number, and second-zone component values remain `null`/`NOT_AVAILABLE`. Unavailable evidence must never be represented or inferred as zero. Zero is a measured value and is semantically different from missing evidence; null values do not prove zero hits.
+
+**Authorization boundaries remain in effect:** Read-only DB extraction NOT AUTHORIZED. Hit-spectrum frontend/page/API implementation NOT AUTHORIZED. Strategy/portfolio search NOT AUTHORIZED by this task. Registry mutation, ONLINE classification/activation, production write, deployment, and `controlled_apply` remain untouched and unauthorized. P274D/PR #444 remains outside scope. Cleanup of `/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p278a` requires separate authorization. Cleanup of `/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p278h` requires separate authorization. Either cleanup may occur only after PR #453 is merged and post-merge verification passes; P278J authorizes no cleanup. The next research/product direction requires separate Owner authorization.
+
+### 0.0-P277A 2026-06-17 Historical Observation-Status Reclassification — COMPLETE
+
+**PR #450 MERGED** at merge commit `eb032ac37993eeaa5e228e8de0b77c59ca7e45ec` (`2026-06-17T08:47:07Z`); merge parent 1 `b6dd42f14e822a186187b90c50acdfedebe3fd07`, parent 2 `9000bb510c79478647e3dcdf3360af08a806bf0c`. The arc spanned five sub-tasks: P277A completed the historical observation-status audit; P277B identified a path-dependent canonical digest caused by absolute paths in the manifest; P277C fixed manifest serialization to repository-relative POSIX paths; P277D independently verified path independence and confirmed merge-readiness; P277E merged PR #450 and completed post-merge verification. P277F records the governance closeout via a separate governance-only PR.
+
+The canonical artifact `outputs/research/p277a_historical_observation_status_reclassification_20260617.{json,md}` (canonical payload digest `d75f8383c5029c5024279f9e3792d417885cecc202f25740f10406a701f14284`) covers all **36 strategy cells**, **8 portfolios**, **3 endpoints**, and **18 source artifacts**. Taxonomy:
+
+| Status | Count |
+|---|---|
+| OBSERVATION_SUPPORTED_ABOVE_RANDOM | 3 |
+| OBSERVATION_POTENTIAL_ABOVE_RANDOM | 12 |
+| COMPETITIVE_OBSERVATION_STRATEGY | 0 |
+| STRONG_RESEARCH_CANDIDATE | 0 |
+| UNDERPOWERED_OBSERVATION_POTENTIAL | 1 |
+| HISTORICAL_OBSERVATION_SUPERSEDED_BY_OOS_NULL | 1 |
+| NO_EVIDENCE_OVER_RANDOM | 15 |
+| INSUFFICIENT_RANDOM_BASELINE_EVIDENCE | 4 |
+| INSUFFICIENT_SUPPORT | 0 |
+| NOT_APPLICABLE_ENDPOINT | 0 |
+
+Scientific boundaries: beating an appropriate random baseline may retain an observation candidate; beating the best equal-budget strategy is a separate, stronger gate that requires the same-budget best to be individually characterized; observation retention is **not** prediction-success confirmation; P276B still preserves `NO_RETROSPECTIVE_COMPLEMENTARITY_EVIDENCE`; later OOS/backward-OOS evidence may supersede the current mapping without erasing history.
+
+Tests: P277A post-merge targeted **83 PASS**. Regression verification **107 PASS and 3 ENVIRONMENT_BLOCKED** — the three blocked cases are temporary-clone origin configuration limitations, not assertion failures; P277D independently ran the relevant regression set without failures. Full repository suite **NOT RUN**. `prediction_success_claim=false`; `strategy_promoted=false`; `database_opened=false`; `database_write=false`. No registry mutation, ONLINE classification, deployment, or production write was authorized. Hit-spectrum implementation remains **NOT AUTHORIZED**; feature mining, new portfolio optimization, future-only execution, registry changes, and PR #444/P274D remain separate Owner decisions.
+
+**The P277F governance closeout PR is OPEN and UNMERGED and requires separate Owner authorization to merge.**
+
+### 0.0-P276B 2026-06-17 Fixed-N Cross-Strategy Coverage & Complementarity Study
+
+P276B is complete as a bounded retrospective, read-only, post-hoc, non-confirmatory study. **PR #448 is MERGED** at merge commit `74913fc0d2cef586ba477fb0785f05936d289c5d` (`2026-06-17T04:45:46Z`), bringing `outputs/research/p276b_fixed_n_coverage_complementarity_20260617.{json,md}` onto `main`. The artifact bundle is byte-verified on main with canonical payload digest `438dca463edb574a3ed346ac616728d4621e669d25f010efeb9909478d68657e`, bounded retrospective analysis hash `3e2aa62c54e2d004b562d72dca8138fc1620ab6d0068874224cc97a9d1469d6e`, future contract hash `229ecd041430909969fb064ff1e2fdddca126cb1a07412763ff89166105638d4`, and superseded identity-only family hash `48d0c30d7c7643204a76bd0c6b30823c9d74b3061f10e81042bc2399eeb38440`. Count reproduction PASS covers 108 primary-window cells; DB SHA `4c8736caab661088c8430908ae4423a73522619f7521fb64e2c6f1affd20b056` remained unchanged.
+
+The scientific verdict is `NO_RETROSPECTIVE_COMPLEMENTARITY_EVIDENCE`. The evaluated bounded round-robin family did not exceed its best equal-budget constituent. That is a negative result only for this evaluated bounded family; it does not prove all combinations fail and does not prove future failure or success. Historical status is `RETROSPECTIVE_POST_HOC_BOUNDED_EXPLORATORY_NONCONFIRMATORY`; historical Bonferroni role is `DESCRIPTIVE_MULTIPLICITY_ADJUSTED_ONLY`; future confirmation status is `FUTURE_CONFIRMATION_PENDING`. `prediction_success_claim=false`; no strategy promotion, registry mutation, DB write, activation, or automatic next implementation task occurred.
+
+The P276B study, its P276D future-confirmatory family contract, and the downstream P276E/P276F validation and closeout checks are complete and merged through **PR #448**. The follow-on P276G governance sync is packaged on branch `task/p276g-p276b-governance-closeout` and is awaiting **PR #449** independent audit and merge authorization, so those governance edits have not landed on `main`. PR #444 / P274D remains separate and untouched. This governance package updates only the four governance files and does not select any next research direction.
+
+### 0.0-P275B 2026-06-17 Unified Prize-Aware Success Matrix — COMPLETE
+
+**PR #446 (P275E cadence re-attestation prerequisite) MERGED** at merge commit `52adc88a6fe39ebb3f6351735e435aa2635fedf0` (`2026-06-16T14:12:39Z`). This cadence gate (43/43 cadence tests PASS; `run_timestamp` preserved; `re_attestation_timestamp` added) was a required prerequisite for PR #445.
+
+**PR #445 (P275B unified prize-aware success matrix) MERGED** at merge commit `80b7e99f1b5f96f75b0019004bc915bf523fdebe` (`2026-06-17T01:22:00Z`). The unified matrix artifact `outputs/research/p275b_unified_prize_aware_success_matrix_20260616.{json,md}` is byte-unchanged on `main`:
+- JSON SHA-256: `0a81b9e652b5d84e80ebf16e9d5c5ff625746d8c46e6cfe5d38e6cfe312cf964`
+- MD SHA-256: `b2467682d9a1fe0550a15ac11a2b44502d9e5526cea878d7a8a6862d15da9352`
+- Canonical payload digest: `c1b99e57024f528e39e4beeca03cb22dd3278eb1d356aafbe48d8485695102f6`
+- Dimensions: 108 rows, 36 frozen group decisions, windows SHORT=50 / MID=300 / LONG=750
+- `source_commit=77994824d1c1e5e4d4db14f0c7d5cb64bf933ead` (pinned replay; distinct from current `main` HEAD `80b7e99`)
+
+The provenance reproducibility fix was merged as part of P275B: `source_commit` is now explicit and pinned, enabling deterministic artifact replay without weakening digest coverage. `None` means live HEAD for a new build; empty provenance is rejected.
+
+Tests: **33/33 P275B PASS; 43/43 cadence PASS; 76/76 combined PASS.**
+
+This milestone completes the prize-aware evidence-infrastructure layer. The matrix unifies retrospective evidence and runs in parallel with existing M3+ research. It does not establish confirmed predictive advantage; `prediction_success_claim=false`. No candidate has been promoted; no production activation, DB write, or registry mutation occurred.
+
+**The next success-rate research direction (including whether to proceed to P274A execution/activation, P273B replay mining, or another direction) awaits explicit Owner/CTO selection. No automatic next task.**
+
+### 0.0-P274C 2026-06-15 G1 Prospective Execution Decision Resolution
+
+The owner superseded the prior P274B HOLD selection and authorized exhaustive G1 decision resolution, with the explicit principle that necessary governed option exploration is not redundant and workload alone cannot justify HOLD. P274C completed comprehensive design only: all 14 canonical P274B decisions were dispositioned as resolved (0 deferred), 8 additional mandatory decisions were identified and resolved (0 deferred), and 89 options were evaluated (67 rejected; 14 conditional selections with explicit pre-G2 acceptance-evidence gates).
+
+Artifacts: `outputs/research/p274c_g1_prospective_execution_decision_resolution_design_20260615.{json,md}`; canonical digest `873dc804130ca1e737e6430ac114791c15277a2799b7567279d809f8b7fc51a6`. The selected reference architecture is `RECOMMENDED_RESILIENT_LONG_HORIZON`, separating candidate generation, pre-outcome capture/sealing, immutable evidence, outcome linkage, and frozen evaluation while preserving fail-closed clock/resolver behavior and a governed missingness envelope.
+
+**G1 outcome:** `G1_COMPLETE_READY_FOR_SEPARATE_G2_AUTHORIZATION`. G2 remains a separate owner gate and may be considered only after the recorded pre-G2 evidence is attached and verified. Activation, boundary assignment, and capture remain separately gated. P274A and its frozen scientific contract are unchanged; P271 remains unactivated; P273B remains deferred; production apply remains `NOT_READY_FOR_APPLY`; `prediction_success_claim=false`. No implementation, production DB access, registry/recommendation mutation, deployment, or `controlled_apply` occurred. The resulting P274C PR is open/unmerged; no next task is automatic.
+
+### 0.0-P274B-POSTMERGE 2026-06-15 P274B PR #441 Merged — Post-Merge Governance Closeout
+
+**PR #441 is MERGED** — merge commit `fa896035a2c6d5980c3e82276ebb87a7205672bc` at `2026-06-15T10:14:49Z` (PR head `38edcd408741371a21852e521156522b26de0813`, branch `task/p274b-prospective-execution-activation-readiness-plan`), bringing `outputs/research/p274b_prospective_execution_activation_readiness_plan_20260615.{json,md}` onto `main`. Canonical payload digest `bf8ae32f8dbd208da4939ee46cdbe19125827f36c3a80aedefc8fee21a994744` is unchanged. This governance-only closeout independently re-verified the merged artifacts and confirms no protocol, digest, or blocker change. `current position` remains `G1_PARTIAL_PENDING_OWNER_APPROVAL`; implementation remains `NOT_READY_FOR_IMPLEMENTATION_AUTHORIZATION`; activation remains `NOT_READY_FOR_ACTIVATION`; production apply remains `NOT_READY_FOR_APPLY`; `HOLD_RECOMMENDED`; P271 remains unactivated; P273B stays deferred. No implementation, activation, capture, registry/recommendation mutation, deployment, controlled_apply, or predictive-success claim occurred. `final_classification=P274B_PR441_POSTMERGE_GOVERNANCE_CLOSEOUT_COMPLETE`.
+
+### 0.0-P274B 2026-06-15 Prospective Execution / Activation Readiness Plan
+
+P274B is complete as a Type-B design/readiness assessment only. Artifacts: `outputs/research/p274b_prospective_execution_activation_readiness_plan_20260615.{json,md}`, canonical digest `bf8ae32f8dbd208da4939ee46cdbe19125827f36c3a80aedefc8fee21a994744`. Current position is `G1_PARTIAL_PENDING_OWNER_APPROVAL`; G0 is complete, G2 is not authorized, and no G5+ activation gate is authorized.
+
+Confirmed dependencies: frozen P274A protocol, P271J isolated append-only ledger, P271K temporary-DB migration rehearsal, and P271L read-only `ABSENT_CLEAN` production inspection/preflight. Principal gaps: no production prospective schema or runtime capture worker; no authoritative draw-close resolver or trusted-clock policy; incomplete P274A field/version mapping; no monitoring, access control, retention/archive, restart recovery, named long-horizon ownership, governed capture-gap threshold, or frozen prospective evaluator.
+
+**Verdict:** implementation `NOT_READY_FOR_IMPLEMENTATION_AUTHORIZATION`; activation `NOT_READY_FOR_ACTIVATION`; production apply remains `NOT_READY_FOR_APPLY`; `HOLD_RECOMMENDED`. P271 remains unactivated, the concrete boundary remains unset, P273B stays deferred, and no prediction-success claim is allowed.
+
+**Next strategic fork:** owner may (a) approve G1 architecture and resolve the recorded decision points before issuing a separately scoped G2 authorization, (b) HOLD, or (c) choose scientific closure. No next task is automatic.
+
+### 0.0 2026-06-15 P273A Post-Merge Override
+
+P273A’s complete chain is now merged: primary-window observed-count export (50/300/750), canonical distinct-ticket identity export, exact without-replacement inference, independent audit across all 108 hypotheses, and **PR #437 merge** (`f2d3c4c13b256ac2a8d118270ba85f6366f33035`, `2026-06-15T05:11:17Z`). The final research class is `PRIZE_AWARE_EDGE_CORRECTION_SURVIVING`; three research-only candidates survive, all in DAILY_539: `acb_markov_midfreq_3bet`, `daily539_f4cold_3bet`, and `daily539_f4cold_5bet`.
+
+This result reaches the retrospective confirmation ceiling. It is stronger than the prior descriptive evidence, but it does not establish confirmed predictive success, betting value, promotion, production readiness, or deployment authorization. All survivors are DAILY_539, so Direction 3’s cross-lottery transfer question remains unresolved. Production apply remains separately blocked at `NOT_READY_FOR_APPLY`; no registry/recommendation mutation, prospective activation, P273B, or production work is authorized.
+
+**Recommended next substantive direction (now AUTHORIZED — see §0.0-P274A and CEO-Decision.md 2026-06-15):** `P274A_PROSPECTIVE_CONFIRMATION_PROTOCOL_DESIGN`, design/pre-registration only. It freezes the three candidates, a future-only boundary, sample size/horizon, correction family, sequential monitoring and early-stop rules, decision outcomes, and dependencies on the unactivated P271 prospective-capture infrastructure. The earlier "not worker authorization / `WAITING_FOR_CEO_DECISION`" status for P274A is superseded by the owner authorization recorded below; HOLD/scientific closure was the alternative not taken.
+
+### 0.0-P274A 2026-06-15 P274A Prospective-Confirmation Protocol — AUTHORIZED & DESIGN COMPLETE
+
+Owner authorized `P274A_PROSPECTIVE_CONFIRMATION_PROTOCOL_DESIGN` as **design / pre-registration only** (CEO-Decision.md 2026-06-15). The artifact `outputs/research/p274a_prospective_confirmation_protocol_design_20260615.{json,md}` (canonical payload digest `f2294716699368a9c2b21fb14301d84d70f662b882aef9eab896f96825f18ffc`) pre-registers a **future-only** confirmation protocol for the **three frozen DAILY_539 candidates** `acb_markov_midfreq_3bet`, `daily539_f4cold_3bet`, `daily539_f4cold_5bet` (no substitution/addition/cross-lottery). It uses the prize-aware M2+ (`hit_count>=2`) endpoint and the exact distinct-ticket null `q_N=1-C(T-W,N)/C(T,N)`; a **power-derived common final horizon of 3605 future draws** (50%-shrunken-excess alternative, 90% power, exact one-sided binomial; candidate N@90% = 3605/2612/915); **Bonferroni m=3** (per-candidate α=0.05/3); 50-draw (integrity-only) / 300-draw (non-binding conditional-power<10% futility) / final monitoring with **no interim efficacy**; integrity-stop and decision classes. The concrete future-only boundary remains `UNSET_PENDING_SEPARATE_ACTIVATION_AUTHORIZATION`. Depends on the **unactivated** P271 prospective-capture infrastructure (P271H→P271I→P271J→P271K→P271L; production state `ABSENT_CLEAN`). **Execution/activation are separately gated** by a future owner decision; **P273B remains deferred**. No candidate is ONLINE/PROMOTED, no production readiness, no predictive-success claim, and no prospective execution has started; production apply remains `NOT_READY_FOR_APPLY`. PR opened to `main` — **not merged**.
+
+### 0.0-P274A-POSTMERGE 2026-06-15 P274A PR #439 Merged — Post-Merge Governance Closeout
+
+**PR #439 is MERGED** — merge commit `03e151fd02bb4cb3854ee63e58a417803930dc78` at `2026-06-15T07:58:12Z` (PR head `b8e5c74062ed4b2855702095b4e66d1ccf20c662`), closing the "PR opened to `main` — not merged" status in §0.0-P274A above. All design/pre-registration content and governed numbers in §0.0-P274A are unchanged and now on `main`. This governance-only closeout independently re-verified the merged artifacts: recomputed canonical payload digest equals the embedded digest and equals `f2294716699368a9c2b21fb14301d84d70f662b882aef9eab896f96825f18ffc`; the invalid superseded digest `d04ddae248b440bf160d7b2145fd60c4a99e440dc3d10c35c4a8d7dc836d3e6b` is absent from both files; the four cited P273A source-artifact digests are unchanged. `execution_readiness=false`; the future-only boundary remains `UNSET_PENDING_SEPARATE_ACTIVATION_AUTHORIZATION`; production apply remains `NOT_READY_FOR_APPLY`; P271M/P271N and P273B remain unstarted. **Next owner decision (three-way fork recorded in `CEO-Decision.md` 2026-06-15, none selected):** (a) separately authorize a P274A execution/activation task, (b) HOLD, or (c) scientific closure of the P274A arc. `final_classification=P274A_PR439_POSTMERGE_GOVERNANCE_CLOSEOUT_COMPLETE`.
+
+### 0.0a 2026-06-14 CTO Review — User Four-Direction Strategic Input (historical)
+
+Owner direction (2026-06-14): exhaust every avenue to raise success rate, via four directions. CTO alignment verdicts (full analysis in `CTO-Analysis.md` 2026-06-14 section):
+
+| User Direction | Verdict | Note |
+|---|---|---|
+| **D1** demote long-term frequency to reference; decide on long≈750 / mid≈300 / short≈50 windows | `[Aligned — already adopted]` | §0.1 P221F already froze short 100/125/150 + mid 500/750/1000, all-history = reference. **Invariant frozen: windows ≤ ~50 are feature/momentum inputs only, never a standalone deployment gate** (CEO order: n=50 special-ball CI ±0.092). Exact counts → statistics-expert consult. |
+| **D2** mine all historical replay data cross-lottery for features | `[Missing → P1 research, high overfit risk]` | 94,924 replay rows + P232A scoreboard + P251 dashboard exist; no unified cross-strategy mining run. Requires pre-registered hypothesis family + P221F/Bonferroni gate (L137: undirected mining = p-hacking). → `P273B`. |
+| **D3** cross-lottery feasibility under new filter | `[Already NULL on old criteria; now dependent]` | P222/P230C scanned 3 lotteries → REJECTED (L85). Only new angle = prize-aware filter (= D4). **Gate on `P273A` result first.** |
+| **D4** per-lottery win-mode scoring — BIG **M2+special**, POWER **M1+second-zone** | `[~80% already built; inferential layer is the gap]` | Exactly the prize-aware endpoints from P271A (`BIG = hit≥3 OR (hit=2 AND special)`, `POWER = hit≥3 OR (hit≥1 AND special)`), implemented in `prize_aware_scorer.py` (P271C) and descriptively evaluated in P271F (win rates POWER 11.88% / BIG 3.13% / 539 12.49%) — **but P271F has no baseline, no p-value, no per-strategy test.** That missing inference = `P273A`. Honest prior NULL-leaning (special-ball 0.1181<0.125); second-zone stays display-only/containment (SZC2). |
+
+**Actual-state correction:** the attached P272B "interrupted" handoff is **stale** — P272B is **COMPLETE** (61 tests pass; `POWER_QUANTIFIED_THRESHOLD_NOT_GOVERNED`; **PR #432 MERGED** — implementation commit `b1fc9be`, merge commit `f6533585`). Do not restart it.
+
+**Reprioritization (this review):** P0 unchanged (anti-overfit gate; canonical-dispatch guard; CTO↔CEO task boundary; `NOT_READY_FOR_APPLY` hold). **P1-lead = `P273A` prize-aware inferential validation** (read-only diagnostic completing D4: prize-aware random baseline + per-strategy significance + three-window + permutation + Bonferroni, NULL-accepting, second-zone display-only). P1-second = `P273B` replay feature mining. P2 = D3 cross-lottery prize-aware (dependent on `P273A`), D1 window reconciliation, P272B PR **#432 MERGED** (merge commit `f6533585`) — gate closed. P3+ = deferred UI/scheduler; prospective activation P271M/P271N remains gated on an owner threshold decision (P272B B1), not on more code.
+
+**Status:** `WAITING_FOR_CEO_DECISION`. CTO does not author the worker prompt (Repo Policy + CEO line 546). No DB/registry/production write; no stage/commit/push this review.
+
+### 0.1 Latest Phase Status
+
+| Phase / Chain | Status | Evidence | CTO Note |
+|---|---|---|---|
+| **P273A prize-aware exact-inference chain** | **[Complete / merged] `P273A_DISTINCT_TICKET_INFERENCE_COMPLETE_EDGE_SURVIVES_RESEARCH_ONLY`** | primary-window observed counts + identity export + `outputs/research/p273a_prize_aware_inferential_validation_20260615.{json,md}` (digest `5666e67c...b2fb4`); independent 108-hypothesis audit; PR #437 merge `f2d3c4c...` | 3 research-only DAILY_539 candidates; retrospective ceiling applies; D3 cross-lottery transfer unresolved; production apply `NOT_READY_FOR_APPLY`. P274A design-only prospective-confirmation protocol is now AUTHORIZED & design-complete (§0.0-P274A; common horizon 3605 draws, m=3; PR open/unmerged); execution/activation separately gated. |
+| P149-P159B replay product closure | [Confirmed] Complete | `00-Plan/roadmap/CEO-Decision.md`; prior P159B handoff | Historical product baseline accepted; now merged through the reconciliation chain. |
+| R1/R2 POWER_LOTTO research P161-P178A | [Confirmed] Closed NULL result | `outputs/research/power_lotto/p178a_r2_research_closure_archive_20260601.*` | 17 strategies/candidates produced no corrected-significant OOS edge. Do not restart old R2 candidates. |
+| P183-P188 DB migration chain | [Confirmed] Complete | `outputs/research/power_lotto/p188_production_db_migration_execution_20260601.*`; read-only SQLite check | Production local DB is now 94,924 rows with `bet_index` present and 0 duplicate keys. |
+| P189-P205 post-migration / PR #249 chain | [Confirmed] Complete | git log `061bdc1`, `d119ea6`, `4a36b12`, `41449fb`, `a3e30ae`; handoff report | Drift guard, stale HEAD-only tests, DB binary exclusion, PR/CI, and merge are reported complete. |
+| P206-P207 local main sync / branch cleanup decision | [Confirmed] Complete by handoff | user handoff report; current HEAD `061bdc19...` on `main` | Latest known full suite from handoff: 1097 passed, 0 failed; CTO did not rerun tests in this review. |
+| P208-P209 repo archive cleanup closure | [Confirmed] Complete | `/Users/kelvin/Kelvin-WorkSpace/_archive/lottery_stale_repos_20260602_162329/README_DO_NOT_USE.md`; root `Lottery*` listing | `Lottery/` and `LotteryNew-clean/` are archived, not deleted; future dispatch must use only canonical `LotteryNew`. |
+| SZC1/SZC2 second-zone containment | [Confirmed] Complete | existing SZC evidence cited in 2026-06-01 roadmap/CEO decision | Second-zone remains display-only / no-signal unless future pre-registered evidence beats random. |
+| P210 short/mid-window strategy protocol | [Complete] / CEO accepted | `outputs/research/power_lotto/p210_short_mid_window_protocol_plan_20260602.md`; CEO-Decision.md 2026-06-02 section | Protocol frozen as reference. P211 held by user (`HELD_BY_USER`). |
+| P211R short/mid-window read-only diagnostic | COMPLETE — `P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE` | artifact `outputs/research/p211r_short_mid_window_diagnostic_20260605.{md,json}` | 9 IS-window candidates; all confirmed historical artifacts (prior OOS rejection). No deployable edge. No follow-up authorized without new explicit authorization. |
+| P212 agent_bootstrap honesty correction | [Complete] | `active_task.md` P212 record | CURRENT_STATE.md corrected from `adoption COMPLETE` → honest provisional. |
+| P213 agent_bootstrap git-ratification commit | [Complete] | commit `8d34f4c` | Three bootstrap files committed and source-controlled. USER GATE: CLOSED. |
+| P214 post-ratification governance state sync | [Complete] | commit `7b9c179`; PR #250 | `active_task.md` + `CEO-Decision.md` updated. |
+| P215 remote governance ratification (PR flow) | [Complete] | PR #250, merge `4eb8051` (2026-06-03) | `origin/main` contains ratified bootstrap; required CI check passed. |
+| P216 post-ratification roadmap/analysis doc sync | [Complete] | PR #251 + PR #252, merge `6e220f2` | CTO-authored `roadmap.md` + stale-remark remediation merged to `origin/main`. |
+| P217 current-state metadata sync | [Complete] | PR #253, merge `c8ac14c` | Governance metadata synced to reflect P213–P216 completion. |
+| P218 structural HEAD metadata fix | [Complete] | PR #254, merge `f3155fc` | Replaced live HEAD hash fields with self-verifying language across four governance docs. |
+| P211A POWER_LOTTO second-zone bias-reduction diagnostic | [Complete] NULL result / display-only confirmed | `outputs/research/power_lotto/p211a_second_zone_bias_reduction_diagnostic_20260603.md`; PR #255 | Hit-rate edge NULL (all Bonferroni-corrected p > 0.04); second-zone remains display-only. Do not promote. |
+| P221F cross-lottery feature-discovery protocol freeze | [Complete] | `outputs/research/p221_cross_lottery_feature_discovery_protocol_20260603.md`; PR #256 | Windows frozen: short 100/125/150, mid 500/750/1000, all-history = reference. Universe: BIG_LOTTO + DAILY_539 + POWER_LOTTO; 3_STAR / 4_STAR draw-only (0 replay rows). Anti-overfit gate active. |
+| P222 cross-lottery feature-discovery scan | [Complete] `CANDIDATES_FOUND_NEED_MORE_OOS` | `outputs/research/p222_cross_lottery_feature_discovery_scan_20260603.md`; PR #257 | 35 strategies × 14 bet-index × 3 lotteries. BIG_LOTTO row-level = baseline. DAILY_539 and POWER_LOTTO show corrected in-sample candidates but no cross-year confirmation. |
+| P223B candidate OOS cross-year validation | [Complete] `P223B_CANDIDATE_OOS_VALIDATION_COMPLETE` | `outputs/research/p223b_candidate_oos_cross_year_validation_20260603.md`; PR #258 | Of 5 candidates, only `midfreq_fourier_2bet / DAILY_539` survived as `CROSS_YEAR_CONFIRMED` on the (overlapping) P222 slice. Others: NEEDS_MORE_OOS / WEAK_OBSERVATION / REJECTED. |
+| P224 DAILY_539 survivor deeper validation | [Complete] `P224_SURVIVOR_NEEDS_MORE_OOS` | `outputs/research/p224_daily539_midfreq_fourier_2bet_deeper_validation_20260603.md`; PR #259 | Clean deduplicated slice (1500 rows = 1500 distinct draws, bet_index=1): mean 0.6693 vs baseline 0.6410, one-sided **p=0.0674** (fails 0.05), CI [0.632, 0.706] crosses baseline, 6/10 blocks above. Edge rests on 19 `hit_count=3` rows; removing them drops mean below baseline. **Survivor status: WAIT_FOR_OOS — not deployable.** P223B `CROSS_YEAR_CONFIRMED` was produced on the overlapping P222 slice; dedup flipped it to NEEDS_MORE_OOS. Honest prior: lean NULL. |
+| P224B/P224C survivor future-OOS monitoring protocol | [Complete] `P224B_FUTURE_OOS_MONITORING_PROTOCOL_READY` | `outputs/research/p224b_daily539_survivor_future_oos_monitoring_protocol_20260603.md`; PR #260, merge `ebfc597` | Reopen gate: ≥300 new DAILY_539 target draws (preferred 500). Must pass mean / CI / corrected p / block-stability / robustness / comparison gates. Failure → historical artifact. No deployment, no DB write, no registry write, no recommendation-logic change authorized. |
+| P225 governance closeout sync | [Complete] doc-only | `00-Plan/roadmap/roadmap.md` §0.1 + `CURRENT_STATE.md`; PR #261 + PR #262 | Records P217–P224C in phase table; fixes stale CURRENT_STATE windows; marks survivor WAIT_FOR_OOS. |
+| P226 3_STAR / 4_STAR replay-gap discovery | [Complete] `P226_STAR_REPLAY_GAP_DISCOVERY_COMPLETE` | `outputs/research/p226_star_replay_gap_discovery_plan_20260603.md`; PR #263 | 3_STAR 4,179 draws; 4_STAR 2,922 draws; replay rows = 0 for both. DB stores sorted numbers → positional order lost. Straight-play BLOCKED until re-ingestion. Box-play feasible on sorted data. Baselines: 3_STAR 1/C(10,3)=0.00833; 4_STAR 1/C(10,4)=0.00476. |
+| P227A 3_STAR / 4_STAR box-play adapter design | [Complete] `P227A_STAR_BOX_PLAY_ADAPTER_DESIGN_READY` + `STRAIGHT_PLAY_BLOCKED_REINGEST_REQUIRED` | `outputs/research/p227a_star_box_play_dryrun_adapter_design_20260603.md`; PR #263 | Design-only. Metric semantics defined: `star_box_exact_match` (multiset Counter, not set), `star_digit_overlap_count`, `star_calculate_box_score`. `calculate_match_score` prohibited. `dry_run=1` isolation documented. 4-layer authorization boundary. UNDERPOWERED warning: 3_STAR needs ~10k draws; 4_STAR ~17k. |
+| P227B 3_STAR / 4_STAR box-play code dry-run | [Complete] `P227B_STAR_BOX_PLAY_DRYRUN_CODE_COMPLETE` + `STRAIGHT_PLAY_REINGEST_REQUIRED` | `lottery_api/models/star_box_play.py`; `tests/test_p227b_star_box_play_semantics.py`; `outputs/research/p227b_star_box_play_dryrun_adapter_20260603.md`; PR #264 | Code-only implementation. **42/42 targeted tests PASS.** `calculate_match_score` not used (AST test). `dry_run=1` always. No DB write. |
+| P227C 3_STAR / 4_STAR box-play dry-run scan | [Complete] `P227C_STAR_BOX_PLAY_UNDERPOWERED_NO_SIGNAL` | `outputs/research/p227c_star_box_play_dryrun_scan_20260603.md`; PR #265, merge `7ab5407` | 120 hypotheses (10 features × 6 windows × 2 lotteries); Bonferroni threshold 0.000417. **3_STAR: 0 Bonferroni, 1 BH-FDR (F7_high_low/w750, p=0.0008, UNDERPOWERED)**; **4_STAR: 0 Bonferroni, 0 BH-FDR, UNDERPOWERED**. **69/69 targeted tests PASS.** Both lotteries UNDERPOWERED_NO_SIGNAL. Not deployable. Straight-play BLOCKED. |
+| P228 governance closeout sync | [Complete] doc-only | `00-Plan/roadmap/roadmap.md` §0.1 + `CURRENT_STATE.md`; PR #266/#267 | Records P226–P227C in phase table; marks 3_STAR/4_STAR box-play UNDERPOWERED_NO_SIGNAL and straight-play BLOCKED_REINGEST_REQUIRED. |
+| **P230A DAILY_539 backward-OOS extension plan** | **[Complete]** `P230A_DAILY539_BACKWARD_OOS_EXTENSION_PLAN_READY` | `outputs/research/p230a_daily539_backward_oos_extension_plan_20260603.md`; PR #268 | Plan-only; identified 4,265 replayable backward-OOS draws (2007/05–2021/08); leakage guard (ordinal predecessor, not numeric subtraction at ROC-year boundaries); artifact-first dry-run architecture; no DB write. |
+| **P230B1 DAILY_539 backward-OOS code-only dry-run** | **[Complete]** `P230B1_BACKWARD_OOS_DRYRUN_BELOW_BASELINE` | `outputs/research/p230b1_daily539_backward_oos_dryrun_20260603.md`; `scripts/p230b1_daily539_backward_oos_dryrun.py`; PR #269 | Zero DB write (read-only `mode=ro`). 4,265 backward draws generated. Mean hit_count 0.6375 < baseline 0.6410 (z=−0.32, p=0.626). Below baseline in early (0.632) and late (0.621) eras; only middle era marginal (0.657, p=0.184). Both robustness checks fail (exclude hit≥3 → 0.612; exclude strongest block → 0.633). In-window edge does not persist on backward history. **12/12 targeted tests PASS.** |
+| **P230C DAILY_539 survivor reclassification closeout** | **[Complete]** `P230C_DAILY539_SURVIVOR_RECLASSIFIED_HISTORICAL_ARTIFACT` | `00-Plan/roadmap/roadmap.md` §0.1 + `CURRENT_STATE.md`; PR #270 | `midfreq_fourier_2bet / DAILY_539` reclassified from `WAIT_FOR_OOS` → **`REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION`**. No P230B2 DB backfill recommended. No P225 model design recommended. No production/registry/recommendation change. |
+| **P231A POWER_LOTTO first-zone re-entry review** | **[Complete]** `P231A_POWERLOTTO_REENTRY_PLAN_READY` | `outputs/research/p231a_powerlotto_first_zone_reentry_review_20260604.{md,json}`; artifact only | Plan + pre-registration for P231B backward-OOS falsification of `midfreq_fourier_mk_3bet / POWER_LOTTO` first-zone candidate. DB-verified candidate: 4,500 rows / 1,500 draws / bet 1,2,3. |
+| **P231B POWER_LOTTO first-zone backward-OOS dry-run** | **[Complete]** `P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL` | `outputs/research/p231b_powerlotto_first_zone_backward_oos_dryrun_20260604.{md,json}`; `scripts/p231b_powerlotto_first_zone_backward_oos_dryrun.py`; `tests/test_p231b_powerlotto_first_zone_backward_oos_dryrun.py`; PR #272, merge commit `2beb24e` | Zero DB write (read-only `mode=ro`). 382 replayable backward draws (2008–2012, boundary `101000002`). Deterministic bet-1 only (P230B1 discipline; bets 2,3 not invented). First-zone mean **0.96859** vs baseline **0.94737** (36/38); 95% CI crosses baseline; one-sided **p = 0.3018** (not significant); both robustness checks fail (exclude hit≥3 → 0.9113; exclude strongest block → 0.875); block stability mixed. Second-zone display-only (0.1099 < 0.125, p=0.826). **14 targeted tests: 12/14 PASS (2 env-skip, not failures).** No production/registry/recommendation change. Candidate non-deployable; observation-only. |
+| **P231C POWER_LOTTO first-zone governance closeout** | **[Complete]** `P231C_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_GOVERNANCE_CLOSEOUT_MERGED` | `00-Plan/roadmap/roadmap.md` §0.1 + `CURRENT_STATE.md` + `active_task.md` + `CEO-Decision.md`; PR #273 | Doc-only governance sync recording P231B NULL result. No code/DB/registry/production change. |
+| **P251A Evidence dashboard dry-run contract** | **[Complete]** `CROSS_LOTTERY_EVIDENCE_DASHBOARD_DRYRUN_PLAN` | `outputs/research/p251a_cross_lottery_evidence_dashboard_dryrun_plan_20260606.{md,json}`; PR #338 | Read-only contract/dry-run plan for a cross-lottery evidence dashboard. Preserves SSOT=current registry, P232A as historical snapshot, artifact-only visibility, lifecycle badge/filter semantics, and no active deployable candidate. |
+| **P251B Evidence dashboard data artifact** | **[Complete]** `CROSS_LOTTERY_EVIDENCE_DASHBOARD_DATA_ARTIFACT` | `outputs/research/p251b_cross_lottery_evidence_dashboard_data_20260606.{md,json}`; PR #339 | Dashboard-ready read-only artifact. 41 visible historical rows, 38 current registry entries, 3 artifact-only rows. BIG_LOTTO replay/raw/canonical/add-on row semantics remain separated. |
+| **P251C Evidence dashboard API payload contract plan** | **[Complete]** `EVIDENCE_DASHBOARD_API_PAYLOAD_CONTRACT_PLAN` | `outputs/research/p251c_evidence_dashboard_api_payload_contract_plan_20260606.{md,json}`; PR #340 | Future-only API payload contract under `/api/replay/evidence-dashboard`. No route or UI implemented in this planning step. |
+| **P251D Evidence dashboard read-only API route** | **[Complete]** `EVIDENCE_DASHBOARD_READONLY_API_ROUTE_IMPLEMENTED` | `lottery_api/routes/replay.py`; `outputs/research/p251d_evidence_dashboard_readonly_api_route_20260606.{md,json}`; PR #341 | Implements `GET /api/replay/evidence-dashboard` as a read-only artifact-backed route serving the published P251B payload unchanged. No DB query/write, no registry mutation, no strategy promotion, no UI, no betting advice. |
+| **P251E Evidence dashboard API runtime smoke + governance closure** | **[Complete]** `EVIDENCE_DASHBOARD_API_RUNTIME_SMOKE_GOVERNANCE_CLOSURE` | `outputs/research/p251e_evidence_dashboard_api_runtime_smoke_governance_closure_20260606.{md,json}`; this task | Full app/TestClient smoke confirms the mounted route returns HTTP 200 and exactly matches the published P251B payload under the P251C contract path. Governance docs now close the full P251A–P251E dashboard API arc. No DB write, registry mutation, strategy promotion, UI implementation, or betting advice. |
+| **P232A All-catalog historical replay scoreboard** | **[Complete]** `P232A_ALL_CATALOG_STRATEGY_HISTORICAL_REPLAY_SCOREBOARD_COMPLETE` | `outputs/research/p232a_all_catalog_strategy_replay_scoreboard_20260604.{md,json}`; `scripts/p232a_all_catalog_strategy_replay_scoreboard.py`; `tests/test_p232a_all_catalog_strategy_replay_scoreboard.py`; PR #274, merge commit `86d4f52` | Read-only scoreboard: 41 union strategy+lottery entries (21 catalog-registered, 20 LIFECYCLE_UNRESOLVED), 36 replay-backed, 5 no-replay. lifecycle is a label only. Zero DB write. 20/20 targeted tests PASS. No deployable/promote/forbidden classifications. Historical evidence only. |
+| **P232B All-catalog scoreboard governance closeout** | **[Complete]** `P232B_ALL_CATALOG_SCOREBOARD_GOVERNANCE_CLOSEOUT_MERGED` | governance docs; PR #275 | Doc-only sync recording P232A complete and LIFECYCLE_UNRESOLVED observation. |
+| **P233A Lifecycle-unresolved registry hygiene plan** | **[Complete]** `P233A_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_PLAN_MERGED` | `outputs/research/p233a_lifecycle_unresolved_registry_hygiene_plan_20260604.{md,json}`; PR #276 | Read-only plan for 20 LIFECYCLE_UNRESOLVED entries. Evidence-based: 12 REJECTED (rejected/ archive) + 8 RETIRED (P59/P66/P79/P94/P126D controlled applies). |
+| **P233B Non-executable stub update** | **[Complete]** `P233B_LIFECYCLE_UNRESOLVED_NON_EXECUTABLE_STUB_UPDATE_MERGED` | `lottery_api/models/replay_strategy_registry.py`; `outputs/research/p233b_lifecycle_unresolved_non_executable_stub_update_20260604.{md,json}`; PR #277, merge commit `24f9f81` | 20 `_NON_EXECUTABLE_STUB` entries added. LIFECYCLE_UNRESOLVED 20→0. No executable adapter added. Zero DB write. 10/10 tests PASS. |
+| **P233C Lifecycle unresolved registry hygiene governance closeout** | **[Complete]** `P233C_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_GOVERNANCE_CLOSEOUT` | `00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md`; user handoff attachment | Doc-only sync recording P233A/B complete and LIFECYCLE_UNRESOLVED=0. No code/DB/production change. |
+| **P234 Scientific Statistical Diagnostics Layer adoption analysis** | **[Complete]** `CTO_STATISTICAL_METHODS_ADOPTION_WITH_RISKS` | `00-Plan/roadmap/CTO-Analysis.md` §2026-06-04 statistical methods adoption analysis; roadmap §0.6 Direction F | CTO analysis only. Recommends adopting open-source-style statistical methods as a **read-only diagnostics layer**, not as new hypotheses/strategies and not as a win-rate improvement claim. Required boundaries: no DB write, no production write, no executable registry change, no active-task prompt, no strategy promotion. |
+| **P234A Governance follow-up** | **[Complete]** `P234A_GOVERNANCE_FOLLOWUP_CEO_DECISION_PARTIALLY_APPROVED_P2_DESIGN_ONLY` | `00-Plan/roadmap/roadmap.md`; `00-Plan/roadmap/CTO-Analysis.md`; PR #280, merge commit `8b70aee` | Doc-only: demoted P0.5→P2.4 design-only; added CEO Follow-Up Note to CTO-Analysis.md; fixed namespace (Lofea=P235A). No code/DB/production change. |
+| **P235A Lofea read-only feasibility review** | **[Complete]** `P235A_LOFEA_FEASIBILITY_REVIEW_COMPLETE_DESIGN_INSPIRATION_ONLY` | `outputs/research/p235a_lofea_readonly_feasibility_review_20260604.{md,json}`; PR #281, merge commit `03ba6d1` | Read-only feasibility review. Lofea = CC-BY-NC Python feature-engineering toolkit for 1/10-per-column lotteries. **No deployable predictive evidence.** Classification: `FIT_AS_DESIGN_INSPIRATION_ONLY`. Adopt now = NO. No code/DB/registry/production write. |
+| **P235B Lofea feasibility governance closeout** | **[Complete]** `P235B_LOFEA_FEASIBILITY_GOVERNANCE_CLOSEOUT_MERGED` | `00-Plan/roadmap/roadmap.md`; `00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md`; `00-Plan/roadmap/active_task.md`; PR #282 | Doc-only closeout recording P235A complete. active_task → `WAITING_FOR_USER_AUTHORIZATION`. No code/DB/production change. |
+| **P236A External statistical methods scouting** | **[Complete]** `P236A_EXTERNAL_STAT_METHODS_SCOUTING_COMPLETE_FALSIFICATION_AND_DIAGNOSTICS_ONLY` | `outputs/research/p236a_external_statistical_methods_scouting_20260604.{md,json}`; `00-Plan/roadmap/CEO-Decision.md` addendum; PR #283 | Read-only falsification scout. Hit-rate closed (L82/L91/P178A). 7/8 proposed methods already owned + enforced (P234). Sources S1–S8 verified. Two net-new diagnostics, **neither hit-rate**: NIST-style randomness-audit SSOT/tripwire (design-only) + payout/anti-crowd EV (L102 marginal). No deployable edge; no DB/registry/production write; no predictability claim. CEO `CEO_DECISION_PARTIALLY_APPROVED`. |
+| **P236B Governance merge closeout** | **[Complete]** `P236B_GOVERNANCE_MERGE_CLOSEOUT_COMPLETE` | `00-Plan/roadmap/active_task.md`; `00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md`; `00-Plan/roadmap/roadmap.md`; this PR | Merged PR #282 then PR #283; verified P236A artifacts + JSON + drift PASS + DB 94,924 unchanged; synced governance docs. No code/DB/production change; no build started. |
+| **P237C NIST randomness-audit tripwire design doc** | **[Complete]** `P237C_NIST_RANDOMNESS_AUDIT_TRIPWIRE_DESIGN_READY` | `outputs/research/p237c_nist_randomness_audit_tripwire_design_20260604.md`; PR #285, merge commit `c0d4eaa` | Design-doc only. Defines draw-level randomness diagnostics, tripwire alert taxonomy, multiple-testing/anti-overfit gates, rolling-window design, and future artifact schema. It explicitly rejects prediction, win-rate, betting-advice, strategy, production, and monitoring claims. No build/code/scripts/tests/DB/registry/production/recommendation change. |
+| **P237D P237C merge + governance closeout** | **[Complete]** `P237D_P237C_DESIGN_DOC_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE` | governance docs after PR #285 merge | Merge + governance closeout only. Records P237C and returns to `WAITING_FOR_USER_AUTHORIZATION`. Future NIST build remains unauthorized and requires separate explicit user authorization. |
+| **P238A NIST randomness-audit artifact-only build plan** | **[Complete]** `P238A_NIST_RANDOMNESS_AUDIT_ARTIFACT_ONLY_BUILD_PLAN_READY` | `outputs/research/p238a_nist_randomness_audit_artifact_only_build_plan_20260604.md`; PR #287 | Build-plan artifact only. Converts P237C into a future artifact-only implementation plan. It explicitly keeps the future audit diagnostics-only and rejects prediction, win-rate, betting-advice, strategy, production, monitoring, registry, DB, and recommendation implications. No executable build/code/scripts/tests created. |
+| **P238C P238A build-plan merge + governance closeout** | **[Complete]** `P238C_P238A_BUILD_PLAN_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE` | governance docs after PR #287 merge | Merge + governance closeout only. Records P238A and returns to `WAITING_FOR_USER_AUTHORIZATION`. Future P238B build remains unauthorized and requires separate explicit user authorization. |
+| **P238B NIST randomness audit artifact build** | **[Complete]** `P238B_NIST_RANDOMNESS_AUDIT_ARTIFACT_ONLY_BUILD_COMPLETE` | `outputs/research/p238b_nist_randomness_audit_artifact_20260604.{json,md}`; `scripts/p238b_nist_randomness_audit_artifact_build.py`; `tests/test_p238b_nist_randomness_audit_artifact_build.py`; PR #289 | Artifact-only build. Classification: `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`. YELLOW is observation-only. ORANGE/RED require independent future confirmation. RED authorizes human review only, not strategy or production. All no-claim booleans false. Zero DB write. 6/6 targeted tests PASS. |
+| **P238D P238B artifact build merge + governance closeout** | **[Complete]** `P238D_P238B_ARTIFACT_BUILD_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE` | governance docs after PR #289 merge | Merge + governance closeout only. Records P238B and returns to `WAITING_FOR_USER_AUTHORIZATION`. P211 remains HELD_BY_USER. No new build, no DB/registry/production/recommendation/monitoring change. |
+| **P240B Governance simplification design proposal** | **[Complete]** `P240B_GOVERNANCE_SIMPLIFICATION_DESIGN_PROPOSAL_COMPLETE` | `outputs/research/p240b_governance_simplification_design_proposal_20260604.{md,json}`; `tests/test_p240b_governance_simplification_design_proposal.py`; PR #291, merged 2026-06-04T14:29:34Z at commit 112d6b7 | Design proposal only. 17/17 targeted tests PASS. **Proposal-only — simplification rules are NOT adopted.** Existing governance rules remain active. No DB write, no registry mutation, no production/recommendation/monitoring/strategy change. Adoption requires explicit authorization phrase. |
+| **P240C P240B governance closeout** | **[Complete]** `P240C_P240B_GOVERNANCE_CLOSEOUT_COMPLETE` | governance docs (active_task, CURRENT_STATE, roadmap, CEO-Decision) | Governance closeout only. Records P240B artifacts and PR #291. P240B proposal remains proposal-only; not adopted. Returns to `WAITING_FOR_USER_AUTHORIZATION`. P211 remains HELD_BY_USER. P238B NIST YELLOW remains observation-only. No DB/registry/production/strategy change. |
+| **P240D Governance simplification rule adoption** | **[Complete]** `P240D_GOVERNANCE_SIMPLIFICATION_RULE_ADOPTION_COMPLETE` | `00-Plan/roadmap/agent_bootstrap/SHARED_AGENT_BOOTSTRAP.md`; `00-Plan/roadmap/agent_bootstrap/TASK_TEMPLATES.md`; governance docs | P240B proposal adopted. Task Type A/B/C/D/E and No-op HOLD rule added to SHARED_AGENT_BOOTSTRAP.md §Task Type Classification. TASK_TEMPLATES.md updated with reference. All safety boundaries unchanged. No DB/registry/production/strategy change. |
+| **P241A Type-A next direction decision support** | **[Complete]** `P241A_TYPE_A_NEXT_SUBSTANTIVE_DIRECTION_DECISION_SUPPORT_COMPLETE` | Response only (Type A — no files) | Type A decision support. No files modified. No PR. Recommended P241B OPT-C statistical diagnostics inventory as next Type B task. |
+| **P241B P234 statistical diagnostics inventory** | **[Complete]** `P241B_P234_STATISTICAL_DIAGNOSTICS_INVENTORY_COMPLETE` | `outputs/research/p241b_p234_statistical_diagnostics_inventory_20260605.{md,json}`; `tests/test_p241b_p234_statistical_diagnostics_inventory.py`; governance docs (same-PR closeout) | Type B. 33/33 targeted tests PASS. 16 diagnostic methods inventoried; 13 gap categories; 43-field feature-bottleneck schema proposed. No code implementation. No DB/registry/production/strategy change. Same-PR closeout under P240D Type B rule. |
+| **P242 Read-only statistical diagnostics schema implementation** | **[Complete]** `P242_READ_ONLY_STATISTICAL_DIAGNOSTICS_SCHEMA_IMPLEMENTATION_COMPLETE` | `lottery_api/diagnostics/statistical_diagnostics_schema.py`; `lottery_api/diagnostics/__init__.py`; `tests/test_p242_statistical_diagnostics_schema.py`; governance docs (same-PR) | Type C. 42/42 PASS. Pure Python module; 43 REQUIRED_SCHEMA_FIELDS; 4 helpers; conservative safety defaults; NIST semantics. |
+| **P243A Diagnostic report fixture pack** | **[Complete]** `P243A_DIAGNOSTIC_REPORT_FIXTURE_PACK_COMPLETE` | `tests/test_p243a_diagnostic_report_fixture_pack.py`; `outputs/research/p243a_diagnostic_report_fixture_pack_20260605.{md,json}`; governance docs (same-PR closeout) | Type C. 55/55 targeted tests PASS. 4 evidence-backed historical fixtures. No DB write. Same-PR closeout. |
+| **P243B P2.4 readiness decision** | **[Complete]** `P243B_P2_4_DIAGNOSTICS_LAYER_READINESS_DECISION_COMPLETE` | Response only (Type A — no files) | Type A decision support. No files. Recommended P244C integration plan. |
+| **P244C Diagnostics integration plan** | **[Complete]** `P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE` | `tests/test_p244c_diagnostics_integration_plan.py`; `outputs/research/p244c_diagnostics_integration_plan_20260605.{md,json}`; governance docs (same-PR closeout) | Type B. 34/34 targeted tests PASS. Maps P242 schema to P211/P221F checkpoints; 7 confidence templates; 16 blocker labels; prompt snippet; forbidden-language list. No code changes. Same-PR closeout. |
+| **P211R Short/mid-window diagnostic** | **[Complete]** `P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE` | `scripts/p211r_short_mid_window_diagnostic.py`; `tests/test_p211r_short_mid_window_diagnostic.py`; `outputs/research/p211r_short_mid_window_diagnostic_20260605.{md,json}`; governance (same-PR) | Type C. 34/34 PASS. P211 restarted. IS-window candidates confirmed historical artifacts. |
+| **P211S Post-P211R decision support** | **[Complete]** `P211S_POST_P211R_DECISION_SUPPORT_COMPLETE` | Response only (Type A) | Type A. No files. Recommended P212 gap check. |
+| **P212 POWER_LOTTO backward-OOS gap check** | **[Complete]** `P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_COMPLETE` | `scripts/p212_power_lotto_backward_oos_gap_check.py`; artifacts; governance (same-PR) | Type C. 31/31 PASS. Historical artifact. |
+| **P213 New hypothesis scouting plan** | **[Complete]** `P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE` | `tests/test_p213_new_hypothesis_scouting_plan.py`; `outputs/research/p213_new_hypothesis_scouting_plan_20260605.{md,json}`; governance (same-PR) | Type B. 36/36 PASS. Recommended H_STAR_POSITIONAL_REINGEST. |
+| **P213B 3_STAR/4_STAR positional feasibility** | **[Complete]** `P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE` | `tests/test_p213b_3star_4star_positional_data_recovery_feasibility.py`; `outputs/research/p213b_3star_4star_positional_data_recovery_feasibility_20260605.{md,json}`; governance (same-PR) | Type B. 37/37 PASS. Root cause: `database.py:463` sorts numbers. Feasibility: POSSIBLE_BUT_SOURCE_UNCONFIRMED. 4-phase recovery plan. Next: Phase A source audit. Same-PR closeout. |
+| **P213C 3_STAR/4_STAR source audit** | **[Complete]** `P213C_3STAR_4STAR_SOURCE_AUDIT_COMPLETE` | `tests/test_p213c_3star_4star_source_audit.py`; `outputs/research/p213c_3star_4star_source_audit_20260605.{md,json}`; governance (same-PR) | Type B. 50/50 PASS. Classification: `P213C_SOURCE_AUDIT_SOURCE_CANDIDATE_FOUND_NEEDS_VALIDATION`. `lottery_types.json` isPermutation confirmed; `csv_validator.py` permutation order preserved; `database.py:463` root cause confirmed; raw TXT format includes `開出順序`; original CSV files not in repo. No DB write. Same-PR closeout. |
+| **P213D 3_STAR/4_STAR schema/code fix design** | **[Complete]** `P213D_3STAR_4STAR_POSITIONAL_SCHEMA_CODE_FIX_DESIGN_COMPLETE` | `tests/test_p213d_3star_4star_positional_schema_code_fix_design.py`; `outputs/research/p213d_3star_4star_positional_schema_code_fix_design_20260605.{md,json}`; governance (same-PR) | Type B. 51/51 PASS. Recommended Option C: additive `numbers_positional` column; backward compatible; `numbers` semantics unchanged for all game types. 5-phase future implementation plan (P213E–P213H). No code changes, no DB write. Same-PR closeout. |
+| **P213E 3_STAR/4_STAR schema impl design review** | **[Complete]** `P213E_3STAR_4STAR_POSITIONAL_SCHEMA_IMPLEMENTATION_DESIGN_REVIEW_COMPLETE` | `tests/test_p213e_3star_4star_positional_schema_implementation_design_review.py`; `outputs/research/p213e_3star_4star_positional_schema_implementation_design_review_20260605.{md,json}`; governance (same-PR) | Type B. 60/60 PASS. Only `database.py` changes; established try/except migration pattern; `csv_validator.py` unchanged; 17-test plan for P213F; non-permutation games provably unaffected. No code changes. Same-PR closeout. |
+| **P213F 3_STAR/4_STAR positional code fix** | **[Complete]** `P213F_3STAR_4STAR_POSITIONAL_CODE_FIX_COMPLETE` | `lottery_api/database.py`; `tests/test_p213f_3star_4star_positional_code_fix.py`; `outputs/research/p213f_3star_4star_positional_code_fix_20260605.{md,json}`; governance (same-PR) | Type C. 29/29 PASS. Additive `numbers_positional TEXT DEFAULT NULL` column; try/except migration; dual-write draw order for 3_STAR/4_STAR; NULL for non-permutation; no production DB write; production DB unchanged at 94,924. Same-PR closeout. |
+| **P213G 3_STAR/4_STAR dry-run source parser** | **[Complete]** `P213G_SOURCE_FORMAT_VALIDATED_WITH_MOCK_ONLY` | `scripts/p213g_3star_4star_dry_run_source_parser.py`; `tests/test_p213g_3star_4star_dry_run_source_parser.py`; `outputs/research/p213g_3star_4star_dry_run_source_parser_validation_20260605.{md,json}`; rows artifact; governance (same-PR) | Type C. 27/27 PASS. Source format validated with mock fixtures; `開出順序` field confirmed parseable for both 3_STAR (space-separated) and 4_STAR (joined-digit); no real historical files available; no production DB write. Same-PR closeout. |
+| **P213I-C 3_STAR/4_STAR real-source dry-run artifact closeout** | **[Complete]** `P213I_C_REAL_SOURCE_DRY_RUN_ARTIFACT_CLOSEOUT_COMPLETE` | `scripts/p213i_3star_4star_real_source_dry_run_validation.py`; `tests/test_p213i_3star_4star_real_source_dry_run_validation.py`; `outputs/research/p213i_3star_4star_real_source_dry_run_validation_20260605.{md,json}`; `outputs/research/p213i_3star_4star_real_source_rows_20260605.json`; `outputs/research/p213i_3star_4star_real_source_mismatches_20260605.json`; governance (same-PR) | Type C. 4/4 PASS. Real-source CSVs found: 40 total; 11,700 rows parsed; 7,101 matched; 4,599 missing; 0 mismatches. Positional order encoded by `獎號1..N`; dates normalized before comparison; no production DB write. Same-PR closeout. |
+| **P213H 3_STAR/4_STAR controlled positional backfill** | **[Complete]** `P213H_3STAR_4STAR_CONTROLLED_POSITIONAL_BACKFILL_COMPLETE` | `scripts/p213h_3star_4star_controlled_positional_backfill.py`; `tests/test_p213h_3star_4star_controlled_positional_backfill.py`; `outputs/research/p213h_3star_4star_controlled_positional_backfill_20260605.{md,json}`; row/audit artifacts; backup DB + sha256 | Type D. 12/12 PASS. Backup `backups/p213h_lottery_v2_backup_20260605_20260605_142219.db` sha256 `214f05870e741164495cd0dbf46158ba1e92835d7a7c072df47a20a0795896c1`. Updated 7,101 existing star rows; 4,599 missing source rows not inserted; replay rows unchanged at 94,924; drift guard PASS. |
+| **P213K missing source-row ingestion feasibility design** | **[Complete]** `P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE` | `outputs/research/p213k_missing_source_row_ingestion_feasibility_design_20260605.{md,json}`; `tests/test_p213k_missing_source_row_ingestion_feasibility_design.py`; governance (same-PR) | Type B. 13/13 PASS. No DB write; no ingestion. Analyzed 4,599 source-only rows (3_STAR 1,671; 4_STAR 2,928). Future insertion feasible only under separate Type D gate with fresh backup/rollback; straight-play scan not authorized. |
+| **P213L controlled missing source-row ingestion** | **[Complete]** `P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE` | `scripts/p213l_3star_4star_controlled_missing_row_ingestion.py`; `tests/test_p213l_3star_4star_controlled_missing_row_ingestion.py`; `outputs/research/p213l_3star_4star_controlled_missing_row_ingestion_20260605.{md,json}`; row/audit artifacts; backup DB + sha256 | Type D. 14/14 PASS. Backup `backups/p213l_lottery_v2_backup_20260605_20260605_151715.db` sha256 `1b2abd793a3ea3f2d300337eb2db6d2621b52e1600453bc20141377fa6475485`. Inserted 4,599 source-only star rows; draw rows 59,762→64,361; source-to-DB match 11,700/11,700; replay rows unchanged 94,924; no strategy scan authorized. |
+| **P246B–P249B BIG_LOTTO canonical isolation arc + governance** | **[Complete]** `P249B_ROADMAP_SYNC_ROW_LABEL_CLARIFICATION_COMPLETE` | `outputs/research/p246b_*` through `outputs/research/p249b_*`; PRs #316–#336; `lottery_api/database.py`; `scripts/p247b_apply_big_lotto_canonical_view.py`; tests 266+ PASS | **P246B–P246K** (Type B/C/D): taxonomy corrected (SIM_HYPHEN→ADD_ON_PRIZE_EXCLUDED; valid add-on/special prize records), impact audit, preserve-and-isolate architecture, get_canonical_draws() helper isolation, active research callers canonicalized, canonical NIST re-audit GREEN. **P247A–P247G** (Type B/C/D): DB view `draws_big_lotto_canonical_main` created (Type D, PR #328), helper view-backed (P247E), 9 analysis tools migrated (P247F), final regression guard 15 active paths (P247G). **P248A** (Type B): governance closure. **P249A** (Type B): roadmap triage; all research lines NULL/closed; recommended T1+T2 doc-only. **P249B** (Type B): row-label clarification + this roadmap sync. Canonical BIG_LOTTO: 2,113 rows. Raw: 22,238. ADD_ON: 19,100 raw-accessible. No rows deleted. No strategy promotion. No prediction edge implied. |
+
+### 0.2 Current System Baseline
+
+| System State | Value | Status |
+|---|---:|---|
+| Current repo | `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` | [Confirmed] |
+| Current branch | `main` | [Confirmed] |
+| Current HEAD | HEAD must equal `origin/main`; verify with `git rev-parse HEAD` and `git rev-parse origin/main` before any task. Do not hardcode a live hash here — it becomes stale after every PR merge. Last known PR merge hash (immutable fact): `c8ac14c` (PR #253). | [Self-verifying] |
+| Root `Lottery*` folders | only `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` | [Confirmed] |
+| Archived stale repos | `_archive/lottery_stale_repos_20260602_162329/{Lottery,LotteryNew-clean}` | [Confirmed] |
+| Production replay table | `strategy_prediction_replays` | [Confirmed] |
+| Production replay rows | 94,924 | [Confirmed] read-only SQLite |
+| Production `bet_index` column | present | [Confirmed] read-only SQLite |
+| Duplicate `(lottery_type,target_draw,strategy_id,bet_index)` keys | 0 | [Confirmed] read-only SQLite |
+| POWER_LOTTO rows | 36,104 | [Confirmed] read-only SQLite |
+| `bet_index` distribution | 1=54,302; 2=16,581; 3=15,041; 4=6,000; 5=3,000 | [Confirmed] read-only SQLite |
+| Latest known full suite | 1097 passed / 0 failed | [Confirmed] handoff report; [Unknown] not rerun by CTO |
+| Worktree status | dirty outside CTO scope | [Confirmed] `git status --short` |
+| Formal 2026-06-02 CEO decision for P210 | absent from allowed CTO sources | [Unknown] |
+
+### 0.3 Roadmap Alignment Assessment
+
+| Item | Classification | Assessment |
+|---|---|---|
+| P188-P205 migration / PR completion | [Aligned] | This directly resolves the prior P0 canonical DB blocker and branch-protection / DB-binary risks. |
+| P206-P209 repo archive cleanup | [Aligned] | Strongly aligns with "no new repo" and reduces wrong-repo dispatch risk. |
+| P186/P187/P188 still shown as blockers in older sections | [Outdated] | The older 2026-06-01 blocker state is superseded by P188 completion and PR #249 merge. |
+| Main/zen-gates split as current P0 | [Outdated] | Current local main is at 94,924 rows with `bet_index`; the split is no longer the top blocker. |
+| Short/mid-window strategy direction | [Complete / Executed → NULL] | P221F frozen windows (short 100/125/150, mid 500/750/1000, all-history=reference) exactly match user direction. P222 scan ran to completion. Sole survivor fragile (clean-slice p=0.0674, edge rests on 19 rows). |
+| Long-term frequency as primary filter | [Retired as filter / Reference-only] | User direction adopted: long-term frequency demoted to reference-only. P221F/P222 used only frozen mid/short windows as primary. |
+| Reusing old POWER_LOTTO R2 candidates | [Outdated] / [Blocked] | P178A closed R2 active research; new work must be a new pre-registered protocol, not a rerun. |
+| Worker prompt output today | [Resolved] | CEO Decision 2026-06-03 resolved governance boundary; P225 active_task set. |
+
+### 0.4 Reprioritized P0-P10
+
+| Priority | Phase | Focus | Current Status | Acceptance Criteria |
+|---|---|---|---|---|
+| **P0.1** | P210 / P221F protocol governance | Freeze short/mid-window strategy scope before any implementation | [Complete] P221F frozen (2026-06-03) | Windows short 100/125/150, mid 500/750/1000, all-history=reference. Anti-overfit gate active for all future scans. P211 HELD_BY_USER. |
+| **P0.2** | Anti-overfit validation gate | Prevent short-window noise from becoming false signal | [Active / Enforced] — P221F gate applied to P222 | P221F protocol provides the gate; P222 scan applied it; P224 clean-slice dedup verified it. All future research must inherit P221F validation rules. |
+| **P0.3** | Canonical execution / repo dispatch guard | Ensure every agent uses only `LotteryNew/main` and not archived/stale worktrees | [Confirmed] baseline; STOP guards in all P22x prompts | Prompts and worker reports must STOP on `.claude/worktrees/*`, archive paths, wrong branch, wrong HEAD/DB baseline, or broad staging. |
+| **P0.4** | CTO/CEO task-generation boundary | Resolve prompt-generation conflict for the next executable task | [Resolved] CEO Decision 2026-06-03 | P225 active_task set; governance boundary clarified. |
+| **P2.4** | Scientific Statistical Diagnostics Layer | Consolidate scattered diagnostics (random baselines, multiple-testing correction, rolling windows, stability labels, feature bottleneck report) into a reusable read-only layer | [P2 design-only — CEO `CEO_DECISION_PARTIALLY_APPROVED`] 7/8 methods already exist and are enforced (P221F gate; Bonferroni/BH in P222/P223B/P227C; rolling windows in RSM/P114/P224). No current consumer. Implementation requires separate explicit user authorization. | Layer is diagnostics-only, artifact-only; no new strategies, no DB/registry/production writes, no recommendation logic, no predictability claim. Authorized options: P235A Lofea feasibility review (OPT-B) or P234 inventory design-doc (OPT-C). |
+| **P1.1** | 3_STAR / 4_STAR replay-gap diagnostic → P226–P227C / P213H–P213L data recovery | Only unmined lottery family | [Data recovered; no scan authorized] `P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE` | Box-play remains UNDERPOWERED_NO_SIGNAL and not deployable. Straight-play source coverage is now restored for 11,700 rows after P213H/P213L, but any feasibility/diagnostic/scan requires separate explicit authorization and P221F-style anti-overfit gates. |
+| **P1.2** | DAILY_539 survivor backward-OOS extension | Resolve survivor p=0.0674 using older draws | **[Complete — BELOW_BASELINE → reclassified]** P230A + P230B1 + P230C | P230B1 dry-run (4,265 backward draws, zero DB write): mean 0.6375 < baseline 0.6410; all eras/robustness fail. **Reclassified HISTORICAL_ARTIFACT_DIRECTION in P230C.** No P230B2 DB backfill. No P225. |
+| **P1.3** | Product disclosure and second-zone containment | Make UI/API wording consistent with NULL/no-signal evidence | [Deferred] | No surface implies guaranteed improvement, betting advice, or second-zone predictive edge. |
+| **P2.1** | Passive monitoring / reopen rules for DAILY_539 survivor | Monitor `midfreq_fourier_2bet / DAILY_539` | **[RECLASSIFIED — HISTORICAL_ARTIFACT_DIRECTION]** P230C | P230B1 backward-OOS: mean 0.6375 < baseline; all checks fail. Formally reclassified in P230C. Future OOS (≥300 new draws) could reopen, but prior shifted toward NULL. No deployment. No P230B2 backfill. No P225. |
+| **P2.2** | Passive monitoring / reopen rules for POWER_LOTTO | Monitor POWER_LOTTO only under P178A reopen conditions | [Waiting] | Reopen only after ≥500 new draws after 115000041, structural change, independent evidence, or explicit governance design. |
+| **P2.3** | Archive retention / cleanup decision | Decide whether archived stale repos remain indefinitely | [Deferred] | No deletion without explicit destructive authorization; archive README remains clear. |
+| **P3** | POWER_LOTTO first-zone candidate `midfreq_fourier_mk_3bet` | Backward-OOS NULL (P231B) — non-deployable; observation-only; no promotion authorized | [Complete — `P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL`] | P231B: mean 0.969 vs 0.947 baseline; CI crosses; p=0.30; robustness fails. No production/registry/recommendation change. Future OOS monitoring only with explicit authorization and P221F gates. |
+| **P4** | Replay product backlog | UI polish, monitoring dashboards, operator reporting | [Deferred] | Does not consume P0/P1 validation or governance capacity. |
+| **P5** | Optional scheduler / automation | Cron/launchd/automation setup | [Deferred] | Explicit OS-level authorization only. |
+| **P6** | External reference review | Architecture notes only if useful | [Paused] | No clone/new repo. |
+| **P7** | Worktree hygiene | Clean dirty runtime/data files | [Deferred but risky] | Only with explicit cleanup authorization and file allowlist. |
+| **P8** | Future OOS re-evaluation | Retest only after new data thresholds | [Waiting] | Pre-registered configs; no post-hoc threshold tuning. |
+| **P9** | Product packaging | Release notes / operational docs | [Deferred] | After P210/P1 evidence boundary is stable. |
+| **P10** | Long-term cadence | Periodic governance review | [Deferred] | Low-cost checks without no-change churn. |
+
+Upgrade / downgrade decisions:
+
+| Item | Decision | Reason |
+|---|---|---|
+| Short/mid-window protocol | **[Done]** P221F frozen | Windows operationalized in P222 scan; P221F is the permanent gate. |
+| Anti-overfit validation | **[Active]** P221F gate enforced | P222/P223B/P224 applied it; all future research must inherit it. |
+| Canonical repo dispatch guard | Keep P0/P1 | Wrong worktree/repo dispatch repeatedly caused STOP conditions; archive exists and must not be used. |
+| P186/P187/P188 migration blocker | Downgrade to historical complete | Current DB is 94,924 rows with `bet_index`; PR #249 merged. |
+| Long-term full-period frequency as filter | **[Retired]** reference-only | User direction adopted; P221F/P222 used only frozen mid/short windows as primary. |
+| Active POWER_LOTTO R2 optimization | Retire / keep closed | P178A closed R2 after NULL results. |
+| Second-zone optimization | Retire as active goal; keep containment | P211A confirmed NULL hit-rate edge; display-only unless future pre-registered proof appears. |
+| DAILY_539 survivor | **[REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION]** — reclassified P230C | P224 clean-slice p=0.0674 (WAIT_FOR_OOS); P230B1 backward-OOS 4,265 draws: mean 0.6375 < baseline 0.6410; all eras/robustness fail. No deployment. No P230B2 DB backfill recommended. No P225 model design recommended. |
+| 3_STAR / 4_STAR box-play / straight-play data state | **Box-play UNDERPOWERED_NO_SIGNAL; straight-play source coverage restored but no scan authorized** | P227C: 0 Bonferroni pass, 1 BH-FDR weak observation (UNDERPOWERED); not deployable. P213H/P213L restored positional/source rows for 11,700 star draws; future straight-play work requires separate authorization. |
+| P123 trigger standby and old apply chains | Keep P3+ guardrails | Useful history, not today's bottleneck. |
+
+### 0.5 Critical Blockers
+
+| Blocker | Impact | Why It Blocks | Risk If Ignored | Priority | Acceptance |
+|---|---|---|---|---|---|
+| DAILY_539 survivor misclassified as promotable | Research correctness | P223B `CROSS_YEAR_CONFIRMED` was on overlapping slice; P224 clean dedup gives p=0.0674; P230B1 backward-OOS BELOW_BASELINE | A worker or agent could promote a historical-artifact result as deployable | P0 | **Resolved by P230C**: survivor reclassified `REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION`. No deployment. No P230B2 backfill. No P225. |
+| Short-window overfitting / multiple testing | System correctness, trust | Many windows/strategies can create false positives | False "improved prediction" claims or strategy promotion from noise | P0.2 | P221F anti-overfit gate enforced; all future research must pre-register windows and baselines. |
+| Wrong repo/worktree dispatch | Reproducibility, safety | `.claude/worktrees/*` and archived stale repos still exist and have incompatible states | Agents may run stale DB/code and produce invalid evidence | P0.3 | Every future task includes canonical repo/branch/DB STOP guard and archive DO_NOT_USE rule. |
+| Governance docs stale (P217–P227C) | Agent correctness | A fresh agent reading old governance docs would misread current state | Wrong task scope, incorrect baseline, or unauthorized promotion | P0 | P225 + P228 resolve this; §0.1 + CURRENT_STATE.md now reflect P227C. |
+| Evidence disclosure gap | Product maturity | Lottery outputs can be misread as betting advice or validated edge | User trust and safety risk from overclaiming | P1.3 | UI/API/report copy separates historical evidence from predictive claims; second-zone display-only confirmed by P211A. |
+
+### 0.6 Recommended System Optimization Directions (updated by P228, 2026-06-03)
+
+#### Direction A: P221F Anti-Overfit Gate — Permanent / Already Active
+
+- **Roadmap phase:** P0.2 / P221F. **Status: [Active / Enforced]**
+- **Why important:** Short/mid-window signals are noisy; corrected significance + pre-registered windows + clean dedup prevent false-positive promotion. P222/P223B/P224/P227C all applied the gate.
+- **Rule:** All future research chains must pre-register windows and baselines using P221F as the reference gate.
+- **Priority:** P0 — permanent.
+
+#### Direction B: 3_STAR / 4_STAR — COMPLETE (UNDERPOWERED_NO_SIGNAL)
+
+- **Roadmap phase:** P1.1 → P226–P227C. **Status: [Complete — UNDERPOWERED_NO_SIGNAL]**
+- **Summary:** P226–P227C chain ran to completion. Box-play semantics implemented (P227B), 120 hypotheses scanned (P227C). 0 Bonferroni passes in either lottery; 1 BH-FDR weak observation in 3_STAR (F7_high_low/w750, p=0.0008, UNDERPOWERED). Both classified `UNDERPOWERED_NO_SIGNAL`. Not deployable.
+- **Straight-play:** BLOCKED — sorted DB storage causes positional order loss; re-ingestion requires separate authorization.
+- **Future condition:** 3_STAR needs ≥10,000 draws (currently 4,179); 4_STAR needs ≥17,000 (currently 2,922). Any re-scan must inherit P221F gate with fresh pre-registration.
+- **Priority:** P3 — deferred until sufficient data accumulates.
+
+#### Direction C: DAILY_539 Survivor Backward-OOS Extension
+
+- **Roadmap phase:** P1.2. **Status: [Deferred — needs DB-write authorization]**
+- **Why important:** ~4,376 un-replayed older DAILY_539 draws exist. Backward extension can resolve survivor p=0.0674 on a larger sample now instead of waiting ~1 year.
+- **Risk:** DB write needed; pre-2021 draws carry regime-change caveats.
+- **Acceptance:** Explicit DB-write authorization required; P224B reopen gates must all pass; failure = historical artifact.
+- **Priority:** P1.
+
+#### Direction D: Evidence Disclosure And Recommendation Containment
+
+- **Roadmap phase:** P1.3. **Status: [Deferred]**
+- **Why important:** Replay evidence must not imply guaranteed improvement or wagering advice. P211A confirmed second-zone NULL.
+- **Acceptance:** All surfaces label second-zone display-only; no betting advice; no guaranteed prediction claim.
+- **Priority:** P1.
+
+#### Direction E: Canonical Repo / DB Execution Integrity
+
+- **Roadmap phase:** P0.3. **Status: [Confirmed baseline; guards enforced in P22x tasks]**
+- **Why important:** Stale worktrees/archive paths still exist and can produce invalid evidence if used.
+- **Priority:** P0 / P1 — ongoing maintenance.
+
+#### Direction F: Scientific Statistical Diagnostics Layer — P2 Design-Only
+
+- **Roadmap phase:** P2.4. **Status: [CEO `CEO_DECISION_PARTIALLY_APPROVED` — CTO framing adopted; P0.5 urgency rejected/demoted; implementation requires separate explicit user authorization]**
+- **Scope:** Consolidate scattered diagnostics into a reusable read-only layer: historical draw parser inventory, number/position frequency summaries, rolling windows, null/random baselines, permutation/binomial tests, multiple-testing correction, stability diagnostics, and feature bottleneck reporting.
+- **Why important:** The project already has 7/8 methods scattered and enforced (P221F gate; Bonferroni/BH in P222/P223B/P227C; rolling windows in RSM/P114/P224). The only genuinely new work is consolidation + a feature-bottleneck report schema — which has **no current consumer** until a future authorized research run needs it.
+- **Boundary:** Diagnostics-only and artifact-only. It must not create hypotheses, add strategies, write DB, write production state, write executable registry entries, generate worker prompts, or claim improved lottery win rate. No predictability claim.
+- **Required gates (if/when authorized):** pre-registered universe/windows/baselines, explicit family size, Bonferroni/BH-FDR where applicable, walk-forward or out-of-sample validation for any validation use, unit labels (row/draw/bet-index/strategy), NULL-is-success reporting.
+- **Priority:** P2 design-only — all subcomponents. Build only after explicit user authorization. Authorized on-request options: OPT-B P235A Lofea read-only feasibility review, OPT-C P234 statistical-methods diagnostics inventory (design-doc only).
+
+### 0.7 Current State Summary (updated by P249B roadmap sync + row-label clarification, 2026-06-06)
+
+**Research chains P211A–P231B (all lotteries), P226–P227C (3_STAR/4_STAR), P232A (all-catalog scoreboard), and P233A/B (registry hygiene, LIFECYCLE_UNRESOLVED 20→0) are complete.**
+
+- Direction #1 (window reframe): P221F frozen windows (short 100/125/150, mid 500/750/1000, all-history=reference) operationalized. Gate active.
+- Direction #2 (mine all-lottery × all-method): P222 scan complete. Sole survivor `midfreq_fourier_2bet / DAILY_539` fragile → **reclassified `REJECTED_BY_BACKWARD_OOS / HISTORICAL_ARTIFACT_DIRECTION` (P230C)**. DAILY_539 backward-OOS (P230B1): mean 0.6375 < baseline 0.6410; all eras/robustness fail.
+- POWER_LOTTO first-zone: P231B backward-OOS NULL. `midfreq_fourier_mk_3bet` mean 0.969 vs 0.947 baseline; CI crosses; p=0.30; robustness fails. **Non-deployable. Observation-only.**
+- 3_STAR / 4_STAR chain: Box-play scanned, 120 hypotheses, **UNDERPOWERED_NO_SIGNAL**. P213H/P213L restored draw-side positional/source coverage for 11,700 rows (5,850 each for 3_STAR/4_STAR). Straight-play is data-ready for a separately authorized feasibility/diagnostic task, but no scan, strategy, registry, recommendation, production change, or betting claim is authorized by P213L.
+- P234/P234A governance: Scientific Statistical Diagnostics Layer framing adopted as read-only diagnostics. P0.5 urgency rejected/demoted to **P2 design-only** (7/8 methods already exist + enforced). CTO final: `CTO_STATISTICAL_METHODS_ADOPTION_WITH_RISKS`. CEO: `CEO_DECISION_PARTIALLY_APPROVED`. No implementation authorized.
+- P235A Lofea feasibility review: **`FIT_AS_DESIGN_INSPIRATION_ONLY`**. Lofea is a CC-BY-NC Python feature-engineering toolkit for 1/10-per-column lotteries. **No deployable predictive evidence.** Adopt now = NO. Design inspiration only for P2.4 / Direction F (not yet authorized). Any reuse must be natively re-derived, pass P221F + multiple-testing + walk-forward/OOS, zero DB/registry/production writes. CC-BY-NC: no vendoring (WebComm is commercial).
+- P235B governance closeout: active_task → `WAITING_FOR_USER_AUTHORIZATION`. No new research authorized.
+- P236A external statistical methods scouting: **`FALSIFICATION_AND_DIAGNOSTICS_ONLY`**. Hit-rate prediction closed (L82/L91/P178A); external methods do not reopen it. 7/8 proposed methods already owned + enforced (P234). Two net-new diagnostics, **neither hit-rate**: NIST-style randomness-audit SSOT/tripwire (design-only; alerts only if draws stop being random) + payout/anti-crowd EV (E[payout|win], not P(win); L102 marginal). No deployable edge. CEO `CEO_DECISION_PARTIALLY_APPROVED`. PR #283 merged.
+- P236B governance merge closeout: merged PR #282 then PR #283; verified P236A artifacts + drift + DB 94,924 unchanged; governance docs synced. NIST tripwire = future read-only design/build option (OPT-D), **not started**, build needs separate authorization.
+- P237C NIST randomness-audit tripwire design doc: **`P237C_NIST_RANDOMNESS_AUDIT_TRIPWIRE_DESIGN_READY`**. PR #285 merged. Design-doc only; diagnostics-only; no predictor, no win-rate claim, no betting advice. RED alert would authorize human review only, not strategy or production. No build/code/scripts/tests/DB/registry/production/recommendation/monitoring change.
+- P237D governance closeout: records P237C on governance docs and returns to `WAITING_FOR_USER_AUTHORIZATION`. Future NIST build remains unauthorized.
+- P238A NIST randomness-audit artifact-only build plan: **`P238A_NIST_RANDOMNESS_AUDIT_ARTIFACT_ONLY_BUILD_PLAN_READY`**. PR #287 merged. Build-plan artifact only; no executable build/code/scripts/tests. Future audit remains diagnostics-only and artifact-only unless separately authorized.
+- P238C governance closeout: records P238A on governance docs and returns to `WAITING_FOR_USER_AUTHORIZATION`. Future P238B build requires separate explicit authorization.
+- P238B NIST randomness-audit artifact build: **`P238B_NIST_RANDOMNESS_AUDIT_ARTIFACT_ONLY_BUILD_COMPLETE`**. PR #289 merged. Artifact-only build complete. Classification: `RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY`. YELLOW is observation-only and does not authorize strategy, production, registry, recommendation, monitoring, DB write, or betting advice. ORANGE/RED require independent future confirmation. RED authorizes human review only. All no-claim booleans false. Zero DB write. 6/6 targeted tests PASS.
+- P238D governance closeout: records P238B on governance docs and returns to `WAITING_FOR_USER_AUTHORIZATION`. P211 remains HELD_BY_USER. No new build. NIST audit YELLOW observation-only result stands.
+- P240B governance simplification design proposal: **`P240B_GOVERNANCE_SIMPLIFICATION_DESIGN_PROPOSAL_COMPLETE`**. PR #291 merged 2026-06-04T14:29:34Z. Artifacts: `outputs/research/p240b_governance_simplification_design_proposal_20260604.{json,md}`. 17/17 targeted tests PASS. **Proposal-only — simplification rules are NOT adopted.** Existing governance rules remain active. No DB/registry/production/strategy change.
+- P240C governance closeout: records P240B in governance files. P240B proposal was proposal-only at this stage.
+- P240D governance simplification rule adoption: **`P240D_GOVERNANCE_SIMPLIFICATION_RULE_ADOPTION_COMPLETE`**. P240B proposal adopted into SHARED_AGENT_BOOTSTRAP.md (§Task Type Classification) and TASK_TEMPLATES.md. Task Types A/B/C/D/E and No-op HOLD rule are now active governance rules. All safety boundaries unchanged. No DB/registry/production/strategy change.
+- P241A Type-A decision support: **`P241A_TYPE_A_NEXT_SUBSTANTIVE_DIRECTION_DECISION_SUPPORT_COMPLETE`**. Type A. No files modified. Recommended P241B.
+- P241B P234 statistical diagnostics inventory: **`P241B_P234_STATISTICAL_DIAGNOSTICS_INVENTORY_COMPLETE`**. Type B same-PR closeout. 33/33 PASS. 16 methods inventoried; 13 gaps; 43-field schema proposed. No code implementation.
+- P242 Read-only statistical diagnostics schema implementation: **`P242_READ_ONLY_STATISTICAL_DIAGNOSTICS_SCHEMA_IMPLEMENTATION_COMPLETE`**. Type C same-PR. 42/42 PASS. Pure Python module; no DB access; no production change.
+- P243A Diagnostic report fixture pack: **`P243A_DIAGNOSTIC_REPORT_FIXTURE_PACK_COMPLETE`**. Type C same-PR. 55/55 PASS. 4 evidenced fixtures. No DB write.
+- P243B P2.4 readiness decision: **`P243B_P2_4_DIAGNOSTICS_LAYER_READINESS_DECISION_COMPLETE`**. Type A. No files modified. Recommended P244C.
+- P244C Diagnostics integration plan: **`P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE`**. Type B same-PR. 34/34 PASS. P2.4 layer complete and ready for P211 integration.
+- P211R Short/mid-window diagnostic: **`P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE`**. 9 IS-window candidates all confirmed historical artifacts.
+- P211S: Type A decision support. Recommended P212 gap check.
+- P212 POWER_LOTTO backward-OOS gap check: **`P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_HISTORICAL_ARTIFACT`**. All P211R IS-window candidates confirmed historical artifacts.
+- P213 New hypothesis scouting plan: **`P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE`**. Type B same-PR. 36/36 PASS. Recommended H_STAR_POSITIONAL_REINGEST.
+- P213B 3_STAR/4_STAR positional data recovery feasibility: **`P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE`** (feasibility: `P213B_POSITIONAL_RECOVERY_POSSIBLE_BUT_SOURCE_UNCONFIRMED`). Type B same-PR. 37/37 PASS. Root cause confirmed: `database.py:463 json.dumps(sorted(numbers))` and fetcher `sorted(...)`. No 3_STAR/4_STAR API endpoint in current fetcher. Source positional order unconfirmed. 4-phase recovery plan documented. Next step: Phase A source audit (`"Authorize P213C 3_STAR/4_STAR source audit (read-only API inspection, no DB write)"`). No code changes. No DB write.
+- P213L controlled missing source-row ingestion: **`P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE`**. Type D. 14/14 PASS. Backup `backups/p213l_lottery_v2_backup_20260605_20260605_151715.db`, sha256 `1b2abd793a3ea3f2d300337eb2db6d2621b52e1600453bc20141377fa6475485`, integrity `ok`. Inserted 4,599 source-only rows; production replay rows unchanged 94,924; draw rows 59,762→64,361; source-to-DB match 11,700/11,700; drift guard PASS. No strategy scan or recommendation change authorized.
+- P246B–P249B BIG_LOTTO canonical isolation arc + governance: **`P249B_ROADMAP_SYNC_ROW_LABEL_CLARIFICATION_COMPLETE`**. 21 tasks (P246B through P249B). PRs #316–#336. DB view `draws_big_lotto_canonical_main` created (Type D). Helper `get_canonical_draws()` view-backed. 9 analysis tools migrated. 15 active paths regression-guarded. Canonical NIST re-audit GREEN (random-compatible; no prediction edge). Governance docs synced. CURRENT_STATE row-count labels disambiguated (replay rows ≠ draw rows). Canonical BIG_LOTTO: 2,113 rows. Raw: 22,238. ADD_ON: 19,100 raw-accessible. No rows deleted. No strategy promotion. No prediction edge implied.
+- P251A–P251E evidence dashboard API arc: dry-run contract (P251A), dashboard data artifact (P251B), API payload contract plan (P251C), read-only replay route implementation (P251D), and full app/TestClient runtime smoke + governance closure (P251E) are complete. `GET /api/replay/evidence-dashboard` is mounted, artifact-backed, DB-free for reads/writes, and returns the published P251B payload unchanged. The dashboard remains evidence-only: no active deployable candidate, no strategy promotion, no UI implementation in this arc, and no betting advice.
+
+**No active deployable candidate in any lottery.**
+
+**Governance simplification (P240D) is now adopted. Task Type A/B/C/D/E and No-op HOLD rule are active.**
+
+**Next authorized steps (each needs separate explicit authorization):**
+- P211 hold resolved: P211R ran and produced HISTORICAL_ARTIFACT result. Any new diagnostic direction requires fresh explicit authorization and pre-registration.
+- Passive monitoring per P224B (≥300 new DAILY_539 draws before next recheck; preferred 500). Prior shifted toward NULL after P230B1.
+- 3_STAR/4_STAR: straight-play arc P214/P214B/P214C COMPLETE with NULL result (0/7 Bonferroni-significant). Box-play remains UNDERPOWERED_NO_SIGNAL. Any new scan requires fresh explicit authorization with hypotheses not derived from observed P214C anomaly.
+- Explore entirely new strategies / hypotheses: requires explicit authorization, fresh P221F pre-registration.
+- POWER_LOTTO first-zone future OOS: only after significant new draws accumulate; requires P221F gate.
+- NIST randomness-audit follow-on (if any): P238B is YELLOW observation-only. Any escalation or confirmation task requires separate explicit authorization. YELLOW does not authorize strategy, production, or any follow-on action.
+
+**Forbidden:** rerun same P221F/P227C/P231B sweeps on same data; promote any strategy; write DB / registry / production / recommendation logic; start model design without authorization.
+
+Final current roadmap marker:
+
+```text
+P249B_ROADMAP_SYNC_ROW_LABEL_CLARIFICATION_COMPLETE
+P249A_POST_ISOLATION_ROADMAP_TRIAGE_COMPLETE
+P248A_BIG_LOTTO_CANONICAL_ISOLATION_GOVERNANCE_CLOSURE_COMPLETE
+P247G_BIG_LOTTO_CANONICAL_ISOLATION_FINAL_GUARD_COMPLETE
+P247F_BIG_LOTTO_ANALYSIS_TOOL_MIGRATION_COMPLETE
+P247E_GET_CANONICAL_DRAWS_VIEW_ADOPTION_COMPLETE
+P247D_BIG_LOTTO_CANONICAL_VIEW_CONSUMER_ADOPTION_AUDIT_COMPLETE
+P247C_BIG_LOTTO_VIEW_POST_APPLY_RECONCILIATION_COMPLETE
+P247B_BIG_LOTTO_CANONICAL_VIEW_APPLIED
+P247A_BIG_LOTTO_CANONICAL_VIEW_DRY_RUN_PLAN_COMPLETE
+P246K_CANONICAL_BIG_LOTTO_NIST_REAUDIT_COMPLETE
+P246J_BIG_LOTTO_ADDON_ISOLATION_ARC_CLOSURE_COMPLETE
+P214E_GOVERNANCE_WORDING_CLEANUP_COMPLETE
+P214D_POST_P214C_STRAIGHT_PLAY_RESEARCH_ARC_DECISION_SUPPORT_COMPLETE
+P214C_3STAR_4STAR_STRAIGHT_PLAY_BONFERRONI_DIAGNOSTIC_SCAN_COMPLETE
+P214B_3STAR_4STAR_STRAIGHT_PLAY_READONLY_DIAGNOSTIC_COMPLETE
+P214_3STAR_4STAR_STRAIGHT_PLAY_FEASIBILITY_PROTOCOL_DESIGN_COMPLETE
+P213L_3STAR_4STAR_CONTROLLED_MISSING_SOURCE_ROW_INGESTION_COMPLETE
+P213K_MISSING_SOURCE_ROW_INGESTION_FEASIBILITY_DESIGN_COMPLETE
+P213B_3STAR_4STAR_POSITIONAL_DATA_RECOVERY_FEASIBILITY_COMPLETE
+P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE
+P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_COMPLETE
+P211R_SHORT_MID_WINDOW_DIAGNOSTIC_COMPLETE
+P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE
+P243A_DIAGNOSTIC_REPORT_FIXTURE_PACK_COMPLETE
+P242_READ_ONLY_STATISTICAL_DIAGNOSTICS_SCHEMA_IMPLEMENTATION_COMPLETE
+P241B_P234_STATISTICAL_DIAGNOSTICS_INVENTORY_COMPLETE
+P241A_TYPE_A_NEXT_SUBSTANTIVE_DIRECTION_DECISION_SUPPORT_COMPLETE
+P240D_GOVERNANCE_SIMPLIFICATION_RULE_ADOPTION_COMPLETE
+P240C_P240B_GOVERNANCE_CLOSEOUT_COMPLETE
+P240B_GOVERNANCE_SIMPLIFICATION_DESIGN_PROPOSAL_COMPLETE
+P238D_P238B_ARTIFACT_BUILD_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE
+P238B_NIST_RANDOMNESS_AUDIT_ARTIFACT_ONLY_BUILD_COMPLETE
+P238C_P238A_BUILD_PLAN_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE
+P238A_NIST_RANDOMNESS_AUDIT_ARTIFACT_ONLY_BUILD_PLAN_READY
+P237D_P237C_DESIGN_DOC_MERGED_GOVERNANCE_CLOSEOUT_COMPLETE
+P237C_NIST_RANDOMNESS_AUDIT_TRIPWIRE_DESIGN_READY
+P236B_GOVERNANCE_MERGE_CLOSEOUT_COMPLETE
+P236A_EXTERNAL_STAT_METHODS_SCOUTING_COMPLETE_FALSIFICATION_AND_DIAGNOSTICS_ONLY
+P235B_LOFEA_FEASIBILITY_GOVERNANCE_CLOSEOUT_MERGED
+P235A_LOFEA_FEASIBILITY_REVIEW_COMPLETE_DESIGN_INSPIRATION_ONLY
+P234A_GOVERNANCE_FOLLOWUP_CEO_DECISION_PARTIALLY_APPROVED_P2_DESIGN_ONLY
+P234_CTO_STATISTICAL_METHODS_ADOPTION_WITH_RISKS
+P233C_LIFECYCLE_UNRESOLVED_REGISTRY_HYGIENE_GOVERNANCE_CLOSEOUT
+P233B_LIFECYCLE_UNRESOLVED_NON_EXECUTABLE_STUB_UPDATE_MERGED_PR277
+P232B_ALL_CATALOG_SCOREBOARD_GOVERNANCE_CLOSEOUT_MERGED_PR275
+P232A_ALL_CATALOG_STRATEGY_HISTORICAL_REPLAY_SCOREBOARD_COMPLETE_MERGED_PR274
+P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL_MERGED_PR272
+```
+
+---
+
+> **⚠️ SUPERSEDED — §1–§7 below are the 2026-06-01 pre-migration snapshot (historical, NOT current truth).**
+>
+> Current truth is **§0 (Current Roadmap Override — 2026-06-02)** above, not the values below:
+> - Production replay DB = **94,924 rows**, `bet_index` **present** (0 nulls), POWER_LOTTO **36,104** — not the `54462` / `absent` / `15142` shown below.
+> - `P186` / `P188` production DB migration is **COMPLETE** (executed + merged via PR #249) — not `[Blocked]`.
+> - PR #252 merge commit = `6e220f2` (immutable historical fact); for current HEAD verify with `git rev-parse HEAD` — not `d1a6817`.
+>
+> Do not read any §1–§7 baseline value, `[Confirmed]` stamp, blocker, or P0–P10 priority as current. See §0.
+
+## 1. Phase Snapshot (2026-06-01 historical)
+
+| Phase / Chain | Status | Evidence | CTO Note |
+|---|---|---|---|
+| P119-P128 trigger / multi-bet / storage design chain | [Confirmed] Complete, historical | P119-P128 artifacts and tests referenced in prior roadmap | Superseded as near-term focus by P149-P185 reconciliation and research closure. Keep as historical guardrail context. |
+| P149-P159B replay product closure | [Confirmed] in handoff / [Drift] on main | `00-Plan/roadmap/CEO-Decision.md`; zen-gates handoff evidence | Replay product closure is accepted in the P159B/zen-gates state, but current `main` remains at 54462 rows and lacks `bet_index` in production DB. |
+| R1/R2 POWER_LOTTO research P161-P178A | [Confirmed] Closed NULL result | `outputs/research/power_lotto/p161_*`, `p177_*`, `p178a_*` | 17 strategies/candidates produced zero corrected-significant OOS edge. No active POWER_LOTTO research, prototype, promotion, or controlled_apply is authorized. |
+| P179 replay product governance backlog decision | [Confirmed] Complete | `outputs/research/power_lotto/p179_replay_product_governance_backlog_decision_gate_20260601.*` | Reprioritized toward main/zen-gates reconciliation and replay product backlog. |
+| P180 combined reconciliation and replay backlog plan | [Confirmed] Complete | `outputs/research/power_lotto/p180_combined_reconciliation_and_replay_backlog_plan_20260601.*` | Plan-only. No execution, DB write, or merge. |
+| P181 code/docs/tests parity plan | [Confirmed] Complete | `outputs/research/power_lotto/p181_code_docs_tests_parity_plan_20260601.*` | Defined Safe/Medium backport and test compatibility strategy. |
+| P182 code/docs/tests parity backport | [Confirmed] Complete | `outputs/research/power_lotto/p182_code_docs_tests_parity_backport_20260601.*`; `active_task.md` history | Copied P161-P181 research artifacts/scripts/tests to main. No DB write; main DB still 54462 and no `bet_index`. |
+| P183 controlled DB migration rehearsal plan | [Confirmed] Complete | `outputs/research/power_lotto/p183_controlled_db_migration_rehearsal_plan_20260601.*` | Found SQLite table recreation is required; simple `ALTER TABLE ADD COLUMN` is insufficient. |
+| P184 controlled DB migration rehearsal on temp copy | [Confirmed] Complete | `outputs/research/power_lotto/p184_controlled_db_migration_rehearsal_temp_copy_20260601.*` | Schema rehearsal passed. Dedup `MAX(id)` reduces 54462 to 54302 base rows matching zen-gates `bet_index=1`. |
+| P185 row-delta import rehearsal on temp copy | [Confirmed] Complete | `outputs/research/power_lotto/p185_row_delta_import_rehearsal_temp_copy_20260601.*`; read-only temp DB query | Full rehearsal passed: 40622 imported rows, final temp rows 94924, exact per-lottery and `bet_index` distribution match. Production DB unchanged. |
+| P186 production DB migration authorization gate | [Blocked] CEO authorization required | P185 report Part F/G | Must approve dedup policy, immutable backup, production lock, SQL review, post-migration validation, and exact production phrase before any production DB write. |
+| SZC1 second-zone containment diagnostic | [Confirmed] Complete | `outputs/research/power_lotto/szc1_second_zone_containment_diagnostic_20260601.*` | Final classification: `SECOND_ZONE_NO_SIGNAL_CONFIRMED`. No stable corrected-significant OOS edge above 0.125. |
+| SZC2 second-zone score-guard static verification | [Confirmed] Complete | `outputs/research/power_lotto/szc2_second_zone_score_guard_audit_20260601.*` | Final classification: `SECOND_ZONE_DISPLAY_ONLY_CONFIRMED`. No static contamination of special fields into recommendation score/ranking/confidence/candidate selection. |
+| New worker task prompt generation | [Blocked] | Current CTO instruction conflict | User asks for a prompt, but strict instructions also say CTO must not produce a new worker task prompt and may only update two files. No `active_task.md` update is performed by CTO. |
+
+---
+
+## 2. System Baseline (2026-06-01 historical — pre-migration)
+
+Read-only checks performed by CTO on 2026-06-01:
+
+| System State | Value | Status |
+|---|---:|---|
+| Current repo | `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` | [Confirmed] |
+| Current branch | `main` | [Confirmed] |
+| Current git-dir | `.git` | [Confirmed] |
+| Current HEAD | `d1a6817 P128: define native multi-bet replay storage design` | [Confirmed] |
+| Production main replay rows | 54462 | [Confirmed] read-only SQLite |
+| Production main `bet_index` column | absent | [Confirmed] read-only SQLite |
+| Production main POWER_LOTTO rows | 15142 | [Confirmed] read-only SQLite |
+| P185 temp rehearsal rows | 94924 | [Confirmed] read-only SQLite |
+| P185 temp `bet_index` column | present | [Confirmed] read-only SQLite |
+| P185 temp POWER_LOTTO rows | 36104 | [Confirmed] read-only SQLite |
+| P185 temp bet_index distribution | 1=54302, 2=16581, 3=15041, 4=6000, 5=3000 | [Confirmed] read-only SQLite |
+| POWER_LOTTO active research | CLOSED | [Confirmed] P178A |
+| POWER_LOTTO second-zone special hit rate | 0.1181 vs 0.125 random | [Confirmed] P161/P162 |
+| New tests run by CTO in this review | Not run | [Confirmed] analysis-only task |
+
+Known worktree risk:
+
+- [Confirmed] The current git status is dirty before this CTO update, including DB/history/runtime/untracked files outside CTO scope.
+- [Confirmed] CTO does not clean, stage, commit, or modify those files.
+- [Inferred] Broad staging or production migration from this state would be risky without a production lock and explicit file allowlist.
+
+---
+
+## 3. Roadmap Alignment Assessment (2026-06-01 historical)
+
+| Item | Classification | Assessment |
+|---|---|---|
+| P179-P185 reconciliation chain | [Aligned] | Correctly follows CEO/P177/P178A recommendation to prioritize main/zen-gates reconciliation over more POWER_LOTTO research. |
+| P185 row-delta rehearsal completion | [Missing] | Completed artifact exists but roadmap was not fully updated before this CTO review. Added to current snapshot. |
+| P186 as next step | [Blocked] | Production migration is technically rehearsed but cannot execute without CEO authorization gate. |
+| P161-P178A POWER_LOTTO research closure | [Aligned] | Existing research properly reports NULL, no edge, no deployment, no wagering advice. |
+| User request for second-zone optimization | [Drift] / [Blocked] | The request points at a new diagnostic/optimization path, but current evidence says second-zone is below random and POWER_LOTTO active research is closed. It must be containment/diagnostic-only unless CEO reopens scope. |
+| Old P0 trigger-governance standby as top priority | [Outdated] | Still valid as a guardrail, but no longer the top maturity blocker. Current P0 is canonical DB reconciliation and migration gate. |
+| Direct P126/P127 controlled applies | [Outdated] | Superseded by P184/P185 migration rehearsal and the 94924-row zen-gates reconciliation path. |
+| Roadmap file structure before this update | [Outdated] | Mixed 2026-05-28 state, 2026-06-01 appended state, and corrupted table text. CTO rewrote into a compact current-state roadmap while preserving historical references. |
+| Active task / worker prompt request | [Blocked] | CTO cannot write `active_task.md` or emit a new worker task prompt under the strict limitations in this request. |
+
+---
+
+## 4. Reprioritized P0-P10 (2026-06-01 historical)
+
+| Priority | Phase | Focus | Current Status | Acceptance Criteria |
+|---|---|---|---|---|
+| **P0.1** | P186 production migration authorization gate | Decide whether production main may migrate from 54462/no `bet_index` to the validated 94924/`bet_index` state | [Blocked] CEO auth required | P186 plan-only artifact approves or rejects dedup policy, backup, production lock, SQL log, validation checklist, rollback, and exact execution phrase. No production DB write in P186. |
+| **P0.2** | Canonical data reconciliation | Resolve main/zen-gates split as a governed system baseline | [Blocked] depends on P186 | Canonical baseline is documented; production DB remains unchanged unless separately authorized; tests and drift guards agree on target state. |
+| **P0.3** | Second-zone special-ball containment and score guard | Prevent below-random special-ball predictions from being promoted, scored, or over-displayed as an edge | [Confirmed] Baseline governance active | Second-zone is locked as display-only / metrics-only. It must not enter recommendation score, ranking, confidence, or candidate selection. |
+| **P0.4** | Governance conflict handling | Resolve current conflict between "produce prompt" and "no new worker task prompt" | [Blocked] CTO cannot override | No new `active_task.md` or worker prompt is produced by CTO; CEO must explicitly authorize a later Planner/Worker task if desired. |
+| **P1.1** | Post-migration quality gate | Prepare tests, drift guards, and skip-marker transition for the migrated 94924-row state | [Deferred] after P186 decision | DB-dependent tests that currently SKIP on main have a clear PASS path after migration; drift guard target is updated only after production migration. |
+| **P1.2** | Replay UI/API disclosure | Surface `bet_index`, lifecycle, provenance, and special-ball confidence honestly | [Deferred] | UI/API do not imply second-zone predictive edge or native multi-bet coverage where evidence is missing. |
+| **P1.3** | Migration operator guide | Convert P184/P185 rehearsal evidence into an operator checklist | [Deferred] | Backup, lock, SQL, validation, rollback, and "no broad staging" steps are explicit and auditable. |
+| **P2.1** | Passive monitoring | Monitor POWER_LOTTO only under P178A reopen conditions | [Waiting] | Reopen only after >=500 new draws after 115000041, documented structural change, independent evidence, or explicit new governance design. |
+| **P2.2** | Second-zone diagnostic-only audit | If CEO authorizes, evaluate special-ball concentration, random/frequency/recency baselines, and rolling stability | [Blocked] needs CEO auth and prompt restriction resolution | Read-only artifact; no strategy promotion; final classification limited to no-signal, weak-observation-only, candidate-needs-more-evidence, or blocked. |
+| **P3** | Other lottery research | DAILY_539, BIG_LOTTO, 3_STAR, 4_STAR research | [Deferred] | Separate authorization; 4_STAR still provenance-gated. |
+| **P4** | Long-term replay product backlog | UI polish, monitoring dashboards, operator reporting | [Deferred] | Does not consume P0/P1 migration or containment capacity. |
+| **P5** | Optional scheduler / automation | Cron/launchd/automation setup | [Deferred] | Explicit OS-level authorization only. |
+| **P6** | External reference review | Architecture notes only if useful | [Paused] | No clone/new repo. |
+| **P7** | Worktree hygiene | Clean-up or archive dirty runtime/data files | [Deferred but risky] | Only with explicit cleanup authorization and file allowlist. |
+| **P8** | Future OOS re-evaluation | Retest only after new data thresholds | [Waiting] | Pre-registered configs, no post-hoc threshold tuning. |
+| **P9** | Product packaging | Release notes / operational docs | [Deferred] | After migration baseline is decided. |
+| **P10** | Long-term cadence | Periodic governance review | [Deferred] | Low-cost checks without no-change PR churn. |
+
+Upgrade / downgrade decisions:
+
+| Item | Decision | Reason |
+|---|---|---|
+| P186 production migration authorization gate | Upgrade to P0 | Production migration is the clearest blocker to canonical data, test parity, and replay product maturity. |
+| Second-zone containment | Upgrade to P0.3 | P161/P162 show special-ball prediction is below random; product must not present it as an edge. |
+| Active POWER_LOTTO optimization | Retire / keep closed | P178A closes active research after 17 NULL outcomes. |
+| More feature-engineering prototypes | Downgrade to P3+ / blocked | Further search increases false-positive risk without new structural evidence. |
+| P123 trigger standby | Downgrade from active P0 to standing guard | Still useful, but not today's bottleneck. |
+| P126/P127 direct replay applies | Retire as near-term path | Superseded by P184/P185 migration reconciliation path. |
+
+---
+
+## 5. Critical Blockers (2026-06-01 historical)
+
+| Blocker | Impact | Why It Blocks | Risk If Ignored | Priority | Acceptance |
+|---|---|---|---|---|---|
+| Main/zen-gates baseline split | Data quality, tests, product truth | Main has 54462 rows and no `bet_index`; validated target has 94924 rows and `bet_index` | Research/UI/tests run against different universes and produce inconsistent conclusions | P0.1/P0.2 | P186 decides gate; no production write until backup, lock, SQL, validation, rollback, and exact phrase are approved. |
+| Irreversible dedup policy | Production DB safety | P184/P185 validated dropping 160 no-provenance rows, but production deletion is still irreversible without backup | Accidental loss of production rows or inability to audit rollback | P0.1 | CEO explicitly approves `MAX(id)` dedup policy and immutable backup procedure. |
+| Second-zone below-random evidence | Product correctness | P161/P162 + SZC1 show no stable edge above 0.125 baseline | Product may overstate weak or negative evidence as an optimization signal | P0.3 | Special-ball output is display-only/metrics-only and excluded from recommendation score/ranking/confidence/candidate selection unless future pre-registered walk-forward corrected-significant evidence beats 0.125. |
+| POWER_LOTTO research closure vs new optimization request | Workflow governance | P178A closes active research; user attachment asks for a new P185 second-zone task, while P185 already exists as DB rehearsal | Duplicate task IDs, scope drift, and unauthorized research restart | P0.4/P2.2 | CEO decides whether to authorize a new diagnostic-only task with a non-conflicting ID and no production changes. |
+| Dirty worktree and runtime/data files | Release safety | Existing modified/untracked DB/history/runtime files are outside CTO scope | Broad staging could commit runtime state or DB artifacts | P1/P7 | Any implementation task uses a strict allowlist and refuses broad staging. |
+| Roadmap corruption / stale sections | Governance clarity | Prior roadmap mixed old priorities, appended new phases, and corrupted rows | Planner may choose outdated P0/P1 tasks | P1 | This roadmap becomes current source of truth; CTO-Analysis explains rewrite reason. |
+
+---
+
+## 6. Recommended System Optimization Directions (2026-06-01 historical)
+
+### Direction A: Canonical Data Reconciliation And Migration Gate
+
+- **Roadmap phase:** P0.1/P0.2
+- **Why important:** The validated replay universe is 94924 rows with `bet_index`; production main is still 54462 rows without `bet_index`.
+- **System maturity gain:** Creates one canonical dataset for replay UI, research, tests, and drift guards.
+- **Expected benefit:** Eliminates split-brain evidence and lets DB-dependent tests move from SKIP to PASS after authorized migration.
+- **Risk:** Production DB migration is irreversible without backup; dedup drops 160 no-provenance rows.
+- **Acceptance:** P186 gate is complete before any production write; production migration only with exact CEO phrase and lock/backup.
+- **Priority:** P0
+
+### Direction B: Second-Zone Special-Ball Evidence Containment (Now Enforced)
+
+- **Roadmap phase:** P0.3 (enforced), P2.2 (future evidence-gated only)
+- **Why important:** Existing special-ball evidence is below random and active research is closed.
+- **System maturity gain:** Prevents a weak signal from contaminating recommendation quality, UI confidence, or future planning.
+- **Expected benefit:** Users see special-ball outputs as low-confidence display/metrics information without contaminating recommendation score.
+- **Risk:** Pressure to "optimize" can become overfitting or false-positive hunting.
+- **Acceptance:** No second-zone promotion/candidate/online basis, no production scoring contamination, and no optimization restart unless future evidence is pre-registered + walk-forward + corrected-significant above 0.125.
+- **Priority:** P0/P1
+
+### Direction C: Post-Migration Quality Gate And Test Parity
+
+- **Roadmap phase:** P1.1
+- **Why important:** P182 added tests that intentionally SKIP on stale main. After migration, those gates must become meaningful.
+- **System maturity gain:** Converts artifact evidence into enforceable CI and regression gates.
+- **Expected benefit:** Fewer hidden mismatches between docs, scripts, and DB reality.
+- **Risk:** Updating guards before migration would encode a false production state.
+- **Acceptance:** Drift guard, skip markers, DB-dependent contracts, and P161-P185 checks align with actual production state after migration only.
+- **Priority:** P1
+
+### Direction D: Roadmap And Task Namespace Governance
+
+- **Roadmap phase:** P0.4/P1.3
+- **Why important:** The project now has a P185 DB rehearsal and a user-supplied P185 second-zone prompt candidate.
+- **System maturity gain:** Prevents task-ID collisions, stale active_task handoff, and unauthorized worker prompt generation.
+- **Expected benefit:** Planner/Worker handoff becomes safer and less ambiguous.
+- **Risk:** If ignored, the next worker may execute the wrong P185.
+- **Acceptance:** CEO/Planner assigns a non-conflicting ID for any future second-zone diagnostic and updates active task under proper authorization.
+- **Priority:** P1
+
+### Direction E: Product Disclosure For Replay Evidence
+
+- **Roadmap phase:** P1.2/P4
+- **Why important:** Replay product value comes from honest visibility, not claimed predictive edge.
+- **System maturity gain:** UI/API clearly separate main-number hits, special-ball hits, bet_index coverage, lifecycle, provenance, and NULL research outcomes.
+- **Expected benefit:** Better operator trust and less risk of overclaiming lottery recommendations.
+- **Risk:** Product copy may lag research conclusions.
+- **Acceptance:** User-facing surfaces do not imply guaranteed improvement, wagering advice, or validated second-zone edge.
+- **Priority:** P1/P2
+
+---
+
+## 7. Today's Recommended Focus (2026-06-01 historical)
+
+**CTO recommendation:** Keep focus on **P186/P187/P188 migration governance chain** while preserving enforced second-zone containment (SZC1/SZC2 complete, display-only guard active).
+
+Do not do today:
+
+- Do not create a new repo.
+- Do not write production DB.
+- Do not copy zen-gates DB over main.
+- Do not run controlled_apply.
+- Do not restart POWER_LOTTO feature engineering.
+- Do not promote or score second-zone strategies as predictive.
+- Do not use second-zone as promotion/candidate/online basis.
+- Do not restart second-zone optimization without pre-registered walk-forward corrected-significant evidence above 0.125.
+- Do not create or update `00-Plan/roadmap/active_task.md` from CTO.
+- Do not emit a new worker task prompt from CTO under the current conflicting instructions.
+
+Final roadmap marker:
+
+```text
+CTO_ROADMAP_UPDATED_WITH_RISKS_20260601
+```
+
+---
+
+## P186 — Production DB Migration Authorization Gate — COMPLETE (2026-06-01)
+
+**Classification**: `P186_PRODUCTION_DB_MIGRATION_AUTHORIZATION_GATE_READY`
+
+12-condition authorization gate. Plan-only — no migration executed.
+
+| Item | Value |
+|------|-------|
+| Production DB rows | 54,462 (UNCHANGED) |
+| Migration executed | **NO** |
+| P187 exact phrase defined | YES |
+| P187 | BLOCKED — CEO exact phrase required |
+| P178A closure | ACTIVE |
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P186_AUTHORIZATION_GATE_20260601
+```
+
+---
+
+## P187 — Production DB Migration Dry-Run Checklist — COMPLETE (2026-06-01)
+
+**Classification**: `P187_PRODUCTION_DB_MIGRATION_DRY_RUN_CHECKLIST_READY`
+
+13-item dry-run checklist for production migration. Plan-only — no DB write.
+
+| Item | Value |
+|------|-------|
+| Production DB rows | 54,462 (UNCHANGED) |
+| Migration executed | NO |
+| Checklist items | 13 DRC + 12 SQL review + backup/rollback |
+| P188 | BLOCKED — CEO exact destructive phrase required |
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P187_DRY_RUN_CHECKLIST_20260601
+```
+
+---
+
+## P188 — Production DB Migration Execution — COMPLETE (2026-06-01)
+
+**Classification**: `P188_PRODUCTION_DB_MIGRATION_EXECUTED_RECONCILED_94924`
+
+Production DB migration executed. DB-level reconciliation complete.
+
+| Item | Value |
+|------|-------|
+| Production DB rows | **94,924** (migrated from 54,462) |
+| bet_index | **PRESENT** |
+| Backup | `backups/p188_lottery_v2_backup_20260601_153821.db` |
+| Integrity check | ok |
+| DB-level split | **RECONCILED** |
+| Code/docs/tests parity | Completed in P182 |
+| Commit/push | **NOT YET** — awaiting P189 authorization |
+| P189 | BLOCKED |
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P188_PRODUCTION_DB_MIGRATION_20260601
+```
+
+---
+
+## P189 — Post-Migration Verification and Commit Readiness Audit — COMPLETE (2026-06-01)
+
+**Classification**: `P189_POST_MIGRATION_VERIFICATION_COMMIT_READINESS_READY`
+
+| Item | Status |
+|------|--------|
+| Production DB | 94,924 rows, bet_index PRESENT |
+| Drift guard | UPDATED → PASS |
+| Tests | 600 PASS, 0 FAIL, 0 SKIP |
+| Stage/commit/push | NOT YET |
+| P190 | BLOCKED |
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P189_POST_MIGRATION_VERIFICATION_20260601
+```
+
+---
+
+## P190 — Commit Readiness and Staging Plan — COMPLETE (2026-06-01)
+
+**Classification**: `P190_COMMIT_READINESS_AND_STAGING_PLAN_READY`
+
+Post-migration commit readiness audit + staging whitelist plan produced. No stage/commit/push.
+
+| Item | Value |
+|------|-------|
+| Production DB rows | **94,924** (bet_index PRESENT) |
+| Phase 0 verification | ALL PASS |
+| Tests (P178A-P189) | **644 PASS, 0 FAIL, 0 SKIP** |
+| Drift guard | PASS |
+| Staged / committed / pushed | **0 / 0 / 0** |
+| Staging whitelist | 8 groups (A-H) documented |
+| Forbidden staging policy | Documented (*.pid, runtime/, .gstack/, .fuse_hidden*, DB.bak_*) |
+| Commit message draft | Ready |
+| P191 options | 5 authorization options defined |
+| Post-migration verification | **COMPLETE** |
+| Stage/commit/push | **DEFERRED to P191** |
+| POWER_LOTTO R2 research | **CLOSED** (P178A) |
+| P191 | **BLOCKED — CEO authorization required** |
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P190_COMMIT_READINESS_STAGING_PLAN_20260601
+```
+
+---
+
+## P191 — Stage Reviewed Files and Create Local Commit — COMPLETE (2026-06-01)
+
+**Classification**: `P191_STAGE_REVIEWED_FILES_LOCAL_COMMIT_READY`
+
+Reviewed whitelist (109 files) staged and local commit created. No push.
+
+| Item | Value |
+|------|-------|
+| Production DB rows | **94,924** (bet_index PRESENT) |
+| Files staged | 109 (0 forbidden) |
+| Local commit | **CREATED** |
+| Push | **NOT YET** — P192 BLOCKED |
+| POWER_LOTTO R2 research | **CLOSED** (P178A) |
+| P192 | **BLOCKED — CEO authorization required** |
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P191_STAGE_LOCAL_COMMIT_20260601
+```
+
+---
+
+## P192 — Push to origin/main — REJECTED (2026-06-01)
+
+**Classification**: `P192_PUSH_REJECTED`
+
+Direct push to main rejected by GitHub branch protection.
+
+| Item | Value |
+|------|-------|
+| Push result | **REJECTED** — GH006 branch protection, required check `replay-default-validation` |
+| Large file | lottery_v2.db = 96MB; backup = 51MB (exceed 50MB recommendation) |
+| Local commit | `012d4a3` INTACT |
+| origin/main | UNCHANGED |
+| Remote/main reconciliation | **NOT YET** |
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P192_PUSH_REJECTED_20260601
+```
+
+---
+
+## P193 — Push Rejection Remediation Plan — COMPLETE (2026-06-01)
+
+**Classification**: `P193_PUSH_REJECTION_REMEDIATION_PLAN_READY`
+
+Remediation plan produced. No file modifications. CTO recommends Option B (remove DB binaries).
+
+| Item | Value |
+|------|-------|
+| Options assessed | 5 (A-E) |
+| CTO primary | **Option B — Remove DB binaries from commit** |
+| Remote/main | **NOT YET** |
+| POWER_LOTTO R2 research | **CLOSED** (P178A) |
+| P194 | **BLOCKED — CEO authorization required** |
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P193_PUSH_REJECTION_REMEDIATION_PLAN_20260601
+```
+
+---
+
+## P194 — Remove DB Binaries from Local Commit Plan — COMPLETE (2026-06-01)
+
+**Classification**: `P194_REMOVE_DB_BINARIES_FROM_LOCAL_COMMIT_PLAN_READY`
+
+Binary removal plan produced. No file modifications in P194.
+
+| Item | Value |
+|------|-------|
+| P191 local commit | `012d4a3` INTACT — should NOT be pushed as-is |
+| Large binary inventory | lottery_v2.db = 96MB, backup = 51MB |
+| SHA256 evidence | `a5ac27a6...` (prod DB), `5eea5313...` (backup) |
+| Recommended approach | Approach 1: soft reset + recommit + manifest + .gitignore |
+| Binary removal strategy | PLANNED (not yet executed) |
+| POWER_LOTTO R2 research | **CLOSED** (P178A) |
+| P195 | **BLOCKED — CEO authorization required** |
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P194_REMOVE_DB_BINARIES_PLAN_20260601
+```
+
+---
+
+## P195 — Remove DB Binaries Execution Plan — COMPLETE (2026-06-01)
+
+**Classification**: `P195_REMOVE_DB_BINARIES_FROM_LOCAL_COMMIT_EXECUTION_PLAN_READY`
+
+9-step execution plan for P196 produced. Manifest design ready. No file modifications.
+
+| Item | Value |
+|------|-------|
+| P194 plan | COMPLETE |
+| P196 execution plan | READY — soft reset + recommit + manifest + .gitignore |
+| DB SHA256 evidence | `a5ac27a6...` (prod), `5eea5313...` (backup) |
+| Manifest path | `docs/db_migration_manifest_p188_p191.json` |
+| Binary removal | PLANNED (not yet executed) |
+| POWER_LOTTO R2 research | **CLOSED** (P178A) |
+| P196 | **BLOCKED — CEO authorization required** |
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P195_REMOVE_DB_BINARIES_EXECUTION_PLAN_20260601
+```
+
+---
+
+## P196 — Remove DB Binaries: Soft Reset and Recommit — COMPLETE (2026-06-01)
+
+**Classification**: `P196_REMOVE_DB_BINARIES_RECOMMIT_NON_BINARY_READY`
+
+Binary-heavy P191 commit replaced with non-binary recommit. Local DB and backup preserved.
+
+| Item | Value |
+|------|-------|
+| Binary-heavy P191 commit | **REPLACED** by non-binary local commit |
+| DB binary in new commit | **NONE** |
+| Production DB (local) | 94924 rows, 96MB — **LOCAL ONLY** |
+| Backup DB (local) | 54462 rows, 51MB — **LOCAL ONLY** |
+| Push | **NOT YET** |
+| POWER_LOTTO R2 research | **CLOSED** (P178A) |
+| P197 | **BLOCKED — CEO authorization required** |
+
+```text
+CTO_ROADMAP_UPDATED_AFTER_P196_REMOVE_DB_BINARIES_RECOMMIT_20260601
+```
+
+## P280K — BIG 6/49 First Future-Publication Readiness and Owner Decision Package (2026-06-19)
+
+- **P280K**: readiness / owner-decision package complete. PR #457 is MERGED at merge SHA `aa9ea86338f6af0211c638ad3f449bdead84d1d0` with parents `fc8225222430f2bfde3b480df75441c8e93ed05b` and `5efcc1e480e6a1aebda47cd76a0b2115f7d9d469`.
+- **P280J**: P280D worktree cleanup complete. `/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p280d` was removed with `git worktree remove`; the local and remote branch `task/p280d-big649-future-only-freeze-protocol` remain retained at `5efcc1e480e6a1aebda47cd76a0b2115f7d9d469`.
+- The exact seven-file P280D protocol scope remains frozen on `main`; zero-DB protocol merged; all 11 BIG strategies remain frozen under the future-only protocol.
+- Future publication remains unauthorized: no real target draw selected, no real ticket published, no deadline looked up, no future evaluation started, no activation.
+- Historical 750 evidence remains post-hoc only and cannot be used for candidate selection.
+- Required next owner decision items: target draw selection, deadline lookup authorization, one-time manifest generation, target-specific prediction branch, immutable pre-deadline PR, branch/PR retention to closeout, and separate post-draw evaluator planning.
+- Fallback if declined: `P280L_BIG649_PUBLICATION_DRY_RUN_REHEARSAL_ONLY`.
+- Protocol status booleans: `prediction_success_claim=false`, `strategy_promoted=false`, `activation_authorized=false`.
+- Recommended next state: `WAITING_FOR_USER_AUTHORIZATION`.
+
+## P254A–P254B Fetcher Repair Arc — CLOSED (2026-06-08)
+
+- **PR #360** ACCEPT_BACKFILL_DB_DRIFT_2026_0608: accepted 5 auto-backfilled draws; BIG_LOTTO baseline updated to raw=22,239 / canonical=2,114. Merged `234cc02`.
+- **PR #361** P254A repair fetcher backfill modules: restored `lottery_api/fetcher/*` (deleted in `7306264`); fixed ADD_ON `isdigit()` crash. Merged `36f6862`.
+- **P254B** governance closure: incident chain documented; lessons recorded; returns to `WAITING_FOR_USER_AUTHORIZATION`.
+
+```text
+FETCHER_REPAIR_GOVERNANCE_CLOSURE_COMPLETE_20260608
+```
+
+## P255A–P255D Ingest Write Guard Arc — CLOSED (2026-06-08)
+
+- **P255A** (PR #363): Ingest/backfill safety audit — 5 write-capable paths, 6 auto-trigger risks, 8 guardrails recommended. `INGEST_BACKFILL_SAFETY_AUDIT_COMPLETE`.
+- **P255B** (PR #364): Ingest write guard design — G01–G08 specifications documented. `INGEST_WRITE_GUARD_DESIGN_COMPLETE`.
+- **P255C** (PR #365, `4304a09`): G01 (dry_run default True) + G02 (server-side confirm token) implemented in `lottery_api/routes/ingest.py`. 42 new tests pass. `INGEST_WRITE_GUARD_IMPLEMENTATION_COMPLETE`.
+- **P255D**: Runtime smoke (8 cases via TestClient + mock) + governance closure. DB baseline 22,239/2,114 unchanged. Deferred G03–G08 to P255E+. `INGEST_WRITE_GUARD_RUNTIME_SMOKE_GOVERNANCE_CLOSURE_COMPLETE`.
+- **Next authorized**: P255E+ requires explicit authorization (UI confirmation, audit log, SHA backup, idempotency, CORS, env gate).
+
+```text
+INGEST_WRITE_GUARD_RUNTIME_SMOKE_GOVERNANCE_CLOSURE_COMPLETE_20260608
+```
+
+## P256A Feature-Information MI Null-Framework — CLOSED (2026-06-08)
+
+- **P256A** (PR #367, `eb3915a`): Pre-registered family of 39 MI tests (2 freq-features × 6 P221F windows + 1 lag × 3 lotteries). Monte-Carlo/Binomial null (L96 fix). Zero Bonferroni survivors. `HOLD_NULL_RESULT`. No deployable edge; prediction validity boundary unchanged. 35/35 tests PASS.
+
+```text
+P256A_FEATURE_INFORMATION_MI_NULL_ASSESSMENT_COMPLETE_NULL_RESULT_20260608
+```
+
+## P257A–P257C Best Strategy Overview Arc — CLOSED (2026-06-08)
+
+- **P257A** (PR #368, `e629e46`): Best N-Bet Strategy Overview historical replay data + UI contract. 14 best-strategy entries (BIG_LOTTO N=1–4, DAILY_539 N=1–5, POWER_LOTTO N=1–5). Portfolio metrics, high-hit events, page contract. 31/31 tests PASS. `P257A_BEST_NBET_STRATEGY_OVERVIEW_HISTORICAL_REPLAY_DATA_READY`.
+- **P257B** (PR #369, `8fa354d`): Read-only API `GET /api/replay/best-strategy-overview` + `#p257-overview-section` in index.html. 18+13 tests PASS. `P257B_BEST_STRATEGY_OVERVIEW_READONLY_UI_IMPLEMENTED`.
+- **P257C**: Runtime smoke PASS (39/39). API HTTP 200, artifact-backed. UI nav/section/tabs/labels/empty-states verified. Forbidden wording absent from P257B region. DB 94,924 unchanged. `P257C_BEST_STRATEGY_OVERVIEW_RUNTIME_SMOKE_GOVERNANCE_CLOSEOUT_COMPLETE`.
+
+```text
+P257C_BEST_STRATEGY_OVERVIEW_RUNTIME_SMOKE_GOVERNANCE_CLOSEOUT_COMPLETE_20260608
+```
+
+## P258 Prediction-Accuracy-Only Research Round — OPEN (2026-06-08)
+
+- **P258-PRE0** (PR #371, `96a5175`): Worktree disposition + CURRENT_STATE draw-total reconcile (64,361→64,366). Draw delta = legitimate post-draw backfill (`ingest_log.jsonl`), NOT data drift; DB integrity ok, replay 94,924 unchanged. Committed 16 net-new P250–P253 artifacts; reverted 25 timestamp-churned. `P258_PRE0_WORKTREE_DISPOSITION_COMPLETE`.
+- **P258A**: Prediction-accuracy-only research intake protocol (read-only). External-agent prompt (exactly 3 method directions; ignore CP/EV/payout/cost/ROI), scoring rubric, hard rejection rules, P257A best-N-bet baseline + P256A NULL risk boundary. All statistical gates retained. 22/22 tests PASS. **CEO framing: protocol value = rejection discipline, not edge discovery (P256A NULL / L82 / L91).** `P258A_PREDICTION_ACCURACY_RESEARCH_INTAKE_PROTOCOL_READY`.
+- **P258B** (PR #373 merged): External-response evaluation complete. D2 HARD_REJECT (L82/L91/L73/L104/L105 set-geometry, no survival arg). D1 REJECT_INSUFFICIENT_EVIDENCE (missing P256A boundary, L106 NULL, L86/L89 overfit). D3 `AdversarialNullSurvivorGate` ACCEPT — selected as pre-registration candidate (methodology gate only, not predictor). 40/40 tests PASS. `P258B_READ_ONLY_PREREGISTRATION_CANDIDATE_SELECTED`.
+- **P258C**: D3 `AdversarialNullSurvivorGate` read-only pre-registration design complete. Matched adversarial-null family (M≥1000, per-draw Binomial null per L96), provenance/leakage gates, chronological OOS, short/mid/long, paired-vs-P257A + null-percentile endpoints, BH-FDR+Bonferroni, 6 risk-control triggers. Falsification-only — never promotes; not a predictor; no accuracy claim. 26/26 tests PASS. `P258C_D3_READ_ONLY_PREREGISTRATION_DESIGN_READY`.
+- **P258D** (PR #374 merged P258C): D3 gate read-only IMPLEMENTATION PLAN complete — module boundaries (6 layers + import-ban), proposed future P258E module names (not created), data contracts (candidate/baseline/null/provenance), 6-point validation contract, future artifact schema (gate_decision ∈ {REJECTED, NOT_YET_REJECTED}) + 8-point test plan, 8 STOP gates. Plan only — no executable gate, no backtest, no DB write; passing = not-yet-rejected, never approved. 26/26 tests PASS. `P258D_D3_READ_ONLY_IMPLEMENTATION_PLAN_READY`.
+- **P258E** (PR #376 merged): D3 gate read-only SKELETON / contract tests complete — `GateStatus` limited to `REJECTED` / `NOT_YET_REJECTED`, schema dataclasses, and validation-stub package created under `lottery_api/research/d3_gate/`. No executable gate evaluation, no backtest, no DB write. `P258E_D3_READ_ONLY_SKELETON_CONTRACT_TESTS_READY`.
+- **P258F**: D3 gate read-only CONTRACT VALIDATORS ready — schema/provenance/timestamp/baseline/matched-null/correction-family/no-approval checks only. No executable gate evaluation, no null generation, no p-values/statistical tests, no backtest, no DB/recommendation/registry/production/controlled_apply/deployment. Passing validators is not approval and not an accuracy claim. `P258F_D3_READ_ONLY_CONTRACT_VALIDATORS_READY`.
+- **P258G** (PR #377 merged): synthetic-fixture-only contract validator hardening. Synthetic fixtures only; no real candidate methods, no executable gate evaluation, no null generation, no p-values, no paired tests, no backtest, no DB write. `P258G_D3_SYNTHETIC_FIXTURE_VALIDATOR_HARDENING_READY`.
+- **P258H** (2026-06-09): read-only contract-validation integration plan only. Defines validator invocation order (6 validators, fail-closed), allowed input contract boundaries (5 contracts: candidate provenance, P257A baseline, matched-null metadata, correction-family declaration, status/result), future validation report schema, import boundary plan, 7 STOP gates, and future task split. No real candidate methods, no executable gate evaluation, no null generation, no p-values, no paired tests, no backtest, no DB write. 74/74 tests PASS. `P258H_D3_READ_ONLY_CONTRACT_VALIDATION_INTEGRATION_PLAN_READY`.
+- **P258I** (2026-06-09): read-only contract-validation integration skeleton only. Created `lottery_api/research/d3_gate/integration_skeleton.py` with static metadata (VALIDATOR_INVOCATION_ORDER 6-step, ALLOWED_INPUT_CONTRACT_BOUNDARIES 5-contract, FAIL_CLOSED_POLICY, FORBIDDEN_IMPORTS_AND_PATHS), safety semantic constants, `build_contract_validation_plan()` (static dict), `run_contract_validation_flow()` (NotImplementedError). No executable gate, no nulls, no DB. 85/85 tests PASS. `P258I_D3_READ_ONLY_CONTRACT_VALIDATION_INTEGRATION_SKELETON_READY`.
+- **P258J** (2026-06-09): read-only synthetic integration skeleton tests / dry-contract fixtures only. 114 tests covering complete 6-validator round-trip with synthetic fixtures, 13 invalid fixture cases, 4 static safety cases, validator order guard, fail-closed policy, forbidden import/function checks. No real candidates, no strategy artifacts, no executable gate. 114/114 PASS. `P258J_D3_READ_ONLY_SYNTHETIC_INTEGRATION_SKELETON_TESTS_READY`.
+- **P258K** (2026-06-09): read-only integration contract documentation closeout. Consolidated P258A–P258J arc: 10-task milestone chain, final arc status (READ_ONLY_FOUNDATION_COMPLETE), module inventory (schemas.py/gate_validation.py/integration_skeleton.py — all non-executable), test inventory (372+ tests), governance final recommendation (HOLD). **P258 D3 arc CLOSED.** 81/81 tests PASS. `P258K_D3_INTEGRATION_CONTRACT_DOCUMENTATION_CLOSEOUT_READY`.
+
+**P258 arc status: CLOSED — HOLD / WAITING_FOR_USER_AUTHORIZATION**
+
+- **P258L** (2026-06-09): D3 Strategy Status / Contract Audit page plan. Read-only audit/index page contract with 15 row fields, 5 allowed D3 contract statuses, 5 forbidden statuses, 4 data sources, 6 filters, required safety copy. No UI, no API, no executable gate. 83/83 tests PASS. `P258L_D3_STRATEGY_STATUS_AUDIT_PAGE_PLAN_READY`.
+- **P258M** (2026-06-09): D3 Strategy Status Audit artifact-backed API contract. Defines `GET /api/replay/d3-strategy-status-audit` contract: 11 top-level payload fields, 15 row fields, 5 allowed D3 statuses, 5 forbidden statuses, 6 filters, 5 required safety disclaimers, data source policy (artifact-backed only, no DB query in first implementation). No API route implemented, no UI, no executable gate, no DB query/write. 76/76 tests PASS. `P258M_D3_STRATEGY_STATUS_AUDIT_API_CONTRACT_READY`.
+- **P258N** (2026-06-09): D3 Strategy Status Audit read-only artifact-backed API route. Implements `GET /api/replay/d3-strategy-status-audit` in `lottery_api/routes/replay.py`. Serves 14-row payload (DAILY_539/BIG_LOTTO/POWER_LOTTO) from p258n artifact. All P258M row fields present; only allowed D3 statuses; all 5 safety disclaimers. No DB query, no D3 execution, no real candidates, no UI. 63/63 tests PASS. `P258N_D3_STRATEGY_STATUS_AUDIT_READONLY_API_ROUTE_READY`.
+- **P258O** (2026-06-09): D3 Strategy Status Audit read-only UI display. `index.html` — nav button + section `p258-d3-audit`. Fetches `GET /api/replay/d3-strategy-status-audit`. Purple safety banner (5 disclaimers). Two column groups: lifecycle/evidence (blue) vs D3 contract (purple, labeled "非核准"). Client-side filters (lottery_type/lifecycle/d3_contract_status). Only allowed D3 statuses. No DB, no D3 execution, no API changes. 47/47 tests PASS. `P258O_D3_STRATEGY_STATUS_AUDIT_READONLY_UI_DISPLAY_READY`.
+- **P258P** (2026-06-09): D3 Strategy Status Audit E2E/UX/safety closeout. API verified: 200, 14 rows, all required fields, only allowed D3 statuses, all 5 disclaimers. UI verified: nav button, section, disclaimer banner, two column groups (lifecycle/evidence vs D3 contract labeled 非核准), 3 filters, summary bar, empty/error/loading states, no forbidden vocabulary. 52/52 tests PASS. **P258L–P258P arc CLOSED.** `P258P_D3_STRATEGY_STATUS_AUDIT_E2E_UX_SAFETY_CLOSEOUT_READY`.
+
+**P258 D3 Strategy Status Audit arc status: CLOSED — HOLD / WAITING_FOR_USER_AUTHORIZATION**
+
+```text
+P258P_D3_STRATEGY_STATUS_AUDIT_E2E_UX_SAFETY_CLOSEOUT_READY_20260609
+```

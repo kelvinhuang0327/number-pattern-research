@@ -1,0 +1,42 @@
+{
+  "task_id": "P329A_D5_PIXEL_BROWSER_EVIDENCE_OR_DEMO_PACKAGE",
+  "authorization_phrase": "AUTHORIZE_P329A_D5_PIXEL_BROWSER_EVIDENCE_REPO_EXTERNAL_ONLY_NO_REPO_CHANGE_NO_DB_WRITE",
+  "final_classification": "P329A_D5_PIXEL_BROWSER_EVIDENCE_COMPLETE_WITH_NOTES",
+  "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p300a-d5-ui",
+  "origin_main_head": "ce2c042e7f4967841e6b31e17552d55bf4717f91",
+  "evidence_root": "/Users/kelvin/Kelvin-WorkSpace/p329a_d5_pixel_browser_evidence_20260701_194515",
+  "p328a_evidence_root": "/Users/kelvin/Kelvin-WorkSpace/p328a_d5_baseline_results_post_push_acceptance_20260701_193612",
+  "repo_changes": false,
+  "db_writes": false,
+  "new_dependencies_added": false,
+  "production_apply": false,
+  "registry_publication": false,
+  "future_tickets_created": false,
+  "browser_tooling_used": "system-installed Google Chrome headless (--headless=new); chrome extension had 0 connected browsers; playwright not installed",
+  "static_server": "python3 -m http.server 8931 --bind 127.0.0.1 (temporary, stopped at end, no repo config written)",
+  "validations": {
+    "build_p326a_baseline_summary_byte_identical": "PASS",
+    "node_check_lottery_d5_js": "PASS",
+    "pytest_23_tests": "PASS",
+    "dom_required_values_confirmed": "PASS (12/12)",
+    "pixel_screenshot_of_toggled_d5_tab": "NOT_CAPTURED (tooling limitation, documented)",
+    "console_log_capture": "PASS (no D5-baseline-related errors)",
+    "no_loader_failure_string_for_d5": "PASS",
+    "no_forbidden_wording_introduced": "PASS",
+    "final_git_status_clean": "PASS",
+    "db_path_clean": "PASS"
+  },
+  "files": {
+    "phase0_state.md": {"sha256": "001d191713a225a8c0b6fafba12706ca2e76b87fc427d871c3f5660aa38ea14e", "bytes": 1244},
+    "commands.log": {"sha256": "b8098c2843ca36b65cda37b8714f4cc282b0c84d8b054bb951a46636ffd011ff", "bytes": 829},
+    "browser_dom_or_screenshot.md": {"sha256": "79b0654682563bd06dc4a2499cad71c27ddfd189958e82d5f103d15a0dd5eee8", "bytes": 3437},
+    "console_log_summary.md": {"sha256": "3c6f92ecad8483cb9c028b756ef6b09e21c1fa312ab264ae0fcb6e849dffc9f5", "bytes": 1738},
+    "validation_summary.md": {"sha256": "b94b8be6bcf1eccd7d36d2d56492fa6ab78f897439e9c346b02c9e1a74a662f0", "bytes": 3224},
+    "dom_dump_default.html": {"sha256": "619f648544d37a75c249ed389c79524c0a968a9ebef3bbc66a737dc779c2520e", "bytes": 586260},
+    "dom_dump_console_run.html": {"sha256": "aab69a91ba56de352bbeb9fccd128f47333780d4d18736d9b6fcf73e324a86e9", "bytes": 587678},
+    "screenshot_default_load.png": {"sha256": "0d8b6002456001cde320d9a50ab0402759a90e04238e06406817b77e33560760", "bytes": 321062},
+    "chrome_console_stderr.log": {"sha256": "08af5e7e1f56ea5d756045bade4c9e64f4dfdf943f6a1d56c78bd09e67bb606e", "bytes": 995644},
+    "chrome_dump_stderr.log": {"sha256": "0854e5974255dde4fe30715a7f6c9b13751fd1f98eb4493606f7df6292eba0cc", "bytes": 428},
+    "chrome_screenshot_stderr.log": {"sha256": "bf48b50db7d37037fa98978bd9c1812fb5d52231199917130941ed32a9aff2c7", "bytes": 437}
+  }
+}

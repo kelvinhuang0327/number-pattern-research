@@ -1,0 +1,237 @@
+{
+  "artifact_prefix": "P518G_predraw_ledger_verify_edge_matrix",
+  "cases": [
+    {
+      "actual_exit": 1,
+      "case_id": "malformed_jsonl_row",
+      "description": "truncated JSONL row returns chain-invalid nonzero status",
+      "expected_exit": 1,
+      "expected_signal": "unparseable/truncated",
+      "invariant_notes": "no canonical DB open/write; no migration/backfill; no deploy; synthetic fixtures only; not production release approval; no betting/future prediction claims",
+      "ledger_input": "${P518G_EDGE_TMP}/edge_malformed_jsonl_row.jsonl",
+      "requirement": "malformed JSONL row",
+      "semantic_notes": "existing verifier detects JSON decode failure during chain verification",
+      "signal_present": true,
+      "status": "PASS"
+    },
+    {
+      "actual_exit": 0,
+      "case_id": "empty_ledger_file",
+      "description": "empty ledger file is valid with zero records",
+      "expected_exit": 0,
+      "expected_signal": "record_count=0",
+      "invariant_notes": "no canonical DB open/write; no migration/backfill; no deploy; synthetic fixtures only; not production release approval; no betting/future prediction claims",
+      "ledger_input": "${P518G_EDGE_TMP}/edge_empty_ledger_file.jsonl",
+      "requirement": "empty ledger file",
+      "semantic_notes": "existing verifier treats an empty ledger as structurally valid",
+      "signal_present": true,
+      "status": "PASS"
+    },
+    {
+      "actual_exit": 1,
+      "case_id": "missing_required_field",
+      "description": "chain-consistent record missing strategy_id is reported malformed",
+      "expected_exit": 1,
+      "expected_signal": "strategy_id",
+      "invariant_notes": "no canonical DB open/write; no migration/backfill; no deploy; synthetic fixtures only; not production release approval; no betting/future prediction claims",
+      "ledger_input": "${P518G_EDGE_TMP}/edge_missing_required_field.jsonl",
+      "requirement": "missing required field",
+      "semantic_notes": "existing verifier flags required-field omissions after chain validation",
+      "signal_present": true,
+      "status": "PASS"
+    },
+    {
+      "actual_exit": 0,
+      "case_id": "duplicate_draw_record_supported",
+      "description": "duplicate target draw identity remains valid under current verifier semantics",
+      "expected_exit": 0,
+      "expected_signal": "validation_status=VALID",
+      "invariant_notes": "no canonical DB open/write; no migration/backfill; no deploy; synthetic fixtures only; not production release approval; no betting/future prediction claims",
+      "ledger_input": "${P518G_EDGE_TMP}/edge_duplicate_draw_record_supported.jsonl",
+      "requirement": "duplicate draw record if supported by verifier behavior",
+      "semantic_notes": "current verifier does not reject duplicate draw identity records",
+      "signal_present": true,
+      "status": "PASS"
+    },
+    {
+      "actual_exit": 0,
+      "case_id": "wrong_game_identifier_supported",
+      "description": "unknown lottery_type remains valid under current verifier semantics",
+      "expected_exit": 0,
+      "expected_signal": "lottery_type=MYSTERY_LOTTO",
+      "invariant_notes": "no canonical DB open/write; no migration/backfill; no deploy; synthetic fixtures only; not production release approval; no betting/future prediction claims",
+      "ledger_input": "${P518G_EDGE_TMP}/edge_wrong_game_identifier_supported.jsonl",
+      "requirement": "wrong game identifier if supported by verifier behavior",
+      "semantic_notes": "current verifier requires the lottery_type field but does not validate its enum",
+      "signal_present": true,
+      "status": "PASS"
+    },
+    {
+      "actual_exit": 1,
+      "case_id": "prev_hash_mismatch_chain_invalid",
+      "description": "stored prev_record_hash mismatch returns chain-invalid nonzero status",
+      "expected_exit": 1,
+      "expected_signal": "prev_record_hash mismatch",
+      "invariant_notes": "no canonical DB open/write; no migration/backfill; no deploy; synthetic fixtures only; not production release approval; no betting/future prediction claims",
+      "ledger_input": "${P518G_EDGE_TMP}/edge_prev_hash_mismatch_chain_invalid.jsonl",
+      "requirement": "inconsistent hash chain beyond existing tampered case",
+      "semantic_notes": "existing verifier detects a distinct chain linkage mismatch",
+      "signal_present": true,
+      "status": "PASS"
+    },
+    {
+      "actual_exit": 0,
+      "case_id": "no_db_invariant_evidence",
+      "description": "harness records no canonical DB open/write and no migration/backfill/deploy",
+      "expected_exit": 0,
+      "expected_signal": "no canonical DB open/write",
+      "invariant_notes": "no canonical DB open/write; no migration/backfill; no deploy; synthetic fixtures only; not production release approval; no betting/future prediction claims",
+      "ledger_input": "none",
+      "requirement": "DB side-effect invariant",
+      "semantic_notes": "temporary synthetic fixtures are the only inputs",
+      "signal_present": true,
+      "status": "PASS"
+    }
+  ],
+  "coverage": [
+    {
+      "case_id": "malformed_jsonl_row",
+      "covered": true,
+      "invariant_notes": "no canonical DB open/write; no migration/backfill; no deploy; synthetic fixtures only; not production release approval; no betting/future prediction claims",
+      "notes": "existing verifier detects JSON decode failure during chain verification",
+      "requirement": "malformed JSONL row",
+      "verifier_semantic_change_required": false
+    },
+    {
+      "case_id": "empty_ledger_file",
+      "covered": true,
+      "invariant_notes": "no canonical DB open/write; no migration/backfill; no deploy; synthetic fixtures only; not production release approval; no betting/future prediction claims",
+      "notes": "existing verifier treats an empty ledger as structurally valid",
+      "requirement": "empty ledger file",
+      "verifier_semantic_change_required": false
+    },
+    {
+      "case_id": "missing_required_field",
+      "covered": true,
+      "invariant_notes": "no canonical DB open/write; no migration/backfill; no deploy; synthetic fixtures only; not production release approval; no betting/future prediction claims",
+      "notes": "existing verifier flags required-field omissions after chain validation",
+      "requirement": "missing required field",
+      "verifier_semantic_change_required": false
+    },
+    {
+      "case_id": "duplicate_draw_record_supported",
+      "covered": true,
+      "invariant_notes": "no canonical DB open/write; no migration/backfill; no deploy; synthetic fixtures only; not production release approval; no betting/future prediction claims",
+      "notes": "current verifier does not reject duplicate draw identity records",
+      "requirement": "duplicate draw record if supported by verifier behavior",
+      "verifier_semantic_change_required": false
+    },
+    {
+      "case_id": "wrong_game_identifier_supported",
+      "covered": true,
+      "invariant_notes": "no canonical DB open/write; no migration/backfill; no deploy; synthetic fixtures only; not production release approval; no betting/future prediction claims",
+      "notes": "current verifier requires the lottery_type field but does not validate its enum",
+      "requirement": "wrong game identifier if supported by verifier behavior",
+      "verifier_semantic_change_required": false
+    },
+    {
+      "case_id": "prev_hash_mismatch_chain_invalid",
+      "covered": true,
+      "invariant_notes": "no canonical DB open/write; no migration/backfill; no deploy; synthetic fixtures only; not production release approval; no betting/future prediction claims",
+      "notes": "existing verifier detects a distinct chain linkage mismatch",
+      "requirement": "inconsistent hash chain beyond existing tampered case",
+      "verifier_semantic_change_required": false
+    },
+    {
+      "case_id": "no_db_invariant_evidence",
+      "covered": true,
+      "invariant_notes": "no canonical DB open/write; no migration/backfill; no deploy; synthetic fixtures only; not production release approval; no betting/future prediction claims",
+      "notes": "temporary synthetic fixtures are the only inputs",
+      "requirement": "DB side-effect invariant",
+      "verifier_semantic_change_required": false
+    }
+  ],
+  "fixture_scope": "synthetic temporary JSONL ledgers only",
+  "no_db_evidence": {
+    "canonical_db_exists_after": true,
+    "canonical_db_exists_before": true,
+    "canonical_db_opened": false,
+    "canonical_db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P518G-predraw-ledger-verifier-edge-matrix/data/lottery_v2.db",
+    "canonical_db_written": false,
+    "fixture_root": "${P518G_EDGE_TMP}",
+    "fixture_scope": "temporary synthetic JSONL files only",
+    "migration_backfill_deploy_run": false
+  },
+  "notices": [
+    "no canonical DB open/write",
+    "no migration/backfill",
+    "no deploy",
+    "synthetic fixtures only",
+    "not production release approval",
+    "no betting/future prediction claims"
+  ],
+  "overall_status": "PASS",
+  "transcripts": [
+    {
+      "argv": [
+        "tools.predraw_ledger_verify",
+        "${P518G_EDGE_TMP}/edge_malformed_jsonl_row.jsonl"
+      ],
+      "case_id": "malformed_jsonl_row",
+      "exit_code": 1,
+      "stderr": "",
+      "stdout": "[predraw-verify] ledger_path=${P518G_EDGE_TMP}/edge_malformed_jsonl_row.jsonl\n[predraw-verify] validation_status=INVALID\n[predraw-verify] chain_ok=False chain_total_records=1\n[predraw-verify] chain_first_broken_index=0 chain_reason=unparseable/truncated line at index 0\n[predraw-verify] record_count=0 record_kind_counts={}\n[predraw-verify] generation_mode_counts={}\n[predraw-verify] disclaimer: This is a structural/hash-chain validity check only. It is NOT a prediction, betting recommendation, evidence of strategy edge, or out-of-sample (OOS) performance proof.\n"
+    },
+    {
+      "argv": [
+        "tools.predraw_ledger_verify",
+        "${P518G_EDGE_TMP}/edge_empty_ledger_file.jsonl"
+      ],
+      "case_id": "empty_ledger_file",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "[predraw-verify] ledger_path=${P518G_EDGE_TMP}/edge_empty_ledger_file.jsonl\n[predraw-verify] validation_status=VALID\n[predraw-verify] chain_ok=True chain_total_records=0\n[predraw-verify] record_count=0 record_kind_counts={}\n[predraw-verify] generation_mode_counts={}\n[predraw-verify] disclaimer: This is a structural/hash-chain validity check only. It is NOT a prediction, betting recommendation, evidence of strategy edge, or out-of-sample (OOS) performance proof.\n"
+    },
+    {
+      "argv": [
+        "tools.predraw_ledger_verify",
+        "${P518G_EDGE_TMP}/edge_missing_required_field.jsonl"
+      ],
+      "case_id": "missing_required_field",
+      "exit_code": 1,
+      "stderr": "",
+      "stdout": "[predraw-verify] ledger_path=${P518G_EDGE_TMP}/edge_missing_required_field.jsonl\n[predraw-verify] validation_status=INVALID\n[predraw-verify] chain_ok=True chain_total_records=1\n[predraw-verify] record_count=1 record_kind_counts={'PREDICTION': 1}\n[predraw-verify] generation_mode_counts={}\n[predraw-verify] malformed_record_count=1\n[predraw-verify]   index=0 record_id=p518g-edge-missing-field-001 missing_fields=['strategy_id']\n[predraw-verify] disclaimer: This is a structural/hash-chain validity check only. It is NOT a prediction, betting recommendation, evidence of strategy edge, or out-of-sample (OOS) performance proof.\n"
+    },
+    {
+      "argv": [
+        "tools.predraw_ledger_verify",
+        "${P518G_EDGE_TMP}/edge_duplicate_draw_record_supported.jsonl"
+      ],
+      "case_id": "duplicate_draw_record_supported",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "[predraw-verify] ledger_path=${P518G_EDGE_TMP}/edge_duplicate_draw_record_supported.jsonl\n[predraw-verify] validation_status=VALID\n[predraw-verify] chain_ok=True chain_total_records=2\n[predraw-verify] record_count=2 record_kind_counts={'PREDICTION': 2}\n[predraw-verify] generation_mode_counts={'RETROSPECTIVE_REPLAY': 2}\n[predraw-verify] lottery_type=BIG_LOTTO record_count=2 target_draw_range=[114000101, 114000101]\n[predraw-verify] disclaimer: This is a structural/hash-chain validity check only. It is NOT a prediction, betting recommendation, evidence of strategy edge, or out-of-sample (OOS) performance proof.\n"
+    },
+    {
+      "argv": [
+        "tools.predraw_ledger_verify",
+        "${P518G_EDGE_TMP}/edge_wrong_game_identifier_supported.jsonl"
+      ],
+      "case_id": "wrong_game_identifier_supported",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "[predraw-verify] ledger_path=${P518G_EDGE_TMP}/edge_wrong_game_identifier_supported.jsonl\n[predraw-verify] validation_status=VALID\n[predraw-verify] chain_ok=True chain_total_records=1\n[predraw-verify] record_count=1 record_kind_counts={'PREDICTION': 1}\n[predraw-verify] generation_mode_counts={'RETROSPECTIVE_REPLAY': 1}\n[predraw-verify] lottery_type=MYSTERY_LOTTO record_count=1 target_draw_range=[114000101, 114000101]\n[predraw-verify] disclaimer: This is a structural/hash-chain validity check only. It is NOT a prediction, betting recommendation, evidence of strategy edge, or out-of-sample (OOS) performance proof.\n"
+    },
+    {
+      "argv": [
+        "tools.predraw_ledger_verify",
+        "${P518G_EDGE_TMP}/edge_prev_hash_mismatch_chain_invalid.jsonl"
+      ],
+      "case_id": "prev_hash_mismatch_chain_invalid",
+      "exit_code": 1,
+      "stderr": "",
+      "stdout": "[predraw-verify] ledger_path=${P518G_EDGE_TMP}/edge_prev_hash_mismatch_chain_invalid.jsonl\n[predraw-verify] validation_status=INVALID\n[predraw-verify] chain_ok=False chain_total_records=2\n[predraw-verify] chain_first_broken_index=1 chain_reason=prev_record_hash mismatch at index 1\n[predraw-verify] record_count=0 record_kind_counts={}\n[predraw-verify] generation_mode_counts={}\n[predraw-verify] disclaimer: This is a structural/hash-chain validity check only. It is NOT a prediction, betting recommendation, evidence of strategy edge, or out-of-sample (OOS) performance proof.\n"
+    }
+  ],
+  "verifier_module": "tools.predraw_ledger_verify"
+}

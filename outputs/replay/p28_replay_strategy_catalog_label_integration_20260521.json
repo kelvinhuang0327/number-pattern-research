@@ -1,0 +1,56 @@
+{
+  "phase": "P28",
+  "final_classification": "P28_REPLAY_STRATEGY_CATALOG_LABEL_INTEGRATION_READY",
+  "generated_at": "2026-05-21T00:00:00Z",
+  "production_rows_before": 12460,
+  "production_rows_after": 12460,
+  "no_db_write": true,
+  "no_migrations": true,
+  "p26_label_module_used": true,
+  "p26_label_module_path": "lottery_api/models/replay_strategy_state_labels.py",
+  "catalog_strategy_count": 59,
+  "endpoint_path": "/api/replay/strategy-catalog",
+  "ui_integration": false,
+  "label_summary": {
+    "row-backed": 8,
+    "artifact-only": 41,
+    "no-data": 0,
+    "reconstructible": 0,
+    "manual-review": 0,
+    "unsupported": 0,
+    "retired": 5,
+    "rejected-registered": 4,
+    "observation": 1
+  },
+  "row_backed_count": 8,
+  "non_row_backed_count": 51,
+  "artifact_only_count": 41,
+  "retired_count": 5,
+  "rejected_registered_count": 4,
+  "observation_count": 1,
+  "tests_summary": {
+    "p28_tests": "21/21 PASS",
+    "p26_regression": "PASS",
+    "replay_api_contract": "PASS",
+    "total_passed": 148,
+    "browser_tests": "skipped (no UI changes)"
+  },
+  "guards_summary": {
+    "pre_drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "post_drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "pre_governance_guard": "BRANCH_GOVERNANCE_PASS",
+    "post_governance_guard": "BRANCH_GOVERNANCE_PASS"
+  },
+  "files_changed": [
+    "lottery_api/routes/replay.py",
+    "tests/test_p28_replay_strategy_catalog_label_integration.py",
+    "outputs/replay/p28_replay_strategy_catalog_label_integration_20260521.json",
+    "docs/replay/p28_replay_strategy_catalog_label_integration_20260521.md"
+  ],
+  "limitations": [
+    "UI catalog section not implemented in this phase (API-only)",
+    "Browser smoke tests not run (no frontend changes)",
+    "Catalog is read-only from P24 static inventory — not live DB-computed"
+  ],
+  "next_recommendation": "P29: Add UI catalog section to replay page showing strategy state summary and per-strategy label badges"
+}

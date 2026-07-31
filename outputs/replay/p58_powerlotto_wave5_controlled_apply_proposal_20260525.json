@@ -1,0 +1,191 @@
+{
+  "classification": "P58_CONTROLLED_APPLY_PROPOSAL_READY",
+  "phase": "P58",
+  "lottery_type": "POWER_LOTTO",
+  "strategy": "fourier30_markov30_2bet",
+  "controlled_apply_id": "P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525",
+  "mode": "PROPOSAL_ONLY",
+  "overall_ok": true,
+  "pre_flight": {
+    "p57_artifact_exists": true,
+    "p57_classification": "P57_POWERLOTTO_WAVE5_PARTIAL_COHORT_RECOMMENDED",
+    "p57_cohort_ok": true,
+    "p57_commit_ref": "c3f0325",
+    "production_rows": 42460,
+    "production_rows_ok": true,
+    "power_lotto_rows": 9140,
+    "p58_strategy_in_prod": 0,
+    "duplicate_check_pass": true,
+    "champion_present": true
+  },
+  "proposal": {
+    "phase": "P58",
+    "lottery_type": "POWER_LOTTO",
+    "strategy": "fourier30_markov30_2bet",
+    "controlled_apply_id": "P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525",
+    "mode": "PROPOSAL_ONLY",
+    "authorization_required": true,
+    "authorization_phrase": "YES apply Wave 5 POWER_LOTTO strategies to production DB",
+    "production_rows_before": 42460,
+    "expected_new_rows": 1500,
+    "projected_rows_after": 43960,
+    "rows_generated": 1500,
+    "draw_range": {
+      "first": "101000002",
+      "last": "115000040"
+    },
+    "schema_validation": {
+      "valid": true,
+      "error_count": 0,
+      "errors": []
+    },
+    "leakage_check": {
+      "violation_count": 0,
+      "violations": [],
+      "pass": true
+    },
+    "duplicate_check": {
+      "existing_in_prod": 0,
+      "pass": true,
+      "controlled_apply_id_unique": true
+    },
+    "hit_stats": {
+      "predicted": 1500,
+      "hit_3plus": 61,
+      "hit_3plus_rate": 0.0407,
+      "special_hits": 187,
+      "special_hit_rate": 0.1247,
+      "hit_count_distribution": {
+        "0": 472,
+        "1": 678,
+        "2": 289,
+        "3": 57,
+        "4": 4
+      }
+    },
+    "theoretical_m3_baseline": 0.0387,
+    "theoretical_special_baseline": 0.125,
+    "z_test": {
+      "z": 0.3949,
+      "p_value": 0.3465,
+      "significant_at_05": false,
+      "baseline": 0.0387,
+      "observed_rate": 0.0407
+    },
+    "p57_strategy_classification": "READY_FOR_P58_WITH_CAUTION",
+    "p57_z": 0.4,
+    "p57_p_value": 0.344,
+    "p57_note": "P57 classified this strategy as READY_FOR_P58_WITH_CAUTION. Edge is directional (+0.20pp above baseline) but NOT statistically significant at n=1500 (z=0.40, p=0.344). Apply with caution.",
+    "excluded_strategies": [
+      "cold_complement_2bet",
+      "zonal_entropy_2bet"
+    ],
+    "excluded_reason": "WATCHLIST_REHEARSAL_ONLY (M3+ below baseline in P57)",
+    "pre_apply_checklist": [
+      "P57 artifact exists and classification is P57_POWERLOTTO_WAVE5_PARTIAL_COHORT_RECOMMENDED",
+      "Drift guard PASS (--strict)",
+      "Branch governance guard PASS",
+      "Duplicate check PASS (0 rows for fourier30_markov30_2bet in POWER_LOTTO)",
+      "Schema validation PASS (all 1500 rows)",
+      "Leakage check PASS (0 violations)",
+      "DB backup created and verified",
+      "All governance tests PASS (213/213)",
+      "Production rows = 42460 before apply",
+      "Forbidden staging scan PASS"
+    ],
+    "rollback_plan": [
+      "1. Before apply: cp lottery_api/data/lottery_v2.db lottery_api/data/lottery_v2.db.bak_p58",
+      "2. Verify backup row count == 42460",
+      "3. Apply within BEGIN...COMMIT transaction",
+      "4. On any error: ROLLBACK and restore from backup",
+      "5. Post-rollback: verify row count == 42460"
+    ],
+    "rollback_sql": "DELETE FROM strategy_prediction_replays WHERE controlled_apply_id = 'P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525';",
+    "governance": {
+      "production_db_write": false,
+      "lifecycle_promotion": false,
+      "champion_replacement": false,
+      "registry_mutation": false,
+      "live_api_call": false,
+      "online_promotion": false
+    },
+    "sample_rows": [
+      {
+        "target_draw": "101000002",
+        "predicted": [
+          4,
+          10,
+          19,
+          20,
+          27,
+          35
+        ],
+        "predicted_special": 1,
+        "hit_count": 1,
+        "special_hit": 0
+      },
+      {
+        "target_draw": "101000003",
+        "predicted": [
+          4,
+          10,
+          19,
+          20,
+          27,
+          35
+        ],
+        "predicted_special": 1,
+        "hit_count": 1,
+        "special_hit": 0
+      },
+      {
+        "target_draw": "115000039",
+        "predicted": [
+          13,
+          14,
+          15,
+          27,
+          34,
+          38
+        ],
+        "predicted_special": 7,
+        "hit_count": 0,
+        "special_hit": 0
+      },
+      {
+        "target_draw": "115000040",
+        "predicted": [
+          9,
+          13,
+          14,
+          27,
+          34,
+          38
+        ],
+        "predicted_special": 7,
+        "hit_count": 2,
+        "special_hit": 0
+      }
+    ],
+    "insert_sql_template": "INSERT INTO strategy_prediction_replays (lottery_type, target_draw, target_date, strategy_id, strategy_name, strategy_version, history_cutoff_draw, replay_status, predicted_numbers, predicted_special, actual_numbers, actual_special, hit_numbers, hit_count, special_hit, replay_run_id, generated_at, truth_level, controlled_apply_id, source, provenance_hash, provenance_source, dry_run, prediction_cutoff_date, prediction_generated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+  },
+  "governance": {
+    "production_db_write": false,
+    "lifecycle_promotion": false,
+    "champion_replacement": false,
+    "registry_mutation": false,
+    "live_api_call": false,
+    "online_promotion": false,
+    "watchlist_strategies_excluded": [
+      "cold_complement_2bet",
+      "zonal_entropy_2bet"
+    ]
+  },
+  "p57_ref": {
+    "commit": "aea8ff7",
+    "classification": "P57_POWERLOTTO_WAVE5_PARTIAL_COHORT_RECOMMENDED",
+    "p58_cohort": [
+      "fourier30_markov30_2bet"
+    ]
+  }
+}

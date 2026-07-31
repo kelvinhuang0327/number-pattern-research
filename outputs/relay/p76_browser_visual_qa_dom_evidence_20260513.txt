@@ -1,0 +1,52 @@
+P76 Browser Visual QA - DOM Evidence
+Captured: 2026-05-13
+Page: http://localhost:8081 (歷史回放 section, fetch proxy via addInitScript)
+
+=== LIFECYCLE REGISTRY TABLE STATE ===
+wrapDisplay: block (visible ✅)
+errorDisplay: none (no error ✅)
+totalBadges: 16
+badgeTypes: ["NO HISTORY", "LIVE", "METADATA ONLY"]
+rowCount: 26 rows
+
+=== BADGE COLORS VERIFIED ===
+NO HISTORY  → class: rp-truth-badge rp-truth-missing  → bgColor: rgb(74, 74, 74) [dark grey]
+LIVE        → class: rp-truth-badge rp-truth-production → bgColor: rgb(26, 127, 55) [green ✅]
+METADATA ONLY → class: rp-truth-badge rp-truth-display → bgColor: rgb(187, 128, 9) [amber ✅]
+
+=== ARIA-LABEL VERIFIED ===
+NO HISTORY    → "NO HISTORY: No production replay history available" ✅
+LIVE          → "LIVE: Production replay rows exist" ✅
+METADATA ONLY → "METADATA ONLY: Metadata only, not production replay" ✅
+
+=== BILINGUAL DISCLAIMER TEXT VERIFIED ===
+Tombstone (🪦): "此策略目前沒有 production replay 歷史資料；不會產生假回放列。This strategy has been retired. Historical prediction records are not available." ✅
+DISPLAY_ONLY (⚠️): "此策略僅顯示 metadata，不代表已存在 production replay 回放。This strategy was evaluated but is not in active production. No per-draw prediction history is available." ✅
+
+=== STRATEGY LIST (26 rows) ===
+1. acb_1bet
+2. [tombstone row]
+3. acb_markov_midfreq
+4. [tombstone row]
+5. acb_markov_midfreq_3bet
+6. [tombston6. [tombston6. [tombston6. [tombston6. [tombston6. [tombston6. [tombston6. [tombston6. [tombston6._a6. [tombston6. [tombston6. [tombston6. [tombston6. [tombston6. [tombston6. [tombston6. [tombston6_on6. [to]
+13. daily539_f4cold             [LIVE]
+14. daily539_markov_cold        [LIVE]
+15. h6_gate_mk20_ew85           [METADATA ONLY]
+16. [display_only row]
+17. midfreq_acb_2bet            [NO HISTORY]
+18. [tombstone row]
+19. midfreq_fourier_2bet        [NO HISTORY]
+20. [tombstone row]
+21. p1_deviation_2bet_539       [METADATA ONLY]
+22. [display_only row]
+23. power_orthogonal_5bet       [LIVE]
+24. power_precision_3bet        [LIVE]
+25. power_shlc_midfreq          [LIVE]
+26. [display_only row]
+
+=== NOTES ===
+- Architecture: index.html uses const BASE='/api/replay' (relative URL)
+- fetch proxy applied via page.addInitScript() to route /api/ → http://localhost:8002
+- RETROSPECTIVE and LEGACY ERROR badges not seen (no strategies with those lifecycle states active)
+- FIXTURE badge not seen (expected — no fixture strategies in registry)

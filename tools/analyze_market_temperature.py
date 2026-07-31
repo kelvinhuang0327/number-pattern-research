@@ -28,7 +28,7 @@ def analyze_temperature(windows=[20, 50, 100]):
     
     # 1. 準備數據
     db = DatabaseManager(db_path=os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db'))
-    all_draws = db.get_all_draws(lottery_type='BIG_LOTTO')
+    all_draws = db.get_canonical_draws('BIG_LOTTO')  # P247F: canonical 2,113 main-draw rows
     all_draws = sorted(all_draws, key=lambda x: x['date'])
     
     total_draws = len(all_draws)

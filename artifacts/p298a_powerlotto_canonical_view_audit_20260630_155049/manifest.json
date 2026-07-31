@@ -1,0 +1,75 @@
+{
+  "task_id": "P298A_POWER_LOTTO_CANONICAL_VIEW_READINESS_AND_PREDICTED_SECOND_ZONE_AUDIT",
+  "created_at_taipei": "2026-06-30 15:57:24 UTC+08:00+0800",
+  "evidence_root": "/Users/kelvin/Kelvin-WorkSpace/p298a_powerlotto_canonical_view_audit_20260630_155049",
+  "manifest_self_hash": "excluded; manifest covers all non-manifest files present at generation time",
+  "sqlite_read_mode": "mode=ro&immutable=1",
+  "artifacts": [
+    {
+      "path": "commands.log",
+      "sha256": "1322d6807e7594e849342e9cd64332c60910d1db95cf171987c44e3b8636d86c",
+      "bytes": 3358
+    },
+    {
+      "path": "contract_mapping_patch.md",
+      "sha256": "e3535cae39d8d949d426bb3c7927eacb0a0f4ee3e4a2647c16f30edc38a28de9",
+      "bytes": 2484
+    },
+    {
+      "path": "db_sidecars_after.tsv",
+      "sha256": "6587a1301db0028cab51f2e4e4a52db9bca5b687f04a89f302faefd0e11ac81d",
+      "bytes": 22222
+    },
+    {
+      "path": "db_sidecars_before.tsv",
+      "sha256": "6587a1301db0028cab51f2e4e4a52db9bca5b687f04a89f302faefd0e11ac81d",
+      "bytes": 22222
+    },
+    {
+      "path": "db_sidecars_diff.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "handoff_report.md",
+      "sha256": "4916ac38fab881ca91d76398da3f439653b26330160fef95c2c6b9e78486251a",
+      "bytes": 4025
+    },
+    {
+      "path": "p297_evidence_excerpt.txt",
+      "sha256": "049ae838519ddf0a4436ef45182045b55efd685668b9c43b386580b5b5a0c9f1",
+      "bytes": 213860
+    },
+    {
+      "path": "phase0_state.md",
+      "sha256": "bbdb9db20cba85c3c7a477cb4e54873ae7d8cee95a803b4b7a345b6e72da2e14",
+      "bytes": 24687
+    },
+    {
+      "path": "powerlotto_readiness_matrix.csv",
+      "sha256": "29badc0792ef54a5d8ecc555bc3d577942de5b95d5754617d8c0970b5762f3bb",
+      "bytes": 4746
+    },
+    {
+      "path": "powerlotto_source_audit.md",
+      "sha256": "4716bd538cd779f10224c19779771274c36d232cef393579da5de67926891a78",
+      "bytes": 2108
+    },
+    {
+      "path": "predicted_second_zone_audit.csv",
+      "sha256": "65f35356fd203c214e3ebd89aa30b87ca5cef2984a921138cd9b45ba6679da79",
+      "bytes": 2145
+    },
+    {
+      "path": "repo_powerlotto_canonical_scan.txt",
+      "sha256": "e0c3152c8d168092a3780ea10d6d35982ad2081fe1c69961326fa69f9a30f8f3",
+      "bytes": 19599182
+    },
+    {
+      "path": "sqlite_metadata_inspection.txt",
+      "sha256": "521f04cab22809ad11a1f6af465f5986dc4586976a24489350f38b8cb6df8e88",
+      "bytes": 9693
+    }
+  ],
+  "final_classification": "P298A_POWERLOTTO_READINESS_AUDIT_COMPLETE_WITH_RISKS"
+}

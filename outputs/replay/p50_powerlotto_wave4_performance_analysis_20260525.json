@@ -1,0 +1,41 @@
+{
+  "task": "P50",
+  "classification": "P50_NOT_COMMITTED_ANALYSIS_ONLY",
+  "note": "P50 findings were originally in-conversation only. Committed under P51 to preserve audit trail.",
+  "generated_at": "2026-05-25T00:00:00Z",
+  "committed_under": "P51",
+  "apply_id": "P48_POWERLOTTO_WAVE4_4500_PROD_20260524",
+  "production_rows": 42460,
+  "no_db_write": true,
+  "no_lifecycle_promotion": true,
+  "no_registry_mutation": true,
+  "strategies_analyzed": [
+    "pp3_freqort_4bet",
+    "midfreq_fourier_mk_3bet",
+    "midfreq_fourier_2bet"
+  ],
+  "rows_per_strategy": 1500,
+  "draw_range": {
+    "min": "101000002",
+    "max": "115000040"
+  },
+  "lifecycle_status": "DRY_RUN",
+  "power_lotto_semantics": {
+    "hit_count": "first-zone hits only",
+    "special_hit": "special-zone match only",
+    "special_not_folded_into_hit_count": true
+  },
+  "mean_hit": {
+    "midfreq_fourier_mk_3bet": 1.0273,
+    "pp3_freqort_4bet": 1.002,
+    "midfreq_fourier_2bet": 0.9727
+  },
+  "theoretical_first_zone_baseline": 0.9474,
+  "special_hit_rate": {
+    "all_strategies": 0.118667,
+    "count": 178,
+    "expected_range": "~1/8 (0.125)"
+  },
+  "p50_assessment": "Effect sizes are small; formal rolling-window, permutation, and McNemar tests are required (P51).",
+  "next_task": "P51 formal rolling-window and McNemar gate verification"
+}

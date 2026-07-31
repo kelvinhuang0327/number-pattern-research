@@ -106,7 +106,7 @@ export class DataProcessor {
                 text = await this.readFileContent(file, 'Big5');
             }
 
-            const lines = text.split(/\r?\n/).filter(line => line.trim());
+            const lines = this.splitCSVRecords(text);
             if (lines.length < 2) throw new Error('檔案內容為空');
 
             let data = [];
@@ -149,7 +149,7 @@ export class DataProcessor {
             const line = lines[i].trim();
             if (!line) continue;
 
-            let parts = line.split(',').map(p => p.trim().replace(/^"|"$/g, ''));
+            let parts = this.splitCSVLine(line);
 
             // 嘗試使用空白分隔（如果逗號分隔無效）
             if (parts.length <= 1) {
@@ -190,11 +190,11 @@ export class DataProcessor {
 
             const numberStartIndex = 6;
             const numbers = parts.slice(numberStartIndex, numberStartIndex + lotteryType.pickCount)
-                .map(n => parseInt(n));
+                .map(n => this.parseCSVInteger(n));
 
             let special = 0;
             if (lotteryType.hasSpecialNumber && parts.length > numberStartIndex + lotteryType.pickCount) {
-                special = parseInt(parts[numberStartIndex + lotteryType.pickCount]);
+                special = this.parseCSVInteger(parts[numberStartIndex + lotteryType.pickCount]);
             }
 
             if (this.validateDraw(numbers, special, lotteryType)) {
@@ -208,6 +208,90 @@ export class DataProcessor {
             }
         }
         return data;
+    }
+
+    splitCSVLine(line) {
+        const values = [];
+        let current = '';
+        let inQuotes = false;
+
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            const nextChar = line[i + 1];
+
+            if (char === '"') {
+                if (inQuotes && nextChar === '"') {
+                    current += '"';
+                    i++;
+                } else {
+                    inQuotes = !inQuotes;
+                }
+                continue;
+            }
+
+            if (char === ',' && !inQuotes) {
+                values.push(current.trim());
+                current = '';
+                continue;
+            }
+
+            current += char;
+        }
+
+        values.push(current.trim());
+        return values;
+    }
+
+    parseCSVInteger(value) {
+        const token = String(value ?? '').trim();
+        return /^\d+$/.test(token) ? Number(token) : NaN;
+    }
+
+    isMalformedCSVIntegerToken(value) {
+        const token = String(value ?? '').trim();
+        if (!/\d/.test(token) || /^\d+$/.test(token)) return false;
+        return !/^(\d{3,4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/.test(token);
+    }
+
+    splitCSVRecords(text) {
+        const records = [];
+        let current = '';
+        let inQuotes = false;
+
+        for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+            const nextChar = text[i + 1];
+
+            if (char === '"') {
+                current += char;
+                if (inQuotes && nextChar === '"') {
+                    current += nextChar;
+                    i++;
+                } else {
+                    inQuotes = !inQuotes;
+                }
+                continue;
+            }
+
+            if ((char === '\n' || char === '\r') && !inQuotes) {
+                if (current.trim()) {
+                    records.push(current.trim());
+                }
+                current = '';
+                if (char === '\r' && nextChar === '\n') {
+                    i++;
+                }
+                continue;
+            }
+
+            current += char;
+        }
+
+        if (current.trim()) {
+            records.push(current.trim());
+        }
+
+        return records;
     }
 
     parseHeuristic(lines) {
@@ -247,19 +331,27 @@ export class DataProcessor {
 
             for (let j = 0; j <= parts.length - 6; j++) {
                 if (j === dateIndex) continue;
+                const previousPart = j > 0 ? parts[j - 1] : '';
+                const nextWindowPart = (j + 6 < parts.length) ? parts[j + 6] : '';
+                if (
+                    this.isMalformedCSVIntegerToken(previousPart) ||
+                    this.isMalformedCSVIntegerToken(nextWindowPart)
+                ) {
+                    continue;
+                }
 
                 const window = parts.slice(j, j + 6);
-                const validWindow = window.every(p => {
-                    const n = parseInt(p);
+                const parsedWindow = window.map(p => this.parseCSVInteger(p));
+                const validWindow = parsedWindow.every(n => {
                     return !isNaN(n) && n >= 1 && n <= 49;
                 });
 
                 if (validWindow) {
                     const nextPart = (j + 6 < parts.length) ? parts[j + 6] : null;
-                    const nextNum = nextPart ? parseInt(nextPart) : NaN;
+                    const nextNum = nextPart ? this.parseCSVInteger(nextPart) : NaN;
                     const hasSpecial = !isNaN(nextNum) && nextNum >= 1 && nextNum <= 49;
 
-                    numbers = window.map(n => parseInt(n));
+                    numbers = parsedWindow;
                     special = hasSpecial ? nextNum : 0;
 
                     const unique = new Set(numbers);

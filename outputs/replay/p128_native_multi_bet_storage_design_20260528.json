@@ -1,0 +1,587 @@
+{
+  "task_id": "P128",
+  "classification": "P128_NATIVE_MULTI_BET_STORAGE_DESIGN_READY",
+  "generated_at": "2026-05-28T04:02:25.171714+00:00",
+  "p124_source_artifact": "outputs/replay/p124_multi_bet_truth_and_coverage_matrix_20260528.json",
+  "p125_source_artifact": "outputs/replay/p125_adapter_gap_plan_from_p124_20260528.json",
+  "p126_source_artifact": "outputs/replay/p126_controlled_apply_plan_tier_b_multi_bet_20260528.json",
+  "db_snapshot_before": {
+    "replay_rows": 54462,
+    "3_STAR": {
+      "count": 4179,
+      "max_draw": 115000106
+    },
+    "4_STAR": {
+      "count": 2922,
+      "max_draw": 115000103
+    },
+    "POWER_LOTTO": {
+      "count": 1913,
+      "max_draw": 115000041
+    }
+  },
+  "db_snapshot_after": {
+    "replay_rows": 54462,
+    "3_STAR": {
+      "count": 4179,
+      "max_draw": 115000106
+    },
+    "4_STAR": {
+      "count": 2922,
+      "max_draw": 115000103
+    },
+    "POWER_LOTTO": {
+      "count": 1913,
+      "max_draw": 115000041
+    }
+  },
+  "schema_introspection": {
+    "table_ddl_excerpt": "CREATE TABLE strategy_prediction_replays (\n            id                   INTEGER PRIMARY KEY AUTOINCREMENT,\n            lottery_type         TEXT NOT NULL,\n            target_draw          TEXT NOT NULL,\n            target_date          TEXT,\n            strategy_id          TEXT NOT NULL,\n            strategy_name        TEXT,\n            strategy_version     TEXT,\n            history_cutoff_draw  TEXT,\n            replay_status        TEXT NOT NULL,\n            reject_reason        TEXT,\n            predicted_numbers    TEXT,\n            predicted_special    INTEGER,\n            actual_numbers       TEXT,\n            actual_special       INTEGER,\n            hit_numbers          TEXT,\n            hit_count            INTEGER DEFAULT 0,\n            special_hit          INTEGER DEFAULT 0,\n            replay_run_id        INTEGER,\n            generated_at         TEXT DEFAULT (datetime('now')), truth_level TEXT DEFAULT NULL, controlled_apply_id TEXT DEFAULT NULL, source TEXT DEFAULT NULL, provenance_hash TEXT DEFAULT NULL, provenance_source TEXT DEFAULT NULL, dry_run INTEGER DEFAULT 0, prediction_cutoff_date TEXT, prediction_generated_at TEXT,\n            UNIQUE(lottery_type, tar",
+    "columns": [
+      "id",
+      "lottery_type",
+      "target_draw",
+      "target_date",
+      "strategy_id",
+      "strategy_name",
+      "strategy_version",
+      "history_cutoff_draw",
+      "replay_status",
+      "reject_reason",
+      "predicted_numbers",
+      "predicted_special",
+      "actual_numbers",
+      "actual_special",
+      "hit_numbers",
+      "hit_count",
+      "special_hit",
+      "replay_run_id",
+      "generated_at",
+      "truth_level",
+      "controlled_apply_id",
+      "source",
+      "provenance_hash",
+      "provenance_source",
+      "dry_run",
+      "prediction_cutoff_date",
+      "prediction_generated_at"
+    ],
+    "has_bet_index_column": false,
+    "indexes": [
+      "sqlite_autoindex_strategy_prediction_replays_1",
+      "idx_spr_lottery",
+      "idx_spr_strategy",
+      "idx_spr_draw",
+      "idx_spr_status",
+      "idx_spr_run",
+      "idx_spr_hit",
+      "idx_spr_controlled_apply_id",
+      "idx_spr_truth_level"
+    ],
+    "current_unique_constraints": [
+      "lottery_type, target_draw, strategy_id, replay_run_id"
+    ],
+    "p94_tierb_groups": [
+      {
+        "strategy_id": "biglotto_echo_aware_3bet",
+        "replay_run_id": null,
+        "source": "P94_TIERB_CONTROLLED_APPLY",
+        "count": 1500
+      },
+      {
+        "strategy_id": "biglotto_ts3_markov_4bet_w30",
+        "replay_run_id": null,
+        "source": "P94_TIERB_CONTROLLED_APPLY",
+        "count": 1500
+      },
+      {
+        "strategy_id": "daily539_f4cold_3bet",
+        "replay_run_id": null,
+        "source": "P94_TIERB_CONTROLLED_APPLY",
+        "count": 1500
+      },
+      {
+        "strategy_id": "daily539_f4cold_5bet",
+        "replay_run_id": null,
+        "source": "P94_TIERB_CONTROLLED_APPLY",
+        "count": 1500
+      },
+      {
+        "strategy_id": "power_fourier_rhythm_2bet",
+        "replay_run_id": null,
+        "source": "P94_TIERB_CONTROLLED_APPLY",
+        "count": 1500
+      }
+    ],
+    "all_p94_replay_run_id_null": true,
+    "sqlite_null_uniqueness_note": "SQLite treats NULL values as distinct in UNIQUE constraints. All P94 Tier-B rows have replay_run_id=NULL, which technically permits multiple rows per (lottery_type, target_draw, strategy_id) with NULL replay_run_id. This is accidental behavior — NOT a valid storage convention."
+  },
+  "p126_source_summary": {
+    "classification": "P126_DRY_RUN_PLAN_READY",
+    "candidate_count": 5,
+    "total_new_rows_if_all_applied": 18000,
+    "total_replay_rows_after_all_applied": 72462,
+    "all_prov_guard_pass": true,
+    "all_dup_guard_pass": true,
+    "p128_pending_was": true,
+    "p128_now_resolved": true
+  },
+  "storage_options_considered": [
+    {
+      "option_id": "A",
+      "title": "Schema Migration: add bet_index column + update UNIQUE constraint",
+      "approach": "one_row_per_bet_with_schema_migration",
+      "description": "ADD COLUMN bet_index INTEGER NOT NULL DEFAULT 1 to strategy_prediction_replays. Replace UNIQUE(lottery_type, target_draw, strategy_id, replay_run_id) with UNIQUE(lottery_type, target_draw, strategy_id, bet_index). Existing rows get bet_index=1 automatically via DEFAULT. New multi-bet rows inserted as bet_index=2, 3, ... per draw.",
+      "pros": [
+        "Clean, normalized, permanent solution",
+        "Enables GROUP BY bet_index for per-bet analysis",
+        "Removes dependency on NULL replay_run_id accident",
+        "Provenance hash can be scoped per bet",
+        "Future-proof for N-bet strategies (N up to ~10 safely)",
+        "Duplicate prevention via UNIQUE is enforced by DB engine"
+      ],
+      "cons": [
+        "Requires SQLite 12-step table recreation (CREATE NEW → COPY → DROP → RENAME)",
+        "Schema migration must be formally authorized and executed before P126 apply",
+        "Adds 4 bytes per row (INTEGER column)",
+        "API/UI consumers must be updated to filter by bet_index=1 for single-bet views"
+      ],
+      "migration_required": true,
+      "p126_apply_readiness": "READY after migration executed and Kelvin auth phrases provided",
+      "recommended": true
+    },
+    {
+      "option_id": "B",
+      "title": "Interim workaround: encode bet_index in source/controlled_apply_id + exploit NULL uniqueness",
+      "approach": "one_row_per_bet_no_schema_change",
+      "description": "No schema change. Encode bet index in existing text fields: source='P94_TIERB_CONTROLLED_APPLY_BET_2', controlled_apply_id='P94_TIERB_CONTROLLED_APPLY_20260526_BET_2'. Relies on SQLite's NULL-distinct behavior in UNIQUE(lottery_type, target_draw, strategy_id, replay_run_id) since all P94 rows have replay_run_id=NULL — so multiple rows per key can coexist.",
+      "pros": [
+        "No migration needed — can proceed to P126 apply immediately",
+        "Zero risk of table recreation failure",
+        "Bet index is encoded and recoverable via source field parsing"
+      ],
+      "cons": [
+        "Exploits accidental SQLite NULL-distinct behavior — fragile if any row ever has non-NULL replay_run_id",
+        "No formal bet_index column — queries require LIKE 'BET_%' parsing",
+        "Downstream API/UI consumers see duplicate (strategy, draw) pairs with no structural differentiator",
+        "Provenance hash is per-strategy not per-bet — ambiguous for multi-bet dedup",
+        "Technical debt: must be resolved by Option A eventually",
+        "Risk of silent duplicate inserts if NULL behavior assumption breaks"
+      ],
+      "migration_required": false,
+      "p126_apply_readiness": "CONDITIONALLY READY — requires explicit Kelvin authorization of workaround",
+      "recommended": false
+    },
+    {
+      "option_id": "C",
+      "title": "Array-of-arrays per row (compact multi-bet)",
+      "approach": "multi_bet_json_array_in_predicted_numbers",
+      "description": "Store all bets for a single (strategy, draw) in one row by encoding predicted_numbers as JSON array-of-arrays: [[bet1], [bet2], [bet3]]. One row per (strategy, draw) preserved.",
+      "pros": [
+        "Preserves one-row-per-draw semantics",
+        "Zero schema migration required",
+        "No UNIQUE constraint changes needed"
+      ],
+      "cons": [
+        "BREAKS all existing consumers — predicted_numbers is currently a flat JSON array",
+        "hit_count, hit_numbers columns become ambiguous (which bet?)",
+        "Cannot analyze per-bet performance independently",
+        "Requires rewriting all API endpoints, analysis scripts, dashboard",
+        "Breaks P94 existing rows — would need data migration",
+        "High risk, high cost, zero benefit for current scale"
+      ],
+      "migration_required": true,
+      "p126_apply_readiness": "NOT RECOMMENDED — too disruptive",
+      "recommended": false
+    }
+  ],
+  "recommended_storage_design": {
+    "option_selected": "A",
+    "title": "one-row-per-bet with bet_index schema migration",
+    "approach": "one_row_per_bet_with_schema_migration",
+    "bet_index_column": "bet_index INTEGER NOT NULL DEFAULT 1",
+    "new_unique_constraint": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+    "migration_required": true,
+    "existing_rows_impacted": "All 54462 rows receive bet_index=1 via DEFAULT — no data change",
+    "row_count_after_migration": 54462
+  },
+  "one_row_per_bet_decision": {
+    "decision": "APPROVED",
+    "convention": "one_row_per_bet",
+    "bet_index_column_required": true,
+    "rationale": [
+      "Consistent with existing single-bet rows (all existing = bet_index=1)",
+      "Enables per-bet hit analysis and per-bet performance comparison",
+      "Preserves all existing query patterns with WHERE bet_index = 1 filter",
+      "P126 +18000 row estimate based on this convention is validated",
+      "Scales linearly with bet count — no structural limits for N<=10"
+    ],
+    "approved_for_p126_apply": true,
+    "approval_condition": "Subject to: migration authorization + per-strategy Kelvin authorization"
+  },
+  "bet_index_representation": {
+    "column_name": "bet_index",
+    "column_type": "INTEGER NOT NULL DEFAULT 1",
+    "bet_1_meaning": "Primary bet (existing rows and first bet of any multi-bet strategy)",
+    "bet_n_meaning": "Additional bets (N=2,3,...) inserted during controlled apply",
+    "encoding_in_source_if_no_migration": "FALLBACK ONLY: source='P94_TIERB_CONTROLLED_APPLY_BET_N' — requires explicit Option B authorization",
+    "preferred": "bet_index column (Option A migration)"
+  },
+  "duplicate_key_contract": {
+    "primary_unique_constraint": {
+      "columns": [
+        "lottery_type",
+        "target_draw",
+        "strategy_id",
+        "bet_index"
+      ],
+      "description": "After migration: UNIQUE(lottery_type, target_draw, strategy_id, bet_index). Each (strategy, draw, bet slot) is exactly one row. Insert of duplicate (strategy, draw, bet_index) is rejected by DB engine.",
+      "current_constraint_before_migration": "UNIQUE(lottery_type, target_draw, strategy_id, replay_run_id)",
+      "migration_required_to_enforce": true
+    },
+    "provenance_hash_guard": {
+      "column": "provenance_hash",
+      "description": "provenance_hash must be set per inserted row. For multi-bet rows: provenance_hash = SHA256(strategy_id + target_draw + bet_index + predicted_numbers + controlled_apply_id). Pre-insert check: if (lottery_type, target_draw, strategy_id, bet_index, provenance_hash) already exists, skip (idempotent).",
+      "hash_input_fields": [
+        "strategy_id",
+        "target_draw",
+        "bet_index",
+        "predicted_numbers",
+        "controlled_apply_id"
+      ]
+    },
+    "predicted_numbers_fingerprint": {
+      "description": "predicted_numbers stored as JSON-sorted array string. Fingerprint = SHA256 of sorted predicted_numbers string. Two bets with same numbers for same draw = logical duplicate, must be rejected.",
+      "fingerprint_check": "Reject if (strategy_id, target_draw, bet_index, sorted(predicted_numbers)) already exists"
+    },
+    "full_dedup_tuple": [
+      "lottery_type",
+      "target_draw",
+      "strategy_id",
+      "bet_index",
+      "predicted_numbers_fingerprint",
+      "provenance_hash"
+    ],
+    "dedup_enforcement_order": [
+      "1. UNIQUE constraint (lottery_type, target_draw, strategy_id, bet_index) — DB level",
+      "2. provenance_hash pre-insert check — application level",
+      "3. predicted_numbers fingerprint check — application level",
+      "4. controlled_apply_id prefix guard — application level"
+    ],
+    "forbidden_duplicates": [
+      "Same (strategy, draw, bet_index) with different predicted_numbers = ERROR (bet slot collision)",
+      "Same (strategy, draw) with same predicted_numbers for bet_index > 1 = WARN (likely duplicate bet)",
+      "Any row with provenance_hash=NULL after migration = ERROR (must be set)"
+    ]
+  },
+  "migration_plan_if_needed": {
+    "migration_type": "SQLite_12_step_table_recreation",
+    "target_schema_changes": [
+      {
+        "change": "add_column",
+        "column": "bet_index",
+        "type": "INTEGER",
+        "not_null": true,
+        "default": 1,
+        "note": "All existing rows will receive bet_index=1 via DEFAULT"
+      },
+      {
+        "change": "replace_unique_constraint",
+        "old_unique": "UNIQUE(lottery_type, target_draw, strategy_id, replay_run_id)",
+        "new_unique": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+        "note": "replay_run_id removed from UNIQUE; bet_index added for per-bet dedup"
+      }
+    ],
+    "steps": [
+      {
+        "step": 1,
+        "sql": "PRAGMA foreign_keys = OFF",
+        "purpose": "Disable FK checks during table recreation"
+      },
+      {
+        "step": 2,
+        "sql": "BEGIN TRANSACTION",
+        "purpose": "Atomic migration"
+      },
+      {
+        "step": 3,
+        "sql": "CREATE TABLE strategy_prediction_replays_new (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  lottery_type TEXT NOT NULL,\n  target_draw TEXT NOT NULL,\n  target_date TEXT,\n  strategy_id TEXT NOT NULL,\n  strategy_name TEXT,\n  strategy_version TEXT,\n  history_cutoff_draw TEXT,\n  replay_status TEXT NOT NULL,\n  reject_reason TEXT,\n  predicted_numbers TEXT,\n  predicted_special INTEGER,\n  actual_numbers TEXT,\n  actual_special INTEGER,\n  hit_numbers TEXT,\n  hit_count INTEGER DEFAULT 0,\n  special_hit INTEGER DEFAULT 0,\n  replay_run_id INTEGER,\n  generated_at TEXT DEFAULT (datetime('now')),\n  truth_level TEXT DEFAULT NULL,\n  controlled_apply_id TEXT DEFAULT NULL,\n  source TEXT DEFAULT NULL,\n  provenance_hash TEXT DEFAULT NULL,\n  provenance_source TEXT DEFAULT NULL,\n  dry_run INTEGER DEFAULT 0,\n  prediction_cutoff_date TEXT,\n  prediction_generated_at TEXT,\n  bet_index INTEGER NOT NULL DEFAULT 1,\n  UNIQUE(lottery_type, target_draw, strategy_id, bet_index),\n  FOREIGN KEY (replay_run_id) REFERENCES strategy_replay_runs(id)\n)",
+        "purpose": "Create new table with bet_index and updated UNIQUE constraint"
+      },
+      {
+        "step": 4,
+        "sql": "INSERT INTO strategy_prediction_replays_new SELECT id, lottery_type, target_draw, target_date, strategy_id, strategy_name, strategy_version, history_cutoff_draw, replay_status, reject_reason, predicted_numbers, predicted_special, actual_numbers, actual_special, hit_numbers, hit_count, special_hit, replay_run_id, generated_at, truth_level, controlled_apply_id, source, provenance_hash, provenance_source, dry_run, prediction_cutoff_date, prediction_generated_at, 1 AS bet_index FROM strategy_prediction_replays",
+        "purpose": "Copy all existing rows with bet_index=1"
+      },
+      {
+        "step": 5,
+        "sql": "DROP TABLE strategy_prediction_replays",
+        "purpose": "Remove old table"
+      },
+      {
+        "step": 6,
+        "sql": "ALTER TABLE strategy_prediction_replays_new RENAME TO strategy_prediction_replays",
+        "purpose": "Rename new table to production name"
+      },
+      {
+        "step": 7,
+        "sql": "CREATE INDEX idx_spr_lottery ON strategy_prediction_replays(lottery_type)",
+        "purpose": "Recreate index"
+      },
+      {
+        "step": 8,
+        "sql": "CREATE INDEX idx_spr_strategy ON strategy_prediction_replays(strategy_id)",
+        "purpose": "Recreate index"
+      },
+      {
+        "step": 9,
+        "sql": "CREATE INDEX idx_spr_draw ON strategy_prediction_replays(target_draw)",
+        "purpose": "Recreate index"
+      },
+      {
+        "step": 10,
+        "sql": "CREATE INDEX idx_spr_status ON strategy_prediction_replays(replay_status)",
+        "purpose": "Recreate index"
+      },
+      {
+        "step": 11,
+        "sql": "CREATE INDEX idx_spr_run ON strategy_prediction_replays(replay_run_id)",
+        "purpose": "Recreate index"
+      },
+      {
+        "step": 12,
+        "sql": "CREATE INDEX idx_spr_hit ON strategy_prediction_replays(hit_count)",
+        "purpose": "Recreate index"
+      },
+      {
+        "step": 13,
+        "sql": "CREATE INDEX idx_spr_controlled_apply_id ON strategy_prediction_replays(controlled_apply_id)",
+        "purpose": "Recreate index"
+      },
+      {
+        "step": 14,
+        "sql": "CREATE INDEX idx_spr_truth_level ON strategy_prediction_replays(truth_level)",
+        "purpose": "Recreate index"
+      },
+      {
+        "step": 15,
+        "sql": "CREATE INDEX idx_spr_bet_index ON strategy_prediction_replays(bet_index)",
+        "purpose": "New index for bet_index filtering"
+      },
+      {
+        "step": 16,
+        "sql": "COMMIT",
+        "purpose": "Commit atomic migration"
+      },
+      {
+        "step": 17,
+        "sql": "PRAGMA foreign_keys = ON",
+        "purpose": "Re-enable FK constraints"
+      },
+      {
+        "step": 18,
+        "sql": "SELECT COUNT(*) FROM strategy_prediction_replays",
+        "purpose": "Post-migration invariant check — must equal 54462"
+      }
+    ],
+    "preconditions_before_execution": [
+      "Kelvin explicitly authorizes: YES authorize migration_plan_p128 because <reason>",
+      "DB backup created and verified before execution",
+      "All current DB invariants confirmed: replay_rows=54462",
+      "No active replay job or write transaction on DB",
+      "Drift guard expected count updated to 54462 + new_rows after migration + apply"
+    ],
+    "post_migration_invariants": [
+      "SELECT COUNT(*) FROM strategy_prediction_replays = 54462 (unchanged)",
+      "All existing rows have bet_index = 1",
+      "UNIQUE constraint is (lottery_type, target_draw, strategy_id, bet_index)",
+      "All 8 original indexes + idx_spr_bet_index exist",
+      "SQLite PRAGMA integrity_check = ok"
+    ],
+    "authorization_required": true,
+    "authorization_phrase": "YES authorize migration_plan_p128 because <reason>",
+    "not_executed_in_p128": true
+  },
+  "p126_apply_readiness_after_p128": {
+    "p128_resolved_rsr": [
+      "RSR-1",
+      "RSR-2"
+    ],
+    "rsr_remaining": [
+      "RSR-3 (drift guard update — after apply)",
+      "RSR-4 (API/UI consumer update — can be parallel)"
+    ],
+    "overall_readiness": "CONDITIONALLY_READY",
+    "readiness_detail": "P128 design is complete and resolves RSR-1 (storage format decided: one-row-per-bet with bet_index column) and RSR-2 (bet_index column defined with migration plan). P126 apply is CONDITIONALLY READY pending: (1) migration authorization, (2) migration execution, (3) per-strategy authorization phrases from Kelvin.",
+    "total_new_rows_if_applied": 18000,
+    "total_rows_after_apply": 72462,
+    "candidates": [
+      {
+        "strategy_id": "biglotto_echo_aware_3bet",
+        "lottery_type": "BIG_LOTTO",
+        "target_bets": 3,
+        "new_rows": 3000,
+        "auth_phrase": "YES authorize controlled_apply for biglotto_echo_aware_3bet because <reason>"
+      },
+      {
+        "strategy_id": "daily539_f4cold_5bet",
+        "lottery_type": "DAILY_539",
+        "target_bets": 5,
+        "new_rows": 6000,
+        "auth_phrase": "YES authorize controlled_apply for daily539_f4cold_5bet because <reason>"
+      },
+      {
+        "strategy_id": "daily539_f4cold_3bet",
+        "lottery_type": "DAILY_539",
+        "target_bets": 3,
+        "new_rows": 3000,
+        "auth_phrase": "YES authorize controlled_apply for daily539_f4cold_3bet because <reason>"
+      },
+      {
+        "strategy_id": "power_fourier_rhythm_2bet",
+        "lottery_type": "POWER_LOTTO",
+        "target_bets": 2,
+        "new_rows": 1500,
+        "auth_phrase": "YES authorize controlled_apply for power_fourier_rhythm_2bet because <reason>"
+      },
+      {
+        "strategy_id": "biglotto_ts3_markov_4bet_w30",
+        "lottery_type": "BIG_LOTTO",
+        "target_bets": 4,
+        "new_rows": 4500,
+        "auth_phrase": "YES authorize controlled_apply for biglotto_ts3_markov_4bet_w30 because <reason>"
+      }
+    ],
+    "preconditions": [
+      {
+        "check": "p128_migration_executed",
+        "status": "PENDING",
+        "detail": "Schema migration must be authorized and executed before P126 apply. P128 design is now complete; migration plan is ready."
+      },
+      {
+        "check": "kelvin_migration_authorization",
+        "status": "REQUIRED",
+        "detail": "Kelvin must state: YES authorize migration_plan_p128 because <reason>"
+      },
+      {
+        "check": "kelvin_per_strategy_authorization_phrases",
+        "status": "REQUIRED",
+        "detail": "5 individual authorization phrases required — one per strategy",
+        "phrases_required": [
+          "YES authorize controlled_apply for biglotto_echo_aware_3bet because <reason>",
+          "YES authorize controlled_apply for daily539_f4cold_5bet because <reason>",
+          "YES authorize controlled_apply for daily539_f4cold_3bet because <reason>",
+          "YES authorize controlled_apply for power_fourier_rhythm_2bet because <reason>",
+          "YES authorize controlled_apply for biglotto_ts3_markov_4bet_w30 because <reason>"
+        ]
+      },
+      {
+        "check": "drift_guard_expected_count_update",
+        "status": "REQUIRED",
+        "detail": "replay_lifecycle_drift_guard.py expected count must be updated to 72462 after apply"
+      },
+      {
+        "check": "db_backup_before_migration",
+        "status": "REQUIRED",
+        "detail": "Backup lottery_api/data/lottery_v2.db before executing migration plan"
+      },
+      {
+        "check": "api_ui_consumer_review",
+        "status": "RECOMMENDED",
+        "detail": "RSR-4: API endpoints and dashboard should be updated to filter bet_index=1 for single-bet views before or in parallel with apply"
+      }
+    ],
+    "db_writes_in_p128": 0,
+    "migration_not_executed_in_p128": true
+  },
+  "blocked_or_excluded": [
+    {
+      "item": "4_STAR",
+      "reason": "Explicitly excluded from all Tier-B multi-bet work per governance"
+    },
+    {
+      "item": "P108",
+      "reason": "P108 execution blocked — not within P128 scope"
+    },
+    {
+      "item": "P117",
+      "reason": "P117 execution blocked — not within P128 scope"
+    },
+    {
+      "item": "P118",
+      "reason": "P118 execution blocked — not within P128 scope"
+    },
+    {
+      "item": "rejected_strategies",
+      "reason": "No rejected strategies may be promoted or included in multi-bet apply"
+    },
+    {
+      "item": "strategy_promotion",
+      "reason": "No lifecycle/champion/registry mutation in P128"
+    },
+    {
+      "item": "scheduler_cron_launchd",
+      "reason": "No scheduler installation in P128"
+    },
+    {
+      "item": "db_writes",
+      "reason": "P128 is design-only — zero DB writes permitted"
+    },
+    {
+      "item": "migration_execution",
+      "reason": "Migration plan defined but not executed — requires separate authorization"
+    },
+    {
+      "item": "p126_apply",
+      "reason": "P126 apply not executed in P128 — RSR-1/RSR-2 now resolved by design; execution requires authorization"
+    }
+  ],
+  "required_authorization_phrases": {
+    "migration_authorization": "YES authorize migration_plan_p128 because <reason>",
+    "per_strategy_apply_authorization": [
+      "YES authorize controlled_apply for biglotto_echo_aware_3bet because <reason>",
+      "YES authorize controlled_apply for daily539_f4cold_5bet because <reason>",
+      "YES authorize controlled_apply for daily539_f4cold_3bet because <reason>",
+      "YES authorize controlled_apply for power_fourier_rhythm_2bet because <reason>",
+      "YES authorize controlled_apply for biglotto_ts3_markov_4bet_w30 because <reason>"
+    ],
+    "note": "All phrases must be provided before any DB changes or apply execution"
+  },
+  "governance": {
+    "db_writes": 0,
+    "schema_changes_executed": false,
+    "scheduler_installed": false,
+    "strategy_promoted": false,
+    "fabricated_rows": 0,
+    "4_STAR_included": false,
+    "P108_executed": false,
+    "P117_executed": false,
+    "P118_executed": false,
+    "p126_apply_executed": false,
+    "pragma_query_only": "ON (enforced on every DB connection)",
+    "forbidden_files_staged": false,
+    "migration_plan_status": "DESIGN_ONLY_NOT_EXECUTED"
+  },
+  "summary": {
+    "task_id": "P128",
+    "classification": "P128_NATIVE_MULTI_BET_STORAGE_DESIGN_READY",
+    "db_writes": 0,
+    "schema_changes_executed": false,
+    "migration_plan_status": "DESIGN_ONLY_NOT_EXECUTED",
+    "p126_apply_readiness": "CONDITIONALLY_READY",
+    "total_new_rows_if_p126_applied": 18000,
+    "total_rows_after_p126_apply": 72462,
+    "rsr_resolved": [
+      "RSR-1",
+      "RSR-2"
+    ],
+    "rsr_remaining": [
+      "RSR-3",
+      "RSR-4"
+    ],
+    "one_row_per_bet_approved": true,
+    "bet_index_column_required": true,
+    "migration_authorization_required": true,
+    "per_strategy_authorization_required": true
+  }
+}

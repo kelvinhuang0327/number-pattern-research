@@ -1,0 +1,236 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P65",
+  "run_id": "p65_wave6_controlled_apply_proposal_20260525",
+  "marker": "P65_WAVE6_CONTROLLED_APPLY_PROPOSAL_20260525",
+  "generated_at": "2026-05-25T09:21:37.960932+00:00",
+  "governance": {
+    "db_writes": false,
+    "online_promotions": false,
+    "champion_replacement": false,
+    "registry_mutation": false,
+    "production_apply": false,
+    "production_rows_before": 43960,
+    "production_rows_after": 43960,
+    "drift_guard": "PASS",
+    "branch_governance_guard": "PASS"
+  },
+  "p59_rows": 1500,
+  "p64_artifacts": {
+    "p64a": "outputs/replay/p64_cold_complement_wave6_dryrun_rehearsal_20260525.json",
+    "p64b": "outputs/replay/p64b_lag_reversion_wave6_mini_backtest_20260525.json",
+    "p64c": "outputs/replay/p64c_zonal_entropy_wave6_determinism_dryrun_20260525.json"
+  },
+  "p64_summary": {
+    "cold_complement": {
+      "strategy_id": "cold_complement_2bet",
+      "p64_task": "P64a",
+      "classification": "P64_COLD_COMPLEMENT_WAVE6_DRYRUN_REHEARSAL_COMPLETED",
+      "readiness": "READY_FOR_P65_WITH_CAUTION",
+      "m3plus_rate_pct": 3.6667,
+      "vs_baseline_pp": -0.2033,
+      "special_hit_rate_pct": 11.8667,
+      "avg_hit_count": 0.94,
+      "deterministic": true,
+      "determinism_verified": "N/A (no concern flagged)",
+      "dry_run_rows": 1500
+    },
+    "lag_reversion": {
+      "strategy_id": "lag_reversion_2bet",
+      "p64_task": "P64b",
+      "classification": "P64B_LAG_REVERSION_WAVE6_MINI_BACKTEST_GATE_FAIL",
+      "readiness": "GATE_FAIL",
+      "w150_m3plus_pct": 0.6667,
+      "w500_m3plus_pct": 2.0,
+      "w1500_m3plus_pct": 3.7333,
+      "w150_vs_baseline_pp": -3.2033,
+      "w500_vs_baseline_pp": -1.87,
+      "w1500_vs_baseline_pp": -0.1367
+    },
+    "zonal_entropy": {
+      "strategy_id": "zonal_entropy_2bet",
+      "p64_task": "P64c",
+      "classification": "P64C_ZONAL_ENTROPY_WAVE6_READY_WITH_CAUTION",
+      "readiness": "READY_FOR_P65_WITH_CAUTION",
+      "m3plus_rate_pct": 3.6667,
+      "vs_baseline_pp": -0.2033,
+      "special_hit_rate_pct": 11.8667,
+      "avg_hit_count": 0.94,
+      "deterministic": true,
+      "determinism_verified": true,
+      "dry_run_rows": 1500,
+      "regime_distribution": {
+        "chaotic": 1500,
+        "stable": 0,
+        "unknown": 0,
+        "chaotic_pct": 100.0
+      },
+      "regime_note": "100% chaotic \u2014 adapter always uses 100-draw cold fallback (entropy > 2.2 bits for all 1500 target draws)"
+    }
+  },
+  "duplicate_check": {
+    "cold_complement_prod_rows": 0,
+    "zonal_entropy_prod_rows": 0,
+    "wave6_controlled_apply_ids": [],
+    "cold_complement_safe": true,
+    "zonal_entropy_safe": true,
+    "no_wave6_caid_collision": true,
+    "duplicate_risk": false
+  },
+  "decision_matrix": {
+    "cold_complement_2bet": {
+      "strategy_id": "cold_complement_2bet",
+      "p64_task": "P64a",
+      "classification": "P64_COLD_COMPLEMENT_WAVE6_DRYRUN_REHEARSAL_COMPLETED",
+      "readiness": "READY_FOR_P65_WITH_CAUTION",
+      "dry_run_rows": 1500,
+      "m3plus_rate_pct": 3.6667,
+      "baseline_pct": 3.87,
+      "vs_baseline_pp": -0.2033,
+      "special_hit_rate_pct": 11.8667,
+      "avg_hit_count": 0.94,
+      "deterministic": true,
+      "evidence_strength": "MODERATE",
+      "risk_level": "MEDIUM",
+      "coverage_value": "HIGH",
+      "proposed_caid": "P65_POWERLOTTO_WAVE6_COLD_COMPLEMENT_1500_PROD_20260525",
+      "proposed_rows": 1500,
+      "recommendation": "INCLUDE_WITH_CAUTION",
+      "rationale": "Deterministic adapter (P56). Single 1500-window: M3+=3.67% (-0.20pp vs 3.87% baseline). Delta within 2SE noise band (SE\u22480.50pp at N=1500). Regime: standard cold-complement selection. Coverage expansion justifies inclusion despite sub-baseline M3+. NOT a performance improvement claim.",
+      "exclude": false,
+      "exclude_reason": null,
+      "duplicate_safe": true,
+      "prod_rows_if_applied": 0
+    },
+    "zonal_entropy_2bet": {
+      "strategy_id": "zonal_entropy_2bet",
+      "p64_task": "P64c",
+      "classification": "P64C_ZONAL_ENTROPY_WAVE6_READY_WITH_CAUTION",
+      "readiness": "READY_FOR_P65_WITH_CAUTION",
+      "dry_run_rows": 1500,
+      "m3plus_rate_pct": 3.6667,
+      "baseline_pct": 3.87,
+      "vs_baseline_pp": -0.2033,
+      "special_hit_rate_pct": 11.8667,
+      "avg_hit_count": 0.94,
+      "deterministic": true,
+      "determinism_verified": true,
+      "evidence_strength": "MODERATE",
+      "risk_level": "MEDIUM",
+      "coverage_value": "HIGH",
+      "proposed_caid": "P65_POWERLOTTO_WAVE6_ZONAL_ENTROPY_1500_PROD_20260525",
+      "proposed_rows": 1500,
+      "recommendation": "INCLUDE_WITH_CAUTION",
+      "rationale": "Determinism verified in P64c (5 checks, 0 violations; random.seed() removed in P56). Single 1500-window: M3+=3.67% (-0.20pp vs 3.87% baseline). Delta within 2SE noise band (SE\u22480.50pp at N=1500). P57 precedent: same result, p=0.656. Notable: 100% chaotic regime \u2014 adapter always uses cold fallback. Distinct entropy axis provides signal diversity. NOT a performance improvement claim.",
+      "notable": "100% of 1500 draws classified as chaotic (entropy > 2.2 bits). Adapter in practice = cold fallback at window=100 for all draws.",
+      "exclude": false,
+      "exclude_reason": null,
+      "duplicate_safe": true,
+      "prod_rows_if_applied": 0
+    },
+    "lag_reversion_2bet": {
+      "strategy_id": "lag_reversion_2bet",
+      "p64_task": "P64b",
+      "classification": "P64B_LAG_REVERSION_WAVE6_MINI_BACKTEST_GATE_FAIL",
+      "readiness": "GATE_FAIL",
+      "w150_m3plus_pct": 0.6667,
+      "w500_m3plus_pct": 2.0,
+      "w1500_m3plus_pct": 3.7333,
+      "w150_vs_baseline_pp": -3.2033,
+      "w500_vs_baseline_pp": -1.87,
+      "w1500_vs_baseline_pp": -0.1367,
+      "evidence_strength": "WEAK",
+      "risk_level": "HIGH",
+      "recommendation": "EXCLUDE",
+      "rationale": "Adapter not yet built (DEFER_ADAPTER_BUILD). Window inconsistency: w150=0.67%, w500=2.00%, w1500=3.73%. Severe short-window underperformance indicates regime-sensitive signal. Cannot safely propose production apply without adapter + tuning.",
+      "exclude": true,
+      "exclude_reason": "GATE_FAIL, DEFER_ADAPTER_BUILD, window inconsistency"
+    }
+  },
+  "proposal": {
+    "decision": "D",
+    "proposed_strategies": [
+      "cold_complement_2bet",
+      "zonal_entropy_2bet"
+    ],
+    "apply_rows_per_strategy": 1500,
+    "total_apply_rows": 3000,
+    "current_production_rows": 43960,
+    "projected_rows_after_apply": 46960,
+    "classification": "P65_WAVE6_CONTROLLED_APPLY_PROPOSAL_READY_WITH_CAUTION",
+    "rationale": "Option D: Apply both cold_complement_2bet and zonal_entropy_2bet. Both are READY_WITH_CAUTION (M3+=3.67%, -0.20pp, within 2SE noise band). Distinct signal axes (frequency-gap vs entropy-adaptive) justify dual coverage. This is a coverage expansion, NOT a performance superiority claim. lag_reversion_2bet excluded (GATE_FAIL, DEFER_ADAPTER_BUILD).",
+    "is_performance_improvement_claim": false,
+    "online_promotion": false,
+    "champion_replacement": false
+  },
+  "apply_plan": {
+    "applicable": true,
+    "proposed_task_id": "P66",
+    "controlled_apply_ids": {
+      "cold_complement_2bet": "P65_POWERLOTTO_WAVE6_COLD_COMPLEMENT_1500_PROD_20260525",
+      "zonal_entropy_2bet": "P65_POWERLOTTO_WAVE6_ZONAL_ENTROPY_1500_PROD_20260525"
+    },
+    "authorization_phrases_required": {
+      "cold_complement_2bet": "YES apply cold_complement_2bet 1500 rows to production for P66",
+      "zonal_entropy_2bet": "YES apply zonal_entropy_2bet 1500 rows to production for P66"
+    },
+    "apply_order": [
+      "cold_complement_2bet",
+      "zonal_entropy_2bet"
+    ],
+    "apply_one_at_a_time": true,
+    "backup_required": true,
+    "backup_name": "strategy_prediction_replays_backup_before_p66_wave6",
+    "backup_command": "CREATE TABLE strategy_prediction_replays_backup_before_p66_wave6 AS SELECT * FROM strategy_prediction_replays;",
+    "rollback_commands": {
+      "cold_complement_2bet": "DELETE FROM strategy_prediction_replays WHERE strategy_id='cold_complement_2bet';",
+      "zonal_entropy_2bet": "DELETE FROM strategy_prediction_replays WHERE strategy_id='zonal_entropy_2bet';"
+    },
+    "pre_apply_checks": [
+      "SELECT COUNT(*) FROM strategy_prediction_replays;  -- expect 43960",
+      "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id='cold_complement_2bet';  -- expect 0",
+      "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id='zonal_entropy_2bet';  -- expect 0"
+    ],
+    "post_apply_checks": [
+      "SELECT COUNT(*) FROM strategy_prediction_replays;  -- expect 46960",
+      "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id='cold_complement_2bet';  -- expect 1500",
+      "SELECT COUNT(*) FROM strategy_prediction_replays WHERE strategy_id='zonal_entropy_2bet';  -- expect 1500"
+    ],
+    "drift_guard_expected_rows_after": 46960,
+    "duplicate_check_required": true,
+    "monitoring_note": "Monitor first 50 draws per strategy after apply. M3+ rate benchmark: 3.67% (with \u00b11.0pp acceptable range). Flag anomalies if M3+ drops below 2.87% in first 50 draws.",
+    "caution_notes": [
+      "M3+ rate is 3.67% (-0.20pp below 3.87% baseline)",
+      "Statistical test: p=0.656 (not significant) \u2014 no strong performance signal",
+      "Regime: 100% chaotic for zonal_entropy (always cold fallback)",
+      "Rationale is coverage expansion, NOT performance improvement",
+      "Do NOT promote ONLINE",
+      "Do NOT replace champion fourier30_markov30_2bet"
+    ]
+  },
+  "classification": "P65_WAVE6_CONTROLLED_APPLY_PROPOSAL_READY_WITH_CAUTION",
+  "conservative_policy": {
+    "coverage_expansion_only": true,
+    "performance_improvement_claim": false,
+    "online_promotion": false,
+    "champion_replacement": false,
+    "wave5_champion_unchanged": "fourier30_markov30_2bet",
+    "post_apply_monitoring_draws": 50,
+    "monitoring_threshold_m3plus_pct": 2.87
+  },
+  "next_steps": {
+    "if_authorized": "P66: Wave 6 controlled apply (cold_complement + zonal_entropy)",
+    "if_not_authorized": "P66: Wave 7 candidate planning OR lag_reversion tuning",
+    "authorization_phrases": {
+      "cold_complement_2bet": "YES apply cold_complement_2bet 1500 rows to production for P66",
+      "zonal_entropy_2bet": "YES apply zonal_entropy_2bet 1500 rows to production for P66"
+    }
+  },
+  "preceding_tasks": [
+    "P63",
+    "P64a",
+    "P64b",
+    "P64c"
+  ],
+  "base_commit": "de70f32"
+}

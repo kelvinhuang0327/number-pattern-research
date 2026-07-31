@@ -1,0 +1,79 @@
+# ── Python ────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+eggs/
+*.egg
+.Python
+develop-eggs/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ── Virtual Environments ──────────────────────────────────
+.venv/
+venv/
+ENV/
+env/
+
+# ── IDE / Editor ──────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ── Pytest ────────────────────────────────────────────────
+.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
+*.cover
+
+# ── Model Artifacts (large binary files) ──────────────────
+data/wbc_backend/artifacts/*.pkl
+data/wbc_backend/artifacts/*.joblib
+*.pkl
+*.joblib
+
+# ── Large Data Files ──────────────────────────────────────
+data/mlb_2025/gl2025.txt
+data/mlb_2025/mlb-2025-asplayed.csv
+data/wbc_players_2026.json
+data/wbc_players_2025_stats.json
+
+# ── Output / Log Files (generated, not source) ───────────
+verify_all_output.txt
+output_mlb_v3.txt
+backtest_results_sure_bets.txt
+backtest_results_real_2025.txt
+simulation_output.txt
+output.txt
+report_output.txt
+last_report.txt
+
+# ── Report Outputs (per-game, auto-generated) ────────────
+a01_report.txt
+b01_report.txt
+c03_report.txt
+
+# ── Environment / Secrets ────────────────────────────────
+.env
+.env.*
+!.env.example
+secrets/
+credentials/
+
+# ── Telegram Bot ──────────────────────────────────────────
+# Bot token and session files
+telegram_bot_token.txt
+*.session
+
+# ── Misc ──────────────────────────────────────────────────
+*.log
+tmp/

@@ -1,0 +1,67 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+
+# Data files (optional - uncomment if you don't want to track data files)
+# data/*.csv
+
+# Temporary files
+*.tmp
+*.bak
+
+# SQLite write-ahead log journal files (runtime artifacts, never commit)
+*.db-shm
+*.db-wal
+
+# === P196: SQLite DB binaries excluded from git (2026-06-01) ===
+# Production DB — managed locally, not tracked in git
+lottery_api/data/*.db
+lottery_api/data/*.db-wal
+lottery_api/data/*.db-shm
+lottery_api/data/*.bak_*
+lottery_api/data/*.fuse_hidden*
+
+# DB backups — stored locally, not tracked in git
+backups/*.db
+backups/*.db-shm
+backups/*.db-wal
+
+# Rehearsal temp DBs
+outputs/research/power_lotto/p184_rehearsal/*.db
+outputs/research/power_lotto/p184_rehearsal/*.db-wal
+outputs/research/power_lotto/p184_rehearsal/*.db-shm
+outputs/research/power_lotto/p185_rehearsal/*.db
+outputs/research/power_lotto/p185_rehearsal/*.db-wal
+outputs/research/power_lotto/p185_rehearsal/*.db-shm

@@ -1,0 +1,99 @@
+task: PREDRAW_QUICK_PREDICT_LEDGER_OPT_IN_MIGRATION_R2
+status: COMPLETED_VERTICAL_ONLY
+task_class: STATE_CHANGING_IMPLEMENTATION
+worker_route: STANDARD_JUDGED
+judge_mode: FRESH_CONTEXT
+judge_depth: BOUNDED
+judge_verdict: PASS_WITH_CAVEATS
+
+workspace:
+  root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  branch: task/p273a-prize-aware-inferential-validation
+  head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  complete_dirty_before: 0
+  complete_dirty_after: 2
+  task_owned_dirty_before: 0
+  task_owned_dirty_after: 2
+  unattributed_dirty_paths_modified: false
+
+authority:
+  source_ref: refs/remotes/origin/task/p273a-prize-aware-inferential-validation
+  source_paths:
+    - tools/quick_predict.py
+    - tests/test_p360b_quick_predict_ledger_entrypoint.py
+  previous_engine_report: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged/_integration_reports/PREDRAW_STRATEGY_FREEZE_LEDGER_CAPTURE_ENGINE_MIGRATION_R1/final_report.yaml
+  source_contract_resolved: true
+
+changes:
+  created_paths:
+    - tests/test_p360b_quick_predict_ledger_entrypoint.py
+  modified_paths:
+    - tools/quick_predict.py
+  source_deviations: []
+  excluded_paths:
+    - lottery_api/routes/replay.py
+  unexpected_paths: []
+
+behavior:
+  opt_in_flag: --write-predraw-ledger
+  default_behavior_changed: false
+  default_ledger_write: false
+  opt_in_ledger_write: true
+  ledger_records_per_success: 1 per bet
+  failed_prediction_ledger_behavior: exception raised before ledger write; zero false records
+  output_path_resolution: --predraw-ledger-path > LOTTERY_PREDRAW_LEDGER_PATH > module default
+  database_read: true (mode=ro)
+  database_write: false
+  network_access: false
+
+verification:
+  focused_test_command: .venv/bin/pytest tests/test_p360b_quick_predict_ledger_entrypoint.py -v
+  focused_tests: PASS (14/14)
+  engine_regression: PASS (52/52)
+  relevant_quick_predict_regression: PASS (16/16)
+  cli_help: PASS
+  default_no_write: PASS
+  opt_in_success: PASS
+  prediction_failure: PASS
+  invalid_config: PASS
+  ast_parse: PASS
+  import_check: PASS
+  lint: PASS
+  typecheck: PASS
+  diff_check: PASS
+  changed_path_review: PASS
+  judge: PASS_WITH_CAVEATS
+
+runtime:
+  sandbox_root: _integration_reports/PREDRAW_QUICK_PREDICT_LEDGER_OPT_IN_MIGRATION_R2/runtime_sandbox/
+  writes_observed:
+    - _integration_reports/PREDRAW_QUICK_PREDICT_LEDGER_OPT_IN_MIGRATION_R2/runtime_sandbox/cli_dry_run.json
+    - _integration_reports/PREDRAW_QUICK_PREDICT_LEDGER_OPT_IN_MIGRATION_R2/runtime_sandbox/cli_test_ledger.jsonl
+    - .pytest_cache
+  unauthorized_writes: []
+  existing_predraw_outputs_modified: false
+
+safety:
+  production_db_modified: false
+  ledger_engine_modified: false
+  replay_scope_modified: false
+  dependency_installed: false
+  dependency_manifest_modified: false
+  strategy_identity_modified: false
+  git_refs_mutated: false
+  commit_created: false
+  push_run: false
+  pr_created: false
+
+claim_boundary:
+  predraw_engine_migrated: true
+  quick_predict_opt_in_migrated: true
+  replay_query_normalization_migrated: false
+  source_branch_merged: false
+  all_branch_functions_migrated: false
+  production_ready_claimed: false
+
+not_run: []
+blocked: []
+remaining_risks: []
+next_recommended_task: PREDRAW_REPLAY_QUERY_NORMALIZATION_MIGRATION_R3

@@ -1,0 +1,9 @@
+migration_decisions:
+  - decision: Minimal targeted query normalization migration only.
+    rationale: Scope must be strictly bounded to lottery type and detail enum query normalization without expanding into a full Replay route refactor.
+  - decision: Add _normalise_lottery_type_query and _normalise_detail_enum_query helper functions to lottery_api/routes/replay.py.
+    rationale: Provides single source of truth for query preprocessing and fail-closed validation for replay routes.
+  - decision: Migrate source tests test_p354a and test_p355a directly into tests/.
+    rationale: Ensures full test coverage for normalization contracts while using existing test fixtures.
+  - decision: Preserve all target endpoint contracts and response models.
+    rationale: Ensures zero regressions for existing consumers of the Replay API.

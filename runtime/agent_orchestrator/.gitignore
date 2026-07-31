@@ -1,0 +1,8 @@
+orchestrator.db
+orchestrator.db-shm
+orchestrator.db-wal
+launchd/
+tasks/*
+logs/*
+!tasks/.gitkeep
+!logs/.gitkeep

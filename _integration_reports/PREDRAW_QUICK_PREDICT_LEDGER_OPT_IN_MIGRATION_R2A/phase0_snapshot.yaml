@@ -1,0 +1,19 @@
+phase0_snapshot:
+  timestamp: "2026-07-29T14:27:36+08:00"
+  repository: "/Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged"
+  expected_branch: "task/p273a-prize-aware-inferential-validation"
+  actual_branch: "task/p273a-prize-aware-inferential-validation"
+  expected_head: "3d6df001da3a0633ab91f164d722b595ca76d2e1"
+  actual_head: "3d6df001da3a0633ab91f164d722b595ca76d2e1"
+  branch_matches: true
+  head_matches: true
+  quick_predict_final_sha256: "d563d9484d09ded6f22ac18e532e3b841aa5f47c5be044a195ecccdaee650670"
+  test_file_sha256: "2ba0797fc7d61b946826f92008ee8ef6fed4853b35c1355acb39267b106f9a7b"
+  task_owned_dirty_paths:
+    - "tools/quick_predict.py"
+    - "tests/test_p360b_quick_predict_ledger_entrypoint.py"
+  unattributed_dirty_paths:
+    - "claude-code-showcase"
+    - "data/lottery_v2.db"
+    - "index.html"
+  stop_conditions_triggered: false

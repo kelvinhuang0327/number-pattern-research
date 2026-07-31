@@ -1,0 +1,24 @@
+task: P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_LINT_REMEDIATION_R4B
+timestamp: "2026-07-29T20:17:10+08:00"
+target_script: scripts/p0_per_draw_coverage_matrix.py
+prohibited_keywords_check:
+  INSERT: absent
+  UPDATE: absent
+  DELETE: absent
+  REPLACE: absent
+  CREATE TABLE: absent
+  ALTER TABLE: absent
+  DROP TABLE: absent
+  VACUUM: absent
+  ATTACH: absent
+  executescript: absent
+  apply_p0_schema_migration: absent
+sql_queries_found:
+  - "SELECT draw, date FROM draws WHERE lottery_type = ? ORDER BY CAST(draw AS INTEGER) DESC LIMIT ?"
+  - "SELECT strategy_id, COUNT(*) as row_count, GROUP_CONCAT(DISTINCT truth_level) as truth_levels, MIN(generated_at) as first_generated FROM strategy_prediction_replays WHERE lottery_type = ? AND target_draw = ? GROUP BY strategy_id"
+manual_classification_of_matches:
+  - match: "no rows written"
+    type: string_literal_metadata
+    risk: none
+read_only_contract_verified: true
+status: PASS

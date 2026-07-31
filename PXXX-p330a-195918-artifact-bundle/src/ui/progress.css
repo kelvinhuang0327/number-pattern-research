@@ -1,0 +1,128 @@
+/* 進度條樣式 */
+
+.progress-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.progress-container.hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.progress-wrapper {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.progress-text {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.progress-bg {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    height: 8px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 8px;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.progress-bar.complete {
+    background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.progress-bar.complete::after {
+    animation: none;
+}
+
+.progress-percent {
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* 不確定進度動畫 */
+.progress-bar.indeterminate {
+    width: 100% !important;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #3b82f6,
+        transparent
+    );
+    background-size: 200% 100%;
+    animation: indeterminate 1.5s infinite;
+}
+
+@keyframes indeterminate {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* 響應式設計 */
+@media (max-width: 640px) {
+    .progress-container {
+        padding: 15px;
+    }
+    
+    .progress-text {
+        font-size: 13px;
+    }
+    
+    .progress-percent {
+        font-size: 11px;
+    }
+}

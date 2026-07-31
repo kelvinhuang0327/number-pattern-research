@@ -1,0 +1,1287 @@
+"""
+SQLite 數據庫管理模組
+負責所有彩票數據的持久化存儲
+"""
+import os
+import sqlite3
+import json
+import logging
+from typing import List, Dict, Optional, Tuple
+from datetime import datetime
+
+try:
+    from .canonical_db_path import resolve_db_path
+except ImportError:  # top-level import context
+    from canonical_db_path import resolve_db_path
+
+logger = logging.getLogger(__name__)
+
+
+def _describe_sidecar(path: str) -> str:
+    """Classify a WAL sidecar path as missing, unreadable, or present."""
+    if not os.path.exists(path):
+        return f"{path} (missing)"
+    if not os.access(path, os.R_OK):
+        return f"{path} (unreadable)"
+    return f"{path} (present)"
+
+
+_SQLITE_HEADER_SIZE = 100
+_SQLITE_HEADER_MAGIC = b"SQLite format 3\x00"
+
+
+def _read_sqlite_header(path: str) -> Optional[bytes]:
+    """Read the fixed 100-byte SQLite header, or None if the file can't be
+    opened, is shorter than a full header, or isn't a SQLite database.
+
+    None means "inconclusive" -- callers must not treat that as cold WAL.
+    """
+    try:
+        with open(path, "rb") as handle:
+            header = handle.read(_SQLITE_HEADER_SIZE)
+    except OSError:
+        return None
+    if len(header) < _SQLITE_HEADER_SIZE or not header.startswith(_SQLITE_HEADER_MAGIC):
+        return None
+    return header
+
+
+def _header_indicates_wal(header: bytes) -> bool:
+    """Bytes 18/19 are SQLite's file-format write/read version; both read 2
+    only for WAL mode (1 = legacy rollback journal). Require both bytes to
+    agree, matching SQLite's own interpretation, so a corrupt/ambiguous
+    header never gets misclassified as WAL.
+    """
+    return header[18] == 2 and header[19] == 2
+
+
+def _sidecar_openable(path: str) -> bool:
+    """True only if the sidecar can actually be opened for reading right
+    now -- an existence check alone can be stale or lie on some filesystems.
+    """
+    try:
+        with open(path, "rb"):
+            return True
+    except OSError:
+        return False
+
+
+class ColdWalReadOnlyError(sqlite3.OperationalError):
+    """Strict read-only WAL-mode SQLite database could not be read because
+    its -wal/-shm sidecars are missing or unreadable ("cold WAL").
+
+    Raised only for this confirmed condition, on first real read (never
+    during DatabaseManager construction). Strict read-only mode never
+    creates or repairs sidecars, never retries with a writable connection,
+    and never modifies journal mode -- this failure is fail-closed by
+    design. Restore managed WAL state by starting the authorized
+    backend/runtime against this database, or use a separately approved
+    frozen snapshot instead.
+    """
+
+    def __init__(self, db_path: str):
+        self.db_path = db_path
+        self.wal_path = db_path + "-wal"
+        self.shm_path = db_path + "-shm"
+        message = (
+            f"Cannot read {db_path}: WAL-mode SQLite database is 'cold' "
+            "(its -wal/-shm sidecars are missing or unreadable). "
+            f"Sidecar {_describe_sidecar(self.wal_path)}; "
+            f"sidecar {_describe_sidecar(self.shm_path)}. "
+            "Strict read-only mode (SQLite mode=ro, PRAGMA query_only=ON) "
+            "does not create or repair sidecars and will not retry with a "
+            "writable connection. Restore managed WAL state by starting the "
+            "authorized backend/runtime against this database, or use a "
+            "separately approved frozen snapshot instead."
+        )
+        super().__init__(message)
+
+
+# 不含特別號的彩種。DB 內可能用 0 當佔位值，但 API 輸出應正規化成 None。
+_NO_SPECIAL_TYPES = {
+    "DAILY_539",
+    "BIG_LOTTO_BONUS",
+    "3_STAR",
+    "4_STAR",
+    "39_LOTTO",
+    "38_LOTTO",
+    "49_LOTTO",
+    "BINGO_BINGO",
+    "DOUBLE_WIN",
+    "LOTTO_6_38",
+}
+
+
+def _normalize_special_for_output(lottery_type: Optional[str], special):
+    """對外輸出時統一沒有特別號的彩種回傳 None。"""
+    if lottery_type in _NO_SPECIAL_TYPES:
+        return None
+    return special
+
+
+class DatabaseManager:
+    """SQLite 數據庫管理器"""
+    
+    def __init__(self, db_path: Optional[str] = None, read_only: bool = False):
+        """
+        初始化數據庫管理器（惰性）
+
+        Construction performs no filesystem or SQLite I/O, so importing this
+        module (or the module-level `db_manager` singleton below) never
+        requires the canonical DB to exist. Path resolution and schema
+        initialization are deferred to the first real connection request, so
+        artifact-only callers that never touch the DB can boot cleanly, while
+        DB-backed callers still fail closed (FileNotFoundError) on first use
+        if the DB is absent.
+
+        Args:
+            db_path: 絕對數據庫文件路徑；None 使用 canonical 路徑
+            read_only: True 時所有連線一律以 SQLite URI `mode=ro` 開啟並設定
+                `PRAGMA query_only=ON`，且首次使用時完全跳過 schema
+                initialization（不執行任何 CREATE TABLE/INDEX/VIEW）。DB 檔案
+                不存在時 fail closed（不建立檔案）。write 方法在執行任何 SQL
+                前即拒絕。預設 False，既有呼叫者行為不變。
+        """
+        self._db_path_arg = db_path
+        self.db_path: Optional[str] = None
+        self._initialized = False
+        self._read_only = read_only
+
+    def _ensure_ready(self):
+        """Resolve the DB path and initialize schema on first real use.
+
+        Read-only managers resolve the path and fail closed if the DB file
+        doesn't exist, but never call _init_database() — no CREATE TABLE,
+        INDEX, or VIEW statement is ever issued on a read-only connection.
+        """
+        if self._initialized:
+            return
+        if self.db_path is None:
+            self.db_path = resolve_db_path(self._db_path_arg)
+        if self._read_only:
+            self._initialized = True
+            logger.info(f"✅ Database (read-only) resolved at {self.db_path}")
+            return
+        self._init_database()
+        self._initialized = True
+        logger.info(f"✅ Database initialized at {self.db_path}")
+
+    def _reject_if_read_only(self, operation: str):
+        """Fail closed before any SQL runs, if this manager is read-only."""
+        if self._read_only:
+            raise PermissionError(
+                f"DatabaseManager(read_only=True) cannot perform '{operation}': "
+                "this connection is read-only (SQLite mode=ro, PRAGMA query_only=ON)."
+            )
+
+    @staticmethod
+    def _raise_if_cold_wal(db_path: str) -> None:
+        """Pre-connect guard: if db_path's own file header conclusively
+        indicates WAL mode and either -wal/-shm sidecar is missing or
+        unreadable, raise ColdWalReadOnlyError before sqlite3.connect() is
+        ever called.
+
+        This is deterministic across SQLite/Python versions and never
+        depends on a particular sqlite3.OperationalError message string.
+        Inconclusive headers (short/non-SQLite files, or a rollback-journal
+        header) fall through to the normal connect path unchanged.
+        """
+        header = _read_sqlite_header(db_path)
+        if header is None or not _header_indicates_wal(header):
+            return
+        wal_path = db_path + "-wal"
+        shm_path = db_path + "-shm"
+        if not _sidecar_openable(wal_path) or not _sidecar_openable(shm_path):
+            raise ColdWalReadOnlyError(db_path)
+
+    def _get_connection(self) -> sqlite3.Connection:
+        """獲取數據庫連接"""
+        self._ensure_ready()
+        if self._read_only:
+            self._raise_if_cold_wal(self.db_path)
+            conn = sqlite3.connect(f"file:{self.db_path}?mode=ro", uri=True)
+            conn.row_factory = sqlite3.Row
+            conn.execute("PRAGMA query_only = ON")
+            # Fallback probe: the pre-connect header check above catches the
+            # deterministic cold-WAL case. This first real read stays as a
+            # safety net for any other way SQLite might fail to open the
+            # database file, so callers still get an actionable error
+            # instead of a bare sqlite3.OperationalError from deep inside an
+            # arbitrary query.
+            try:
+                conn.execute("SELECT 1 FROM sqlite_master LIMIT 1")
+            except sqlite3.OperationalError as exc:
+                conn.close()
+                if "unable to open database file" in str(exc):
+                    raise ColdWalReadOnlyError(self.db_path) from exc
+                raise
+            return conn
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row  # 使用字典式訪問
+        return conn
+
+    def _raw_connection(self) -> sqlite3.Connection:
+        """Open a connection directly against self.db_path, bypassing _ensure_ready().
+
+        _init_database() runs *during* _ensure_ready(), before _initialized is
+        set to True. If it opened its connection via _get_connection(), that
+        would re-enter _ensure_ready() -> _init_database() -> _get_connection()
+        indefinitely. Callers must guarantee self.db_path is already resolved.
+        """
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row  # 使用字典式訪問
+        return conn
+
+    def _init_database(self):
+        """初始化數據庫表結構"""
+        conn = self._raw_connection()
+        cursor = conn.cursor()
+        
+        try:
+            # 創建開獎記錄表
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS draws (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    draw TEXT NOT NULL,
+                    date TEXT NOT NULL,
+                    lottery_type TEXT NOT NULL,
+                    numbers TEXT NOT NULL,
+                    special INTEGER DEFAULT 0,
+                    jackpot_amount REAL DEFAULT NULL,
+                    numbers_positional TEXT DEFAULT NULL,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(draw, lottery_type)
+                )
+            """)
+            try:
+                cursor.execute("ALTER TABLE draws ADD COLUMN jackpot_amount REAL DEFAULT NULL")
+                conn.commit()
+            except Exception:
+                pass
+            try:
+                cursor.execute("ALTER TABLE draws ADD COLUMN numbers_positional TEXT DEFAULT NULL")
+                conn.commit()
+            except Exception:
+                pass
+            
+            # 創建索引以提升查詢性能
+            cursor.execute("""
+                CREATE INDEX IF NOT EXISTS idx_lottery_type 
+                ON draws(lottery_type)
+            """)
+            
+            cursor.execute("""
+                CREATE INDEX IF NOT EXISTS idx_date 
+                ON draws(date DESC)
+            """)
+            
+            cursor.execute("""
+                CREATE INDEX IF NOT EXISTS idx_draw
+                ON draws(draw)
+            """)
+
+            # 預測追蹤：預測批次（每次預測為一個 run）
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS prediction_runs (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    lottery_type TEXT NOT NULL,
+                    latest_known_draw TEXT NOT NULL,
+                    latest_known_date TEXT,
+                    strategy_name TEXT NOT NULL,
+                    snapshot_source TEXT DEFAULT 'VALID',
+                    notes TEXT,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            # Migration: add snapshot_source to existing tables (safe no-op if column exists)
+            try:
+                cursor.execute("ALTER TABLE prediction_runs ADD COLUMN snapshot_source TEXT DEFAULT 'VALID'")
+                conn.commit()
+            except Exception:
+                pass
+            # Migration: add analyzed field (run-level analysis status)
+            try:
+                cursor.execute("ALTER TABLE prediction_runs ADD COLUMN analyzed TEXT DEFAULT '未研究'")
+                conn.commit()
+            except Exception:
+                pass
+            # Migration: add analysis_note field (user-submitted analysis text)
+            try:
+                cursor.execute("ALTER TABLE prediction_runs ADD COLUMN analysis_note TEXT")
+                conn.commit()
+            except Exception:
+                pass
+            # Migration: add review_json field (structured review data from LLM Research Board)
+            try:
+                cursor.execute("ALTER TABLE prediction_runs ADD COLUMN review_json TEXT")
+                conn.commit()
+            except Exception:
+                pass
+
+            # 預測追蹤：每注預測
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS prediction_items (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    run_id INTEGER NOT NULL,
+                    bet_index INTEGER NOT NULL,
+                    numbers TEXT NOT NULL,
+                    special INTEGER,
+                    status TEXT DEFAULT 'PENDING',
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (run_id) REFERENCES prediction_runs(id)
+                )
+            """)
+
+            # 預測追蹤：比對結果
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS prediction_results (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    item_id INTEGER NOT NULL UNIQUE,
+                    actual_draw TEXT NOT NULL,
+                    actual_date TEXT,
+                    actual_numbers TEXT NOT NULL,
+                    actual_special INTEGER,
+                    hit_count INTEGER NOT NULL,
+                    matched_numbers TEXT NOT NULL,
+                    special_hit INTEGER DEFAULT 0,
+                    researched TEXT DEFAULT '無',
+                    resolved_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (item_id) REFERENCES prediction_items(id)
+                )
+            """)
+            # Migration: add researched column to existing tables (safe no-op if column exists)
+            try:
+                cursor.execute("ALTER TABLE prediction_results ADD COLUMN researched TEXT DEFAULT '無'")
+                conn.commit()
+            except Exception:
+                pass
+            # Migration: Winning Quality fields (P1-1)
+            try:
+                cursor.execute("ALTER TABLE prediction_results ADD COLUMN wq_score INTEGER DEFAULT NULL")
+                conn.commit()
+            except Exception:
+                pass
+            try:
+                cursor.execute("ALTER TABLE prediction_results ADD COLUMN split_risk TEXT DEFAULT NULL")
+                conn.commit()
+            except Exception:
+                pass
+            # Migration: zone_coverage for prediction_items (P1-3)
+            try:
+                cursor.execute("ALTER TABLE prediction_items ADD COLUMN zone_coverage TEXT DEFAULT NULL")
+                conn.commit()
+            except Exception:
+                pass
+            # Migration: add strategy_name and num_bets to prediction_items (multi-strategy per run)
+            try:
+                cursor.execute("ALTER TABLE prediction_items ADD COLUMN strategy_name TEXT")
+                conn.commit()
+            except Exception:
+                pass
+            try:
+                cursor.execute("ALTER TABLE prediction_items ADD COLUMN num_bets INTEGER")
+                conn.commit()
+            except Exception:
+                pass
+
+            cursor.execute("""
+                CREATE INDEX IF NOT EXISTS idx_pred_runs_lottery
+                ON prediction_runs(lottery_type)
+            """)
+            cursor.execute("""
+                CREATE INDEX IF NOT EXISTS idx_pred_items_run
+                ON prediction_items(run_id)
+            """)
+            cursor.execute("""
+                CREATE INDEX IF NOT EXISTS idx_pred_items_status
+                ON prediction_items(status)
+            """)
+
+            # ── Snapshot Schedule Table ─────────────────────────────────────
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS snapshot_schedule (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    lottery_type TEXT NOT NULL,
+                    target_draw TEXT NOT NULL,
+                    target_date TEXT,
+                    scheduled_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    status TEXT DEFAULT 'SCHEDULED',
+                    run_id INTEGER,
+                    notes TEXT,
+                    UNIQUE(lottery_type, target_draw),
+                    FOREIGN KEY (run_id) REFERENCES prediction_runs(id)
+                )
+            """)
+            cursor.execute("""
+                CREATE INDEX IF NOT EXISTS idx_schedule_lottery
+                ON snapshot_schedule(lottery_type, status)
+            """)
+
+            # ── Research Review System Tables ──────────────────────────────
+
+            # review_sessions: 每次檢討會議
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS review_sessions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    game TEXT NOT NULL,
+                    draw TEXT,
+                    draw_date TEXT,
+                    session_type TEXT NOT NULL DEFAULT 'daily_review',
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    summary TEXT,
+                    final_decision TEXT DEFAULT 'NO_ACTION',
+                    confidence_level TEXT DEFAULT 'LOW',
+                    raw_report_text TEXT,
+                    parsed_successfully INTEGER DEFAULT 0,
+                    status TEXT DEFAULT 'OPEN'
+                )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_sessions_game ON review_sessions(game)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_sessions_draw ON review_sessions(draw)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_sessions_status ON review_sessions(status)")
+
+            # review_findings: 檢討發現
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS review_findings (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    session_id INTEGER NOT NULL,
+                    section_type TEXT NOT NULL,
+                    title TEXT,
+                    content TEXT,
+                    evidence_type TEXT DEFAULT 'UNSURE',
+                    sort_order INTEGER DEFAULT 0,
+                    FOREIGN KEY (session_id) REFERENCES review_sessions(id)
+                )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_findings_session ON review_findings(session_id)")
+
+            # review_hypotheses: 假說記錄
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS review_hypotheses (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    session_id INTEGER NOT NULL,
+                    hypothesis_type TEXT DEFAULT 'other',
+                    description TEXT,
+                    expected_impact TEXT,
+                    validation_method TEXT,
+                    kill_condition TEXT,
+                    status TEXT DEFAULT 'PENDING',
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (session_id) REFERENCES review_sessions(id)
+                )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_hypotheses_session ON review_hypotheses(session_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_hypotheses_status ON review_hypotheses(status)")
+
+            # review_actions: 行動項目
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS review_actions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    session_id INTEGER NOT NULL,
+                    priority TEXT DEFAULT 'P2',
+                    action_title TEXT,
+                    action_description TEXT,
+                    expected_gain TEXT,
+                    cost_level TEXT,
+                    risk_level TEXT,
+                    validation_method TEXT,
+                    stop_condition TEXT,
+                    status TEXT DEFAULT 'OPEN',
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (session_id) REFERENCES review_sessions(id)
+                )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_actions_session ON review_actions(session_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_actions_status ON review_actions(status)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_review_actions_priority ON review_actions(priority)")
+
+            # shadow_experiments: 影子實驗
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS shadow_experiments (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    session_id INTEGER,
+                    game TEXT NOT NULL,
+                    experiment_name TEXT NOT NULL,
+                    base_strategy TEXT,
+                    experiment_strategy TEXT,
+                    experiment_config_json TEXT,
+                    status TEXT DEFAULT 'DRAFT',
+                    notes TEXT,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (session_id) REFERENCES review_sessions(id)
+                )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_shadow_experiments_session ON shadow_experiments(session_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_shadow_experiments_game ON shadow_experiments(game)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_shadow_experiments_status ON shadow_experiments(status)")
+
+            # prediction_review_status: 預測與檢討的關聯
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS prediction_review_status (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    prediction_run_id INTEGER,
+                    review_session_id INTEGER,
+                    review_status TEXT DEFAULT 'UNREVIEWED',
+                    resolved_at TEXT,
+                    notes TEXT,
+                    FOREIGN KEY (prediction_run_id) REFERENCES prediction_runs(id),
+                    FOREIGN KEY (review_session_id) REFERENCES review_sessions(id)
+                )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_pred_review_run ON prediction_review_status(prediction_run_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_pred_review_session ON prediction_review_status(review_session_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_pred_review_status ON prediction_review_status(review_status)")
+
+            # ─── Strategy Historical Replay Store (v0.1) ───────────────────────────────
+            # IMPORTANT: These tables are SEPARATE from prediction_runs / prediction_items /
+            # prediction_results.  They carry a distinct semantic:
+            #   "what would strategy S have predicted for draw N, using only draws 0..N-1?"
+            # They do NOT represent current strategy state or formal edge claims.
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS strategy_replay_runs (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    lottery_type TEXT NOT NULL,
+                    strategy_scope TEXT NOT NULL DEFAULT 'ALL',
+                    started_at TEXT NOT NULL,
+                    finished_at TEXT,
+                    status TEXT NOT NULL DEFAULT 'RUNNING',
+                    generator_version TEXT NOT NULL DEFAULT 'v0.1',
+                    data_hash TEXT,
+                    notes TEXT,
+                    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_srr_lottery ON strategy_replay_runs(lottery_type)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_srr_status ON strategy_replay_runs(status)")
+
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS strategy_prediction_replays (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    lottery_type TEXT NOT NULL,
+                    target_draw TEXT NOT NULL,
+                    target_date TEXT,
+                    strategy_id TEXT NOT NULL,
+                    strategy_name TEXT NOT NULL,
+                    strategy_version TEXT NOT NULL DEFAULT 'v0.1',
+                    history_cutoff_draw TEXT,
+                    replay_status TEXT NOT NULL,
+                    reject_reason TEXT,
+                    predicted_numbers TEXT,
+                    predicted_special INTEGER,
+                    actual_numbers TEXT,
+                    actual_special INTEGER,
+                    hit_numbers TEXT,
+                    hit_count INTEGER DEFAULT 0,
+                    special_hit INTEGER DEFAULT 0,
+                    replay_run_id INTEGER,
+                    generated_at TEXT,
+                    FOREIGN KEY (replay_run_id) REFERENCES strategy_replay_runs(id),
+                    UNIQUE(lottery_type, target_draw, strategy_id, replay_run_id)
+                )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_spr_lottery ON strategy_prediction_replays(lottery_type)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_spr_strategy ON strategy_prediction_replays(strategy_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_spr_draw ON strategy_prediction_replays(target_draw)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_spr_status ON strategy_prediction_replays(replay_status)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_spr_run ON strategy_prediction_replays(replay_run_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_spr_hit ON strategy_prediction_replays(hit_count)")
+            # ─── End Strategy Historical Replay Store ──────────────────────────────────
+
+            conn.commit()
+            logger.info("✅ Database tables and indexes created")
+            
+        except Exception as e:
+            conn.rollback()
+            logger.error(f"❌ Database initialization failed: {e}")
+            raise
+        finally:
+            conn.close()
+    
+    def insert_draws(self, draws: List[Dict]) -> Tuple[int, int]:
+        """
+        批量插入開獎記錄（優化版 - 使用 executemany）
+        
+        Args:
+            draws: 開獎記錄列表
+            
+        Returns:
+            (inserted_count, duplicate_count) 元組
+        """
+        if not draws:
+            return (0, 0)
+
+        self._reject_if_read_only("insert_draws")
+        conn = self._get_connection()
+        cursor = conn.cursor()
+
+        inserted = 0
+        duplicates = 0
+        
+        try:
+            # 準備批次插入的數據
+            batch_data = []
+            
+            # Debug: Log first item to check structure
+            if len(draws) > 0:
+                logger.info(f"🔍 First draw data sample: {draws[0]}")
+            
+            for draw in draws:
+                # 處理 numbers 字段，防止雙重序列化
+                numbers = draw.get('numbers', [])
+                if isinstance(numbers, str):
+                    try:
+                        parsed = json.loads(numbers)
+                        if isinstance(parsed, list):
+                            numbers = parsed
+                    except (json.JSONDecodeError, TypeError):
+                        pass
+                        
+                numbers_json = json.dumps(sorted(numbers))
+                lottery_type = draw.get('lotteryType', draw.get('lottery_type', ''))
+                if lottery_type in ('3_STAR', '4_STAR'):
+                    numbers_positional_json = json.dumps(numbers)
+                else:
+                    numbers_positional_json = None
+                jackpot_amount = draw.get('jackpot_amount', draw.get('jackpot'))
+                if jackpot_amount in (None, ""):
+                    jackpot_amount = None
+                else:
+                    try:
+                        jackpot_amount = float(jackpot_amount)
+                    except Exception:
+                        jackpot_amount = None
+                
+                # Extract pool-size fields
+                sell_amount = draw.get('sell_amount')
+                if sell_amount in (None, ""):
+                    sell_amount = None
+                else:
+                    try:
+                        sell_amount = float(sell_amount)
+                    except Exception:
+                        sell_amount = None
+                
+                total_amount = draw.get('total_amount')
+                if total_amount in (None, ""):
+                    total_amount = None
+                else:
+                    try:
+                        total_amount = float(total_amount)
+                    except Exception:
+                        total_amount = None
+                
+                batch_data.append((
+                    draw.get('draw'),
+                    draw.get('date'),
+                    lottery_type,
+                    numbers_json,
+                    draw.get('special', 0),
+                    jackpot_amount,
+                    sell_amount,
+                    total_amount,
+                    numbers_positional_json,
+                ))
+            
+            # 使用 executemany 批次插入（大幅提升性能）
+            # 注意：SQLite 的 executemany 在遇到 UNIQUE 約束時會全部失敗
+            # 所以我們需要先檢查哪些是重複的
+            
+            # 方法1：使用 INSERT OR IGNORE（快速但無法統計重複數）
+            # 方法2：分批處理並捕獲錯誤（準確統計）
+            
+            # 這裡使用方法1（優先性能）+ 後續統計
+            cursor.executemany("""
+                INSERT OR IGNORE INTO draws (draw, date, lottery_type, numbers, special, jackpot_amount, sell_amount, total_amount, numbers_positional)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, batch_data)
+            
+            inserted = cursor.rowcount
+            duplicates = len(draws) - inserted
+            
+            conn.commit()
+            logger.info(f"✅ Batch inserted {inserted} draws, {duplicates} duplicates skipped")
+            
+            return (inserted, duplicates)
+            
+        except Exception as e:
+            conn.rollback()
+            logger.error(f"❌ Insert failed: {e}")
+            raise
+        finally:
+            conn.close()
+    
+    def get_draws(
+        self,
+        lottery_type: Optional[str] = None,
+        page: int = 1,
+        page_size: int = 50,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None
+    ) -> Dict:
+        """
+        分頁查詢開獎記錄
+        
+        Args:
+            lottery_type: 彩券類型篩選
+            page: 頁碼（從 1 開始）
+            page_size: 每頁數量
+            start_date: 開始日期
+            end_date: 結束日期
+            
+        Returns:
+            包含 draws, total, page, page_size, total_pages 的字典
+        """
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        
+        try:
+            # 構建查詢條件
+            conditions = []
+            params = []
+
+            if lottery_type:
+                # ✅ 使用相關類型查詢
+                from .common import get_related_lottery_types
+                related_types = get_related_lottery_types(lottery_type)
+
+                # 使用 IN 子句支持多個類型
+                placeholders = ','.join('?' * len(related_types))
+                conditions.append(f"lottery_type IN ({placeholders})")
+                params.extend(related_types)
+
+            if start_date:
+                conditions.append("date >= ?")
+                params.append(start_date)
+
+            if end_date:
+                conditions.append("date <= ?")
+                params.append(end_date)
+
+            where_clause = " AND ".join(conditions) if conditions else "1=1"
+            
+            # 查詢總數
+            count_query = f"SELECT COUNT(*) FROM draws WHERE {where_clause}"
+            cursor.execute(count_query, params)
+            total = cursor.fetchone()[0]
+            
+            # 計算分頁
+            offset = (page - 1) * page_size
+            total_pages = (total + page_size - 1) // page_size
+            
+            # 查詢數據
+            data_query = f"""
+                SELECT id, draw, date, lottery_type, numbers, special, jackpot_amount, created_at
+                FROM draws
+                WHERE {where_clause}
+                ORDER BY CAST(draw AS INTEGER) DESC
+                LIMIT ? OFFSET ?
+            """
+            cursor.execute(data_query, params + [page_size, offset])
+            
+            rows = cursor.fetchall()
+            draws = []
+            
+            for row in rows:
+                draws.append({
+                    'id': row['id'],
+                    'draw': row['draw'],
+                    'date': row['date'],
+                    'lotteryType': row['lottery_type'],
+                    'numbers': json.loads(row['numbers']),
+                    'special': _normalize_special_for_output(row['lottery_type'], row['special']),
+                    'jackpot_amount': row['jackpot_amount'],
+                    'created_at': row['created_at']
+                })
+            
+            return {
+                'draws': draws,
+                'total': total,
+                'page': page,
+                'page_size': page_size,
+                'total_pages': total_pages
+            }
+            
+        except Exception as e:
+            logger.error(f"❌ Query failed: {e}")
+            raise
+        finally:
+            conn.close()
+    
+    def get_all_draws(self, lottery_type: Optional[str] = None) -> List[Dict]:
+        """
+        獲取所有開獎記錄（不分頁）- 支持相關類型查詢
+
+        Args:
+            lottery_type: 可選的彩券類型篩選（會自動包含相關類型）
+
+        Returns:
+            開獎記錄列表
+        """
+        conn = self._get_connection()
+        cursor = conn.cursor()
+
+        try:
+            logger.info(f"🔍 [get_all_draws] Using database: {self.db_path}")
+
+            if lottery_type:
+                # ✅ 導入並使用 get_related_lottery_types（支援直接執行和模組導入）
+                try:
+                    from .common import get_related_lottery_types
+                except ImportError:
+                    from common import get_related_lottery_types
+
+                # 獲取相關類型（例如：BIG_LOTTO -> [BIG_LOTTO, BIG_LOTTO_BONUS]）
+                related_types = get_related_lottery_types(lottery_type)
+                logger.info(f"🔍 [get_all_draws] Related types: {related_types}")
+
+                # 使用 IN 查詢支持多個相關類型
+                placeholders = ','.join('?' * len(related_types))
+                query = f"""
+                    SELECT id, draw, date, lottery_type, numbers, special, jackpot_amount
+                    FROM draws
+                    WHERE lottery_type IN ({placeholders})
+                    ORDER BY CAST(draw AS INTEGER) DESC
+                """
+                logger.info(f"🔍 [get_all_draws] Query: {query}")
+                logger.info(f"🔍 [get_all_draws] Params: {related_types}")
+                cursor.execute(query, related_types)
+            else:
+                query = """
+                    SELECT id, draw, date, lottery_type, numbers, special, jackpot_amount
+                    FROM draws
+                    ORDER BY CAST(draw AS INTEGER) DESC
+                """
+                cursor.execute(query)
+
+            rows = cursor.fetchall()
+            logger.info(f"🔍 [get_all_draws] SQL fetchall() returned {len(rows)} rows")
+
+            draws = []
+
+            for row in rows:
+                draws.append({
+                    'draw': row['draw'],
+                    'date': row['date'],
+                    'lotteryType': row['lottery_type'],
+                    'numbers': json.loads(row['numbers']),
+                    'special': _normalize_special_for_output(row['lottery_type'], row['special']),
+                    'jackpot_amount': row['jackpot_amount'],
+                })
+
+            logger.info(f"🔍 [get_all_draws] Parsed {len(draws)} draws, returning...")
+            return draws
+
+        except Exception as e:
+            logger.error(f"❌ Get all draws failed: {e}")
+            raise
+        finally:
+            conn.close()
+
+    # P247B created draws_big_lotto_canonical_main in lottery_api/data/lottery_v2.db.
+    # P247E: get_canonical_draws uses this view as the preferred source for BIG_LOTTO.
+    _CANONICAL_VIEW_BIG_LOTTO = 'draws_big_lotto_canonical_main'
+
+    def _big_lotto_canonical_view_exists(self, cursor) -> bool:
+        """Return True if draws_big_lotto_canonical_main is present in this DB."""
+        row = cursor.execute(
+            "SELECT name FROM sqlite_master WHERE type='view' AND name=?",
+            (self._CANONICAL_VIEW_BIG_LOTTO,)
+        ).fetchone()
+        return row is not None
+
+    def get_canonical_draws(self, lottery_type: str, limit: Optional[int] = None) -> List[Dict]:
+        """
+        Return only canonical main-draw rows for the given lottery type.
+
+        For BIG_LOTTO, this excludes three non-canonical row families:
+          - ADD_ON_PRIZE_EXCLUDED: hyphenated draw IDs (e.g. 103000009-01)
+            These are valid lottery-related add-on/special prize records.
+            They are excluded from canonical 6/49 research due to population
+            mismatch, NOT because they are fake or invalid.
+          - DATE_FORMAT_ALIEN: 8-digit YYYYMMDD draw IDs (e.g. 20090727)
+            Numbers inconsistent with 6/49 pool.
+          - SMALL_POOL_ALIEN: serial IDs but max(numbers) <= 25
+            Likely a different game mislabeled as BIG_LOTTO.
+
+        P247E: For BIG_LOTTO, prefers querying draws_big_lotto_canonical_main (DB view)
+        which applies all three exclusion filters at the SQL level. Falls back to the
+        original SQL+Python dual-filter when the view is absent (e.g. test DBs).
+
+        Raw history access remains available via get_all_draws() and get_draws().
+        This helper is for research, strategy, and replay callers only.
+
+        For non-BIG_LOTTO types, behaviour matches get_all_draws().
+        """
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        try:
+            if lottery_type == 'BIG_LOTTO':
+                if self._big_lotto_canonical_view_exists(cursor):
+                    # Preferred path (P247E): query the DB-level canonical view.
+                    # All three exclusion families are filtered at SQL level.
+                    query = f"""
+                        SELECT id, draw, date, lottery_type, numbers, special, jackpot_amount
+                        FROM {self._CANONICAL_VIEW_BIG_LOTTO}
+                        ORDER BY CAST(draw AS INTEGER) DESC
+                    """
+                    if limit:
+                        query += f" LIMIT {int(limit)}"
+                    cursor.execute(query)
+                    rows = cursor.fetchall()
+                    draws = []
+                    for row in rows:
+                        numbers = json.loads(row['numbers'])
+                        draws.append({
+                            'draw': row['draw'],
+                            'date': row['date'],
+                            'lotteryType': row['lottery_type'],
+                            'numbers': numbers,
+                            'special': _normalize_special_for_output(row['lottery_type'], row['special']),
+                            'jackpot_amount': row['jackpot_amount'],
+                        })
+                    logger.info(
+                        f"[get_canonical_draws] BIG_LOTTO: {len(draws)} rows via view"
+                    )
+                else:
+                    # Fallback: view absent (e.g. test DB without view).
+                    # SQL-level filter: excludes ADD_ON_PRIZE_EXCLUDED and DATE_FORMAT_ALIEN.
+                    # Python-level filter: excludes SMALL_POOL_ALIEN (max number <= 25).
+                    logger.warning(
+                        f"[get_canonical_draws] BIG_LOTTO: view absent, using fallback filter"
+                    )
+                    query = """
+                        SELECT id, draw, date, lottery_type, numbers, special, jackpot_amount
+                        FROM draws
+                        WHERE lottery_type = 'BIG_LOTTO'
+                          AND draw NOT LIKE '%-%'
+                          AND NOT (LENGTH(draw) = 8 AND draw LIKE '20%')
+                        ORDER BY CAST(draw AS INTEGER) DESC
+                    """
+                    if limit:
+                        query += f" LIMIT {int(limit)}"
+                    cursor.execute(query)
+                    rows = cursor.fetchall()
+                    draws = []
+                    for row in rows:
+                        numbers = json.loads(row['numbers'])
+                        if numbers and max(numbers) <= 25:
+                            continue
+                        draws.append({
+                            'draw': row['draw'],
+                            'date': row['date'],
+                            'lotteryType': row['lottery_type'],
+                            'numbers': numbers,
+                            'special': _normalize_special_for_output(row['lottery_type'], row['special']),
+                            'jackpot_amount': row['jackpot_amount'],
+                        })
+                    logger.info(
+                        f"[get_canonical_draws] BIG_LOTTO: {len(draws)} rows via fallback filter"
+                    )
+                return draws
+            else:
+                # For non-BIG_LOTTO types, no non-canonical row families are known.
+                # Use a direct query to avoid importing get_related_lottery_types
+                # (which may trigger heavy scheduler imports in test environments).
+                query = """
+                    SELECT id, draw, date, lottery_type, numbers, special, jackpot_amount
+                    FROM draws
+                    WHERE lottery_type = ?
+                    ORDER BY CAST(draw AS INTEGER) DESC
+                """
+                if limit:
+                    query += f" LIMIT {int(limit)}"
+                cursor.execute(query, (lottery_type,))
+                rows = cursor.fetchall()
+                draws = []
+                for row in rows:
+                    numbers = json.loads(row['numbers'])
+                    draws.append({
+                        'draw': row['draw'],
+                        'date': row['date'],
+                        'lotteryType': row['lottery_type'],
+                        'numbers': numbers,
+                        'special': _normalize_special_for_output(row['lottery_type'], row['special']),
+                        'jackpot_amount': row['jackpot_amount'],
+                    })
+                logger.info(
+                    f"[get_canonical_draws] {lottery_type}: {len(draws)} canonical rows returned"
+                )
+                return draws
+        except Exception as e:
+            logger.error(f"❌ get_canonical_draws failed: {e}")
+            raise
+        finally:
+            conn.close()
+
+    def get_stats(self, lottery_type: Optional[str] = None) -> Dict:
+        """
+        獲取統計信息
+        
+        Args:
+            lottery_type: 可選的彩券類型篩選
+            
+        Returns:
+            統計信息字典
+        """
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        
+        try:
+            # 按類型統計（若指定 lottery_type 則只回傳該類型）
+            if lottery_type:
+                cursor.execute("""
+                    SELECT lottery_type, COUNT(*) as count
+                    FROM draws
+                    WHERE lottery_type = ?
+                    GROUP BY lottery_type
+                """, (lottery_type,))
+            else:
+                cursor.execute("""
+                    SELECT lottery_type, COUNT(*) as count
+                    FROM draws
+                    GROUP BY lottery_type
+                """)
+
+            by_type = {}
+            total = 0
+
+            for row in cursor.fetchall():
+                by_type[row['lottery_type']] = row['count']
+                total += row['count']
+
+            # 日期範圍
+            if lottery_type:
+                cursor.execute("""
+                    SELECT MIN(date) as earliest, MAX(date) as latest
+                    FROM draws
+                    WHERE lottery_type = ?
+                """, (lottery_type,))
+            else:
+                cursor.execute("""
+                    SELECT MIN(date) as earliest, MAX(date) as latest
+                    FROM draws
+                """)
+            
+            date_row = cursor.fetchone()
+            
+            return {
+                'total': total,
+                'by_type': by_type,
+                'date_range': {
+                    'earliest': date_row['earliest'],
+                    'latest': date_row['latest']
+                }
+            }
+            
+        except Exception as e:
+            logger.error(f"❌ Get stats failed: {e}")
+            raise
+        finally:
+            conn.close()
+    
+    def delete_draw(self, draw_id: int) -> bool:
+        """
+        刪除指定的開獎記錄
+        
+        Args:
+            draw_id: 記錄 ID
+            
+        Returns:
+            是否刪除成功
+        """
+        self._reject_if_read_only("delete_draw")
+        conn = self._get_connection()
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute("DELETE FROM draws WHERE id = ?", (draw_id,))
+            conn.commit()
+            
+            deleted = cursor.rowcount > 0
+            if deleted:
+                logger.info(f"✅ Deleted draw {draw_id}")
+            
+            return deleted
+            
+        except Exception as e:
+            conn.rollback()
+            logger.error(f"❌ Delete failed: {e}")
+            raise
+        finally:
+            conn.close()
+    
+    def clear_all_data(self) -> int:
+        """
+        清空所有數據
+        
+        Returns:
+            刪除的記錄數
+        """
+        self._reject_if_read_only("clear_all_data")
+        conn = self._get_connection()
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute("SELECT COUNT(*) FROM draws")
+            count = cursor.fetchone()[0]
+
+            # 清除所有業務表（依外鍵順序：子表先刪）
+            for table in (
+                "prediction_results",
+                "prediction_items",
+                "snapshot_schedule",
+                "prediction_runs",
+                "draws",
+            ):
+                cursor.execute(f"DELETE FROM {table}")
+
+            conn.commit()
+
+            logger.info(f"✅ Cleared {count} draws and all prediction data from database")
+            return count
+            
+        except Exception as e:
+            conn.rollback()
+            logger.error(f"❌ Clear failed: {e}")
+            raise
+        finally:
+            conn.close()
+    
+    def vacuum(self):
+        """優化數據庫（回收空間）"""
+        self._reject_if_read_only("vacuum")
+        conn = self._get_connection()
+        try:
+            conn.execute("VACUUM")
+            logger.info("✅ Database vacuumed")
+        except Exception as e:
+            logger.error(f"❌ Vacuum failed: {e}")
+            raise
+        finally:
+            conn.close()
+
+    def get_draw(self, lottery_type: str, draw_number: str) -> Optional[Dict]:
+        """
+        根據期號獲取開獎記錄
+        
+        Args:
+            lottery_type: 彩券類型
+            draw_number: 期號
+            
+        Returns:
+            開獎記錄字典或 None
+        """
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        
+        try:
+            cursor.execute("""
+                SELECT id, draw, date, lottery_type, numbers, special, jackpot_amount
+                FROM draws
+                WHERE lottery_type = ? AND draw = ?
+            """, (lottery_type, draw_number))
+            
+            row = cursor.fetchone()
+            if not row:
+                return None
+                
+            return {
+                'id': row['id'],
+                'draw': row['draw'],
+                'date': row['date'],
+                'lotteryType': row['lottery_type'],
+                'numbers': json.loads(row['numbers']),
+                'special': _normalize_special_for_output(row['lottery_type'], row['special']),
+                'jackpot_amount': row['jackpot_amount'],
+            }
+            
+        except Exception as e:
+            logger.error(f"❌ Get draw failed: {e}")
+            raise
+        finally:
+            conn.close()
+
+    def get_draws_by_range(
+        self,
+        lottery_type: str,
+        start_draw: Optional[str] = None,
+        end_draw: Optional[str] = None
+    ) -> List[Dict]:
+        """
+        根據期數範圍查詢開獎記錄 - 支持相關類型
+
+        Args:
+            lottery_type: 彩券類型（會自動包含相關類型）
+            start_draw: 起始期數（包含），None 表示從最早開始
+            end_draw: 結束期數（包含），None 表示到最新為止
+
+        Returns:
+            開獎記錄列表（按日期和期數升序排序）
+        """
+        conn = self._get_connection()
+        cursor = conn.cursor()
+
+        try:
+            # ✅ 使用相關類型查詢
+            from .common import get_related_lottery_types
+            related_types = get_related_lottery_types(lottery_type)
+
+            # 構建查詢條件
+            placeholders = ','.join('?' * len(related_types))
+            conditions = [f"lottery_type IN ({placeholders})"]
+            params = list(related_types)
+
+            if start_draw:
+                # 使用 CAST 將 draw 轉為整數進行比較
+                conditions.append("CAST(draw AS INTEGER) >= ?")
+                params.append(int(start_draw))
+
+            if end_draw:
+                # 使用 CAST 將 draw 轉為整數進行比較
+                conditions.append("CAST(draw AS INTEGER) <= ?")
+                params.append(int(end_draw))
+
+            where_clause = " AND ".join(conditions)
+
+            # 查詢數據（按期號整數升序排列）
+            query = f"""
+                SELECT draw, date, lottery_type, numbers, special
+                FROM draws
+                WHERE {where_clause}
+                ORDER BY CAST(draw AS INTEGER) ASC
+            """
+
+            logger.info(f"🔍 SQL Query: {query}")
+            logger.info(f"🔍 Params: {params}")
+
+            cursor.execute(query, params)
+
+            rows = cursor.fetchall()
+            draws = []
+
+            for row in rows:
+                draws.append({
+                    'draw': row['draw'],
+                    'date': row['date'],
+                    'lotteryType': row['lottery_type'],
+                    'numbers': json.loads(row['numbers']),
+                    'special': _normalize_special_for_output(row['lottery_type'], row['special'])
+                })
+
+            logger.info(f"✅ 查詢範圍預測數據: {lottery_type} {start_draw or '最早'} - {end_draw or '最新'}, 共 {len(draws)} 期")
+
+            return draws
+
+        except Exception as e:
+            logger.error(f"❌ Range query failed: {e}")
+            raise
+        finally:
+            conn.close()
+
+
+# 全局數據庫實例
+db_manager = DatabaseManager()

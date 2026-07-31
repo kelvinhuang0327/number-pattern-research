@@ -1,0 +1,36 @@
+task: P2_CONTROLLED_REPLAY_BACKFILL_DRYRUN_MIGRATION_R5
+decisions:
+  - subject: dryrun_cli
+    source: scripts/p2_controlled_replay_backfill_dryrun.py
+    target: scripts/p2_controlled_replay_backfill_dryrun.py
+    action: COPY_WITH_AUTHORIZED_FAIL_CLOSED_REMEDIATION
+    source_sha256: e53dcaeea8eefc3adc2d49d198e7a4dfbfe51aea20e8723b7286b132f5f3de45
+    target_sha256: cbdca8b3382ff67bb2c4e1b236e34cb0bc54761789fad8687414397d8b04cd52
+    source_deviation: FAIL_CLOSED_OUTPUT_DESTINATION_PREFLIGHT
+    rationale: >-
+      Initial Fresh Judge found that an invalid CSV destination could fail after
+      a READY JSON artifact was published. Both caller-selected destinations are
+      now validated before DB access or output publication.
+  - subject: focused_tests
+    target: tests/test_p2_controlled_replay_backfill_dryrun.py
+    action: CREATE_NEW_R5_ACCEPTANCE_TEST
+    source_deviation: NOT_APPLICABLE
+    target_sha256: 9551b9e4e625fa54aab5aa07a8a41492053da1abfbe07fc001cff77b3926406f
+    rationale: >-
+      The R5 Worker Packet requires a new target-only focused contract test;
+      bounded remediation added invalid-CSV partial-output regression coverage.
+  - subject: fixture_and_outputs
+    action: ISOLATE_UNDER_TASK_RUNTIME_SANDBOX
+    path: _integration_reports/P2_CONTROLLED_REPLAY_BACKFILL_DRYRUN_MIGRATION_R5/runtime_sandbox
+    rationale: Fixture writes and dry-run reports must remain task-owned.
+excluded:
+  - docs/replay/p2_ts3_regime_backfill_dryrun_report_20260515.md
+  - outputs/replay/p2_ts3_regime_backfill_dryrun_20260515.json
+  - outputs/replay/p2_ts3_regime_backfill_dryrun_20260515.csv
+  - production_db_write
+  - schema_migration
+  - formal_backfill_executor
+  - replay_api_wiring
+  - ui_wiring
+  - scheduler_or_service_wiring
+  - dependency_changes

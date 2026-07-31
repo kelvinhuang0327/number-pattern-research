@@ -1,0 +1,26 @@
+# Python 虛擬環境
+venv/
+env/
+ENV/
+*.pyc
+__pycache__/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 環境變數
+.env
+
+# 日誌
+*.log
+
+# 資料庫
+*.db
+*.sqlite
+
+# OS
+.DS_Store
+Thumbs.db

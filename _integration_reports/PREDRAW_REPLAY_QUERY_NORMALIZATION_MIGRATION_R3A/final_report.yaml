@@ -1,0 +1,75 @@
+task_id: PREDRAW_REPLAY_QUERY_NORMALIZATION_MIGRATION_R3A
+timestamp: '2026-07-29T15:25:40+08:00'
+status: COMPLETED_FINAL_TREE_VERIFIED_WITH_CAVEATS
+
+workspace:
+  root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  branch: task/p273a-prize-aware-inferential-validation
+  head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  resource_safe_path_scoped_checks: true
+
+final_tree:
+  replay_sha256: 32a1511c9c9976cdd50c9365e4fcc03876ed584be6dde8ddee7db911ee0d7062
+  p354_test_sha256: ec491108dba479c95c01e954e609a73c56a660e4b3589be7067f767bb0b218c6
+  p355_test_sha256: a2a194281acf19c1df7ba36fc6271280a974860f4ce230606ac5f29aff699067
+  normalization_only_diff: true
+  response_schema_changed: false
+  repository_contract_changed: false
+
+verification:
+  focused_tests: PASS
+  p257b_full_regression: PASS
+  p261a_full_regression: FAIL_WITH_CAVEAT
+  additional_regression: FAIL_WITH_CAVEAT
+  ast_parse: PASS
+  import_check: PASS
+  lint: NOT_RUN_TOOL_NOT_AVAILABLE
+  typecheck: NOT_RUN_TOOL_NOT_AVAILABLE
+  diff_check: PASS
+  delta_judge: PASS_WITH_CAVEATS
+
+invariance:
+  quick_predict_sha256: d563d9484d09ded6f22ac18e532e3b841aa5f47c5be044a195ecccdaee650670
+  quick_predict_test_sha256: 2ba0797fc7d61b946826f92008ee8ef6fed4853b35c1355acb39267b106f9a7b
+  prior_vertical_hashes_unchanged: true
+  database_invariance: PARTIALLY_VERIFIED
+  predraw_engine_modified: false
+
+runtime:
+  task_pyc_files: NONE_CREATED_BY_R3
+  pyc_provenance: RUNTIME_WRITE_PROVENANCE_UNRESOLVED
+  unauthorized_writes: NONE
+  cache_cleanup_performed: false
+
+safety:
+  ordinary_source_modified_by_r3a: false
+  ordinary_tests_modified_by_r3a: false
+  database_write_performed: false
+  dependency_installed: false
+  dependency_manifest_modified: false
+  git_refs_mutated: false
+  commit_created: false
+  push_run: false
+  pr_created: false
+
+claim_boundary:
+  predraw_engine_migrated: true
+  quick_predict_opt_in_migrated: true
+  replay_query_normalization_migrated: true
+  replay_final_tree_verified: true
+  source_branch_merged: false
+  all_branch_functions_migrated: false
+  production_ready_claimed: false
+
+not_run:
+  - ruff
+  - pyright
+  - mypy
+blocked: NONE
+caveats:
+  - P261A_UI_SCOPE_GUARD_FAILURE_ON_DIRTY_INDEX_HTML
+  - RUNTIME_WRITE_PROVENANCE_UNRESOLVED
+  - DATABASE_INVARIANCE_PARTIALLY_VERIFIED
+remaining_risks:
+  - Dirty index.html file in workspace baseline causes UI scope guard test failures in test_p261a and test_p259a.
+next_recommended_task: LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R4

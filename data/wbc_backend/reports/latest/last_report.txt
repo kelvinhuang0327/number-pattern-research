@@ -1,0 +1,281 @@
+⚠️  Verification Warning (Bypassed): WBC data verification failed for C09: Official starting lineup missing; using previous-game lineup fallback.; Snapshot home SP Lachlan Wells != model home SP Jack O'Loughlin.; Snapshot away SP Ju-Young Son != model away SP Koo Chang-Mo.; Away SP Koo Chang-Mo is not present in the verified away roster.; Home lineup does not match the verified starting lineup.; Away lineup does not match the verified starting lineup.; Home lineup player Darryl George is not present in the verified home roster.; Home lineup player Liam Spence is not present in the verified home roster.; Home lineup player Jake Bowey is not present in the verified home roster.; Away lineup player Lee Jung-Hoo is not present in the verified away roster.; Away lineup player Kim Ha-Seong is not present in the verified away roster.; Away lineup player Kim Do-yeong is not present in the verified away roster.; Away lineup player Ahn Hyun-Min is not present in the verified away roster.; Away lineup player Koo Ja-wook is not present in the verified away roster.; Away lineup player Yang Eui-Ji is not present in the verified away roster.; Away lineup player Noh Si-Hwan is not present in the verified away roster.; Away lineup player Shin Min-jae is not present in the verified away roster.; Away lineup player Park Hae-min is not present in the verified away roster.; Model input still declares MOCK/SEED source. Treat this as unsafe until the authoritative snapshot fully replaces the seed path.
+======================================================================
+  ⚾  2026 WBC QUANTITATIVE BETTING REPORT
+  Pool C  |  Tokyo Dome, Tokyo
+  2026-03-09T19:00:00+09:00
+
+  📡 資料來源 (Data Source): MOCK/SEED (人工建置模擬賽前盤口)
+  💧 盤口流動性 (Liquidity): LOW (尚未開盤)
+======================================================================
+
+## Match: South Korea (KOR) vs Australia (AUS)
+
+### 1. 核心指標對比
+
+| 指標 (Category)    |    KOR     |    AUS     | 優勢 (Edge) |
+|--------------------|------------|------------|-------------|
+| 投手 (Pitching)    |    3.35    |    5.78    |     KOR     |
+| 打擊 wRC+          |    118     |     88     |     KOR     |
+| 打線 wOBA          |   0.338    |   0.305    |     KOR     |
+| 守備 DER           |   0.715    |   0.695    |     KOR     |
+| 跑壘 SB%           |    75%     |    72%     |     KOR     |
+| 牛棚 ERA           |    3.10    |    4.85    |     KOR     |
+| 高壓 Clutch wOBA   |   0.330    |   0.295    |     KOR     |
+| Elo Rating         |    1510    |    1380    |     KOR     |
+
+#### 先發投手對決
+
+| 指標           |      Koo Chang-Mo      |    Jack O'Loughlin     |
+|----------------|------------------------|------------------------|
+| ERA            |          3.60          |          6.70          |
+| FIP            |          3.70          |          5.85          |
+| WHIP           |          1.22          |          1.65          |
+| K/9            |          8.0           |          6.3           |
+| BB/9           |          2.6           |          3.2           |
+| Stuff+         |          102           |           98           |
+| 均速 (mph)     |          93.0          |          92.5          |
+| 春訓 ERA       |          3.20          |          4.50          |
+| 近3場 ERA      |          3.40          |          6.10          |
+| vs LHB BA      |         0.242          |         0.275          |
+| vs RHB BA      |         0.232          |         0.290          |
+| 高壓 ERA       |          3.80          |          5.80          |
+
+#### 投手用球數限制 & 投手時間軸
+
+- **賽程階段**: Pool C
+- **單場上限**: 65 球
+- **休息規定**: ≥30球 → 休1天; ≥50球 → 休4天
+- **先發預計局數**: ~3.5 局
+
+| 局數   |      KOR       |      AUS       |
+|--------|----------------|----------------|
+|  1局   |  SP Chang-Mo   | SP O'Loughlin  |
+|  2局   |  SP Chang-Mo   | SP O'Loughlin  |
+|  3局   |  SP Chang-Mo   | SP O'Loughlin  |
+|  4局   |     PB Ryu     |   PB Spence    |
+|  5局   |     PB Ryu     |   PB Spence    |
+|  6局   |    Bullpen     |    Bullpen     |
+|  7局   |    Bullpen     |    Bullpen     |
+|  8局   |    Bullpen     |    Bullpen     |
+|  9局   |    Bullpen     |    Bullpen     |
+
+#### 第二先發 (Piggyback Starter)
+
+| 指標         |      Hyun-Jin Ryu      |      Liam Spence       |
+|--------------|------------------------|------------------------|
+| ERA          |          4.20          |          5.50          |
+| FIP          |          4.00          |          5.30          |
+| Stuff+       |           98           |           88           |
+| 春訓 ERA     |          3.80          |          4.80          |
+
+### 2. 勝率預測與比分分佈
+
+#### Ensemble Model 各模型輸出
+
+| Model         |      KOR |      AUS |
+|---------------|----------|----------|
+| elo           |    67.9% |    32.1% |
+| bayesian      |    71.1% |    28.9% |
+| poisson       |    88.5% |    11.3% |
+| gbm           |    81.3% |    18.7% |
+| monte_carlo   |    83.2% |    16.8% |
+|---------------|----------|----------|
+| **Ensemble**  | **80.7%** | **19.3%** |
+
+#### WBC 修正係數
+
+- round: `Pool`
+- pitch_limit: `65`
+- sp_expected_innings: `3.5`
+- starter_impact_factor: `0.55`
+- bullpen_impact_factor: `1.6`
+- sp_dampening: `0.45`
+- piggyback_away: `Hyun-Jin Ryu`
+- piggyback_home: `Liam Spence`
+- piggyback_adjustment: `0.0023`
+- bullpen_fatigue_away_3d: `128`
+- bullpen_fatigue_home_3d: `128`
+- bp_penalty_away: `0.0128`
+- bp_penalty_home: `0.0128`
+- roster_strength_away: `85`
+- roster_strength_home: `70`
+- rsi_adjustment: `0.006`
+- collapse_shift: `0.0`
+- chemistry_bonus: `0.0002`
+- variance_regression: `0.11`
+- strikeout_adj: `+6%`
+- xbh_adj: `-4%`
+- pre_adjust_away: `0.8351`
+- pre_adjust_home: `0.1649`
+- post_adjust_away: `0.8067`
+- post_adjust_home: `0.1933`
+
+#### 比分預測
+
+| 排名 | 比分 (KOR-AUS) | 機率     |
+|------|----------------------|----------|
+|  1   |         6-3          |     3.1% |
+|  2   |         7-3          |     2.9% |
+|  3   |         7-2          |     2.7% |
+|  4   |         4-5          |     2.7% |
+|  5   |         6-2          |     2.7% |
+
+**最可能比分 (Most Likely Score):** `6-3` (KOR-AUS)
+
+**預測總分:** 10.8 分
+
+#### 多維度情境分析 (Multi-Scenario Analysis)
+
+> [!NOTE]
+> 基於 WBC 2026 模擬引擎輸出的三種情境預案：
+
+| 情境 (Scenario) | 預計總分 | 特徵描述 |
+|:---|:---:|:---|
+| **中性基準 (Baseline)** | 11 | 雙方發揮正常，符合實力常態分佈。 |
+| **投手戰 (Pitching Duel)** | 8 | 先發投手壓制力極大化，且牛棚銜接完美。 |
+| **打線爆發 (Explosion)** | 16 | 觸發連續得分鏈，弱方防禦體系崩潰。 |
+
+**模擬平均局數:** 9.1 局 (含 Mercy Rule 影響)
+
+#### 總分分佈 (O/U 機率)
+
+| 盤口 (Line) | Over 機率 | Under 機率 |
+|-------------|-----------|------------|
+|         6.5 |     89.7% |      10.3% |
+|         7.5 |     82.8% |      17.2% |
+|         8.5 |     74.3% |      25.7% |
+|         9.5 |     61.9% |      38.1% |
+
+**延長賽機率 (Extra Innings):** 7.1%
+
+**爆冷機率 (AUS 獲勝):** 19.3%
+
+### 3. 台灣運彩 (TSL) 下注建議
+
+#### 不讓分（獨贏）Money Line
+- ✅ **KOR** @ 1.52 (TSL)
+  - 隱含機率: 65.8% | 模型真實機率: 79.3%
+  - 期望值 (EV): +20.5% → **STRONG**
+- ❌ **AUS** @ 2.65 (TSL)
+  - 隱含機率: 37.7% | 模型真實機率: 23.9%
+  - 期望值 (EV): -36.7% → **PASS**
+
+#### 讓分 Run Line / Spread
+- ✅ **AUS (+1.5)** @ 1.85 (TSL)
+  - 隱含機率: 54.0% | 模型真實機率: 67.4%
+  - 期望值 (EV): +24.7% → **MEDIUM (Market Restricted)**
+- ❌ **KOR (-1.5)** @ 1.95 (TSL)
+  - 隱含機率: 51.3% | 模型真實機率: 37.4%
+  - 期望值 (EV): -27.1% → **PASS**
+
+#### 大小分 Over/Under
+- ✅ **Over 8.5** @ 1.85 (TSL)
+  - EV: +25.9% → **MEDIUM (Market Restricted)**
+- ❌ **Under 8.5** @ 1.95 (TSL)
+  - EV: -28.4% → **PASS**
+
+#### 單雙 Odd/Even（總分奇偶）
+- ❌ **單（奇數）** @ 1.90 (TSL)
+  - 隱含機率: 52.6% | 模型機率: 50.0%
+  - EV: -5.0% → **PASS**
+- ❌ **雙（偶數）** @ 1.90 (TSL)
+  - 隱含機率: 52.6% | 模型機率: 50.0%
+  - EV: -5.0% → **PASS**
+
+#### 前五局獨贏 First 5 Innings
+- ✅ **KOR** @ 1.58 (TSL)
+  - 隱含機率: 63.3% | 模型真實機率: 77.3%
+  - 期望值 (EV): +22.1% → **SECONDARY_VALIDATION_REQUIRED**
+- ❌ **AUS** @ 2.50 (TSL)
+  - 隱含機率: 40.0% | 模型真實機率: 25.7%
+  - 期望值 (EV): -35.8% → **PASS**
+
+#### 隊伍總分 Team Totals
+- ✅ **TT KOR_Over 4.5** @ 1.85 (TSL)
+  - EV: +28.6% → **SECONDARY_VALIDATION_REQUIRED**
+- ✅ **TT AUS_Under 3.5** @ 1.95 (TSL)
+  - EV: +13.8% → **STRONG**
+- ❌ **TT AUS_Over 3.5** @ 1.85 (TSL)
+  - EV: -24.5% → **PASS**
+- ❌ **TT KOR_Under 4.5** @ 1.95 (TSL)
+  - EV: -31.2% → **PASS**
+
+--------------------------------------------------
+### BETTING DECISION
+
+**Best Bet:** TT KOR_Over (4.5) @ 1.85 (TSL)
+- True Probability: 69.5%
+- Implied Probability: 54.0%
+- **EV: +28.6%**
+- **Warning**: Edge calculation is extremely high. Secondary validation required.
+- Stake: 0.50% of bankroll = **$500**
+  (Kelly Full: 0.3364 → Used: 0.0050)
+
+**Confidence:** ★★★★★
+
+--------------------------------------------------
+### AI 推薦原因 (AI Rationale)
+
+- 🤖 **模型核心邏輯**: 預測 KOR 為優勢方 (80.7%)。
+- ⚾ **WBC 賽制特點**: 本場為 Pool C，先發限投 65 球，預測先發僅能負擔約 3.5 局。
+- 🔄 **第二先發 (Piggyback)**: AUS、KOR 已配置第二先發以銜接中繼局數，顯著降低了早期換投帶來的崩盤風險。
+- 📉 **牛棚疲勞**: KOR 牛棚近三日用球量過高，模型已加入 19.2% 的失分懲罰係數。
+- 💪 **盤口建議 (讓分)**: KOR 具備強大分差優勢 (預計贏 3.5 分)，**讓分盤 (-1.5)** 具備高度穿盤潛力。
+- 🧨 **盤口建議 (大小分)**: 預計總分高達 10.8，且打線擁有卓越的「关键打擊率」(Clutch wOBA 0.332)，強烈建議觀察 **大分 (Over)**。
+- 💰 **價值交易點**: ML KOR 賠率為 1.52，隱含勝率僅 65.8%，但 AI 計算結果為 79.3%，存在 20.5% 的期望值邊際 (Edge)。
+- 💰 **價值交易點**: TT AUS_Under 賠率為 1.95，隱含勝率僅 51.3%，但 AI 計算結果為 58.4%，存在 13.8% 的期望值邊際 (Edge)。
+
+### 4. 關鍵變數 (X-Factors)
+
+1. ⚠️ **資料真實性警示**: 目前盤口/球員數據依賴預先設定之 SEED，尚未經真實市場深度校驗，存在嚴重高估 Edge 的風險。
+2. 🔑 **用球數限制 (Pitch Count)**: Pool C 階段上限 65 球，Koo Chang-Mo 與 Jack O'Loughlin 預計僅投 ~3.5 局 (約 15~18 球/局)。第 4 局起由第二先發接手，比賽後半段完全由牛棚主導。
+3. 🔑 **第二先發 (Piggyback)**: Hyun-Jin Ryu (ERA 4.20) vs Liam Spence (ERA 5.50) — KOR 的第二先發品質較佳，中段比賽有優勢。
+4. 🔑 **牛棚疲勞度**: KOR 近 3 日牛棚用球數較高 (KOR: 128, AUS: 128)，後段比賽可能出現失分風險。
+5. 🔑 **打線核心對決**: Park Hae-min (wOBA 0.367, SwStr% vs 98mph+ 34.0%) vs Jake Bowey (wOBA 0.334, SwStr% vs 98mph+ 34.0%)
+6. 🔑 **球星效應**: 本場確認參賽球星 — Lee Jung-Hoo, Kim Ha-Seong, Go Woo-Suk, Kim Do-yeong, Won Tae-In, Jack O'Loughlin 等 9 人，球星表現將直接影響勝負走勢。
+7. 🔑 **Elo 差距**: KOR 高出 130 分，歷史勝率優勢明顯，但 WBC 短期賽制與 65 球限制增加爆冷機率。
+
+### 5. 陣容完整度 (Roster Strength)
+
+| 指標              |      KOR       |      AUS       |
+|-------------------|----------------|----------------|
+| RSI (0-100)       |       85       |       70       |
+| MLB 球員數        |       5        |       2        |
+| 磨合度 Chemistry  |      0.83      |      0.82      |
+
+**KOR 確認出賽球星**: Lee Jung-Hoo, Kim Ha-Seong, Go Woo-Suk, Kim Do-yeong, Won Tae-In
+**KOR 待確認球星**:  An Woo-Jin
+
+**AUS 確認出賽球星**: Jack O'Loughlin, Curtis Mead, Aaron Whitefield, Robbie Glendinning
+**AUS 待確認球星**:  Liam Spence
+
+> ⚠️ **陣容差距**: KOR RSI 高出 15 分，
+>    MLB 球員數量與球星密度有明顯優勢。
+
+--------------------------------------------------
+### Risk Status: GREEN
+
+🟢 **Betting ALLOWED**
+- All systems nominal
+
+--------------------------------------------------
+### PORTFOLIO SUMMARY
+
+- **Total Bets Today:** 6
+- **Total Risk:** 4.00% of bankroll ($4,000)
+- **Bankroll:** $100,000
+- **Conservative Mode:** No
+- **Expected ROI (weighted):** +22.1%
+
+| # | Market | Side | Odds | EV | Stake | Amount |
+|---|--------|------|------|----|-------|--------|
+| 1 | TT | KOR_Over | 1.85 | +28.6% | 0.50% | $500 |
+| 2 | OU | Over | 1.85 | +25.9% | 0.50% | $500 |
+| 3 | RL | AUS | 1.85 | +24.7% | 0.50% | $500 |
+| 4 | F5 | KOR | 1.58 | +22.1% | 0.50% | $500 |
+| 5 | ML | KOR | 1.52 | +20.5% | 1.50% | $1,500 |
+| 6 | TT | AUS_Under | 1.95 | +13.8% | 0.50% | $500 |
+
+======================================================================
+  END OF REPORT — Generated by WBC Quantitative Betting AI Engine
+======================================================================

@@ -1,0 +1,39 @@
+{
+  "task": "PREDRAW_STRATEGY_FREEZE_LEDGER_CAPTURE_ENGINE_MIGRATION_R1",
+  "runtime_policy_tier": 2,
+  "allowed_runtime_roots": [
+    "/Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged/_integration_reports/PREDRAW_STRATEGY_FREEZE_LEDGER_CAPTURE_ENGINE_MIGRATION_R1/**",
+    "/Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged/.pytest_cache/**"
+  ],
+  "forbidden_writes_observed": [],
+  "runtime_writes": [
+    {
+      "path": "_integration_reports/PREDRAW_STRATEGY_FREEZE_LEDGER_CAPTURE_ENGINE_MIGRATION_R1/phase0_snapshot.yaml",
+      "action": "WRITE"
+    },
+    {
+      "path": "_integration_reports/PREDRAW_STRATEGY_FREEZE_LEDGER_CAPTURE_ENGINE_MIGRATION_R1/source_target_map.md",
+      "action": "WRITE"
+    },
+    {
+      "path": "_integration_reports/PREDRAW_STRATEGY_FREEZE_LEDGER_CAPTURE_ENGINE_MIGRATION_R1/migration_decisions.yaml",
+      "action": "WRITE"
+    },
+    {
+      "path": "_integration_reports/PREDRAW_STRATEGY_FREEZE_LEDGER_CAPTURE_ENGINE_MIGRATION_R1/changed_paths.txt",
+      "action": "WRITE"
+    },
+    {
+      "path": "_integration_reports/PREDRAW_STRATEGY_FREEZE_LEDGER_CAPTURE_ENGINE_MIGRATION_R1/runtime_write_ledger.json",
+      "action": "WRITE"
+    },
+    {
+      "path": "_integration_reports/PREDRAW_STRATEGY_FREEZE_LEDGER_CAPTURE_ENGINE_MIGRATION_R1/verification.md",
+      "action": "WRITE"
+    },
+    {
+      "path": ".pytest_cache/",
+      "action": "WRITE_BY_PYTEST"
+    }
+  ]
+}

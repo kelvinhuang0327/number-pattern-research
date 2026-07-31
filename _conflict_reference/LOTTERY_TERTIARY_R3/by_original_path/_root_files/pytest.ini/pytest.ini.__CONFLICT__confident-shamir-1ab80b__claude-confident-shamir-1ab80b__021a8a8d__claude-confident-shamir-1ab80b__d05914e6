@@ -1,0 +1,4 @@
+[pytest]
+testpaths = tests
+norecursedirs = archive quarantine build .git .venv venv node_modules
+pythonpath = .

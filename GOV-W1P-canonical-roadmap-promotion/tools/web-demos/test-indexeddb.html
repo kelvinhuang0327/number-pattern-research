@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndexedDB 測試</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', sans-serif;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: monospace;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button.danger {
+            background: #dc3545;
+        }
+        button.danger:hover {
+            background: #c82333;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗄️ IndexedDB 功能測試</h1>
+        
+        <div id="status"></div>
+        
+        <div>
+            <button onclick="testInit()">1. 初始化 IndexedDB</button>
+            <button onclick="testSaveData()">2. 儲存測試數據</button>
+            <button onclick="testLoadData()">3. 載入數據</button>
+            <button onclick="testStats()">4. 查看統計</button>
+            <button onclick="testStorageEstimate()">5. 儲存空間資訊</button>
+            <button class="danger" onclick="testClear()">清除所有數據</button>
+        </div>
+        
+        <div class="stats" id="stats"></div>
+        
+        <pre id="output"></pre>
+    </div>
+
+    <script type="module">
+        import { IndexedDBManager } from './src/utils/IndexedDBManager.js';
+        
+        const dbManager = new IndexedDBManager();
+        let testData = [];
+        
+        // 生成測試數據
+        function generateTestData(count = 1000) {
+            const data = [];
+            const types = ['BIG_LOTTO', 'POWER_BALL', 'DAILY_CASH_539', 'STAR_3', 'BINGO_BINGO'];
+            
+            for (let i = 0; i < count; i++) {
+                const type = types[Math.floor(Math.random() * types.length)];
+                data.push({
+                    draw: `114${String(i).padStart(6, '0')}`,
+                    date: '2025-01-' + String((i % 28) + 1).padStart(2, '0'),
+                    lotteryType: type,
+                    numbers: Array.from({length: 6}, () => Math.floor(Math.random() * 49) + 1).sort((a,b) => a-b),
+                    special: Math.floor(Math.random() * 49) + 1
+                });
+            }
+            return data;
+        }
+        
+        function showStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+        
+        function showOutput(text) {
+            document.getElementById('output').textContent = text;
+        }
+        
+        function showStats(stats) {
+            const statsDiv = document.getElementById('stats');
+            statsDiv.innerHTML = '';
+            
+            Object.entries(stats).forEach(([label, value]) => {
+                const card = document.createElement('div');
+                card.className = 'stat-card';
+                card.innerHTML = `
+                    <div class="stat-label">${label}</div>
+                    <div class="stat-value">${value}</div>
+                `;
+                statsDiv.appendChild(card);
+            });
+        }
+        
+        window.testInit = async function() {
+            try {
+                showStatus('初始化 IndexedDB...', 'info');
+                await dbManager.init();
+                showStatus('✅ IndexedDB 初始化成功！', 'success');
+                showOutput('數據庫名稱: ' + dbManager.dbName + '\n版本: ' + dbManager.version);
+            } catch (error) {
+                showStatus('❌ 初始化失敗: ' + error.message, 'error');
+                showOutput(error.stack);
+            }
+        };
+        
+        window.testSaveData = async function() {
+            try {
+                showStatus('生成並儲存測試數據...', 'info');
+                testData = generateTestData(10000); // 生成 10000 筆
+                
+                const startTime = Date.now();
+                const result = await dbManager.saveData(testData);
+                const duration = Date.now() - startTime;
+                
+                showStatus(`✅ 成功儲存 ${result.count} 筆數據（耗時 ${duration}ms）`, 'success');
+                showOutput(JSON.stringify(result, null, 2));
+                
+                showStats({
+                    '總筆數': result.count,
+                    '成功': result.count,
+                    '失敗': result.errors,
+                    '耗時': duration + 'ms',
+                    '速度': Math.round(result.count / (duration / 1000)) + ' 筆/秒'
+                });
+            } catch (error) {
+                showStatus('❌ 儲存失敗: ' + error.message, 'error');
+                showOutput(error.stack);
+            }
+        };
+        
+        window.testLoadData = async function() {
+            try {
+                showStatus('載入所有數據...', 'info');
+                
+                const startTime = Date.now();
+                const data = await dbManager.loadAllData();
+                const duration = Date.now() - startTime;
+                
+                showStatus(`✅ 成功載入 ${data.length} 筆數據（耗時 ${duration}ms）`, 'success');
+                
+                // 顯示前 5 筆
+                const preview = data.slice(0, 5).map((d, i) => 
+                    `${i + 1}. ${d.lotteryType} ${d.draw} [${d.numbers.join(',')}] 特:${d.special}`
+                ).join('\n');
+                
+                showOutput(`載入 ${data.length} 筆數據\n\n前 5 筆預覽：\n${preview}\n\n...`);
+                
+                showStats({
+                    '總筆數': data.length,
+                    '耗時': duration + 'ms',
+                    '速度': Math.round(data.length / (duration / 1000)) + ' 筆/秒'
+                });
+            } catch (error) {
+                showStatus('❌ 載入失敗: ' + error.message, 'error');
+                showOutput(error.stack);
+            }
+        };
+        
+        window.testStats = async function() {
+            try {
+                showStatus('獲取統計資訊...', 'info');
+                
+                const stats = await dbManager.getStats();
+                
+                showStatus(`✅ 統計完成`, 'success');
+                showOutput(JSON.stringify(stats, null, 2));
+                
+                const typeStats = Object.entries(stats.byType)
+                    .map(([type, count]) => `${type}: ${count}`)
+                    .reduce((obj, str) => {
+                        const [key, val] = str.split(': ');
+                        obj[key] = val;
+                        return obj;
+                    }, {});
+                
+                showStats({
+                    '總筆數': stats.total,
+                    ...typeStats
+                });
+            } catch (error) {
+                showStatus('❌ 獲取統計失敗: ' + error.message, 'error');
+                showOutput(error.stack);
+            }
+        };
+        
+        window.testStorageEstimate = async function() {
+            try {
+                showStatus('查詢儲存空間...', 'info');
+                
+                const estimate = await dbManager.getStorageEstimate();
+                
+                if (!estimate) {
+                    showStatus('⚠️ 瀏覽器不支援 Storage API', 'warning');
+                    return;
+                }
+                
+                showStatus(`✅ 儲存空間查詢完成`, 'success');
+                showOutput(JSON.stringify(estimate, null, 2));
+                
+                showStats({
+                    '已使用': estimate.usageMB + ' MB',
+                    '配額': estimate.quotaMB + ' MB',
+                    '使用率': estimate.usagePercent + '%',
+                    '可用': (estimate.quotaMB - estimate.usageMB).toFixed(2) + ' MB'
+                });
+            } catch (error) {
+                showStatus('❌ 查詢失敗: ' + error.message, 'error');
+                showOutput(error.stack);
+            }
+        };
+        
+        window.testClear = async function() {
+            if (!confirm('確定要清除所有數據嗎？')) return;
+            
+            try {
+                showStatus('清除數據...', 'info');
+                await dbManager.clearAll();
+                showStatus('✅ 所有數據已清除', 'success');
+                showOutput('數據庫已清空');
+                showStats({});
+            } catch (error) {
+                showStatus('❌ 清除失敗: ' + error.message, 'error');
+                showOutput(error.stack);
+            }
+        };
+        
+        // 自動執行初始化
+        window.addEventListener('load', () => {
+            showStatus('請點擊按鈕開始測試', 'info');
+            showOutput('IndexedDB 測試工具已就緒\n\n建議測試流程：\n1. 初始化 → 2. 儲存測試數據 → 3. 載入數據 → 4. 查看統計 → 5. 儲存空間資訊');
+        });
+    </script>
+</body>
+</html>

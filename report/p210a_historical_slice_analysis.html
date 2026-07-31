@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MLB Historical Slice Analysis Dashboard</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --ink: #17202a;
+      --muted: #56616f;
+      --line: #d8dee7;
+      --head: #eef2f5;
+      --accent: #22577a;
+      --alert: #8a4b14;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+      padding: 28px max(24px, calc((100vw - 1180px) / 2)) 22px;
+    }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(28px, 4vw, 44px);
+      letter-spacing: 0;
+    }
+    h2 {
+      margin: 0 0 14px;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+    p { margin: 0; }
+    section {
+      margin-top: 24px;
+      padding: 20px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .disclaimer {
+      max-width: 900px;
+      color: var(--alert);
+      font-weight: 750;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .pill {
+      border: 1px solid var(--line);
+      background: #f1f4f7;
+      border-radius: 999px;
+      color: #243241;
+      font-size: 13px;
+      padding: 6px 10px;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .summary-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      min-height: 112px;
+      background: #fbfcfe;
+    }
+    .summary-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .summary-card strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 24px;
+      overflow-wrap: anywhere;
+    }
+    .summary-card p {
+      margin-top: 8px;
+      color: var(--muted);
+    }
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 840px;
+      background: #fff;
+    }
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      white-space: nowrap;
+    }
+    th {
+      background: var(--head);
+      color: #253241;
+      font-size: 13px;
+    }
+    td:last-child { white-space: normal; min-width: 180px; }
+    code {
+      background: #eef2f5;
+      border-radius: 4px;
+      padding: 2px 5px;
+    }
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    li + li { margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MLB Historical Slice Analysis Dashboard</h1>
+    <p class="disclaimer">Historical replay/backtest only. Not live predictions, not betting advice.</p>
+    <div class="meta">
+      <span class="pill">Scope: LOCAL_HISTORICAL_REPLAY_ONLY</span>
+      <span class="pill">Prediction rows: 3888</span>
+      <span class="pill">Models analyzed: 4</span>
+      <span class="pill">Train: 2025-03-18 to 2025-07-18</span>
+      <span class="pill">Test: 2025-07-18 to 2025-09-28</span>
+    </div>
+  </header>
+  <main>
+    <section aria-labelledby="summary-title">
+      <h2 id="summary-title">Historical Slice Summary</h2>
+      <div class="summary-grid">
+        <article class="summary-card">
+          <span>Rows Read</span>
+          <strong>3888</strong>
+          <p>Completed historical replay rows only.</p>
+        </article>
+        <article class="summary-card">
+          <span>Models</span>
+          <strong>4</strong>
+          <p>baseline_fixed_prior, calibrated_elo_recent_form, elo_like_rating, retrained_team_history_smooth</p>
+        </article>
+        <article class="summary-card">
+          <span>Claim Status</span>
+          <strong>Historical Only</strong>
+          <p>No provider call, database write, ticket mutation, or workflow activation.</p>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="sources-title">
+      <h2 id="sources-title">Source Artifacts And Merge Lineage</h2>
+      <div class="table-wrap"><table><thead><tr><th>Task</th><th>Artifact</th></tr></thead><tbody><tr><td>P207-A</td><td><code>report/p207a_local_retrain_scorecard.json</code></td></tr><tr><td>P207-A</td><td><code>report/p207a_local_retrain_model_comparison.csv</code></td></tr><tr><td>P207-A</td><td><code>report/p207a_local_retrain_predictions.csv</code></td></tr><tr><td>P208-A</td><td><code>report/p208a_visible_scorecard_result_viewer.json</code></td></tr><tr><td>P209-A</td><td><code>report/p209a_static_scorecard_dashboard.json</code></td></tr></tbody></table></div>
+      <br>
+      <div class="table-wrap"><table><thead><tr><th>Task</th><th>Merge commit</th></tr></thead><tbody><tr><td>P207-A</td><td><code>dbdbe24053a07a7a9ae338395992849350072bdd</code></td></tr><tr><td>P208-A</td><td><code>a3ae86aa7c78361082b1e250e1ae740cd79c6f70</code></td></tr><tr><td>P209-A</td><td><code>48727abef6e3323fdbfe37b89d7e10cf7497f692</code></td></tr></tbody></table></div>
+    </section>
+
+    <section aria-labelledby="leaderboard-title">
+      <h2 id="leaderboard-title">Model Leaderboard</h2>
+      <div class="table-wrap"><table><thead><tr><th>Model</th><th>Accuracy</th><th>Brier</th><th>Log Loss</th><th>Calibration Error</th><th>Coverage</th><th>Reference Only</th><th>Notes</th></tr></thead><tbody><tr><td>baseline_fixed_prior</td><td>53.29%</td><td>0.249187</td><td>0.691524</td><td>0.016461</td><td>100.00%</td><td>No</td><td>constant = train home-win rate; no discrimination</td></tr><tr><td>elo_like_rating</td><td>54.84%</td><td>0.248577</td><td>0.690391</td><td>0.048769</td><td>100.00%</td><td>No</td><td>rolling Elo K=20 + HFA; pregame only</td></tr><tr><td>retrained_team_history_smooth</td><td>56.38%</td><td>0.246063</td><td>0.685249</td><td>0.024793</td><td>100.00%</td><td>No</td><td>log5 of smoothed team win-rates + home logit bump; pregame only</td></tr><tr><td>calibrated_elo_recent_form</td><td>54.42%</td><td>0.246033</td><td>0.685080</td><td>0.020230</td><td>100.00%</td><td>No</td><td>Elo logit Platt-calibrated on train fold only</td></tr><tr><td>market_implied_devig(REFERENCE_UNVERIFIED)</td><td>54.73%</td><td>0.245503</td><td>0.683898</td><td>0.031829</td><td>100.00%</td><td>Yes</td><td>post-game unverified snapshot; look-ahead; NOT a valid predictor</td></tr></tbody></table></div>
+    </section>
+
+    <section aria-labelledby="month-title">
+      <h2 id="month-title">Month-By-Month Accuracy And Count Slices</h2>
+      <div class="table-wrap"><table><thead><tr><th>Model</th><th>Month</th><th>Count</th><th>Correct</th><th>Accuracy</th></tr></thead><tbody><tr><td>baseline_fixed_prior</td><td>2025-07</td><td>177</td><td>97</td><td>54.80%</td></tr><tr><td>baseline_fixed_prior</td><td>2025-08</td><td>421</td><td>221</td><td>52.49%</td></tr><tr><td>baseline_fixed_prior</td><td>2025-09</td><td>374</td><td>200</td><td>53.48%</td></tr><tr><td>calibrated_elo_recent_form</td><td>2025-07</td><td>177</td><td>98</td><td>55.37%</td></tr><tr><td>calibrated_elo_recent_form</td><td>2025-08</td><td>421</td><td>221</td><td>52.49%</td></tr><tr><td>calibrated_elo_recent_form</td><td>2025-09</td><td>374</td><td>210</td><td>56.15%</td></tr><tr><td>elo_like_rating</td><td>2025-07</td><td>177</td><td>100</td><td>56.50%</td></tr><tr><td>elo_like_rating</td><td>2025-08</td><td>421</td><td>229</td><td>54.39%</td></tr><tr><td>elo_like_rating</td><td>2025-09</td><td>374</td><td>204</td><td>54.55%</td></tr><tr><td>retrained_team_history_smooth</td><td>2025-07</td><td>177</td><td>93</td><td>52.54%</td></tr><tr><td>retrained_team_history_smooth</td><td>2025-08</td><td>421</td><td>238</td><td>56.53%</td></tr><tr><td>retrained_team_history_smooth</td><td>2025-09</td><td>374</td><td>217</td><td>58.02%</td></tr></tbody></table></div>
+    </section>
+
+    <section aria-labelledby="band-title">
+      <h2 id="band-title">Confidence-Band Correctness Slices</h2>
+      <div class="table-wrap"><table><thead><tr><th>Model</th><th>Confidence Band</th><th>Count</th><th>Correct</th><th>Accuracy</th></tr></thead><tbody><tr><td>baseline_fixed_prior</td><td>HIGH</td><td>0</td><td>0</td><td>0.00%</td></tr><tr><td>baseline_fixed_prior</td><td>MEDIUM</td><td>0</td><td>0</td><td>0.00%</td></tr><tr><td>baseline_fixed_prior</td><td>LOW</td><td>972</td><td>518</td><td>53.29%</td></tr><tr><td>calibrated_elo_recent_form</td><td>HIGH</td><td>32</td><td>23</td><td>71.88%</td></tr><tr><td>calibrated_elo_recent_form</td><td>MEDIUM</td><td>498</td><td>285</td><td>57.23%</td></tr><tr><td>calibrated_elo_recent_form</td><td>LOW</td><td>442</td><td>221</td><td>50.00%</td></tr><tr><td>elo_like_rating</td><td>HIGH</td><td>170</td><td>110</td><td>64.71%</td></tr><tr><td>elo_like_rating</td><td>MEDIUM</td><td>521</td><td>278</td><td>53.36%</td></tr><tr><td>elo_like_rating</td><td>LOW</td><td>281</td><td>145</td><td>51.60%</td></tr><tr><td>retrained_team_history_smooth</td><td>HIGH</td><td>138</td><td>86</td><td>62.32%</td></tr><tr><td>retrained_team_history_smooth</td><td>MEDIUM</td><td>447</td><td>253</td><td>56.60%</td></tr><tr><td>retrained_team_history_smooth</td><td>LOW</td><td>387</td><td>209</td><td>54.01%</td></tr></tbody></table></div>
+    </section>
+
+    <section aria-labelledby="side-title">
+      <h2 id="side-title">Selected-Side HOME/AWAY Counts And Correctness</h2>
+      <div class="table-wrap"><table><thead><tr><th>Model</th><th>Selected Side</th><th>Count</th><th>Correct</th><th>Accuracy</th></tr></thead><tbody><tr><td>baseline_fixed_prior</td><td>HOME</td><td>972</td><td>518</td><td>53.29%</td></tr><tr><td>baseline_fixed_prior</td><td>AWAY</td><td>0</td><td>0</td><td>0.00%</td></tr><tr><td>calibrated_elo_recent_form</td><td>HOME</td><td>767</td><td>421</td><td>54.89%</td></tr><tr><td>calibrated_elo_recent_form</td><td>AWAY</td><td>205</td><td>108</td><td>52.68%</td></tr><tr><td>elo_like_rating</td><td>HOME</td><td>587</td><td>333</td><td>56.73%</td></tr><tr><td>elo_like_rating</td><td>AWAY</td><td>385</td><td>200</td><td>51.95%</td></tr><tr><td>retrained_team_history_smooth</td><td>HOME</td><td>638</td><td>366</td><td>57.37%</td></tr><tr><td>retrained_team_history_smooth</td><td>AWAY</td><td>334</td><td>182</td><td>54.49%</td></tr></tbody></table></div>
+    </section>
+
+    <section aria-labelledby="team-title">
+      <h2 id="team-title">Top Teams By Exposure</h2>
+      <div class="table-wrap"><table><thead><tr><th>Model</th><th>Selected Team</th><th>Exposure</th><th>Correct</th><th>Accuracy</th></tr></thead><tbody><tr><td>elo_like_rating</td><td>Milwaukee Brewers</td><td>65</td><td>40</td><td>61.54%</td></tr><tr><td>retrained_team_history_smooth</td><td>New York Yankees</td><td>62</td><td>39</td><td>62.90%</td></tr><tr><td>retrained_team_history_smooth</td><td>Los Angeles Dodgers</td><td>61</td><td>34</td><td>55.74%</td></tr><tr><td>retrained_team_history_smooth</td><td>Milwaukee Brewers</td><td>60</td><td>37</td><td>61.67%</td></tr><tr><td>retrained_team_history_smooth</td><td>San Diego Padres</td><td>60</td><td>37</td><td>61.67%</td></tr><tr><td>elo_like_rating</td><td>Philadelphia Phillies</td><td>59</td><td>36</td><td>61.02%</td></tr><tr><td>calibrated_elo_recent_form</td><td>Milwaukee Brewers</td><td>58</td><td>35</td><td>60.34%</td></tr><tr><td>elo_like_rating</td><td>Toronto Blue Jays</td><td>58</td><td>35</td><td>60.34%</td></tr><tr><td>retrained_team_history_smooth</td><td>Philadelphia Phillies</td><td>56</td><td>35</td><td>62.50%</td></tr><tr><td>elo_like_rating</td><td>Boston Red Sox</td><td>55</td><td>30</td><td>54.55%</td></tr><tr><td>elo_like_rating</td><td>Chicago Cubs</td><td>52</td><td>28</td><td>53.85%</td></tr><tr><td>elo_like_rating</td><td>San Diego Padres</td><td>52</td><td>28</td><td>53.85%</td></tr></tbody></table></div>
+    </section>
+
+    <section aria-labelledby="correct-title">
+      <h2 id="correct-title">Top Correct High-Confidence Historical Examples</h2>
+      <div class="table-wrap"><table><thead><tr><th>Label</th><th>Date</th><th>Game</th><th>Model</th><th>Selected Side</th><th>Selected Probability</th><th>Band</th><th>Correct</th></tr></thead><tbody><tr><td>historical replay/backtest only</td><td>2025-09-25</td><td>Colorado Rockies @ Seattle Mariners</td><td>elo_like_rating</td><td>HOME</td><td>83.56%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay/backtest only</td><td>2025-09-24</td><td>Colorado Rockies @ Seattle Mariners</td><td>elo_like_rating</td><td>HOME</td><td>83.02%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay/backtest only</td><td>2025-09-23</td><td>Colorado Rockies @ Seattle Mariners</td><td>elo_like_rating</td><td>HOME</td><td>82.44%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay/backtest only</td><td>2025-08-22</td><td>San Francisco Giants @ Milwaukee Brewers</td><td>elo_like_rating</td><td>HOME</td><td>81.84%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay/backtest only</td><td>2025-08-13</td><td>Pittsburgh Pirates @ Milwaukee Brewers</td><td>elo_like_rating</td><td>HOME</td><td>79.21%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay/backtest only</td><td>2025-08-12</td><td>Pittsburgh Pirates @ Milwaukee Brewers</td><td>elo_like_rating</td><td>HOME</td><td>78.38%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay/backtest only</td><td>2025-08-11</td><td>Pittsburgh Pirates @ Milwaukee Brewers</td><td>elo_like_rating</td><td>HOME</td><td>77.49%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay/backtest only</td><td>2025-08-10</td><td>New York Mets @ Milwaukee Brewers</td><td>elo_like_rating</td><td>HOME</td><td>77.44%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay/backtest only</td><td>2025-09-25</td><td>Chicago White Sox @ New York Yankees</td><td>retrained_team_history_smooth</td><td>HOME</td><td>77.01%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay/backtest only</td><td>2025-09-24</td><td>Chicago White Sox @ New York Yankees</td><td>retrained_team_history_smooth</td><td>HOME</td><td>76.84%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay/backtest only</td><td>2025-09-23</td><td>Chicago White Sox @ New York Yankees</td><td>retrained_team_history_smooth</td><td>HOME</td><td>76.67%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay/backtest only</td><td>2025-08-09</td><td>New York Mets @ Milwaukee Brewers</td><td>elo_like_rating</td><td>HOME</td><td>76.48%</td><td>HIGH</td><td>Yes</td></tr></tbody></table></div>
+    </section>
+
+    <section aria-labelledby="incorrect-title">
+      <h2 id="incorrect-title">Top Incorrect High-Confidence Historical Examples</h2>
+      <div class="table-wrap"><table><thead><tr><th>Label</th><th>Date</th><th>Game</th><th>Model</th><th>Selected Side</th><th>Selected Probability</th><th>Band</th><th>Correct</th></tr></thead><tbody><tr><td>historical replay/backtest only</td><td>2025-08-23</td><td>San Francisco Giants @ Milwaukee Brewers</td><td>elo_like_rating</td><td>HOME</td><td>82.45%</td><td>HIGH</td><td>No</td></tr><tr><td>historical replay/backtest only</td><td>2025-08-24</td><td>San Francisco Giants @ Milwaukee Brewers</td><td>elo_like_rating</td><td>HOME</td><td>79.54%</td><td>HIGH</td><td>No</td></tr><tr><td>historical replay/backtest only</td><td>2025-09-27</td><td>Minnesota Twins @ Philadelphia Phillies</td><td>elo_like_rating</td><td>HOME</td><td>76.90%</td><td>HIGH</td><td>No</td></tr><tr><td>historical replay/backtest only</td><td>2025-09-05</td><td>Chicago White Sox @ Detroit Tigers</td><td>retrained_team_history_smooth</td><td>HOME</td><td>75.21%</td><td>HIGH</td><td>No</td></tr><tr><td>historical replay/backtest only</td><td>2025-09-07</td><td>Chicago White Sox @ Detroit Tigers</td><td>retrained_team_history_smooth</td><td>HOME</td><td>75.08%</td><td>HIGH</td><td>No</td></tr><tr><td>historical replay/backtest only</td><td>2025-09-21</td><td>Cleveland Guardians @ Minnesota Twins</td><td>elo_like_rating</td><td>AWAY</td><td>74.90%</td><td>HIGH</td><td>No</td></tr><tr><td>historical replay/backtest only</td><td>2025-08-27</td><td>Arizona Diamondbacks @ Milwaukee Brewers</td><td>elo_like_rating</td><td>HOME</td><td>74.49%</td><td>HIGH</td><td>No</td></tr><tr><td>historical replay/backtest only</td><td>2025-09-12</td><td>Colorado Rockies @ San Diego Padres</td><td>retrained_team_history_smooth</td><td>HOME</td><td>74.48%</td><td>HIGH</td><td>No</td></tr><tr><td>historical replay/backtest only</td><td>2025-08-26</td><td>Minnesota Twins @ Toronto Blue Jays</td><td>elo_like_rating</td><td>HOME</td><td>73.52%</td><td>HIGH</td><td>No</td></tr><tr><td>historical replay/backtest only</td><td>2025-07-21</td><td>Chicago White Sox @ Tampa Bay Rays</td><td>retrained_team_history_smooth</td><td>HOME</td><td>73.35%</td><td>HIGH</td><td>No</td></tr><tr><td>historical replay/backtest only</td><td>2025-07-28</td><td>Philadelphia Phillies @ Chicago White Sox</td><td>retrained_team_history_smooth</td><td>AWAY</td><td>73.30%</td><td>HIGH</td><td>No</td></tr><tr><td>historical replay/backtest only</td><td>2025-07-23</td><td>Chicago White Sox @ Tampa Bay Rays</td><td>retrained_team_history_smooth</td><td>HOME</td><td>73.21%</td><td>HIGH</td><td>No</td></tr></tbody></table></div>
+    </section>
+
+    <section aria-labelledby="limitations-title">
+      <h2 id="limitations-title">Limitations</h2>
+      <ul><li>Uses only committed historical replay artifacts from P207-A, P208-A, and P209-A.</li>
+<li>Slice accuracy is descriptive over completed rows and should not be extrapolated.</li>
+<li>Small slice counts can be noisy; inspect count before comparing accuracy.</li></ul>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,10 @@
+task: P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_FINAL_TREE_CLOSURE_R4A
+fixture:
+  path: _integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4A/runtime_sandbox/fixture.db
+  sha256_before_runs: 7db25e2be7ad445c1d58230016cf19bd40b5334aa2461ca12149407abb230128
+  size_before_runs: 20480
+  mtime_before_runs: 1785319845521600007
+  sha256_after_runs: 7db25e2be7ad445c1d58230016cf19bd40b5334aa2461ca12149407abb230128
+  size_after_runs: 20480
+  mtime_after_runs: 1785319845521600007
+  unchanged: true

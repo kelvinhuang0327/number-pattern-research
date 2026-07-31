@@ -1,0 +1,1311 @@
+"""
+P253G Feature Bottleneck Report Inventory.
+
+Read-only Type B inventory task.
+
+Inventories existing artifacts, scripts, metrics, and terminology related to:
+  - feature bottleneck analysis
+  - mutual information (MI)
+  - entropy diagnostics
+  - zero-bit / empty-channel evidence
+  - feature→outcome evidence
+
+Identifies overclaim risks and proposes a future M8 report schema.
+Does NOT implement a report module, write to DB, modify registry,
+change strategy logic, or provide betting advice.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+from datetime import datetime, timezone
+
+# ---------------------------------------------------------------------------
+# Output paths
+# ---------------------------------------------------------------------------
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_OUT_JSON = os.path.join(
+    _REPO_ROOT,
+    "outputs", "research",
+    "p253g_feature_bottleneck_report_inventory_20260607.json",
+)
+_OUT_MD = os.path.join(
+    _REPO_ROOT,
+    "outputs", "research",
+    "p253g_feature_bottleneck_report_inventory_20260607.md",
+)
+
+# ---------------------------------------------------------------------------
+# Classification labels
+# ---------------------------------------------------------------------------
+FEATURE_BOTTLENECK_LIKE_ARTIFACT = "FEATURE_BOTTLENECK_LIKE_ARTIFACT"
+MI_OR_CHANNEL_METRIC_PRESENT = "MI_OR_CHANNEL_METRIC_PRESENT"
+ENTROPY_OR_COMPRESSION_DIAGNOSTIC = "ENTROPY_OR_COMPRESSION_DIAGNOSTIC"
+NULL_OR_NO_EDGE_EVIDENCE = "NULL_OR_NO_EDGE_EVIDENCE"
+HISTORICAL_ARTIFACT_DO_NOT_EDIT = "HISTORICAL_ARTIFACT_DO_NOT_EDIT"
+ARCHIVED_OR_EXPLORATORY_DEFER = "ARCHIVED_OR_EXPLORATORY_DEFER"
+UNKNOWN_NEEDS_SCOPE = "UNKNOWN_NEEDS_SCOPE"
+
+
+# ---------------------------------------------------------------------------
+# Inventory builders
+# ---------------------------------------------------------------------------
+
+def _build_artifact_inventory() -> list:
+    return [
+        {
+            "artifact_id": "A1",
+            "path": "analysis/p219_external_method_diagnostic_sweep.py",
+            "task": "P219",
+            "classifications": [
+                FEATURE_BOTTLENECK_LIKE_ARTIFACT,
+                MI_OR_CHANNEL_METRIC_PRESENT,
+                ENTROPY_OR_COMPRESSION_DIAGNOSTIC,
+                NULL_OR_NO_EDGE_EVIDENCE,
+            ],
+            "description": (
+                "External 10-method diagnostic sweep. "
+                "M6: Shannon entropy + zlib compression ratio diagnostic. "
+                "M10: feature-bottleneck synthesis — computes MI (bits) between a "
+                "binned trailing-frequency feature and binary hit outcome via "
+                "_mutual_information_binary(feat, hit). Also computes pct_of_outcome_entropy "
+                "and min_detectable_edge_pp."
+            ),
+            "lottery_types_covered": ["DAILY_539", "POWER_LOTTO"],
+            "lottery_types_excluded": [
+                "BIG_LOTTO (contaminated data, P219 canonical re-run excludes raw table)",
+                "3_STAR (no M10 run)",
+                "4_STAR (no M10 run)",
+            ],
+            "key_metrics": [
+                "mi_bits (trailing_freq->next_hit)",
+                "pct_of_outcome_entropy",
+                "min_detectable_edge_pp",
+                "entropy (Shannon, freq distribution)",
+                "compression_ratio (zlib)",
+            ],
+            "key_findings": [
+                "DAILY_539: MI ~= 8.8e-6 bits (near zero)",
+                "POWER_LOTTO: MI ~= 1.6e-5 bits (near zero)",
+                "Both far below min-detectable-edge (~1.7-2.2pp)",
+                "Channel is empty; no bottleneck to widen",
+                "M6 entropy/compression: BIG_LOTTO signals are data contamination artifacts",
+            ],
+            "do_not_edit": True,
+            "note": "Only one feature tested (trailing_freq). Other feature spaces untested.",
+        },
+        {
+            "artifact_id": "A2",
+            "path": "outputs/research/p219_external_method_diagnostic_sweep_20260605.json",
+            "task": "P219",
+            "classifications": [
+                FEATURE_BOTTLENECK_LIKE_ARTIFACT,
+                MI_OR_CHANNEL_METRIC_PRESENT,
+                NULL_OR_NO_EDGE_EVIDENCE,
+                HISTORICAL_ARTIFACT_DO_NOT_EDIT,
+            ],
+            "description": (
+                "P219 sweep result artifact. Contains M10_bottleneck results including "
+                "mutual_information dict with trailing_freq_to_next_hit_bits and "
+                "pct_of_outcome_entropy. Published evidence of near-zero MI for DAILY_539 "
+                "and POWER_LOTTO."
+            ),
+            "lottery_types_covered": ["DAILY_539", "POWER_LOTTO"],
+            "lottery_types_excluded": ["BIG_LOTTO (contaminated)", "3_STAR", "4_STAR"],
+            "key_metrics": ["trailing_freq_to_next_hit_bits", "pct_of_outcome_entropy"],
+            "key_findings": [
+                "MI near zero for both clean games",
+                "P219 lessons L_P219_A: channel empty, no bottleneck to widen",
+            ],
+            "do_not_edit": True,
+            "note": None,
+        },
+        {
+            "artifact_id": "A3",
+            "path": "lottery_api/diagnostics/statistical_diagnostics_schema.py",
+            "task": "P242",
+            "classifications": [
+                FEATURE_BOTTLENECK_LIKE_ARTIFACT,
+                HISTORICAL_ARTIFACT_DO_NOT_EDIT,
+            ],
+            "description": (
+                "Read-only statistical diagnostics schema. Contains 'feature_bottleneck' as "
+                "a REQUIRED_SCHEMA_FIELD (line 124) alongside companion fields "
+                "min_detectable_effect, power_at_observed_effect, overfit_ratio. "
+                "No MI computation -- schema definition only. Safety booleans enforce "
+                "no_edge_claim semantics."
+            ),
+            "lottery_types_covered": ["ALL (schema-level, not lottery-specific)"],
+            "lottery_types_excluded": [],
+            "key_metrics": [
+                "feature_bottleneck (schema field -- REQUIRED)",
+                "min_detectable_effect (companion field)",
+                "power_at_observed_effect (companion field)",
+                "overfit_ratio (companion field)",
+            ],
+            "key_findings": [
+                "field is REQUIRED but no implementation exists",
+                "no MI module wired to this field",
+                "safety booleans prevent production/betting claims",
+            ],
+            "do_not_edit": True,
+            "note": "Schema intent is clear but no module fills the feature_bottleneck field.",
+        },
+        {
+            "artifact_id": "A4",
+            "path": "outputs/research/p244c_diagnostics_integration_plan_20260605.json",
+            "task": "P244C",
+            "classifications": [
+                FEATURE_BOTTLENECK_LIKE_ARTIFACT,
+                HISTORICAL_ARTIFACT_DO_NOT_EDIT,
+            ],
+            "description": (
+                "Diagnostics integration plan. Maps 'feature_bottleneck' group to fields: "
+                "[feature_bottleneck, min_detectable_effect, power_at_observed_effect, "
+                "overfit_ratio]. Provides field mapping and confidence templates. "
+                "Plan-only -- no code."
+            ),
+            "lottery_types_covered": ["ALL (plan-level)"],
+            "lottery_types_excluded": [],
+            "key_metrics": ["field mapping for feature_bottleneck group"],
+            "key_findings": [
+                "4-field group identified: feature_bottleneck, min_detectable_effect, "
+                "power_at_observed_effect, overfit_ratio",
+                "plan-only; implementation deferred",
+            ],
+            "do_not_edit": True,
+            "note": None,
+        },
+        {
+            "artifact_id": "A5",
+            "path": "outputs/research/p241b_p234_statistical_diagnostics_inventory_20260605.json",
+            "task": "P241B",
+            "classifications": [
+                FEATURE_BOTTLENECK_LIKE_ARTIFACT,
+                HISTORICAL_ARTIFACT_DO_NOT_EDIT,
+            ],
+            "description": (
+                "P234 statistical diagnostics inventory. Identified 'feature_bottleneck' as "
+                "one of 16 method gaps. Confirmed it is MISSING implementation and is a gap "
+                "in the current research infrastructure."
+            ),
+            "lottery_types_covered": ["ALL (gap assessment)"],
+            "lottery_types_excluded": [],
+            "key_metrics": ["gap identification: feature_bottleneck"],
+            "key_findings": [
+                "feature_bottleneck is one of 16 method gaps from P234 CTO analysis",
+                "no implementation; schema field only",
+            ],
+            "do_not_edit": True,
+            "note": None,
+        },
+        {
+            "artifact_id": "A6",
+            "path": "outputs/research/p252b_unified_external_method_coverage_audit_20260607.json",
+            "task": "P252B",
+            "classifications": [
+                FEATURE_BOTTLENECK_LIKE_ARTIFACT,
+                NULL_OR_NO_EDGE_EVIDENCE,
+                HISTORICAL_ARTIFACT_DO_NOT_EDIT,
+            ],
+            "description": (
+                "P252B 8-method coverage audit. Classifies M8 Feature Bottleneck Report "
+                "as PARTIAL / P1. Identifies gaps: no feature_bottleneck_report.py SSOT, "
+                "no canonical output format for feature-information-rate or MI report, "
+                "P219 MI analysis exploratory not shareable. Confirms no deployable "
+                "prediction edge across all research arcs."
+            ),
+            "lottery_types_covered": ["ALL (audit scope)"],
+            "lottery_types_excluded": [],
+            "key_metrics": ["M8 PARTIAL / P1 classification"],
+            "key_findings": [
+                "M8 status: PARTIAL -- schema field exists but no module",
+                "gap: no feature vocabulary SSOT",
+                "gap: no canonical MI output format",
+                "recommended next: Type B design + Type C implementation (multi-step)",
+                "no deployable prediction edge from any method",
+            ],
+            "do_not_edit": True,
+            "note": None,
+        },
+        {
+            "artifact_id": "A7",
+            "path": "outputs/research/p253a_p1_external_method_readiness_triage_20260607.json",
+            "task": "P253A",
+            "classifications": [
+                FEATURE_BOTTLENECK_LIKE_ARTIFACT,
+                NULL_OR_NO_EDGE_EVIDENCE,
+                HISTORICAL_ARTIFACT_DO_NOT_EDIT,
+            ],
+            "description": (
+                "P253A P1 method readiness triage. Classifies M8 as DEFER. Rationale: "
+                "no feature vocabulary SSOT, no MI null baseline under random draws, "
+                "HIGH overclaim risk. Blocking issues: missing feature vocabulary, "
+                "missing MI null distribution, no null comparison framework."
+            ),
+            "lottery_types_covered": ["ALL (triage scope)"],
+            "lottery_types_excluded": [],
+            "key_metrics": ["M8 readiness: DEFER"],
+            "key_findings": [
+                "M8 readiness: DEFER",
+                "blocking_issues: [no feature vocab, no MI null baseline, overclaim risk]",
+                "implementation_risk: HIGH",
+                "edge_claim_risk: HIGH",
+                "module_path: lottery_api/utils/feature_bottleneck.py (future -- deferred)",
+            ],
+            "do_not_edit": True,
+            "note": None,
+        },
+        {
+            "artifact_id": "A8",
+            "path": "outputs/research/p212_power_lotto_backward_oos_gap_check_20260605.json",
+            "task": "P212",
+            "classifications": [
+                ARCHIVED_OR_EXPLORATORY_DEFER,
+            ],
+            "description": (
+                "P212 backward-OOS gap check. Contains a 'feature_bottlenecks' field that "
+                "lists blocking factors as strings (e.g. 'no_pre_boundary_draws_available'), "
+                "NOT an MI or channel diagnostic. TERMINOLOGY INCONSISTENCY: "
+                "'feature_bottlenecks' here means 'blocking issues' not 'MI per feature'."
+            ),
+            "lottery_types_covered": ["POWER_LOTTO"],
+            "lottery_types_excluded": [],
+            "key_metrics": [
+                "feature_bottlenecks: blocking factors list (non-MI use)"
+            ],
+            "key_findings": [
+                "TERMINOLOGY_INCONSISTENCY: 'feature_bottlenecks' used as blocking-factors "
+                "list, not as MI channel diagnostics",
+            ],
+            "do_not_edit": True,
+            "note": "Term collision must be resolved in future M8 schema.",
+        },
+        {
+            "artifact_id": "A9",
+            "path": "memory/lessons.md L_P219_A",
+            "task": "P219",
+            "classifications": [
+                MI_OR_CHANNEL_METRIC_PRESENT,
+                NULL_OR_NO_EDGE_EVIDENCE,
+                HISTORICAL_ARTIFACT_DO_NOT_EDIT,
+            ],
+            "description": (
+                "Lessons.md L_P219_A: M10 bottleneck results summarized. "
+                "MI(trailing-freq->next-hit) approx 8.8e-6 bits (DAILY_539) / "
+                "1.6e-5 bits (POWER_LOTTO). Far below min-detectable-edge (~1.7-2.2pp). "
+                "Lesson: channel is empty, no bottleneck to widen. "
+                "P219 10-method sweep all predictive-NULL."
+            ),
+            "lottery_types_covered": ["DAILY_539", "POWER_LOTTO"],
+            "lottery_types_excluded": ["BIG_LOTTO", "3_STAR", "4_STAR"],
+            "key_metrics": [
+                "MI DAILY_539: 8.8e-6 bits",
+                "MI POWER_LOTTO: 1.6e-5 bits",
+                "min-detectable-edge: ~1.7-2.2pp",
+            ],
+            "key_findings": [
+                "channel is empty -- no bottleneck to widen",
+                "10 method families all predictive-NULL after Bonferroni",
+                "anomaly not predictor confirmed (L_P219_C)",
+            ],
+            "do_not_edit": True,
+            "note": "Gold-standard evidence for DAILY_539 and POWER_LOTTO M10 results.",
+        },
+        {
+            "artifact_id": "A10",
+            "path": "outputs/research/p245b_bias_gate_layer_20260605.json",
+            "task": "P245B",
+            "classifications": [
+                ENTROPY_OR_COMPRESSION_DIAGNOSTIC,
+                NULL_OR_NO_EDGE_EVIDENCE,
+                HISTORICAL_ARTIFACT_DO_NOT_EDIT,
+            ],
+            "description": (
+                "P245B bias gate layer design. Establishes gate states: "
+                "539/POWER/3_STAR/4_STAR = GATE_YELLOW_OBSERVATION_ONLY (P238B), "
+                "BIG_LOTTO = GATE_RED_DATA_CONTAMINATION (P219). "
+                "Principle: anomaly detection is NOT prediction. "
+                "GATE_OPEN requires e-value K>=100 + BOCD + clean data + >=500 OOS draws + "
+                "independent confirmation + Bonferroni + human authorization -- zero conditions "
+                "currently met."
+            ),
+            "lottery_types_covered": ["ALL"],
+            "lottery_types_excluded": [],
+            "key_metrics": [
+                "GATE_YELLOW_OBSERVATION_ONLY (539/POWER/3_STAR/4_STAR)",
+                "GATE_RED_DATA_CONTAMINATION (BIG_LOTTO)",
+            ],
+            "key_findings": [
+                "anomaly detection is NOT prediction",
+                "all games currently gated -- no strategy authorized",
+            ],
+            "do_not_edit": True,
+            "note": "Context for anomaly-not-predictor principle relevant to M8 overclaim risks.",
+        },
+        {
+            "artifact_id": "A11",
+            "path": "memory/lessons.md (BIG_LOTTO signal boundary study, line ~1365)",
+            "task": "P178A / signal_boundary",
+            "classifications": [
+                MI_OR_CHANNEL_METRIC_PRESENT,
+                NULL_OR_NO_EDGE_EVIDENCE,
+                HISTORICAL_ARTIFACT_DO_NOT_EDIT,
+            ],
+            "description": (
+                "BIG_LOTTO signal boundary study. Best MI = 0.006 bits (window_20), "
+                "1.18 pct of baseline entropy. Even this best-observed MI is within noise. "
+                "Covers BIG_LOTTO only. Different MI metric from M10 (window-based vs "
+                "trailing-freq). Additional terminology variant."
+            ),
+            "lottery_types_covered": ["BIG_LOTTO"],
+            "lottery_types_excluded": [],
+            "key_metrics": ["Best MI: 0.006 bits (window_20)", "pct of baseline entropy: 1.18%"],
+            "key_findings": [
+                "Even best-window MI = 0.006 bits -- within noise for BIG_LOTTO",
+                "Different MI metric variant (window-based autocorrelation MI, not feature->hit MI)",
+            ],
+            "do_not_edit": True,
+            "note": (
+                "TERMINOLOGY_INCONSISTENCY: this is window-based MI (sequence autocorrelation), "
+                "not feature->hit MI as in P219 M10. Both called 'MI' without disambiguation."
+            ),
+        },
+    ]
+
+
+def _build_metric_inventory() -> list:
+    return [
+        {
+            "metric_id": "MI1",
+            "metric_name": "mutual_information_binary (feature->hit)",
+            "term_variants": [
+                "MI(trailing-freq->next-hit) bits",
+                "trailing_freq_to_next_hit_bits",
+                "mutual_information",
+                "M10 bottleneck MI",
+            ],
+            "source_artifacts": ["A1", "A2", "A9"],
+            "definition": (
+                "MI between a binned trailing-frequency feature and binary hit outcome. "
+                "Computed via _mutual_information_binary(feat, hit) in p219. "
+                "Unit: bits. Near-zero for DAILY_539 and POWER_LOTTO."
+            ),
+            "lottery_coverage": ["DAILY_539", "POWER_LOTTO"],
+            "status": "COMPUTED_NEAR_ZERO -- no predictive channel found",
+        },
+        {
+            "metric_id": "MI2",
+            "metric_name": "pct_of_outcome_entropy",
+            "term_variants": ["pct_of_outcome_entropy", "fraction of base entropy"],
+            "source_artifacts": ["A1", "A2"],
+            "definition": (
+                "MI as percentage of baseline Bernoulli entropy: "
+                "mi_bits / h_baseline * 100. Near-zero in all tested games."
+            ),
+            "lottery_coverage": ["DAILY_539", "POWER_LOTTO"],
+            "status": "COMPUTED_NEAR_ZERO",
+        },
+        {
+            "metric_id": "MI3",
+            "metric_name": "window-based MI (sequence autocorrelation)",
+            "term_variants": [
+                "MI = 0.006 bits (window_20)",
+                "pct of baseline entropy 1.18%",
+            ],
+            "source_artifacts": ["A11"],
+            "definition": (
+                "MI measured via sliding window on number sequences (autocorrelation style), "
+                "not feature->hit binary. Different concept from MI1."
+            ),
+            "lottery_coverage": ["BIG_LOTTO"],
+            "status": "COMPUTED_NEAR_ZERO -- within noise floor",
+        },
+        {
+            "metric_id": "ENT1",
+            "metric_name": "Shannon entropy (frequency distribution)",
+            "term_variants": [
+                "freq_distribution_shannon_entropy_bits",
+                "entropy",
+                "M6 entropy",
+                "Shannon entropy normalized",
+            ],
+            "source_artifacts": ["A1", "A2"],
+            "definition": (
+                "Shannon entropy of the frequency distribution of drawn numbers. "
+                "Diagnostic only -- not a predictor. BIG_LOTTO anomalies explained "
+                "by data contamination (L_P219_B/C)."
+            ),
+            "lottery_coverage": ["DAILY_539", "POWER_LOTTO", "BIG_LOTTO"],
+            "status": "COMPUTED_DIAGNOSTIC_ONLY -- anomaly not predictor",
+        },
+        {
+            "metric_id": "ENT2",
+            "metric_name": "zlib compression ratio",
+            "term_variants": [
+                "zlib_compression_ratio",
+                "compression",
+                "M6 compression",
+            ],
+            "source_artifacts": ["A1", "A2"],
+            "definition": (
+                "Compression ratio of serialized draw sequence as a proxy for "
+                "redundancy/predictability. Near-random compression ratios across "
+                "clean games."
+            ),
+            "lottery_coverage": ["DAILY_539", "POWER_LOTTO", "BIG_LOTTO"],
+            "status": "COMPUTED_DIAGNOSTIC_ONLY",
+        },
+        {
+            "metric_id": "MDE1",
+            "metric_name": "min_detectable_edge_pp",
+            "term_variants": [
+                "min_detectable_edge_pp",
+                "min_detectable_effect",
+                "minimum detectable effect",
+            ],
+            "source_artifacts": ["A1", "A3", "A4", "A9"],
+            "definition": (
+                "Minimum prediction advantage (in percentage points) detectable with "
+                "adequate statistical power. For DAILY_539/POWER_LOTTO: ~1.7-2.2pp. "
+                "No observed MI or feature-based signal reaches this threshold."
+            ),
+            "lottery_coverage": ["DAILY_539", "POWER_LOTTO"],
+            "status": "THRESHOLD_ESTABLISHED -- all observed MI far below",
+        },
+        {
+            "metric_id": "FB1",
+            "metric_name": "feature_bottleneck (schema field)",
+            "term_variants": [
+                "feature_bottleneck",
+                "feature bottleneck",
+                "M8 Feature Bottleneck Report",
+            ],
+            "source_artifacts": ["A3", "A4", "A5", "A6", "A7"],
+            "definition": (
+                "Schema field in statistical_diagnostics_schema.py REQUIRED_SCHEMA_FIELDS. "
+                "Intended to hold a structured summary of feature-information diagnostics "
+                "(MI, channel, bottleneck score). No implementation exists."
+            ),
+            "lottery_coverage": ["ALL (intended)"],
+            "status": "SCHEMA_FIELD_ONLY -- no implementation",
+        },
+        {
+            "metric_id": "BLK1",
+            "metric_name": "feature_bottlenecks (blocking factors list)",
+            "term_variants": ["feature_bottlenecks"],
+            "source_artifacts": ["A8"],
+            "definition": (
+                "DIFFERENT CONCEPT from MI-based feature bottleneck. "
+                "In p212, 'feature_bottlenecks' is a list of strings describing "
+                "why backward-OOS is blocked. NOT an MI or channel metric."
+            ),
+            "lottery_coverage": ["POWER_LOTTO"],
+            "status": "TERMINOLOGY_COLLISION -- must disambiguate in M8 schema",
+        },
+    ]
+
+
+def _build_lottery_type_coverage() -> dict:
+    return {
+        "DAILY_539": {
+            "mi_computed": True,
+            "mi_value_bits": "8.8e-6 (M10 trailing-freq->next-hit)",
+            "entropy_computed": True,
+            "compression_computed": True,
+            "bottleneck_conclusion": "channel empty -- no predictive bottleneck to widen",
+            "source": "P219 (L_P219_A)",
+            "data_quality": "CLEAN",
+            "gate_state": "GATE_YELLOW_OBSERVATION_ONLY (P238B)",
+        },
+        "POWER_LOTTO": {
+            "mi_computed": True,
+            "mi_value_bits": "1.6e-5 (M10 trailing-freq->next-hit)",
+            "entropy_computed": True,
+            "compression_computed": True,
+            "bottleneck_conclusion": "channel empty -- no predictive bottleneck to widen",
+            "source": "P219 (L_P219_A)",
+            "data_quality": "CLEAN",
+            "gate_state": "GATE_YELLOW_OBSERVATION_ONLY (P238B)",
+        },
+        "BIG_LOTTO": {
+            "mi_computed": True,
+            "mi_value_bits": "0.006 bits (window-based MI, P178A signal boundary study)",
+            "entropy_computed": True,
+            "compression_computed": True,
+            "bottleneck_conclusion": (
+                "MI near zero (signal boundary study); "
+                "M6 entropy/compression signals are data contamination artifacts "
+                "(L_P219_B/C, L_P246_A/B). Canonical sample (2,113 rows) not yet M10-tested."
+            ),
+            "source": "P219, P178A signal boundary study, P246",
+            "data_quality": "CONTAMINATED (raw); CLEAN (canonical 2,113 rows, P246K GREEN)",
+            "gate_state": "GATE_RED_DATA_CONTAMINATION (P219, raw table)",
+            "note": (
+                "Canonical sample P246K GREEN is a data quality result, not prediction clearance. "
+                "M10 should be re-run on canonical 2,113 rows if/when M8 is designed."
+            ),
+        },
+        "3_STAR": {
+            "mi_computed": False,
+            "mi_value_bits": None,
+            "entropy_computed": False,
+            "compression_computed": False,
+            "bottleneck_conclusion": (
+                "not computed -- UNDERPOWERED_NO_SIGNAL (P227C); no M10 run"
+            ),
+            "source": "P227C",
+            "data_quality": "CLEAN (5,850 rows, positional-tagged)",
+            "gate_state": "UNDERPOWERED_NO_SIGNAL",
+        },
+        "4_STAR": {
+            "mi_computed": False,
+            "mi_value_bits": None,
+            "entropy_computed": False,
+            "compression_computed": False,
+            "bottleneck_conclusion": (
+                "not computed -- UNDERPOWERED_NO_SIGNAL (P227C); no M10 run"
+            ),
+            "source": "P227C",
+            "data_quality": "CLEAN (5,850 rows, positional-tagged)",
+            "gate_state": "UNDERPOWERED_NO_SIGNAL",
+        },
+    }
+
+
+def _build_terminology_gaps() -> list:
+    return [
+        {
+            "gap_id": "TG1",
+            "term": "feature bottleneck",
+            "variants_found": [
+                "feature_bottleneck (schema field in statistical_diagnostics_schema.py)",
+                "M10 bottleneck (p219 sweep method label)",
+                "M8 Feature Bottleneck Report (P252B/P253A method label)",
+                "feature_bottleneck_report.py (future module name, P252B)",
+                "feature bottleneck report (human-readable P252B label)",
+            ],
+            "inconsistency": (
+                "Three different naming conventions for the same concept: "
+                "(1) M8 in 8-method P252B audit, (2) M10 in p219 10-method sweep, "
+                "(3) feature_bottleneck in schema. Method number differs across documents."
+            ),
+            "risk": "Consumers may not recognize M8=M10 as the same concept, causing duplicate work.",
+            "resolution_required": True,
+        },
+        {
+            "gap_id": "TG2",
+            "term": "feature_bottlenecks",
+            "variants_found": [
+                "feature_bottlenecks (p212: list of blocking strings)",
+                "feature_bottleneck (schema: MI report field)",
+            ],
+            "inconsistency": (
+                "Homograph collision: 'feature_bottlenecks' in p212 is a list of "
+                "backward-OOS blocking factors (NOT MI metrics), while 'feature_bottleneck' "
+                "in schema is intended for MI-based channel diagnostics."
+            ),
+            "risk": (
+                "If M8 schema uses 'feature_bottlenecks' as a field name, it may be "
+                "confused with the p212 blocking-factors list."
+            ),
+            "resolution_required": True,
+        },
+        {
+            "gap_id": "TG3",
+            "term": "mutual information (MI)",
+            "variants_found": [
+                "MI(trailing-freq->next-hit) bits (P219 M10: feature->hit binary MI)",
+                "MI = 0.006 bits window_20 (P178A: window-based autocorrelation MI)",
+                "mutual_information (P219 result dict key)",
+                "feature-information-rate (P252B description)",
+            ],
+            "inconsistency": (
+                "Two structurally different MI concepts both called 'MI': "
+                "(1) feature->hit binary MI (P219 M10) and "
+                "(2) window autocorrelation MI (P178A). These measure different things."
+            ),
+            "risk": (
+                "Misinterpretation: near-zero window-MI does not imply near-zero "
+                "feature->hit MI for all possible features."
+            ),
+            "resolution_required": True,
+        },
+        {
+            "gap_id": "TG4",
+            "term": "entropy",
+            "variants_found": [
+                "M6 entropy: Shannon entropy of frequency distribution (P219)",
+                "baseline Bernoulli entropy h_base: per-number draw probability entropy (P219 M10)",
+                "pct_of_outcome_entropy: MI as fraction of baseline entropy (P219 M10)",
+                "permutation entropy (P191 signal boundary study)",
+            ],
+            "inconsistency": (
+                "Multiple entropy concepts with different denominators and purposes. "
+                "All called 'entropy' without disambiguation."
+            ),
+            "risk": (
+                "Low M6 entropy (uniform distribution) could be confused with "
+                "predictive signal, when it is actually a distribution diagnostic."
+            ),
+            "resolution_required": True,
+        },
+        {
+            "gap_id": "TG5",
+            "term": "feature",
+            "variants_found": [
+                "trailing_freq (only feature tested in P219 M10)",
+                "feature vocabulary (undefined SSOT)",
+                "features in strategy prediction (gap_score, freq_deficit, boundary, mod3, etc.)",
+            ],
+            "inconsistency": (
+                "No canonical feature vocabulary SSOT exists. P219 M10 tested only trailing_freq. "
+                "Strategy code uses many features without formal definitions."
+            ),
+            "risk": (
+                "HIGH: M8 report without feature vocabulary could claim channel is empty "
+                "based on one feature (trailing_freq) when other features are untested."
+            ),
+            "resolution_required": True,
+        },
+        {
+            "gap_id": "TG6",
+            "term": "channel",
+            "variants_found": [
+                "channel empty (channel is empty -- lessons.md L_P219_A)",
+                "evidence channel (task prompt context)",
+                "signal channel (informal)",
+                "information channel (informal)",
+            ],
+            "inconsistency": (
+                "Channel is used informally in lessons.md but not formally defined in any schema. "
+                "The term 'evidence channel' appears in task prompts but not in codebase artifacts."
+            ),
+            "risk": (
+                "Ambiguous: 'channel empty' for trailing_freq is not 'all channels empty' "
+                "without full feature vocabulary."
+            ),
+            "resolution_required": True,
+        },
+    ]
+
+
+def _build_overclaim_risks() -> list:
+    return [
+        {
+            "risk_id": "OR1",
+            "label": "random-compatible-not-edge",
+            "title": "Random-compatible does not imply prediction edge",
+            "description": (
+                "NIST GREEN result (P246K) for canonical BIG_LOTTO is a data quality / "
+                "isolation audit result. It does NOT authorize any new strategy, "
+                "production recommendation, deployment, or betting advice. "
+                "GREEN randomness does not imply exploitable prediction signal."
+            ),
+            "affected_artifacts": ["A1", "A9"],
+            "mitigation": (
+                "M8 schema must include no_edge_claim=True and "
+                "random_compatible_does_not_imply_predictive_edge=True as required fields."
+            ),
+        },
+        {
+            "risk_id": "OR2",
+            "label": "anomaly-not-predictor",
+            "title": "Entropy anomaly does not imply predictor",
+            "description": (
+                "P219 M6 shows BIG_LOTTO has anomalous entropy/compression signals that "
+                "passed Bonferroni. L_P219_B/C and L_P246_A/B fully explain all signals "
+                "as data contamination artifacts. Anomaly detection is NOT prediction."
+            ),
+            "affected_artifacts": ["A1", "A2", "A10"],
+            "mitigation": (
+                "M8 schema must include anomaly_not_predictor=True and require explanation "
+                "of anomaly source before flagging as signal-relevant."
+            ),
+        },
+        {
+            "risk_id": "OR3",
+            "label": "near-zero-mi-not-feature-space-exhausted",
+            "title": "MI approx 0 for trailing_freq does not exhaust all possible features",
+            "description": (
+                "P219 M10 tested only trailing_freq. MI approx 8.8e-6 bits (539) / "
+                "1.6e-5 (POWER) is near zero for this feature. "
+                "This does NOT prove that gap_score, zone_balance, mod3_count, "
+                "consecutive_count, calendar features, or other candidates also have near-zero MI. "
+                "Claiming 'feature space exhausted' from one feature is an overclaim."
+            ),
+            "affected_artifacts": ["A1", "A9"],
+            "mitigation": (
+                "M8 report must enumerate all tested features explicitly and list "
+                "untested features. Scope of 'channel empty' claim must be bounded "
+                "to tested features only."
+            ),
+        },
+        {
+            "risk_id": "OR4",
+            "label": "artifact-signal-not-strategy",
+            "title": "Artifact-only signal cannot become strategy without pre-registration + walk-forward",
+            "description": (
+                "Any non-zero MI found in an M8 report cannot be promoted to a strategy "
+                "without: pre-registration, multiple testing correction, walk-forward OOS "
+                "validation, and explicit human authorization. The CLAUDE.md validation "
+                "pipeline (1500-period three-window) must be completed before any MI finding "
+                "is treated as a prediction candidate."
+            ),
+            "affected_artifacts": ["A3", "A6", "A7"],
+            "mitigation": (
+                "M8 schema must include allowed_next_action and forbidden_next_action fields "
+                "explicitly prohibiting strategy deployment from MI findings alone."
+            ),
+        },
+        {
+            "risk_id": "OR5",
+            "label": "mi-uncertainty-bands-at-near-zero",
+            "title": "Near-zero MI has wide uncertainty bands at small N",
+            "description": (
+                "Very small MI values (e.g. 8.8e-6 bits) are within estimation noise "
+                "for sample sizes of a few thousand draws. Without an established null MI "
+                "distribution (MC null), the reported MI cannot be compared to a "
+                "meaningful floor. Reporting MI without null comparison risks "
+                "misinterpretation as meaningful."
+            ),
+            "affected_artifacts": ["A1", "A9"],
+            "mitigation": (
+                "M8 schema must require null_mi_95th_pct and null_mi_99th_pct fields "
+                "(MC null distribution under random draws) alongside observed MI. "
+                "Only report is_above_null_floor if MI > null_mi_95th_pct."
+            ),
+        },
+        {
+            "risk_id": "OR6",
+            "label": "window-based-mi-not-feature-hit-mi",
+            "title": "Window-based MI (autocorrelation) is not feature->hit MI",
+            "description": (
+                "P178A computed MI on sequence windows (autocorrelation style), "
+                "finding best MI = 0.006 bits (window_20). This is structurally different "
+                "from M10 feature->hit MI. Both are near zero but measure different things. "
+                "Conflating the two in an M8 report would be an overclaim in either direction."
+            ),
+            "affected_artifacts": ["A11"],
+            "mitigation": (
+                "M8 schema must distinguish mi_type: 'feature_to_hit_binary' vs "
+                "'sequence_autocorrelation'. Both must use separate null baselines."
+            ),
+        },
+    ]
+
+
+def _build_future_m8_schema() -> dict:
+    return {
+        "schema_name": "M8FeatureBottleneckReport",
+        "version": "0.1-proposed",
+        "note": (
+            "Proposed minimum schema for a future M8 Feature Bottleneck Report. "
+            "P253G does NOT implement this schema. Implementation requires a separate "
+            "authorized Type C task following a vocabulary design task."
+        ),
+        "required_fields": [
+            {"field": "task_id", "type": "str", "example": "P253H"},
+            {"field": "report_date", "type": "str (ISO-8601)"},
+            {"field": "lottery_type", "type": "str from LotteryType.ALL"},
+            {"field": "feature_name", "type": "str", "example": "trailing_freq_50"},
+            {
+                "field": "feature_definition",
+                "type": "str",
+                "note": "Exact formula -- required to bound overclaim scope",
+            },
+            {
+                "field": "mi_type",
+                "type": "str",
+                "allowed": ["feature_to_hit_binary", "sequence_autocorrelation"],
+                "note": "Must distinguish to prevent MI1 vs MI3 conflation (TG3)",
+            },
+            {"field": "mi_bits", "type": "float", "note": "Observed MI in bits"},
+            {
+                "field": "mi_pct_of_baseline_entropy",
+                "type": "float",
+                "note": "mi_bits / h_baseline * 100",
+            },
+            {
+                "field": "null_mi_95th_pct",
+                "type": "float",
+                "note": "MC null 95th percentile -- required (OR5 mitigation)",
+            },
+            {
+                "field": "null_mi_99th_pct",
+                "type": "float",
+                "note": "MC null 99th percentile",
+            },
+            {
+                "field": "is_above_null_floor",
+                "type": "bool",
+                "note": "True only if mi_bits > null_mi_95th_pct",
+            },
+            {
+                "field": "min_detectable_edge_pp",
+                "type": "float",
+                "note": "Minimum detectable prediction advantage in pp",
+            },
+            {"field": "n_draws", "type": "int"},
+            {"field": "lottery_pool", "type": "dict", "keys": ["n_numbers", "k_draw"]},
+            {"field": "baseline_hit_rate", "type": "float"},
+            {"field": "family_size_k", "type": "int", "note": "Number of features tested"},
+            {
+                "field": "correction_method",
+                "type": "str from CorrectionMethod.ALL",
+                "note": "Bonferroni or BH-FDR required if k>1",
+            },
+            {"field": "corrected_significant", "type": "bool"},
+            {
+                "field": "all_features_tested",
+                "type": "list[str]",
+                "note": "Explicit list -- OR3 mitigation",
+            },
+            {
+                "field": "untested_features",
+                "type": "list[str]",
+                "note": "Must enumerate -- prevents false exhaustion claim (OR3)",
+            },
+            {
+                "field": "no_edge_claim",
+                "type": "bool",
+                "fixed": True,
+                "note": "Always True",
+            },
+            {
+                "field": "random_compatible_does_not_imply_predictive_edge",
+                "type": "bool",
+                "fixed": True,
+                "note": "Always True -- OR1 mitigation",
+            },
+            {
+                "field": "anomaly_not_predictor",
+                "type": "bool",
+                "fixed": True,
+                "note": "Always True -- OR2 mitigation",
+            },
+            {
+                "field": "allowed_next_action",
+                "type": "str",
+                "note": "Must prohibit strategy deployment from MI alone (OR4)",
+            },
+            {"field": "forbidden_next_action", "type": "str"},
+        ],
+        "design_prerequisites": [
+            "Feature vocabulary SSOT: enumerate and define all candidate features",
+            "Null MI distribution: MC simulation of MI under random draws for each feature x lottery",
+            "Disambiguation of mi_type: feature_to_hit_binary vs sequence_autocorrelation",
+            "Disambiguation of feature_bottleneck (MI report) vs feature_bottlenecks (blocking list)",
+            "Resolve TG1-TG6 terminology gaps before implementation",
+        ],
+    }
+
+
+def _build_phase0_summary() -> dict:
+    return {
+        "branch": "main",
+        "head_eq_origin_main": True,
+        "p253f_visible": True,
+        "p253e_visible": True,
+        "p253d_visible": True,
+        "p253c_visible": True,
+        "p253a_visible": True,
+        "p252i_visible": True,
+        "dirty_items": (
+            "backend.pid, frontend.pid, claude-code-showcase, "
+            "data/lottery_v2.db (metadata-only touch), "
+            "outputs/research/* modified by prior agents -- not modified by P253G, "
+            "claude-code-showcase.worktrees/, runtime/ -- all tolerated"
+        ),
+        "stop_conditions_triggered": "NONE",
+        "db_write_attempted": False,
+        "registry_mutation_attempted": False,
+        "strategy_promotion_attempted": False,
+    }
+
+
+def build_report() -> dict:
+    artifact_inventory = _build_artifact_inventory()
+    metric_inventory = _build_metric_inventory()
+    lottery_coverage = _build_lottery_type_coverage()
+    terminology_gaps = _build_terminology_gaps()
+    overclaim_risks = _build_overclaim_risks()
+    future_schema = _build_future_m8_schema()
+
+    report = {
+        "schema_version": "1.0",
+        "task_id": "P253G",
+        "classification": "FEATURE_BOTTLENECK_REPORT_INVENTORY_COMPLETE",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "phase0_summary": _build_phase0_summary(),
+        "p253a_dependency_verified": {
+            "found": True,
+            "path": "outputs/research/p253a_p1_external_method_readiness_triage_20260607.json",
+            "classification": "P1_EXTERNAL_METHOD_READINESS_TRIAGE_COMPLETE",
+            "m8_readiness_in_p253a": "DEFER",
+            "m8_blocking_issues_in_p253a": [
+                "No feature vocabulary SSOT defined",
+                "MI null baseline under random draws not established",
+                "Overclaim risk without proper null comparison framework",
+            ],
+        },
+        "p252b_dependency_verified": {
+            "found": True,
+            "path": "outputs/research/p252b_unified_external_method_coverage_audit_20260607.json",
+            "classification": "UNIFIED_EXTERNAL_METHOD_COVERAGE_AUDIT",
+            "m8_status_in_p252b": "PARTIAL / P1",
+            "m8_gaps_in_p252b": [
+                "No dedicated feature_bottleneck_report.py SSOT module",
+                "No canonical output format for feature-information-rate or MI report",
+                "P219 MI analysis exploratory not structured as shareable module",
+            ],
+        },
+        "artifact_inventory": artifact_inventory,
+        "metric_inventory": metric_inventory,
+        "lottery_type_coverage": lottery_coverage,
+        "terminology_gaps": terminology_gaps,
+        "terminology_gap_count": len(terminology_gaps),
+        "overclaim_risks": overclaim_risks,
+        "future_m8_schema_recommendation": future_schema,
+        "readiness_decision": {
+            "decision": "DEFER_PENDING_VOCABULARY_AND_NULL_FRAMEWORK",
+            "rationale": (
+                "P219 M10 provides one functioning MI implementation (trailing_freq only) "
+                "with near-zero results for DAILY_539 and POWER_LOTTO. However: "
+                "(1) Only one feature tested -- near-zero MI does not exhaust feature space. "
+                "(2) No feature vocabulary SSOT -- 'feature' is undefined as shared contract. "
+                "(3) No null MI distribution established -- cannot confirm near-zero MI "
+                "is above or below the noise floor. "
+                "(4) HIGH overclaim risk without null framework and feature vocabulary. "
+                "(5) 6 unresolved terminology gaps (TG1-TG6) would cause schema confusion. "
+                "M8 is not READY_FOR_DESIGN until terminology and vocabulary prerequisites "
+                "are resolved. DEFER remains the correct status."
+            ),
+            "preconditions_for_design_start": [
+                "Resolve TG1: unify M8/M10/feature_bottleneck naming (single term)",
+                "Resolve TG2: disambiguate feature_bottlenecks (blocking list) from feature_bottleneck (MI report)",
+                "Resolve TG3: define mi_type taxonomy (feature_to_hit_binary vs sequence_autocorrelation)",
+                "Resolve TG5: define feature vocabulary SSOT with at least 5 candidate features",
+                "Establish null MI distribution via MC simulation for trailing_freq as baseline",
+                "Confirm BIG_LOTTO canonical M10 run is separate from contaminated raw-table M10",
+            ],
+        },
+        "recommended_next_task": {
+            "recommendation": "HOLD_OR_P253H_FEATURE_VOCABULARY_DESIGN",
+            "if_authorized": {
+                "task_id_proposal": "P253H",
+                "title": "Feature Vocabulary Design for M8 Feature Bottleneck Report",
+                "type": "Type B -- design document only, no code",
+                "scope": [
+                    "Define feature vocabulary SSOT (enumerate candidate features with exact formulas)",
+                    "Resolve TG1-TG6 terminology gaps",
+                    "Establish null MI distribution design (MC simulation approach)",
+                    "Produce M8 schema candidate for review",
+                ],
+                "non_scope": [
+                    "Do not implement feature_bottleneck.py",
+                    "Do not compute new MI values",
+                    "Do not modify strategy registry",
+                    "Do not claim any feature is predictive",
+                ],
+                "authorization_phrase": "Authorize P253H M8 feature vocabulary design",
+            },
+            "if_hold": (
+                "M8 remains DEFER. P253G inventory is the terminal artifact. "
+                "No action required until user explicitly authorizes feature vocabulary design."
+            ),
+        },
+        "no_db_write_confirmed": True,
+        "no_registry_mutation_confirmed": True,
+        "no_strategy_promotion_confirmed": True,
+        "no_betting_advice_confirmed": True,
+        "final_decision": (
+            "P253G inventory complete. M8 Feature Bottleneck Report readiness: "
+            "DEFER_PENDING_VOCABULARY_AND_NULL_FRAMEWORK. "
+            "Existing evidence: P219 M10 near-zero MI for DAILY_539 (8.8e-6 bits) "
+            "and POWER_LOTTO (1.6e-5 bits) for trailing_freq feature only. "
+            "Schema field 'feature_bottleneck' exists but no module fills it. "
+            "6 terminology gaps (TG1-TG6) require resolution. "
+            "6 overclaim risks (OR1-OR6) identified with mitigations. "
+            "3_STAR/4_STAR: no MI computed. BIG_LOTTO canonical M10 not yet run. "
+            "No deployable prediction edge. No betting advice. No strategy promotion. "
+            "System remains WAITING_FOR_USER_AUTHORIZATION. "
+            "Next: HOLD or authorize P253H feature vocabulary design."
+        ),
+    }
+    return report
+
+
+def build_markdown(report: dict) -> str:
+    ts = report["generated_at"]
+    lottery_cov = report["lottery_type_coverage"]
+    artifact_inv = report["artifact_inventory"]
+    metric_inv = report["metric_inventory"]
+    term_gaps = report["terminology_gaps"]
+    overclaim = report["overclaim_risks"]
+    schema_rec = report["future_m8_schema_recommendation"]
+    readiness = report["readiness_decision"]
+    next_task = report["recommended_next_task"]
+
+    lines = [
+        "# P253G Feature Bottleneck Report Inventory",
+        "",
+        f"**Task ID:** P253G  ",
+        f"**Classification:** `FEATURE_BOTTLENECK_REPORT_INVENTORY_COMPLETE`  ",
+        f"**Generated:** {ts}  ",
+        "",
+        "---",
+        "",
+        "## Executive Summary",
+        "",
+        (
+            "P253G is a read-only Type B inventory of all existing artifacts, scripts, "
+            "and metrics related to feature bottleneck analysis, mutual information (MI), "
+            "entropy diagnostics, and evidence channels in the LotteryNew project."
+        ),
+        "",
+        (
+            "**Key findings:** P219 M10 provides the only functioning MI implementation "
+            "(trailing_freq only) with near-zero results for DAILY_539 (8.8e-6 bits) and "
+            "POWER_LOTTO (1.6e-5 bits). The schema field `feature_bottleneck` exists in "
+            "`statistical_diagnostics_schema.py` but no module fills it. Six unresolved "
+            "terminology gaps (TG1-TG6) and six overclaim risks (OR1-OR6) are identified."
+        ),
+        "",
+        (
+            "**Readiness decision:** `DEFER_PENDING_VOCABULARY_AND_NULL_FRAMEWORK`. "
+            "M8 is not ready for design start without feature vocabulary SSOT, "
+            "null MI distribution, and terminology gap resolution."
+        ),
+        "",
+        (
+            "**No deployable prediction edge. No betting advice. No strategy promotion. "
+            "No DB write. No registry mutation.**"
+        ),
+        "",
+        "---",
+        "",
+        "## Existing Feature/Bottleneck Evidence Inventory",
+        "",
+        f"Total artifacts inventoried: {len(artifact_inv)}",
+        "",
+    ]
+
+    for art in artifact_inv:
+        lines.append(f"### {art['artifact_id']}: `{art['path']}`")
+        lines.append(f"**Task:** {art['task']}  ")
+        lines.append(
+            "**Classifications:** "
+            + ", ".join("`" + c + "`" for c in art["classifications"])
+            + "  "
+        )
+        lines.append(f"**Description:** {art['description']}  ")
+        lines.append(f"**Lottery types covered:** {', '.join(art['lottery_types_covered'])}  ")
+        if art.get("key_findings"):
+            lines.append("**Key findings:**")
+            for kf in art["key_findings"]:
+                lines.append(f"- {kf}")
+        if art.get("note"):
+            lines.append(f"**Note:** {art['note']}  ")
+        lines.append("")
+
+    lines += [
+        "---",
+        "",
+        "## Metric Inventory",
+        "",
+        f"Total metrics inventoried: {len(metric_inv)}",
+        "",
+    ]
+
+    for m in metric_inv:
+        lines.append(f"### {m['metric_id']}: {m['metric_name']}")
+        lines.append(f"**Status:** `{m['status']}`  ")
+        lines.append(f"**Definition:** {m['definition']}  ")
+        lines.append(f"**Lottery coverage:** {', '.join(m['lottery_coverage'])}  ")
+        lines.append(f"**Term variants:** {', '.join(m['term_variants'])}  ")
+        lines.append("")
+
+    lines += [
+        "---",
+        "",
+        "## Lottery-Type Coverage",
+        "",
+    ]
+
+    for lt, cov in lottery_cov.items():
+        lines.append(f"### {lt}")
+        lines.append(f"- MI computed: {cov['mi_computed']}")
+        if cov.get("mi_value_bits"):
+            lines.append(f"- MI value: {cov['mi_value_bits']}")
+        lines.append(f"- Conclusion: {cov['bottleneck_conclusion']}")
+        lines.append(f"- Data quality: {cov['data_quality']}")
+        lines.append(f"- Gate state: {cov['gate_state']}")
+        if cov.get("note"):
+            lines.append(f"- Note: {cov['note']}")
+        lines.append("")
+
+    lines += [
+        "---",
+        "",
+        "## Terminology Gaps",
+        "",
+        f"Total terminology gaps identified: {len(term_gaps)}",
+        "",
+    ]
+
+    for tg in term_gaps:
+        lines.append(f"### {tg['gap_id']}: `{tg['term']}`")
+        lines.append(f"**Inconsistency:** {tg['inconsistency']}  ")
+        lines.append(f"**Risk:** {tg['risk']}  ")
+        lines.append(f"**Resolution required:** {tg['resolution_required']}  ")
+        lines.append(f"**Variants found:** {', '.join(tg['variants_found'][:3])}  ")
+        lines.append("")
+
+    lines += [
+        "---",
+        "",
+        "## Overclaim Risks",
+        "",
+        f"Total overclaim risks identified: {len(overclaim)}",
+        "",
+    ]
+
+    for oc in overclaim:
+        lines.append(f"### {oc['risk_id']}: `{oc['label']}`")
+        lines.append(f"**{oc['title']}**  ")
+        lines.append(f"{oc['description']}  ")
+        lines.append(f"**Mitigation:** {oc['mitigation']}  ")
+        lines.append("")
+
+    lines += [
+        "---",
+        "",
+        "## Future M8 Report Schema Recommendation",
+        "",
+        f"**Schema name:** `{schema_rec['schema_name']}`  ",
+        f"**Version:** {schema_rec['version']}  ",
+        f"**Note:** {schema_rec['note']}  ",
+        "",
+        "**Design prerequisites (must complete before implementation):**",
+    ]
+    for prereq in schema_rec["design_prerequisites"]:
+        lines.append(f"- {prereq}")
+    lines.append("")
+    lines.append("**Required fields (first 10 of full list):**")
+    for field in schema_rec["required_fields"][:10]:
+        note = field.get("note") or field.get("example") or ""
+        lines.append(f"- `{field['field']}` ({field['type']}) -- {note}")
+    remainder = len(schema_rec["required_fields"]) - 10
+    lines.append(f"- *(+ {remainder} more fields -- see JSON for full list)*")
+    lines.append("")
+
+    lines += [
+        "---",
+        "",
+        "## Readiness Decision",
+        "",
+        f"**Decision:** `{readiness['decision']}`  ",
+        "",
+        readiness["rationale"],
+        "",
+        "**Preconditions for design start:**",
+    ]
+    for pre in readiness["preconditions_for_design_start"]:
+        lines.append(f"- {pre}")
+    lines.append("")
+
+    lines += [
+        "---",
+        "",
+        "## Recommended Next Task or HOLD",
+        "",
+        f"**Recommendation:** `{next_task['recommendation']}`  ",
+        "",
+        "If authorized: **P253H Feature Vocabulary Design** (Type B -- design document only)  ",
+        "- Define feature vocabulary SSOT (enumerate candidate features with exact formulas)  ",
+        "- Resolve TG1-TG6 terminology gaps  ",
+        "- Establish null MI distribution design  ",
+        "- Authorization phrase: `Authorize P253H M8 feature vocabulary design`  ",
+        "",
+        "If HOLD: M8 remains DEFER. P253G inventory is the terminal artifact.  ",
+        "",
+        "---",
+        "",
+        "## Explicit Non-Actions",
+        "",
+        "P253G did NOT:",
+        "- Implement a feature_bottleneck report module",
+        "- Compute new MI values",
+        "- Modify any DB (no DB write)",
+        "- Modify strategy registry (no registry mutation)",
+        "- Promote any strategy (no strategy promotion)",
+        "- Modify API or frontend",
+        "- Modify existing historical artifacts",
+        "- Modify parser code, controlled_apply scripts, or production config",
+        "",
+        "---",
+        "",
+        "## Explicit No-Overclaim Statement",
+        "",
+        (
+            "- Near-zero MI (8.8e-6 bits for DAILY_539, 1.6e-5 for POWER_LOTTO) does NOT "
+            "prove all possible features are non-predictive. Only trailing_freq was tested."
+        ),
+        "- Random-compatible (NIST GREEN) does NOT imply predictive edge.",
+        (
+            "- Entropy anomaly does NOT imply predictor "
+            "(anomaly = data contamination in BIG_LOTTO, per L_P219_B/C)."
+        ),
+        "- No artifact-only signal can become strategy without pre-registration, correction, and walk-forward OOS.",
+        "- This report does NOT claim any deployable prediction edge.",
+        "- No betting advice is given or implied.",
+        "",
+        "---",
+        "",
+        "## Explicit No DB Write",
+        "",
+        "No database was written, read for strategy decisions, or queried for MI computation in P253G.",
+        "",
+        "---",
+        "",
+        "## Explicit No Strategy Promotion / No Betting Advice",
+        "",
+        "No strategy was promoted, modified, or deployed. No betting advice is given or implied.",
+        "",
+        "---",
+        "",
+        "## Final Classification",
+        "",
+        f"`{report['classification']}`",
+        "",
+        f"*{report['final_decision']}*",
+    ]
+
+    return "\n".join(lines)
+
+
+def main():
+    report = build_report()
+
+    os.makedirs(os.path.dirname(_OUT_JSON), exist_ok=True)
+    with open(_OUT_JSON, "w", encoding="utf-8") as f:
+        json.dump(report, f, indent=2, ensure_ascii=False)
+    print(f"[P253G] JSON written: {_OUT_JSON}")
+
+    md = build_markdown(report)
+    with open(_OUT_MD, "w", encoding="utf-8") as f:
+        f.write(md)
+    print(f"[P253G] Markdown written: {_OUT_MD}")
+
+    print(f"[P253G] Classification: {report['classification']}")
+    print(f"[P253G] Readiness decision: {report['readiness_decision']['decision']}")
+    print(f"[P253G] Artifacts inventoried: {len(report['artifact_inventory'])}")
+    print(f"[P253G] Metrics inventoried: {len(report['metric_inventory'])}")
+    print(f"[P253G] Terminology gaps: {report['terminology_gap_count']}")
+    print(f"[P253G] Overclaim risks: {len(report['overclaim_risks'])}")
+
+
+if __name__ == "__main__":
+    main()

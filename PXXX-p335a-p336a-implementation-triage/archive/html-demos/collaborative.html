@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>協作預測系統 - Collaborative Prediction</title>
+    <meta name="description" content="多專家協作預測系統，結合接力與合作模式進行智能號碼預測">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .collab-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .collab-nav-btn {
+            background: rgba(100, 255, 218, 0.1);
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            color: #ccd6f6;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+        .collab-nav-btn:hover {
+            border-color: #64ffda;
+            background: rgba(100, 255, 218, 0.2);
+        }
+        .collab-nav-btn.active {
+            background: linear-gradient(135deg, #64ffda, #00bcd4);
+            color: #0a192f;
+            border-color: #64ffda;
+            font-weight: 600;
+        }
+        .collab-section {
+            display: none;
+        }
+        .collab-section.active {
+            display: block;
+        }
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .mode-card {
+            background: rgba(100, 255, 218, 0.05);
+            border: 2px solid rgba(100, 255, 218, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            width: 220px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .mode-card:hover {
+            border-color: rgba(100, 255, 218, 0.5);
+            transform: translateY(-3px);
+        }
+        .mode-card.active {
+            border-color: #64ffda;
+            background: rgba(100, 255, 218, 0.1);
+        }
+        .mode-card .icon { font-size: 2rem; margin-bottom: 10px; }
+        .mode-card h4 { color: #ccd6f6; font-size: 1.1rem; margin-bottom: 8px; }
+        .mode-card p { color: #8892b0; font-size: 0.85rem; line-height: 1.5; }
+        .mode-card .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #64ffda, #00bcd4);
+            color: #0a192f;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        .architecture-box {
+            background: rgba(100, 255, 218, 0.03);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .architecture-box h3 {
+            color: #64ffda;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .pipeline-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .pipeline-stage {
+            background: rgba(100, 255, 218, 0.08);
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            min-width: 120px;
+        }
+        .pipeline-stage .stage-icon { font-size: 1.5rem; }
+        .pipeline-stage h5 { color: #ccd6f6; font-size: 0.9rem; margin: 8px 0 5px; }
+        .pipeline-stage .count { color: #64ffda; font-size: 1.1rem; font-weight: 700; }
+        .pipeline-arrow { color: #64ffda; font-size: 1.5rem; }
+        .expert-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .expert-item {
+            background: rgba(100, 255, 218, 0.05);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+        }
+        .expert-item h5 { color: #64ffda; font-size: 0.9rem; margin-bottom: 8px; }
+        .expert-item ul { list-style: none; padding: 0; margin: 0; }
+        .expert-item li { color: #8892b0; font-size: 0.8rem; padding: 3px 0; }
+        .expert-item li::before { content: '→ '; color: #64ffda; }
+        .simulation-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .simulation-table th, .simulation-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+        }
+        .simulation-table th {
+            color: #64ffda;
+            font-weight: 600;
+            background: rgba(100, 255, 218, 0.05);
+        }
+        .simulation-table td { color: #ccd6f6; }
+        .simulation-table .success-row { background: rgba(100, 255, 218, 0.1); }
+        .hit-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            background: rgba(100, 255, 218, 0.2);
+        }
+        .hit-badge.high-hit { background: #64ffda; color: #0a192f; font-weight: 600; }
+        .predicted-numbers-display {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+        }
+        .predicted-numbers-display .number-ball {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #64ffda, #00bcd4);
+            color: #0a192f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(100, 255, 218, 0.3);
+        }
+        .confidence-display {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .confidence-bar {
+            width: 250px;
+            height: 16px;
+            background: rgba(100, 255, 218, 0.1);
+            border-radius: 8px;
+            margin: 10px auto;
+            overflow: hidden;
+        }
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #64ffda, #00bcd4);
+            border-radius: 8px;
+            transition: width 0.8s ease;
+        }
+        .stats-summary {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-item .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #64ffda;
+        }
+        .stat-item .label {
+            font-size: 0.85rem;
+            color: #8892b0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background-animation">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">🚀</div>
+                    <div class="logo-text">
+                        <h1>協作預測系統</h1>
+                        <p>Collaborative Prediction System</p>
+                    </div>
+                </div>
+                <nav class="nav">
+                    <a href="index.html" class="nav-btn" style="text-decoration: none;">
+                        <span class="icon">🏠</span>
+                        <span>返回主頁</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- 內部導航 -->
+            <div class="collab-nav">
+                <button class="collab-nav-btn active" data-section="data">
+                    <span>📊</span> 資料基底
+                </button>
+                <button class="collab-nav-btn" data-section="predict">
+                    <span>🔮</span> 協作預測
+                </button>
+                <button class="collab-nav-btn" data-section="simulation">
+                    <span>🧪</span> 模擬比對
+                </button>
+            </div>
+
+            <!-- ==================== 資料基底區塊 ==================== -->
+            <section id="data-section" class="collab-section active section">
+                <div class="section-header">
+                    <h2>資料基底</h2>
+                    <p>上傳或載入歷史開獎數據</p>
+                </div>
+
+                <div class="upload-area">
+                    <div class="upload-card">
+                        <div class="upload-icon">📁</div>
+                        <h3>上傳CSV檔案</h3>
+                        <p>支援台灣彩券官方CSV格式</p>
+                        <input type="file" id="collab-file-input" accept=".csv" hidden>
+                        <button class="btn btn-primary" id="collab-upload-btn">
+                            <span class="btn-icon">📤</span> 選擇檔案
+                        </button>
+                        <div class="file-info" id="collab-file-info"></div>
+                    </div>
+
+                    <div class="upload-card">
+                        <div class="upload-icon">🔄</div>
+                        <h3>從主頁面同步</h3>
+                        <p>載入主頁面已上傳的數據</p>
+                        <button class="btn btn-secondary" id="collab-sync-btn">
+                            <span class="btn-icon">⚡</span> 同步數據
+                        </button>
+                    </div>
+                </div>
+
+                <div class="data-summary" id="collab-data-summary" style="display: none;">
+                    <h3>數據概覽</h3>
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <div class="summary-label">總期數</div>
+                            <div class="summary-value" id="collab-total-draws">0</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">數據範圍</div>
+                            <div class="summary-value" id="collab-date-range">-</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">最新期數</div>
+                            <div class="summary-value" id="collab-latest-draw">-</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">數據狀態</div>
+                            <div class="summary-value status-ready">✓ 就緒</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== 協作預測區塊 ==================== -->
+            <section id="predict-section" class="collab-section section">
+                <div class="section-header">
+                    <h2>協作預測</h2>
+                    <p>多專家組協作進行智能預測</p>
+                </div>
+
+                <!-- 模式選擇 -->
+                <div class="mode-selector">
+                    <div class="mode-card active" data-mode="collaborative_hybrid">
+                        <div class="icon">⭐</div>
+                        <h4>混合模式</h4>
+                        <p>接力過濾 + 合作決策</p>
+                        <span class="badge">推薦</span>
+                    </div>
+                    <div class="mode-card" data-mode="collaborative_relay">
+                        <div class="icon">🏃</div>
+                        <h4>接力模式</h4>
+                        <p>三階段逐層過濾</p>
+                    </div>
+                    <div class="mode-card" data-mode="collaborative_coop">
+                        <div class="icon">🤝</div>
+                        <h4>合作模式</h4>
+                        <p>全專家平行投票</p>
+                    </div>
+                </div>
+
+                <!-- 架構展示 -->
+                <div class="architecture-box">
+                    <h3>協作架構流程</h3>
+                    <div class="pipeline-visual">
+                        <div class="pipeline-stage">
+                            <div class="stage-icon">🔍</div>
+                            <h5>探索層</h5>
+                            <div class="count">49→25</div>
+                        </div>
+                        <div class="pipeline-arrow">→</div>
+                        <div class="pipeline-stage">
+                            <div class="stage-icon">🎯</div>
+                            <h5>精煉層</h5>
+                            <div class="count">25→12</div>
+                        </div>
+                        <div class="pipeline-arrow">→</div>
+                        <div class="pipeline-stage">
+                            <div class="stage-icon">✨</div>
+                            <h5>決策層</h5>
+                            <div class="count">12→6</div>
+                        </div>
+                    </div>
+                    <div class="expert-grid">
+                        <div class="expert-item">
+                            <h5>📊 統計專家組</h5>
+                            <ul><li>頻率分析</li><li>趨勢分析</li><li>綜合回歸</li></ul>
+                        </div>
+                        <div class="expert-item">
+                            <h5>📈 機率專家組</h5>
+                            <ul><li>貝葉斯</li><li>偏差追蹤</li><li>ARIMA</li></ul>
+                        </div>
+                        <div class="expert-item">
+                            <h5>🔗 序列專家組</h5>
+                            <ul><li>馬可夫鏈</li><li>共現分析</li></ul>
+                        </div>
+                        <div class="expert-item">
+                            <h5>🌲 特徵專家組</h5>
+                            <ul><li>特徵加權</li><li>隨機森林</li></ul>
+                        </div>
+                        <div class="expert-item">
+                            <h5>🧬 優化專家組</h5>
+                            <ul><li>遺傳算法</li></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 預測控制 -->
+                <div class="prediction-controls">
+                    <div class="control-group">
+                        <label>樣本大小</label>
+                        <select id="collab-sample-size" class="select-input">
+                            <option value="30">最近 30 期</option>
+                            <option value="50" selected>最近 50 期</option>
+                            <option value="100">最近 100 期</option>
+                            <option value="200">最近 200 期</option>
+                            <option value="all">全部數據</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="collab-predict-btn">
+                        <span class="btn-icon">🚀</span> 開始協作預測
+                    </button>
+                </div>
+
+                <!-- 預測結果 -->
+                <div class="prediction-results" id="collab-predict-results" style="display: none;">
+                    <div class="prediction-card">
+                        <h3>預測號碼</h3>
+                        <div class="predicted-numbers-display" id="collab-predicted-numbers"></div>
+                        <div class="confidence-display">
+                            <label>預測信心度</label>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" id="collab-confidence-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="confidence-value" id="collab-confidence-value">0%</span>
+                        </div>
+                    </div>
+                    <div class="prediction-card full-width">
+                        <h3>分析報告</h3>
+                        <div id="collab-prediction-report" class="report-content"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== 模擬比對區塊 ==================== -->
+            <section id="simulation-section" class="collab-section section">
+                <div class="section-header">
+                    <h2>模擬比對測試</h2>
+                    <p>選擇年度進行滾動預測模擬，比對實際開獎結果</p>
+                </div>
+
+                <div class="simulation-controls" style="margin: 20px 0; display: flex; gap: 15px; align-items: center; justify-content: center; flex-wrap: wrap;">
+                    <div class="control-group">
+                        <label style="color: #ccd6f6;">測試年度</label>
+                        <input type="month" id="collab-sim-year-month" value="2025-01" class="select-input" style="padding: 8px 12px;">
+                    </div>
+                    <div class="control-group">
+                        <label style="color: #ccd6f6;">協作模式</label>
+                        <select id="collab-sim-method" class="select-input">
+                            <option value="collaborative_hybrid" selected>⭐ 混合模式</option>
+                            <option value="collaborative_relay">🏃 接力模式</option>
+                            <option value="collaborative_coop">🤝 合作模式</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="collab-sim-btn">
+                        <span class="btn-icon">🧪</span> 開始模擬
+                    </button>
+                </div>
+
+                <!-- 模擬結果 -->
+                <div id="collab-sim-results" style="display: none;">
+                    <div class="stats-summary">
+                        <div class="stat-item">
+                            <div class="value" id="collab-sim-total">0</div>
+                            <div class="label">測試期數</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="value" id="collab-sim-success">0</div>
+                            <div class="label">成功期數</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="value" id="collab-sim-rate">0%</div>
+                            <div class="label">成功率</div>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="simulation-table" id="collab-sim-table">
+                            <thead>
+                                <tr>
+                                    <th>期數</th>
+                                    <th>日期</th>
+                                    <th>預測號碼 (Top 6)</th>
+                                    <th>實際號碼</th>
+                                    <th>命中數</th>
+                                    <th>訓練期數</th>
+                                    <th>成功</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.9); z-index: 1000; justify-content: center; align-items: center; flex-direction: column;">
+        <div style="width: 50px; height: 50px; border: 4px solid rgba(100, 255, 218, 0.2); border-top-color: #64ffda; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <div style="color: #64ffda; font-size: 1.1rem; margin-top: 20px;" id="loading-text">處理中...</div>
+    </div>
+    <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+    <script type="module">
+        import { LOTTERY_RULES } from './src/utils/Constants.js';
+        import { StatisticsService } from './src/data/StatisticsService.js';
+        import { PredictionEngine } from './src/engine/PredictionEngine.js';
+
+        // 簡化版 DataProcessor
+        class DataProcessor {
+            constructor() {
+                this.lotteryData = [];
+            }
+
+            async parseCSV(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const text = e.target.result;
+                            const lines = text.split('\n').filter(line => line.trim());
+                            const data = [];
+                            if (lines.length < 2) { reject(new Error('檔案內容為空')); return; }
+
+                            const firstLine = lines[0].trim();
+                            const secondLine = lines.length > 1 ? lines[1].trim() : '';
+                            const isOfficialFormat = firstLine.includes('遊戲名稱') || (secondLine && secondLine.includes('大樂透'));
+
+                            for (let i = 1; i < lines.length; i++) {
+                                const line = lines[i].trim();
+                                if (!line) continue;
+                                const parts = line.split(',').map(p => p.trim().replace(/^"|"$/g, ''));
+                                let draw, date, numbers, special;
+
+                                if (isOfficialFormat) {
+                                    if (!parts[0].includes('大樂透')) continue;
+                                    if (parts.length < 13) continue;
+                                    draw = parts[1];
+                                    date = parts[2].replace(/\//g, '-');
+                                    numbers = [parseInt(parts[6]), parseInt(parts[7]), parseInt(parts[8]), parseInt(parts[9]), parseInt(parts[10]), parseInt(parts[11])];
+                                    special = parseInt(parts[12]);
+                                } else {
+                                    if (parts.length < 8) continue;
+                                    draw = parts[0];
+                                    date = parts[1].replace(/\//g, '-');
+                                    numbers = [parseInt(parts[2]), parseInt(parts[3]), parseInt(parts[4]), parseInt(parts[5]), parseInt(parts[6]), parseInt(parts[7])];
+                                    special = parseInt(parts[8]);
+                                }
+
+                                const validNumbers = numbers.filter(n => !isNaN(n) && n >= 1 && n <= 49);
+                                if (validNumbers.length === 6 && !isNaN(special)) {
+                                    data.push({ draw, date, numbers: validNumbers.sort((a, b) => a - b), special });
+                                }
+                            }
+                            if (data.length === 0) reject(new Error('無法解析'));
+                            else resolve(data);
+                        } catch (error) { reject(error); }
+                    };
+                    reader.onerror = () => reject(new Error('讀取失敗'));
+                    reader.readAsText(file, 'UTF-8');
+                });
+            }
+
+            getData() { return this.lotteryData; }
+            getDataRange(sampleSize) {
+                if (sampleSize === 'all') return this.lotteryData;
+                return this.lotteryData.slice(0, parseInt(sampleSize));
+            }
+        }
+
+        class CollaborativeApp {
+            constructor() {
+                this.dataProcessor = new DataProcessor();
+                this.statisticsService = null;
+                this.predictionEngine = null;
+                this.currentMode = 'collaborative_hybrid';
+                this.init();
+            }
+
+            init() {
+                this.bindNavigation();
+                this.bindDataEvents();
+                this.bindPredictEvents();
+                this.bindSimulationEvents();
+                this.tryLoadFromStorage();
+            }
+
+            // ========== 導航 ==========
+            bindNavigation() {
+                document.querySelectorAll('.collab-nav-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.collab-nav-btn').forEach(b => b.classList.remove('active'));
+                        document.querySelectorAll('.collab-section').forEach(s => s.classList.remove('active'));
+                        btn.classList.add('active');
+                        const sectionId = btn.dataset.section + '-section';
+                        document.getElementById(sectionId).classList.add('active');
+                    });
+                });
+            }
+
+            // ========== 資料基底 ==========
+            bindDataEvents() {
+                const uploadBtn = document.getElementById('collab-upload-btn');
+                const fileInput = document.getElementById('collab-file-input');
+                const syncBtn = document.getElementById('collab-sync-btn');
+
+                uploadBtn?.addEventListener('click', () => fileInput.click());
+                fileInput?.addEventListener('change', async (e) => {
+                    const file = e.target.files[0];
+                    if (file) await this.handleFileUpload(file);
+                    e.target.value = '';
+                });
+                syncBtn?.addEventListener('click', () => this.syncFromMainPage());
+            }
+
+            async handleFileUpload(file) {
+                this.showLoading('正在解析檔案...');
+                try {
+                    const data = await this.dataProcessor.parseCSV(file);
+                    this.dataProcessor.lotteryData = data.sort((a, b) => parseInt(b.draw) - parseInt(a.draw));
+                    this.initServices();
+                    this.updateDataSummary();
+                    this.saveToStorage();
+                    document.getElementById('collab-file-info').textContent = `✓ 已載入: ${file.name}`;
+                    alert(`成功載入 ${data.length} 期數據！`);
+                } catch (error) {
+                    alert('載入失敗: ' + error.message);
+                } finally {
+                    this.hideLoading();
+                }
+            }
+
+            syncFromMainPage() {
+                const savedData = localStorage.getItem('lotteryData');
+                if (savedData) {
+                    const parsed = JSON.parse(savedData);
+                    this.dataProcessor.lotteryData = parsed;
+                    this.initServices();
+                    this.updateDataSummary();
+                    alert(`已同步 ${parsed.length} 期數據！`);
+                } else {
+                    alert('主頁面尚無數據，請先在主頁面上傳！');
+                }
+            }
+
+            tryLoadFromStorage() {
+                const savedData = localStorage.getItem('collabLotteryData') || localStorage.getItem('lotteryData');
+                if (savedData) {
+                    const parsed = JSON.parse(savedData);
+                    this.dataProcessor.lotteryData = parsed;
+                    this.initServices();
+                    this.updateDataSummary();
+                }
+            }
+
+            saveToStorage() {
+                localStorage.setItem('collabLotteryData', JSON.stringify(this.dataProcessor.lotteryData));
+            }
+
+            initServices() {
+                this.statisticsService = new StatisticsService(this.dataProcessor);
+                this.predictionEngine = new PredictionEngine(this.dataProcessor, this.statisticsService);
+            }
+
+            updateDataSummary() {
+                const data = this.dataProcessor.lotteryData;
+                if (data.length === 0) return;
+
+                document.getElementById('collab-data-summary').style.display = 'block';
+                document.getElementById('collab-total-draws').textContent = data.length;
+
+                const dates = data.map(d => d.date).sort();
+                document.getElementById('collab-date-range').textContent = `${dates[0]} ~ ${dates[dates.length - 1]}`;
+                document.getElementById('collab-latest-draw').textContent = data[0].draw;
+
+                // 自動設定模擬年月
+                const latestDate = data[0].date;
+                const [year, month] = latestDate.split('-');
+                const simInput = document.getElementById('collab-sim-year-month');
+                if (simInput) simInput.value = `${year}-${month}`;
+            }
+
+            // ========== 協作預測 ==========
+            bindPredictEvents() {
+                document.querySelectorAll('.mode-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
+                        card.classList.add('active');
+                        this.currentMode = card.dataset.mode;
+                    });
+                });
+
+                document.getElementById('collab-predict-btn')?.addEventListener('click', () => this.runPrediction());
+            }
+
+            async runPrediction() {
+                if (!this.predictionEngine) {
+                    alert('請先載入數據！');
+                    return;
+                }
+
+                this.showLoading('協作預測進行中...');
+                try {
+                    const sampleSize = document.getElementById('collab-sample-size').value;
+                    const result = await this.predictionEngine.predict(this.currentMode, sampleSize);
+                    this.displayPredictionResult(result);
+                } catch (error) {
+                    alert('預測失敗: ' + error.message);
+                    console.error(error);
+                } finally {
+                    this.hideLoading();
+                }
+            }
+
+            displayPredictionResult(result) {
+                document.getElementById('collab-predict-results').style.display = 'block';
+
+                const numbersContainer = document.getElementById('collab-predicted-numbers');
+                numbersContainer.innerHTML = result.numbers.map(num =>
+                    `<div class="number-ball">${num}</div>`
+                ).join('');
+
+                document.getElementById('collab-confidence-fill').style.width = `${result.confidence}%`;
+                document.getElementById('collab-confidence-value').textContent = `${result.confidence}%`;
+                document.getElementById('collab-prediction-report').textContent = result.report;
+            }
+
+            // ========== 模擬比對 ==========
+            bindSimulationEvents() {
+                document.getElementById('collab-sim-btn')?.addEventListener('click', () => this.runSimulation());
+            }
+
+            async runSimulation() {
+                if (!this.predictionEngine) {
+                    alert('請先載入數據！');
+                    return;
+                }
+
+                const yearMonth = document.getElementById('collab-sim-year-month').value;
+                const method = document.getElementById('collab-sim-method').value;
+
+                if (!yearMonth) {
+                    alert('請選擇測試年度');
+                    return;
+                }
+
+                const [year] = yearMonth.split('-');
+                const allData = this.dataProcessor.getData();
+
+                if (allData.length < 50) {
+                    alert('數據量不足 (至少需要 50 期)');
+                    return;
+                }
+
+                // 過濾目標年份
+                const testTargets = allData.filter(d => d.date.split('-')[0] === year);
+                if (testTargets.length === 0) {
+                    const availableYears = [...new Set(allData.map(d => d.date.split('-')[0]))];
+                    alert(`該年份 (${year}) 無資料。可用年份: ${availableYears.join(', ')}`);
+                    return;
+                }
+
+                // 依日期升序
+                testTargets.sort((a, b) => a.date.localeCompare(b.date));
+
+                this.showLoading(`模擬測試中 (0/${testTargets.length})...`);
+
+                try {
+                    const results = [];
+                    let successCount = 0;
+                    const strategy = this.predictionEngine.strategies[method];
+
+                    for (let i = 0; i < testTargets.length; i++) {
+                        const targetDraw = testTargets[i];
+                        const targetDate = targetDraw.date;
+
+                        // 取得該期之前的資料作為訓練集
+                        const trainingData = allData.filter(d => d.date < targetDate);
+
+                        if (trainingData.length < 30) continue;
+
+                        document.getElementById('loading-text').textContent =
+                            `模擬測試中 (${i + 1}/${testTargets.length})...`;
+
+                        const prediction = await strategy.predict(trainingData);
+                        const hits = targetDraw.numbers.filter(n => prediction.numbers.includes(n));
+                        const isSuccess = hits.length >= 3;
+                        if (isSuccess) successCount++;
+
+                        results.push({
+                            draw: targetDraw.draw,
+                            date: targetDraw.date,
+                            predicted: prediction.numbers,
+                            actual: targetDraw.numbers,
+                            hits: hits.length,
+                            isSuccess,
+                            trainingCount: trainingData.length
+                        });
+                    }
+
+                    this.displaySimulationResults(results, successCount);
+                } catch (error) {
+                    alert('模擬失敗: ' + error.message);
+                    console.error(error);
+                } finally {
+                    this.hideLoading();
+                }
+            }
+
+            displaySimulationResults(results, successCount) {
+                document.getElementById('collab-sim-results').style.display = 'block';
+
+                const rate = results.length > 0 ? Math.round((successCount / results.length) * 100) : 0;
+                document.getElementById('collab-sim-total').textContent = results.length;
+                document.getElementById('collab-sim-success').textContent = successCount;
+                document.getElementById('collab-sim-rate').textContent = rate + '%';
+
+                const tbody = document.querySelector('#collab-sim-table tbody');
+                tbody.innerHTML = results.map(r => `
+                    <tr class="${r.isSuccess ? 'success-row' : ''}">
+                        <td>${r.draw}</td>
+                        <td>${r.date}</td>
+                        <td>${r.predicted.join(', ')}</td>
+                        <td>${r.actual.join(', ')}</td>
+                        <td><span class="hit-badge ${r.hits >= 3 ? 'high-hit' : ''}">${r.hits}</span></td>
+                        <td>${r.trainingCount} 期</td>
+                        <td>${r.isSuccess ? '✅' : '❌'}</td>
+                    </tr>
+                `).join('');
+            }
+
+            // ========== 工具方法 ==========
+            showLoading(text = '處理中...') {
+                document.getElementById('loading-text').textContent = text;
+                document.getElementById('loading-overlay').style.display = 'flex';
+            }
+
+            hideLoading() {
+                document.getElementById('loading-overlay').style.display = 'none';
+            }
+        }
+
+        // 初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            new CollaborativeApp();
+        });
+    </script>
+</body>
+
+</html>

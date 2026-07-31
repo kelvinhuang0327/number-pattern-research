@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV 上傳測試 - 大樂透 vs 加開獎項</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', sans-serif;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .upload-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .upload-box {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .upload-box:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        .upload-box.active {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .upload-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+        .upload-button:hover {
+            transform: scale(1.05);
+        }
+        .result-section {
+            margin-top: 30px;
+        }
+        .result-box {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .result-box h3 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+        .data-preview {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        .draw-item {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .draw-numbers {
+            display: flex;
+            gap: 8px;
+        }
+        .number-ball {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .special-ball {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+        .no-special {
+            color: #999;
+            font-size: 12px;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎰 大樂透 CSV 上傳測試</h1>
+        
+        <div class="upload-section">
+            <div class="upload-box" id="normalBox">
+                <h3>📊 正常大樂透</h3>
+                <p>有特別號的正常期數</p>
+                <label for="normalFile" class="upload-button">選擇 大樂透_2025.csv</label>
+                <input type="file" id="normalFile" accept=".csv">
+                <p id="normalStatus"></p>
+            </div>
+            
+            <div class="upload-box" id="bonusBox">
+                <h3>🎁 加開獎項</h3>
+                <p>沒有特別號的加開期數</p>
+                <label for="bonusFile" class="upload-button">選擇 大樂透加開獎項_2025.csv</label>
+                <input type="file" id="bonusFile" accept=".csv">
+                <p id="bonusStatus"></p>
+            </div>
+        </div>
+        
+        <div class="result-section" id="results"></div>
+    </div>
+
+    <script type="module">
+        import { DataProcessor } from './src/core/DataProcessor.js';
+        import { LOTTERY_TYPES } from './src/utils/LotteryTypes.js';
+        
+        const processor = new DataProcessor();
+        
+        // 驗證配置
+        console.log('BIG_LOTTO hasSpecialNumber:', LOTTERY_TYPES.BIG_LOTTO.hasSpecialNumber);
+        console.log('BIG_LOTTO_BONUS hasSpecialNumber:', LOTTERY_TYPES.BIG_LOTTO_BONUS.hasSpecialNumber);
+        
+        async function handleFileUpload(file, type, statusElement, boxElement) {
+            statusElement.textContent = '解析中...';
+            boxElement.classList.add('active');
+            
+            try {
+                const data = await processor.parseCSV(file);
+                
+                if (data.length === 0) {
+                    throw new Error('沒有解析到任何數據');
+                }
+                
+                // 統計資料
+                const hasSpecial = data.filter(d => d.special > 0).length;
+                const noSpecial = data.filter(d => d.special === 0).length;
+                const lotteryTypes = [...new Set(data.map(d => d.lotteryType))];
+                
+                statusElement.innerHTML = `<span class="success">✓ 解析成功 (${data.length} 筆)</span>`;
+                
+                // 顯示結果
+                displayResults(data, type, hasSpecial, noSpecial, lotteryTypes);
+                
+            } catch (error) {
+                statusElement.innerHTML = `<span class="error">✗ 解析失敗: ${error.message}</span>`;
+                console.error(error);
+            } finally {
+                boxElement.classList.remove('active');
+            }
+        }
+        
+        function displayResults(data, type, hasSpecial, noSpecial, lotteryTypes) {
+            const resultsDiv = document.getElementById('results');
+            
+            const resultBox = document.createElement('div');
+            resultBox.className = 'result-box';
+            
+            const typeName = type === 'normal' ? '正常大樂透' : '加開獎項';
+            const expectedSpecial = type === 'normal';
+            
+            resultBox.innerHTML = `
+                <h3>${typeName} 解析結果</h3>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-label">總筆數</div>
+                        <div class="stat-value">${data.length}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">有特別號</div>
+                        <div class="stat-value ${expectedSpecial ? 'success' : 'error'}">${hasSpecial}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">無特別號</div>
+                        <div class="stat-value ${!expectedSpecial ? 'success' : 'error'}">${noSpecial}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">彩券類型</div>
+                        <div class="stat-value" style="font-size: 14px;">${lotteryTypes.join(', ')}</div>
+                    </div>
+                </div>
+                
+                <h4>前 5 筆數據預覽：</h4>
+                <div class="data-preview">
+                    ${data.slice(0, 5).map(draw => `
+                        <div class="draw-item">
+                            <div>
+                                <strong>${draw.draw}</strong>
+                                <span style="color: #666; margin-left: 10px;">${draw.date}</span>
+                                <span style="color: #667eea; margin-left: 10px; font-size: 11px;">${draw.lotteryType}</span>
+                            </div>
+                            <div class="draw-numbers">
+                                ${draw.numbers.map(n => `<div class="number-ball">${n}</div>`).join('')}
+                                ${draw.special > 0 
+                                    ? `<div class="number-ball special-ball">${draw.special}</div>` 
+                                    : `<span class="no-special">無特別號</span>`
+                                }
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div style="margin-top: 15px; padding: 10px; background: ${
+                    (expectedSpecial && hasSpecial === data.length) || 
+                    (!expectedSpecial && noSpecial === data.length)
+                    ? '#d4edda' 
+                    : '#fff3cd'
+                }; border-radius: 6px;">
+                    <strong>驗證結果:</strong> 
+                    ${
+                        (expectedSpecial && hasSpecial === data.length)
+                        ? '<span class="success">✓ 正常大樂透，所有資料都有特別號</span>'
+                        : (!expectedSpecial && noSpecial === data.length)
+                        ? '<span class="success">✓ 加開獎項，所有資料都沒有特別號</span>'
+                        : '<span style="color: #856404;">⚠ 數據混合，請檢查 CSV 內容</span>'
+                    }
+                </div>
+            `;
+            
+            resultsDiv.appendChild(resultBox);
+        }
+        
+        // 綁定檔案上傳
+        document.getElementById('normalFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleFileUpload(
+                    file, 
+                    'normal', 
+                    document.getElementById('normalStatus'),
+                    document.getElementById('normalBox')
+                );
+            }
+        });
+        
+        document.getElementById('bonusFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleFileUpload(
+                    file, 
+                    'bonus', 
+                    document.getElementById('bonusStatus'),
+                    document.getElementById('bonusBox')
+                );
+            }
+        });
+    </script>
+</body>
+</html>

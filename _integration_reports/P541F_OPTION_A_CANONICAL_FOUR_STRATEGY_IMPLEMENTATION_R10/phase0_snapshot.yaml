@@ -1,0 +1,52 @@
+task: P541F_OPTION_A_CANONICAL_FOUR_STRATEGY_IMPLEMENTATION_R10
+snapshot_status: PASS_STABLE
+
+repository:
+  root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  branch: task/p273a-prize-aware-inferential-validation
+  head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+
+canonical:
+  repository: /Users/kelvin/Kelvin-WorkSpace/LotteryNew
+  commit: 3b32beb4543de9169dbfb2469b0577f8cc8a6f58
+  commit_readable: true
+  remote_freshness: UNVERIFIED_NO_FETCH
+
+snapshot_1:
+  git_state:
+    - "?? lottery_api/models/p541d_r2_biglotto_selected_adapters.py"
+    - "?? tests/test_p541d_r2_biglotto_selected_adapters.py"
+    - "?? tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py"
+  sha256_by_existing_path:
+    lottery_api/models/replay_strategy_registry.py: bdc035b2f49a0368001ffd1af07d90f4d382cba79671abdea904e8b91de9a54f
+    lottery_api/models/social_wisdom_predictor.py: a00829b5d875cb8202c3bbd90ad7202fa6b95f568e3e8d821a6cdbffe6a95e3b
+    lottery_api/models/p541d_r2_biglotto_selected_adapters.py: 22e3a5bfc27272d2126e7daa256d2f1840d3b7fd760bce700c39e3f1f236c82a
+    tests/test_p541d_r2_biglotto_selected_adapters.py: f2bfff8ad90b6f644ed3a52e03a6f623fa80c094d8d895d237cdb5ddb7881324
+    tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py: 1a4bcfc0fec647025d104c43d7ac1e0fdfeab3c87c4113502be1b09f4fdee916
+
+snapshot_2:
+  git_state:
+    - "?? lottery_api/models/p541d_r2_biglotto_selected_adapters.py"
+    - "?? tests/test_p541d_r2_biglotto_selected_adapters.py"
+    - "?? tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py"
+  sha256_by_existing_path:
+    lottery_api/models/replay_strategy_registry.py: bdc035b2f49a0368001ffd1af07d90f4d382cba79671abdea904e8b91de9a54f
+    lottery_api/models/social_wisdom_predictor.py: a00829b5d875cb8202c3bbd90ad7202fa6b95f568e3e8d821a6cdbffe6a95e3b
+    lottery_api/models/p541d_r2_biglotto_selected_adapters.py: 22e3a5bfc27272d2126e7daa256d2f1840d3b7fd760bce700c39e3f1f236c82a
+    tests/test_p541d_r2_biglotto_selected_adapters.py: f2bfff8ad90b6f644ed3a52e03a6f623fa80c094d8d895d237cdb5ddb7881324
+    tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py: 1a4bcfc0fec647025d104c43d7ac1e0fdfeab3c87c4113502be1b09f4fdee916
+
+collision_review:
+  lottery_api/models/biglotto_social_wisdom_adapter.py: CREATE_ABSENT_TARGET
+  lottery_api/models/biglotto_zone_split_adapter.py: CREATE_ABSENT_TARGET
+  lottery_api/models/replay_strategy_registry.py: UPDATE_TRACKED_CLEAN_EXPLICIT_TARGET
+  tests/fixtures/biglotto_zone_split_p541d.json: CREATE_ABSENT_TARGET
+  tests/test_biglotto_social_wisdom_adapter.py: CREATE_ABSENT_TARGET
+  tests/test_biglotto_zone_split_adapter.py: CREATE_ABSENT_TARGET
+  tests/test_p541d_r2_biglotto_selected_adapters.py: RETAIN_IDENTIFIED_UNTRACKED_SUPERSEDED_PROPOSAL
+  tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py: REWRITE_IDENTIFIED_UNTRACKED_PROPOSAL
+
+concurrent_path_activity: false
+target_path_collision: false
+frozen_vertical_collision: false
+ordinary_files_written_before_resolved_scope: false

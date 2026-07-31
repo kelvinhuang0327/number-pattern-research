@@ -1,0 +1,34 @@
+task: P2_CONTROLLED_REPLAY_BACKFILL_DRYRUN_MIGRATION_R5
+database: runtime_sandbox/smoke/fixture.sqlite
+fixture_origin: TASK_OWNED_SYNTHETIC_SQLITE
+final_tree_evidence_after_remediation: true
+production_database_accessed: false
+connection_contract:
+  uri_template: "file:<db_path>?mode=ro"
+  uri: true
+  mode: read_only
+before:
+  sha256: 969539bdacc91a29c2f6c582ae543efb855567096e4abf0593a989ad16130b0f
+  size: 24576
+  mtime: "1785332191.476820454"
+after_first_run:
+  sha256: 969539bdacc91a29c2f6c582ae543efb855567096e4abf0593a989ad16130b0f
+  size: 24576
+  mtime: "1785332191.476820454"
+after_second_run:
+  sha256: 969539bdacc91a29c2f6c582ae543efb855567096e4abf0593a989ad16130b0f
+  size: 24576
+  mtime: "1785332191.476820454"
+sidecar_files_created: []
+invariance:
+  sha256: PASS
+  size: PASS
+  mtime: PASS
+  repeated_execution: PASS
+normalized_outputs:
+  json_equal: PASS
+  json_sha256: 9e2afec8633201146f9834c2c31a38d29e4496e86078d1b86e2888683f56c40e
+  csv_equal: PASS
+  csv_sha256: c11298d65944a4cdd681e02acc3ca21736d6d5ff5f37a32003fda6f39ccc47d4
+  csv_rows: 1
+  final_classification: P2_TS3_REGIME_BACKFILL_DRYRUN_READY

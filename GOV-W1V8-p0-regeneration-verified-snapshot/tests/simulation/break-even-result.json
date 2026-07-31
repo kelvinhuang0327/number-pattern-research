@@ -1,0 +1,820 @@
+{
+  "target": "两注200元回本",
+  "achieved": {
+    "rate": 3.3333333333333335,
+    "roi": -91.66666666666666,
+    "totalCost": 6000,
+    "totalWin": 500,
+    "profit": -5500,
+    "tests": 30,
+    "breakEven": 1,
+    "weights": {
+      "freq": 0.45,
+      "pair": 0.35,
+      "decay": 0.15,
+      "iters": 150
+    }
+  },
+  "history": [
+    {
+      "iteration": 1,
+      "rate": 3.3333333333333335,
+      "roi": -91.66666666666666,
+      "totalCost": 6000,
+      "totalWin": 500,
+      "profit": -5500,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.35,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 2,
+      "rate": 3.3333333333333335,
+      "roi": -91.66666666666666,
+      "totalCost": 6000,
+      "totalWin": 500,
+      "profit": -5500,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.385,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 3,
+      "rate": 3.3333333333333335,
+      "roi": -91.66666666666666,
+      "totalCost": 6000,
+      "totalWin": 500,
+      "profit": -5500,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 4,
+      "rate": 3.3333333333333335,
+      "roi": -91.66666666666666,
+      "totalCost": 6000,
+      "totalWin": 500,
+      "profit": -5500,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 5,
+      "rate": 3.3333333333333335,
+      "roi": -96.66666666666667,
+      "totalCost": 6000,
+      "totalWin": 200,
+      "profit": -5800,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 6,
+      "rate": 3.3333333333333335,
+      "roi": -91.66666666666666,
+      "totalCost": 6000,
+      "totalWin": 500,
+      "profit": -5500,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 7,
+      "rate": 0,
+      "roi": -98.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 100,
+      "profit": -5900,
+      "tests": 30,
+      "breakEven": 0,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 8,
+      "rate": 3.3333333333333335,
+      "roi": -91.66666666666666,
+      "totalCost": 6000,
+      "totalWin": 500,
+      "profit": -5500,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 9,
+      "rate": 3.3333333333333335,
+      "roi": -91.66666666666666,
+      "totalCost": 6000,
+      "totalWin": 500,
+      "profit": -5500,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 10,
+      "rate": 3.3333333333333335,
+      "roi": -91.66666666666666,
+      "totalCost": 6000,
+      "totalWin": 500,
+      "profit": -5500,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 11,
+      "rate": 3.3333333333333335,
+      "roi": -91.66666666666666,
+      "totalCost": 6000,
+      "totalWin": 500,
+      "profit": -5500,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 12,
+      "rate": 3.3333333333333335,
+      "roi": -91.66666666666666,
+      "totalCost": 6000,
+      "totalWin": 500,
+      "profit": -5500,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 13,
+      "rate": 3.3333333333333335,
+      "roi": -96.66666666666667,
+      "totalCost": 6000,
+      "totalWin": 200,
+      "profit": -5800,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 14,
+      "rate": 3.3333333333333335,
+      "roi": -91.66666666666666,
+      "totalCost": 6000,
+      "totalWin": 500,
+      "profit": -5500,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 15,
+      "rate": 3.3333333333333335,
+      "roi": -91.66666666666666,
+      "totalCost": 6000,
+      "totalWin": 500,
+      "profit": -5500,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 16,
+      "rate": 3.3333333333333335,
+      "roi": -96.66666666666667,
+      "totalCost": 6000,
+      "totalWin": 200,
+      "profit": -5800,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 17,
+      "rate": 3.3333333333333335,
+      "roi": -96.66666666666667,
+      "totalCost": 6000,
+      "totalWin": 200,
+      "profit": -5800,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 18,
+      "rate": 3.3333333333333335,
+      "roi": -96.66666666666667,
+      "totalCost": 6000,
+      "totalWin": 200,
+      "profit": -5800,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 19,
+      "rate": 3.3333333333333335,
+      "roi": -91.66666666666666,
+      "totalCost": 6000,
+      "totalWin": 500,
+      "profit": -5500,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 20,
+      "rate": 3.3333333333333335,
+      "roi": -91.66666666666666,
+      "totalCost": 6000,
+      "totalWin": 500,
+      "profit": -5500,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 21,
+      "rate": 3.3333333333333335,
+      "roi": -91.66666666666666,
+      "totalCost": 6000,
+      "totalWin": 500,
+      "profit": -5500,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 22,
+      "rate": 0,
+      "roi": -98.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 100,
+      "profit": -5900,
+      "tests": 30,
+      "breakEven": 0,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 23,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 24,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 25,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 26,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 27,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 28,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 29,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 30,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 31,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 150
+      }
+    },
+    {
+      "iteration": 32,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 157.09403883794423
+      }
+    },
+    {
+      "iteration": 33,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 157.09403883794423
+      }
+    },
+    {
+      "iteration": 34,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 157.09403883794423
+      }
+    },
+    {
+      "iteration": 35,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 157.09403883794423
+      }
+    },
+    {
+      "iteration": 36,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 157.09403883794423
+      }
+    },
+    {
+      "iteration": 37,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.45,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 157.09403883794423
+      }
+    },
+    {
+      "iteration": 38,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.4488365720355249,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 157.09403883794423
+      }
+    },
+    {
+      "iteration": 39,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.4488365720355249,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 157.09403883794423
+      }
+    },
+    {
+      "iteration": 40,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.4488365720355249,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 157.09403883794423
+      }
+    },
+    {
+      "iteration": 41,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.4488365720355249,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 157.09403883794423
+      }
+    },
+    {
+      "iteration": 42,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.4488365720355249,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 157.09403883794423
+      }
+    },
+    {
+      "iteration": 43,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.4488365720355249,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 157.09403883794423
+      }
+    },
+    {
+      "iteration": 44,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.4488365720355249,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 157.09403883794423
+      }
+    },
+    {
+      "iteration": 45,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.4488365720355249,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 160.7298419779716
+      }
+    },
+    {
+      "iteration": 46,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.4488365720355249,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 160.7298419779716
+      }
+    },
+    {
+      "iteration": 47,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.4488365720355249,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 160.7298419779716
+      }
+    },
+    {
+      "iteration": 48,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.4488365720355249,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 160.7298419779716
+      }
+    },
+    {
+      "iteration": 49,
+      "rate": 3.3333333333333335,
+      "roi": -93.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 400,
+      "profit": -5600,
+      "tests": 30,
+      "breakEven": 1,
+      "weights": {
+        "freq": 0.4488365720355249,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 160.7298419779716
+      }
+    },
+    {
+      "iteration": 50,
+      "rate": 0,
+      "roi": -98.33333333333333,
+      "totalCost": 6000,
+      "totalWin": 100,
+      "profit": -5900,
+      "tests": 30,
+      "breakEven": 0,
+      "weights": {
+        "freq": 0.4488365720355249,
+        "pair": 0.4,
+        "decay": 0.15105912391536733,
+        "iters": 160.7298419779716
+      }
+    }
+  ]
+}

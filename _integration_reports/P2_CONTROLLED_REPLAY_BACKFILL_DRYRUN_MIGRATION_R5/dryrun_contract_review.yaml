@@ -1,0 +1,92 @@
+entrypoint: scripts/p2_controlled_replay_backfill_dryrun.py
+cli_arguments:
+  --db:
+    required: true
+    role: caller_injected_sqlite_path
+  --strategy-id:
+    required: false
+    default: ts3_regime_3bet
+  --prediction-item-ids:
+    required: true
+  --json-out:
+    required: true
+    role: caller_injected_json_path
+  --csv-out:
+    required: true
+    role: caller_injected_csv_path
+database_paths:
+  runtime_source: --db
+  production_default: null
+  source_docstring_example_only: lottery_api/data/lottery_v2.db
+sqlite_connection_modes:
+  - expression: sqlite3.connect("file:<db_path>?mode=ro", uri=True)
+    mode: read_only_uri
+read_queries:
+  - SELECT draw, date, numbers, special FROM draws
+  - SELECT * FROM prediction_items
+  - SELECT * FROM prediction_runs
+  - SELECT strategy_id, target_draw FROM strategy_prediction_replays
+write_queries: []
+ddl_queries: []
+transaction_statements: []
+backfill_executor_imports: []
+migration_imports: []
+runtime_output_paths:
+  json: --json-out
+  csv: --csv-out
+  implicit_repository_output: null
+  creates_parent_directories: false
+  preflight_before_db_access: true
+  both_destinations_validated_before_publish: true
+failure_behavior:
+  cli_help: exits_zero_without_opening_db_or_writing_output
+  nonexistent_db: sqlite_read_only_open_fails_without_creating_db
+  missing_schema: sqlite_query_fails_without_db_mutation
+  invalid_cli_arguments: argparse_exits_nonzero_before_db_open
+  invalid_output_path: destination_preflight_fails_before_db_open_or_output_publish
+  invalid_csv_path_after_valid_json_path: no_partial_json_or_csv_output
+  adapter_missing: emits_blocked_classification_with_empty_preview
+manual_token_classification:
+  sqlite3.connect:
+    occurrences: 1
+    classification: REQUIRED_READ_ONLY_URI_OPEN
+  mode=ro:
+    occurrences: 2
+    classification: DOCSTRING_GUARANTEE_AND_CONNECTION_URI
+  PRAGMA: []
+  BEGIN: []
+  COMMIT: []
+  ROLLBACK: []
+  INSERT:
+    occurrences: 1
+    classification: PYTHON_SYS_PATH_INSERT
+  UPDATE: []
+  DELETE: []
+  REPLACE: []
+  CREATE_TABLE: []
+  ALTER_TABLE: []
+  DROP_TABLE: []
+  VACUUM: []
+  ATTACH: []
+  executescript: []
+  backfill:
+    occurrences: 3
+    classification: DRYRUN_NAMING_HELP_TEXT_AND_FALSE_SAFETY_METADATA_ONLY
+  migration: []
+contract_gate:
+  production_db_write: false
+  ddl: false
+  migration: false
+  formal_backfill_executor: false
+  db_path_injectable: true
+  output_paths_isolatable: true
+  source_tests_require_production_db: false
+  result: PASS
+source_deviation:
+  reason: INITIAL_JUDGE_INVALID_CSV_PARTIAL_OUTPUT_FINDING
+  scope:
+    - validate_json_destination_before_db_access
+    - validate_csv_destination_before_db_access
+  dryrun_planning_logic_changed: false
+  db_behavior_changed: false
+  api_ui_scheduler_wiring_added: false

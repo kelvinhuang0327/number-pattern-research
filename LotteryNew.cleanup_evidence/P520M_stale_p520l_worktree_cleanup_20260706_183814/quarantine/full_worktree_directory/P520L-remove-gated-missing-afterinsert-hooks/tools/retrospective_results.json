@@ -1,0 +1,165 @@
+{
+  "actual": {
+    "numbers": [
+      3,
+      7,
+      16,
+      19,
+      40,
+      42
+    ],
+    "special": 12
+  },
+  "results": [
+    {
+      "method": "Frequency",
+      "prediction": [
+        3,
+        9,
+        11,
+        20,
+        29,
+        40
+      ],
+      "special": 34,
+      "hits": [
+        3,
+        40
+      ],
+      "hit_count": 2,
+      "special_hit": false,
+      "confidence": 0.894675218834753
+    },
+    {
+      "method": "Markov",
+      "prediction": [
+        6,
+        19,
+        25,
+        26,
+        35,
+        44
+      ],
+      "special": 34,
+      "hits": [
+        19
+      ],
+      "hit_count": 1,
+      "special_hit": false,
+      "confidence": 0.77
+    },
+    {
+      "method": "Trend",
+      "prediction": [
+        5,
+        15,
+        18,
+        20,
+        24,
+        41
+      ],
+      "special": 34,
+      "hits": [],
+      "hit_count": 0,
+      "special_hit": false,
+      "confidence": 0.75
+    },
+    {
+      "method": "Bayesian",
+      "prediction": [
+        8,
+        10,
+        12,
+        15,
+        18,
+        24
+      ],
+      "special": 37,
+      "hits": [],
+      "hit_count": 0,
+      "special_hit": false,
+      "confidence": 0.7918811089878124
+    },
+    {
+      "method": "Deviation",
+      "prediction": [
+        4,
+        6,
+        9,
+        11,
+        14,
+        17
+      ],
+      "special": 20,
+      "hits": [],
+      "hit_count": 0,
+      "special_hit": false,
+      "confidence": 0.7817933895723564
+    },
+    {
+      "method": "Entropy Analysis",
+      "prediction": [
+        8,
+        11,
+        15,
+        20,
+        23,
+        41
+      ],
+      "special": null,
+      "hits": [],
+      "hit_count": 0,
+      "special_hit": false,
+      "confidence": 0.3
+    },
+    {
+      "method": "Clustering",
+      "prediction": [
+        2,
+        14,
+        15,
+        20,
+        25,
+        41
+      ],
+      "special": null,
+      "hits": [],
+      "hit_count": 0,
+      "special_hit": false,
+      "confidence": 0.5081103060524792
+    },
+    {
+      "method": "Dynamic Ensemble",
+      "prediction": [
+        11,
+        12,
+        18,
+        23,
+        24,
+        41
+      ],
+      "special": null,
+      "hits": [],
+      "hit_count": 0,
+      "special_hit": false,
+      "confidence": 0.8867141853445072
+    },
+    {
+      "method": "Temporal Enhanced",
+      "prediction": [
+        5,
+        6,
+        15,
+        17,
+        30,
+        33
+      ],
+      "special": null,
+      "hits": [],
+      "hit_count": 0,
+      "special_hit": false,
+      "confidence": 0.7517611348528481
+    }
+  ],
+  "history_count": 2082
+}

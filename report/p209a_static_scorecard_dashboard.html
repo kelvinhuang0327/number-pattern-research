@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MLB Local Retrain Historical Scorecard Dashboard</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --ink: #17202a;
+      --muted: #5b6776;
+      --line: #d9dee8;
+      --accent: #176b87;
+      --accent-2: #8b5e34;
+      --good: #1f7a4d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+      padding: 28px max(24px, calc((100vw - 1180px) / 2)) 22px;
+    }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(28px, 4vw, 46px);
+      letter-spacing: 0;
+    }
+    h2 {
+      margin: 0 0 14px;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+    p { margin: 0; }
+    .disclaimer {
+      max-width: 900px;
+      color: var(--muted);
+      font-weight: 650;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .pill {
+      border: 1px solid var(--line);
+      background: #f2f5f8;
+      border-radius: 999px;
+      color: #243241;
+      font-size: 13px;
+      padding: 6px 10px;
+    }
+    section {
+      margin-top: 24px;
+      padding: 20px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .summary-grid, .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .summary-card, .mini-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      min-height: 118px;
+      background: #fbfcfe;
+    }
+    .summary-card span, .mini-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .summary-card strong, .mini-card strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 22px;
+      overflow-wrap: anywhere;
+    }
+    .summary-card p, .mini-card p {
+      margin-top: 8px;
+      color: var(--muted);
+    }
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 820px;
+      background: #fff;
+    }
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      white-space: nowrap;
+    }
+    th {
+      background: #eef3f6;
+      color: #253241;
+      font-size: 13px;
+    }
+    td:last-child { white-space: normal; min-width: 240px; }
+    code {
+      background: #eef3f6;
+      border-radius: 4px;
+      padding: 2px 5px;
+    }
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    li + li { margin-top: 6px; }
+    .status {
+      border-left: 4px solid var(--good);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MLB Local Retrain Historical Scorecard Dashboard</h1>
+    <p class="disclaimer">Historical replay/backtest only. This dashboard summarizes completed MLB games from committed local artifacts and is not for live use.</p>
+    <div class="meta">
+      <span class="pill">Scope: LOCAL_HISTORICAL_REPLAY_ONLY</span>
+      <span class="pill">Train: 2025-03-18 to 2025-07-18</span>
+      <span class="pill">Test: 2025-07-18 to 2025-09-28</span>
+      <span class="pill">Evaluation rows: 2430</span>
+    </div>
+  </header>
+  <main>
+    <section aria-labelledby="summary-title">
+      <h2 id="summary-title">Summary Cards</h2>
+      <div class="summary-grid">
+        <article class="summary-card"><span>Best Accuracy</span><strong>retrained_team_history_smooth</strong><p>Accuracy: 56.38%</p></article>
+        <article class="summary-card"><span>Best Brier</span><strong>calibrated_elo_recent_form</strong><p>Brier score: 0.246033</p></article>
+      </div>
+    </section>
+
+    <section aria-labelledby="leaderboard-title">
+      <h2 id="leaderboard-title">Model Leaderboard</h2>
+      <div class="table-wrap"><table><thead><tr><th>Model</th><th>Accuracy</th><th>Brier</th><th>Log Loss</th><th>Calibration Error</th><th>Coverage</th><th>Reference Only</th><th>Notes</th></tr></thead><tbody><tr><td>baseline_fixed_prior</td><td>53.29%</td><td>0.249187</td><td>0.691524</td><td>0.016461</td><td>100.00%</td><td>No</td><td>constant = train home-win rate; no discrimination</td></tr><tr><td>elo_like_rating</td><td>54.84%</td><td>0.248577</td><td>0.690391</td><td>0.048769</td><td>100.00%</td><td>No</td><td>rolling Elo K=20 + HFA; pregame only</td></tr><tr><td>retrained_team_history_smooth</td><td>56.38%</td><td>0.246063</td><td>0.685249</td><td>0.024793</td><td>100.00%</td><td>No</td><td>log5 of smoothed team win-rates + home logit bump; pregame only</td></tr><tr><td>calibrated_elo_recent_form</td><td>54.42%</td><td>0.246033</td><td>0.685080</td><td>0.020230</td><td>100.00%</td><td>No</td><td>Elo logit Platt-calibrated on train fold only</td></tr><tr><td>market_implied_devig(REFERENCE_UNVERIFIED)</td><td>54.73%</td><td>0.245503</td><td>0.683898</td><td>0.031829</td><td>100.00%</td><td>Yes</td><td>post-game unverified snapshot; look-ahead; NOT a valid predictor</td></tr></tbody></table></div>
+    </section>
+
+    <section aria-labelledby="band-title">
+      <h2 id="band-title">Confidence-Band Correctness</h2>
+      <div class="mini-grid"><article class="mini-card"><span>LOW</span><strong>221 / 442</strong><p>50.00% correct</p></article><article class="mini-card"><span>MEDIUM</span><strong>285 / 498</strong><p>57.23% correct</p></article><article class="mini-card"><span>HIGH</span><strong>23 / 32</strong><p>71.88% correct</p></article></div>
+    </section>
+
+    <section aria-labelledby="side-title">
+      <h2 id="side-title">Selected-Side Counts</h2>
+      <div class="mini-grid"><article class="mini-card"><span>HOME</span><strong>767</strong><p>78.91% of selected sides</p></article><article class="mini-card"><span>AWAY</span><strong>205</strong><p>21.09% of selected sides</p></article></div>
+    </section>
+
+    <section aria-labelledby="examples-title">
+      <h2 id="examples-title">Top Historical Examples Sorted By Confidence</h2>
+      <div class="table-wrap"><table><thead><tr><th>Label</th><th>Date</th><th>Game</th><th>Selected Side</th><th>Selected Probability</th><th>Band</th><th>Correct</th></tr></thead><tbody><tr><td>historical replay / backtest only</td><td>2025-09-25</td><td>Colorado Rockies @ Seattle Mariners</td><td>HOME</td><td>72.56%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay / backtest only</td><td>2025-09-24</td><td>Colorado Rockies @ Seattle Mariners</td><td>HOME</td><td>72.16%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay / backtest only</td><td>2025-08-23</td><td>San Francisco Giants @ Milwaukee Brewers</td><td>HOME</td><td>71.74%</td><td>HIGH</td><td>No</td></tr><tr><td>historical replay / backtest only</td><td>2025-09-23</td><td>Colorado Rockies @ Seattle Mariners</td><td>HOME</td><td>71.73%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay / backtest only</td><td>2025-08-22</td><td>San Francisco Giants @ Milwaukee Brewers</td><td>HOME</td><td>71.30%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay / backtest only</td><td>2025-08-24</td><td>San Francisco Giants @ Milwaukee Brewers</td><td>HOME</td><td>69.70%</td><td>HIGH</td><td>No</td></tr><tr><td>historical replay / backtest only</td><td>2025-08-13</td><td>Pittsburgh Pirates @ Milwaukee Brewers</td><td>HOME</td><td>69.48%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay / backtest only</td><td>2025-08-12</td><td>Pittsburgh Pirates @ Milwaukee Brewers</td><td>HOME</td><td>68.93%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay / backtest only</td><td>2025-08-11</td><td>Pittsburgh Pirates @ Milwaukee Brewers</td><td>HOME</td><td>68.35%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay / backtest only</td><td>2025-08-10</td><td>New York Mets @ Milwaukee Brewers</td><td>HOME</td><td>68.31%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay / backtest only</td><td>2025-09-27</td><td>Minnesota Twins @ Philadelphia Phillies</td><td>HOME</td><td>67.97%</td><td>HIGH</td><td>No</td></tr><tr><td>historical replay / backtest only</td><td>2025-08-09</td><td>New York Mets @ Milwaukee Brewers</td><td>HOME</td><td>67.70%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay / backtest only</td><td>2025-09-25</td><td>Chicago White Sox @ New York Yankees</td><td>HOME</td><td>67.39%</td><td>HIGH</td><td>Yes</td></tr><tr><td>historical replay / backtest only</td><td>2025-09-26</td><td>Minnesota Twins @ Philadelphia Phillies</td><td>HOME</td><td>67.34%</td><td>HIGH</td><td>Yes</td></tr></tbody></table></div>
+    </section>
+
+    <section aria-labelledby="source-title">
+      <h2 id="source-title">P207-A And P208-A Source Artifacts</h2>
+      <ul><li><code>P207-A: report/p207a_local_retrain_scorecard.json</code></li>
+<li><code>P207-A: report/p207a_local_retrain_model_comparison.csv</code></li>
+<li><code>P207-A: report/p207a_local_retrain_predictions.csv</code></li>
+<li><code>P208-A: report/p208a_visible_scorecard_result_viewer.json</code></li></ul>
+    </section>
+
+    <section aria-labelledby="status-title" class="status">
+      <h2 id="status-title">Run Status</h2>
+      <p>All displayed rows are labeled historical replay/backtest only. Provider calls, database writes, ticket mutation, and production activation are false for this dashboard build.</p>
+    </section>
+  </main>
+</body>
+</html>

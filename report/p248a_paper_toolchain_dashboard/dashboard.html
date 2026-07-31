@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P248-A Paper Toolchain Dashboard</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f7f8fa;
+  --panel: #ffffff;
+  --ink: #1d252c;
+  --muted: #5f6b76;
+  --line: #d8dde3;
+  --pass: #196b43;
+  --warn: #9a5b00;
+  --fail: #a3322a;
+  --neutral: #46515c;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+}
+header, main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px;
+}
+header {
+  padding-top: 28px;
+  padding-bottom: 12px;
+}
+h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+p {
+  margin: 0;
+  color: var(--muted);
+}
+section {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin: 0 0 16px;
+  padding: 18px;
+  overflow: hidden;
+}
+.status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 650;
+}
+.pass { background: var(--pass); }
+.warn { background: var(--warn); }
+.fail { background: var(--fail); }
+.neutral { background: var(--neutral); }
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+.metric {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px;
+  min-width: 0;
+}
+.metric dt {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.metric dd {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+th, td {
+  border-bottom: 1px solid var(--line);
+  padding: 8px 7px;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+th {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 650;
+}
+ul {
+  margin: 0;
+  padding-left: 20px;
+}
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+.stack {
+  display: grid;
+  gap: 14px;
+}
+@media (max-width: 720px) {
+  header, main { padding-left: 14px; padding-right: 14px; }
+  h1 { font-size: 22px; }
+  section { padding: 14px; }
+}
+</style>
+</head>
+<body>
+<header>
+<h1>P248-A Paper Toolchain Dashboard</h1>
+<p>Generated at UTC: 2026-07-09T00:00:00Z</p>
+</header>
+<main>
+<section id="summary">
+<h2>Summary <span class="status pass">PASS</span></h2>
+<div class="metrics">
+<div class="metric"><dt>Toolchain status</dt><dd>PASS</dd></div>
+<div class="metric"><dt>Latest P246 gate</dt><dd>PASS</dd></div>
+<div class="metric"><dt>Artifact roots</dt><dd>12 / 12</dd></div>
+<div class="metric"><dt>Scripts</dt><dd>10 / 10</dd></div>
+<div class="metric"><dt>Warnings</dt><dd>0</dd></div>
+<div class="metric"><dt>Failures</dt><dd>0</dd></div>
+</div>
+<table><thead><tr><th>Section</th><th>Title</th><th>Status</th><th>Items</th><th>Notes</th></tr></thead><tbody><tr><td>summary</td><td>Summary</td><td>PASS</td><td>6</td><td>toolchain=PASS</td></tr><tr><td>latest_gate</td><td>Latest Gate</td><td>PASS</td><td>1</td><td>P246 gate status rendered</td></tr><tr><td>toolchain_steps</td><td>Toolchain Steps</td><td>PASS</td><td>10</td><td>stable CSV order preserved</td></tr><tr><td>artifact_roots</td><td>Artifact Roots</td><td>PASS</td><td>12</td><td>12 / 12 present</td></tr><tr><td>scripts</td><td>Scripts</td><td>PASS</td><td>10</td><td>10 / 10 present</td></tr><tr><td>hashes</td><td>Hashes</td><td>PASS</td><td>13</td><td>input and module hashes rendered</td></tr><tr><td>warnings_failures</td><td>Warnings / Failures</td><td>PASS</td><td>0</td><td>none</td></tr><tr><td>safety_boundaries</td><td>Safety Boundaries</td><td>PASS</td><td>15</td><td>result-only boundaries rendered</td></tr><tr><td>limitations</td><td>Limitations</td><td>PASS</td><td>10</td><td>required labels rendered</td></tr><tr><td>not_claims</td><td>Not Claims</td><td>PASS</td><td>4</td><td>forbidden claims excluded</td></tr></tbody></table>
+</section>
+<section id="latest-gate">
+<h2>Latest Gate</h2>
+<div class="metrics">
+<div class="metric"><dt>P246 gate status</dt><dd>PASS</dd></div>
+<div class="metric"><dt>P246 gate counts</dt><dd>{&quot;check_counts&quot;:{&quot;failed&quot;:0,&quot;passed&quot;:9,&quot;total&quot;:9},&quot;failure_count&quot;:0,&quot;observed_counts&quot;:{&quot;added_count&quot;:0,&quot;changed_count&quot;:0,&quot;entry_added_count&quot;:0,&quot;entry_changed_count&quot;:0,&quot;entry_file_type_changed_count&quot;:0,&quot;entry_notes_changed_count&quot;:0,&quot;entry_removed_count&quot;:0,&quot;entry_role_changed_count&quot;:0,&quot;entry_row_count&quot;:26,&quot;entry_status_changed_count&quot;:0,&quot;failure_count&quot;:0,&quot;file_type_changed_count&quot;:0,&quot;notes_changed_count&quot;:0,&quot;removed_count&quot;:0,&quot;role_changed_count&quot;:0,&quot;status_changed_count&quot;:0,&quot;warning_count&quot;:0},&quot;warning_count&quot;:0}</dd></div>
+</div>
+</section>
+<section id="toolchain-steps">
+<h2>Toolchain Steps</h2>
+<table><thead><tr><th>Step</th><th>Name</th><th>Status</th><th>Script</th><th>Artifact</th><th>Files</th><th>Bytes</th><th>Digest</th></tr></thead><tbody><tr><td>P237</td><td>paper strategy simulator</td><td>PASS</td><td>True</td><td>True</td><td>2</td><td>6903</td><td>a966b3b1aeeb29bc1e7ce5552633c5c8ba600eaedd51a703fe8ebfbff02bc1f2</td></tr><tr><td>P238</td><td>paper strategy learning</td><td>PASS</td><td>True</td><td>True</td><td>2</td><td>3553</td><td>cb1a9aa19f116ef296e77d7fb5265a09db2b6f967205ff079282d8b91cbf68eb</td></tr><tr><td>P239</td><td>paper strategy workflow</td><td>PASS</td><td>True</td><td>True</td><td>5</td><td>11847</td><td>69cbb7ace3c062cb861a8e9f2a4dbf3226521e259690e312b94067cd25982a4c</td></tr><tr><td>P240</td><td>paper strategy workflow inspector</td><td>PASS</td><td>True</td><td>True</td><td>2</td><td>10206</td><td>d519c26c37aae160c247dcdcb5728f0f325fb6fc3c76dad18c4514e51882c7e9</td></tr><tr><td>P241</td><td>paper strategy workflow review pack</td><td>PASS</td><td>True</td><td>True</td><td>3</td><td>6015</td><td>1647a5ff367cb7a9a8665676da24ac6ec83ff25a846d4d256a4a4f6d5fdd0c02</td></tr><tr><td>P242</td><td>paper strategy workflow bundle</td><td>PASS</td><td>True</td><td>True</td><td>12</td><td>35876</td><td>b870719b20636ab6ccbe28278b7407511b936f737ed2bc335d2099611cedd0ba</td></tr><tr><td>P243</td><td>paper artifact catalog</td><td>PASS</td><td>True</td><td>True</td><td>3</td><td>31274</td><td>ba761764f7ac14e2b563e1c6f11bac2f204a13440756229d78cb3c55d841ee3a</td></tr><tr><td>P244</td><td>paper artifact catalog query</td><td>PASS</td><td>True</td><td>True</td><td>3</td><td>7812</td><td>7a275bd49696a19b089e0362bfe76442b8002299ee1a18c7fbf7521c94f4c480</td></tr><tr><td>P245</td><td>paper artifact catalog diff</td><td>PASS</td><td>True</td><td>True</td><td>3</td><td>10363</td><td>336a4979ee1494a5bcfd96689443815365380b8c8579e18f5453f8de2f56b251</td></tr><tr><td>P246</td><td>paper artifact diff gate</td><td>PASS</td><td>True</td><td>True</td><td>3</td><td>4489</td><td>79d15d9c9975150ff11efe88301271d81320aa29ff5ea6b5da96c1d77554fd8a</td></tr></tbody></table>
+</section>
+<section id="artifact-roots">
+<h2>Artifact Roots</h2>
+<table><thead><tr><th>Path</th><th>Present</th><th>Files</th><th>Bytes</th><th>Digest</th></tr></thead><tbody><tr><td>report/p237a_paper_strategy_decisions.csv</td><td>True</td><td>1</td><td>4484</td><td>8dcd05ad6a8e75612c74f5695e5287bd1cfa0b7bc0e9691587c0d7001790c2f7</td></tr><tr><td>report/p237a_paper_strategy_simulator_summary.json</td><td>True</td><td>1</td><td>2419</td><td>06a804d8a63103f9f9f8ff450aa94640d82f634a0919602964959e84443d6d65</td></tr><tr><td>report/p238a_paper_strategy_learning_segments.csv</td><td>True</td><td>1</td><td>2217</td><td>e9914bb6bb7ee73cb2e64590ff8d58e0be57ce822745bb0f78ed638a71f3750f</td></tr><tr><td>report/p238a_paper_strategy_learning_summary.json</td><td>True</td><td>1</td><td>1336</td><td>9df7f4446f8182fcdcd69a6f806a2b47bff704e91c88c02125ac41acace6e9d5</td></tr><tr><td>report/p239a_paper_strategy_workflow</td><td>True</td><td>5</td><td>11847</td><td>69cbb7ace3c062cb861a8e9f2a4dbf3226521e259690e312b94067cd25982a4c</td></tr><tr><td>report/p240a_paper_strategy_workflow_inspector</td><td>True</td><td>2</td><td>10206</td><td>d519c26c37aae160c247dcdcb5728f0f325fb6fc3c76dad18c4514e51882c7e9</td></tr><tr><td>report/p241a_paper_strategy_workflow_review_pack</td><td>True</td><td>3</td><td>6015</td><td>1647a5ff367cb7a9a8665676da24ac6ec83ff25a846d4d256a4a4f6d5fdd0c02</td></tr><tr><td>report/p242a_paper_strategy_workflow_bundle</td><td>True</td><td>12</td><td>35876</td><td>b870719b20636ab6ccbe28278b7407511b936f737ed2bc335d2099611cedd0ba</td></tr><tr><td>report/p243a_paper_artifact_catalog</td><td>True</td><td>3</td><td>31274</td><td>ba761764f7ac14e2b563e1c6f11bac2f204a13440756229d78cb3c55d841ee3a</td></tr><tr><td>report/p244a_paper_artifact_catalog_query</td><td>True</td><td>3</td><td>7812</td><td>7a275bd49696a19b089e0362bfe76442b8002299ee1a18c7fbf7521c94f4c480</td></tr><tr><td>report/p245a_paper_artifact_catalog_diff</td><td>True</td><td>3</td><td>10363</td><td>336a4979ee1494a5bcfd96689443815365380b8c8579e18f5453f8de2f56b251</td></tr><tr><td>report/p246a_paper_artifact_diff_gate</td><td>True</td><td>3</td><td>4489</td><td>79d15d9c9975150ff11efe88301271d81320aa29ff5ea6b5da96c1d77554fd8a</td></tr></tbody></table>
+</section>
+<section id="scripts">
+<h2>Scripts</h2>
+<table><thead><tr><th>Path</th><th>SHA-256</th></tr></thead><tbody><tr><td>scripts/build_mlb_paper_artifact_catalog.py</td><td>32625b29e1a79ab0febac84423d5231aec39387b3e848f6e1be6418f56f66392</td></tr><tr><td>scripts/build_mlb_paper_strategy_workflow_review_pack.py</td><td>c8aa4a4a9d416050d6b09f98f64bd759560cc45cb49f97b9a6d743ade3240d63</td></tr><tr><td>scripts/check_mlb_paper_artifact_diff.py</td><td>9aee6ba1267e8d27457ceda90b141f0e0015e6d4718cdad4bd48f25f7f766f56</td></tr><tr><td>scripts/diff_mlb_paper_artifact_catalogs.py</td><td>ac285e2fce31453f6adbd9230b57350c005de765666d8a630effc69238c621d4</td></tr><tr><td>scripts/inspect_mlb_paper_strategy_workflow.py</td><td>629b0b76a99a0881ce8887a24e9c25a4e6ab872bf982306b6cd3299892189b44</td></tr><tr><td>scripts/query_mlb_paper_artifact_catalog.py</td><td>12ec156f5a9899b82102716b5d9218aa7bbf6cfba3acedd75e1c3d041466d71d</td></tr><tr><td>scripts/run_mlb_paper_strategy_learning.py</td><td>c9a8fb1e33d729f97dffb93534bcfb6eb6bf561dfecd054e4f849445455ece52</td></tr><tr><td>scripts/run_mlb_paper_strategy_simulator.py</td><td>05c6aefc28d047c6cb32997f544acb45f35ba45c77cf963aeb2d81ec60183e0f</td></tr><tr><td>scripts/run_mlb_paper_strategy_workflow.py</td><td>463da75b67aec25bc3fde839a20cb8c1b05a033750b160d89063de9b70a79276</td></tr><tr><td>scripts/run_mlb_paper_strategy_workflow_bundle.py</td><td>886efaf736b9d5467de6904a245bbc2e7c513b9917feac8bbd88845ccc28aac2</td></tr></tbody></table>
+</section>
+<section id="hashes">
+<h2>Hashes</h2>
+<div class="stack">
+<table><thead><tr><th>Input</th><th>Path</th><th>SHA-256</th></tr></thead><tbody><tr><td>toolchain_status_json</td><td>report/p247a_paper_toolchain_status/toolchain_status.json</td><td>5b907a68b2d196bbe25294113cc7975cad8dfa22901d173f2adc1f01ae66eec4</td></tr><tr><td>toolchain_steps_csv</td><td>report/p247a_paper_toolchain_status/toolchain_steps.csv</td><td>6190b8188572d5883a889819bbd645383dab93b88dbbb4aeccd7cb7398c09020</td></tr><tr><td>toolchain_report_md</td><td>report/p247a_paper_toolchain_status/toolchain_report.md</td><td>5bfddc09dae6d2f6625195010a8c9ae09e6d1375b73e1dff89c7cec33ecae4bd</td></tr></tbody></table>
+<table><thead><tr><th>Module</th><th>SHA-256</th></tr></thead><tbody><tr><td>wbc_backend/recommendation/paper_artifact_catalog.py</td><td>4bff40cee3736898ca0343a0dd9ddf5f54814b461872c4139292ebbf973c9275</td></tr><tr><td>wbc_backend/recommendation/paper_artifact_catalog_diff.py</td><td>1d25817fce2cf3e57e88e63d3097388c994589869cdbe0e5021da4b452820c16</td></tr><tr><td>wbc_backend/recommendation/paper_artifact_catalog_query.py</td><td>6abf9fb2e00cd45db3c03cd0257267b8cbddb391f10ae132743e5cb8f1c1a6b0</td></tr><tr><td>wbc_backend/recommendation/paper_artifact_diff_gate.py</td><td>ca01c15af70c7414b78d80d5470471376d67f2060ba3df4c09502fa076a7a751</td></tr><tr><td>wbc_backend/recommendation/paper_strategy_learning.py</td><td>23c7e126c9b2d0ca6c46e462541b29166d8edcf93d29e92b5c222303ea51a873</td></tr><tr><td>wbc_backend/recommendation/paper_strategy_simulator.py</td><td>96203d57fe4cc80bf71b715b2a01e6b6df1c88f42752b37d87263b846e198152</td></tr><tr><td>wbc_backend/recommendation/paper_strategy_workflow.py</td><td>16cfb5b9f861b339f5a07e03cb474f73c1f4ac99eb736a7e0d32484198be4ab8</td></tr><tr><td>wbc_backend/recommendation/paper_strategy_workflow_bundle.py</td><td>594a2b1e1f7e9f11596a508a4467862802eeca7a178c35e118626174aeeeba5b</td></tr><tr><td>wbc_backend/recommendation/paper_strategy_workflow_inspector.py</td><td>9aed4d14878286c895e93c8fd03e73f6c1a1e73c93a48c3201c8e1010cd6921b</td></tr><tr><td>wbc_backend/recommendation/paper_strategy_workflow_review_pack.py</td><td>137777af0e098905eef4764001008cede690dc3a498758b06755a974207fedd5</td></tr></tbody></table>
+</div>
+</section>
+<section id="warnings-failures">
+<h2>Warnings / Failures</h2>
+<div class="stack">
+<div><strong>Warnings</strong><ul><li>None</li></ul></div>
+<div><strong>Failures</strong><ul><li>None</li></ul></div>
+</div>
+</section>
+<section id="safety-boundaries">
+<h2>Safety Boundaries</h2>
+<table><thead><tr><th>Boundary</th><th>Value</th></tr></thead><tbody><tr><td>computed_roi_pnl_ev_kelly</td><td>False</td></tr><tr><td>contacted_providers</td><td>False</td></tr><tr><td>created_betting_recommendations</td><td>False</td></tr><tr><td>created_live_production_or_real_betting_output</td><td>False</td></tr><tr><td>executed_existing_workflows</td><td>False</td></tr><tr><td>fetched_remote_sports_data</td><td>False</td></tr><tr><td>mutated_p237_to_p246_artifacts</td><td>False</td></tr><tr><td>mutated_p237_to_p247_source_artifacts</td><td>False</td></tr><tr><td>read_existing_artifacts_only</td><td>True</td></tr><tr><td>read_existing_p247_artifacts_only</td><td>True</td></tr><tr><td>regenerated_catalogs_diffs_or_gates</td><td>False</td></tr><tr><td>regenerated_p237_to_p247_artifacts</td><td>False</td></tr><tr><td>used_pybaseball</td><td>False</td></tr><tr><td>wrote_data_runtime_logs_or_outputs</td><td>False</td></tr><tr><td>wrote_db</td><td>False</td></tr></tbody></table>
+</section>
+<section id="limitations">
+<h2>Limitations</h2>
+<ul><li>2025-only</li><li>historical paper-only</li><li>odds provenance unverified</li><li>not true-PIT</li><li>not betting edge</li><li>not future prediction</li><li>not live</li><li>not production</li><li>not real betting</li><li>not multi-season validation</li></ul>
+</section>
+<section id="not-claims">
+<h2>Not Claims</h2>
+<ul><li>No ROI, paper P/L, EV, Kelly, bankroll, or compounding is computed.</li><li>No best_strategy, best_threshold, recommended_bet, or strategy ranking is output.</li><li>No betting edge, future prediction, true-PIT validation, or multi-season validation is claimed.</li><li>No live, production, or real betting output is created.</li></ul>
+</section>
+</main>
+</body>
+</html>

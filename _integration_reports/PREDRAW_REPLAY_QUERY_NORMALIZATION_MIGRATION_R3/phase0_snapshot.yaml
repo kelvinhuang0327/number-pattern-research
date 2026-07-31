@@ -1,0 +1,15 @@
+task_id: PREDRAW_REPLAY_QUERY_NORMALIZATION_MIGRATION_R3
+timestamp: '2026-07-29T15:17:30+08:00'
+workspace_root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+git_state:
+  head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  branch: task/p273a-prize-aware-inferential-validation
+  task_paths_clean: true
+frozen_prior_vertical_hashes:
+  tools/quick_predict.py: d563d9484d09ded6f22ac18e532e3b841aa5f47c5be044a195ecccdaee650670
+  tests/test_p360b_quick_predict_ledger_entrypoint.py: 2ba0797fc7d61b946826f92008ee8ef6fed4853b35c1355acb39267b106f9a7b
+  matches_expected: true
+snapshot_count: 2
+snapshots_identical: true
+phase0_completed_before_first_write: true
+phase0_authority_resolved: true

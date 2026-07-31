@@ -1,0 +1,11 @@
+task: P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_FINAL_TREE_CLOSURE_R4A
+historical_comparison:
+  historical_path: _git_ref_reference/LOTTERY_BRANCH_REF_EXTRACTION_R1/by_repository/repo_1_lotterynew/by_ref/refs_heads_feat_p0-schema-stabilization-_325f854e/files/outputs/replay/p0_per_draw_coverage_matrix_20260518.json
+  top_level_schema_equal: true
+  normalized_contract_equal: true
+  expected_environment_differences:
+    - db_path
+    - generated_at
+  fixture_data_differences: Historical artifact evaluated against production DB (lottery_v2.db) with 10 draws per lottery type, while fresh test used sandbox fixture DB with 5 draws per lottery type.
+  unexpected_differences: []
+  historical_artifact_promoted: false

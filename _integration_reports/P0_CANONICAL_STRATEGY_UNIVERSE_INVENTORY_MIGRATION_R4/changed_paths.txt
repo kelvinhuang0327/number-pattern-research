@@ -1,0 +1,4 @@
+scripts/p0_per_draw_coverage_matrix.py
+tests/test_p0_canonical_universe.py
+docs/replay/p0_canonical_strategy_universe_20260518.md
+outputs/replay/p0_canonical_strategy_universe_20260518.json

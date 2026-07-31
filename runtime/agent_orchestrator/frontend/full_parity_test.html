@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>Betting-pool UI 功能完整性測試</title>
+  <style>
+    body {
+      font-family: "Fira Code", monospace;
+      margin: 16px;
+      background: #010409;
+      color: #e6edf3;
+    }
+    pre {
+      white-space: pre-wrap;
+      background: #161b22;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid #30363d;
+    }
+    iframe {
+      width: 1280px;
+      height: 900px;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+    }
+    .status {
+      padding: 8px 16px;
+      border-radius: 6px;
+      margin: 8px 0;
+      font-weight: 600;
+    }
+    .success { background: rgba(35,134,54,.2); color: #3fb950; }
+    .error { background: rgba(248,81,73,.2); color: #f85149; }
+    .warning { background: rgba(187,128,9,.2); color: #e3b341; }
+  </style>
+</head>
+<body>
+  <h1>🎯 Betting-pool UI 功能完整性測試</h1>
+  <div id="status" class="status warning">執行中...</div>
+  <pre id="result">初始化測試中...</pre>
+  <iframe id="app-frame" src="http://127.0.0.1:8789/"></iframe>
+
+  <script>
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    async function runFullParityTest() {
+      const frame = document.getElementById('app-frame');
+      const result = document.getElementById('result');
+      const statusEl = document.getElementById('status');
+
+      const testResults = {
+        timestamp: new Date().toISOString(),
+        testPhases: [],
+        errors: [],
+        summary: {},
+        finalStatus: 'unknown'
+      };
+
+      try {
+        // Phase 1: 等待應用載入
+        statusEl.textContent = "Phase 1: 等待應用載入...";
+        testResults.testPhases.push("Phase 1: App Loading");
+
+        await new Promise((resolve, reject) => {
+          const timer = setTimeout(() => reject(new Error('應用載入超時 (15秒)')), 15000);
+          frame.addEventListener('load', () => {
+            clearTimeout(timer);
+            resolve();
+          }, { once: true });
+        });
+
+        const win = frame.contentWindow;
+        const doc = frame.contentDocument;
+
+        // 錯誤收集器
+        const capturedErrors = [];
+        const originalConsoleError = win.console.error.bind(win.console);
+        win.console.error = (...args) => {
+          capturedErrors.push(args.map(String).join(' '));
+          originalConsoleError(...args);
+        };
+        win.addEventListener('error', (event) => {
+          capturedErrors.push(`Window Error: ${event.message || 'Unknown error'}`);
+        });
+
+        // Phase 2: 檢查基本 DOM 結構
+        statusEl.textContent = "Phase 2: 檢查 DOM 結構...";
+        testResults.testPhases.push("Phase 2: DOM Structure Check");
+
+        await sleep(2000); // 等待 JavaScript 初始化
+
+        const requiredElements = {
+          'orchestration-section': '任務編排區段',
+          'cto-review-section': 'CTO 審核區段',
+          'orc-total': '總任務數指標',
+          'orc-worker-status': 'Worker 狀態指標',
+          'orc-task-tbody': '任務表格',
+          'orc-run-tbody': '執行紀錄表格',
+          'orc-cto-run-tbody': 'CTO 執行表格'
+        };
+
+        const missingElements = [];
+        for (const [id, name] of Object.entries(requiredElements)) {
+          if (!doc.getElementById(id)) {
+            missingElements.push(`${name} (${id})`);
+          }
+        }
+
+        if (missingElements.length > 0) {
+          throw new Error(`缺少必要元素: ${missingElements.join(', ')}`);
+        }
+
+        // Phase 3: 測試 Orchestration 頁面
+        statusEl.textContent = "Phase 3: 測試 Orchestration 功能...";
+        testResults.testPhases.push("Phase 3: Orchestration Testing");
+
+        // 確保在 orchestration 頁面
+        const orchNavBtn = doc.querySelector('.nav-btn[data-section="orchestration"]');
+        if (orchNavBtn) {
+          orchNavBtn.click();
+          await sleep(3000); // 等待數據載入
+        }
+
+        // 檢查 orchestration 數據
+        const getText = (selector) => doc.querySelector(selector)?.textContent?.trim() || null;
+
+        const orchestrationData = {
+          activeSection: doc.querySelector('.section.active')?.id || null,
+          summary: {
+            total: getText('#orc-total'),
+            running: getText('#orc-running'),
+            completed: getText('#orc-completed'),
+            worker: getText('#orc-worker-status'),
+          },
+          scheduler: {
+            state: getText('#orc-scheduler-state'),
+            toggleBtn: getText('#orc-scheduler-toggle-btn'),
+          },
+          providers: {
+            planner: doc.getElementById('orc-planner-provider')?.value || null,
+            worker: doc.getElementById('orc-worker-provider')?.value || null,
+            hint: getText('#orc-provider-hint'),
+          },
+          taskTable: {
+            rows: Array.from(doc.querySelectorAll('#orc-task-tbody tr')).length,
+            dataRows: Array.from(doc.querySelectorAll('#orc-task-tbody tr[data-task-id]')).length,
+            firstRowText: doc.querySelector('#orc-task-tbody tr')?.textContent?.trim() || null,
+          },
+          runsTable: {
+            rows: Array.from(doc.querySelectorAll('#orc-run-tbody tr')).length,
+            firstRowText: doc.querySelector('#orc-run-tbody tr')?.textContent?.trim() || null,
+          }
+        };
+
+        // Phase 4: 測試 CTO Review 頁面
+        statusEl.textContent = "Phase 4: 測試 CTO Review 功能...";
+        testResults.testPhases.push("Phase 4: CTO Review Testing");
+
+        const ctoNavBtn = doc.querySelector('.nav-btn[data-section="cto-review"]');
+        if (ctoNavBtn) {
+          ctoNavBtn.click();
+          await sleep(3000); // 等待數據載入
+        }
+
+        const ctoData = {
+          activeSection: doc.querySelector('.section.active')?.id || null,
+          summary: {
+            frequencyMode: getText('#cto-frequency-mode'),
+            pending: getText('#cto-pending-count'),
+            approved: getText('#cto-approved-count'),
+            merged: getText('#cto-merged-count'),
+            rejected: getText('#cto-rejected-count'),
+          },
+          scheduler: {
+            state: getText('#cto-scheduler-state'),
+            toggleBtn: getText('#cto-scheduler-toggle-btn'),
+          },
+          providers: {
+            planner: doc.getElementById('orc-cto-planner-provider')?.value || null,
+            model: doc.getElementById('orc-cto-planner-model')?.value || null,
+            hint: getText('#orc-cto-provider-hint'),
+          },
+          runsTable: {
+            rows: Array.from(doc.querySelectorAll('#orc-cto-run-tbody tr')).length,
+            firstRowText: doc.querySelector('#orc-cto-run-tbody tr')?.textContent?.trim() || null,
+          }
+        };
+
+        // Phase 5: 測試互動功能
+        statusEl.textContent = "Phase 5: 測試互動功能...";
+        testResults.testPhases.push("Phase 5: Interaction Testing");
+
+        // 測試任務詳情（如果有任務）
+        const taskDetailTest = { available: false, working: false };
+        const firstTaskRow = doc.querySelector('#orc-task-tbody tr[data-task-id]');
+        if (firstTaskRow) {
+          taskDetailTest.available = true;
+          firstTaskRow.click();
+          await sleep(1500);
+
+          const detailView = doc.getElementById('orc-detail-view');
+          const detailContent = doc.getElementById('orc-detail-content');
+          if (detailView && !detailView.classList.contains('rv-hidden') && detailContent?.textContent) {
+            taskDetailTest.working = true;
+
+            // 返回列表
+            const backBtn = doc.getElementById('orc-back-btn');
+            if (backBtn) {
+              backBtn.click();
+              await sleep(500);
+            }
+          }
+        }
+
+        // Phase 6: 功能完整性評估
+        statusEl.textContent = "Phase 6: 功能完整性評估...";
+        testResults.testPhases.push("Phase 6: Completeness Assessment");
+
+        // 驗證關鍵功能
+        const functionalityChecks = {
+          navigation: {
+            orchestrationTab: !!doc.querySelector('.nav-btn[data-section="orchestration"]'),
+            ctoTab: !!doc.querySelector('.nav-btn[data-section="cto-review"]'),
+          },
+          dataDisplay: {
+            orchestrationMetrics: orchestrationData.summary.total !== null && orchestrationData.summary.total !== '—',
+            ctoMetrics: ctoData.summary.frequencyMode !== null && ctoData.summary.frequencyMode !== '—',
+            taskTable: orchestrationData.taskTable.rows > 0,
+            runsTable: orchestrationData.runsTable.rows > 0,
+            ctoRunsTable: ctoData.runsTable.rows > 0,
+          },
+          controls: {
+            schedulerToggle: !!doc.getElementById('orc-scheduler-toggle-btn'),
+            ctoSchedulerToggle: !!doc.getElementById('cto-scheduler-toggle-btn'),
+            providerSettings: !!doc.getElementById('orc-provider-save-btn'),
+            ctoProviderSettings: !!doc.getElementById('orc-cto-provider-save-btn'),
+            runButtons: !!doc.getElementById('orc-run-planner-btn') && !!doc.getElementById('orc-run-worker-btn'),
+            ctoRunButton: !!doc.getElementById('orc-cto-run-now-btn'),
+          },
+          providers: {
+            orchestrationProviders: orchestrationData.providers.planner && orchestrationData.providers.worker,
+            ctoProviders: ctoData.providers.planner,
+            workerHasClaude: doc.querySelector('#orc-worker-provider option[value="claude"]'),
+          },
+          interactions: {
+            taskDetail: taskDetailTest.working,
+          }
+        };
+
+        // 編譯最終結果
+        testResults.orchestrationData = orchestrationData;
+        testResults.ctoData = ctoData;
+        testResults.functionalityChecks = functionalityChecks;
+        testResults.taskDetailTest = taskDetailTest;
+        testResults.errors = capturedErrors;
+
+        // 計算成功率
+        const allChecks = [];
+        function addChecks(obj, prefix = '') {
+          for (const [key, value] of Object.entries(obj)) {
+            if (typeof value === 'boolean') {
+              allChecks.push({name: prefix + key, passed: value});
+            } else if (typeof value === 'object' && value !== null) {
+              addChecks(value, prefix + key + '.');
+            }
+          }
+        }
+        addChecks(functionalityChecks);
+
+        const passedChecks = allChecks.filter(c => c.passed).length;
+        const totalChecks = allChecks.length;
+        const successRate = Math.round((passedChecks / totalChecks) * 100);
+
+        testResults.summary = {
+          totalChecks,
+          passedChecks,
+          successRate,
+          hasErrors: capturedErrors.length > 0,
+          errorCount: capturedErrors.length,
+        };
+
+        // 判斷最終狀態
+        if (successRate >= 95 && capturedErrors.length === 0) {
+          testResults.finalStatus = 'success';
+          statusEl.className = 'status success';
+          statusEl.textContent = `✅ 測試完成 - 功能完整性: ${successRate}% (${passedChecks}/${totalChecks})`;
+        } else if (successRate >= 85) {
+          testResults.finalStatus = 'warning';
+          statusEl.className = 'status warning';
+          statusEl.textContent = `⚠️ 測試完成 - 功能完整性: ${successRate}% (${passedChecks}/${totalChecks}) - 有${capturedErrors.length}個錯誤`;
+        } else {
+          testResults.finalStatus = 'error';
+          statusEl.className = 'status error';
+          statusEl.textContent = `❌ 測試失敗 - 功能完整性: ${successRate}% (${passedChecks}/${totalChecks}) - 有${capturedErrors.length}個錯誤`;
+        }
+
+      } catch (error) {
+        testResults.finalStatus = 'error';
+        testResults.errors.push(`測試執行錯誤: ${error.message}`);
+
+        statusEl.className = 'status error';
+        statusEl.textContent = `❌ 測試失敗: ${error.message}`;
+      }
+
+      // 輸出詳細結果
+      result.textContent = JSON.stringify(testResults, null, 2);
+      document.title = `測試${testResults.finalStatus === 'success' ? '通過' : '失敗'} - ${testResults.summary.successRate || 0}%`;
+    }
+
+    // 啟動測試
+    runFullParityTest().catch((error) => {
+      document.getElementById('result').textContent = JSON.stringify({
+        error: String(error),
+        timestamp: new Date().toISOString(),
+        finalStatus: 'critical_error'
+      }, null, 2);
+      document.getElementById('status').className = 'status error';
+      document.getElementById('status').textContent = `💥 嚴重錯誤: ${error.message}`;
+      document.title = '測試嚴重失敗';
+    });
+  </script>
+</body>
+</html>

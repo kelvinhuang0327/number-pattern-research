@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>P222-A Historical Time-Split Error Analysis Dashboard</title>
+  <style>
+    :root { color-scheme: light; --bg: #f3efe7; --panel: #fffdf8; --ink: #1e2931; --line: #d6cab9; --accent: #7a2f2f; --accent-soft: #f2dfd6; --muted: #59636f; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 24px; font-family: Georgia, 'Times New Roman', serif; background: radial-gradient(circle at top, #fbf8f1 0%, #efe8dc 48%, #e6ddcf 100%); color: var(--ink); }
+    main { max-width: 1480px; margin: 0 auto; }
+    section { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 18px; margin-bottom: 18px; box-shadow: 0 10px 28px rgba(79, 61, 41, 0.06); }
+    .hero { background: linear-gradient(135deg, #f7e5db 0%, #fffaf4 100%); border-left: 6px solid var(--accent); }
+    .eyebrow { color: var(--accent); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+    h1, h2, h3 { margin: 0 0 12px; line-height: 1.15; }
+    p, li { line-height: 1.5; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { background: #f6efe4; }
+    .muted { color: var(--muted); }
+  </style>
+</head>
+<body>
+<main>
+<section class="hero">
+  <div class="eyebrow">Historical Only</div>
+  <h1>P222-A Historical Time-Split Error Analysis Dashboard</h1>
+  <p><strong>Status:</strong> PASS_P221A_P220A_ARTIFACT_ONLY_HISTORICAL_TIME_SPLIT_ERROR_ANALYSIS_DASHBOARD</p>
+  <p>Historical time-split error analysis dashboard only. Not live predictions, not betting advice.</p>
+  <p class="muted">Historical-only holdout error analysis. No live predictions, no betting advice, no production claims.</p>
+</section>
+<section>
+  <h2>Source Artifacts and Hashes</h2>
+  <table><thead><tr><th>Artifact</th><th>SHA256</th></tr></thead><tbody><tr><td>report/p221a_historical_time_split_baseline_evaluation.csv</td><td>2d17483e66a11069806f4b0f49bcd905f1d427ab56425edef9f24aba8844d3ae</td></tr><tr><td>report/p221a_historical_time_split_baseline_evaluation.json</td><td>0ccec8bc6b01c5bbdd8a3c082cbbc161d4a5fc0f39cc3cfe51948199e7528982</td></tr><tr><td>report/p221a_historical_time_split_baseline_evaluation.md</td><td>f31c00dbd65a86ae0224cbd147c1e2c39c45a58e13791f702266c54cb5b05617</td></tr><tr><td>report/p220a_historical_baseline_error_dashboard.json</td><td>abd4a2540ea2109ee77f30a4a836f1800e3218cc003ed92fda0e1043c8f695f3</td></tr></tbody></table>
+</section>
+<div class="grid">
+<section>
+  <h2>Overall Metrics</h2>
+  <table><thead><tr><th>Metric</th><th>Accuracy</th><th>Correct Rows</th><th>Evaluated Rows</th></tr></thead><tbody><tr><td>Baseline A</td><td>0.250000</td><td>4</td><td>16</td></tr><tr><td>Baseline B</td><td>0.312500</td><td>5</td><td>16</td></tr><tr><td>B minus A</td><td>0.062500</td><td>1</td><td></td></tr></tbody></table>
+</section>
+<section>
+  <h2>P220 In-Sample vs P222 Time-Split</h2>
+  <table><thead><tr><th>Baseline</th><th>P220 Accuracy</th><th>P222 Accuracy</th><th>Delta</th></tr></thead><tbody><tr><td>Baseline A</td><td>0.375000</td><td>0.250000</td><td>-0.125000</td></tr><tr><td>Baseline B</td><td>0.500000</td><td>0.312500</td><td>-0.187500</td></tr></tbody></table>
+</section>
+</div>
+<section>
+  <h2>Per-Split Metrics</h2>
+  <table><thead><tr><th>Split</th><th>Train Date Range</th><th>Eval Date</th><th>Train Rows</th><th>Eval Rows</th><th>Baseline A Accuracy</th><th>Baseline B Accuracy</th><th>Direct Rows</th><th>Fallback Rows</th><th>B minus A</th></tr></thead><tbody><tr><td>1</td><td>2024-04-01 to 2024-04-01</td><td>2024-04-02</td><td>8</td><td>8</td><td>0.125000</td><td>0.250000</td><td>6</td><td>2</td><td>0.125000</td></tr><tr><td>2</td><td>2024-04-01 to 2024-04-02</td><td>2024-04-03</td><td>16</td><td>8</td><td>0.375000</td><td>0.375000</td><td>5</td><td>3</td><td>0.000000</td></tr></tbody></table>
+</section>
+<section>
+  <h2>Per-Date Metrics</h2>
+  <table><thead><tr><th>Eval Date</th><th>Split IDs</th><th>Rows</th><th>Baseline A Accuracy</th><th>Baseline B Accuracy</th><th>Direct Rows</th><th>Fallback Rows</th></tr></thead><tbody><tr><td>2024-04-02</td><td>1</td><td>8</td><td>0.125000</td><td>0.250000</td><td>6</td><td>2</td></tr><tr><td>2024-04-03</td><td>2</td><td>8</td><td>0.375000</td><td>0.375000</td><td>5</td><td>3</td></tr></tbody></table>
+</section>
+<div class="grid">
+<section>
+  <h2>Coverage Summary</h2>
+  <table><thead><tr><th>Coverage Type</th><th>Rows</th><th>Fraction</th><th>Correct Rows</th><th>Accuracy</th></tr></thead><tbody><tr><td>direct_pitch_type_majority</td><td>11</td><td>0.687500</td><td>5</td><td>0.454545</td></tr><tr><td>global_fallback_due_to_tie</td><td>2</td><td>0.125000</td><td>0</td><td>0.000000</td></tr><tr><td>global_fallback_missing_pitch_type</td><td>3</td><td>0.187500</td><td>0</td><td>0.000000</td></tr><tr><td>all_global_fallback</td><td>5</td><td>0.312500</td><td>0</td><td>0.000000</td></tr></tbody></table>
+</section>
+<section>
+  <h2>Prediction Source Breakdown</h2>
+  <table><thead><tr><th>Prediction Source</th><th>Rows</th><th>Fraction</th><th>Correct Rows</th><th>Accuracy</th><th>Split IDs</th><th>Eval Dates</th></tr></thead><tbody><tr><td>all_global_fallback</td><td>5</td><td>0.312500</td><td>0</td><td>0.000000</td><td>1, 2</td><td>2024-04-02, 2024-04-03</td></tr><tr><td>global_fallback_due_to_tie</td><td>2</td><td>0.125000</td><td>0</td><td>0.000000</td><td>1</td><td>2024-04-02</td></tr><tr><td>global_fallback_missing_pitch_type</td><td>3</td><td>0.187500</td><td>0</td><td>0.000000</td><td>2</td><td>2024-04-03</td></tr><tr><td>pitch_type_majority</td><td>11</td><td>0.687500</td><td>5</td><td>0.454545</td><td>1, 2</td><td>2024-04-02, 2024-04-03</td></tr></tbody></table>
+</section>
+</div>
+<div class="grid">
+<section>
+  <h2>Baseline A Confusion Matrix</h2>
+  <table><thead><tr><th>Actual \ Predicted</th><th>strike_like</th><th>ball_like</th><th>in_play_out</th><th>in_play_hit</th><th>hit_by_pitch</th><th>strikeout</th></tr></thead><tbody><tr><td>strike_like</td><td>3</td><td>0</td><td>3</td><td>0</td><td>0</td><td>0</td></tr><tr><td>ball_like</td><td>2</td><td>0</td><td>3</td><td>0</td><td>0</td><td>0</td></tr><tr><td>in_play_out</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr><tr><td>in_play_hit</td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr><tr><td>hit_by_pitch</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>strikeout</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr></tbody></table>
+</section>
+<section>
+  <h2>Baseline B Confusion Matrix</h2>
+  <table><thead><tr><th>Actual \ Predicted</th><th>strike_like</th><th>ball_like</th><th>in_play_out</th><th>in_play_hit</th><th>hit_by_pitch</th><th>strikeout</th></tr></thead><tbody><tr><td>strike_like</td><td>5</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr><tr><td>ball_like</td><td>5</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>in_play_out</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>in_play_hit</td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr><tr><td>hit_by_pitch</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>strikeout</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr></tbody></table>
+</section>
+</div>
+<section>
+  <h3>Split 1 Pitch-Type Resolution</h3>
+  <p><strong>Eval date:</strong> 2024-04-02</p>
+  <table><thead><tr><th>Pitch Type</th><th>Support</th><th>Resolved Prediction</th><th>Prediction Source</th><th>Fallback</th></tr></thead><tbody><tr><td>CH</td><td>3</td><td>in_play_out</td><td>global_fallback_due_to_tie</td><td>true</td></tr><tr><td>FF</td><td>3</td><td>strike_like</td><td>pitch_type_majority</td><td>false</td></tr><tr><td>SI</td><td>2</td><td>in_play_out</td><td>global_fallback_due_to_tie</td><td>true</td></tr></tbody></table>
+</section>
+<section>
+  <h3>Split 2 Pitch-Type Resolution</h3>
+  <p><strong>Eval date:</strong> 2024-04-03</p>
+  <table><thead><tr><th>Pitch Type</th><th>Support</th><th>Resolved Prediction</th><th>Prediction Source</th><th>Fallback</th></tr></thead><tbody><tr><td>CH</td><td>3</td><td>strike_like</td><td>global_fallback_due_to_tie</td><td>true</td></tr><tr><td>FF</td><td>9</td><td>strike_like</td><td>pitch_type_majority</td><td>false</td></tr><tr><td>SI</td><td>4</td><td>strike_like</td><td>pitch_type_majority</td><td>false</td></tr></tbody></table>
+</section>
+<section>
+  <h2>Baseline B Improvement Rows</h2>
+  <table><thead><tr><th>split_id</th><th>train_date_range</th><th>eval_date</th><th>source_row_id</th><th>pitch_type</th><th>actual_event_category</th><th>baseline_a_prediction</th><th>baseline_a_correct</th><th>baseline_b_prediction</th><th>baseline_b_correct</th><th>baseline_b_prediction_source</th></tr></thead><tbody><tr><td>1</td><td>2024-04-01 to 2024-04-01</td><td>2024-04-02</td><td>12</td><td>FF</td><td>strike_like</td><td>in_play_out</td><td>false</td><td>strike_like</td><td>true</td><td>pitch_type_majority</td></tr><tr><td>1</td><td>2024-04-01 to 2024-04-01</td><td>2024-04-02</td><td>15</td><td>FF</td><td>strike_like</td><td>in_play_out</td><td>false</td><td>strike_like</td><td>true</td><td>pitch_type_majority</td></tr></tbody></table>
+</section>
+<section>
+  <h2>Baseline B Incorrect Rows</h2>
+  <table><thead><tr><th>split_id</th><th>train_date_range</th><th>eval_date</th><th>source_row_id</th><th>pitch_type</th><th>actual_event_category</th><th>baseline_a_prediction</th><th>baseline_a_correct</th><th>baseline_b_prediction</th><th>baseline_b_correct</th><th>baseline_b_prediction_source</th></tr></thead><tbody><tr><td>1</td><td>2024-04-01 to 2024-04-01</td><td>2024-04-02</td><td>9</td><td>SI</td><td>strike_like</td><td>in_play_out</td><td>false</td><td>in_play_out</td><td>false</td><td>global_fallback_due_to_tie</td></tr><tr><td>1</td><td>2024-04-01 to 2024-04-01</td><td>2024-04-02</td><td>10</td><td>FF</td><td>ball_like</td><td>in_play_out</td><td>false</td><td>strike_like</td><td>false</td><td>pitch_type_majority</td></tr><tr><td>1</td><td>2024-04-01 to 2024-04-01</td><td>2024-04-02</td><td>11</td><td>FF</td><td>ball_like</td><td>in_play_out</td><td>false</td><td>strike_like</td><td>false</td><td>pitch_type_majority</td></tr><tr><td>1</td><td>2024-04-01 to 2024-04-01</td><td>2024-04-02</td><td>13</td><td>FF</td><td>ball_like</td><td>in_play_out</td><td>false</td><td>strike_like</td><td>false</td><td>pitch_type_majority</td></tr><tr><td>1</td><td>2024-04-01 to 2024-04-01</td><td>2024-04-02</td><td>14</td><td>SI</td><td>in_play_hit</td><td>in_play_out</td><td>false</td><td>in_play_out</td><td>false</td><td>global_fallback_due_to_tie</td></tr><tr><td>1</td><td>2024-04-01 to 2024-04-01</td><td>2024-04-02</td><td>16</td><td>FF</td><td>in_play_out</td><td>in_play_out</td><td>true</td><td>strike_like</td><td>false</td><td>pitch_type_majority</td></tr><tr><td>2</td><td>2024-04-01 to 2024-04-02</td><td>2024-04-03</td><td>17</td><td>SI</td><td>in_play_hit</td><td>strike_like</td><td>false</td><td>strike_like</td><td>false</td><td>pitch_type_majority</td></tr><tr><td>2</td><td>2024-04-01 to 2024-04-02</td><td>2024-04-03</td><td>20</td><td>FS</td><td>hit_by_pitch</td><td>strike_like</td><td>false</td><td>strike_like</td><td>false</td><td>global_fallback_missing_pitch_type</td></tr><tr><td>2</td><td>2024-04-01 to 2024-04-02</td><td>2024-04-03</td><td>21</td><td>ST</td><td>ball_like</td><td>strike_like</td><td>false</td><td>strike_like</td><td>false</td><td>global_fallback_missing_pitch_type</td></tr><tr><td>2</td><td>2024-04-01 to 2024-04-02</td><td>2024-04-03</td><td>23</td><td>KC</td><td>ball_like</td><td>strike_like</td><td>false</td><td>strike_like</td><td>false</td><td>global_fallback_missing_pitch_type</td></tr><tr><td>2</td><td>2024-04-01 to 2024-04-02</td><td>2024-04-03</td><td>24</td><td>SI</td><td>in_play_hit</td><td>strike_like</td><td>false</td><td>strike_like</td><td>false</td><td>pitch_type_majority</td></tr></tbody></table>
+</section>
+<section>
+  <h2>All Historical Mistake Rows</h2>
+  <table><thead><tr><th>split_id</th><th>train_date_range</th><th>eval_date</th><th>source_row_id</th><th>pitch_type</th><th>actual_event_category</th><th>baseline_a_prediction</th><th>baseline_a_correct</th><th>baseline_b_prediction</th><th>baseline_b_correct</th><th>baseline_b_prediction_source</th></tr></thead><tbody><tr><td>1</td><td>2024-04-01 to 2024-04-01</td><td>2024-04-02</td><td>9</td><td>SI</td><td>strike_like</td><td>in_play_out</td><td>false</td><td>in_play_out</td><td>false</td><td>global_fallback_due_to_tie</td></tr><tr><td>1</td><td>2024-04-01 to 2024-04-01</td><td>2024-04-02</td><td>10</td><td>FF</td><td>ball_like</td><td>in_play_out</td><td>false</td><td>strike_like</td><td>false</td><td>pitch_type_majority</td></tr><tr><td>1</td><td>2024-04-01 to 2024-04-01</td><td>2024-04-02</td><td>11</td><td>FF</td><td>ball_like</td><td>in_play_out</td><td>false</td><td>strike_like</td><td>false</td><td>pitch_type_majority</td></tr><tr><td>1</td><td>2024-04-01 to 2024-04-01</td><td>2024-04-02</td><td>12</td><td>FF</td><td>strike_like</td><td>in_play_out</td><td>false</td><td>strike_like</td><td>true</td><td>pitch_type_majority</td></tr><tr><td>1</td><td>2024-04-01 to 2024-04-01</td><td>2024-04-02</td><td>13</td><td>FF</td><td>ball_like</td><td>in_play_out</td><td>false</td><td>strike_like</td><td>false</td><td>pitch_type_majority</td></tr><tr><td>1</td><td>2024-04-01 to 2024-04-01</td><td>2024-04-02</td><td>14</td><td>SI</td><td>in_play_hit</td><td>in_play_out</td><td>false</td><td>in_play_out</td><td>false</td><td>global_fallback_due_to_tie</td></tr><tr><td>1</td><td>2024-04-01 to 2024-04-01</td><td>2024-04-02</td><td>15</td><td>FF</td><td>strike_like</td><td>in_play_out</td><td>false</td><td>strike_like</td><td>true</td><td>pitch_type_majority</td></tr><tr><td>1</td><td>2024-04-01 to 2024-04-01</td><td>2024-04-02</td><td>16</td><td>FF</td><td>in_play_out</td><td>in_play_out</td><td>true</td><td>strike_like</td><td>false</td><td>pitch_type_majority</td></tr><tr><td>2</td><td>2024-04-01 to 2024-04-02</td><td>2024-04-03</td><td>17</td><td>SI</td><td>in_play_hit</td><td>strike_like</td><td>false</td><td>strike_like</td><td>false</td><td>pitch_type_majority</td></tr><tr><td>2</td><td>2024-04-01 to 2024-04-02</td><td>2024-04-03</td><td>20</td><td>FS</td><td>hit_by_pitch</td><td>strike_like</td><td>false</td><td>strike_like</td><td>false</td><td>global_fallback_missing_pitch_type</td></tr><tr><td>2</td><td>2024-04-01 to 2024-04-02</td><td>2024-04-03</td><td>21</td><td>ST</td><td>ball_like</td><td>strike_like</td><td>false</td><td>strike_like</td><td>false</td><td>global_fallback_missing_pitch_type</td></tr><tr><td>2</td><td>2024-04-01 to 2024-04-02</td><td>2024-04-03</td><td>23</td><td>KC</td><td>ball_like</td><td>strike_like</td><td>false</td><td>strike_like</td><td>false</td><td>global_fallback_missing_pitch_type</td></tr><tr><td>2</td><td>2024-04-01 to 2024-04-02</td><td>2024-04-03</td><td>24</td><td>SI</td><td>in_play_hit</td><td>strike_like</td><td>false</td><td>strike_like</td><td>false</td><td>pitch_type_majority</td></tr></tbody></table>
+</section>
+<section>
+  <h2>Limitations</h2>
+  <ul><li>This dashboard reads only the fixed P221-A CSV/JSON/Markdown artifacts plus the fixed P220-A JSON artifact.</li><li>All metrics are historical holdout metrics on the bounded 16-row P221 evaluation snapshot.</li><li>The dashboard analyzes deterministic baseline errors only and does not train or score a production model.</li><li>No remote data fetch, no pybaseball call, no DB write, and no production activation occur in this task.</li><li>Evaluation reads only the fixed committed P218, P219, and P220 artifacts and does not refresh any upstream source.</li><li>Each holdout split trains only on earlier historical game_date rows and evaluates later historical rows from the same bounded P218 sample.</li><li>Baseline A uses the prior-date global majority event_category with deterministic alphabetical tie-break on tied counts.</li><li>Baseline B uses the prior-date pitch_type majority event_category and falls back to the prior-date global majority when the pitch_type majority is tied or missing from training history.</li><li>This is a historical-only evaluation prototype for pipeline shape demonstration and does not train a production model.</li><li>Results are bounded historical holdout metrics on a 24-row artifact snapshot and must not be interpreted as future predictive ability.</li><li>This dashboard reads only the fixed P219-A CSV, JSON, and Markdown artifacts and does not refresh upstream data.</li><li>All metrics are historical and in-sample on the bounded 24-row P219 evaluation snapshot.</li><li>The dashboard analyzes deterministic baseline mistakes only and does not train or score a production model.</li><li>This evaluation reuses the fixed 24-row P218 historical feature table only and does not refresh any upstream source.</li><li>Baselines are deterministic heuristics for pipeline demonstration only and do not train or score a production model.</li><li>Pitch-type baseline falls back to the global majority class whenever a pitch type has no unique within-pitch majority class.</li><li>Results are in-sample on a bounded historical snapshot and must not be interpreted as future predictive ability.</li><li>Feature rows are derived only from the fixed P216/P217 artifact snapshots and do not refresh upstream data.</li><li>This prototype is a bounded preprocessing example for one small historical sample and is not a production feature contract.</li><li>Several fields remain heuristic because the source artifacts do not include full context such as batter names, count state, or full plate appearance outcomes.</li><li>One fixed three-day historical date range and one team filter only; this is a bounded sample pack, not a season-wide study.</li><li>Output depends on the public historical pybaseball/statcast upstream response remaining available and schema-compatible for the fixed request.</li><li>Sample rows are normalized into a deterministic, bounded CSV artifact for inspection only and are not production-ready data contracts.</li><li>Dashboard metrics are computed from the fixed P216-A CSV snapshot only, not from a refreshed upstream pull.</li><li>This dashboard reflects a small bounded multi-date historical sample and should not be generalized beyond the fixed date range and team filter.</li><li>CSV typing is preserved as artifact text for determinism, so numeric-looking fields are summarized as stored snapshot values.</li></ul>
+</section>
+<section>
+  <h2>Prohibited Claims</h2>
+  <ul><li>No future prediction claim.</li><li>No live prediction claim.</li><li>No betting advice claim.</li><li>No production readiness claim.</li><li>No edge, ROI, EV, Kelly, or CLV claim.</li></ul>
+  <p><strong>Disclaimer:</strong> Historical time-split error analysis dashboard only. Not live predictions, not betting advice.</p>
+</section>
+</main>
+</body>
+</html>

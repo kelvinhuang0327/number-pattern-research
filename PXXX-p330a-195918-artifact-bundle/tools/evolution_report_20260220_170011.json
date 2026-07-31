@@ -1,0 +1,735 @@
+{
+  "timestamp": "2026-02-20T17:00:11.806244",
+  "total_draws": 2102,
+  "total_strategies_tested": 396,
+  "generations": 10,
+  "1_leaderboard": [
+    {
+      "name": "Ensemble(Ensemble(M+Ensemble(E)",
+      "category": "synergy",
+      "numbers": [
+        1,
+        8,
+        28,
+        29,
+        31,
+        41
+      ],
+      "edge_>=2": 0.1358,
+      "hit_rates": {
+        ">=1": 0.62,
+        ">=2": 0.25,
+        ">=3": 0.06
+      },
+      "extreme_best": 4,
+      "volatility": 0.9254188241007418,
+      "generation": 10,
+      "params": {
+        "n_strategies": 2,
+        "weights": [
+          0.6177828121983537,
+          0.38221718780164626
+        ]
+      }
+    },
+    {
+      "name": "Ensemble(GapPressur+GapPressur)",
+      "category": "synergy",
+      "numbers": [
+        7,
+        10,
+        17,
+        23,
+        34,
+        42
+      ],
+      "edge_>=2": 0.1258,
+      "hit_rates": {
+        ">=1": 0.66,
+        ">=2": 0.24,
+        ">=3": 0.07
+      },
+      "extreme_best": 4,
+      "volatility": 0.9162968951164246,
+      "generation": 2,
+      "params": {
+        "n_strategies": 2,
+        "weights": [
+          0.48843848245725296,
+          0.511561517542747
+        ]
+      }
+    },
+    {
+      "name": "Markov_o3_w0.5",
+      "category": "stable",
+      "numbers": [
+        8,
+        15,
+        22,
+        35,
+        41,
+        43
+      ],
+      "edge_>=2": 0.1258,
+      "hit_rates": {
+        ">=1": 0.58,
+        ">=2": 0.24,
+        ">=3": 0.02
+      },
+      "extreme_best": 3,
+      "volatility": 0.8333066662399864,
+      "generation": 3,
+      "params": {
+        "order": "3",
+        "weight_prev": 0.516645669544757
+      }
+    },
+    {
+      "name": "Ensemble(GapPressur+GapPressur)",
+      "category": "synergy",
+      "numbers": [
+        7,
+        10,
+        17,
+        23,
+        34,
+        42
+      ],
+      "edge_>=2": 0.1258,
+      "hit_rates": {
+        ">=1": 0.66,
+        ">=2": 0.24,
+        ">=3": 0.07
+      },
+      "extreme_best": 4,
+      "volatility": 0.9162968951164246,
+      "generation": 3,
+      "params": {
+        "n_strategies": 2,
+        "weights": [
+          0.5637690538767607,
+          0.4362309461232393
+        ]
+      }
+    },
+    {
+      "name": "Ensemble(Ensemble(G+GapPressur)",
+      "category": "synergy",
+      "numbers": [
+        7,
+        10,
+        17,
+        23,
+        34,
+        42
+      ],
+      "edge_>=2": 0.1258,
+      "hit_rates": {
+        ">=1": 0.66,
+        ">=2": 0.24,
+        ">=3": 0.07
+      },
+      "extreme_best": 4,
+      "volatility": 0.9162968951164246,
+      "generation": 5,
+      "params": {
+        "n_strategies": 2,
+        "weights": [
+          0.563145314016211,
+          0.43685468598378896
+        ]
+      }
+    },
+    {
+      "name": "Ensemble(Markov_o1_+Markov_o3_+Markov_o2_)",
+      "category": "synergy",
+      "numbers": [
+        1,
+        8,
+        20,
+        22,
+        23,
+        41
+      ],
+      "edge_>=2": 0.1258,
+      "hit_rates": {
+        ">=1": 0.62,
+        ">=2": 0.24,
+        ">=3": 0.03
+      },
+      "extreme_best": 3,
+      "volatility": 0.8354040938372279,
+      "generation": 6,
+      "params": {
+        "n_strategies": 3,
+        "weights": [
+          0.14109575955094247,
+          0.11165749747074363,
+          0.747246742978314
+        ]
+      }
+    },
+    {
+      "name": "Ensemble(HotCold_h3+GapPressur)",
+      "category": "synergy",
+      "numbers": [
+        10,
+        17,
+        19,
+        23,
+        42,
+        47
+      ],
+      "edge_>=2": 0.11580000000000001,
+      "hit_rates": {
+        ">=1": 0.63,
+        ">=2": 0.23,
+        ">=3": 0.01
+      },
+      "extreme_best": 3,
+      "volatility": 0.7830070242341379,
+      "generation": 4,
+      "params": {
+        "n_strategies": 2,
+        "weights": [
+          0.5377734655025806,
+          0.46222653449741935
+        ]
+      }
+    },
+    {
+      "name": "Freq_mixed_w30",
+      "category": "stable",
+      "numbers": [
+        11,
+        14,
+        19,
+        32,
+        39,
+        47
+      ],
+      "edge_>=2": 0.1058,
+      "hit_rates": {
+        ">=1": 0.6,
+        ">=2": 0.22,
+        ">=3": 0.07
+      },
+      "extreme_best": 3,
+      "volatility": 0.9043782394551519,
+      "generation": 1,
+      "params": {
+        "window": 30,
+        "mode": "mixed",
+        "top_n": 6
+      }
+    },
+    {
+      "name": "Markov_o3_w0.5",
+      "category": "stable",
+      "numbers": [
+        8,
+        15,
+        22,
+        35,
+        41,
+        43
+      ],
+      "edge_>=2": 0.1058,
+      "hit_rates": {
+        ">=1": 0.58,
+        ">=2": 0.22,
+        ">=3": 0.03
+      },
+      "extreme_best": 3,
+      "volatility": 0.8373171442171716,
+      "generation": 1,
+      "params": {
+        "order": 3,
+        "weight_prev": 0.5
+      }
+    },
+    {
+      "name": "Markov_o3_w0.7",
+      "category": "stable",
+      "numbers": [
+        20,
+        28,
+        29,
+        31,
+        35,
+        41
+      ],
+      "edge_>=2": 0.1058,
+      "hit_rates": {
+        ">=1": 0.55,
+        ">=2": 0.22,
+        ">=3": 0.04
+      },
+      "extreme_best": 3,
+      "volatility": 0.8682741502543999,
+      "generation": 1,
+      "params": {
+        "order": 3,
+        "weight_prev": 0.7
+      }
+    }
+  ],
+  "2_dark_horses": [
+    {
+      "name": "Ensemble(Ensemble(M+Ensemble(E)",
+      "category": "synergy",
+      "numbers": [
+        1,
+        8,
+        28,
+        29,
+        31,
+        41
+      ],
+      "edge_>=2": 0.1358,
+      "hit_rates": {
+        ">=1": 0.62,
+        ">=2": 0.25,
+        ">=3": 0.06
+      },
+      "extreme_best": 4,
+      "volatility": 0.9254188241007418,
+      "generation": 10,
+      "params": {
+        "n_strategies": 2,
+        "weights": [
+          0.6177828121983537,
+          0.38221718780164626
+        ]
+      }
+    }
+  ],
+  "3_best_combos": [
+    {
+      "name": "Ensemble(Ensemble(M+Ensemble(E)",
+      "category": "synergy",
+      "numbers": [
+        1,
+        8,
+        28,
+        29,
+        31,
+        41
+      ],
+      "edge_>=2": 0.1358,
+      "hit_rates": {
+        ">=1": 0.62,
+        ">=2": 0.25,
+        ">=3": 0.06
+      },
+      "extreme_best": 4,
+      "volatility": 0.9254188241007418,
+      "generation": 10,
+      "params": {
+        "n_strategies": 2,
+        "weights": [
+          0.6177828121983537,
+          0.38221718780164626
+        ]
+      }
+    },
+    {
+      "name": "Ensemble(GapPressur+GapPressur)",
+      "category": "synergy",
+      "numbers": [
+        7,
+        10,
+        17,
+        23,
+        34,
+        42
+      ],
+      "edge_>=2": 0.1258,
+      "hit_rates": {
+        ">=1": 0.66,
+        ">=2": 0.24,
+        ">=3": 0.07
+      },
+      "extreme_best": 4,
+      "volatility": 0.9162968951164246,
+      "generation": 2,
+      "params": {
+        "n_strategies": 2,
+        "weights": [
+          0.48843848245725296,
+          0.511561517542747
+        ]
+      }
+    },
+    {
+      "name": "Ensemble(GapPressur+GapPressur)",
+      "category": "synergy",
+      "numbers": [
+        7,
+        10,
+        17,
+        23,
+        34,
+        42
+      ],
+      "edge_>=2": 0.1258,
+      "hit_rates": {
+        ">=1": 0.66,
+        ">=2": 0.24,
+        ">=3": 0.07
+      },
+      "extreme_best": 4,
+      "volatility": 0.9162968951164246,
+      "generation": 3,
+      "params": {
+        "n_strategies": 2,
+        "weights": [
+          0.5637690538767607,
+          0.4362309461232393
+        ]
+      }
+    },
+    {
+      "name": "Ensemble(Ensemble(G+GapPressur)",
+      "category": "synergy",
+      "numbers": [
+        7,
+        10,
+        17,
+        23,
+        34,
+        42
+      ],
+      "edge_>=2": 0.1258,
+      "hit_rates": {
+        ">=1": 0.66,
+        ">=2": 0.24,
+        ">=3": 0.07
+      },
+      "extreme_best": 4,
+      "volatility": 0.9162968951164246,
+      "generation": 5,
+      "params": {
+        "n_strategies": 2,
+        "weights": [
+          0.563145314016211,
+          0.43685468598378896
+        ]
+      }
+    },
+    {
+      "name": "Ensemble(Markov_o1_+Markov_o3_+Markov_o2_)",
+      "category": "synergy",
+      "numbers": [
+        1,
+        8,
+        20,
+        22,
+        23,
+        41
+      ],
+      "edge_>=2": 0.1258,
+      "hit_rates": {
+        ">=1": 0.62,
+        ">=2": 0.24,
+        ">=3": 0.03
+      },
+      "extreme_best": 3,
+      "volatility": 0.8354040938372279,
+      "generation": 6,
+      "params": {
+        "n_strategies": 3,
+        "weights": [
+          0.14109575955094247,
+          0.11165749747074363,
+          0.747246742978314
+        ]
+      }
+    }
+  ],
+  "4_synergy_strategies": [
+    {
+      "name": "Ensemble(Ensemble(M+Ensemble(E)",
+      "category": "synergy",
+      "numbers": [
+        1,
+        8,
+        28,
+        29,
+        31,
+        41
+      ],
+      "edge_>=2": 0.1358,
+      "hit_rates": {
+        ">=1": 0.62,
+        ">=2": 0.25,
+        ">=3": 0.06
+      },
+      "extreme_best": 4,
+      "volatility": 0.9254188241007418,
+      "generation": 10,
+      "params": {
+        "n_strategies": 2,
+        "weights": [
+          0.6177828121983537,
+          0.38221718780164626
+        ]
+      }
+    },
+    {
+      "name": "Ensemble(GapPressur+GapPressur)",
+      "category": "synergy",
+      "numbers": [
+        7,
+        10,
+        17,
+        23,
+        34,
+        42
+      ],
+      "edge_>=2": 0.1258,
+      "hit_rates": {
+        ">=1": 0.66,
+        ">=2": 0.24,
+        ">=3": 0.07
+      },
+      "extreme_best": 4,
+      "volatility": 0.9162968951164246,
+      "generation": 2,
+      "params": {
+        "n_strategies": 2,
+        "weights": [
+          0.48843848245725296,
+          0.511561517542747
+        ]
+      }
+    },
+    {
+      "name": "Ensemble(GapPressur+GapPressur)",
+      "category": "synergy",
+      "numbers": [
+        7,
+        10,
+        17,
+        23,
+        34,
+        42
+      ],
+      "edge_>=2": 0.1258,
+      "hit_rates": {
+        ">=1": 0.66,
+        ">=2": 0.24,
+        ">=3": 0.07
+      },
+      "extreme_best": 4,
+      "volatility": 0.9162968951164246,
+      "generation": 3,
+      "params": {
+        "n_strategies": 2,
+        "weights": [
+          0.5637690538767607,
+          0.4362309461232393
+        ]
+      }
+    },
+    {
+      "name": "Ensemble(Ensemble(G+GapPressur)",
+      "category": "synergy",
+      "numbers": [
+        7,
+        10,
+        17,
+        23,
+        34,
+        42
+      ],
+      "edge_>=2": 0.1258,
+      "hit_rates": {
+        ">=1": 0.66,
+        ">=2": 0.24,
+        ">=3": 0.07
+      },
+      "extreme_best": 4,
+      "volatility": 0.9162968951164246,
+      "generation": 5,
+      "params": {
+        "n_strategies": 2,
+        "weights": [
+          0.563145314016211,
+          0.43685468598378896
+        ]
+      }
+    },
+    {
+      "name": "Ensemble(Markov_o1_+Markov_o3_+Markov_o2_)",
+      "category": "synergy",
+      "numbers": [
+        1,
+        8,
+        20,
+        22,
+        23,
+        41
+      ],
+      "edge_>=2": 0.1258,
+      "hit_rates": {
+        ">=1": 0.62,
+        ">=2": 0.24,
+        ">=3": 0.03
+      },
+      "extreme_best": 3,
+      "volatility": 0.8354040938372279,
+      "generation": 6,
+      "params": {
+        "n_strategies": 3,
+        "weights": [
+          0.14109575955094247,
+          0.11165749747074363,
+          0.747246742978314
+        ]
+      }
+    }
+  ],
+  "5_no_advantage": 0,
+  "6_pattern_exists": true,
+  "7_best_form": {
+    "name": "Ensemble(Ensemble(M+Ensemble(E)",
+    "category": "synergy",
+    "numbers": [
+      1,
+      8,
+      28,
+      29,
+      31,
+      41
+    ],
+    "edge_>=2": 0.1358,
+    "hit_rates": {
+      ">=1": 0.62,
+      ">=2": 0.25,
+      ">=3": 0.06
+    },
+    "extreme_best": 4,
+    "volatility": 0.9254188241007418,
+    "generation": 10,
+    "params": {
+      "n_strategies": 2,
+      "weights": [
+        0.6177828121983537,
+        0.38221718780164626
+      ]
+    }
+  },
+  "8_why_no_pattern": null,
+  "evolution_history": [
+    {
+      "generation": 1,
+      "pop_size": 53,
+      "best_name": "Freq_mixed_w30",
+      "best_edge": 0.1058,
+      "best_hit2": 0.22,
+      "avg_edge": 0.07937142857142857,
+      "hof_size": 5,
+      "elapsed": 64.0280818939209
+    },
+    {
+      "generation": 2,
+      "pop_size": 53,
+      "best_name": "Ensemble(GapPressur+GapPressur)",
+      "best_edge": 0.1258,
+      "best_hit2": 0.24,
+      "avg_edge": 0.08695384615384616,
+      "hof_size": 10,
+      "elapsed": 131.31012201309204
+    },
+    {
+      "generation": 3,
+      "pop_size": 56,
+      "best_name": "Ensemble(GapPressur+GapPressur)",
+      "best_edge": 0.1258,
+      "best_hit2": 0.24,
+      "avg_edge": 0.09233846153846155,
+      "hof_size": 15,
+      "elapsed": 221.95093822479248
+    },
+    {
+      "generation": 4,
+      "pop_size": 57,
+      "best_name": "Ensemble(GapPressur+GapPressur)",
+      "best_edge": 0.1258,
+      "best_hit2": 0.24,
+      "avg_edge": 0.09437142857142858,
+      "hof_size": 20,
+      "elapsed": 229.16868424415588
+    },
+    {
+      "generation": 5,
+      "pop_size": 65,
+      "best_name": "Ensemble(GapPressur+GapPressur)",
+      "best_edge": 0.1258,
+      "best_hit2": 0.24,
+      "avg_edge": 0.09758571428571429,
+      "hof_size": 25,
+      "elapsed": 349.6106197834015
+    },
+    {
+      "generation": 6,
+      "pop_size": 67,
+      "best_name": "Ensemble(GapPressur+GapPressur)",
+      "best_edge": 0.1258,
+      "best_hit2": 0.24,
+      "avg_edge": 0.10205,
+      "hof_size": 30,
+      "elapsed": 385.21848607063293
+    },
+    {
+      "generation": 7,
+      "pop_size": 61,
+      "best_name": "Ensemble(GapPressur+GapPressur)",
+      "best_edge": 0.1258,
+      "best_hit2": 0.24,
+      "avg_edge": 0.10731515151515153,
+      "hof_size": 35,
+      "elapsed": 529.6942329406738
+    },
+    {
+      "generation": 8,
+      "pop_size": 66,
+      "best_name": "Ensemble(GapPressur+GapPressur)",
+      "best_edge": 0.1258,
+      "best_hit2": 0.24,
+      "avg_edge": 0.10946666666666668,
+      "hof_size": 40,
+      "elapsed": 392.3073740005493
+    },
+    {
+      "generation": 9,
+      "pop_size": 76,
+      "best_name": "Ensemble(GapPressur+GapPressur)",
+      "best_edge": 0.1258,
+      "best_hit2": 0.24,
+      "avg_edge": 0.11186060606060606,
+      "hof_size": 45,
+      "elapsed": 497.5651309490204
+    },
+    {
+      "generation": 10,
+      "pop_size": 87,
+      "best_name": "Ensemble(Ensemble(M+Ensemble(E)",
+      "best_edge": 0.1358,
+      "best_hit2": 0.25,
+      "avg_edge": 0.11316842105263154,
+      "hof_size": 50,
+      "elapsed": 581.4961290359497
+    }
+  ],
+  "strategy_categories": {
+    "stable": 13,
+    "burst": 4,
+    "conditional": 0,
+    "synergy": 7,
+    "no_advantage": 0
+  },
+  "total_elapsed_seconds": 3382.3685958385468
+}

@@ -1,0 +1,49 @@
+lottery_type_normalization:
+  accepted_inputs:
+    - UPPERCASE (e.g. "BIG_LOTTO", "POWER_LOTTO", "DAILY_539")
+    - lowercase (e.g. "big_lotto", "power_lotto", "daily_539")
+    - MixedCase (e.g. "Big_Lotto")
+    - Leading/trailing whitespace (e.g. " big_lotto ", " BIG_LOTTO ")
+  canonical_values:
+    - "BIG_LOTTO"
+    - "POWER_LOTTO"
+    - "DAILY_539"
+  rejected_inputs:
+    - Non-string or empty string after strip (returns None)
+  case_behavior: case-insensitive, converted to uppercase via .strip().upper()
+  separator_behavior: underscores preserved
+  whitespace_behavior: leading and trailing whitespace stripped via .strip()
+
+detail_enum_normalization:
+  accepted_inputs:
+    sort:
+      - "target_draw_desc"
+      - "target_draw_asc"
+      - " TARGET_DRAW_ASC "
+      - "TARGET_DRAW_DESC"
+    hit_filter:
+      - "all"
+      - "hit"
+      - "miss"
+      - " HIT "
+      - " MISS "
+      - "ALL"
+  canonical_values:
+    sort:
+      - "target_draw_desc"
+      - "target_draw_asc"
+    hit_filter:
+      - "all"
+      - "hit"
+      - "miss"
+  rejected_inputs:
+    - Any value not matching canonical enum set after normalization (e.g. "target_draw_latest")
+  case_behavior: case-insensitive, converted to lowercase via .strip().lower()
+  separator_behavior: underscores preserved
+  whitespace_behavior: leading and trailing whitespace stripped via .strip()
+
+error_contract:
+  status_code: 400
+  response_shape:
+    detail: "invalid {param_name} '{original_value}'; allowed: {allowed_list}"
+  error_type: FastAPI HTTPException

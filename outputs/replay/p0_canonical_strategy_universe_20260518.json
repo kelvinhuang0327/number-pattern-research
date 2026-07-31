@@ -1,0 +1,204 @@
+{
+  "generated_at": "2026-05-18T02:06:00Z",
+  "mission": "P0 Schema Stabilization",
+  "canonical_total": 18,
+  "denomination_history": {
+    "legacy_506": {
+      "source": "docs/replay/strategy_historical_replay_roadmap_20260515.md",
+      "count": 506,
+      "scope": "Broad tool/script-level strategy inventory including EXPERIMENTAL/UNKNOWN candidates from codebase scan; not all have formal replay adapters",
+      "status": "SUPERSEDED by canonical_total=18 for replay governance purposes"
+    },
+    "legacy_91": {
+      "source": "outputs/replay/p1_strategy_lifecycle_inventory_20260511.json",
+      "count": 91,
+      "scope": "Earlier point-in-time inventory of strategies with any DB or registry presence",
+      "status": "SUPERSEDED"
+    },
+    "canonical_18": {
+      "source": "lottery_api/models/replay_strategy_registry.py _REGISTRY + non-executable entries",
+      "count": 18,
+      "scope": "Formal replay governance registry — strategies with adapters, governance decisions, or tombstone records",
+      "status": "CURRENT CANONICAL"
+    }
+  },
+  "note_on_512": "The mission briefing references '512 total strategies (含 ONLINE/OFFLINE/REJECTED/OBSERVATION/EXPERIMENTAL)'. As of 2026-05-18, the formal replay_strategy_registry contains 18 strategies. The gap reflects strategies from the broader codebase (tools/, models/) that have not been onboarded into the formal replay governance registry. These 494 additional candidate strategies are DISPLAY_ONLY/UNEVALUATED and are not tracked in this canonical universe until they pass P0 governance review. This document tracks the 18 formally-governed strategies only.",
+  "classification": {
+    "row_backed": {
+      "description": "Has prediction rows in strategy_prediction_replays. Can display actual vs predicted comparison.",
+      "count": 13
+    },
+    "historical_reconstructable": {
+      "description": "Has historical evidence (artifacts, JSONL logs) that could be reconstructed into replay rows. Not yet applied.",
+      "count": 0
+    },
+    "display_only": {
+      "description": "In registry but no rows and no reconstructable evidence. Shows as catalog entry only.",
+      "count": 1
+    },
+    "tombstone": {
+      "description": "RETIRED/REJECTED strategies with no rows and no reconstruction path. Preserved for audit trail.",
+      "count": 4
+    }
+  },
+  "classification_sum_check": {
+    "row_backed": 13,
+    "historical_reconstructable": 0,
+    "display_only": 1,
+    "tombstone": 4,
+    "total": 18,
+    "matches_canonical_total": true
+  },
+  "by_lifecycle": {
+    "ONLINE": 8,
+    "REJECTED": 4,
+    "RETIRED": 5,
+    "OBSERVATION": 1
+  },
+  "strategies": [
+    {
+      "canonical_id": "power_precision_3bet",
+      "strategy_name": "威力彩 Precision 3注",
+      "lifecycle_status": "ONLINE",
+      "replay_rows": 120,
+      "category": "row_backed",
+      "supported_lottery_types": ["POWER_LOTTO"]
+    },
+    {
+      "canonical_id": "power_orthogonal_5bet",
+      "strategy_name": "威力彩 Orthogonal 5注",
+      "lifecycle_status": "ONLINE",
+      "replay_rows": 120,
+      "category": "row_backed",
+      "supported_lottery_types": ["POWER_LOTTO"]
+    },
+    {
+      "canonical_id": "fourier_rhythm_3bet",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "lifecycle_status": "ONLINE",
+      "replay_rows": 3,
+      "category": "row_backed",
+      "supported_lottery_types": ["POWER_LOTTO"]
+    },
+    {
+      "canonical_id": "biglotto_triple_strike",
+      "strategy_name": "大樂透 Triple Strike",
+      "lifecycle_status": "ONLINE",
+      "replay_rows": 120,
+      "category": "row_backed",
+      "supported_lottery_types": ["BIG_LOTTO"]
+    },
+    {
+      "canonical_id": "biglotto_deviation_2bet",
+      "strategy_name": "大樂透 Deviation 2注",
+      "lifecycle_status": "ONLINE",
+      "replay_rows": 120,
+      "category": "row_backed",
+      "supported_lottery_types": ["BIG_LOTTO"]
+    },
+    {
+      "canonical_id": "ts3_regime_3bet",
+      "strategy_name": "大樂透 TS3+Regime 3注",
+      "lifecycle_status": "ONLINE",
+      "replay_rows": 9,
+      "category": "row_backed",
+      "supported_lottery_types": ["BIG_LOTTO"]
+    },
+    {
+      "canonical_id": "daily539_f4cold",
+      "strategy_name": "今彩539 F4 Cold",
+      "lifecycle_status": "ONLINE",
+      "replay_rows": 140,
+      "category": "row_backed",
+      "supported_lottery_types": ["DAILY_539"]
+    },
+    {
+      "canonical_id": "daily539_markov_cold",
+      "strategy_name": "今彩539 Markov Cold",
+      "lifecycle_status": "ONLINE",
+      "replay_rows": 140,
+      "category": "row_backed",
+      "supported_lottery_types": ["DAILY_539"]
+    },
+    {
+      "canonical_id": "biglotto_ts3_acb_4bet",
+      "strategy_name": "大樂透 TS3+ACB 4注",
+      "lifecycle_status": "REJECTED",
+      "replay_rows": 50,
+      "category": "row_backed",
+      "supported_lottery_types": ["BIG_LOTTO"]
+    },
+    {
+      "canonical_id": "biglotto_ts3_markov_freq_5bet",
+      "strategy_name": "大樂透 TS3+Markov 頻率正交 5注",
+      "lifecycle_status": "REJECTED",
+      "replay_rows": 50,
+      "category": "row_backed",
+      "supported_lottery_types": ["BIG_LOTTO"]
+    },
+    {
+      "canonical_id": "power_shlc_midfreq",
+      "strategy_name": "威力彩 SHLC 中頻指標",
+      "lifecycle_status": "REJECTED",
+      "replay_rows": 50,
+      "category": "row_backed",
+      "supported_lottery_types": ["POWER_LOTTO"]
+    },
+    {
+      "canonical_id": "p1_deviation_2bet_539",
+      "strategy_name": "今彩539 P1號+偏差互補 2注",
+      "lifecycle_status": "REJECTED",
+      "replay_rows": 50,
+      "category": "row_backed",
+      "supported_lottery_types": ["DAILY_539"]
+    },
+    {
+      "canonical_id": "acb_1bet",
+      "strategy_name": "今彩539 ACB 1注",
+      "lifecycle_status": "RETIRED",
+      "replay_rows": 0,
+      "category": "tombstone",
+      "supported_lottery_types": ["DAILY_539"]
+    },
+    {
+      "canonical_id": "acb_markov_midfreq",
+      "strategy_name": "今彩539 ACB+Markov 中頻",
+      "lifecycle_status": "RETIRED",
+      "replay_rows": 0,
+      "category": "tombstone",
+      "supported_lottery_types": ["DAILY_539"]
+    },
+    {
+      "canonical_id": "acb_markov_midfreq_3bet",
+      "strategy_name": "今彩539 ACB+Markov 中頻 3注",
+      "lifecycle_status": "RETIRED",
+      "replay_rows": 3,
+      "category": "row_backed",
+      "supported_lottery_types": ["DAILY_539"]
+    },
+    {
+      "canonical_id": "midfreq_acb_2bet",
+      "strategy_name": "今彩539 中頻 ACB 2注",
+      "lifecycle_status": "RETIRED",
+      "replay_rows": 0,
+      "category": "tombstone",
+      "supported_lottery_types": ["DAILY_539"]
+    },
+    {
+      "canonical_id": "midfreq_fourier_2bet",
+      "strategy_name": "今彩539 中頻 Fourier 2注",
+      "lifecycle_status": "RETIRED",
+      "replay_rows": 0,
+      "category": "tombstone",
+      "supported_lottery_types": ["DAILY_539"]
+    },
+    {
+      "canonical_id": "h6_gate_mk20_ew85",
+      "strategy_name": "威力彩 H6 Gate mk20 ew85",
+      "lifecycle_status": "OBSERVATION",
+      "replay_rows": 0,
+      "category": "display_only",
+      "supported_lottery_types": ["POWER_LOTTO"]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+task: P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_FINAL_TREE_CLOSURE_R4A
+database_contract:
+  production_db_path_opened: false
+  fixture_db_opened: _integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4A/runtime_sandbox/fixture.db
+  write_sql_present: false
+  ddl_present: false
+  migration_dependency: false
+  fixture_db_unchanged: true

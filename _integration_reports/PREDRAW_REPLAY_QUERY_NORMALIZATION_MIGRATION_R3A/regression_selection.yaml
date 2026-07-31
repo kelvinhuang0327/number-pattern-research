@@ -1,0 +1,16 @@
+task_id: PREDRAW_REPLAY_QUERY_NORMALIZATION_MIGRATION_R3A
+timestamp: '2026-07-29T15:25:06+08:00'
+selected_tests:
+  - tests/test_p354a_replay_lottery_type_query_normalization.py
+  - tests/test_p355a_replay_detail_enum_query_normalization.py
+  - tests/test_p257b_best_strategy_overview_readonly_api.py
+  - tests/test_p261a_replay_detail_row_expand.py
+  - tests/test_p259a_history_replay_overview.py
+  - tests/test_p259b_history_replay_detail.py
+  - tests/test_replay_api_contract.py
+  - tests/test_p260a_replay_ux_parity.py
+selection_rationale:
+  Gate_1: Focused normalization unit tests for lottery_type and sort/hit_filter enums.
+  Gate_2: Full P257B regression for best strategy overview endpoints.
+  Gate_3: Full P261A regression for replay detail row expand endpoints and UI scope guard.
+  Gate_4: Additional directly relevant replay router, history replay overview, detail, and API contract test suites.

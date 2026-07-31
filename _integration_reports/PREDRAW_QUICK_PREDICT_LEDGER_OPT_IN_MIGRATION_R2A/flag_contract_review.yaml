@@ -1,0 +1,10 @@
+flag_contract:
+  extracted_source_flag: "--write-predraw-ledger"
+  target_final_flag: "--write-predraw-ledger"
+  test_expected_flag: "--write-predraw-ledger"
+  compatible: true
+  alias_supported: false
+  correction_required: false
+  env_var_supported: "LOTTERY_PREDRAW_LEDGER_PATH"
+  path_override_flag: "--predraw-ledger-path"
+  resolution_notes: "Source implementation and tests both use --write-predraw-ledger as the explicit opt-in flag. Planning packet reference --opt-in-predraw-ledger was an initial design draft, superseded by extracted source authority --write-predraw-ledger."

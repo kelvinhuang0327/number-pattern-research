@@ -1,0 +1,37 @@
+task_id: LOTTERYNEW_BIGLOTTO_GENERATE_CANONICAL_VERTICAL_R1
+canonical_files:
+  - lottery_api/models/replay_strategy_registry.py
+conflict_copies:
+  - file_path: lottery_api/models/replay_strategy_registry.py.__CONFLICT__LotteryNew-agent__DETACHED__24617fe3__DETACHED__bf3fd41a
+    status: NOT_USED
+    reason: "Contains older state without recent P1.3/P1.4 ts3_regime_3bet reconstruction and normalization rules."
+  - file_path: lottery_api/models/replay_strategy_registry.py.__CONFLICT__LotteryNew-clean__DETACHED__NOHEAD__DETACHED__25f60c23
+    status: NOT_USED
+    reason: "Earlier stripped baseline snapshot, lacks full adapter definitions."
+  - file_path: lottery_api/models/replay_strategy_registry.py.__CONFLICT__LotteryNew-main__main__2aaa1874__main__bf3fd41a
+    status: NOT_USED
+    reason: "Identical to detached agent conflict copy, superseded by current canonical."
+  - file_path: lottery_api/models/replay_strategy_registry.py.__CONFLICT__P691-fresh-main-successor-r1__codex-p691-fresh-main-successor-r1__e0f6c26f__codex-p691-fresh-main-successor-r1__c6c03528
+    status: NOT_USED
+    reason: "Branch-specific experiment copy."
+  - file_path: lottery_api/models/replay_strategy_registry.py.__CONFLICT__clever-villani-2f0ef7__claude-clever-villani-2f0ef7__7cd02b06__claude-clever-villani-2f0ef7__25f60c23
+    status: NOT_USED
+    reason: "Older branch snapshot."
+  - file_path: lottery_api/models/replay_strategy_registry.py.__CONFLICT__hopeful-bouman-38cd5d__claude-priceless-newton-09ad69__2aaa1874__claude-priceless-newton-09ad69__bf3fd41a
+    status: NOT_USED
+    reason: "Older worktree snapshot."
+  - file_path: lottery_api/models/replay_strategy_registry.py.__CONFLICT__nifty-meitner-d9c302__claude-nifty-meitner-d9c302__2aaa1874__claude-nifty-meitner-d9c302__bf3fd41a
+    status: NOT_USED
+    reason: "Older worktree snapshot."
+  - file_path: lottery_api/models/replay_strategy_registry.py.__CONFLICT__objective-carson-fa5c72__claude-objective-carson-fa5c72__2aaa1874__claude-objective-carson-fa5c72__bf3fd41a
+    status: NOT_USED
+    reason: "Older worktree snapshot."
+  - file_path: lottery_api/models/replay_strategy_registry.py.__CONFLICT__p1-family-independent-reproduction-r2__DETACHED__24617fe3__DETACHED__bf3fd41a
+    status: NOT_USED
+    reason: "Reproduction branch snapshot."
+  - file_path: lottery_api/models/replay_strategy_registry.py.__CONFLICT__trusting-chaum-8cc8c5__claude-trusting-chaum-8cc8c5__684bffce__claude-trusting-chaum-8cc8c5__25f60c23
+    status: NOT_USED
+    reason: "Older worktree snapshot."
+  - file_path: lottery_api/models/replay_strategy_registry.py.__CONFLICT__zen-gates-ff6802__claude-zen-gates-ff6802__c8b423d0__claude-zen-gates-ff6802__e5e29b03
+    status: NOT_USED
+    reason: "Alternative experiment snapshot."

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.bettingpool.main</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>__PROJECT_ROOT__/start_all.sh</string>
+        <string>--foreground</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>__PROJECT_ROOT__</string>
+
+    <!-- 預設關閉：需手動執行 scheduler_start.sh 才會啟動 -->
+    <key>RunAtLoad</key>
+    <false/>
+
+    <key>KeepAlive</key>
+    <false/>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>__LAUNCH_PATH__</string>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+        <key>SERVICE_HOST</key>
+        <string>127.0.0.1</string>
+        <key>BACKEND_PORT</key>
+        <string>8787</string>
+        <key>FRONTEND_PORT</key>
+        <string>8788</string>
+        <key>PROXY_PORT</key>
+        <string>8789</string>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>__PROJECT_ROOT__/runtime/agent_orchestrator/logs/launchd/main_agent.out.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>__PROJECT_ROOT__/runtime/agent_orchestrator/logs/launchd/main_agent.err.log</string>
+
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
+</dict>
+</plist>

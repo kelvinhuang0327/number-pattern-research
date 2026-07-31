@@ -1,0 +1,23 @@
+{
+  "schedule_rule_version": "v1",
+  "created_at": "2026-07-03T14:37:22Z",
+  "timezone": "Asia/Taipei",
+  "provenance_note": "Draw weekdays derived from existing repo code: lottery_api/predict_next_power_lotto.py::get_next_draw_date (POWER_LOTTO draws Mon/Thu, weekday()in[0,3]) and tools/scrape_lottery_data.py line ~146 (BIG_LOTTO draws Tue/Fri, weekday() in [1,4]). DAILY_539 draws every day. The conservative_close_time_local values are a deliberately conservative PLACEHOLDER (not sourced from an official draw-close timetable) pending Owner confirmation of the true official close time; eligibility checks use this as an upper bound so under-estimating draw lateness (setting the cutoff earlier than the true close) is safe (fails closed toward non-live), while over-estimating (setting it later) would NOT be safe -- this value should be tightened, never loosened, without Owner review.",
+  "rules": {
+    "POWER_LOTTO": {
+      "draw_weekdays": [0, 3],
+      "draw_weekdays_note": "Monday=0, Thursday=3 (Python datetime.weekday())",
+      "conservative_close_time_local": "20:00:00"
+    },
+    "BIG_LOTTO": {
+      "draw_weekdays": [1, 4],
+      "draw_weekdays_note": "Tuesday=1, Friday=4 (Python datetime.weekday())",
+      "conservative_close_time_local": "20:00:00"
+    },
+    "DAILY_539": {
+      "draw_weekdays": [0, 1, 2, 3, 4, 5, 6],
+      "draw_weekdays_note": "draws every day",
+      "conservative_close_time_local": "20:00:00"
+    }
+  }
+}

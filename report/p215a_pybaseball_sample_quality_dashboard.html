@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>P215-A pybaseball Historical Sample Quality Dashboard</title>
+  <style>
+    :root { color-scheme: light; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 32px; color: #182028; background: #f6f8fb; }
+    main { max-width: 1200px; margin: 0 auto; background: #ffffff; padding: 32px; border: 1px solid #d8dee8; }
+    h1, h2, h3 { color: #0f3554; }
+    p.notice { padding: 12px 14px; background: #eef5fb; border-left: 4px solid #2d6ea3; }
+    table { border-collapse: collapse; width: 100%; margin: 16px 0 24px; font-size: 14px; }
+    th, td { border: 1px solid #d8dee8; padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { background: #edf3f8; }
+    code { font-family: 'SFMono-Regular', Menlo, monospace; font-size: 0.95em; }
+    section { margin-bottom: 28px; }
+    ul { padding-left: 20px; }
+  </style>
+</head>
+<body>
+<main>
+<h1>P215-A pybaseball Historical Sample Quality Dashboard</h1>
+<p class="notice">Historical pybaseball sample quality dashboard only. Not live predictions, not betting advice.</p>
+<section>
+  <h2>Summary</h2>
+  <ul><li><strong>Status:</strong> PASS_P214A_ARTIFACT_ONLY_SAMPLE_QUALITY_DASHBOARD</li>
+<li><strong>Dashboard row count:</strong> 12</li>
+<li><strong>Dashboard column count:</strong> 15</li>
+<li><strong>Source fetched row count:</strong> 121</li>
+<li><strong>Source snapshot row count:</strong> 12</li></ul>
+</section>
+<section>
+  <h2>Source Artifacts</h2>
+  <table>
+    <thead><tr><th>Artifact</th><th>SHA256</th></tr></thead>
+    <tbody><tr><td><code>report/p214a_pybaseball_historical_sample_smoke.md</code></td><td><code>e91a9a2a8e57db938fa8c433e908aae90276aa4087ec992f19398602e8aa868e</code></td></tr>
+<tr><td><code>report/p214a_pybaseball_historical_sample_smoke.json</code></td><td><code>007e245ca3784c5415aa344ee001a2bf4ebabb8716ef566671780214e1bb0563</code></td></tr>
+<tr><td><code>report/p214a_pybaseball_historical_sample_smoke.csv</code></td><td><code>0e00a449bb814866b678e8849763f032e522051f6d192b8c5fb5e5b57a623558</code></td></tr></tbody>
+  </table>
+</section>
+<section>
+  <h2>Columns</h2>
+  <p>game_date, game_pk, home_team, away_team, inning, inning_topbot, at_bat_number, pitch_number, batter, pitcher, pitch_type, events, description, release_speed, zone</p>
+</section>
+<section>
+  <h2>Missingness</h2>
+  <table>
+    <thead><tr><th>Column</th><th>Missing Count</th><th>Missing Fraction</th></tr></thead>
+    <tbody><tr><td><code>game_date</code></td><td>0</td><td>0.000000</td></tr>
+<tr><td><code>game_pk</code></td><td>0</td><td>0.000000</td></tr>
+<tr><td><code>home_team</code></td><td>0</td><td>0.000000</td></tr>
+<tr><td><code>away_team</code></td><td>0</td><td>0.000000</td></tr>
+<tr><td><code>inning</code></td><td>0</td><td>0.000000</td></tr>
+<tr><td><code>inning_topbot</code></td><td>0</td><td>0.000000</td></tr>
+<tr><td><code>at_bat_number</code></td><td>0</td><td>0.000000</td></tr>
+<tr><td><code>pitch_number</code></td><td>0</td><td>0.000000</td></tr>
+<tr><td><code>batter</code></td><td>0</td><td>0.000000</td></tr>
+<tr><td><code>pitcher</code></td><td>0</td><td>0.000000</td></tr>
+<tr><td><code>pitch_type</code></td><td>0</td><td>0.000000</td></tr>
+<tr><td><code>events</code></td><td>7</td><td>0.583333</td></tr>
+<tr><td><code>description</code></td><td>0</td><td>0.000000</td></tr>
+<tr><td><code>release_speed</code></td><td>0</td><td>0.000000</td></tr>
+<tr><td><code>zone</code></td><td>0</td><td>0.000000</td></tr></tbody>
+  </table>
+</section>
+<section>
+  <h2>Selected Distributions</h2>
+  <section><h3><code>pitch_type</code></h3><table><thead><tr><th>Value</th><th>Count</th><th>Fraction</th></tr></thead><tbody><tr><td>CH</td><td>5</td><td>0.416667</td></tr>
+<tr><td>SI</td><td>4</td><td>0.333333</td></tr>
+<tr><td>FF</td><td>3</td><td>0.250000</td></tr></tbody></table></section>
+<section><h3><code>events</code></h3><table><thead><tr><th>Value</th><th>Count</th><th>Fraction</th></tr></thead><tbody><tr><td>(missing)</td><td>7</td><td>0.583333</td></tr>
+<tr><td>field_out</td><td>4</td><td>0.333333</td></tr>
+<tr><td>strikeout</td><td>1</td><td>0.083333</td></tr></tbody></table></section>
+<section><h3><code>description</code></h3><table><thead><tr><th>Value</th><th>Count</th><th>Fraction</th></tr></thead><tbody><tr><td>called_strike</td><td>4</td><td>0.333333</td></tr>
+<tr><td>hit_into_play</td><td>4</td><td>0.333333</td></tr>
+<tr><td>ball</td><td>2</td><td>0.166667</td></tr>
+<tr><td>foul</td><td>1</td><td>0.083333</td></tr>
+<tr><td>swinging_strike</td><td>1</td><td>0.083333</td></tr></tbody></table></section>
+<section><h3><code>home_team</code></h3><table><thead><tr><th>Value</th><th>Count</th><th>Fraction</th></tr></thead><tbody><tr><td>SEA</td><td>12</td><td>1.000000</td></tr></tbody></table></section>
+<section><h3><code>away_team</code></h3><table><thead><tr><th>Value</th><th>Count</th><th>Fraction</th></tr></thead><tbody><tr><td>CLE</td><td>12</td><td>1.000000</td></tr></tbody></table></section>
+<section><h3><code>inning_topbot</code></h3><table><thead><tr><th>Value</th><th>Count</th><th>Fraction</th></tr></thead><tbody><tr><td>Top</td><td>12</td><td>1.000000</td></tr></tbody></table></section>
+</section>
+<section>
+  <h2>Sample Preview</h2>
+  <table><thead><tr><th><code>game_date</code></th><th><code>game_pk</code></th><th><code>home_team</code></th><th><code>away_team</code></th><th><code>inning</code></th><th><code>inning_topbot</code></th><th><code>at_bat_number</code></th><th><code>pitch_number</code></th><th><code>batter</code></th><th><code>pitcher</code></th><th><code>pitch_type</code></th><th><code>events</code></th><th><code>description</code></th><th><code>release_speed</code></th><th><code>zone</code></th></tr></thead><tbody><tr><td>2024-04-01</td><td>745277</td><td>SEA</td><td>CLE</td><td>1</td><td>Top</td><td>1</td><td>1</td><td>680757</td><td>676106</td><td>SI</td><td></td><td>called_strike</td><td>94.2</td><td>5</td></tr><tr><td>2024-04-01</td><td>745277</td><td>SEA</td><td>CLE</td><td>1</td><td>Top</td><td>1</td><td>2</td><td>680757</td><td>676106</td><td>FF</td><td></td><td>called_strike</td><td>94.5</td><td>8</td></tr><tr><td>2024-04-01</td><td>745277</td><td>SEA</td><td>CLE</td><td>1</td><td>Top</td><td>1</td><td>3</td><td>680757</td><td>676106</td><td>CH</td><td>strikeout</td><td>swinging_strike</td><td>87.8</td><td>13</td></tr><tr><td>2024-04-01</td><td>745277</td><td>SEA</td><td>CLE</td><td>1</td><td>Top</td><td>2</td><td>1</td><td>665926</td><td>676106</td><td>FF</td><td></td><td>called_strike</td><td>93.7</td><td>7</td></tr><tr><td>2024-04-01</td><td>745277</td><td>SEA</td><td>CLE</td><td>1</td><td>Top</td><td>2</td><td>2</td><td>665926</td><td>676106</td><td>FF</td><td>field_out</td><td>hit_into_play</td><td>94.6</td><td>1</td></tr></tbody></table>
+</section>
+<section>
+  <h2>Limitations</h2>
+  <ul><li>Dashboard metrics are computed from the fixed P214-A CSV snapshot only, not from a refreshed upstream pull.</li>
+<li>This dashboard reflects a small historical sample and should not be generalized beyond the bounded artifact.</li>
+<li>CSV typing is preserved as artifact text for determinism, so numeric-looking fields are summarized as stored snapshot values.</li>
+<li>One fixed historical date and one team filter only; this is a bounded smoke sample, not a season-wide study.</li>
+<li>Output depends on the public historical pybaseball/statcast upstream response remaining available for the fixed request.</li>
+<li>Snapshot records are normalized to a small deterministic subset for inspection and are not production-ready data contracts.</li></ul>
+</section>
+<section>
+  <h2>Historical-Only Scope</h2>
+  <p>Historical pybaseball sample quality dashboard only. Not live predictions, not betting advice.</p>
+  <ul><li>No live prediction claim.</li>
+<li>No wagering recommendation claim.</li>
+<li>No deployable-system claim.</li>
+<li>No season-wide representativeness claim.</li>  </ul>
+</section>
+</main>
+</body>
+</html>

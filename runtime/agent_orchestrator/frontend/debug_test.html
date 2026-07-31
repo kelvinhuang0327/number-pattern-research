@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>調度器功能診斷測試</title>
+    <style>
+        body {
+            font-family: "Fira Code", monospace;
+            margin: 16px;
+            background: #010409;
+            color: #e6edf3;
+        }
+        .test-result {
+            padding: 8px;
+            margin: 8px 0;
+            border-radius: 4px;
+            border-left: 4px solid;
+        }
+        .success { border-color: #3fb950; background: rgba(35,134,54,.2); }
+        .error { border-color: #f85149; background: rgba(248,81,73,.2); }
+        .warning { border-color: #e3b341; background: rgba(187,128,9,.2); }
+        button { padding: 8px 16px; margin: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🔧 調度器功能診斷測試</h1>
+    <div id="test-results"></div>
+
+    <h2>手動測試</h2>
+    <button id="test-api">測試 API 連接</button>
+    <button id="test-scheduler">測試調度器狀態</button>
+    <button id="test-toggle">切換調度器</button>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8789';
+        const results = document.getElementById('test-results');
+
+        function addResult(message, type = 'success') {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.textContent = message;
+            results.appendChild(div);
+        }
+
+        async function testAPI() {
+            try {
+                const response = await fetch(`${API_BASE}/api/summary`);
+                const data = await response.json();
+                addResult(`✅ API 連接成功: ${response.status}`, 'success');
+                addResult(`📊 調度器狀態: ${data.scheduler.enabled ? '啟用' : '停用'}`, 'success');
+                return data;
+            } catch (error) {
+                addResult(`❌ API 連接失敗: ${error.message}`, 'error');
+                return null;
+            }
+        }
+
+        async function testScheduler() {
+            try {
+                const response = await fetch(`${API_BASE}/api/scheduler`);
+                const data = await response.json();
+                addResult(`✅ 調度器 API 正常: enabled=${data.enabled}`, 'success');
+                return data;
+            } catch (error) {
+                addResult(`❌ 調度器 API 失敗: ${error.message}`, 'error');
+                return null;
+            }
+        }
+
+        async function testToggle() {
+            try {
+                // 先獲取當前狀態
+                const current = await testScheduler();
+                if (!current) return;
+
+                const newState = !current.enabled;
+                const response = await fetch(`${API_BASE}/api/scheduler/enable`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ enabled: newState })
+                });
+
+                const result = await response.json();
+                addResult(`✅ 調度器切換成功: ${current.enabled} → ${result.enabled}`, 'success');
+
+                // 切換回原狀態
+                await fetch(`${API_BASE}/api/scheduler/enable`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ enabled: current.enabled })
+                });
+                addResult(`🔄 已還原調度器狀態: ${result.enabled} → ${current.enabled}`, 'warning');
+
+            } catch (error) {
+                addResult(`❌ 調度器切換失敗: ${error.message}`, 'error');
+            }
+        }
+
+        // 自動測試
+        window.addEventListener('load', async () => {
+            addResult('🚀 開始自動診斷測試...', 'warning');
+            await testAPI();
+            await testScheduler();
+        });
+
+        // 手動測試按鈕
+        document.getElementById('test-api').addEventListener('click', testAPI);
+        document.getElementById('test-scheduler').addEventListener('click', testScheduler);
+        document.getElementById('test-toggle').addEventListener('click', testToggle);
+    </script>
+</body>
+</html>

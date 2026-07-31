@@ -1,0 +1,7 @@
+task: P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_LINT_REMEDIATION_R4B
+timestamp: "2026-07-29T20:17:05+08:00"
+fixture_db_path: _integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/runtime_sandbox/fixture.db
+sha256_before: cb44fea97a3222af0525a173765c7d5d753c9f24d8879c1fcab9d06676909e69
+sha256_after: cb44fea97a3222af0525a173765c7d5d753c9f24d8879c1fcab9d06676909e69
+fixture_db_unchanged: true
+status: PASS

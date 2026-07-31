@@ -1,0 +1,87 @@
+task: PREDRAW_QUICK_PREDICT_LEDGER_OPT_IN_MIGRATION_R2A
+status: COMPLETED_FINAL_TREE_VERIFIED
+
+workspace:
+  root: "/Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged"
+  branch: "task/p273a-prize-aware-inferential-validation"
+  head: "3d6df001da3a0633ab91f164d722b595ca76d2e1"
+  complete_dirty_inventory:
+    - "tools/quick_predict.py"
+    - "tests/test_p360b_quick_predict_ledger_entrypoint.py"
+    - "claude-code-showcase"
+    - "data/lottery_v2.db"
+    - "index.html"
+  task_owned_dirty_paths:
+    - "tools/quick_predict.py"
+    - "tests/test_p360b_quick_predict_ledger_entrypoint.py"
+  unattributed_dirty_paths_modified: false
+
+final_edit:
+  quick_predict_sha256: "d563d9484d09ded6f22ac18e532e3b841aa5f47c5be044a195ecccdaee650670"
+  test_sha256: "2ba0797fc7d61b946826f92008ee8ef6fed4853b35c1355acb39267b106f9a7b"
+  changed_symbols:
+    - predraw_ledger_enabled
+    - resolve_predraw_ledger_path
+    - compute_next_scheduled_draw_date
+    - write_predraw_ledger_for_prediction
+    - main
+  reason: "Opt-in integration of P360A predraw ledger into tools/quick_predict.py via --write-predraw-ledger and --predraw-ledger-path"
+  source_contract_deviation: false
+
+flag_contract:
+  extracted_source_flag: "--write-predraw-ledger"
+  final_flag: "--write-predraw-ledger"
+  tests_expect: "--write-predraw-ledger"
+  compatible: true
+  aliases: []
+
+verification:
+  focused_tests: "PASS (14/14)"
+  quick_predict_regression: "PASS (16/16)"
+  engine_regression: "PASS (52/52)"
+  cli_help: "PASS"
+  default_no_write: "PASS"
+  opt_in_success: "PASS"
+  invalid_input: "PASS"
+  prediction_failure: "PASS"
+  ast_parse: "PASS"
+  import_check: "PASS"
+  lint: "NOT RUN — TOOL NOT AVAILABLE"
+  typecheck: "NOT RUN — TOOL NOT AVAILABLE"
+  diff_check: "PASS"
+  changed_path_review: "PASS"
+  delta_judge: "PASS"
+
+runtime:
+  sandbox_root: "_integration_reports/PREDRAW_QUICK_PREDICT_LEDGER_OPT_IN_MIGRATION_R2A/runtime_sandbox/"
+  writes_observed:
+    - "_integration_reports/PREDRAW_QUICK_PREDICT_LEDGER_OPT_IN_MIGRATION_R2A/runtime_sandbox/opt_in_ledger.jsonl"
+  unauthorized_writes: []
+  existing_predraw_outputs_modified: false
+
+safety:
+  production_db_modified: false
+  database_write_performed: false
+  ledger_engine_modified: false
+  replay_scope_modified: false
+  dependency_manifest_modified: false
+  strategy_identity_modified: false
+  git_refs_mutated: false
+  commit_created: false
+  push_run: false
+  pr_created: false
+
+claim_boundary:
+  predraw_engine_migrated: true
+  quick_predict_opt_in_migrated: true
+  quick_predict_final_tree_verified: true
+  replay_query_normalization_migrated: false
+  source_branch_merged: false
+  production_ready_claimed: false
+
+not_run:
+  - "ruff lint check (tool not installed)"
+  - "mypy/pyright typecheck (tool not installed)"
+blocked: []
+remaining_risks: []
+next_recommended_task: "PREDRAW_REPLAY_QUERY_NORMALIZATION_MIGRATION_R3"

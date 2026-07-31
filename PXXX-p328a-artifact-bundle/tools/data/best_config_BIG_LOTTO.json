@@ -1,0 +1,21 @@
+{
+    "components": [
+        {
+            "name": "strat_deep_frequency",
+            "weight": 3,
+            "window": 100
+        },
+        {
+            "name": "strat_deep_interval",
+            "weight": 2,
+            "window": 100
+        },
+        {
+            "name": "strat_deep_social_wisdom",
+            "weight": 1,
+            "window": 100
+        }
+    ],
+    "win_rate": 0.09333333333333334,
+    "lottery_type": "BIG_LOTTO"
+}

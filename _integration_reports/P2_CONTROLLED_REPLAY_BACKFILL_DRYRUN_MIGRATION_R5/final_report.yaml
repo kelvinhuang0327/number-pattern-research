@@ -1,0 +1,216 @@
+task: P2_CONTROLLED_REPLAY_BACKFILL_DRYRUN_MIGRATION_R5
+status: COMPLETED_VERTICAL_ONLY
+
+authorization:
+  authorization_first_line_valid: true
+  owner_authorization_status: PRESENT
+  token: AUTHORIZE_P2_CONTROLLED_REPLAY_BACKFILL_DRYRUN_MIGRATION_R5
+  second_confirmation_requested: false
+  authorization_caveat: NONE
+
+resource_mode:
+  language_server_used: false
+  workspace_indexing_used: false
+  background_commands_used: false
+  parallel_commands_used: false
+  global_git_status_used: false
+  full_workspace_scan_used: false
+  path_scoped_checks: true
+
+workspace:
+  root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  branch: task/p273a-prize-aware-inferential-validation
+  head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  head_tree: beadb5fe3932a49d8619caf05c95ff3278489a44
+  worktree_mode: EXISTING_TASK_WORKTREE
+  worktree_state_route_at_entry: ACTIVE_STABLE_TASK_OWNED_DIRTY
+  reusable_workspace_release_action: NOT_APPLICABLE
+  reusable_workspace_switch_performed: NOT_APPLICABLE
+  reusable_final_state: ACTIVE_TASK_OWNED_DIRTY
+  task_owned_paths:
+    - scripts/p2_controlled_replay_backfill_dryrun.py
+    - tests/test_p2_controlled_replay_backfill_dryrun.py
+    - _integration_reports/P2_CONTROLLED_REPLAY_BACKFILL_DRYRUN_MIGRATION_R5
+  unattributed_dirty_paths_modified: false
+
+source:
+  candidate_id: cand_006_chore/p2_controlled_replay_backfill_dryrun_20260515
+  source_ref: refs/heads/chore/p2-controlled-replay-backfill-dryrun-20260515
+  source_commit: fb49ae6b7a34ebf9b1ed0cd7b9c56fce82982636
+  source_tree: d5ee3335506325b3fcc395c17de3a6a0ed4ef879
+  source_blob: e45e038ed28e787acfe6c0e127870bb30c709a50
+  extraction_root: >-
+    _git_ref_reference/LOTTERY_BRANCH_REF_EXTRACTION_R1/by_repository/
+    repo_1_lotterynew/by_ref/refs_heads_chore_p2-controlled-replay-ba_e82364b7
+  source_paths:
+    - scripts/p2_controlled_replay_backfill_dryrun.py
+  source_hashes_verified: PASS
+  source_sha256: e53dcaeea8eefc3adc2d49d198e7a4dfbfe51aea20e8723b7286b132f5f3de45
+
+changes:
+  created_paths:
+    - scripts/p2_controlled_replay_backfill_dryrun.py
+    - tests/test_p2_controlled_replay_backfill_dryrun.py
+    - _integration_reports/P2_CONTROLLED_REPLAY_BACKFILL_DRYRUN_MIGRATION_R5
+  modified_paths: []
+  already_present_identical: []
+  implementation_sha256: cbdca8b3382ff67bb2c4e1b236e34cb0bc54761789fad8687414397d8b04cd52
+  test_sha256: 9551b9e4e625fa54aab5aa07a8a41492053da1abfbe07fc001cff77b3926406f
+  source_deviations:
+    - FAIL_CLOSED_OUTPUT_DESTINATION_PREFLIGHT
+  excluded_paths:
+    - docs/replay/p2_ts3_regime_backfill_dryrun_report_20260515.md
+    - outputs/replay/p2_ts3_regime_backfill_dryrun_20260515.json
+    - outputs/replay/p2_ts3_regime_backfill_dryrun_20260515.csv
+    - lottery_api/routes/replay.py
+    - index.html
+    - data/lottery_v2.db
+
+contract:
+  audit_or_research_tool: true
+  dryrun_only: true
+  read_only_db_uri: PASS
+  write_sql_present: false
+  ddl_present: false
+  migration_dependency: false
+  backfill_executor_dependency: false
+  output_destinations_preflighted: true
+  failure_behavior: FAIL_CLOSED
+
+database:
+  production_db_accessed: false
+  production_db_modified: false
+  temporary_fixture_db: >-
+    _integration_reports/P2_CONTROLLED_REPLAY_BACKFILL_DRYRUN_MIGRATION_R5/
+    runtime_sandbox/smoke/fixture.sqlite
+  fixture_db_unchanged: PASS
+  fixture_sha256: 969539bdacc91a29c2f6c582ae543efb855567096e4abf0593a989ad16130b0f
+  fixture_size: 24576
+  fixture_mtime_unchanged: PASS
+
+verification:
+  source_authority_verified: PASS
+  dryrun_contract_resolved: PASS
+  dryrun_tool_migrated: PASS
+  focused_tests_migrated: PASS
+  focused_tests: "PASS — final Worker run 12 passed in 12.10s"
+  cli_help: PASS
+  sandbox_smoke: PASS
+  repeatability: PASS
+  missing_db_failure: PASS
+  invalid_schema_failure: PASS
+  invalid_json_output_failure: PASS
+  invalid_csv_output_failure: PASS
+  non_read_only_request_failure: PASS
+  invalid_cli_failure: PASS
+  ast_parse: PASS
+  import_check: PASS
+  lint: NOT_RUN_TOOL_NOT_AVAILABLE
+  typecheck: NOT_RUN_TOOL_NOT_AVAILABLE
+  diff_check: PASS
+  changed_path_review: PASS
+  initial_judge: REFUTED
+  bounded_remediation: PASS
+  delta_judge: VERIFIED
+  judge: PASS
+
+runtime:
+  sandbox_root: >-
+    _integration_reports/P2_CONTROLLED_REPLAY_BACKFILL_DRYRUN_MIGRATION_R5/
+    runtime_sandbox
+  expected_runtime_writes:
+    - _integration_reports/P2_CONTROLLED_REPLAY_BACKFILL_DRYRUN_MIGRATION_R5/runtime_sandbox/**
+  actual_runtime_writes:
+    - focused test fixtures and outputs
+    - isolated pytest cache
+    - standalone smoke fixture and outputs
+  unauthorized_writes: []
+  unexpected_runtime_writes: []
+  runtime_output_restoration_authority: NOT_APPLICABLE_TASK_SANDBOX_RETAINED
+  runtime_output_cleanup_authorized: false
+
+safety:
+  schema_migration_performed: false
+  formal_backfill_executed: false
+  production_db_write_performed: false
+  dependency_installed: false
+  dependency_manifest_modified: false
+  strategy_identity_modified: false
+  completed_verticals_modified: false
+  git_refs_mutated: false
+  commit_created: false
+  push_run: false
+  pr_created: false
+
+claim_boundary:
+  controlled_backfill_dryrun_tool_migrated: true
+  production_backfill_completed: false
+  production_db_changed: false
+  schema_migration_completed: false
+  runtime_integration_completed: false
+  source_branch_merged: false
+  production_ready_claimed: false
+
+judge_continuity:
+  initial_judge_input_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  initial_judge_input_tree: beadb5fe3932a49d8619caf05c95ff3278489a44
+  initial_judge_verdict: REFUTED
+  post_initial_judge_source_or_test_edit: true
+  initial_judge_evidence_valid_for_final_tree: false
+  delta_rejudge_required: true
+  delta_rejudge_input_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  delta_rejudge_input_tree: beadb5fe3932a49d8619caf05c95ff3278489a44
+  delta_rejudge_verdict: VERIFIED
+  post_delta_judge_source_or_test_edit: false
+  delta_judge_evidence_valid_for_final_tree: true
+  final_judge_input_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  final_judge_input_tree: beadb5fe3932a49d8619caf05c95ff3278489a44
+  final_judge_verdict: VERIFIED
+  final_tree_judge_continuity: PASS
+
+evidence:
+  new_final_tree_evidence:
+    - final Worker focused suite
+    - post-remediation CLI help
+    - post-remediation AST and import smoke
+    - two post-remediation sandbox smoke runs
+    - DELTA Judge exact remediation diff and targeted regression slice
+  reused_final_tree_evidence:
+    - final Worker post-remediation smoke artifacts
+  invalidated_evidence:
+    - initial REFUTED Judge result as final-tree validation
+    - all pre-remediation source/test acceptance as final-tree validation
+  unaffected_evidence_reused_by_delta:
+    - source authority
+    - read-only SQLite contract
+    - absence of SQL/DDL/migration/backfill executor
+    - adapter and remaining failure-case coverage
+
+run_counts:
+  local_full_suite_runs: 0
+  focused_test_runs: 7
+  initial_judge_runs: 1
+  delta_rejudge_runs: 1
+  full_judge_runs: 0
+  exact_head_ci_runs: 0
+
+lifecycle:
+  implementation_lifecycle_status: COMPLETE
+  pr_publication_status: NOT_APPLICABLE
+  postmerge_lifecycle_status: NOT_APPLICABLE
+  branch_cleanup_status: NOT_APPLICABLE
+  full_pr_lifecycle_closed: false
+
+not_run:
+  - full repository suite — forbidden and not mandatory
+  - full repository typecheck — forbidden
+  - Ruff/Black/Mypy — tools not available
+  - production DB access or mutation — forbidden and out of scope
+  - schema migration or formal backfill — forbidden and out of scope
+  - commit, push, PR, merge, or branch cleanup — not authorized
+blocked: []
+caveats: []
+remaining_risks:
+  - Any future production replay-row write requires a separate task and standalone Owner authorization.
+next_recommended_task: >-
+  Separate Owner-authorized task only if a production replay backfill is later required.

@@ -1,0 +1,36 @@
+task: P2_CONTROLLED_REPLAY_BACKFILL_DRYRUN_MIGRATION_R5
+repository: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+branch: task/p273a-prize-aware-inferential-validation
+head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+expected_branch_match: PASS
+expected_head_match: PASS
+worktree_mode: EXISTING_TASK_WORKTREE
+worktree_state_route_at_entry: ACTIVE_STABLE_TASK_OWNED_DIRTY
+path_scoped_status:
+  command: >-
+    git status --porcelain=v1 -uall --
+    scripts/p2_controlled_replay_backfill_dryrun.py
+    tests/test_p2_controlled_replay_backfill_dryrun.py
+    _integration_reports/P2_CONTROLLED_REPLAY_BACKFILL_DRYRUN_MIGRATION_R5
+  output: ""
+  result: PASS
+target_paths:
+  scripts/p2_controlled_replay_backfill_dryrun.py: ABSENT
+  tests/test_p2_controlled_replay_backfill_dryrun.py: ABSENT
+report_root_preexisting: false
+resource_mode:
+  language_server_used: false
+  workspace_indexing_used: false
+  background_commands_used: false
+  parallel_commands_used: false
+  global_git_status_used: false
+  full_workspace_scan_used: false
+  path_scoped_checks: true
+authority:
+  candidate_id: cand_006_chore/p2_controlled_replay_backfill_dryrun_20260515
+  source_ref: refs/heads/chore/p2-controlled-replay-backfill-dryrun-20260515
+  source_commit: fb49ae6b7a34ebf9b1ed0cd7b9c56fce82982636
+  source_tree: d5ee3335506325b3fcc395c17de3a6a0ed4ef879
+  source_blob: e45e038ed28e787acfe6c0e127870bb30c709a50
+  extracted_source_sha256: e53dcaeea8eefc3adc2d49d198e7a4dfbfe51aea20e8723b7286b132f5f3de45
+

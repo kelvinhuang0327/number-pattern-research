@@ -1,0 +1,89 @@
+task: PREDRAW_STRATEGY_FREEZE_LEDGER_CAPTURE_ENGINE_MIGRATION_R1
+status: COMPLETED_VERTICAL_ONLY
+task_class: STATE_CHANGING_IMPLEMENTATION
+worker_route: STANDARD_JUDGED
+judge_mode: FRESH_CONTEXT
+judge_depth: BOUNDED
+judge_verdict: PASS_WITH_CAVEATS
+
+workspace:
+  root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  branch: task/p273a-prize-aware-inferential-validation
+  head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  worktree_state_route: ACTIVE_STABLE_TASK_OWNED_DIRTY
+  unattributed_dirty_paths_modified: false
+
+source:
+  repository_id: repo_1_lotterynew
+  ref: refs/remotes/origin/task/p273a-prize-aware-inferential-validation
+  extraction_root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged/_git_ref_reference/LOTTERY_BRANCH_REF_EXTRACTION_R1/by_repository/repo_1_lotterynew/by_ref/refs_remotes_origin_task_p273a-prize-awa_0c2b9bd5
+  source_files_count: 9
+  source_hashes_verified: true
+
+migration:
+  created_paths:
+    - docs/p360a_predraw_metadata_preregistration.md
+    - lottery_api/data/predraw_schedule_config.json
+    - lottery_api/data/predraw_strategy_freeze_registry.json
+    - tools/predraw_capture_runner.py
+    - tests/test_p360a_predraw_metadata_instrumentation.py
+    - tests/test_p364_predraw_capture_runner.py
+  already_present_identical:
+    - lottery_api/engine/predraw_ledger.py
+    - tools/predraw_ledger_verify.py
+    - tests/test_p365_predraw_ledger_verify.py
+  blocked_collisions: []
+  source_deviations:
+    - path: tools/predraw_capture_runner.py
+      reason: Added compatibility fallbacks to keep predraw_capture_runner self-contained without touching tools/quick_predict.py.
+  excluded_paths:
+    - tools/quick_predict.py
+    - lottery_api/routes/replay.py
+
+vertical:
+  schedule_config: PASS
+  freeze_registry: PASS
+  ledger_engine: PASS
+  capture_cli: PASS
+  verifier_cli: PASS
+  filesystem_output_root: _integration_reports/PREDRAW_STRATEGY_FREEZE_LEDGER_CAPTURE_ENGINE_MIGRATION_R1/runtime_sandbox/
+  database_read: true
+  database_write: false
+  network_access: false
+
+verification:
+  focused_test_command: .venv/bin/pytest tests/test_p360a_predraw_metadata_instrumentation.py tests/test_p364_predraw_capture_runner.py tests/test_p365_predraw_ledger_verify.py -v
+  focused_tests:
+    test_p360a: PASS (34/34)
+    test_p365: PASS (9/9)
+    test_p364: PASS (9/9)
+    total: PASS (52/52)
+  cli_help: PASS
+  capture_smoke: PASS
+  verifier_valid_smoke: PASS
+  verifier_invalid_smoke: PASS
+  ast_parse: PASS (6/6)
+  import_check: PASS (3/3)
+  diff_check: PASS
+  changed_path_review: PASS
+  judge: PASS_WITH_CAVEATS
+
+safety:
+  production_db_modified: false
+  source_reference_modified: false
+  conflict_reference_modified: false
+  dependency_installed: false
+  dependency_manifest_modified: false
+  strategy_identity_modified: false
+  git_refs_mutated: false
+  commit_created: false
+  push_run: false
+  pr_created: false
+
+claim_boundary:
+  predraw_ledger_engine_migrated: true
+  quick_predict_opt_in_migrated: false
+  replay_query_normalization_migrated: false
+  source_branch_merged: false
+  all_branch_functions_migrated: false
+  production_ready_claimed: false

@@ -1,0 +1,22 @@
+task: P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4
+decisions:
+  - file: scripts/p0_per_draw_coverage_matrix.py
+    change_type: MINIMAL_ADAPTATION
+    rationale: Added optional db_path parameter to run_coverage_matrix() and --db-path CLI argument to allow injecting a custom/temporary DB path, preventing mandatory hardcoded access to production DB. Added error handling if DB path does not exist.
+    contract_changed: false
+    schema_changed: false
+  - file: tests/test_p0_canonical_universe.py
+    change_type: MINIMAL_ADAPTATION
+    rationale: Updated coverage matrix test cases to use a temporary SQLite fixture DB (via tmp_path) instead of defaulting to production DB path lottery_api/data/lottery_v2.db, satisfying production_database_access=false and test_uses_temporary_db=true.
+    contract_changed: false
+    schema_changed: false
+  - file: docs/replay/p0_canonical_strategy_universe_20260518.md
+    change_type: DIRECT_COPY
+    rationale: Identical copy from extracted reference.
+    contract_changed: false
+    schema_changed: false
+  - file: outputs/replay/p0_canonical_strategy_universe_20260518.json
+    change_type: COPY_AS_FIXTURE
+    rationale: Identical copy from extracted reference as canonical contract fixture.
+    contract_changed: false
+    schema_changed: false

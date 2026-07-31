@@ -1,0 +1,660 @@
+"""
+P246D — BIG_LOTTO Add-on Record Segregation Design
+
+Read-only design artifact. Defines exactly how to isolate BIG_LOTTO
+add-on/special prize records (ADD_ON_PRIZE_EXCLUDED) from canonical
+6/49 main-draw research without deleting them.
+
+No DB write is performed. All DB access is read-only.
+"""
+
+import json
+import sqlite3
+from pathlib import Path
+
+DB_PATH = Path(__file__).parent.parent / "lottery_api" / "data" / "lottery_v2.db"
+REPO_ROOT = Path(__file__).parent.parent
+
+# ---------------------------------------------------------------------------
+# Isolation problem statement
+# ---------------------------------------------------------------------------
+
+ISOLATION_PROBLEM_STATEMENT = {
+    "summary": (
+        "The BIG_LOTTO draws table contains 22,238 rows across four row families. "
+        "Only 2,113 rows are canonical 6/49 main draws. The remaining 20,125 rows "
+        "include 19,100 ADD_ON_PRIZE_EXCLUDED (add-on/special prize records), "
+        "375 DATE_FORMAT_ALIEN, and 650 SMALL_POOL_ALIEN. "
+        "Current API paths (get_all_draws, get_draws) return all 22,238 rows with "
+        "no family-level filter. Strategy/replay/research code that consumes these "
+        "paths operates on a mixed population."
+    ),
+    "gold_standard_filter_already_in_use": (
+        "analysis/p219_external_method_diagnostic_sweep.py already implements the "
+        "correct canonical filter: lottery_type='BIG_LOTTO' AND draw NOT LIKE '%-%'. "
+        "This is the design reference. All research paths should adopt this pattern."
+    ),
+    "key_gap": (
+        "database.py get_all_draws() and get_draws() have no canonical filter for BIG_LOTTO. "
+        "quick_predict.py calls get_all_draws(lottery_type='BIG_LOTTO') and receives "
+        "the mixed 22,238-row population. RSM and engine files likely do the same."
+    ),
+    "constraint_preserve_raw_data": (
+        "ADD_ON_PRIZE_EXCLUDED rows are valid lottery-related records. They may have "
+        "display/history/audit value. They must NOT be deleted. Isolation must be "
+        "achieved by filtering or segregation, not by deletion."
+    ),
+}
+
+# ---------------------------------------------------------------------------
+# Isolation requirements
+# ---------------------------------------------------------------------------
+
+ISOLATION_REQUIREMENTS = [
+    {
+        "id": "REQ-1",
+        "requirement": "Add-on records must be preserved in raw form",
+        "rationale": "ADD_ON_PRIZE_EXCLUDED rows are valid lottery-related records; deletion is forbidden",
+        "applies_to": "All options",
+    },
+    {
+        "id": "REQ-2",
+        "requirement": "Strategy/replay/research code must consume only CANONICAL_MAIN_DRAW rows",
+        "rationale": "Population mismatch corrupts statistical analysis and predictions",
+        "applies_to": "Research and strategy paths",
+    },
+    {
+        "id": "REQ-3",
+        "requirement": "API/frontend display paths may show add-on records but must label them",
+        "rationale": "Add-on records are valid history; display consumers may show them with context",
+        "applies_to": "Display/history paths",
+    },
+    {
+        "id": "REQ-4",
+        "requirement": "Isolation mechanism must be reversible and auditable",
+        "rationale": "Safety: if domain evidence changes classification, rollback must be possible",
+        "applies_to": "All options",
+    },
+    {
+        "id": "REQ-5",
+        "requirement": "No direct deletion of ADD_ON_PRIZE_EXCLUDED rows",
+        "rationale": "Valid lottery-related records; may be needed for display and audit",
+        "applies_to": "All options — hard constraint",
+    },
+    {
+        "id": "REQ-6",
+        "requirement": "Canonical main-draw filter: draw NOT LIKE '%-%' AND draw numeric format",
+        "rationale": "P219 gold-standard filter; excludes ADD_ON and DATE_FORMAT_ALIEN families",
+        "applies_to": "SQL filter / view / helper implementation",
+    },
+    {
+        "id": "REQ-7",
+        "requirement": "SMALL_POOL_ALIEN requires Python-driven detection (max(numbers) <= 25)",
+        "rationale": "Cannot be detected by draw ID pattern alone; needs number content inspection",
+        "applies_to": "Full canonical filter implementation",
+    },
+    {
+        "id": "REQ-8",
+        "requirement": "Post-isolation: affected tests/artifacts/replays must be re-validated",
+        "rationale": "test_p238b (>= 22238), test_p243a (sample_size=22238), P238B NIST artifact",
+        "applies_to": "Post Type D apply",
+    },
+]
+
+# ---------------------------------------------------------------------------
+# Evaluated options
+# ---------------------------------------------------------------------------
+
+EVALUATED_OPTIONS = [
+    {
+        "id": "OPT-A",
+        "name": "Code-level canonical query helper",
+        "description": (
+            "Add get_canonical_draws(lottery_type) to lottery_api/database.py. "
+            "For BIG_LOTTO: applies filter draw NOT LIKE '%-%' AND NOT date-format-alien. "
+            "All strategy/replay/research callers switch to this helper instead of get_all_draws. "
+            "Display/history callers keep using get_all_draws/get_draws."
+        ),
+        "example_implementation": {
+            "function_name": "get_canonical_draws",
+            "location": "lottery_api/database.py",
+            "sql_for_big_lotto": (
+                "SELECT * FROM draws "
+                "WHERE lottery_type='BIG_LOTTO' "
+                "AND draw NOT LIKE '%-%' "
+                "AND NOT (LENGTH(draw)=8 AND draw LIKE '20%') "
+                "ORDER BY CAST(draw AS INTEGER) DESC"
+            ),
+            "note": (
+                "SMALL_POOL_ALIEN still included at SQL level; "
+                "Python-driven max(numbers)<=25 post-filter required for full canonical isolation."
+            ),
+        },
+        "requires_db_write": False,
+        "requires_type_d": False,
+        "reversible": True,
+        "satisfies_reqs": ["REQ-1", "REQ-2", "REQ-3", "REQ-4", "REQ-5", "REQ-6"],
+        "open_reqs": ["REQ-7 (SMALL_POOL partial)"],
+        "pros": [
+            "No DB write required — immediately implementable",
+            "Explicit in code — callers see the canonical filter",
+            "Reversible by removing one code path",
+            "P219 filter pattern already validated",
+            "Display callers keep full 22,238 rows",
+        ],
+        "cons": [
+            "Requires code change in every research/strategy/replay caller",
+            "SMALL_POOL_ALIEN still leaks through SQL filter (650 rows)",
+            "Risk of forgetting to update some callers",
+        ],
+        "recommendation_weight": "HIGH — lowest DB risk; recommended as Phase 1",
+    },
+    {
+        "id": "OPT-B",
+        "name": "Canonical SQL view in DB",
+        "description": (
+            "Create draws_big_lotto_canonical_main view in the DB. "
+            "View applies canonical filter. Research callers query view instead of table. "
+            "Original draws table untouched."
+        ),
+        "example_implementation": {
+            "view_name": "draws_big_lotto_canonical_main",
+            "sql": (
+                "CREATE VIEW draws_big_lotto_canonical_main AS "
+                "SELECT * FROM draws "
+                "WHERE lottery_type='BIG_LOTTO' "
+                "AND draw NOT LIKE '%-%' "
+                "AND NOT (LENGTH(draw)=8 AND draw LIKE '20%')"
+            ),
+            "note": (
+                "SMALL_POOL_ALIEN still included at SQL level; "
+                "additional Python-driven number filter required."
+            ),
+        },
+        "requires_db_write": True,
+        "requires_type_d": True,
+        "reversible": True,
+        "satisfies_reqs": ["REQ-1", "REQ-2", "REQ-3", "REQ-4", "REQ-5", "REQ-6"],
+        "open_reqs": ["REQ-7 (SMALL_POOL partial)"],
+        "pros": [
+            "Research callers need only change table name to view name",
+            "Canonical population defined once in DB schema",
+            "View is reversible (DROP VIEW)",
+            "No data movement",
+        ],
+        "cons": [
+            "Requires Type D DB write (CREATE VIEW)",
+            "SMALL_POOL_ALIEN still in view until Python-driven filter",
+            "Research callers must change query target",
+        ],
+        "recommendation_weight": "HIGH — best long-term DB design; recommended as Phase 2 (after Type D)",
+    },
+    {
+        "id": "OPT-C",
+        "name": "Row-family metadata annotation table",
+        "description": (
+            "Create draw_row_family_annotations lookup table mapping draw + lottery_type "
+            "to row_family (ADD_ON_PRIZE_EXCLUDED, CANONICAL_MAIN_DRAW, etc.) and exclusion_reason. "
+            "Research code JOINs or filters against this table. "
+            "Display/API code can read row_family for labeling."
+        ),
+        "example_implementation": {
+            "table_name": "draw_row_family_annotations",
+            "columns": [
+                "draw TEXT NOT NULL",
+                "lottery_type TEXT NOT NULL",
+                "row_family TEXT NOT NULL",
+                "exclusion_reason TEXT",
+                "annotated_at TEXT",
+                "PRIMARY KEY (draw, lottery_type)",
+            ],
+            "research_filter": (
+                "JOIN draw_row_family_annotations rfa "
+                "ON d.draw = rfa.draw AND d.lottery_type = rfa.lottery_type "
+                "WHERE rfa.row_family = 'CANONICAL_MAIN_DRAW'"
+            ),
+        },
+        "requires_db_write": True,
+        "requires_type_d": True,
+        "reversible": True,
+        "satisfies_reqs": ["REQ-1", "REQ-2", "REQ-3", "REQ-4", "REQ-5", "REQ-6", "REQ-7"],
+        "open_reqs": [],
+        "pros": [
+            "Handles SMALL_POOL_ALIEN via Python-driven annotation",
+            "Enables display path to show row_family label",
+            "All row families explicitly catalogued",
+            "Original draws table fully preserved",
+            "API can filter or annotate by row_family",
+        ],
+        "cons": [
+            "Requires Type D DB write",
+            "JOIN overhead in every research query",
+            "Annotation table must be kept in sync if new rows are ingested",
+            "Higher implementation complexity",
+        ],
+        "recommendation_weight": "MEDIUM — complete solution but higher complexity; recommended as Phase 3 or combined with OPT-A/B",
+    },
+    {
+        "id": "OPT-D",
+        "name": "Materialized canonical research table",
+        "description": (
+            "Create draws_research_canonical table as a physical copy of only canonical rows. "
+            "Research code queries this table. Original draws table untouched."
+        ),
+        "requires_db_write": True,
+        "requires_type_d": True,
+        "reversible": True,
+        "satisfies_reqs": ["REQ-1", "REQ-2", "REQ-5"],
+        "open_reqs": ["REQ-3 (display still needs get_draws)", "REQ-4 (sync policy needed)"],
+        "pros": [
+            "Stable research dataset — no accidental mixed-population risk",
+            "Simple queries against canonical table",
+        ],
+        "cons": [
+            "Data duplication — canonical rows exist twice",
+            "Drift risk: new main-draw ingestions must update both tables",
+            "Rebuild policy required",
+            "Highest maintenance burden",
+        ],
+        "recommendation_weight": "LOW — data duplication and drift risk; not recommended",
+    },
+    {
+        "id": "OPT-E",
+        "name": "Direct deletion",
+        "description": (
+            "DELETE ADD_ON_PRIZE_EXCLUDED rows from draws table. "
+            "This option MUST be rejected."
+        ),
+        "requires_db_write": True,
+        "requires_type_d": True,
+        "reversible": False,
+        "satisfies_reqs": [],
+        "open_reqs": ["REQ-1 (VIOLATED — deletion)", "REQ-4 (VIOLATED — irreversible)", "REQ-5 (VIOLATED)"],
+        "rejected": True,
+        "rejection_reason": (
+            "ADD_ON_PRIZE_EXCLUDED rows are valid lottery-related records. "
+            "They must not be deleted. Direct deletion is irreversible (without backup restore) "
+            "and violates the preservation policy established in P246B."
+        ),
+        "recommendation_weight": "REJECTED",
+    },
+]
+
+# ---------------------------------------------------------------------------
+# Rejected options
+# ---------------------------------------------------------------------------
+
+REJECTED_OPTIONS = [opt for opt in EVALUATED_OPTIONS if opt.get("rejected")]
+
+# ---------------------------------------------------------------------------
+# Recommended design (phased)
+# ---------------------------------------------------------------------------
+
+RECOMMENDED_DESIGN = {
+    "approach": "Phased isolation: code-level helper first, DB view second, metadata table third. ADD_ON_PRIZE_EXCLUDED rows are preserved in all phases — no deletion.",
+    "phases": [
+        {
+            "phase": 1,
+            "option": "OPT-A",
+            "name": "Code-level canonical query helper",
+            "authorization_required": "None — code change only (no DB write)",
+            "action": (
+                "Add get_canonical_draws(lottery_type) helper to lottery_api/database.py. "
+                "BIG_LOTTO filter: draw NOT LIKE '%-%' AND NOT date-format-alien pattern. "
+                "Update research/strategy/replay callers to use helper."
+            ),
+            "callers_to_update": [
+                "tools/quick_predict.py:169 — get_all_draws(BIG_LOTTO) → get_canonical_draws(BIG_LOTTO)",
+                "lottery_api/engine/rolling_strategy_monitor.py — verify data-load path",
+                "lottery_api/engine/core_satellite.py — verify data-load path",
+                "lottery_api/routes/advanced_learning.py — verify get_data path",
+                "Any backtest tool that calls get_all_draws('BIG_LOTTO')",
+            ],
+            "callers_not_to_update": [
+                "lottery_api/database.py get_draws() — display/paged endpoint: keep returning full population with add-on labeling",
+                "lottery_api/database.py get_all_draws() — history endpoint: keep returning full population",
+                "Any UI/API consumer that shows draw history to users",
+            ],
+            "deliverable": "New function in database.py + updated callers + tests",
+        },
+        {
+            "phase": 2,
+            "option": "OPT-B",
+            "name": "Canonical SQL view in DB",
+            "authorization_required": "Type D explicit human gate (DB CREATE VIEW)",
+            "action": (
+                "Create draws_big_lotto_canonical_main SQL view in lottery_v2.db. "
+                "Research callers switch query target from draws table to view."
+            ),
+            "sql_ddl": (
+                "CREATE VIEW IF NOT EXISTS draws_big_lotto_canonical_main AS "
+                "SELECT * FROM draws "
+                "WHERE lottery_type='BIG_LOTTO' "
+                "AND draw NOT LIKE '%-%' "
+                "AND NOT (LENGTH(draw)=8 AND draw LIKE '20%')"
+            ),
+            "note": "SMALL_POOL_ALIEN still included in view until Phase 3 annotation table",
+            "deliverable": "CREATE VIEW DDL in a migration script + tests for view",
+        },
+        {
+            "phase": 3,
+            "option": "OPT-C",
+            "name": "Row-family metadata annotation table",
+            "authorization_required": "Type D explicit human gate (DB CREATE TABLE + INSERT)",
+            "action": (
+                "Create draw_row_family_annotations table. "
+                "Populate with Python-driven row-family detection (handles SMALL_POOL_ALIEN). "
+                "Phase 2 view can be enhanced with annotation JOIN."
+            ),
+            "deliverable": "Annotation table DDL + Python population script + tests",
+        },
+        {
+            "phase": 4,
+            "option": "Post-isolation validation",
+            "name": "Re-validate affected artifacts and tests",
+            "authorization_required": "No additional DB write — read-only re-run",
+            "action": (
+                "Re-run P238B-style NIST audit on canonical population only. "
+                "Update test_p238b assertion from >= 22238 to >= 2113. "
+                "Update test_p243a sample_size note. "
+                "Drift guard + replay row integrity check."
+            ),
+            "deliverable": "Updated tests + re-run NIST artifact",
+        },
+    ],
+    "immediate_safe_action": {
+        "description": (
+            "Phase 1 (OPT-A) can be implemented immediately without DB write. "
+            "It requires only code changes in database.py and affected callers. "
+            "This is the fastest path to correct isolation for research paths."
+        ),
+        "sql_filter_for_big_lotto_canonical": (
+            "lottery_type='BIG_LOTTO' "
+            "AND draw NOT LIKE '%-%' "
+            "AND NOT (LENGTH(draw)=8 AND draw LIKE '20%')"
+        ),
+        "note_on_small_pool": (
+            "The SQL filter above excludes ADD_ON_PRIZE_EXCLUDED (19,100 rows) and "
+            "DATE_FORMAT_ALIEN (375 rows) but still includes SMALL_POOL_ALIEN (~650 rows). "
+            "Full exclusion of SMALL_POOL_ALIEN requires Python-driven: "
+            "filter(lambda row: max(row['numbers']) > 25, canonical_rows). "
+            "Serial rows remaining after SQL filter: ~2,763; after SMALL_POOL filter: ~2,113."
+        ),
+    },
+}
+
+# ---------------------------------------------------------------------------
+# Strategy / replay required changes
+# ---------------------------------------------------------------------------
+
+STRATEGY_REPLAY_REQUIRED_CHANGES = [
+    {
+        "caller": "tools/quick_predict.py:169",
+        "current": "history = db.get_all_draws(lottery_type=lottery_type)",
+        "required_change": "history = db.get_canonical_draws(lottery_type=lottery_type)  # or apply canonical filter post-load",
+        "risk": "HIGH — currently loads 22,238 BIG_LOTTO rows; strategies trained on mixed population",
+        "when": "Phase 1",
+    },
+    {
+        "caller": "lottery_api/engine/rolling_strategy_monitor.py",
+        "current": "Unknown data-load path (delegates to scheduler or DB)",
+        "required_change": "Trace data-load path; ensure BIG_LOTTO uses canonical filter",
+        "risk": "MEDIUM — RSM 2113期 reference suggests canonical population used; verify",
+        "when": "Phase 1 verification",
+    },
+    {
+        "caller": "lottery_api/engine/core_satellite.py, hypothesis_registry.py, drift_detector.py, multi_bet_optimizer.py",
+        "current": "Unknown — likely delegates to get_all_draws",
+        "required_change": "Trace each; switch to get_canonical_draws for BIG_LOTTO",
+        "risk": "MEDIUM",
+        "when": "Phase 1",
+    },
+    {
+        "caller": "lottery_api/routes/advanced_learning.py",
+        "current": "scheduler.get_data(lottery_type='BIG_LOTTO')",
+        "required_change": "Verify get_data() applies canonical filter; fix if not",
+        "risk": "MEDIUM",
+        "when": "Phase 1",
+    },
+    {
+        "caller": "30+ tools/*.py and lottery_api/*.py backtest scripts",
+        "current": "Various — many call get_all_draws('BIG_LOTTO')",
+        "required_change": "Systematic update to use canonical helper/filter",
+        "risk": "MEDIUM — exploratory scripts; not in production strategy pipeline",
+        "when": "Phase 1 (batch update)",
+    },
+]
+
+# ---------------------------------------------------------------------------
+# API / frontend display policy
+# ---------------------------------------------------------------------------
+
+API_FRONTEND_DISPLAY_POLICY = {
+    "principle": (
+        "Display/history callers may legitimately show ADD_ON_PRIZE_EXCLUDED records "
+        "to users. Add-on/special prize records are valid lottery history. "
+        "The requirement is correct labeling, not suppression."
+    ),
+    "display_callers_keep_unfiltered": [
+        "lottery_api/database.py get_draws() — paged history endpoint: keep returning all 22,238 rows",
+        "lottery_api/database.py get_all_draws() — history endpoint: keep returning all rows",
+        "Any GET /draws, GET /history, GET /results endpoint",
+    ],
+    "display_callers_should_add_labeling": [
+        "When returning BIG_LOTTO draws that include hyphenated IDs, add row_family field",
+        "Example: {'draw': '100000009-01', 'row_family': 'ADD_ON_PRIZE_EXCLUDED', 'label': '加碼/特別獎'} ",
+        "Frontend can filter or tag add-on records for user clarity",
+    ],
+    "research_callers_must_filter": [
+        "All strategy/replay/backtest/randomness-audit code must use canonical filter",
+        "Canonical SQL filter: draw NOT LIKE '%-%' AND NOT (LENGTH(draw)=8 AND draw LIKE '20%')",
+        "For full isolation: also filter max(numbers) > 25 (Python-driven for SMALL_POOL_ALIEN)",
+    ],
+    "row_family_label_for_addon": "ADD_ON_PRIZE_EXCLUDED",
+    "display_label_suggestion": "加碼/特別獎記錄 (Add-on / Special Prize Record)",
+}
+
+# ---------------------------------------------------------------------------
+# Forbidden actions
+# ---------------------------------------------------------------------------
+
+FORBIDDEN_ACTIONS = [
+    "DB_write",
+    "DB_migration_apply",
+    "row_deletion",
+    "row_movement_without_preservation",
+    "quarantine_apply",
+    "changing_strategy_code_now",
+    "changing_API_frontend_code_now",
+    "registry_mutation",
+    "production_recommendation_change",
+    "controlled_apply",
+    "strategy_promotion",
+    "betting_advice",
+    "P247_apply",
+    "GATE_OPEN_for_BIG_LOTTO_research",
+    "claiming_exploitable_edge",
+]
+
+# ---------------------------------------------------------------------------
+# Test validation plan
+# ---------------------------------------------------------------------------
+
+TEST_VALIDATION_PLAN = [
+    {
+        "test": "tests/test_p238b_nist_randomness_audit_artifact_build.py:146",
+        "current_assertion": "assert active['BIG_LOTTO'] >= 22238",
+        "update_required": True,
+        "when": "After Phase 2/3 Type D segregation",
+        "updated_assertion": "assert active['BIG_LOTTO'] >= 2113  # canonical main draws only",
+    },
+    {
+        "test": "tests/test_p243a_diagnostic_report_fixture_pack.py:58",
+        "current_assertion": "sample_size=22238",
+        "update_required": "annotation_only",
+        "when": "After Phase 2/3",
+        "note": "Historical fixture; add inline comment noting sample_size=22238 is total not canonical",
+    },
+    {
+        "test": "New tests for get_canonical_draws()",
+        "current_assertion": "N/A — function does not exist yet",
+        "update_required": True,
+        "when": "Phase 1 implementation",
+        "note": "Add tests verifying canonical helper returns ~2113 rows and excludes hyphenated IDs",
+    },
+    {
+        "test": "tests/test_p246d_big_lotto_addon_segregation_design.py",
+        "current_assertion": "N/A — this artifact",
+        "update_required": False,
+        "when": "Now (P246D)",
+        "note": "Tests for the design artifact itself; created in this task",
+    },
+]
+
+# ---------------------------------------------------------------------------
+# Future Type D apply requirements
+# ---------------------------------------------------------------------------
+
+FUTURE_TYPE_D_APPLY_REQUIREMENTS = {
+    "phase_2_canonical_view": {
+        "authorization": "Explicit Type D human gate required",
+        "pre_checks": [
+            "Phase 1 code-level helper is implemented and tested",
+            "Replay rows = 94,924 (read-only check)",
+            "PRAGMA integrity_check = ok",
+            "Backup before any DDL",
+            "Phase 0 checks on dev branch",
+        ],
+        "ddl": (
+            "CREATE VIEW IF NOT EXISTS draws_big_lotto_canonical_main AS "
+            "SELECT * FROM draws "
+            "WHERE lottery_type='BIG_LOTTO' "
+            "AND draw NOT LIKE '%-%' "
+            "AND NOT (LENGTH(draw)=8 AND draw LIKE '20%')"
+        ),
+        "post_checks": [
+            "SELECT COUNT(*) FROM draws_big_lotto_canonical_main -- expect 2763 (before SMALL_POOL filter)",
+            "Replay rows unchanged: SELECT COUNT(*) FROM strategy_prediction_replays",
+            "PRAGMA integrity_check",
+        ],
+    },
+    "phase_3_annotation_table": {
+        "authorization": "Explicit Type D human gate required",
+        "pre_checks": [
+            "Phase 2 view is in place",
+            "Python annotation script validated on dev DB",
+            "Backup before INSERT",
+        ],
+        "post_checks": [
+            "SELECT row_family, COUNT(*) FROM draw_row_family_annotations GROUP BY row_family",
+            "Verify ADD_ON_PRIZE_EXCLUDED = 19100, DATE_FORMAT_ALIEN = 375, SMALL_POOL_ALIEN = 650, CANONICAL_MAIN_DRAW = 2113",
+        ],
+    },
+    "never_allowed": [
+        "DELETE FROM draws WHERE draw LIKE '%-%'",
+        "DELETE FROM draws WHERE lottery_type='BIG_LOTTO' AND ...",
+        "Any irreversible operation on ADD_ON_PRIZE_EXCLUDED rows",
+    ],
+}
+
+
+def run_segregation_design(db_path: Path = DB_PATH) -> dict:
+    db_read = False
+    row_counts = {}
+
+    if db_path.exists():
+        conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+        total = conn.execute(
+            "SELECT COUNT(*) FROM draws WHERE lottery_type='BIG_LOTTO'"
+        ).fetchone()[0]
+        addon = conn.execute(
+            "SELECT COUNT(*) FROM draws WHERE lottery_type='BIG_LOTTO' AND draw LIKE '%-%'"
+        ).fetchone()[0]
+        date_fmt = conn.execute(
+            "SELECT COUNT(*) FROM draws "
+            "WHERE lottery_type='BIG_LOTTO' "
+            "AND LENGTH(draw)=8 AND draw LIKE '20%' AND draw NOT LIKE '%-%'"
+        ).fetchone()[0]
+        serial = conn.execute(
+            "SELECT COUNT(*) FROM draws "
+            "WHERE lottery_type='BIG_LOTTO' "
+            "AND draw NOT LIKE '%-%' "
+            "AND NOT (LENGTH(draw)=8 AND draw LIKE '20%')"
+        ).fetchone()[0]
+        replay = conn.execute(
+            "SELECT COUNT(*) FROM strategy_prediction_replays"
+        ).fetchone()[0]
+        # Check that no canonical view exists yet (design gap)
+        existing_views = [
+            r[0] for r in conn.execute(
+                "SELECT name FROM sqlite_master WHERE type='view'"
+            ).fetchall()
+        ]
+        conn.close()
+        db_read = True
+        row_counts = {
+            "TOTAL": total,
+            "ADD_ON_PRIZE_EXCLUDED": addon,
+            "DATE_FORMAT_ALIEN": date_fmt,
+            "SERIAL_NON_DATE": serial,
+            "p246_canonical_main_draw_baseline": 2113,
+            "p246_small_pool_alien_baseline": 650,
+            "replay_rows": replay,
+            "existing_canonical_views": existing_views,
+            "canonical_view_exists": "draws_big_lotto_canonical_main" in existing_views,
+        }
+
+    return {
+        "schema_version": "1.0",
+        "task_id": "P246D",
+        "classification": "P246D_BIG_LOTTO_ADDON_SEGREGATION_DESIGN_COMPLETE",
+        "dependency_artifacts_verified": [
+            "outputs/research/p246b_big_lotto_taxonomy_correction_20260605.json",
+            "outputs/research/p246c_big_lotto_addon_impact_audit_20260605.json",
+            "outputs/research/p247_big_lotto_corrected_exclusion_plan_20260605.json",
+        ],
+        "db_path": str(db_path) if db_read else None,
+        "db_read_status": {"read": db_read, "read_only": True, "write_performed": False},
+        "row_family_counts": row_counts,
+        "isolation_problem_statement": ISOLATION_PROBLEM_STATEMENT,
+        "isolation_requirements": ISOLATION_REQUIREMENTS,
+        "evaluated_options": EVALUATED_OPTIONS,
+        "rejected_options": [o["id"] for o in REJECTED_OPTIONS],
+        "rejected_options_detail": REJECTED_OPTIONS,
+        "recommended_design": RECOMMENDED_DESIGN,
+        "strategy_replay_required_changes": STRATEGY_REPLAY_REQUIRED_CHANGES,
+        "api_frontend_display_policy": API_FRONTEND_DISPLAY_POLICY,
+        "test_validation_plan": TEST_VALIDATION_PLAN,
+        "future_type_d_apply_requirements": FUTURE_TYPE_D_APPLY_REQUIREMENTS,
+        "forbidden_actions_confirmed": FORBIDDEN_ACTIONS,
+        "p247_apply_authorized": False,
+        "p247_apply_authorization_required": "Separate explicit Type D human gate for any DB write",
+        "big_lotto_gate": "GATE_RED_PENDING_CANONICAL_SEPARATION",
+        "db_write_performed": False,
+        "final_decision": (
+            "P246D design is complete. The recommended isolation path is phased: "
+            "Phase 1 (no DB write): add get_canonical_draws() helper to database.py and update "
+            "research/strategy/replay callers (key: quick_predict.py:169, RSM, engine files). "
+            "Phase 2 (Type D): CREATE VIEW draws_big_lotto_canonical_main in DB. "
+            "Phase 3 (Type D): CREATE TABLE draw_row_family_annotations with Python-driven "
+            "SMALL_POOL_ALIEN detection for full canonical isolation. "
+            "Direct deletion of ADD_ON_PRIZE_EXCLUDED rows is rejected. "
+            "API/frontend display callers keep full 22,238-row access but should label add-on records. "
+            "BIG_LOTTO research gate remains GATE_RED_PENDING_CANONICAL_SEPARATION until "
+            "Phase 1+2+3 are executed and verified. No DB write performed in this task."
+        ),
+    }
+
+
+def main():
+    import sys
+    result = run_segregation_design()
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    print(f"\n[P246D] Segregation design complete. DB read: {result['db_read_status']['read']}", file=sys.stderr)
+    print(f"[P246D] DB write: {result['db_write_performed']}", file=sys.stderr)
+    print(f"[P246D] Canonical view exists: {result['row_family_counts'].get('canonical_view_exists')}", file=sys.stderr)
+    print(f"[P246D] Classification: {result['classification']}", file=sys.stderr)
+
+
+if __name__ == "__main__":
+    main()

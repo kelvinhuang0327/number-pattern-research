@@ -1,0 +1,94 @@
+task: LOTTERYNEW_BIGLOTTO_BATCH_GENERATE_VERTICAL_R1
+status: COMPLETED_VERTICAL_ONLY
+
+workspace:
+  root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  branch: task/p273a-prize-aware-inferential-validation
+  head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  worktree_state_route: ACTIVE_STABLE_TASK_OWNED_DIRTY
+  dirty_before: true
+  dirty_after: true
+  unattributed_dirty_paths: 93873
+  unattributed_dirty_paths_modified: false
+
+baseline:
+  prior_task_report: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged/_integration_reports/LOTTERYNEW_BIGLOTTO_GENERATE_CANONICAL_VERTICAL_R1/final_report.yaml
+  single_bet_entrypoint: lottery.prediction.generate.generate_one_bet
+  single_bet_focused_tests: PASS (8 passed)
+
+batch_vertical:
+  public_entrypoint: lottery.prediction.batch_generate.generate_bets
+  request_contract: lottery.prediction.domain.models.GenerateBatchRequest
+  use_case: lottery.prediction.use_cases.generate_batch_use_case.GenerateBatchUseCase
+  result_contract: tuple[lottery.prediction.domain.models.GenerateBetResult, ...]
+  maximum_batch_size: 20
+  reused_single_bet_path: lottery.prediction.use_cases.generate_one_bet_use_case.GenerateOneBetUseCase
+  call_chain: "lottery.prediction.batch_generate.generate_bets -> GenerateBatchUseCase.execute -> N x GenerateOneBetUseCase.execute -> GenerateBetResult collection"
+
+conflicts:
+  related_conflict_files_found: 11
+  fully_absorbed: 0
+  partially_absorbed: 0
+  not_used: 11
+  blocked_by_contract: 0
+  conflict_files_modified: false
+  runtime_imports_conflict_files: false
+
+changes:
+  changed_paths:
+    - lottery/prediction/batch_generate.py
+    - lottery/prediction/use_cases/generate_batch_use_case.py
+    - tests/test_lottery_prediction_batch_generate_vertical.py
+    - lottery/prediction/__init__.py
+    - lottery/prediction/use_cases/__init__.py
+    - lottery/prediction/domain/models.py
+    - lottery/prediction/domain/errors.py
+  created_paths:
+    - lottery/prediction/batch_generate.py
+    - lottery/prediction/use_cases/generate_batch_use_case.py
+    - tests/test_lottery_prediction_batch_generate_vertical.py
+  modified_paths:
+    - lottery/prediction/__init__.py
+    - lottery/prediction/use_cases/__init__.py
+    - lottery/prediction/domain/models.py
+    - lottery/prediction/domain/errors.py
+  deleted_paths: []
+  out_of_scope_paths_changed: []
+
+verification:
+  single_bet_tests: PASS (8 passed)
+  batch_tests: PASS (15 passed)
+  combined_focused_tests: PASS (23 passed)
+  relevant_regression: PASS_WITH_DOCUMENTED_OUT_OF_SCOPE_FAILURES
+  import_check: PASS
+  ast_parse: PASS
+  lint: NOT_RUN_TOOL_NOT_AVAILABLE
+  typecheck: NOT_RUN_TOOL_NOT_AVAILABLE
+  diff_check: PASS
+  changed_path_review: PASS
+  judge: PASS
+
+safety:
+  database_accessed: false
+  secret_accessed: false
+  dependency_installed: false
+  dependency_manifest_modified: false
+  strategy_identity_modified: false
+  git_refs_mutated: false
+  commit_created: false
+  push_run: false
+  pr_created: false
+  unexpected_runtime_writes: false
+
+claim_boundary:
+  batch_generate_vertical_integrated: true
+  single_bet_vertical_preserved: true
+  all_conflicts_resolved: false
+  all_lottery_features_integrated: false
+  application_runnable_established: false
+  production_ready_claimed: false
+
+not_run: "Full project linting/typechecking tools not available; full application boot out of scope"
+blocked: none
+remaining_risks: "Pre-existing sqlite DB file contains post-migration row count differences in legacy P16/P17 test assertions; research artifact JSONs missing in unrelated tests"
+next_recommended_vertical: "power_lotto_single_bet_generation or daily_539_single_bet_generation"

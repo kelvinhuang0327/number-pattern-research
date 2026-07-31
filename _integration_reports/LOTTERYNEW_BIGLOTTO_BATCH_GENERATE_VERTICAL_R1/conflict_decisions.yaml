@@ -1,0 +1,9 @@
+conflict_decisions:
+  wbc_backend_conflict_copies:
+    status: NOT_USED
+    absorbed_symbols: []
+    remaining_unique_symbols: []
+    reason: "Conflict copies in wbc_backend/ and reporting/ belong to legacy decoupled tools and do not provide canonical batch generation contracts for Big Lotto domain vertical."
+  runtime_imports:
+    conflict_files_imported: false
+    reason: "All batch generate code uses clean lottery.prediction package imports."

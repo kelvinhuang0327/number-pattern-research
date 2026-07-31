@@ -1,0 +1,13 @@
+task_id: LOTTERYNEW_DAILY539_SINGLE_BET_VERTICAL_R1
+conflicts_audited:
+  - conflict_copy: lottery_api/predict_539_draw_310.py.__CONFLICT__*
+    status: NOT_USED
+    reason: Historical single-draw prediction script conflict variants. Formal architecture uses canonical replay registry and adapter.
+  - conflict_copy: lottery_api/backtest_oddeven_research_539.py.__CONFLICT__*
+    status: NOT_USED
+    reason: Historical research backtest script conflict variants. Formal architecture uses canonical replay registry and adapter.
+  - conflict_copy: scripts/p94c_daily539_all_strategy_betcount_benchmark.py.__CONFLICT__*
+    status: NOT_USED
+    reason: Benchmark script conflict variants. Formal architecture uses canonical replay registry and adapter.
+conflict_files_modified: false
+runtime_imports_conflict_files: false

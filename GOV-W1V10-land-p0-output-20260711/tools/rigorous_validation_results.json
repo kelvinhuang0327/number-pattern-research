@@ -1,0 +1,28 @@
+{
+  "test_size": 150,
+  "no_consecutive_analysis": {
+    "total_samples": 200,
+    "distribution": {
+      "0": 77,
+      "2": 25,
+      "1": 95,
+      "3": 3
+    },
+    "no_consecutive_rate": 0.385,
+    "has_consecutive_rate": 0.615,
+    "mean_consecutive_pairs": 0.77,
+    "conclusion": "No-consecutive draws are common"
+  },
+  "statistical_tests": {
+    "special_number_binomial": {
+      "Baseline_Bayesian": {
+        "successes": 13,
+        "trials": 150,
+        "observed_rate": 0.08666666666666667,
+        "expected_rate": 0.125,
+        "p_value": 0.9447435190634875,
+        "ci_95": [
+          0.05134668856955886,
+          0.1426294531242353
+        ],
+        "significant": 

@@ -1,0 +1,52 @@
+task: P541F_OPTION_A_CANONICAL_FOUR_STRATEGY_IMPLEMENTATION_R10
+authoritative_strategy_count: 4
+authoritative_strategy_ids:
+  - biglotto_social_wisdom_anti_popularity
+  - biglotto_zone_split_3bet_bet1
+  - biglotto_zone_split_3bet_bet2
+  - biglotto_zone_split_3bet_bet3
+
+implementation_by_id:
+  biglotto_social_wisdom_anti_popularity: lottery_api/models/biglotto_social_wisdom_adapter.py
+  biglotto_zone_split_3bet_bet1: lottery_api/models/biglotto_zone_split_adapter.py
+  biglotto_zone_split_3bet_bet2: lottery_api/models/biglotto_zone_split_adapter.py
+  biglotto_zone_split_3bet_bet3: lottery_api/models/biglotto_zone_split_adapter.py
+
+adapter_by_id:
+  biglotto_social_wisdom_anti_popularity: lottery_api/models/biglotto_social_wisdom_adapter.py
+  biglotto_zone_split_3bet_bet1: lottery_api/models/biglotto_zone_split_adapter.py
+  biglotto_zone_split_3bet_bet2: lottery_api/models/biglotto_zone_split_adapter.py
+  biglotto_zone_split_3bet_bet3: lottery_api/models/biglotto_zone_split_adapter.py
+
+lifecycle_by_id:
+  biglotto_social_wisdom_anti_popularity: ONLINE
+  biglotto_zone_split_3bet_bet1: ONLINE
+  biglotto_zone_split_3bet_bet2: ONLINE
+  biglotto_zone_split_3bet_bet3: ONLINE
+
+focused_tests_by_id:
+  biglotto_social_wisdom_anti_popularity:
+    - tests/test_biglotto_social_wisdom_adapter.py
+    - tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py
+  biglotto_zone_split_3bet_bet1:
+    - tests/fixtures/biglotto_zone_split_p541d.json
+    - tests/test_biglotto_zone_split_adapter.py
+    - tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py
+  biglotto_zone_split_3bet_bet2:
+    - tests/fixtures/biglotto_zone_split_p541d.json
+    - tests/test_biglotto_zone_split_adapter.py
+    - tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py
+  biglotto_zone_split_3bet_bet3:
+    - tests/fixtures/biglotto_zone_split_p541d.json
+    - tests/test_biglotto_zone_split_adapter.py
+    - tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py
+
+public_alias_ids: []
+aggregate_ids: []
+merged_stub_aliases_authorized: false
+expected_identity_checks:
+  catalog_strategy_id_matches: true
+  adapter_strategy_id_matches: true
+  implementation_strategy_id_matches: true
+  focused_test_strategy_id_matches: true
+  runtime_resolution_strategy_id_matches: true

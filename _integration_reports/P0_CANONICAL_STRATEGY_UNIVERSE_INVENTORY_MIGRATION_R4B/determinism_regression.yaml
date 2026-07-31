@@ -1,0 +1,11 @@
+task: P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_LINT_REMEDIATION_R4B
+timestamp: "2026-07-29T20:17:05+08:00"
+sandbox_dir: _integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/runtime_sandbox
+run_1_path: _integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/runtime_sandbox/run_1.json
+run_2_path: _integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/runtime_sandbox/run_2.json
+normalized_fields:
+  - generated_at
+  - db_path
+normalized_documents_equal: true
+unequal_json_paths: []
+status: PASS

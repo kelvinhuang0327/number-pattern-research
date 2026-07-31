@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P249-A Paper Toolchain Index</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f6f7f8;
+  --panel: #ffffff;
+  --ink: #20262d;
+  --muted: #5c6873;
+  --line: #d7dde2;
+  --pass: #196b43;
+  --warn: #9a5b00;
+  --fail: #a3322a;
+  --neutral: #46515c;
+  --link: #245b8f;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+}
+header, main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px;
+}
+header { padding-bottom: 12px; }
+h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+p { margin: 0; color: var(--muted); }
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+section {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin: 0 0 16px;
+  padding: 18px;
+  overflow: hidden;
+}
+.status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 650;
+}
+.pass { background: var(--pass); }
+.warn { background: var(--warn); }
+.fail { background: var(--fail); }
+.neutral { background: var(--neutral); }
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+.metric {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px;
+  min-width: 0;
+}
+.metric dt {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.metric dd {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+th, td {
+  border-bottom: 1px solid var(--line);
+  padding: 8px 7px;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+th {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 650;
+}
+ul { margin: 0; padding-left: 20px; }
+.stack { display: grid; gap: 14px; }
+@media (max-width: 720px) {
+  header, main { padding-left: 14px; padding-right: 14px; }
+  h1 { font-size: 22px; }
+  section { padding: 14px; }
+}
+</style>
+</head>
+<body>
+<header>
+<h1>P249-A Paper Toolchain Index</h1>
+<p>Generated at UTC: 2026-07-09T00:00:00Z</p>
+</header>
+<main>
+<section id="summary">
+<h2>Summary <span class="status pass">PASS</span></h2>
+<div class="metrics">
+<div class="metric"><dt>Dashboard status</dt><dd>PASS</dd></div>
+<div class="metric"><dt>Toolchain status</dt><dd>PASS</dd></div>
+<div class="metric"><dt>Latest P246 gate</dt><dd>PASS</dd></div>
+<div class="metric"><dt>Local links</dt><dd>32 / 32</dd></div>
+<div class="metric"><dt>Warnings</dt><dd>0</dd></div>
+<div class="metric"><dt>Failures</dt><dd>0</dd></div>
+</div>
+<table><thead><tr><th>Input</th><th>Path</th><th>SHA-256</th></tr></thead><tbody><tr><td>dashboard_summary_json</td><td>report/p248a_paper_toolchain_dashboard/dashboard_summary.json</td><td>5e35c86521fd48be1337ab5d256c29145c9ef39d774b134d1ebdbdff688e0386</td></tr><tr><td>dashboard_sections_csv</td><td>report/p248a_paper_toolchain_dashboard/dashboard_sections.csv</td><td>8ebb2e375d3394f7681892933119e209df76592d179bbb502b8b95087e6fe1d3</td></tr><tr><td>dashboard_html</td><td>report/p248a_paper_toolchain_dashboard/dashboard.html</td><td>03e7a9e5fb9a9d2ae4a0f362bc38d430b511e85a8d5bb2ccbf656c9bfc220cf0</td></tr><tr><td>toolchain_status_json</td><td>report/p247a_paper_toolchain_status/toolchain_status.json</td><td>5b907a68b2d196bbe25294113cc7975cad8dfa22901d173f2adc1f01ae66eec4</td></tr><tr><td>gate_summary_json</td><td>report/p246a_paper_artifact_diff_gate/gate_summary.json</td><td>a4a3dc4a972dd2bde38d891f77292d04bf371711211f66eaa7b35e474cb52703</td></tr></tbody></table>
+</section>
+<section id="launch-links">
+<h2>Launch Links</h2>
+<table><thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Exists</th><th>Type</th><th>Notes</th></tr></thead><tbody><tr><td>p248_dashboard_html</td><td><a href="../p248a_paper_toolchain_dashboard/dashboard.html">P248 dashboard HTML</a></td><td>launch</td><td>True</td><td>file</td><td>primary local dashboard launch link</td></tr></tbody></table>
+</section>
+<section id="dashboard">
+<h2>Dashboard</h2>
+<div class="metrics">
+<div class="metric"><dt>P248 dashboard status</dt><dd>PASS</dd></div>
+<div class="metric"><dt>P248 sections</dt><dd>10</dd></div>
+</div>
+<table><thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Exists</th><th>Type</th><th>Notes</th></tr></thead><tbody><tr><td>p248_dashboard_summary</td><td><a href="../p248a_paper_toolchain_dashboard/dashboard_summary.json">P248 dashboard summary JSON</a></td><td>dashboard</td><td>True</td><td>file</td><td></td></tr><tr><td>p248_dashboard_sections</td><td><a href="../p248a_paper_toolchain_dashboard/dashboard_sections.csv">P248 dashboard sections CSV</a></td><td>dashboard</td><td>True</td><td>file</td><td></td></tr></tbody></table>
+</section>
+<section id="latest-gate">
+<h2>Latest Gate</h2>
+<div class="metrics">
+<div class="metric"><dt>P246 gate status</dt><dd>PASS</dd></div>
+<div class="metric"><dt>P246 checks</dt><dd>{&quot;failed&quot;:0,&quot;passed&quot;:9,&quot;total&quot;:9}</dd></div>
+</div>
+<table><thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Exists</th><th>Type</th><th>Notes</th></tr></thead><tbody><tr><td>p246_gate_summary</td><td><a href="../p246a_paper_artifact_diff_gate/gate_summary.json">P246 gate summary JSON</a></td><td>latest_gate</td><td>True</td><td>file</td><td></td></tr><tr><td>p246_gate_checks</td><td><a href="../p246a_paper_artifact_diff_gate/gate_checks.csv">P246 gate checks CSV</a></td><td>latest_gate</td><td>True</td><td>file</td><td></td></tr><tr><td>p246_gate_report</td><td><a href="../p246a_paper_artifact_diff_gate/gate_report.md">P246 gate report Markdown</a></td><td>latest_gate</td><td>True</td><td>file</td><td></td></tr></tbody></table>
+</section>
+<section id="toolchain-status">
+<h2>Toolchain Status</h2>
+<div class="metrics">
+<div class="metric"><dt>P247 status</dt><dd>PASS</dd></div>
+<div class="metric"><dt>Steps</dt><dd>10</dd></div>
+<div class="metric"><dt>Artifact roots</dt><dd>12 / 12</dd></div>
+<div class="metric"><dt>Scripts</dt><dd>10 / 10</dd></div>
+</div>
+<table><thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Exists</th><th>Type</th><th>Notes</th></tr></thead><tbody><tr><td>p247_toolchain_status</td><td><a href="../p247a_paper_toolchain_status/toolchain_status.json">P247 toolchain status JSON</a></td><td>toolchain_status</td><td>True</td><td>file</td><td></td></tr><tr><td>p247_toolchain_steps</td><td><a href="../p247a_paper_toolchain_status/toolchain_steps.csv">P247 toolchain steps CSV</a></td><td>toolchain_status</td><td>True</td><td>file</td><td></td></tr><tr><td>p247_toolchain_report</td><td><a href="../p247a_paper_toolchain_status/toolchain_report.md">P247 toolchain report Markdown</a></td><td>toolchain_status</td><td>True</td><td>file</td><td></td></tr></tbody></table>
+</section>
+<section id="catalog-query-diff">
+<h2>Catalog / Query / Diff</h2>
+<table><thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Exists</th><th>Type</th><th>Notes</th></tr></thead><tbody><tr><td>p245_diff_summary</td><td><a href="../p245a_paper_artifact_catalog_diff/diff_summary.json">P245 diff summary JSON</a></td><td>catalog_query_diff</td><td>True</td><td>file</td><td></td></tr><tr><td>p245_diff_entries</td><td><a href="../p245a_paper_artifact_catalog_diff/diff_entries.csv">P245 diff entries CSV</a></td><td>catalog_query_diff</td><td>True</td><td>file</td><td></td></tr><tr><td>p245_diff_report</td><td><a href="../p245a_paper_artifact_catalog_diff/diff_report.md">P245 diff report Markdown</a></td><td>catalog_query_diff</td><td>True</td><td>file</td><td></td></tr><tr><td>p244_query_summary</td><td><a href="../p244a_paper_artifact_catalog_query/query_summary.json">P244 query summary JSON</a></td><td>catalog_query_diff</td><td>True</td><td>file</td><td></td></tr><tr><td>p244_query_results</td><td><a href="../p244a_paper_artifact_catalog_query/query_results.csv">P244 query results CSV</a></td><td>catalog_query_diff</td><td>True</td><td>file</td><td></td></tr><tr><td>p244_query_report</td><td><a href="../p244a_paper_artifact_catalog_query/query_report.md">P244 query report Markdown</a></td><td>catalog_query_diff</td><td>True</td><td>file</td><td></td></tr><tr><td>p243_catalog_json</td><td><a href="../p243a_paper_artifact_catalog/artifact_catalog.json">P243 artifact catalog JSON</a></td><td>catalog_query_diff</td><td>True</td><td>file</td><td></td></tr><tr><td>p243_catalog_csv</td><td><a href="../p243a_paper_artifact_catalog/artifact_catalog.csv">P243 artifact catalog CSV</a></td><td>catalog_query_diff</td><td>True</td><td>file</td><td></td></tr><tr><td>p243_catalog_md</td><td><a href="../p243a_paper_artifact_catalog/artifact_catalog.md">P243 artifact catalog Markdown</a></td><td>catalog_query_diff</td><td>True</td><td>file</td><td></td></tr></tbody></table>
+</section>
+<section id="scripts">
+<h2>Scripts</h2>
+<div class="stack">
+<table><thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Exists</th><th>Type</th><th>Notes</th></tr></thead><tbody><tr><td>p239_script</td><td><a href="../../scripts/run_mlb_paper_strategy_workflow.py">P239 workflow script</a></td><td>scripts</td><td>True</td><td>file</td><td></td></tr><tr><td>p240_script</td><td><a href="../../scripts/inspect_mlb_paper_strategy_workflow.py">P240 workflow inspector script</a></td><td>scripts</td><td>True</td><td>file</td><td></td></tr><tr><td>p241_script</td><td><a href="../../scripts/build_mlb_paper_strategy_workflow_review_pack.py">P241 review pack script</a></td><td>scripts</td><td>True</td><td>file</td><td></td></tr><tr><td>p242_script</td><td><a href="../../scripts/run_mlb_paper_strategy_workflow_bundle.py">P242 workflow bundle script</a></td><td>scripts</td><td>True</td><td>file</td><td></td></tr><tr><td>p243_script</td><td><a href="../../scripts/build_mlb_paper_artifact_catalog.py">P243 catalog script</a></td><td>scripts</td><td>True</td><td>file</td><td></td></tr><tr><td>p244_script</td><td><a href="../../scripts/query_mlb_paper_artifact_catalog.py">P244 query script</a></td><td>scripts</td><td>True</td><td>file</td><td></td></tr><tr><td>p245_script</td><td><a href="../../scripts/diff_mlb_paper_artifact_catalogs.py">P245 diff script</a></td><td>scripts</td><td>True</td><td>file</td><td></td></tr><tr><td>p246_script</td><td><a href="../../scripts/check_mlb_paper_artifact_diff.py">P246 gate script</a></td><td>scripts</td><td>True</td><td>file</td><td></td></tr><tr><td>p247_script</td><td><a href="../../scripts/build_mlb_paper_toolchain_status.py">P247 toolchain status script</a></td><td>scripts</td><td>True</td><td>file</td><td></td></tr><tr><td>p248_script</td><td><a href="../../scripts/build_mlb_paper_toolchain_dashboard.py">P248 dashboard script</a></td><td>scripts</td><td>True</td><td>file</td><td></td></tr></tbody></table>
+<table><thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Exists</th><th>Type</th><th>Notes</th></tr></thead><tbody><tr><td>p239_workflow_summary</td><td><a href="../p239a_paper_strategy_workflow/workflow_summary.json">P239 workflow summary JSON</a></td><td>reports</td><td>True</td><td>file</td><td></td></tr><tr><td>p240_inspection_summary</td><td><a href="../p240a_paper_strategy_workflow_inspector/inspection_summary.json">P240 inspection summary JSON</a></td><td>reports</td><td>True</td><td>file</td><td></td></tr><tr><td>p241_review_report</td><td><a href="../p241a_paper_strategy_workflow_review_pack/review_report.md">P241 review report Markdown</a></td><td>reports</td><td>True</td><td>file</td><td></td></tr><tr><td>p242_bundle_summary</td><td><a href="../p242a_paper_strategy_workflow_bundle/bundle_summary.json">P242 bundle summary JSON</a></td><td>reports</td><td>True</td><td>file</td><td></td></tr></tbody></table>
+</div>
+</section>
+<section id="safety-boundaries">
+<h2>Safety Boundaries</h2>
+<table><thead><tr><th>Boundary</th><th>Value</th></tr></thead><tbody><tr><td>computed_roi_pnl_ev_kelly</td><td>False</td></tr><tr><td>contacted_providers</td><td>False</td></tr><tr><td>created_betting_recommendations</td><td>False</td></tr><tr><td>created_live_production_or_real_betting_output</td><td>False</td></tr><tr><td>executed_existing_workflows</td><td>False</td></tr><tr><td>fetched_remote_sports_data</td><td>False</td></tr><tr><td>mutated_p237_to_p248_source_artifacts</td><td>False</td></tr><tr><td>read_existing_p246_p247_p248_artifacts_only</td><td>True</td></tr><tr><td>regenerated_p237_to_p248_artifacts</td><td>False</td></tr><tr><td>used_pybaseball</td><td>False</td></tr><tr><td>wrote_data_runtime_logs_or_outputs</td><td>False</td></tr><tr><td>wrote_db</td><td>False</td></tr><tr><td>wrote_only_p249_index_outputs</td><td>True</td></tr></tbody></table>
+</section>
+<section id="limitations">
+<h2>Limitations</h2>
+<ul><li>2025-only</li><li>historical paper-only</li><li>odds provenance unverified</li><li>not true-PIT</li><li>not betting edge</li><li>not future prediction</li><li>not live</li><li>not production</li><li>not real betting</li><li>not multi-season validation</li></ul>
+</section>
+<section id="not-claims">
+<h2>Not Claims</h2>
+<ul><li>No ROI, paper P/L, EV, Kelly, bankroll, or compounding is computed.</li><li>No best_strategy, best_threshold, recommended_bet, or strategy ranking is output.</li><li>No betting edge, future prediction, true-PIT validation, or multi-season validation is claimed.</li><li>No live, production, or real betting output is created.</li></ul>
+</section>
+</main>
+</body>
+</html>

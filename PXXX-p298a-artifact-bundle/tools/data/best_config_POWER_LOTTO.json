@@ -1,0 +1,21 @@
+{
+    "components": [
+        {
+            "name": "strat_adv_entropy_analysis",
+            "weight": 1,
+            "window": 150
+        },
+        {
+            "name": "strat_deep_entropy",
+            "weight": 2,
+            "window": 150
+        },
+        {
+            "name": "strat_deep_maml",
+            "weight": 3,
+            "window": 150
+        }
+    ],
+    "win_rate": 0.13333333333333333,
+    "lottery_type": "POWER_LOTTO"
+}

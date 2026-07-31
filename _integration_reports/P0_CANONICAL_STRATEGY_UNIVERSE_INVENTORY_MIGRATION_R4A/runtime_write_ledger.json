@@ -1,0 +1,23 @@
+{
+  "task": "P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_FINAL_TREE_CLOSURE_R4A",
+  "allowed_write_roots": [
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4A/"
+  ],
+  "writes_observed": [
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4A/runtime_sandbox/fixture.db",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4A/runtime_sandbox/run_1.json",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4A/runtime_sandbox/run_2.json",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4A/phase0_snapshot.yaml",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4A/final_tree_hashes.yaml",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4A/fixture_db_invariance.yaml",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4A/determinism_comparison.yaml",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4A/historical_artifact_comparison.yaml",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4A/universe_fixture_review.yaml",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4A/read_only_contract_review.yaml",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4A/runtime_write_ledger.json",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4A/verification.md",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4A/judge_report.md",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4A/final_report.yaml"
+  ],
+  "unauthorized_writes": []
+}

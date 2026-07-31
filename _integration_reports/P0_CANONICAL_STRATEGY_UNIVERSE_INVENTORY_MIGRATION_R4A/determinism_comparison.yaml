@@ -1,0 +1,13 @@
+task: P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_FINAL_TREE_CLOSURE_R4A
+determinism:
+  run_1_path: _integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4A/runtime_sandbox/run_1.json
+  run_2_path: _integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4A/runtime_sandbox/run_2.json
+  run_1_sha256: 8788c62921942a33e660e8d7b858349279100ff40c138e9e28d574de38e2ad8b
+  run_2_sha256: 2d161469070486deac80d9062515f7b0465830fc028eaf67e03ed1830d25833d
+  exact_bytes_equal: false
+  excluded_environment_fields:
+    - generated_at
+    - db_path
+  normalized_documents_equal: true
+  unequal_json_paths: []
+  deterministic_fields_verified: true

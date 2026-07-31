@@ -1,0 +1,44 @@
+[
+  {
+    "Term": "短期 (20期)",
+    "Method": "ARIMA (5,1,0)",
+    "M3+ Rate": "0.00%",
+    "Avg Match": "0.85",
+    "Edge": "-3.80%"
+  },
+  {
+    "Term": "短期 (20期)",
+    "Method": "Ensemble (含 ARIMA)",
+    "M3+ Rate": "0.00%",
+    "Avg Match": "0.90",
+    "Edge": "-3.80%"
+  },
+  {
+    "Term": "中期 (50期)",
+    "Method": "ARIMA (5,1,0)",
+    "M3+ Rate": "0.00%",
+    "Avg Match": "0.92",
+    "Edge": "-3.80%"
+  },
+  {
+    "Term": "中期 (50期)",
+    "Method": "Ensemble (含 ARIMA)",
+    "M3+ Rate": "0.00%",
+    "Avg Match": "0.86",
+    "Edge": "-3.80%"
+  },
+  {
+    "Term": "長期 (118期)",
+    "Method": "ARIMA (5,1,0)",
+    "M3+ Rate": "2.54%",
+    "Avg Match": "0.87",
+    "Edge": "-1.26%"
+  },
+  {
+    "Term": "長期 (118期)",
+    "Method": "Ensemble (含 ARIMA)",
+    "M3+ Rate": "2.54%",
+    "Avg Match": "0.97",
+    "Edge": "-1.26%"
+  }
+]

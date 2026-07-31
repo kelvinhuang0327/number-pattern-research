@@ -17,6 +17,44 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from lottery_api.database import DatabaseManager
 from lottery_api.engine.multi_bet_optimizer import MultiBetOptimizer
 
+import sqlite3
+from pathlib import Path
+
+
+def _p291u_repo_root():
+    current = Path(__file__)
+    if not current.is_absolute():
+        raise FileNotFoundError(f"Source file path is not absolute: {current}")
+    for parent in (current.parent, *current.parents):
+        if (parent / "lottery_api").is_dir():
+            return parent
+    raise FileNotFoundError(f"Unable to locate repository root from source file: {current}")
+
+
+def _p291u_default_db_path():
+    db_path = _p291u_repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+    if not db_path.is_file():
+        raise FileNotFoundError(f"Default lottery DB path is missing or non-regular: {db_path}")
+    return db_path
+
+
+def _p291u_resolve_db_path(db_path=None):
+    if db_path is None:
+        return _p291u_default_db_path()
+    path = Path(db_path)
+    if not path.is_absolute():
+        raise ValueError(f"Explicit DB path must be absolute: {db_path}")
+    if not path.is_file():
+        raise FileNotFoundError(f"Explicit DB path is missing or non-regular: {path}")
+    return path
+
+
+def _p291u_connect_resolved(db_path, *, uri=False):
+    if uri:
+        return sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    return sqlite3.connect(str(db_path))
+
+
 def run_multi_term_backtest(lottery_type, periods=100, train_window=250, retrain_freq=1):
     lottery_name = '大樂透' if 'BIG' in lottery_type.upper() else '威力彩'
     print(f"\n" + "="*60)
@@ -133,6 +171,7 @@ def run_multi_term_backtest(lottery_type, periods=100, train_window=250, retrain
     return stats
 
 def main():
+    _p291u_db_path = _p291u_resolve_db_path()
     parser = argparse.ArgumentParser(description='多策略 3 注優化回測')
     parser.add_argument('--lottery', type=str, default='big_lotto', choices=['big_lotto', 'power_lotto'])
     parser.add_argument('--terms', type=str, default='150,500,1000', help='回測期數列表 (逗號分隔)')
@@ -148,7 +187,7 @@ def main():
         if t_str == 'all':
             db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'lottery_api', 'data', 'lottery_v2.db')
             import sqlite3
-            conn = sqlite3.connect(db_path)
+            conn = _p291u_connect_resolved(_p291u_db_path)
             c = conn.cursor()
             c.execute("SELECT COUNT(*) FROM draws WHERE lottery_type=?", (lottery_type,))
             count = c.fetchone()[0]

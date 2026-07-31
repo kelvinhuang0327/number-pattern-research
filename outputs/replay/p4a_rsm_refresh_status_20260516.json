@@ -1,0 +1,67 @@
+{
+  "classification": "P4A_RSM_REFRESH_BLOCKED_NEEDS_WRITE_MODE_APPROVAL",
+  "rsm_behavior": {
+    "bootstrap_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/tools/rsm_bootstrap.py",
+    "engine_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/engine/rolling_strategy_monitor.py",
+    "dry_run_available": false,
+    "json_out_available": false,
+    "bootstrap_calls_tracker_save": true,
+    "engine_uses_save": true,
+    "write_mode_reason": "bootstrap() persists via tracker.save()"
+  },
+  "db_audit": {
+    "generated_at": "2026-05-17T02:12:22Z",
+    "database": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-clean/lottery_api/data/lottery_v2.db",
+    "prediction_item_status_counts": [
+      {
+        "status": "RESOLVED",
+        "count": 1089
+      },
+      {
+        "status": "STALE_RESOLVED",
+        "count": 6
+      }
+    ],
+    "replay_total": 975,
+    "controlled_apply_counts": [
+      {
+        "controlled_apply_id": "20260514033100-13acaf34996e",
+        "count": 300
+      },
+      {
+        "controlled_apply_id": "20260514134953-cf683424",
+        "count": 200
+      },
+      {
+        "controlled_apply_id": "P2B_20260515",
+        "count": 6
+      },
+      {
+        "controlled_apply_id": "P2F_20260515",
+        "count": 3
+      },
+      {
+        "controlled_apply_id": "P3BC_RESOLVE_20260516",
+        "count": 6
+      }
+    ],
+    "latest_draws": [
+      {
+        "lottery_type": "3_STAR",
+        "latest_draw": 115000024
+      },
+      {
+        "lottery_type": "BIG_LOTTO",
+        "latest_draw": 115000052
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "latest_draw": 115000106
+      },
+      {
+        "lottery_type": "POWER_LOTTO",
+        "latest_draw": 115000035
+      }
+    ]
+  }
+}

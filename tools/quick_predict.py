@@ -3,11 +3,16 @@
 快速預測腳本 - 供 /predict 命令使用
 用法: python3 tools/quick_predict.py [彩票類型] [注數]
 
-策略對照 (2026-02-24 更新):
-  大樂透 2注: 偏差互補+回聲 P0 (Edge +1.21%, 確定性)
-  大樂透 3注: Triple Strike (Edge +0.98%, 1500期 STABLE)
-  大樂透 4注: TS3+Markov(w=30) (Edge +1.23%, 1500期)
-  大樂透 5注: TS3+Markov+FreqOrt (Edge +1.77%, 1500期 z=2.40 ★最佳)
+策略對照 (2026-07-25 legacy continuity 更新):
+  大樂透 2注: 偏差互補+回聲 P0 (historical edge +1.21%) —
+    evidence_status=HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED
+  大樂透 3注: Triple Strike (historical edge +0.98%) —
+    evidence_status=HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED
+  大樂透 4注: TS3+Markov(w=30) — biglotto_5bet_orthogonal 前4注同一 implementation family；
+    evidence_status=HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED
+  大樂透 5注: TS3+Markov+FreqOrt — evidence_status=HISTORICAL_RESEARCH_ONLY,
+    current_significance=NOT_ESTABLISHED（2026-07-24 獨立重驗：原始 P3 claim 不可重現，詳見
+    rejected/ts3_markov_freq_5bet_biglotto.json :: retest_2026_07_24）
   威力彩 2注: Fourier Rhythm (Edge +1.91%)
   威力彩 3注: Power Precision (Edge +2.23%, 1500期 STABLE, z=2.74)
   威力彩 特別號: V3 (Edge +2.20%)
@@ -18,6 +23,8 @@ import sys
 import os
 import random
 import argparse
+import datetime as dt
+import json
 import numpy as np
 from numpy.fft import fft, fftfreq
 from collections import Counter
@@ -26,7 +33,11 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
-from database import DatabaseManager
+from database import DatabaseManager, ColdWalReadOnlyError
+
+EXIT_COLD_WAL_READ_ONLY = 3
+
+DB_PATH = os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db')
 
 
 # 彩票類型對照
@@ -48,13 +59,41 @@ DEFAULT_CONFIG = {
     'DAILY_539': {'bets': 3, 'cost': 150},
 }
 
-# 各注數 Edge 和策略名稱 (2026-02-23 驗證)
+# 各注數 Edge 和策略名稱 (2026-02-23 驗證; BIG_LOTTO 2/3/4/5注 evidence metadata
+# 於 2026-07-25 legacy-continuity-stabilization 訂正 — 見下方 NOT_ESTABLISHED_WARNING.
+# 'edge' 數值為歷史回測描述性紀錄，不代表目前已驗證的預測優勢。)
+NOT_ESTABLISHED_WARNING = 'No reliable predictive advantage is currently established.'
+
 STRATEGY_INFO = {
     'BIG_LOTTO': {
-        2: {'strategy': '偏差互補+回聲 P0', 'edge': '+1.21%', 'verified': '1000期+10種子'},
-        3: {'strategy': 'Triple Strike', 'edge': '+0.98%', 'verified': '1500期 STABLE'},
-        4: {'strategy': 'TS3+Markov(w=30)', 'edge': '+1.23%', 'verified': '1500期 z=1.85'},
-        5: {'strategy': 'TS3+Markov+FreqOrt', 'edge': '+1.77%', 'verified': '1500期 z=2.40 P3 p=0.030'},
+        2: {
+            'strategy': '偏差互補+回聲 P0', 'edge': '+1.21%', 'verified': '',
+            'implementation_id': 'biglotto_p0_2bet',
+            'evidence_status': 'HISTORICAL_RESEARCH_ONLY',
+            'current_significance': 'NOT_ESTABLISHED',
+            'warning': NOT_ESTABLISHED_WARNING,
+        },
+        3: {
+            'strategy': 'Triple Strike', 'edge': '+0.98%', 'verified': '',
+            'implementation_id': 'biglotto_triple_strike',
+            'evidence_status': 'HISTORICAL_RESEARCH_ONLY',
+            'current_significance': 'NOT_ESTABLISHED',
+            'warning': NOT_ESTABLISHED_WARNING,
+        },
+        4: {
+            'strategy': 'TS3+Markov(w=30)', 'edge': '+1.23%', 'verified': '',
+            'implementation_id': 'biglotto_5bet_orthogonal.slice4',
+            'evidence_status': 'HISTORICAL_RESEARCH_ONLY',
+            'current_significance': 'NOT_ESTABLISHED',
+            'warning': NOT_ESTABLISHED_WARNING,
+        },
+        5: {
+            'strategy': 'TS3+Markov+FreqOrt', 'edge': '+1.77%', 'verified': '',
+            'implementation_id': 'biglotto_5bet_orthogonal.full5',
+            'evidence_status': 'HISTORICAL_RESEARCH_ONLY',
+            'current_significance': 'NOT_ESTABLISHED',
+            'warning': NOT_ESTABLISHED_WARNING,
+        },
     },
     'POWER_LOTTO': {
         2: {'strategy': 'Fourier Rhythm', 'edge': '+1.91%', 'verified': '1000期'},
@@ -77,11 +116,134 @@ BASELINES = {
     'POWER_LOTTO': {1: 3.87, 2: 7.59, 3: 11.17, 4: 14.60},
 }
 
+DRY_RUN_FINAL_CLASSIFICATION = 'P4B_QUICK_PREDICT_DRYRUN_READY'
+
+
+def normalize_lottery_selection(raw_value):
+    if raw_value is None:
+        return None
+
+    value = str(raw_value).strip()
+    if not value:
+        return None
+
+    lower = value.lower()
+    if lower == 'all':
+        return 'ALL'
+
+    mapped = LOTTERY_MAP.get(lower)
+    if mapped:
+        return mapped
+
+    upper = value.upper()
+    if upper in {'BIG_LOTTO', 'POWER_LOTTO', 'DAILY_539'}:
+        return upper
+    return upper
+
+
+def resolve_cli_value(flag_value, positional_value, default_value=None):
+    if flag_value is not None:
+        return flag_value
+    if positional_value is not None:
+        return positional_value
+    return default_value
+
+
+def load_history(lottery_type, dry_run=False):
+    """Single canonical, truly read-only history loader shared by both the
+    normal prediction path and --dry-run.
+
+    Both paths open DatabaseManager(read_only=True): the SQLite connection
+    uses URI mode=ro with PRAGMA query_only=ON, and schema initialization is
+    never invoked (no CREATE TABLE/INDEX/VIEW statement is issued). Both
+    paths therefore see the exact same canonical-filtered history — same DB
+    path, same canonical filter (excludes ADD_ON_PRIZE_EXCLUDED,
+    DATE_FORMAT_ALIEN, and SMALL_POOL_ALIEN for BIG_LOTTO), same ordering,
+    same draw identities. `dry_run` is retained as a parameter purely for
+    call-site symmetry with the CLI's --dry-run flag; it no longer changes
+    which data is read (legacy-continuity-stabilization, 2026-07-24). Raw,
+    unfiltered records remain queryable via get_all_draws() for other
+    display/history callers outside prediction generation.
+    """
+    db = DatabaseManager(db_path=DB_PATH, read_only=True)
+    history = db.get_canonical_draws(lottery_type=lottery_type)
+    return sorted(history, key=lambda x: (x['date'], x['draw']))
+
+
+def _normalize_bet(bet):
+    normalized = {
+        'numbers': [int(n) for n in bet.get('numbers', [])],
+    }
+    if bet.get('special') is not None:
+        normalized['special'] = int(bet['special'])
+    return normalized
+
+
+def build_prediction_summary(lottery_type, bets, strategy, history, num_bets):
+    name = LOTTERY_NAMES.get(lottery_type, lottery_type)
+    config = DEFAULT_CONFIG.get(lottery_type, {})
+    next_draw = get_next_draw_number(history)
+    last_draw = history[-1] if history else {}
+    info = STRATEGY_INFO.get(lottery_type, {}).get(num_bets, {})
+    baseline = BASELINES.get(lottery_type, {}).get(num_bets, 0)
+
+    all_nums = set()
+    for bet in bets:
+        all_nums.update(int(n) for n in bet.get('numbers', []))
+
+    max_num = 49 if lottery_type == 'BIG_LOTTO' else 38 if lottery_type == 'POWER_LOTTO' else 39
+    warnings = []
+    if lottery_type == 'DAILY_539':
+        warnings.append('DAILY_539 currently has no dedicated RSM refresh support.')
+
+    normalized_bets = [_normalize_bet(bet) for bet in bets]
+    summary = {
+        'lottery_type': lottery_type,
+        'lottery_name': name,
+        'next_draw': next_draw,
+        'num_bets': num_bets,
+        'strategy': strategy,
+        'baseline': baseline,
+        'last_draw': {
+            'draw': last_draw.get('draw'),
+            'date': last_draw.get('date'),
+            'numbers': list(last_draw.get('numbers', [])),
+            'special': last_draw.get('special'),
+        } if last_draw else None,
+        'bets': normalized_bets,
+        'coverage': {
+            'covered_numbers': len(all_nums),
+            'max_numbers': max_num,
+            'coverage_rate': round((len(all_nums) / max_num) * 100, 1) if max_num else 0,
+        },
+        'strategy_info': info,
+        'warnings': warnings,
+        'input_history_count': len(history),
+    }
+    if lottery_type == 'POWER_LOTTO':
+        summary['special_top3'] = [int(n) for n in power_special_v3(history)]
+    return summary
+
+
+def build_dry_run_payload(predictions, warnings):
+    return {
+        'generated_at': dt.datetime.utcnow().replace(microsecond=0).isoformat() + 'Z',
+        'final_classification': DRY_RUN_FINAL_CLASSIFICATION,
+        'dry_run': True,
+        'db_written': False,
+        'prediction_items_inserted': False,
+        'prediction_runs_inserted': False,
+        'replay_rows_inserted': False,
+        'predictions': predictions,
+        'warnings': warnings,
+    }
+
 
 # ========== 大樂透策略 ==========
 
 def biglotto_p0_2bet(history, window=50, echo_boost=1.5):
-    """大樂透 2注: 偏差互補+回聲 P0 (Edge +1.21%, 確定性)"""
+    """大樂透 2注: 偏差互補+回聲 P0 (historical edge +1.21%; evidence_status=
+    HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED)"""
     MAX_NUM, PICK = 49, 6
     recent = history[-window:] if len(history) > window else history
     expected = len(recent) * PICK / MAX_NUM
@@ -132,14 +294,19 @@ def biglotto_p0_2bet(history, window=50, echo_boost=1.5):
 
 
 def biglotto_triple_strike(history):
-    """大樂透 3注: Triple Strike (Edge +0.98%, 1500期 STABLE)"""
+    """大樂透 3注: Triple Strike (historical edge +0.98%; evidence_status=
+    HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED)"""
     from tools.predict_biglotto_triple_strike import generate_triple_strike
     bets_raw = generate_triple_strike(history)
     return [{'numbers': b} for b in bets_raw]
 
 
 def biglotto_5bet_orthogonal(history):
-    """大樂透 5注正交: TS3+Markov(w=30)+FreqOrt (Edge +1.77%, 1500期 z=2.40 ★最佳)"""
+    """大樂透 5注正交: TS3+Markov(w=30)+FreqOrt (implementation_id:
+    biglotto_5bet_orthogonal.full5; evidence_status=HISTORICAL_RESEARCH_ONLY,
+    current_significance=NOT_ESTABLISHED — 2026-07-24 獨立重驗：原始文件宣稱的
+    P3顯著性數字不可重現，訂正前後數字詳見 STRATEGY_INFO 與
+    rejected/ts3_markov_freq_5bet_biglotto.json :: retest_2026_07_24)"""
     from tools.backtest_biglotto_markov_4bet import (
         fourier_rhythm_bet, cold_numbers_bet, tail_balance_bet, markov_orthogonal_bet
     )
@@ -292,22 +459,19 @@ def format_numbers(numbers):
 
 
 def print_prediction(lottery_type, bets, strategy, history, num_bets):
-    """打印預測結果"""
-    name = LOTTERY_NAMES.get(lottery_type, lottery_type)
+    """打印預測結果並回傳摘要。"""
+    summary = build_prediction_summary(lottery_type, bets, strategy, history, num_bets)
+    name = summary['lottery_name']
     config = DEFAULT_CONFIG.get(lottery_type, {})
-    next_draw = get_next_draw_number(history)
-    last_draw = history[-1] if history else {}
-
-    # 查詢基準和 Edge
-    info = STRATEGY_INFO.get(lottery_type, {}).get(num_bets, {})
-    baseline = BASELINES.get(lottery_type, {}).get(num_bets, 0)
+    last_draw = summary['last_draw']
+    info = summary.get('strategy_info', {})
+    baseline = summary.get('baseline', 0)
 
     print()
     print('=' * 60)
-    print(f'  {name} {next_draw} 期預測報告')
+    print(f'  {name} {summary["next_draw"]} 期預測報告')
     print('=' * 60)
 
-    # 上期開獎
     if last_draw:
         last_nums = format_numbers(last_draw.get('numbers', []))
         last_special = last_draw.get('special', '')
@@ -336,29 +500,26 @@ def print_prediction(lottery_type, bets, strategy, history, num_bets):
     }
     labels = strategy_labels.get(lottery_type, {}).get(num_bets, [])
 
-    for i, bet in enumerate(bets, 1):
+    for i, bet in enumerate(summary['bets'], 1):
         nums = format_numbers(bet.get('numbers', []))
         special = bet.get('special')
         label = f'  <- {labels[i-1]}' if i <= len(labels) else ''
-        if special:
+        if special is not None:
             print(f'  注{i}: {nums} | 特別號: {int(special):02d}{label}')
         else:
             print(f'  注{i}: {nums}{label}')
 
-    # 覆蓋統計
     all_nums = set()
-    for bet in bets:
+    for bet in summary['bets']:
         all_nums.update(bet.get('numbers', []))
-    max_num = 49 if lottery_type == 'BIG_LOTTO' else 38
+    max_num = 49 if lottery_type == 'BIG_LOTTO' else 38 if lottery_type == 'POWER_LOTTO' else 39
     print()
     print(f'  覆蓋: {len(all_nums)}/{max_num} 號碼 ({len(all_nums)/max_num*100:.1f}%)')
 
-    # 特別號 Top 3 (威力彩)
     if lottery_type == 'POWER_LOTTO':
-        sp_top = power_special_v3(history)
+        sp_top = summary.get('special_top3', [])
         print(f'  特別號 Top3 (V3): {sp_top}')
 
-        # 冷號預警 (P3: 監控用，不影響選號)
         try:
             from tools.cold_alert import get_cold_alert_info
             cold_info = get_cold_alert_info(history)
@@ -371,45 +532,68 @@ def print_prediction(lottery_type, bets, strategy, history, num_bets):
 
     print('-' * 60)
     print(f'  策略: {strategy}')
-    if info:
+    if info.get('implementation_id'):
+        print(f'  Implementation: {info["implementation_id"]}')
+    if info.get('evidence_status'):
+        print(f'  Evidence: {info["evidence_status"]} | Significance: '
+              f'{info.get("current_significance", "NOT_ESTABLISHED")} | Edge(historical): '
+              f'{info.get("edge", "")}')
+        if info.get('warning'):
+            print(f'  ⚠ {info["warning"]}')
+    elif info:
         print(f'  驗證: {info.get("verified", "")} | Edge: {info.get("edge", "")}')
     if baseline > 0:
         print(f'  隨機基準: {baseline:.2f}% ({num_bets}注)')
     print(f'  成本: NT${config.get("cost", 0) // config.get("bets", 1) * num_bets}')
     print('=' * 60)
     print()
+    return summary
 
 
 def main():
     parser = argparse.ArgumentParser(description='彩票預測工具 (2026-02-11 策略更新)')
-    parser.add_argument('lottery', nargs='?', default='all',
+    parser.add_argument('--dry-run', action='store_true',
+                        help='輸出預測預覽 JSON，不寫入任何 DB')
+    parser.add_argument('--json-out',
+                        help='dry-run 模式下輸出的 JSON 路徑')
+    parser.add_argument('--lottery', dest='lottery_opt',
+                        choices=['BIG_LOTTO', 'POWER_LOTTO', 'DAILY_539', 'ALL'],
+                        help='要預測的彩票類型')
+    parser.add_argument('--bets', dest='bets_opt', type=int,
+                        help='要預測的注數')
+    parser.add_argument('lottery', nargs='?', default=None,
                         help='彩票類型 (大樂透/威力彩/今彩539/all)')
     parser.add_argument('bets', nargs='?', type=int, default=None,
                         help='預測注數')
     args = parser.parse_args()
 
-    # 初始化數據庫
-    db = DatabaseManager(db_path=os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db'))
+    if args.json_out and not args.dry_run:
+        parser.error('--json-out requires --dry-run')
+
+    requested_lottery = normalize_lottery_selection(
+        resolve_cli_value(args.lottery_opt, args.lottery, 'all')
+    )
+    requested_bets = resolve_cli_value(args.bets_opt, args.bets, None)
+
+    predictions = []
+    warnings = []
 
     # 確定要預測的彩票類型
-    if args.lottery.lower() == 'all':
+    if requested_lottery == 'ALL':
         lottery_types = ['BIG_LOTTO', 'POWER_LOTTO', 'DAILY_539']
     else:
-        lottery_type = LOTTERY_MAP.get(args.lottery.lower(), args.lottery.upper())
+        lottery_type = requested_lottery or 'ALL'
         lottery_types = [lottery_type]
 
     # 執行預測
     for lottery_type in lottery_types:
         try:
-            history = db.get_all_draws(lottery_type=lottery_type)
+            history = load_history(lottery_type, dry_run=args.dry_run)
 
             if not history or len(history) < 50:
                 print(f'\n  {LOTTERY_NAMES.get(lottery_type, lottery_type)}: '
                       f'數據不足 ({len(history) if history else 0} 期)，跳過預測')
                 continue
-
-            # get_all_draws 返回 DESC 排序，策略需要 ASC (舊→新)
-            history = sorted(history, key=lambda x: (x['date'], x['draw']))
 
             # 獲取規則 (本地硬編碼以避免 import 阻塞)
             rules_map = {
@@ -418,7 +602,7 @@ def main():
                 'DAILY_539': {'pickCount': 5, 'minNumber': 1, 'maxNumber': 39, 'specialMaxNumber': 0},
             }
             rules = rules_map.get(lottery_type, {'pickCount': 6, 'minNumber': 1, 'maxNumber': 49})
-            num_bets = args.bets or DEFAULT_CONFIG.get(lottery_type, {}).get('bets', 3)
+            num_bets = requested_bets or DEFAULT_CONFIG.get(lottery_type, {}).get('bets', 3)
 
             if lottery_type == 'BIG_LOTTO':
                 bets, strategy = predict_biglotto(history, rules, num_bets)
@@ -430,12 +614,27 @@ def main():
                 print(f'  不支援的彩票類型: {lottery_type}')
                 continue
 
-            print_prediction(lottery_type, bets, strategy, history, num_bets)
+            summary = print_prediction(lottery_type, bets, strategy, history, num_bets)
+            if args.dry_run:
+                predictions.append(summary)
+                warnings.extend(summary.get('warnings', []))
 
+        except ColdWalReadOnlyError as e:
+            print(f'ERROR: {e}', file=sys.stderr)
+            sys.exit(EXIT_COLD_WAL_READ_ONLY)
         except Exception as e:
             print(f'  {lottery_type} 預測失敗: {e}')
             import traceback
             traceback.print_exc()
+
+    if args.dry_run:
+        payload = build_dry_run_payload(predictions, warnings)
+        if args.json_out:
+            with open(args.json_out, 'w', encoding='utf-8') as handle:
+                json.dump(payload, handle, ensure_ascii=False, indent=2)
+        print(f'\n  Dry-run completed: {DRY_RUN_FINAL_CLASSIFICATION}')
+        if args.json_out:
+            print(f'  JSON written to: {args.json_out}')
 
 
 if __name__ == '__main__':

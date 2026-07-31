@@ -1,0 +1,157 @@
+{
+  "task_id": "P188_PRODUCTION_DB_MIGRATION_EXECUTION_MAIN_54462_TO_RECONCILED_94924",
+  "final_classification": "P188_PRODUCTION_DB_MIGRATION_EXECUTED_RECONCILED_94924",
+  "date": "2026-06-01",
+  "exact_authorization_phrase_detected": "YES execute P188 production DB migration from main 54462 to reconciled 94924 using P185 rehearsal SQL, approve MAX(id) dedup dropping 160 null-provenance duplicate rows, create timestamped backup, no controlled_apply",
+  "phase_0_verification": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "git_dir": ".git",
+    "is_worktree": false,
+    "db_rows_before": 54462,
+    "bet_index_before": "ABSENT",
+    "zen_gates_rows": 94924,
+    "zen_gates_bet_index": "PRESENT",
+    "p185_classification": "P185_ROW_DELTA_IMPORT_REHEARSAL_TEMP_COPY_READY",
+    "p186_classification": "P186_PRODUCTION_DB_MIGRATION_AUTHORIZATION_GATE_READY",
+    "p187_classification": "P187_PRODUCTION_DB_MIGRATION_DRY_RUN_CHECKLIST_READY",
+    "status": "PASS"
+  },
+  "backup_result": {
+    "status": "PASS",
+    "path": "backups/p188_lottery_v2_backup_20260601_153821.db",
+    "sha256_path": "backups/p188_lottery_v2_backup_20260601_153821.db.sha256",
+    "sha256": "5eea53135fb65369a3dd90512e7f8bfc4411b756abadf00a03b2b9b7d4e24da9",
+    "backup_rows": 54462,
+    "backup_bet_index": "ABSENT",
+    "backup_integrity": "ok",
+    "backup_size": "51M",
+    "verified_before_migration": true
+  },
+  "pre_migration_duplicate_verification": {
+    "status": "PASS",
+    "duplicate_groups": 120,
+    "rows_in_dup_groups": 280,
+    "rows_to_drop": 160,
+    "dropped_rows_all_null_provenance": true,
+    "matches_p184_p185_findings": true
+  },
+  "migration_execution_result": {
+    "status": "PASS",
+    "steps": [
+      "C-1: WAL journal mode",
+      "C-2/3: Create strategy_prediction_replays_new with bet_index + UNIQUE(lottery_type,target_draw,strategy_id,bet_index)",
+      "C-4: INSERT deduplicated base rows via MAX(id) per (lottery_type,target_draw,strategy_id) — 54302 rows",
+      "C-5: Verified base rows = 54302",
+      "C-6: ATTACH zen-gates as read-only; INSERT bet_index>1 rows — 40622 rows",
+      "C-7: Verified final rows = 94924",
+      "C-8/10: Verified per-lottery aggregate: BIG_LOTTO=24140, DAILY_539=34680, POWER_LOTTO=36104",
+      "C-11: Verified bet_index distribution: 1=54302,2=16581,3=15041,4=6000,5=3000",
+      "C-9: Verified 0 duplicates under UNIQUE(lottery_type,target_draw,strategy_id,bet_index)",
+      "C-13: DROP TABLE strategy_prediction_replays",
+      "C-14: ALTER TABLE strategy_prediction_replays_new RENAME TO strategy_prediction_replays",
+      "C-14: CREATE INDEX idx_spr_bet_index"
+    ],
+    "base_rows_after_dedup": 54302,
+    "imported_rows": 40622,
+    "final_rows": 94924,
+    "integrity_check": "ok"
+  },
+  "post_migration_validation": {
+    "db_rows": 94924,
+    "bet_index_present": true,
+    "bet_index_null_count": 0,
+    "duplicate_count": 0,
+    "integrity_check": "ok",
+    "per_lottery": {
+      "BIG_LOTTO": 24140,
+      "DAILY_539": 34680,
+      "POWER_LOTTO": 36104
+    },
+    "bet_index_distribution": {
+      "1": 54302, "2": 16581, "3": 15041, "4": 6000, "5": 3000
+    },
+    "drift_guard": {
+      "status": "FAIL_EXPECTED",
+      "reason": "Drift guard calibrated for pre-migration state (54462 rows, old controlled_apply_ids). Needs update to 94924 in P189. This failure is planned — see P183 Step 8.",
+      "violations": 13,
+      "action": "REQUIRES_P189_DRIFT_GUARD_UPDATE"
+    },
+    "contract_tests": {
+      "passed": 546,
+      "failed": 9,
+      "failed_tests": [
+        "test_p184_production_db_bet_index_still_absent",
+        "test_p185_prod_rows_live",
+        "test_p185_prod_bet_index_still_absent",
+        "test_p186_prod_db_rows_live",
+        "test_p186_prod_bet_index_still_absent",
+        "test_p187_prod_rows_live",
+        "test_p187_prod_bet_index_still_absent",
+        "test_p183_main_db_rows_live_unchanged",
+        "test_p182_conftest_does_not_weaken_to_54462_NOTE"
+      ],
+      "failure_reason": "Tests checking pre-migration state (54462 rows, bet_index ABSENT) now reflect stale DB state. These are planned P189 updates.",
+      "previously_skip_now_pass": "requires_zen_gates_db tests now PASS since production DB = 94924 rows with bet_index"
+    }
+  },
+  "db_rows_before": 54462,
+  "db_rows_after": 94924,
+  "bet_index_before": "ABSENT",
+  "bet_index_after": "PRESENT",
+  "imported_rows": 40622,
+  "dropped_duplicate_rows": 160,
+  "backup_path": "backups/p188_lottery_v2_backup_20260601_153821.db",
+  "backup_sha256": "5eea53135fb65369a3dd90512e7f8bfc4411b756abadf00a03b2b9b7d4e24da9",
+  "sql_log_path": "outputs/research/power_lotto/p188_production_db_migration_sql_log_20260601.sql",
+  "governance_confirmations": {
+    "production_db_migration_executed": true,
+    "backup_created": true,
+    "max_id_dedup_policy_used": true,
+    "dropped_160_null_provenance_duplicates": true,
+    "imported_40622_rows": true,
+    "no_controlled_apply": true,
+    "no_registry_mutation": true,
+    "no_research_rerun": true,
+    "no_merge": true,
+    "no_rebase": true,
+    "no_cherry_pick": true,
+    "no_checkout_other_branch": true,
+    "no_stage": true,
+    "no_commit": true,
+    "no_push": true,
+    "power_lotto_research_closed": true,
+    "main_zen_gates_split_reconciled_at_db_level": true,
+    "code_docs_tests_parity_previously_completed": true
+  },
+  "p189_required_followup": [
+    "Update drift guard expected count: 54462 → 94924 and accepted controlled_apply_ids",
+    "Update/retire stale pre-migration live-check assertions in P183-P187 contract tests",
+    "Update requires_zen_gates_db skip markers — main DB now matches zen-gates",
+    "Evaluate commit/push plan for all P182-P188 changes",
+    "UI backlog: multi-bet display (Bet 1-5), bet_index filter"
+  ],
+  "next_task_options": [
+    {
+      "phrase": "YES start P189 post-migration verification and commit readiness audit",
+      "effect": "Update drift guard, fix stale contract tests, verify full test suite PASS, prepare commit plan.",
+      "recommended": true
+    },
+    {
+      "phrase": "YES start P189 replay product UI backlog implementation plan only",
+      "effect": "Plan multi-bet display (Bet 1-5 filter, lifecycle tooltips) in replay UI.",
+      "recommended": false
+    },
+    {
+      "phrase": "YES start P189 production DB rollback decision gate only",
+      "effect": "Decide whether to rollback using the timestamped backup.",
+      "recommended": false
+    },
+    {
+      "phrase": "YES start P189 maintain reconciled DB state and prepare commit plan only",
+      "effect": "Accept current state, plan git commit/push of all P182-P188 changes.",
+      "recommended": false
+    }
+  ],
+  "next_task_blocked_by_user_authorization": true
+}

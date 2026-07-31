@@ -1,0 +1,218 @@
+# P298A Phase 0 State
+
+## Current Context
+- Current date/time: 2026-06-30 15:51:53 CST (+0800)
+- Repo path: /Users/kelvin/Kelvin-WorkSpace/LotteryNew
+- Branch: task/p273a-prize-aware-inferential-validation
+- HEAD: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+- Upstream: origin/task/p273a-prize-aware-inferential-validation
+- Ahead/behind: 0	1
+
+## Working Tree Status
+```
+ M 00-Plan/roadmap/agent_bootstrap/SHARED_AGENT_BOOTSTRAP.md
+ M 00-Plan/roadmap/agent_bootstrap/TASK_TEMPLATES.md
+ M backend.pid
+ M claude-code-showcase
+ M data/lottery_v2.db
+ M frontend.pid
+ M lottery_api/data/performance_history.json
+?? .gstack/
+?? ".schema strategy_replay_runs"
+?? claude-code-showcase.worktrees/
+?? data/performance_history.json
+?? lottery_api/data/ingest_log.jsonl
+?? outputs/research/p245a_external_predictive_method_scouting_20260605.json
+?? outputs/research/p245a_external_predictive_method_scouting_20260605.md
+?? outputs/research/p251d_evidence_dashboard_readonly_api_route_20260609.json
+?? outputs/research/p251d_evidence_dashboard_readonly_api_route_20260609.md
+?? runtime/
+?? tests/test_p245a_external_predictive_method_scouting.py
+```
+
+## Staged Status
+```
+```
+
+## Protected/Stale Worktree Check
+- Stale/protected worktree indicator: YES - current path is protected path and branch is task/p273a-prize-aware-inferential-validation.
+
+## LotteryNew-main State
+- Exists: NO
+
+## P297A Evidence Root
+- Exists: YES - /Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000
+- Required inputs:
+  - manifest.json: PRESENT
+  - handoff_report.md: PRESENT
+  - limitations.md: PRESENT
+  - strategy_inventory.csv: PRESENT
+  - unified_replay_metrics_contract.md: PRESENT
+
+## DB Candidates Before SQLite Read
+No SQLite database was successfully opened before this BSD-compatible snapshot. The earlier GNU find attempt produced an empty candidate list on macOS.
+```
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main/backups/p213h_lottery_v2_backup_20260605_20260605_142219.db	99368960	2026-06-20 13:13:48 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main/backups/p213l_lottery_v2_backup_20260605_20260605_151715.db	99368960	2026-06-20 13:13:48 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main/data/lottery.db	28672	2026-06-20 13:13:48 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main/data/lottery_v2.db	217088	2026-06-20 13:13:48 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main/lottery-api/data/lottery_v2.db	28672	2026-06-20 13:13:48 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main/lottery.db	0	2026-06-20 13:13:48 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main/lottery_api/data/lottery_v2.db	99368960	2026-06-28 19:23:39 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main/lottery_v2.db	0	2026-06-20 13:13:48 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main/tools/data/lottery_v2.db	28672	2026-06-20 13:13:50 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/amazing-jepsen-b0a5b8/data/lottery.db	28672	2026-06-01 13:56:16 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/amazing-jepsen-b0a5b8/data/lottery_v2.db	217088	2026-06-01 13:56:16 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/amazing-jepsen-b0a5b8/lottery-api/data/lottery_v2.db	28672	2026-06-01 13:56:16 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/amazing-jepsen-b0a5b8/lottery.db	0	2026-06-01 13:56:16 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/amazing-jepsen-b0a5b8/lottery_api/data/lottery_v2.db	44261376	2026-06-01 13:56:16 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/amazing-jepsen-b0a5b8/lottery_v2.db	0	2026-06-01 13:56:16 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/amazing-jepsen-b0a5b8/tools/data/lottery_v2.db	28672	2026-06-01 13:56:19 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7/data/lottery.db	28672	2026-05-19 19:59:55 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7/data/lottery_v2.db	217088	2026-05-19 19:59:55 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7/lottery-api/data/lottery_v2.db	28672	2026-05-19 19:59:55 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7/lottery.db	0	2026-05-19 19:59:55 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7/lottery_api/data/lottery_v2.db	14958592	2026-05-19 20:08:35 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7/lottery_api/data/lottery_v2.db-shm	32768	2026-05-19 21:09:55 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7/lottery_api/data/lottery_v2.db-wal	0	2026-05-19 20:08:39 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7/lottery_v2.db	0	2026-05-19 19:59:55 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7/tools/data/lottery_v2.db	28672	2026-05-19 19:59:56 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/gallant-taussig-6b9a4d/data/lottery.db	28672	2026-06-01 17:03:18 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/gallant-taussig-6b9a4d/data/lottery_v2.db	217088	2026-06-01 17:03:18 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/gallant-taussig-6b9a4d/lottery-api/data/lottery_v2.db	28672	2026-06-01 17:03:21 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/gallant-taussig-6b9a4d/lottery.db	0	2026-06-01 17:03:21 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/gallant-taussig-6b9a4d/lottery_api/data/lottery_v2.db	44261376	2026-06-01 17:03:21 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/gallant-taussig-6b9a4d/lottery_v2.db	0	2026-06-01 17:03:21 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/gallant-taussig-6b9a4d/tools/data/lottery_v2.db	28672	2026-06-01 17:03:26 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/p218-external-methods-scouting/backups/p213h_lottery_v2_backup_20260605_20260605_142219.db	99368960	2026-06-05 17:44:45 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/p218-external-methods-scouting/backups/p213l_lottery_v2_backup_20260605_20260605_151715.db	99368960	2026-06-05 17:44:46 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/p218-external-methods-scouting/data/lottery.db	28672	2026-06-05 17:44:46 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/p218-external-methods-scouting/data/lottery_v2.db	217088	2026-06-05 17:44:46 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/p218-external-methods-scouting/lottery-api/data/lottery_v2.db	28672	2026-06-05 17:44:46 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/p218-external-methods-scouting/lottery.db	0	2026-06-05 17:44:46 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/p218-external-methods-scouting/lottery_v2.db	0	2026-06-05 17:44:47 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/p218-external-methods-scouting/tools/data/lottery_v2.db	28672	2026-06-05 17:44:49 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/peaceful-burnell-898024/data/lottery.db	28672	2026-06-01 15:10:24 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/peaceful-burnell-898024/data/lottery_v2.db	217088	2026-06-01 15:10:24 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/peaceful-burnell-898024/lottery-api/data/lottery_v2.db	28672	2026-06-01 15:10:28 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/peaceful-burnell-898024/lottery.db	0	2026-06-01 15:10:28 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/peaceful-burnell-898024/lottery_api/data/lottery_v2.db	44261376	2026-06-01 15:10:28 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/peaceful-burnell-898024/lottery_v2.db	0	2026-06-01 15:10:28 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/peaceful-burnell-898024/tools/data/lottery_v2.db	28672	2026-06-01 15:10:33 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/trusting-chaum-8cc8c5/data/lottery.db	28672	2026-05-28 09:41:07 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/trusting-chaum-8cc8c5/data/lottery_v2.db	217088	2026-05-28 09:41:07 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/trusting-chaum-8cc8c5/lottery-api/data/lottery_v2.db	28672	2026-05-28 09:41:07 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/trusting-chaum-8cc8c5/lottery.db	0	2026-05-28 09:41:07 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/trusting-chaum-8cc8c5/lottery_api/data/lottery_v2.db	44261376	2026-05-28 09:41:07 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/trusting-chaum-8cc8c5/lottery_v2.db	0	2026-05-28 09:41:08 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/trusting-chaum-8cc8c5/tools/data/lottery_v2.db	28672	2026-05-28 09:41:10 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p131_backup_20260528T140744Z.db	71782400	2026-05-28 20:42:13 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p131_backup_20260528T140744Z.db-shm	32768	2026-05-28 22:07:44 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p131_backup_20260528T140744Z.db-wal	0	2026-05-28 22:07:44 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p132_backup_20260529T014550Z.db	71782400	2026-05-28 22:07:46 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p132_backup_20260529T014550Z.db-shm	32768	2026-05-29 09:45:50 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p132_backup_20260529T014550Z.db-wal	0	2026-05-29 09:45:50 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p133_backup_20260529T021339Z.db	71782400	2026-05-29 09:45:54 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p133_backup_20260529T021339Z.db-shm	32768	2026-05-29 10:13:39 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p133_backup_20260529T021339Z.db-wal	0	2026-05-29 10:13:39 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p134_backup_20260529T022924Z.db	71782400	2026-05-29 10:13:43 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p134_backup_20260529T022924Z.db-shm	32768	2026-05-29 10:29:24 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p134_backup_20260529T022924Z.db-wal	0	2026-05-29 10:29:24 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p138b_backup_20260529T034010Z.db	71782400	2026-05-29 10:29:29 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p138b_backup_20260529T034010Z.db-shm	32768	2026-05-29 11:40:10 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p138b_backup_20260529T034010Z.db-wal	0	2026-05-29 11:40:10 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p140_backup_20260529T043650Z.db	71782400	2026-05-29 11:40:10 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p140_backup_20260529T043650Z.db-shm	32768	2026-05-29 12:36:50 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p140_backup_20260529T043650Z.db-wal	0	2026-05-29 12:36:50 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p141_backup_20260529T063000Z.db	71782400	2026-05-29 12:36:54 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p141_backup_20260529T063000Z.db-shm	32768	2026-05-29 14:41:12 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p141_backup_20260529T063000Z.db-wal	0	2026-05-29 14:30:00 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p141_backup_20260529T063028Z.db	71782400	2026-05-29 12:36:54 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p141_backup_20260529T063028Z.db-shm	32768	2026-05-29 14:36:34 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p141_backup_20260529T063028Z.db-wal	0	2026-05-29 14:30:28 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2_before_rsr6_cleanup_20260528T124212Z.db	71782400	2026-05-28 18:19:49 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2_before_rsr6_cleanup_20260528T124212Z.db-shm	32768	2026-05-28 20:42:13 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2_before_rsr6_cleanup_20260528T124212Z.db-wal	0	2026-05-28 20:42:13 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/data/lottery.db	28672	2026-05-28 15:24:33 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/data/lottery_v2.db	217088	2026-05-28 15:24:33 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery-api/data/lottery_v2.db	28672	2026-05-28 15:24:33 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery.db	0	2026-05-28 15:24:33 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126b_backup_20260528T083019Z.db	71782400	2026-05-28 16:00:36 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126b_backup_20260528T083019Z.db-shm	32768	2026-05-28 16:30:19 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126b_backup_20260528T083019Z.db-wal	0	2026-05-28 16:30:19 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126c_backup_20260528T091319Z.db	71782400	2026-05-28 16:30:22 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126c_backup_20260528T091319Z.db-shm	32768	2026-05-28 17:13:19 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126c_backup_20260528T091319Z.db-wal	0	2026-05-28 17:13:19 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126d_backup_20260528T092957Z.db	71782400	2026-05-28 17:13:23 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126d_backup_20260528T092957Z.db-shm	32768	2026-05-28 17:29:57 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126d_backup_20260528T092957Z.db-wal	0	2026-05-28 17:29:57 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126e_backup_20260528T100249Z.db	71782400	2026-05-28 17:30:48 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126e_backup_20260528T100249Z.db-shm	32768	2026-05-28 18:02:49 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126e_backup_20260528T100249Z.db-wal	0	2026-05-28 18:02:49 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126f_backup_20260528T101943Z.db	71782400	2026-05-28 18:02:53 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126f_backup_20260528T101943Z.db-shm	32768	2026-05-28 18:19:43 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p126f_backup_20260528T101943Z.db-wal	0	2026-05-28 18:19:43 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p129b_backup_20260528T080035Z.db	44261376	2026-05-28 15:24:33 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p129b_backup_20260528T080035Z.db-shm	32768	2026-05-28 16:00:35 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/backups/lottery_v2.db.p129b_backup_20260528T080035Z.db-wal	0	2026-05-28 16:00:35 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db	71782400	2026-06-01 16:55:58 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db-shm	32768	2026-06-01 16:55:58 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_api/data/lottery_v2.db-wal	0	2026-06-01 16:55:58 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/lottery_v2.db	0	2026-05-28 15:24:33 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/tools/data/lottery_v2.db	28672	2026-05-28 15:24:34 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/lottery_v2_pre_p0_20260519_192547.db	14958592	2026-05-27 11:43:41 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/lottery_v2_pre_p0_20260519_192547.db-shm	32768	2026-06-08 10:32:00 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/lottery_v2_pre_p0_20260519_192547.db-wal	0	2026-05-27 13:48:51 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/lottery_v2_pre_p16_biglotto_remaining_apply_20260520.db	14958592	2026-05-27 11:43:41 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/lottery_v2_pre_p16_biglotto_remaining_apply_20260520.db-shm	32768	2026-06-08 10:32:00 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/lottery_v2_pre_p16_biglotto_remaining_apply_20260520.db-wal	0	2026-05-27 13:48:51 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/lottery_v2_pre_p66_wave6_20260525_093850.db	36630528	2026-05-27 11:43:41 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/lottery_v2_pre_p66_wave6_20260525_093850.db-shm	32768	2026-06-08 10:32:00 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/lottery_v2_pre_p66_wave6_20260525_093850.db-wal	0	2026-05-27 13:48:51 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/lottery_v2_pre_p66_wave6_20260526_044224.db	36630528	2026-05-27 11:43:41 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/lottery_v2_pre_p66_wave6_20260526_044224.db-shm	32768	2026-06-08 10:32:00 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/lottery_v2_pre_p66_wave6_20260526_044224.db-wal	0	2026-05-27 13:48:51 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/lottery_v2_pre_p7_controlled_apply_20260520.db	14958592	2026-05-27 11:43:41 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/lottery_v2_pre_p7_controlled_apply_20260520.db-shm	32768	2026-06-08 10:32:00 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/lottery_v2_pre_p7_controlled_apply_20260520.db-wal	0	2026-05-27 13:48:51 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/p188_lottery_v2_backup_20260601_153821.db	53374976	2026-06-01 15:38:21 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/p188_lottery_v2_backup_20260601_153821.db-shm	32768	2026-06-08 10:32:00 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/p188_lottery_v2_backup_20260601_153821.db-wal	0	2026-06-01 17:36:00 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/p213h_lottery_v2_backup_20260605_20260605_142219.db	99368960	2026-06-05 14:28:38 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/p213h_lottery_v2_backup_20260605_20260605_142219.db-shm	32768	2026-06-08 10:32:00 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/p213h_lottery_v2_backup_20260605_20260605_142219.db-wal	0	2026-06-05 14:22:19 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/p213l_lottery_v2_backup_20260605_20260605_151715.db	99368960	2026-06-05 15:23:42 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/p213l_lottery_v2_backup_20260605_20260605_151715.db-shm	32768	2026-06-08 10:32:00 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/p213l_lottery_v2_backup_20260605_20260605_151715.db-wal	0	2026-06-05 15:17:20 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/p247b_lottery_v2_backup_20260606_113816.db	99368960	2026-06-05 15:17:27 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/p247b_lottery_v2_backup_20260606_113816.db-shm	32768	2026-06-08 10:32:00 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/p247b_lottery_v2_backup_20260606_113816.db-wal	0	2026-06-08 10:30:59 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/claude-code-showcase/data/lottery_v2.db	167936	2026-05-01 21:32:05 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/data/lottery.db	28672	2026-03-22 23:41:06 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/data/lottery_v2.db	217088	2026-06-09 13:40:30 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery-api/data/lottery_v2.db	28672	2026-03-22 23:41:06 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery.db	0	2026-03-22 23:41:06 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery.db	11202560	2026-01-13 17:22:06 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db	99368960	2026-06-30 13:38:50 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db-shm	32768	2026-06-30 13:38:54 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db-wal	0	2026-06-30 13:38:50 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/lottery-api/data/lottery_v2.db	28672	2026-01-08 14:00:59 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/lottery.db	0	2025-12-05 14:06:58 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/lottery_api/data/lottery_v2.db	28672	2026-01-25 21:26:47 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/lottery_v2.db	167936	2026-04-20 00:23:53 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_v2.db	0	2026-03-22 23:41:07 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/research/power_lotto/p184_rehearsal/lottery_v2_p184_temp_rehearsal_20260601.db	80494592	2026-06-01 14:35:01 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/research/power_lotto/p184_rehearsal/lottery_v2_p184_temp_rehearsal_20260601.db-shm	32768	2026-06-02 15:43:48 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/research/power_lotto/p184_rehearsal/lottery_v2_p184_temp_rehearsal_20260601.db-wal	0	2026-06-01 14:35:01 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/research/power_lotto/p185_rehearsal/lottery_v2_p185_temp_rehearsal_20260601.db	80494592	2026-06-01 14:52:41 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/research/power_lotto/p185_rehearsal/lottery_v2_p185_temp_rehearsal_20260601.db-shm	32768	2026-06-02 15:43:48 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/outputs/research/power_lotto/p185_rehearsal/lottery_v2_p185_temp_rehearsal_20260601.db-wal	0	2026-06-01 14:52:41 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/tools/data/lottery_v2.db	28672	2026-03-22 23:41:08 +0800
+```
+
+## Canonical Candidate State
+- Inferred replay DB path: `/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db`, based on P297A evidence and live DB size/mtime in this worktree.
+- SQLite access used for metadata: `mode=ro&immutable=1`.
+- POWER_LOTTO raw draw source candidate: `draws` table rows where `lottery_type=POWER_LOTTO` (1,924 rows). This is a source candidate, not a verified canonical view.
+- Canonical DB view state: `draws_big_lotto_canonical_main` present; POWER_LOTTO canonical view absent.
+- DB sidecar pre/after diff: identical (`db_sidecars_diff.txt` empty).

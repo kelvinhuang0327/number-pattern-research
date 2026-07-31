@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 import json
 import sqlite3
+from lottery_api.canonical_db_path import resolve_db_path
 import numpy as np
 from collections import Counter, defaultdict
 from scipy.stats import binomtest
@@ -20,10 +21,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s | %(message)s')
 logger = logging.getLogger(__name__)
 
 def load_big_lotto_history(max_records: int = 1500) -> List[Dict]:
-    db_path = 'lottery_api/data/lottery_v2.db'
-    if not os.path.exists(db_path):
-        db_path = 'lottery_api/data/lottery.db'
-    
+    db_path = resolve_db_path()
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("""

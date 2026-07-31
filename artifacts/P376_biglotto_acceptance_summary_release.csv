@@ -1,0 +1,11 @@
+metric,value,source_artifact,status,notes
+acceptance_decision,PASS,artifacts/P375_biglotto_operator_acceptance_decision.json,PASS,Compact summary of the merged P375 acceptance decision.
+accepted,True,artifacts/P375_biglotto_operator_acceptance_decision.json,PASS,Historical descriptive gate state only.
+operator_health,PASS,artifacts/P374_biglotto_operator_health_snapshot.json,PASS,P373/P374 operator-health state.
+route_coverage_rate,1.0000,artifacts/P372_biglotto_command_center_route_coverage.csv,PASS,9/9 routes replayed.
+blocking_issue_count,0,artifacts/P375_biglotto_operator_acceptance_decision.json,PASS,P375 blocking issue count.
+source_artifact_count,38,P371/P372/P373/P374/P375 merged evidence inventory,PASS,"All required source modules, tests, and artifacts are present."
+no_db_open_write,YES,P376 summary generator statement,PASS,No DB open/write.
+no_adapter_calls,YES,P376 summary generator statement,PASS,No adapter calls.
+no_new_scoring,YES,P376 summary generator statement,PASS,"No new scoring cohort, shape-only scoring, blocked-target scoring, or blended leaderboard."
+not_production_release_approval,YES,P376 summary generator statement,PASS,This compact layer is not production release approval.

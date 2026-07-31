@@ -1,0 +1,76 @@
+{
+  "generated_at": "2026-05-15T00:00:00+08:00",
+  "source_pr": 105,
+  "final_classification": "P13_REGISTRY_ONLINE_PROPOSAL_READY",
+  "registry_before_count": 16,
+  "registry_after_count": 18,
+  "added_online_strategies": [
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle_status": "ONLINE",
+      "adapter_binding_status": "BOUND",
+      "predict_func": "tools.power_fourier_rhythm.fourier_rhythm_predict(n_bets=3, window=500)",
+      "evidence": [
+        "prediction_run=168 VALID",
+        "prediction_items=1072,1073,1074 PENDING",
+        "RSM engine: rolling_strategy_monitor.py:749 fourier_3bet callable",
+        "tools/rsm_bootstrap.py:60 fourier_rhythm_3bet binding",
+        "P1.2 classification: PRODUCT_DENOMINATOR_ONLINE_CANDIDATE",
+        "memory/lessons.md L94: ONLINE, recheck in 30 draws"
+      ],
+      "remaining_risks": [
+        "3 PENDING prediction_items not yet promoted to strategy_prediction_replays (requires P2 backfill)",
+        "replay generation not yet run for this strategy"
+      ]
+    },
+    {
+      "strategy_id": "ts3_regime_3bet",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle_status": "ONLINE",
+      "adapter_binding_status": "PENDING_P1.4",
+      "predict_func": null,
+      "evidence": [
+        "prediction_runs=167(VALID)/174(VALID)/175(RECONSTRUCTED)",
+        "prediction_items=1069,1070,1071,1090,1091,1092,1093,1094,1095 PENDING",
+        "p2 dry run manifest: PROMOTABLE for all 9 items",
+        "memory/lessons.md: ts3_regime_3bet is production baseline strategy",
+        "strategy_catalog_inventory_20260512.md: section 6.2 monitoring reference",
+        "P1.2 classification: PRODUCT_DENOMINATOR_ONLINE_CANDIDATE"
+      ],
+      "remaining_risks": [
+        "predict_func NOT found in current tools/ codebase — adapter binding PENDING P1.4",
+        "get_one_bet() raises AdapterBindingPending until P1.4 resolution",
+        "run_id=175 has RECONSTRUCTED snapshot — elevated audit risk for that item",
+        "9 PENDING items cannot be promoted to strategy_prediction_replays until P1.4"
+      ]
+    }
+  ],
+  "clean_denominator": 71,
+  "covered_before_backfill": 6,
+  "expected_covered_after_backfill": 8,
+  "safety": {
+    "db_written": false,
+    "replay_rows_generated": false,
+    "backfill_run": false,
+    "strategy_logic_changed": false,
+    "api_ui_backend_changed": false,
+    "existing_registry_entries_removed": false,
+    "pr_merged": false
+  },
+  "files_changed": [
+    "lottery_api/models/replay_strategy_registry.py",
+    "tests/test_replay_strategy_registry_online_candidates.py",
+    "tests/test_replay_strategy_lifecycle_registry.py",
+    "docs/replay/p13_registry_online_proposal_report_20260515.md",
+    "outputs/replay/p13_registry_online_proposal_20260515.json"
+  ],
+  "test_results": {
+    "test_replay_strategy_registry_online_candidates": "44 passed",
+    "test_replay_lifecycle_drift_guard": "passed",
+    "test_replay_truth_level_contract": "passed",
+    "test_replay_api_contract": "passed",
+    "test_replay_strategy_lifecycle_registry": "22 passed (updated for P1.3)",
+    "total_passing": 153
+  }
+}

@@ -1,0 +1,25 @@
+# P320A command log (normalized)
+date '+%Y-%m-%d %H:%M:%S %Z'
+git fetch origin
+git status --short --branch
+git diff --cached --quiet
+git merge-base --is-ancestor 5255f14d668da7e407491672f8cc073c4a647600 origin/main
+git rev-parse HEAD origin/main
+test -e lottery_api/data/lottery_v2.db
+git worktree list --porcelain
+rg --files | rg -i '(replay|artifact|prediction|matrix|csv|json|db$)'
+find /Users/kelvin/Kelvin-WorkSpace -maxdepth 2 -type d matching p297/p299
+inspect P297A/P299A evidence and committed replay-analysis artifacts read-only
+inventory all safe-repo DB candidates and SHA256/sidecar state
+inspect committed p273a distinct-ticket identity schema and sample records
+open p213h/p213l backups with SQLite URI mode=ro&immutable=1 and PRAGMA query_only=ON
+verify strategy_prediction_replays schema, counts, completeness, and sample rows
+mkdir -p /Users/kelvin/Kelvin-WorkSpace/p320a_d5_per_draw_combination_analysis_20260701_131917
+python3 /Users/kelvin/Kelvin-WorkSpace/p320a_d5_per_draw_combination_analysis_20260701_131917/build_analysis.py
+validate metric row counts, group denominators, candidate rows, DB SHA256, and sidecar absence
+git status --short --branch
+git diff --cached --name-status
+git diff --name-status
+generate manifest.json over every non-manifest evidence-root file
+recompute and verify every manifest SHA256
+

@@ -1,0 +1,47 @@
+{
+  "task_id": "P342A_POWER_LOTTO_STATIC_READONLY_PROGRESS_DASHBOARD_EXTERNAL_ARTIFACT",
+  "created_at": "2026-07-02 11:58:26 Asia/Taipei +0800",
+  "output_root": "/Users/kelvin/Kelvin-WorkSpace/p342a_power_lotto_static_progress_dashboard_20260702_115648",
+  "source_viewer": "/Users/kelvin/Kelvin-WorkSpace/p341a_power_lotto_readonly_progress_demo_20260702_120000/POWER_LOTTO_P333A_P340A_PROGRESS_VIEWER.md",
+  "source_viewer_sha256": "0258c25f0869f4234d45b750eda46278a769480cd3636d93e7e5e11d3ded2fa9",
+  "hash_algorithm": "sha256",
+  "self_hash_policy": "manifest.json is not self-hashed to avoid recursive checksum instability",
+  "files": [
+    {
+      "path": "index.html",
+      "bytes": 13771,
+      "sha256": "db74a35a370e4afc091cf1962dd859ef6d4a727acd8b081d7a801727fd6d5667"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 6678,
+      "sha256": "32c7bcb44006ae542cb344746efcd5a7e33ad5a1cd8f9055c0e07cad1a523f75"
+    },
+    {
+      "path": "validation.md",
+      "bytes": 2225,
+      "sha256": "5bfac72fbdf892a1cd5a2245f3f45310abcb582042ec5c91fa28e248bfd8dfa8"
+    },
+    {
+      "path": "commands.log",
+      "bytes": 1766,
+      "sha256": "c61a9ce30da1ed04e31c9fb5a9fb5358d28dde6c0b85806049397fbf9f12e72f"
+    },
+    {
+      "path": "handoff_report.md",
+      "bytes": 1750,
+      "sha256": "beedb00419247c9e683bae6bdb402607b1747ae307a7db430cbbd77e83202ecb"
+    }
+  ],
+  "forbidden_operations": {
+    "canonical_db_write": "NOT RUN",
+    "db_backup": "NOT RUN",
+    "db_connection": "NOT RUN",
+    "insert_commit_backfill": "NOT RUN",
+    "production_pipeline_resume": "NOT RUN",
+    "repo_modification": "NOT RUN",
+    "commit_push": "NOT RUN",
+    "recommended_numbers_betting_prediction_claim": "PASS absent"
+  },
+  "final_classification": "P342A_POWER_LOTTO_STATIC_READONLY_PROGRESS_DASHBOARD_COMPLETE"
+}

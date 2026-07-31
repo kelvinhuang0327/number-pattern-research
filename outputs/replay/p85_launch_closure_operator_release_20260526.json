@@ -1,0 +1,200 @@
+{
+  "phase": "P85",
+  "title": "Launch Closure and Operator Release Package",
+  "classification": "P85_REPLAY_LAUNCH_CLOSURE_OPERATOR_PACKAGE_READY",
+  "date": "2026-05-26",
+  "status": "READY",
+
+  "production_baseline": {
+    "replay_rows": 46962,
+    "power_lotto_max_draw": 115000041,
+    "power_lotto_max_draw_date": "2026/05/21",
+    "power_lotto_max_draw_numbers": [6, 14, 22, 28, 35, 38],
+    "power_lotto_max_draw_special": 1,
+    "batch_a_coverage_pct": 100.0,
+    "db_writes": false,
+    "replay_rows_inserted_in_p85": 0,
+    "browser_e2e_stabilized": true,
+    "browser_e2e_ci_run": "26443569347",
+    "browser_e2e_post_merge_result": "70/70 PASS",
+    "p79_sentinel_rows": [
+      {
+        "id": 46961,
+        "strategy_id": "fourier_rhythm_3bet",
+        "draw": "115000041",
+        "hit_count": 1,
+        "dry_run": 0,
+        "truth_level": "POWERLOTTO_DRAW_EXT_VERIFIED"
+      },
+      {
+        "id": 46962,
+        "strategy_id": "fourier30_markov30_2bet",
+        "draw": "115000041",
+        "hit_count": 2,
+        "dry_run": 0,
+        "truth_level": "POWERLOTTO_DRAW_EXT_VERIFIED"
+      }
+    ]
+  },
+
+  "evidence_chain": [
+    {
+      "phase": "P77C",
+      "title": "Draw re-import recovery",
+      "pr": 203,
+      "commit": "4b2eebc",
+      "description": "Recovered draw 115000041 after data loss; confirmed max draw restored"
+    },
+    {
+      "phase": "P78",
+      "title": "Batch A dry-run plan readiness",
+      "pr": 202,
+      "commit": "71511ff",
+      "description": "Generated Batch A replay plan; all 2 rows dry-run verified before apply"
+    },
+    {
+      "phase": "P79",
+      "title": "Controlled apply of 2 production replay rows",
+      "pr": 204,
+      "commit": "00d5bbe",
+      "description": "Applied ids 46961 and 46962 with dry_run=0, truth_level=POWERLOTTO_DRAW_EXT_VERIFIED; replay_rows went from 46960 to 46962"
+    },
+    {
+      "phase": "P80",
+      "title": "Replay API and UI visibility verification",
+      "pr": 205,
+      "commit": "d9c4da4",
+      "description": "Verified Replay API on port 8002 returns correct data; UI display confirmed"
+    },
+    {
+      "phase": "P81",
+      "title": "Monitoring and scoring pipeline verification",
+      "pr": 206,
+      "commit": "8c50144",
+      "description": "Monitoring pipeline and scoring metrics verified for production replay rows"
+    },
+    {
+      "phase": "P82",
+      "title": "Freshness and source gap guard",
+      "pr": 207,
+      "commit": "0a76f75",
+      "description": "Added scripts/p82_replay_freshness_guard.py; FRESHNESS_PASS, batch_a_coverage_pct=100.0%"
+    },
+    {
+      "phase": "P83",
+      "title": "Stable-baseline closure",
+      "pr": 208,
+      "commit": "f019ae8",
+      "description": "Consolidated all P77C–P82 evidence; confirmed stable baseline with full test suite"
+    },
+    {
+      "phase": "P84",
+      "title": "Browser E2E stabilization and launch signoff",
+      "pr": 209,
+      "commit": "a18523d",
+      "description": "Resolved 3-layer root cause: timeout too short, programmatic click, missing apiConfig.js; CI run 26443569347 SUCCESS; 70/70 post-merge PASS"
+    }
+  ],
+
+  "operator_guide": {
+    "backend_port": 8002,
+    "date_format": "2026/05/21",
+    "date_format_note": "Slash-separated (YYYY/MM/DD) is required for Replay API date filter. Hyphen format will not match.",
+    "query_draw_115000041": {
+      "endpoint": "http://127.0.0.1:8002/api/replay",
+      "example_params": {
+        "lottery_type": "POWER_LOTTO",
+        "draw": "115000041"
+      },
+      "curl_example": "curl 'http://127.0.0.1:8002/api/replay?lottery_type=POWER_LOTTO&draw=115000041'"
+    },
+    "filter_strategies": [
+      {
+        "strategy_id": "fourier_rhythm_3bet",
+        "expected_hit_count": 1,
+        "dry_run": 0,
+        "truth_level": "POWERLOTTO_DRAW_EXT_VERIFIED"
+      },
+      {
+        "strategy_id": "fourier30_markov30_2bet",
+        "expected_hit_count": 2,
+        "dry_run": 0,
+        "truth_level": "POWERLOTTO_DRAW_EXT_VERIFIED"
+      }
+    ],
+    "dry_run_explanation": "dry_run=0 means the row is a real production replay entry, not a simulation. It counts toward official accuracy metrics. dry_run=1 rows are planning artifacts only.",
+    "freshness_guard_usage": {
+      "command": "python scripts/p82_replay_freshness_guard.py --lottery POWER_LOTTO",
+      "expected_output": "classification: FRESHNESS_PASS",
+      "expected_coverage": "batch_a_coverage_pct: 100.0%",
+      "meaning": "FRESHNESS_PASS means all Batch A draws have replay rows. Any gap_detected=True requires investigation before new rows are inserted."
+    }
+  },
+
+  "launch_checklist": {
+    "source_recovery_complete": {"status": "COMPLETE", "phase": "P77C"},
+    "draw_freshness_verified": {"status": "COMPLETE", "phase": "P82"},
+    "controlled_replay_apply_complete": {"status": "COMPLETE", "phase": "P79", "rows_applied": 2},
+    "api_visibility_verified": {"status": "COMPLETE", "phase": "P80"},
+    "ui_browser_e2e_stable": {"status": "PASS", "phase": "P84", "ci_run": "26443569347"},
+    "monitoring_path_verified": {"status": "COMPLETE", "phase": "P81"},
+    "freshness_guard_available": {"status": "COMPLETE", "phase": "P82"},
+    "risk_register_updated": {"status": "COMPLETE", "phase": "P85"}
+  },
+
+  "risk_register": [
+    {
+      "risk": "Browser E2E flaky",
+      "status": "CLOSED",
+      "closed_by": "P84",
+      "resolution": "3 root causes resolved: timeout increased to 15000ms, programmatic click replaced with Playwright .click(), missing src/config/apiConfig.js added to git"
+    },
+    {
+      "risk": "Port confusion (8000 vs 8002)",
+      "status": "DOCUMENTED",
+      "notes": "Port 8000 is unrelated Personal Health Platform. Lottery API always on port 8002. All operator docs and curl examples explicitly specify 8002."
+    },
+    {
+      "risk": "Date format slash requirement",
+      "status": "DOCUMENTED",
+      "notes": "Replay API date filter requires YYYY/MM/DD slash format. Hyphen format (2026-05-21) will not match any rows. All operator examples use slash format."
+    },
+    {
+      "risk": "DB local-only nature",
+      "status": "DOCUMENTED",
+      "notes": "lottery_v2.db is local-only and must never be staged or committed. CI uses a separate test environment. Official API ingestion is not used in this phase."
+    },
+    {
+      "risk": "Official API ingestion not used in this phase",
+      "status": "DOCUMENTED",
+      "notes": "All replay rows in P79 were applied from local plan artifacts. Official draw API was used for verification only (read). No write calls were made to external APIs."
+    },
+    {
+      "risk": "Future draw freshness",
+      "status": "OPEN",
+      "notes": "New draws beyond 115000041 will require an explicit source decision before replay rows can be added. Freshness guard will flag gap_detected=True when this occurs."
+    }
+  ],
+
+  "rollback_reference": {
+    "p79_rollback_sql": "DELETE FROM strategy_prediction_replays WHERE id IN (46961, 46962)",
+    "authorization_required": true,
+    "note": "Rollback is not part of P85. Requires explicit operator authorization. P79 backup: lottery_api/data/lottery_v2.db.bak_p79_pre_apply_20260526_160020"
+  },
+
+  "test_suite": {
+    "file": "tests/test_p85_launch_closure_operator_release.py",
+    "assertions": 12,
+    "expected_result": "PASS"
+  },
+
+  "governance": {
+    "branch": "p85-launch-closure-operator-release",
+    "target_branch": "main",
+    "no_db_writes": true,
+    "no_replay_inserts": true,
+    "no_ingestion": true,
+    "no_new_tables": true,
+    "no_lifecycle_mutation": true
+  }
+}

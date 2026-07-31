@@ -1,0 +1,53 @@
+{
+  "phase": "P17_BIGLOTTO_REPLAY_TIMESTAMP_API",
+  "generated_at": "2026-05-20T13:23:57.453747+00:00",
+  "production_rows": 4960,
+  "biglotto_total_online_backfill_rows": 4500,
+  "strategies_checked": [
+    "ts3_regime_3bet",
+    "biglotto_triple_strike",
+    "biglotto_deviation_2bet"
+  ],
+  "api_totals_by_strategy": {
+    "ts3_regime_3bet": 1500,
+    "biglotto_triple_strike": 1570,
+    "biglotto_deviation_2bet": 1570
+  },
+  "p16_timestamp_rows": 3000,
+  "p14d_timestamp_rows": 0,
+  "p14d_timestamp_gap": true,
+  "p14d_timestamp_gap_reason": "ts3_regime_3bet rows applied via P14D before prediction_cutoff_date column was added in P16A; not fabricated",
+  "p16_cutoff_gt_target_violations": 0,
+  "api_patch_applied": true,
+  "api_patch_description": "additive-only: added prediction_cutoff_date and prediction_generated_at to SELECT and response dict (P17)",
+  "api_timestamp_fields_present": true,
+  "required_fields_present": [
+    "strategy_id",
+    "strategy_name",
+    "lottery_type",
+    "target_draw",
+    "target_date",
+    "predicted_numbers",
+    "actual_numbers",
+    "hit_numbers",
+    "hit_count",
+    "special_hit",
+    "truth_level",
+    "controlled_apply_id",
+    "display_status",
+    "visibility_state",
+    "should_count_as_success",
+    "prediction_cutoff_date",
+    "prediction_generated_at"
+  ],
+  "missing_fields": [],
+  "p16_rows_have_cutoff": true,
+  "p14d_rows_cutoff_null": true,
+  "pagination_verified": true,
+  "hit_count_verified": true,
+  "page_timestamp_ready": true,
+  "p14d_timestamp_backfill_needed": true,
+  "no_db_write": true,
+  "fake_success_count": 0,
+  "final_classification": "P17_BIGLOTTO_REPLAY_TIMESTAMP_API_READY"
+}

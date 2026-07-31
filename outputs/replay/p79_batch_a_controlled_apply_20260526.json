@@ -1,0 +1,102 @@
+{
+  "task": "P79",
+  "description": "Batch A controlled apply — POWER_LOTTO draw 115000041 (fourier_rhythm_3bet + fourier30_markov30_2bet)",
+  "generated_at": "2026-05-26T08:00:20Z",
+  "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+  "branch": "p79-batch-a-controlled-apply-powerlotto-115000041",
+  "final_classification": "P79_BATCH_A_CONTROLLED_APPLY_SUCCESS",
+  "dry_run": false,
+  "governance": {
+    "p77c_pr": 203,
+    "p77c_merge_commit": "4b2eebccbb8456f908b9eac28f14250071cacc60",
+    "p78_plan_source": "outputs/replay/p78_batch_a_plan_regeneration_20260526.json",
+    "p78_final_plan_status": "PLAN_READY_FOR_P79_APPLY",
+    "branch_authorization": "YES apply P79 controlled replay rows for POWER_LOTTO draw 115000041"
+  },
+  "db_backup": {
+    "path": "lottery_api/data/lottery_v2.db.bak_p79_pre_apply_20260526_160020",
+    "created_before_write": true
+  },
+  "preflight": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "pr_201_state": "MERGED",
+    "pr_202_state": "MERGED",
+    "pr_203_state": "MERGED",
+    "replay_rows_before": 46960,
+    "power_lotto_max_draw": 115000041,
+    "target_draw_in_db": true,
+    "target_draw_data_verified": true,
+    "duplicate_guard_pre": "PASS — 0 existing rows for target strategies/draw",
+    "p78_plan_status": "PLAN_READY_FOR_P79_APPLY",
+    "p78_expected_delta": 2,
+    "all_stop_conditions_clear": true
+  },
+  "target_draw": {
+    "draw": "115000041",
+    "lottery_type": "POWER_LOTTO",
+    "date": "2026/05/21",
+    "numbers": [6, 14, 22, 28, 35, 38],
+    "special": 1
+  },
+  "inserted_rows": [
+    {
+      "id": 46961,
+      "strategy_id": "fourier_rhythm_3bet",
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "lottery_type": "POWER_LOTTO",
+      "target_draw": "115000041",
+      "target_date": "2026/05/21",
+      "history_cutoff_draw": "115000040",
+      "replay_status": "PREDICTED",
+      "predicted_numbers": "[3, 23, 24, 28, 30, 36]",
+      "predicted_special": null,
+      "actual_numbers": "[6, 14, 22, 28, 35, 38]",
+      "actual_special": 1,
+      "hit_numbers": "[28]",
+      "hit_count": 1,
+      "special_hit": 0,
+      "truth_level": "POWERLOTTO_DRAW_EXT_VERIFIED",
+      "controlled_apply_id": "P78_POWERLOTTO_BATCH_A_FOURIER_RHYTHM_DRAWEXT_20260526",
+      "source": "P78_BATCH_A_PLAN_REGENERATION",
+      "dry_run": 0
+    },
+    {
+      "id": 46962,
+      "strategy_id": "fourier30_markov30_2bet",
+      "strategy_name": "fourier30_markov30_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "target_draw": "115000041",
+      "target_date": "2026/05/21",
+      "history_cutoff_draw": "115000040",
+      "replay_status": "PREDICTED",
+      "predicted_numbers": "[13, 14, 27, 29, 34, 38]",
+      "predicted_special": null,
+      "actual_numbers": "[6, 14, 22, 28, 35, 38]",
+      "actual_special": 1,
+      "hit_numbers": "[14, 38]",
+      "hit_count": 2,
+      "special_hit": 0,
+      "truth_level": "POWERLOTTO_DRAW_EXT_VERIFIED",
+      "controlled_apply_id": "P78_POWERLOTTO_BATCH_A_FOURIER30_MARKOV30_DRAWEXT_20260526",
+      "source": "P78_BATCH_A_PLAN_REGENERATION",
+      "dry_run": 0
+    }
+  ],
+  "verification": {
+    "replay_rows_before": 46960,
+    "replay_rows_inserted": 2,
+    "replay_rows_after": 46962,
+    "replay_rows_delta": 2,
+    "power_lotto_max_draw_before": 115000041,
+    "power_lotto_max_draw_after": 115000041,
+    "draws_table_untouched": true,
+    "duplicate_guard_pre": "PASS — 0 existing rows",
+    "duplicate_guard_post": "PASS — exactly 2 rows",
+    "dry_run_flag_on_inserted_rows": 0,
+    "strategy_lifecycle_untouched": true,
+    "all_assertions_passed": true
+  },
+  "rollback_sql": "DELETE FROM strategy_prediction_replays WHERE id IN (46961, 46962);",
+  "next_task": "Replay UI/API verification — confirm the 2 new rows appear in /api/replays endpoint and frontend replay page for POWER_LOTTO draw 115000041"
+}

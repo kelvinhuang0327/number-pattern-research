@@ -1,0 +1,194 @@
+{
+  "task_id": "P213D",
+  "classification": "P213D_3STAR_4STAR_POSITIONAL_SCHEMA_CODE_FIX_DESIGN_COMPLETE",
+  "task_type": "Type B",
+  "source_authorization": "Authorize P213D 3_STAR/4_STAR positional schema and code fix design (read-only design doc, no DB write)",
+  "lottery_scope": ["3_STAR", "4_STAR"],
+  "date": "2026-06-05",
+
+  "current_root_cause": {
+    "summary": "database.py:463 sorts all numbers unconditionally regardless of isPermutation flag; csv_validator.py already preserves draw order for permutation games but that order is discarded before DB storage",
+    "loss_location": "lottery_api/database.py:463",
+    "loss_code": "numbers_json = json.dumps(sorted(numbers))",
+    "preservation_location": "lottery_api/utils/csv_validator.py:286,451-452",
+    "preservation_code": "final_numbers = numbers if is_permutation else sorted(numbers)",
+    "existing_rows_unrecoverable": true,
+    "existing_rows_unrecoverable_reason": "DB stores sorted arrays; n! orderings possible without raw source; historical CSV/TXT files not in repo",
+    "draws_table_columns": ["id", "draw", "date", "lottery_type", "numbers", "special", "created_at", "jackpot_amount", "sell_amount", "total_amount"],
+    "numbers_positional_column_exists": false,
+    "current_db_sample": "[5, 6, 9] — sorted; original draw order is lost"
+  },
+
+  "evidence_summary": {
+    "lottery_types_json_isPermutation_3star": "lottery_api/data/lottery_types.json:45 — true",
+    "lottery_types_json_isPermutation_4star": "lottery_api/data/lottery_types.json:54 — true",
+    "csv_validator_permutation_preservation": "lottery_api/utils/csv_validator.py:286,451-452 — final_numbers = numbers if is_permutation else sorted(numbers)",
+    "database_sorting_root_cause": "lottery_api/database.py:463 — json.dumps(sorted(numbers)) always sorts",
+    "mock_debug_draw_order_evidence": "lottery_api/tools/debug_validator.py and debug_comprehensive.py — 開出順序 field present in mock source format",
+    "db_sorted_row_confirmation": "sqlite3 query: SELECT numbers FROM draws WHERE lottery_type='3_STAR' LIMIT 10 → [5, 6, 9], [0, 6, 7], [1, 5, 9] — all sorted",
+    "no_numbers_positional_in_schema": "PRAGMA table_info(draws) — no such column",
+    "raw_csv_files_in_repo": false
+  },
+
+  "design_options": [
+    {
+      "option": "A",
+      "name": "Modify draws.numbers to not sort permutation games",
+      "description": "Change database.py:463 to check isPermutation before sorting; store draw order in existing numbers field for permutation games",
+      "backward_compatible": false,
+      "breaking_change": true,
+      "breaking_reason": "Column semantics change for permutation games; mixed sorted/unsorted state in same column for existing vs new rows",
+      "code_change_scope": "database.py:463 + config lookup",
+      "migration_impact": "existing 4179 3_STAR + 2922 4_STAR rows remain sorted; new rows use draw order — ambiguous column semantics",
+      "recommended": false,
+      "recommendation_reason": "Not recommended; creates ambiguous column semantics and potential consumer breakage"
+    },
+    {
+      "option": "B",
+      "name": "Add separate nullable numbers_positional column",
+      "description": "ADD COLUMN numbers_positional TEXT DEFAULT NULL to draws; permutation games write draw order here; non-permutation games leave NULL; numbers column unchanged",
+      "backward_compatible": true,
+      "breaking_change": false,
+      "schema_change": "ALTER TABLE draws ADD COLUMN numbers_positional TEXT DEFAULT NULL",
+      "code_change_scope": "database.py insert_draws path; minimal",
+      "migration_impact": "non-destructive ADD COLUMN; existing rows get NULL; historical rows need re-ingestion to populate",
+      "recommended": false,
+      "recommendation_reason": "Safe option; recommended as base; Option C extends it with stricter enforcement"
+    },
+    {
+      "option": "C",
+      "name": "Dual-write canonical sorted numbers plus original positional sequence",
+      "description": "Same structure as Option B; numbers always stores sorted canonical order; numbers_positional always stores draw order for permutation games; enforced via application logic (and optionally a CHECK constraint)",
+      "backward_compatible": true,
+      "breaking_change": false,
+      "schema_change": "ALTER TABLE draws ADD COLUMN numbers_positional TEXT DEFAULT NULL",
+      "code_change_scope": "database.py insert_draws path; application-level enforcement",
+      "migration_impact": "same as Option B; historical rows remain NULL until re-ingested from source",
+      "recommended": true,
+      "recommendation_reason": "Best long-term design; backward compatible; explicit policy prevents future ambiguity; csv_validator is already correct"
+    },
+    {
+      "option": "D",
+      "name": "No change / HOLD",
+      "description": "Keep current behavior; numbers stores sorted arrays; no positional field; straight-play research remains blocked",
+      "backward_compatible": true,
+      "breaking_change": false,
+      "recommended": false,
+      "recommendation_reason": "Default safe option if straight-play research is not a current priority"
+    }
+  ],
+
+  "recommended_option": "C",
+  "recommended_option_rationale": "Option C is additive (non-destructive ADD COLUMN), backward compatible, preserves existing numbers semantics for all lottery types, and enforces clear dual-write policy. csv_validator is already correct; only database.py needs one-line change. No existing consumers break.",
+
+  "future_implementation_plan": [
+    {
+      "phase": "P213D",
+      "status": "COMPLETE",
+      "description": "Read-only design doc",
+      "authorization": "Authorize P213D 3_STAR/4_STAR positional schema and code fix design (read-only design doc, no DB write)"
+    },
+    {
+      "phase": "P213E",
+      "status": "PENDING_AUTHORIZATION",
+      "description": "Additive code fix design review — detailed implementation spec, proposed diff for database.py, proposed migration SQL, test stubs (review-only, not applied)",
+      "authorization_phrase": "Authorize P213E 3_STAR/4_STAR positional schema implementation design review (read-only, no DB write)"
+    },
+    {
+      "phase": "P213F",
+      "status": "PENDING_AUTHORIZATION",
+      "description": "Additive code implementation and tests — apply database.py change, schema migration to test/staging DB only, insert-path tests",
+      "authorization_phrase": "Authorize P213F 3_STAR/4_STAR positional code fix implementation and tests (no production DB write)"
+    },
+    {
+      "phase": "P213G",
+      "status": "PENDING_AUTHORIZATION",
+      "description": "Dry-run source parser validation — re-obtain historical CSV/TXT, run dry-run parser, validate 開出順序 extraction, no production DB write",
+      "authorization_phrase": "Authorize P213G 3_STAR/4_STAR historical draw re-download and dry-run source parser validation (no DB write to production)"
+    },
+    {
+      "phase": "P213H",
+      "status": "PENDING_AUTHORIZATION",
+      "description": "Controlled production DB migration — confirmed backup, dry-run passed, rollback plan, apply schema migration and re-ingest with positional data",
+      "authorization_phrase": "Authorize P213H 3_STAR/4_STAR controlled production DB migration (DB write authorized, backup confirmed, dry-run passed)"
+    }
+  ],
+
+  "future_authorization_phrases": {
+    "P213E_design_review_no_code": "Authorize P213E 3_STAR/4_STAR positional schema implementation design review (read-only, no DB write)",
+    "P213F_code_fix_no_production_db_write": "Authorize P213F 3_STAR/4_STAR positional code fix implementation and tests (no production DB write)",
+    "P213G_dry_run_source_validation": "Authorize P213G 3_STAR/4_STAR historical draw re-download and dry-run source parser validation (no DB write to production)",
+    "P213H_controlled_db_migration": "Authorize P213H 3_STAR/4_STAR controlled production DB migration (DB write authorized, backup confirmed, dry-run passed)",
+    "HOLD": null
+  },
+
+  "risks": [
+    {
+      "risk": "Breaking non-permutation games",
+      "severity": "high",
+      "mitigation": "Option C leaves numbers column semantics unchanged for all game types"
+    },
+    {
+      "risk": "Changing semantics of draws.numbers",
+      "severity": "high",
+      "mitigation": "Option C avoids this; sorted numbers remains canonical"
+    },
+    {
+      "risk": "Legacy code expecting sorted arrays",
+      "severity": "medium",
+      "mitigation": "Most legacy code re-sorts explicitly; additive column does not affect them"
+    },
+    {
+      "risk": "Mixed NULL state in numbers_positional for historical rows",
+      "severity": "medium",
+      "mitigation": "Expected and documented; historical rows populated only via P213G/P213H re-ingestion"
+    },
+    {
+      "risk": "Current rows unrecoverable without raw source",
+      "severity": "high",
+      "mitigation": "Documented explicitly; no false recovery claim made"
+    },
+    {
+      "risk": "Accidental DB write during design phases",
+      "severity": "high",
+      "mitigation": "Strict phase gate; DB write only in P213H with explicit authorization"
+    },
+    {
+      "risk": "Source files unavailable or format mismatch",
+      "severity": "medium",
+      "mitigation": "P213G dry-run validation required before P213H"
+    },
+    {
+      "risk": "Strategy overclaiming on positional data",
+      "severity": "high",
+      "mitigation": "3_STAR/4_STAR remain UNDERPOWERED_NO_SIGNAL (P227C); schema fix does not create strategy signal"
+    }
+  ],
+
+  "no_code_changes": true,
+  "no_db_write": true,
+  "no_schema_change": true,
+  "no_ingestion": true,
+  "no_registry_mutation": true,
+  "no_production_change": true,
+  "no_monitoring_change": true,
+  "no_strategy_authorization": true,
+  "no_betting_advice": true,
+  "same_pr_closeout": true,
+
+  "p238b_interpretation": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY — observation only; not a strategy signal; not betting advice; not a production change; unchanged by this task",
+
+  "targeted_tests": "tests/test_p213d_3star_4star_positional_schema_code_fix_design.py",
+
+  "final_state": {
+    "classification": "P213D_3STAR_4STAR_POSITIONAL_SCHEMA_CODE_FIX_DESIGN_COMPLETE",
+    "db_rows_unchanged": 94924,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "p213c_remains_complete": true,
+    "p238b_remains_observation_only": true,
+    "star_games_remain_underpowered_no_signal": true,
+    "active_task_status": "WAITING_FOR_USER_AUTHORIZATION",
+    "no_active_worker": true,
+    "separate_closeout_pr_needed": false
+  }
+}

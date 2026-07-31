@@ -1,0 +1,204 @@
+{
+  "task": "P168_POWER_LOTTO_RESEARCH_DECISION_REVIEW",
+  "date": "2026-06-01",
+  "final_classification": "P168_POWER_LOTTO_RESEARCH_DECISION_REVIEW_READY",
+  "phase_0_verification": {
+    "all_checks_passed": true,
+    "worktree_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "head_commit": "c8b423d0c1de26253be4cec79ae6de77719d1074",
+    "db_rows_before": 94924,
+    "db_rows_after": 94924,
+    "db_unchanged": true,
+    "drift_guard": "PASS",
+    "p161_test": "PASS",
+    "p162_test": "PASS",
+    "p163_test": "PASS",
+    "p164_test": "PASS",
+    "p165b_test": "PASS",
+    "p166_test": "PASS",
+    "p167_test": "PASS",
+    "p167_script_reruns_successfully": true,
+    "p167_json_artifact": "outputs/research/power_lotto/p167_ensemble_voting_research_20260531.json",
+    "p167_md_artifact": "outputs/research/power_lotto/p167_ensemble_voting_research_20260531.md"
+  },
+  "p167_summary": {
+    "p167_final_classification": "P167_POWER_LOTTO_NO_DEFENSIBLE_EDGE_FOUND",
+    "defensible_edge_found": false,
+    "null_result": true,
+    "module_results_summary": {
+      "module_a": {
+        "name": "consensus_voting",
+        "in_sample_mean": 1.000667,
+        "random_baseline": 0.947368,
+        "best_single_baseline": 0.974906,
+        "above_random": true,
+        "above_best_single": true,
+        "p_raw": 0.015287,
+        "p_bh": 0.038218,
+        "bh_significant": true,
+        "verdict": "POSITIVE in-sample signal, BH-significant — not yet confirmed in OOS"
+      },
+      "module_b": {
+        "name": "slot_effectiveness",
+        "verdict": "Slot 3 and 4 significantly lower hit rate than slot 1 (descriptive, not OOS-validated)"
+      },
+      "module_c": {
+        "name": "recent_window",
+        "verdict": "No significant difference between recent and full-history ensemble performance"
+      },
+      "module_d": {
+        "name": "lifecycle_grouping",
+        "verdict": "Descriptive only — survivorship bias applies"
+      },
+      "module_e": {
+        "name": "main_special_separated",
+        "main_p_bh": 0.024,
+        "main_bh_significant": true,
+        "special_p_bh": 0.522,
+        "verdict": "Main-number signal p_bh=0.024 (significant); Special-number no signal"
+      },
+      "module_f": {
+        "name": "walk_forward_oos",
+        "pass_final_gate": false,
+        "oos_window_1": {
+          "draws": 500,
+          "mean": 1.04,
+          "above_random": true,
+          "above_best_single": true,
+          "p_bh": 0.048718,
+          "status": "COMPUTED"
+        },
+        "oos_window_2": {
+          "draws": 499,
+          "required_minimum": 500,
+          "status": "INSUFFICIENT_OOS_DATA"
+        },
+        "reason_failed": "OOS Window 2 has only 499 draws (1499 total − 1000 training = 499 < 500 required minimum). Stability check across ≥ 2 windows cannot be performed. The failure is due to data volume limitation, not absence of positive direction."
+      }
+    }
+  },
+  "decision": {
+    "defensible_edge_found": false,
+    "p167_null_result_stands": true,
+    "null_reason": "Module F final gate failed: OOS Window 2 has 499 draws, 1 draw below the pre-declared 500-draw minimum. Only 1 of the required ≥ 2 OOS windows was computed. Stability cannot be confirmed. Per the pre-declared P166 protocol, this is a NULL result.",
+    "promising_signal_acknowledged": true,
+    "promising_signal_note": "The ensemble voting approach shows a consistent positive direction (in-sample p_bh=0.038, OOS Window 1 p_bh=0.049, both above random and best single strategy). This is encouraging but does not qualify as a confirmed defensible edge under the strict P166 OOS protocol.",
+    "interpretation_caveat": "The OOS Window 2 shortfall (499 vs 500 draws) is 1 draw. This is a tight margin. It does NOT mean the result is borderline valid — the pre-declared threshold was 500 and it was not met. Any adjustment to the threshold must be pre-registered in a new plan (P169) before re-evaluation, not applied retroactively."
+  },
+  "options_evaluation": [
+    {
+      "option": "A",
+      "label": "WAIT_FOR_MORE_DRAWS",
+      "description": "Wait for ≥ 1 more POWER_LOTTO draw to be added to the dataset (≥ 1500 complete draws total), then re-run Module F with OOS Window 2 covering ≥ 500 draws.",
+      "pros": [
+        "Strictly respects the pre-declared P166 OOS protocol without any retroactive modification",
+        "Adds real prospective data — not post-hoc rationalization",
+        "If OOS Window 2 also passes, the result becomes genuinely stable across 2 windows",
+        "Lowest risk of governance integrity violation"
+      ],
+      "cons": [
+        "Research is blocked until new draw data is available",
+        "POWER_LOTTO draws may be infrequent — wait time is uncertain",
+        "The positive signal from Window 1 may not persist in genuinely new data"
+      ],
+      "risk": "SHORT_TERM_RESEARCH_STALL — acceptable if signal is real",
+      "when_to_choose": "If the user wants the strictest possible protocol adherence and is willing to wait for new draws",
+      "required_authorization": "No explicit phrase required to wait — this is the default passive state"
+    },
+    {
+      "option": "B",
+      "label": "PLAN_ONLY_THRESHOLD_SENSITIVITY_REVIEW",
+      "description": "Produce a plan-only (P169) document that evaluates threshold sensitivity: what would the result be if OOS window minimum was 400, 450, or 500 draws? Report the sensitivity range descriptively without changing the P167 verdict.",
+      "pros": [
+        "Determines whether the 499 vs 500 draw boundary is material (i.e., does it change the conclusion or is the effect stable across nearby thresholds?)",
+        "Does not retroactively change P167 outcome — P167 NULL result stands",
+        "Informs future protocol design without gaming the current result"
+      ],
+      "cons": [
+        "Easily misread as retroactive justification for claiming P167 passed — must be framed carefully",
+        "Sensitivity analysis that consistently shows 'would have passed at 499' could create pressure to lower thresholds",
+        "Requires careful governance language to prevent threshold shopping"
+      ],
+      "risk": "MEDIUM — threshold-shopping risk if not carefully framed as descriptive plan only",
+      "when_to_choose": "If the user wants to understand the robustness of the 500-draw threshold before deciding on Option A or D",
+      "required_authorization": "YES produce P169 threshold sensitivity plan only, no rerun of P167 verdict"
+    },
+    {
+      "option": "C",
+      "label": "NARROW_TO_CONSENSUS_MAIN_SIGNAL_TRACKING",
+      "description": "Narrow the research focus to the two strongest signals from P167 (Module A consensus voting and Module E main-number signal). Pre-register a prospective tracking protocol: for each new POWER_LOTTO draw, record whether the consensus ensemble hit count is above the P161 mean. Evaluate after ≥ 100 prospective draws.",
+      "pros": [
+        "Focuses on the most promising directions rather than starting from scratch",
+        "Prospective tracking prevents in-sample selection bias",
+        "Pre-registration ensures the tracking is not post-hoc",
+        "100-draw prospective target is achievable on a reasonable timeline"
+      ],
+      "cons": [
+        "Requires pre-registering the tracking protocol before any new data is examined",
+        "100 draws may not be sufficient for statistical power (power analysis needed)",
+        "Risk of over-indexing on two signals that may have been noise"
+      ],
+      "risk": "MEDIUM — cherry-picking risk if tracking protocol is not strictly pre-registered",
+      "when_to_choose": "If the user wants to continue research in a focused, prospective way without waiting for large data batches",
+      "required_authorization": "YES plan P169 prospective signal tracking for consensus voting and main-number, no rerun"
+    },
+    {
+      "option": "D",
+      "label": "PAUSE_R1_POWER_LOTTO_RESEARCH",
+      "description": "Formally pause the R1 POWER_LOTTO research track. Archive current findings (P161-P168) as INCONCLUSIVE. Resume only if: (1) significant new data becomes available (≥ 500 new draws), or (2) a qualitatively different hypothesis emerges.",
+      "pros": [
+        "Prevents over-mining a dataset that has shown borderline-but-unconfirmed signals",
+        "Frees resources for other lottery types or research directions",
+        "Honest acknowledgment that current signal is insufficient for deployment"
+      ],
+      "cons": [
+        "Halts a research track that shows a genuine positive direction",
+        "The positive signal from Module A and E may be real but require more data — pausing risks missing it",
+        "Once paused, re-entry requires new authorization and context rebuild"
+      ],
+      "risk": "LOW research waste risk; MEDIUM opportunity cost if signal is real",
+      "when_to_choose": "If the user judges that the cost of continued research exceeds the expected value of confirming the weak signal"
+    }
+  ],
+  "recommended_option": {
+    "recommendation": "Option B + C combined (conservative)",
+    "proposed_next_task": "P169_POWER_LOTTO_SIGNAL_REVIEW_AND_THRESHOLD_SENSITIVITY_PLAN_ONLY",
+    "reasoning": [
+      "The 499 vs 500 threshold gap is 1 draw — a sensitivity review (Option B) will determine whether this boundary is material or if the result is stable across nearby thresholds. This should be done as a descriptive plan ONLY, with P167 NULL verdict preserved.",
+      "Simultaneously, the Module A and Module E signals are the strongest findings. Pre-registering a prospective tracking protocol (Option C) allows future data to be evaluated cleanly without in-sample selection.",
+      "Option A (wait for draws) is implicit in both B and C — if new draws arrive during P169 planning, they can be incorporated.",
+      "Option D (pause) is premature given the positive direction. Pausing before attempting the less-costly sensitivity review and prospective tracking would leave a promising signal unexplored."
+    ],
+    "p169_scope_constraints": [
+      "P169 must be plan-only — no re-running P167 analysis with different thresholds and claiming a different classification",
+      "P169 must NOT change the P167 final classification to anything other than P167_POWER_LOTTO_NO_DEFENSIBLE_EDGE_FOUND",
+      "P169 threshold sensitivity results must be clearly labeled RETROSPECTIVE DESCRIPTIVE — not as retroactive gate passage",
+      "P169 prospective tracking plan must specify: metric, threshold, N, correction method, and what constitutes success BEFORE any new data is examined"
+    ]
+  },
+  "no_action_confirmations": {
+    "no_db_write": true,
+    "no_p167_rerun_with_different_verdict": true,
+    "no_499_draw_window_reclassified_as_pass": true,
+    "no_registry_mutation": true,
+    "no_champion_promotion": true,
+    "no_controlled_apply": true,
+    "no_commit": true,
+    "no_push": true,
+    "no_merge": true,
+    "no_betting_advice": true,
+    "no_win_guarantee": true,
+    "no_real_money_wording": true
+  },
+  "governance_invariants": {
+    "db_rows": 94924,
+    "drift_guard": "PASS",
+    "main_zen_gates_split": "UNRESOLVED",
+    "p167_null_result_stands": true,
+    "no_success_rate_method_found": true
+  },
+  "next_task": "P169_POWER_LOTTO_SIGNAL_REVIEW_AND_THRESHOLD_SENSITIVITY_PLAN_ONLY",
+  "next_task_state": "WAITING_FOR_USER_AUTHORIZATION",
+  "next_task_note": "P168 defines the decision review. P169 may not begin without explicit user authorization. P169 must be plan-only — no re-running analysis, no changing P167 verdict, no deploying strategies."
+}

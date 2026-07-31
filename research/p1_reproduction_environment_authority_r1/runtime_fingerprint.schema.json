@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lotterynew.invalid/schemas/runtime-fingerprint-v1.json",
+  "title": "RuntimeFingerprintV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "sys_version",
+    "python_implementation",
+    "python_version",
+    "python_compiler",
+    "python_build",
+    "platform_platform",
+    "platform_system",
+    "platform_release",
+    "platform_version",
+    "platform_machine",
+    "platform_processor",
+    "byteorder",
+    "hash_algorithm",
+    "project_lockfile_path",
+    "project_lockfile_sha256",
+    "expected_distribution_set",
+    "actual_distribution_set",
+    "distribution_set_match"
+  ],
+  "properties": {
+    "schema_version": {"const": "RuntimeFingerprintV1"},
+    "sys_version": {"type": "string"},
+    "python_implementation": {"type": "string"},
+    "python_version": {"type": "string"},
+    "python_compiler": {"type": "string"},
+    "python_build": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {"type": "string"}
+    },
+    "platform_platform": {"type": "string"},
+    "platform_system": {"type": "string"},
+    "platform_release": {"type": "string"},
+    "platform_version": {"type": "string"},
+    "platform_machine": {"type": "string"},
+    "platform_processor": {"type": "string"},
+    "byteorder": {"enum": ["little", "big"]},
+    "hash_algorithm": {"const": "sha256"},
+    "project_lockfile_path": {"type": "string"},
+    "project_lockfile_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "expected_distribution_set": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["normalized_name", "version"]
+      }
+    },
+    "actual_distribution_set": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "normalized_name",
+          "version",
+          "metadata_name",
+          "source_artifact_sha256",
+          "distribution_metadata_sha256",
+          "record_sha256_or_explicit_absence"
+        ]
+      }
+    },
+    "distribution_set_match": {"const": true}
+  }
+}

@@ -1,0 +1,187 @@
+{
+  "task_id": "P213",
+  "classification": "P213_NEW_HYPOTHESIS_SCOUTING_PLAN_COMPLETE",
+  "task_type": "Type B",
+  "task_type_description": "Read-only design doc / artifact under P240D governance simplification rules",
+  "generated_at": "2026-06-05",
+  "source_authorization": "Authorize P213 new hypothesis scouting plan (read-only design doc, no code changes, no DB write)",
+
+  "closed_lines": [
+    {
+      "chain": "P211R short/mid-window diagnostic",
+      "status": "P211R_IS_CANDIDATES_PRIOR_OOS_REJECTED_HISTORICAL_ARTIFACT",
+      "pr": "PR #298"
+    },
+    {
+      "chain": "P212 POWER_LOTTO backward-OOS gap check",
+      "status": "P212_POWER_LOTTO_BACKWARD_OOS_GAP_CHECK_HISTORICAL_ARTIFACT",
+      "pr": "PR #299"
+    },
+    {
+      "chain": "P231B POWER_LOTTO first-zone backward-OOS",
+      "status": "P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL",
+      "pr": "PR #272"
+    },
+    {
+      "chain": "P230C DAILY_539 survivor",
+      "status": "REJECTED_BY_BACKWARD_OOS_HISTORICAL_ARTIFACT_DIRECTION",
+      "pr": "PR #270"
+    },
+    {
+      "chain": "P227C 3_STAR/4_STAR box-play",
+      "status": "P227C_STAR_BOX_PLAY_UNDERPOWERED_NO_SIGNAL",
+      "pr": "PR #265"
+    },
+    {
+      "chain": "P238B NIST randomness audit",
+      "status": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+      "pr": "PR #289"
+    },
+    {
+      "chain": "BIG_LOTTO signal boundary",
+      "status": "L90_L91_SIGNAL_SPACE_EXHAUSTED_49C6_FAIR_RANDOM",
+      "pr": "roadmap.md"
+    },
+    {
+      "chain": "P211A second-zone",
+      "status": "NULL_DISPLAY_ONLY_CONFIRMED",
+      "pr": "PR #255"
+    }
+  ],
+
+  "lottery_status": {
+    "BIG_LOTTO": {
+      "status": "SIGNAL_SPACE_EXHAUSTED",
+      "draws_in_replay": 1552,
+      "gate_to_reopen": "new_draws_over_3000_beyond_current_or_structural_change_evidence",
+      "actionable_now": false
+    },
+    "DAILY_539": {
+      "status": "WAIT_FOR_OOS_P224B_GATE_NOT_OPEN",
+      "draws_in_replay": 1550,
+      "gate_to_reopen": "300_new_live_draws_minimum_preferred_500",
+      "actionable_now": false
+    },
+    "POWER_LOTTO": {
+      "status": "IS_WINDOW_CHAIN_COMPLETE_ALL_HISTORICAL_ARTIFACTS",
+      "draws_in_replay": 1551,
+      "gate_to_reopen": "new_draws_plus_structural_change_or_new_pre_registered_hypothesis",
+      "actionable_now": false
+    },
+    "3_STAR": {
+      "status": "UNDERPOWERED_BOX_PLAY_STRAIGHT_PLAY_BLOCKED",
+      "draws_in_replay": 0,
+      "draw_data_exists": 4179,
+      "gate_to_reopen_box_play": "10000_draws_natural_accumulation",
+      "gate_to_reopen_straight_play": "positional_reingest_type_d_authorization_required",
+      "actionable_now": "design_only_feasibility_doc_possible"
+    },
+    "4_STAR": {
+      "status": "UNDERPOWERED_BOX_PLAY_STRAIGHT_PLAY_BLOCKED",
+      "draws_in_replay": 0,
+      "draw_data_exists": 2922,
+      "gate_to_reopen_box_play": "17000_draws_natural_accumulation",
+      "gate_to_reopen_straight_play": "positional_reingest_type_d_authorization_required",
+      "actionable_now": "design_only_feasibility_doc_possible"
+    }
+  },
+
+  "hypothesis_categories": [
+    {
+      "id": "H_STAR_POSITIONAL_REINGEST",
+      "name": "3_STAR/4_STAR Positional Data Recovery Design",
+      "lottery_scope": ["3_STAR", "4_STAR"],
+      "category_type": "data_readiness_design",
+      "current_blocker": "POSITIONAL_ORDER_LOST_REINGEST_REQUIRED",
+      "design_only": true,
+      "implementation_authorized": false,
+      "required_gates": [
+        "source_data_positional_availability_confirmed",
+        "separate_type_d_db_write_authorization",
+        "p221f_pre_registration_before_scan",
+        "straight_play_test_battery_defined"
+      ],
+      "allowed_next_action": "design_feasibility_doc_read_only_no_db_write",
+      "forbidden_next_action": ["db_write_without_authorization", "strategy_promotion", "betting_advice"],
+      "authorization_phrase": "Authorize P213B 3_STAR/4_STAR positional data recovery feasibility design (read-only, no DB write)"
+    },
+    {
+      "id": "H_DAILY539_FUTURE_OOS_GATE",
+      "name": "DAILY_539 Future Live Draw Monitoring Gate",
+      "lottery_scope": ["DAILY_539"],
+      "category_type": "passive_monitoring_gate",
+      "current_blocker": "P224B_GATE_NOT_OPEN",
+      "design_only": true,
+      "implementation_authorized": false,
+      "required_gates": [
+        "300_new_live_draws_added_to_replay_db"
+      ],
+      "allowed_next_action": "passive_monitoring_wait_for_gate",
+      "forbidden_next_action": ["deploy_before_gate", "strategy_promotion", "betting_advice"]
+    },
+    {
+      "id": "H_REGIME_SEGMENTATION",
+      "name": "Regime Segmentation Design",
+      "lottery_scope": ["DAILY_539", "POWER_LOTTO"],
+      "category_type": "new_hypothesis_design",
+      "current_blocker": "P221F_GATE_NOT_PASSED_PRE_REGISTRATION_REQUIRED",
+      "design_only": true,
+      "implementation_authorized": false,
+      "required_gates": [
+        "evidence_of_structural_break_documented",
+        "p221f_pre_registration_regime_boundaries_declared",
+        "bonferroni_k_declared",
+        "oos_confirmation_window_defined"
+      ],
+      "allowed_next_action": "design_doc_type_b_with_explicit_authorization",
+      "forbidden_next_action": ["scan_without_pre_registration", "strategy_promotion", "betting_advice"],
+      "authorization_phrase": "Authorize P214 POWER_LOTTO regime segmentation design (read-only design doc, no code changes)"
+    },
+    {
+      "id": "H_NIST_CONFIRMATION_DESIGN",
+      "name": "NIST ORANGE/RED Confirmation Design (Contingent)",
+      "lottery_scope": ["ALL"],
+      "category_type": "contingent_design",
+      "current_blocker": "NIST_YELLOW_OBSERVATION_ONLY_NO_ORANGE_RED_TRIGGER",
+      "design_only": true,
+      "implementation_authorized": false,
+      "required_gates": [
+        "new_draws_since_p238b",
+        "new_nist_audit_produces_orange_or_red_alert"
+      ],
+      "allowed_next_action": "monitor_only_no_task_until_trigger",
+      "forbidden_next_action": ["treat_yellow_as_signal", "strategy_promotion", "betting_advice"]
+    }
+  ],
+
+  "recommended_next_direction": "H_STAR_POSITIONAL_REINGEST",
+  "recommended_next_direction_rationale": "Only genuinely new signal space remaining. All other lottery families have closed chains or inaccessible gates. 3_STAR/4_STAR straight-play has never been analyzed due to data engineering constraint. A feasibility design doc (Type B) is low-cost and answers whether the source data has positional information.",
+  "exact_authorization_phrase_for_next_direction": "Authorize P213B 3_STAR/4_STAR positional data recovery feasibility design (read-only, no DB write)",
+
+  "no_db_write": true,
+  "no_registry_mutation": true,
+  "no_production_change": true,
+  "no_monitoring_change": true,
+  "no_strategy_authorization": true,
+  "no_betting_advice": true,
+  "p211_restarted": false,
+  "p238b_interpretation": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+
+  "same_pr_closeout": true,
+  "same_pr_closeout_reason": "Type B: all changes read-only; governance changes <=4 files, <=120 lines; CI passes; no merge conflict",
+  "separate_closeout_pr_required": false,
+
+  "targeted_tests": {
+    "test_file": "tests/test_p213_new_hypothesis_scouting_plan.py",
+    "result": "PASS"
+  },
+
+  "final_state": {
+    "active_task_status": "WAITING_FOR_USER_AUTHORIZATION",
+    "p238b_nist_status": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+    "db_rows": 94924,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "deployable_candidate_exists": false,
+    "separate_closeout_pr_needed": false
+  }
+}

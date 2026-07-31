@@ -1,0 +1,242 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P258A",
+  "classification": "PREDICTION_ACCURACY_RESEARCH_INTAKE_PROTOCOL",
+  "generated_date": "2026-06-08",
+  "task_type": "Type B read-only research intake protocol artifact (no code, no DB write)",
+  "phase0_summary": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch_at_start": "main",
+    "head_at_build": "96a5175eb6508fad07d7f614a0b23745297f3232",
+    "staged_files_before_task": 0,
+    "db_integrity": "ok",
+    "replay_rows": 94924,
+    "draw_rows_total": 64366,
+    "baseline_artifacts_verified": [
+      "outputs/research/p256a_feature_information_mi_null_framework_20260608.json",
+      "outputs/research/p257a_best_nbet_strategy_overview_historical_replay_20260608.json",
+      "outputs/research/p257c_best_strategy_overview_runtime_smoke_closeout_20260608.json"
+    ],
+    "predecessor_note": "P258-PRE0 worktree disposition + CURRENT_STATE draw-total reconcile (64,361->64,366) merged via PR #371 before P258A. Draw-total delta was legitimate post-draw backfill, not data drift."
+  },
+  "objective": "prediction_accuracy_only",
+  "objective_detail": "Improve prediction success rate ONLY. No monetary objective is in scope for this research round.",
+  "accuracy_target_metrics": [
+    "avg_hit_count_per_draw",
+    "hit_count_ge_1_success_rate",
+    "hit_count_ge_2_rate",
+    "hit_count_ge_3_rate",
+    "n_bet_portfolio_success_rate",
+    "paired_win_rate_vs_best_nbet_baseline"
+  ],
+  "excluded_objectives": [
+    "CP_value",
+    "EV",
+    "expected_value",
+    "payout",
+    "prize_money_optimization",
+    "betting_cost",
+    "ROI",
+    "anti_crowd_EV",
+    "resource_efficiency",
+    "cost_efficiency"
+  ],
+  "ceo_risk_framing": {
+    "summary": "The value of this protocol is REJECTION DISCIPLINE for incoming external proposals, NOT an expectation of discovering a deployable edge.",
+    "prior_probability_of_edge": "LOW. P256A returned NULL; L82/L91 show DAILY_539 signal exhausted and BIG_LOTTO indistinguishable from fair random.",
+    "key_caution": "Removing EV/CP from the objective does NOT make hit-rate signal easier to find; it only removes a guardrail against chasing false positives. Therefore NO statistical gate may be weakened.",
+    "highest_false_positive_risk_direction": "Composite-feature ML (random forest / gradient boosting) — matches the exact overfitting pattern of L86/L89.",
+    "forbidden_in_this_round": "Any drift 'auto-adjust' / 'auto-rollback' that mutates production — diagnostics-only. Auto-mutation is out of scope and must be proposed as observation-only."
+  },
+  "required_validation_gates": [
+    "no_data_leakage (features use only pre-target-draw information)",
+    "OOS validation (out-of-sample holdout, walk-forward)",
+    "short/mid/long stability (e.g. 150 / 500 / 1500-draw windows all >= baseline)",
+    "McNemar or paired comparison vs current best N-bet baseline",
+    "multiple-testing correction (Bonferroni / BH-FDR / permutation Monte-Carlo)",
+    "drift robustness (performance holds under regime/drift segmentation)",
+    "outlier removal robustness (effect survives removing top high-hit events)",
+    "comparison against current best N-bet historical portfolios from P257A"
+  ],
+  "external_agent_prompt": "You are a quantitative research model proposing NEW lottery number-prediction methods for the Taiwan\nlottery system (BIG_LOTTO 6/49, POWER_LOTTO 6/38+1, DAILY_539 5/39).\n\nSINGLE OBJECTIVE — PREDICTION ACCURACY ONLY.\nYour only goal is to improve PREDICTION SUCCESS RATE. You must IGNORE CP value, expected value (EV),\npayout, prize money, betting cost, anti-crowd EV, ROI, and resource efficiency entirely. Do not\noptimize, mention, or trade off against any monetary metric. The accuracy metrics you may target are:\n  - average hit_count per draw\n  - hit_count >= 1 success_rate\n  - hit_count >= 2 and hit_count >= 3 high-hit rate\n  - N-bet portfolio success_rate (best 1/2/3/4/5-bet portfolio)\n  - paired win rate vs the current best N-bet baseline\n\nPROPOSE EXACTLY 3 NEW METHOD DIRECTIONS. Not 2, not 4 — exactly 3. For EACH of the 3 directions provide:\n  1. method_name\n  2. core_idea\n  3. why_not_a_small_tweak — explicitly argue why it is NOT a minor variant of the existing\n     frequency / recency / Fourier / Markov / rolling-window families already exhausted in this system\n  4. target_accuracy_metric — which prediction-success metric it aims to improve\n  5. minimum_viable_experiment — data needed, feature/signal generation, prediction-number generation\n     method, baseline, OOS split, short/mid/long-window validation, leakage prevention,\n     multiple-testing handling, and comparison against the current best N-bet baseline\n  6. acceptance_thresholds\n  7. failure_criteria\n  8. monitoring_metrics\n  9. risk_controls (observation-only trigger, auto-downgrade trigger, rollback trigger, stop trigger,\n     re-pre-registration trigger, ban-from-recommendation trigger)\n\nHARD CONSTRAINTS (a proposal that violates ANY of these is auto-rejected):\n  - No future/post-draw information leakage. Features use only data available before the target draw.\n  - Evidence on a single window only is NOT acceptable — require short AND mid AND long windows.\n  - Evidence from a single calendar year only is NOT acceptable.\n  - A high-hit anecdote (one lucky draw) is NOT evidence.\n  - No OOS split = reject. No multiple-testing correction = reject. No leakage-prevention plan = reject.\n  - No comparison against the current best N-bet baseline = reject.\n  - Post-hoc threshold tuning to manufacture significance = reject.\n  - You may NOT claim any historical result guarantees or raises future win probability.\n\nPRIOR EVIDENCE YOU MUST RESPECT (do not propose methods these already falsified):\n  - P256A: feature-information MI framework returned NULL (0 Bonferroni survivors across 39 tests).\n  - L82 / L91: DAILY_539 signal space exhausted; BIG_LOTTO 49C6 indistinguishable from fair random.\n  - L86 / L89: ML/evolution feature engineering overfits catastrophically on low-base-rate pools\n    (300p +6.5% -> +0.12% OOS; MicroFish 10.35x overfit ratio).\nA credible proposal must explain why it would survive where these failed.\n",
+  "proposal_required_outputs": [
+    "method_name",
+    "core_idea",
+    "why_not_a_small_tweak",
+    "target_accuracy_metric",
+    "minimum_viable_experiment",
+    "data_needed",
+    "feature_signal_generation",
+    "prediction_number_generation_method",
+    "baseline",
+    "oos_split",
+    "short_mid_long_window_validation",
+    "data_leakage_prevention",
+    "multiple_testing_handling",
+    "comparison_against_best_nbet_baseline",
+    "acceptance_thresholds",
+    "failure_criteria",
+    "monitoring_metrics",
+    "risk_controls"
+  ],
+  "scoring_rubric": {
+    "scale": "0-5 per criterion",
+    "criteria": {
+      "novelty_of_signal": "Is the signal source genuinely new vs frequency/recency/Fourier/Markov/rolling-window?",
+      "leakage_safety": "Is the leakage-prevention plan airtight?",
+      "oos_feasibility": "Can it be evaluated OOS with available data?",
+      "mcnemar_paired_test_feasibility": "Can it be paired-compared against the best N-bet baseline?",
+      "short_mid_long_stability": "Plausible to hold across 3 window sizes?",
+      "multiple_testing_discipline": "Is correction pre-declared and adequate?",
+      "drift_detectability": "Can drift/regime degradation be detected?",
+      "implementation_cost": "OPTIONAL — must NOT dominate the score; capped low weight."
+    },
+    "scoring_note": "implementation_cost is optional and weight-capped so a cheap-but-weak idea cannot outrank a novel leakage-safe one."
+  },
+  "hard_rejection_rules": [
+    "single_window_only_evidence",
+    "single_year_only_evidence",
+    "high_hit_anecdote_only",
+    "no_oos_split",
+    "no_multiple_testing_correction",
+    "no_leakage_prevention_plan",
+    "post_hoc_threshold_tuning",
+    "no_comparison_to_p257a_best_nbet_baseline",
+    "claims_future_win_probability_or_guarantee",
+    "proposes_production_auto_mutation_without_observation_only_gate"
+  ],
+  "baseline_references": {
+    "P256A": {
+      "artifact": "outputs/research/p256a_feature_information_mi_null_framework_20260608.json",
+      "result": "NULL_RESULT — 0 Bonferroni survivors across 39 pre-declared MI tests",
+      "role": "risk boundary: feature-information predictive content is statistically absent"
+    },
+    "P257A": {
+      "artifact": "outputs/research/p257a_best_nbet_strategy_overview_historical_replay_20260608.json",
+      "result": "Best N-bet historical replay portfolios (HISTORICAL_REPLAY_ONLY)",
+      "role": "the baseline every proposal must beat (paired comparison)",
+      "best_nbet_baseline": {
+        "BIG_LOTTO": {
+          "N1": {
+            "strategy": "biglotto_deviation_2bet",
+            "success_rate": 0.5794,
+            "avg_best_hit_per_draw": 0.7574,
+            "draws": 1550
+          },
+          "N2": {
+            "strategy": "biglotto_echo_aware_3bet",
+            "success_rate": 0.838,
+            "avg_best_hit_per_draw": 1.2073,
+            "draws": 1500
+          },
+          "N3": {
+            "strategy": "biglotto_echo_aware_3bet",
+            "success_rate": 0.9493,
+            "avg_best_hit_per_draw": 1.46,
+            "draws": 1500
+          },
+          "N4": {
+            "strategy": "biglotto_ts3_markov_4bet_w30",
+            "success_rate": 0.988,
+            "avg_best_hit_per_draw": 1.5853,
+            "draws": 1500
+          }
+        },
+        "DAILY_539": {
+          "N1": {
+            "strategy": "539_3bet_orthogonal",
+            "success_rate": 0.542,
+            "avg_best_hit_per_draw": 0.672,
+            "draws": 1500
+          },
+          "N2": {
+            "strategy": "daily539_f4cold_5bet",
+            "success_rate": 0.792,
+            "avg_best_hit_per_draw": 1.0647,
+            "draws": 1500
+          },
+          "N3": {
+            "strategy": "daily539_f4cold_5bet",
+            "success_rate": 0.92,
+            "avg_best_hit_per_draw": 1.316,
+            "draws": 1500
+          },
+          "N4": {
+            "strategy": "daily539_f4cold_5bet",
+            "success_rate": 0.976,
+            "avg_best_hit_per_draw": 1.474,
+            "draws": 1500
+          },
+          "N5": {
+            "strategy": "daily539_f4cold_5bet",
+            "success_rate": 0.9953,
+            "avg_best_hit_per_draw": 1.614,
+            "draws": 1500
+          }
+        },
+        "POWER_LOTTO": {
+          "N1": {
+            "strategy": "midfreq_fourier_mk_3bet",
+            "success_rate": 0.7073,
+            "avg_best_hit_per_draw": 1.0273,
+            "draws": 1500
+          },
+          "N2": {
+            "strategy": "power_fourier_rhythm_2bet",
+            "success_rate": 0.9287,
+            "avg_best_hit_per_draw": 1.47,
+            "draws": 1500
+          },
+          "N3": {
+            "strategy": "power_precision_3bet",
+            "success_rate": 0.971,
+            "avg_best_hit_per_draw": 1.6394,
+            "draws": 1550
+          },
+          "N4": {
+            "strategy": "pp3_freqort_4bet",
+            "success_rate": 0.9807,
+            "avg_best_hit_per_draw": 1.6673,
+            "draws": 1500
+          },
+          "N5": {
+            "strategy": "power_orthogonal_5bet",
+            "success_rate": 0.9716,
+            "avg_best_hit_per_draw": 1.6477,
+            "draws": 1550
+          }
+        },
+        "3_STAR": "NO_REPLAY_ROWS",
+        "4_STAR": "NO_REPLAY_ROWS"
+      }
+    },
+    "P257C": {
+      "artifact": "outputs/research/p257c_best_strategy_overview_runtime_smoke_closeout_20260608.json",
+      "result": "Best Strategy Overview runtime smoke + governance closeout (read-only API/UI)",
+      "role": "confirms presentation layer is historical-only, not betting advice"
+    }
+  },
+  "data_constraints": {
+    "replay_rows_total": 94924,
+    "draw_rows_total": 64366,
+    "min_sample_note": "Proposals often assume >=5000 valid draws. This holds for DAILY_539 (5,882 draws) and replay rows, but NOT for BIG_LOTTO canonical main-draw (2,114) or POWER_LOTTO (1,917). A proposal claiming a 5000-draw minimum is INFEASIBLE for BIG_LOTTO/POWER_LOTTO and must be flagged.",
+    "no_replay_lotteries": [
+      "3_STAR",
+      "4_STAR"
+    ]
+  },
+  "recommended_next_task": {
+    "task_id": "P258B",
+    "title": "External proposal evaluation and pre-registration selection",
+    "precondition": "Only after external-model responses (3 method directions each) are received",
+    "type": "read-only evaluation + pre-registration; no implementation",
+    "note": "P258B scores proposals via the rubric, applies hard_rejection_rules, and pre-registers at most the surviving directions for a later read-only feasibility prototype. No strategy implementation in P258B."
+  },
+  "no_db_write_confirmed": true,
+  "no_strategy_implementation_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_recommendation_logic_change_confirmed": true,
+  "no_production_write_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "final_decision": "P258A_PREDICTION_ACCURACY_RESEARCH_INTAKE_PROTOCOL_READY"
+}

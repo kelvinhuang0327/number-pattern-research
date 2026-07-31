@@ -37,8 +37,6 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
-from lottery_api.database import DatabaseManager
-
 # ============================================================
 # Constants
 # ============================================================
@@ -364,6 +362,8 @@ def run_backtest(draws, strategy_func, n_bets, n_periods, seed=42, label=""):
 # ============================================================
 def main():
     import argparse
+    from lottery_api.database import DatabaseManager
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--markov-window', type=int, default=30,
                         help='Markov window (default: 30, validated best)')

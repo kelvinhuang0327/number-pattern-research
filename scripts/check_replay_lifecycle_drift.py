@@ -48,6 +48,27 @@ def _connect_ro(db_path: Path) -> sqlite3.Connection:
     return conn
 
 
+def _table_exists(conn: sqlite3.Connection, table_name: str) -> bool:
+    row = conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name=? LIMIT 1",
+        (table_name,),
+    ).fetchone()
+    return row is not None
+
+
+def _load_fixture_catalog(conn: sqlite3.Connection) -> dict[str, str]:
+    if not _table_exists(conn, "fixture_strategy_catalog"):
+        return {}
+    rows = conn.execute(
+        """
+        SELECT strategy_id, strategy_lifecycle_status
+        FROM fixture_strategy_catalog
+        ORDER BY strategy_id
+        """
+    ).fetchall()
+    return {row["strategy_id"]: row["strategy_lifecycle_status"] for row in rows}
+
+
 def collect_drift_report(db_path: Path | None = None) -> dict[str, Any]:
     """Collect a read-only lifecycle drift report from the replay DB."""
     db_path = _resolve_db_path(db_path)
@@ -77,6 +98,7 @@ def collect_drift_report(db_path: Path | None = None) -> dict[str, Any]:
     registry_by_lifecycle = Counter(entry["strategy_lifecycle_status"] for entry in registry_entries)
 
     with _connect_ro(db_path) as conn:
+        fixture_catalog_by_id = _load_fixture_catalog(conn)
         row_counts = conn.execute(
             """
             SELECT strategy_id, COUNT(*) AS row_count
@@ -87,7 +109,8 @@ def collect_drift_report(db_path: Path | None = None) -> dict[str, Any]:
         ).fetchall()
 
     replay_rows_by_strategy = {row["strategy_id"]: int(row["row_count"]) for row in row_counts}
-    unknown_strategy_ids = sorted(set(replay_rows_by_strategy) - set(registry_by_id))
+    lifecycle_by_strategy = {**registry_by_id, **fixture_catalog_by_id}
+    unknown_strategy_ids = sorted(set(replay_rows_by_strategy) - set(lifecycle_by_strategy))
     missing_lifecycle_status_strategy_ids = sorted(
         strategy_id for strategy_id, lifecycle in registry_by_id.items()
         if lifecycle not in LIFECYCLE_STATUSES
@@ -97,7 +120,7 @@ def collect_drift_report(db_path: Path | None = None) -> dict[str, Any]:
     traceable_row_count = 0
     traceable_strategy_ids = []
     for strategy_id, row_count in replay_rows_by_strategy.items():
-        lifecycle = get_strategy_lifecycle_status(strategy_id)
+        lifecycle = lifecycle_by_strategy.get(strategy_id) or get_strategy_lifecycle_status(strategy_id)
         if lifecycle:
             replay_rows_by_lifecycle[lifecycle] += row_count
             traceable_row_count += row_count
@@ -117,6 +140,8 @@ def collect_drift_report(db_path: Path | None = None) -> dict[str, Any]:
         "traceable_strategy_ids": sorted(traceable_strategy_ids),
         "unknown_strategy_ids": unknown_strategy_ids,
         "missing_lifecycle_status_strategy_ids": missing_lifecycle_status_strategy_ids,
+        "fixture_catalog_strategy_ids": sorted(fixture_catalog_by_id),
+        "fixture_catalog_by_lifecycle": dict(Counter(fixture_catalog_by_id.values())),
     }
 
     if unknown_strategy_ids or missing_lifecycle_status_strategy_ids:

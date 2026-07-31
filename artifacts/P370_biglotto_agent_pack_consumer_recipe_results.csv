@@ -1,0 +1,7 @@
+recipe_id,recipe_type,source_artifact,command_or_api_function,status,output_summary,no_db_confirmed,no_adapter_calls_confirmed,no_new_scoring_confirmed
+list_adapters,api,artifacts/P369_biglotto_evidence_agent_pack_query_recipes.json,api.list_adapters(),PASS,5 adapter_function names listed from committed P365/P367 evidence.,YES,YES,YES
+inspect_one_adapter,api,artifacts/P369_biglotto_evidence_agent_pack_query_recipes.json,api.get_adapter('adapt_predict_biglotto_echo_mixed_3bet'),PASS,Adapter adapt_predict_biglotto_echo_mixed_3bet maps to strategy_id predict_biglotto_echo_mixed_3bet with no runtime adapter call.,YES,YES,YES
+list_compact_shortlist,api,artifacts/P369_biglotto_evidence_agent_pack_query_recipes.json,api.get_compact_shortlist(),PASS,8 compact shortlist rows read from committed P365/P367 evidence.,YES,YES,YES
+compare_two_adapters,api,artifacts/P369_biglotto_evidence_agent_pack_query_recipes.json,"api.compare_adapters('adapt_biglotto_p0_2bet', 'adapt_predict_biglotto_echo_2bet')",PASS,Pairwise row adapt_biglotto_p0_2bet | adapt_predict_biglotto_echo_2bet read with display_rank 1.,YES,YES,YES
+validate_evidence_stack,api,artifacts/P369_biglotto_evidence_agent_pack_query_recipes.json,api.validate_evidence_stack(),PASS,58 P367 validation rows read; fail_count=0.,YES,YES,YES
+inspect_snapshot_compatibility,snapshot_api,artifacts/P369_biglotto_evidence_agent_pack_query_recipes.json,snapshots.build_compatibility_matrix(); snapshots.build_contract_drift_rows(),PASS,9 compatibility rows and 27 drift rows read; incompatible=0; drift_fail=0.,YES,YES,YES

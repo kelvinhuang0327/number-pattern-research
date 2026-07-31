@@ -7,6 +7,7 @@ import { SmartBettingComponent } from '../ui/components/SmartBettingComponent.js
 import { QuickPredictionService } from '../engine/QuickPredictionService.js';
 import { getLotteryRules } from '../utils/Constants.js';
 import { AutoLearningManager } from '../ui/AutoLearningManager.js';
+import { AutoFetchManager } from '../ui/AutoFetchManager.js';
 import { apiClient } from '../services/ApiClient.js';
 import { progressManager } from '../ui/ProgressManager.js';
 import { RecordManager } from '../ui/RecordManager.js';
@@ -30,6 +31,7 @@ export class App {
         this.autoLearningManager = new AutoLearningManager(this.dataProcessor, this.uiManager);
         console.log('✅ AutoLearningManager instantiated');
         this.recordManager = new RecordManager(this);
+        this.autoFetchManager = new AutoFetchManager();
 
         this.currentPage = 1;
         this.itemsPerPage = 20;
@@ -78,6 +80,7 @@ export class App {
 
         if (isLoading) {
             button.disabled = true;
+            button.setAttribute('aria-busy', 'true');
             button.dataset.originalText = button.innerHTML;
             const icon = button.querySelector('.btn-icon');
             if (icon) {
@@ -85,10 +88,33 @@ export class App {
             }
         } else {
             button.disabled = false;
+            button.removeAttribute('aria-busy');
             if (button.dataset.originalText) {
                 button.innerHTML = button.dataset.originalText;
                 delete button.dataset.originalText;
             }
+        }
+    }
+
+    setSimulationLoading(isLoading, current = 0, total = 0) {
+        const loading = document.getElementById('sim-loading');
+        const progress = document.getElementById('sim-loading-progress');
+        const progressBar = document.getElementById('sim-progress-bar');
+
+        if (loading) {
+            loading.classList.toggle('is-active', isLoading);
+            loading.setAttribute('aria-hidden', isLoading ? 'false' : 'true');
+            loading.setAttribute('aria-busy', isLoading ? 'true' : 'false');
+        }
+
+        if (progress) {
+            progress.textContent = total > 0 ? `${current} / ${total} 期` : '準備模擬資料...';
+        }
+
+        if (progressBar) {
+            const percentage = total > 0 ? Math.min(100, Math.round((current / total) * 100)) : 0;
+            progressBar.style.width = `${percentage}%`;
+            progressBar.setAttribute('aria-valuenow', percentage.toString());
         }
     }
 
@@ -989,7 +1015,6 @@ export class App {
         console.log('📋 Elements found:', { card: !!card, icon: !!icon, title: !!title, description: !!description });
 
         if (!card || !icon || !title || !description) {
-            console.error('❌ Missing elements for method description card');
             return;
         }
 
@@ -1278,6 +1303,7 @@ export class App {
 
         try {
             this.setButtonLoading(simulationBtn, true);
+            this.setSimulationLoading(true);
             this.uiManager.showNotification('正在進行模擬測試...', 'info');
 
             // 清除 auto_optimize 緩存（確保每次模擬都是全新的評估）
@@ -1321,9 +1347,12 @@ export class App {
             // -------------------------------------------------
             const results = [];
             let successCount = 0;
+            this.setSimulationLoading(true, 0, testTargets.length);
 
-            for (const targetDraw of testTargets) {
-                console.log(`\n🔄 ========== 模擬測試階段：第 ${testTargets.indexOf(targetDraw) + 1}/${testTargets.length} 期 ==========`);
+            for (let index = 0; index < testTargets.length; index++) {
+                const targetDraw = testTargets[index];
+                this.setSimulationLoading(true, index + 1, testTargets.length);
+                console.log(`\n🔄 ========== 模擬測試階段：第 ${index + 1}/${testTargets.length} 期 ==========`);
                 // 取得該期之前的所有資料作為訓練集
                 const targetDate = targetDraw.date.replace(/\//g, '-');
                 const trainingData = allData.filter(d => {
@@ -1429,6 +1458,7 @@ export class App {
             console.error(error);
         } finally {
             this.setButtonLoading(simulationBtn, false);
+            this.setSimulationLoading(false);
         }
     }
 
@@ -2521,7 +2551,7 @@ export class App {
         if (report) {
             let methodInfo = '';
             if (result.method) {
-                methodInfo = `<strong>使用策略：</strong> ${result.method}<br>`;
+                methodInfo = `<strong>使用策略：</strong> ${this._escapePredictionReportHtml(result.method)}<br>`;
             }
 
             // 如果有詳細信息 (集成預測會返回 details)
@@ -2529,12 +2559,22 @@ export class App {
             if (result.details && Array.isArray(result.details)) {
                 detailsInfo = `<br><div style="font-size: 0.9em; margin-top: 8px; color: #aaa;">
                     <strong>策略詳情：</strong><br>
-                    ${result.details.join('<br>')}
+                    ${result.details.map(detail => this._escapePredictionReportHtml(detail)).join('<br>')}
                 </div>`;
             }
 
-            report.innerHTML = `${methodInfo}${result.report || '分析完成'}${detailsInfo}`;
+            report.innerHTML = `${methodInfo}${this._escapePredictionReportHtml(result.report || '分析完成')}${detailsInfo}`;
         }
+    }
+
+    _escapePredictionReportHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, char => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[char]));
     }
 
     async displayHistory() {

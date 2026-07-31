@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>P371 Big Lotto no-DB evidence command center</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; color: #1d2733; background: #f7f8fa; }
+    header { background: #0f766e; color: white; padding: 28px 36px; }
+    main { padding: 24px 36px 40px; }
+    table { width: 100%; border-collapse: collapse; background: white; margin: 16px 0 28px; }
+    th, td { border: 1px solid #d7dde5; padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { background: #e9f5f3; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    pre { white-space: pre-wrap; background: #fff; border: 1px solid #d7dde5; padding: 12px; overflow-x: auto; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
+    .card { background: white; border: 1px solid #d7dde5; border-radius: 6px; padding: 14px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>P371 Big Lotto no-DB evidence command center</h1>
+    <p>Ready: True. Source baseline: 30e4120060e41e8a6f7cf529c28d9b490c01f70b.</p>
+  </header>
+  <main>
+    <h2>Scope</h2>
+    <ul><li>Historical descriptive evidence only.</li>
+<li>No future prediction guarantee.</li>
+<li>No betting advice.</li>
+<li>No DB open/write.</li>
+<li>No adapter calls.</li>
+<li>No new scoring.</li>
+<li>No new scoring cohort.</li>
+<li>No production registry import.</li>
+<li>No deploy.</li>
+<li>No generated DB rows.</li>
+<li>Generated task cards are templates, not standing authorization.</li></ul>
+    <h2>Routes</h2>
+    <table>
+      <thead><tr><th>Route</th><th>Title</th><th>Command</th><th>Format</th></tr></thead>
+      <tbody><tr><td><code>status</code></td><td>Command center status</td><td><code>python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --status</code></td><td>json</td></tr>
+<tr><td><code>routes</code></td><td>Route catalog</td><td><code>python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --routes</code></td><td>csv</td></tr>
+<tr><td><code>smoke</code></td><td>No-DB command center smoke</td><td><code>python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --smoke</code></td><td>csv</td></tr>
+<tr><td><code>list_tools</code></td><td>Unified tool list</td><td><code>python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --list-tools</code></td><td>json</td></tr>
+<tr><td><code>list_artifacts</code></td><td>Source and output artifact list</td><td><code>python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --list-artifacts</code></td><td>csv</td></tr>
+<tr><td><code>task_cards</code></td><td>Safe task-card templates</td><td><code>python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --show-task-cards</code></td><td>json</td></tr>
+<tr><td><code>validate</code></td><td>Command center validation</td><td><code>python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --validate</code></td><td>csv</td></tr>
+<tr><td><code>query_list_adapters</code></td><td>Query P369 list_adapters recipe</td><td><code>python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --query list_adapters</code></td><td>json</td></tr>
+<tr><td><code>query_compact_shortlist</code></td><td>Query P369 list_compact_shortlist recipe</td><td><code>python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --query list_compact_shortlist</code></td><td>json</td></tr></tbody>
+    </table>
+    <h2>Task Cards</h2>
+    <div class="grid"><section class="card"><h3>Status triage</h3><p><code>status</code></p><pre>Task: Status triage
+
+Route: status
+
+Objective: Inspect current P363-P370 no-DB evidence availability and validation status.
+
+Constraints: Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.
+
+Local command:
+python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --query status
+
+This card is a template only, not standing authorization. Stop before any DB open/write, adapter call, new scoring, production registry import, deploy, generated DB row, betting advice, or future-performance claim.</pre></section>
+<section class="card"><h3>Route selection</h3><p><code>routes</code></p><pre>Task: Route selection
+
+Route: routes
+
+Objective: Choose the safest local command-center route for a read-only evidence task.
+
+Constraints: Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.
+
+Local command:
+python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --query routes
+
+This card is a template only, not standing authorization. Stop before any DB open/write, adapter call, new scoring, production registry import, deploy, generated DB row, betting advice, or future-performance claim.</pre></section>
+<section class="card"><h3>Smoke recheck</h3><p><code>smoke</code></p><pre>Task: Smoke recheck
+
+Route: smoke
+
+Objective: Run command-center smoke rows and report only PASS/FAIL historical evidence state.
+
+Constraints: Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.
+
+Local command:
+python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --query smoke
+
+This card is a template only, not standing authorization. Stop before any DB open/write, adapter call, new scoring, production registry import, deploy, generated DB row, betting advice, or future-performance claim.</pre></section>
+<section class="card"><h3>Tool inventory</h3><p><code>list_tools</code></p><pre>Task: Tool inventory
+
+Route: list_tools
+
+Objective: List available no-DB facade functions, recipes, and command-center routes.
+
+Constraints: Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.
+
+Local command:
+python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --query list_tools
+
+This card is a template only, not standing authorization. Stop before any DB open/write, adapter call, new scoring, production registry import, deploy, generated DB row, betting advice, or future-performance claim.</pre></section>
+<section class="card"><h3>Artifact inventory</h3><p><code>list_artifacts</code></p><pre>Task: Artifact inventory
+
+Route: list_artifacts
+
+Objective: Review source and generated artifact paths and SHA256 values.
+
+Constraints: Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.
+
+Local command:
+python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --query list_artifacts
+
+This card is a template only, not standing authorization. Stop before any DB open/write, adapter call, new scoring, production registry import, deploy, generated DB row, betting advice, or future-performance claim.</pre></section>
+<section class="card"><h3>Recipe query</h3><p><code>list_adapters</code></p><pre>Task: Recipe query
+
+Route: list_adapters
+
+Objective: Query a known P369 recipe through the P370 no-DB consumer path.
+
+Constraints: Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.
+
+Local command:
+python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --query list_adapters
+
+This card is a template only, not standing authorization. Stop before any DB open/write, adapter call, new scoring, production registry import, deploy, generated DB row, betting advice, or future-performance claim.</pre></section></div>
+  </main>
+</body>
+</html>

@@ -34,25 +34,34 @@ Covers all 23 P0-4 required smoke checks:
 Hard rules (enforced):
   - No new strategies added
   - No strategy mining
-  - No edge discovery
+    - No result-discovery work
   - No replay generation triggered
   - No external API calls
 """
 
 from __future__ import annotations
 
+import json
 import os
 import re
 import sys
+import socketserver
+import threading
+from contextlib import contextmanager
+from functools import partial
+from http.server import SimpleHTTPRequestHandler
+from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 import pytest
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-INDEX_HTML = os.path.join(REPO_ROOT, "index.html")
+REPO_ROOT_PATH = Path(REPO_ROOT)
+INDEX_HTML = REPO_ROOT_PATH / "index.html"
 
 
 def _load_html() -> str:
-    if not os.path.exists(INDEX_HTML):
+    if not INDEX_HTML.exists():
         pytest.skip("index.html not found")
     with open(INDEX_HTML, "r", encoding="utf-8") as f:
         return f.read()
@@ -66,6 +75,250 @@ def _replay_section(html: str) -> str:
         re.DOTALL,
     )
     return m.group(0) if m else html
+
+
+def _increase_winning_rate_violations(html: str) -> list[str]:
+    violations = []
+    for match in re.finditer('提高中獎率', html):
+        start = match.start()
+        context = html[max(0, start - 20): start + 10]
+        has_negation = '不代表' in context or '不是' in context or '不得' in context
+        if not has_negation:
+            violations.append(html[max(0, start - 30): start + 20])
+    return violations
+
+
+@contextmanager
+def _serve_repo(root: Path):
+    handler = partial(SimpleHTTPRequestHandler, directory=str(root))
+    with socketserver.TCPServer(("127.0.0.1", 0), handler) as httpd:
+        httpd.allow_reuse_address = True
+        thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+        thread.start()
+        try:
+            yield f"http://127.0.0.1:{httpd.server_address[1]}"
+        finally:
+            httpd.shutdown()
+            thread.join(timeout=5)
+
+
+def _mock_json(route, payload):
+    route.fulfill(
+        status=200,
+        content_type="application/json",
+        body=json.dumps(payload, ensure_ascii=False),
+    )
+
+
+def _freshness_payload():
+    return {
+        "generated_at": "2026-05-10T00:00:00Z",
+        "coverage_mode": "LIMITED",
+        "total_rows": 460,
+        "total_predicted": 420,
+        "total_replay_error": 40,
+        "legacy_error_count": 40,
+        "has_legacy_errors": True,
+        "lottery_types": ["BIG_LOTTO"],
+        "latest_run_id": 1,
+        "latest_run_status": "DONE",
+        "per_lottery_latest_run": [
+            {
+                "lottery_type": "BIG_LOTTO",
+                "replay_run_id": 1,
+                "status": "DONE",
+                "coverage_mode": "LIMITED",
+                "row_count": 1,
+                "predicted_count": 1,
+                "error_count": 0,
+            }
+        ],
+        "disclaimer": "本頁為歷史預測回放，用於稽核；不代表未來結果。",
+    }
+
+
+def _summary_payload(lifecycle_status: str):
+    return {
+        "lottery_type": "BIG_LOTTO",
+        "filter": {"strategy_id": None, "date_from": None, "date_to": None},
+        "filter_lifecycle_status": lifecycle_status,
+        "summaries": [] if lifecycle_status != "ONLINE" else [
+            {
+                "strategy_id": "biglotto_triple_strike",
+                "strategy_name": "大樂透 Triple Strike",
+                "total_rows": 1,
+                "predicted_count": 1,
+                "avg_hit_count": 3,
+                "hit_3plus_count": 1,
+                "special_hit_count": 0,
+                "rejected_count": 0,
+                "insufficient_count": 0,
+                "error_count": 0,
+            }
+        ],
+        "disclaimer": "本摘要為歷史預測回放統計，只用於查詢與稽核；不代表未來結果，也不保證任何回放結果。",
+        "data_scope": "ALL_REPLAY_ROWS",
+        "legacy_error_count": 0,
+        "has_legacy_errors": False,
+        "scope_note": None,
+    }
+
+
+def _strategies_payload(lifecycle_status: str):
+    if lifecycle_status == "ONLINE":
+        return {
+            "strategies": [
+                {
+                    "strategy_id": "biglotto_triple_strike",
+                    "strategy_name": "大樂透 Triple Strike",
+                    "strategy_version": "v0.1",
+                    "supported_lottery_types": ["BIG_LOTTO"],
+                    "min_history": 100,
+                    "status": "ONLINE",
+                    "lifecycle_status": "ONLINE",
+                    "strategy_lifecycle_status": "ONLINE",
+                }
+            ],
+            "count": 1,
+            "filter_lottery_type": "BIG_LOTTO",
+            "filter_lifecycle_status": lifecycle_status,
+            "filter": "BIG_LOTTO",
+        }
+    # P25: non-ONLINE lifecycles expose catalog entries (display-only, no history)
+    if lifecycle_status in ("REJECTED", "RETIRED", "OBSERVATION"):
+        return {
+            "strategies": [
+                {
+                    "strategy_id": f"example_{lifecycle_status.lower()}_01",
+                    "strategy_name": f"Catalog Example ({lifecycle_status})",
+                    "strategy_version": "v0.1",
+                    "supported_lottery_types": ["BIG_LOTTO"],
+                    "min_history": 100,
+                    "status": lifecycle_status,
+                    "lifecycle_status": lifecycle_status,
+                    "strategy_lifecycle_status": lifecycle_status,
+                }
+            ],
+            "count": 1,
+            "filter_lottery_type": "BIG_LOTTO",
+            "filter_lifecycle_status": lifecycle_status,
+            "filter": "BIG_LOTTO",
+        }
+    # OFFLINE has no registered entries → shows "coming soon" in catalog mode
+    return {"strategies": [], "count": 0, "filter_lottery_type": "BIG_LOTTO", "filter_lifecycle_status": lifecycle_status, "filter": "BIG_LOTTO"}
+
+
+def _history_payload(lifecycle_status: str):
+    if lifecycle_status != "ONLINE":
+        return {"total": 0, "page": 1, "page_size": 50, "pages": 1, "filter_lifecycle_status": lifecycle_status, "records": []}
+    return {
+        "total": 1,
+        "page": 1,
+        "page_size": 50,
+        "pages": 1,
+        "filter_lifecycle_status": lifecycle_status,
+        "records": [
+            {
+                "id": 1,
+                "lottery": "BIG_LOTTO",
+                "lottery_type": "BIG_LOTTO",
+                "target_draw": "99000105",
+                "target_date": "2010/12/31",
+                "strategy_id": "biglotto_triple_strike",
+                "strategy_name": "大樂透 Triple Strike",
+                "strategy_version": "v0.1",
+                "history_cutoff": "99000104",
+                "replay_status": "PREDICTED",
+                "reject_reason": "",
+                "predicted_numbers": [3, 8, 22, 35, 38, 43],
+                "predicted_special": None,
+                "actual_numbers": [4, 9, 27, 36, 38, 39],
+                "actual_special": None,
+                "hit_numbers": [38],
+                "hit_count": 1,
+                "special_hit": False,
+                "replay_run_id": 1,
+                "generated_at": "2026-05-10T00:00:00Z",
+                "lifecycle_status": lifecycle_status,
+                "strategy_lifecycle_status": lifecycle_status,
+            }
+        ],
+    }
+
+
+@pytest.mark.skipif(not INDEX_HTML.exists(), reason="index.html not found")
+def test_lifecycle_filter_browser_dom_changes():
+    playwright = pytest.importorskip("playwright.sync_api", reason="Playwright browser tooling unavailable")
+    from playwright.sync_api import sync_playwright  # type: ignore
+
+    with _serve_repo(REPO_ROOT_PATH) as base_url:
+        with sync_playwright() as pw:
+            try:
+                browser = pw.chromium.launch(headless=True)
+            except Exception as exc:  # pragma: no cover - depends on local browser tooling
+                pytest.skip(f"Playwright browser unavailable: {exc}")
+
+            page = browser.new_page()
+
+            def route_handler(route):
+                parsed_url = urlparse(route.request.url)
+                if parsed_url.path.endswith("/api/replay/freshness"):
+                    return _mock_json(route, _freshness_payload())
+                if parsed_url.path.endswith("/api/replay/summary"):
+                    query = parse_qs(parsed_url.query)
+                    lifecycle_status = query.get("lifecycle_status", ["ONLINE"])[0]
+                    return _mock_json(route, _summary_payload(lifecycle_status))
+                if parsed_url.path.endswith("/api/replay/history"):
+                    query = parse_qs(parsed_url.query)
+                    lifecycle_status = query.get("lifecycle_status", ["ONLINE"])[0]
+                    return _mock_json(route, _history_payload(lifecycle_status))
+                if parsed_url.path.endswith("/api/replay/strategies"):
+                    query = parse_qs(parsed_url.query)
+                    lifecycle_status = query.get("lifecycle_status", ["ONLINE"])[0]
+                    return _mock_json(route, _strategies_payload(lifecycle_status))
+                return route.continue_()
+
+            page.route("**/api/replay/**", route_handler)
+            page.goto(f"{base_url}/index.html?rp_lc=ONLINE", wait_until="networkidle")
+            page.wait_for_selector('#rp-lifecycle-select', state='attached')
+
+            page.locator('[data-section="replay"]').click()
+            page.wait_for_selector('#rp-query-btn', state='visible')
+
+            page.locator('#rp-query-btn').click()
+            page.wait_for_function(
+                "() => document.querySelector('#rp-hist-body').innerText.includes('PREDICTED')",
+                timeout=15000,
+            )
+            before = page.locator('#rp-hist-body').inner_text()
+
+            # P25: OFFLINE → catalog display mode with "coming soon" (no registered OFFLINE strategies)
+            page.select_option('#rp-lifecycle-select', 'OFFLINE')
+            page.locator('#rp-query-btn').click()
+            page.wait_for_function(
+                "() => document.querySelector('#rp-hist-body').innerText.includes('coming soon')",
+                timeout=15000,
+            )
+            after_offline = page.locator('#rp-hist-body').inner_text()
+
+            assert before != after_offline
+            assert 'coming soon' in after_offline, "P25 catalog mode must show 'coming soon' for OFFLINE (no registered entries)"
+            assert page.locator('#rp-lifecycle-select').input_value() == 'OFFLINE'
+
+            # P25/P26: REJECTED → catalog display mode with registered strategy rows visible
+            page.select_option('#rp-lifecycle-select', 'REJECTED')
+            page.locator('#rp-query-btn').click()
+            page.wait_for_function(
+                "() => document.querySelector('#rp-hist-body').innerText.includes('無歷史回放資料')",
+                timeout=15000,
+            )
+            after_rejected = page.locator('#rp-hist-body').inner_text()
+
+            assert '無歷史回放資料' in after_rejected, "P25 catalog mode must render display-only rows for REJECTED lifecycle"
+            assert 'REJECTED' in after_rejected, "Lifecycle badge must include REJECTED identifier in catalog display"
+            assert page.locator('#rp-lifecycle-select').input_value() == 'REJECTED'
+
+            browser.close()
 
 
 class TestReplayBrowserSmoke:
@@ -232,6 +485,15 @@ class TestReplayBrowserSmoke:
             "rp_page must be set (written) into URL params in rpUpdateURL"
         )
 
+    def test_rp_fixture_mode_param_written_to_url(self):
+        """rp_fixture_mode must be written to the URL query string when active."""
+        assert 'rp_fixture_mode' in self.html, (
+            '"rp_fixture_mode" URL parameter not found in index.html'
+        )
+        assert "params.set('rp_fixture_mode'" in self.html or 'params.set("rp_fixture_mode"' in self.html, (
+            "rp_fixture_mode must be set (written) into URL params in rpUpdateURL"
+        )
+
     # ------------------------------------------------------------------ #
     # Check 13 — JS calls /api/replay/freshness
     # ------------------------------------------------------------------ #
@@ -253,6 +515,24 @@ class TestReplayBrowserSmoke:
         has_direct = '/api/replay/history' in self.html
         assert has_base or has_direct, (
             "JS does not call /api/replay/history endpoint"
+        )
+
+    def test_js_calls_fixture_mode_history_endpoint(self):
+        """JS must be able to request fixture_mode=true for replay history."""
+        assert 'fixture_mode=true' in self.html, (
+            'fixture_mode=true not found in replay history request logic'
+        )
+
+    # ------------------------------------------------------------------ #
+    # Check 15b — Fixture mode banner
+    # ------------------------------------------------------------------ #
+    def test_fixture_mode_banner_present(self):
+        """Fixture mode banner copy must exist in index.html."""
+        assert 'FIXTURE MODE' in self.html, (
+            'FIXTURE MODE banner text not found in index.html'
+        )
+        assert '合成資料、僅供驗收，不代表真實預測' in self.html, (
+            'Fixture mode warning copy not found in index.html'
         )
 
     # ------------------------------------------------------------------ #
@@ -347,14 +627,16 @@ class TestReplayBrowserSmoke:
         assert len(occurrences) > 0, (
             "No '提高中獎率' found at all — expected at least one negation disclaimer"
         )
-        for pos in occurrences:
-            # Check 20-char window before the match for negation markers
-            context = self.html[max(0, pos - 20): pos + 10]
-            has_negation = '不代表' in context or '不是' in context or '不得' in context
-            assert has_negation, (
-                f"'提高中獎率' found outside negation context near: "
-                f"...{self.html[max(0,pos-30):pos+20]}..."
-            )
+        violations = _increase_winning_rate_violations(self.html)
+        assert not violations, (
+            "'提高中獎率' found outside negation context near: "
+            + "; ".join(f"...{v}..." for v in violations)
+        )
+
+    def test_bare_increase_winning_rate_claim_rejected(self):
+        """Bare promotional 「提高中獎率」 remains forbidden."""
+        assert _increase_winning_rate_violations('此策略可提高中獎率') == ['此策略可提高中獎率']
+        assert _increase_winning_rate_violations('不代表提高中獎率') == []
 
     # ------------------------------------------------------------------ #
     # Check 23 — No SIGNAL / NO_SIGNAL / NO_VALIDATED_EDGE in replay JS
@@ -379,3 +661,163 @@ class TestReplayBrowserSmoke:
                     f"Forbidden token '{token}' found in replay section in "
                     f"non-negation context:\n  ...{context_line}..."
                 )
+
+
+# ======================================================================= #
+# P23 — Fixture Mode UI Toggle Static Tests                                #
+# ======================================================================= #
+
+class TestP23FixtureModeToggle:
+    """P23 static tests: verify toggle button, label, helper text, URL wiring."""
+
+    @pytest.fixture(autouse=True)
+    def _load(self):
+        self.html = _load_html()
+        self.section = _replay_section(self.html)
+
+    # T-P23-S01 — toggle button element exists
+    def test_fixture_toggle_button_exists(self):
+        """rp-fixture-toggle button must exist in index.html."""
+        assert 'id="rp-fixture-toggle"' in self.html, (
+            "rp-fixture-toggle button not found in index.html"
+        )
+
+    # T-P23-S02 — toggle data-testid attribute exists
+    def test_fixture_toggle_testid_exists(self):
+        """data-testid=rp-fixture-toggle must be present for test targeting."""
+        assert 'data-testid="rp-fixture-toggle"' in self.html, (
+            "data-testid=rp-fixture-toggle not found"
+        )
+
+    # T-P23-S03 — toggle label contains "Fixture Mode"
+    def test_fixture_toggle_label_contains_fixture_mode(self):
+        """A label for the toggle must contain 'Fixture Mode'."""
+        assert 'Fixture Mode' in self.html, (
+            "Label 'Fixture Mode' not found near toggle button"
+        )
+
+    # T-P23-S04 — FIXTURE MODE banner element exists (pre-existing, regression)
+    def test_fixture_mode_banner_element_exists(self):
+        """rp-fixture-banner element must still exist."""
+        assert 'id="rp-fixture-banner"' in self.html, (
+            "rp-fixture-banner element missing"
+        )
+
+    # T-P23-S05 — banner text contains advisory warning
+    def test_fixture_mode_banner_text_contains_advisory(self):
+        """Banner must contain advisory-only warning text."""
+        assert '合成資料' in self.html or 'advisory only' in self.html.lower(), (
+            "Advisory warning text not found in fixture mode banner"
+        )
+
+    # T-P23-S06 — tooltip contains safety description
+    def test_fixture_toggle_tooltip_contains_advisory(self):
+        """Toggle title tooltip must mention advisory / no production DB write."""
+        # Look for title attribute on the toggle button
+        m = re.search(r'id="rp-fixture-toggle"[^>]*title="([^"]*)"', self.html)
+        if not m:
+            # Try reversed attribute order
+            m = re.search(r'title="([^"]*)"[^>]*id="rp-fixture-toggle"', self.html)
+        assert m is not None, "rp-fixture-toggle has no title tooltip attribute"
+        tooltip = m.group(1).lower()
+        assert 'advisory' in tooltip or 'no production' in tooltip or 'synthetic' in tooltip, (
+            f"Tooltip does not mention advisory/synthetic/no production DB write: {tooltip}"
+        )
+
+    # T-P23-S07 — aria-pressed attribute exists on toggle
+    def test_fixture_toggle_has_aria_pressed(self):
+        """Toggle must have aria-pressed for accessibility."""
+        assert 'aria-pressed=' in self.html, (
+            "rp-fixture-toggle missing aria-pressed attribute"
+        )
+
+    # T-P23-S08 — rpToggleFixtureMode function exists in JS
+    def test_rp_toggle_fixture_mode_function_exists(self):
+        """rpToggleFixtureMode JS function must be defined."""
+        assert 'function rpToggleFixtureMode' in self.html, (
+            "rpToggleFixtureMode function not found in index.html JS"
+        )
+
+    # T-P23-S09 — rpSyncFixtureModeToggle function exists in JS
+    def test_rp_sync_fixture_mode_toggle_function_exists(self):
+        """rpSyncFixtureModeToggle JS function must be defined."""
+        assert 'function rpSyncFixtureModeToggle' in self.html, (
+            "rpSyncFixtureModeToggle function not found in index.html JS"
+        )
+
+    # T-P23-S10 — toggle wired in DOMContentLoaded
+    def test_fixture_toggle_wired_in_dom_content_loaded(self):
+        """rp-fixture-toggle must be wired via addEventListener in DOMContentLoaded."""
+        assert "fixtureToggleBtn.addEventListener('click', rpToggleFixtureMode)" in self.html or \
+               'fixtureToggleBtn.addEventListener("click", rpToggleFixtureMode)' in self.html, (
+            "rp-fixture-toggle click event not wired in DOMContentLoaded"
+        )
+
+    # T-P23-S11 — rpSyncFixtureModeToggle called after rpRestoreFromURL
+    def test_sync_toggle_called_after_restore_from_url(self):
+        """rpSyncFixtureModeToggle must be called after rpRestoreFromURL in init."""
+        # Find the DOMContentLoaded block (last occurrence, which is the init block)
+        dom_block_pos = self.html.rfind('DOMContentLoaded')
+        assert dom_block_pos != -1, "DOMContentLoaded block not found"
+        dom_block = self.html[dom_block_pos:]
+        restore_pos = dom_block.find('rpRestoreFromURL()')
+        sync_pos = dom_block.find('rpSyncFixtureModeToggle()')
+        assert restore_pos != -1, "rpRestoreFromURL() not found in DOMContentLoaded"
+        assert sync_pos != -1, "rpSyncFixtureModeToggle() not found in DOMContentLoaded"
+        assert sync_pos > restore_pos, (
+            "rpSyncFixtureModeToggle() must be called AFTER rpRestoreFromURL() in DOMContentLoaded"
+        )
+
+    # T-P23-S12 — URL state updated on toggle (rp_fixture_mode written)
+    def test_rp_fixture_mode_url_state_written_on_toggle(self):
+        """rpToggleFixtureMode must write rp_fixture_mode to URL."""
+        assert "params.set('rp_fixture_mode', 'true')" in self.html or \
+               'params.set("rp_fixture_mode", "true")' in self.html, (
+            "rp_fixture_mode=true not written to URL in rpToggleFixtureMode"
+        )
+
+    # T-P23-S13 — toggle OFF removes rp_fixture_mode from URL
+    def test_rp_fixture_mode_url_state_deleted_on_toggle_off(self):
+        """rpToggleFixtureMode must delete rp_fixture_mode from URL when OFF."""
+        assert "params.delete('rp_fixture_mode')" in self.html or \
+               'params.delete("rp_fixture_mode")' in self.html, (
+            "rp_fixture_mode not deleted from URL when toggle is OFF"
+        )
+
+    # T-P23-S14 — fixture_mode=true still passed to API (regression)
+    def test_fixture_mode_true_passed_to_api(self):
+        """fixture_mode=true must still be passed to API when rpFixtureMode is active."""
+        assert 'fixture_mode=true' in self.html, (
+            "fixture_mode=true not found in API query logic"
+        )
+
+    # T-P23-S15 — no OFFLINE filter added
+    def test_no_offline_filter_added(self):
+        """No OFFLINE-specific fixture filter or OFFLINE fixture records must be added."""
+        # Extract only the rpToggleFixtureMode function body
+        m = re.search(
+            r'function rpToggleFixtureMode\(\)\s*\{([^}]*)\}',
+            self.html, re.DOTALL
+        )
+        if m:
+            toggle_body = m.group(1)
+            assert 'OFFLINE' not in toggle_body, (
+                "OFFLINE found inside rpToggleFixtureMode body — must never be a fixture type"
+            )
+        # Verify fixture_mode param is still only wired to existing endpoint
+        assert 'fixture_mode=true' in self.html, (
+            "fixture_mode=true must still be passed to API"
+        )
+
+    # T-P23-S16 — no new backend API added in toggle
+    def test_no_new_api_endpoint_in_toggle(self):
+        """Toggle must only call existing /api/replay endpoints, not new ones."""
+        toggle_func_match = re.search(
+            r'function rpToggleFixtureMode\(\)[^}]*\}', self.html, re.DOTALL
+        )
+        if toggle_func_match:
+            toggle_code = toggle_func_match.group(0)
+            assert 'fetch(' not in toggle_code, (
+                "rpToggleFixtureMode must not make new fetch() calls — "
+                "it only updates state + URL"
+            )

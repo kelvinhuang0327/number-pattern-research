@@ -1,0 +1,48 @@
+# P336A — Commands Log (key commands, chronological)
+
+## Phase 0
+date "+%Y-%m-%d %H:%M:%S %Z (%z)"            # 2026-07-01 22:17:43 CST (+0800)
+# verify worktree + P333A/P334A/P335A evidence roots exist                → all EXIST
+cd /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p335a && git fetch origin    # exit 0
+git -C <wt> rev-parse --abbrev-ref HEAD        # task/p335a-power-lotto-second-zone-forward-wiring
+git -C <wt> rev-parse HEAD                      # ce2c042e7f4967841e6b31e17552d55bf4717f91
+git -C <wt> ls-remote origin main               # ce2c042… (== local origin/main)
+git -C <wt> merge-base --is-ancestor ce2c042… HEAD   # YES (HEAD==base)
+# verify P335A 2 files present; staged=0; status = 2 untracked
+git -C <wt> status --porcelain
+shasum -a 256 <wt>/data/lottery_v2.db                                 # a552351a… (stub)
+shasum -a 256 <main>/lottery_api/data/lottery_v2.db                   # 9956c3bc… (canonical)
+
+## Inventory
+git ls-files | grep -iE 'power' | grep -iE 'adapter|replay|...'
+git ls-files '*.py' | xargs grep -l "predicted_special" | grep -v '^tests/'
+git ls-files '*.py' | grep -v '^tests/' | xargs grep -ln "INSERT INTO strategy_prediction_replays"
+grep -n "import" scripts/p48_powerlotto_wave4_production_apply.py | grep generate_dryrun
+#   → p48:560 imports generate_dryrun_rows from p47  (shared production lineage)
+
+## Smoke (DB-free) — P335A helper + p47 first-zone predictor
+<venv>/python -c "sys.path.insert(0,WT); second_zone_predict(make_history(150))"
+#   → 8, deterministic, in range; insufficient(29) raised; guard OK; p47 bet valid
+git -C <wt> status --porcelain      # still only 2 P335A files (smoke dirtied nothing)
+
+## Implement (2 new files)
+write lottery_api/models/power_lotto_forward_replay_row.py
+write tests/test_p336a_power_lotto_forward_row_generation_path.py
+
+## Test
+cd <wt> && <venv>/python -m pytest tests/test_p336a_power_lotto_forward_row_generation_path.py -v
+#   → 21 passed
+cd <wt> && <venv>/python -m pytest test_p335a… test_p336a… test_p47… test_p48_null_policy… -q
+#   → 88 passed, 3 skipped, 1 error (p47 test_production_rows_unchanged: missing 99MB DB)
+cd <wt> && <venv>/python -m pytest tests/test_p47_powerlotto_wave4_dryrun_rehearsal.py -q
+#   → 35 passed, 1 error (IDENTICAL missing-DB error in isolation → non-causal)
+
+## Invariance / status (after work)
+git -C <wt> status --porcelain      # 2 P335A + 2 P336A untracked; 0 staged
+shasum -a 256 <wt>/data/lottery_v2.db                # a552351a… (unchanged)
+shasum -a 256 <main>/lottery_api/data/lottery_v2.db  # 9956c3bc… (unchanged)
+find <wt> -name '*.db' -newermt '2026-07-01 22:17:00'   # empty (no stray)
+
+## File hashes (for manifest)
+shasum -a 256 lottery_api/models/power_lotto_forward_replay_row.py   # 1cdccb00…
+shasum -a 256 tests/test_p336a_power_lotto_forward_row_generation_path.py  # 0e91bb58…

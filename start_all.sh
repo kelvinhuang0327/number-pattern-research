@@ -2,6 +2,10 @@
 
 # 前後台統一啟動腳本
 
+REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
+PYTHON_BIN="${PYTHON_BIN:-/usr/bin/python3}"
+export PYTHONPATH="$REPO_ROOT${PYTHONPATH:+:$PYTHONPATH}"
+
 echo "======================================"
 echo "🚀 大數據智能分析系統 - 啟動服務"
 echo "======================================"
@@ -11,14 +15,15 @@ echo ""
 BACKEND_PID=$(lsof -ti:8002)
 if [ ! -z "$BACKEND_PID" ]; then
     echo "⚠️  後台服務已在運行 (PID: $BACKEND_PID)"
-    echo "   端口: 8002"
+    echo "   端口: 8002 — 請確認此 process 來自正確 repo"
+    echo "   如需重啟，請先執行 ./stop_all.sh"
 else
     echo "1. 啟動後台服務..."
-    cd lottery_api
+    cd "$REPO_ROOT/lottery_api"
     
     # 檢查 Python
-    if ! command -v python3 &> /dev/null; then
-        echo "❌ 錯誤: 未找到 Python 3"
+    if ! command -v "$PYTHON_BIN" &> /dev/null; then
+        echo "❌ 錯誤: 未找到 Python ($PYTHON_BIN)"
         exit 1
     fi
     
@@ -28,12 +33,12 @@ else
     fi
     
     # 後台啟動服務
-    nohup python3 app.py > ../backend.log 2>&1 &
+    nohup "$PYTHON_BIN" app.py > "$REPO_ROOT/backend.log" 2>&1 &
     BACKEND_PID=$!
-    echo $BACKEND_PID > ../backend.pid
+    echo $BACKEND_PID > "$REPO_ROOT/backend.pid"
     echo "   ✅ 後台服務已啟動 (PID: $BACKEND_PID)"
-    echo "   📝 日誌: backend.log"
-    cd ..
+    echo "   📝 日誌: $REPO_ROOT/backend.log"
+    cd "$REPO_ROOT"
 fi
 echo ""
 

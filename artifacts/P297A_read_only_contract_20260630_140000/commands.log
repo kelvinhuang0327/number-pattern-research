@@ -1,0 +1,141 @@
+P297A commands log generated 2026-06-30T07:38:29.278339+00:00
+Commands are read-only unless explicitly noted as external artifact writes under evidence root.
+
+[001] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=pwd
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew
+
+[002] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git rev-parse --show-toplevel
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew
+
+[003] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git branch --show-current
+task/p273a-prize-aware-inferential-validation
+
+[004] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git rev-parse HEAD
+3d6df001da3a0633ab91f164d722b595ca76d2e1
+
+[005] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git status --short --branch
+## task/p273a-prize-aware-inferential-validation...origin/task/p273a-prize-aware-inferential-validation [ahead 1]
+ M 00-Plan/roadmap/agent_bootstrap/SHARED_AGENT_BOOTSTRAP.md
+ M 00-Plan/roadmap/agent_bootstrap/TASK_TEMPLATES.md
+ M backend.pid
+ M claude-code-showcase
+ M data/lottery_v2.db
+ M frontend.pid
+ M lottery_api/data/performance_history.json
+?? .gstack/
+?? ".schema strategy_replay_runs"
+?? claude-code-showcase.worktrees/
+?? data/performance_history.json
+?? lottery_api/data/ingest_log.jsonl
+?? outputs/research/p245a_external_predictive_method_scouting_20260605.json
+?? outputs/research/p245a_external_predictive_method_scouting_20260605.md
+?? outputs/research/p251d_evidence_dashboard_readonly_api_route_20260609.json
+?? outputs/research/p251d_evidence_dashboard_readonly_api_route_20260609.md
+?? runtime/
+?? tests/test_p245a_external_predictive_method_scouting.py
+
+[006] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git rev-parse --abbrev-ref --symbolic-full-name @{u}
+origin/task/p273a-prize-aware-inferential-validation
+
+[007] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git rev-list --left-right --count HEAD...@{u}
+1	0
+
+[008] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git diff --name-only --cached
+
+[009] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git diff --name-only
+00-Plan/roadmap/agent_bootstrap/SHARED_AGENT_BOOTSTRAP.md
+00-Plan/roadmap/agent_bootstrap/TASK_TEMPLATES.md
+backend.pid
+claude-code-showcase
+data/lottery_v2.db
+frontend.pid
+lottery_api/data/performance_history.json
+
+[010] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git worktree list --porcelain
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew
+HEAD 3d6df001da3a0633ab91f164d722b595ca76d2e1
+branch refs/heads/task/p273a-prize-aware-inferential-validation
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew-main
+HEAD afac66b26858527be161f64a58ddde5213f8e202
+branch refs/heads/task/cto-roadmap-alignment-20260630
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a
+HEAD 9000bb510c79478647e3dcdf3360af08a806bf0c
+branch refs/heads/task/p277a-historical-observation-status-reclassification
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p280amr
+HEAD eac749327218b839a8b81d369831c64f7edab95a
+branch refs/heads/task/p280amr-big649-local-replay-research
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p280aw
+HEAD d9306bb69478097b08a876ab8bd633631f5a0da7
+branch refs/heads/task/p280aw-big649-private-ticket-decision-runner
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p282b
+HEAD e0210462735b7f9e43c02700fe02ebf01dade63c
+branch refs/heads/task/p282b-big649-deduplicated-portfolio-replay
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew-worktrees/p274d-pre-g2-acceptance-evidence-gate-verification
+HEAD 3349631c9ec1f974f4b43bcca870ecf07620db1d
+branch refs/heads/task/p274d-pre-g2-acceptance-evidence-gate-verification
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/amazing-jepsen-b0a5b8
+HEAD d1a6817c47ee5378d3eb5b1c03c5514c99f46531
+detached
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7
+HEAD 7cd02b069407a3823b37d4da4157df666a03db4a
+branch refs/heads/claude/clever-villani-2f0ef7
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/gallant-taussig-6b9a4d
+HEAD d1a6817c47ee5378d3eb5b1c03c5514c99f46531
+detached
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/p218-external-methods-scouting
+HEAD 2478909a92d94397e4d188271972f1ca5bdd3d45
+branch refs/heads/worktree-p218-external-methods-scouting
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/peaceful-burnell-898024
+HEAD d1a6817c47ee5378d3eb5b1c03c5514c99f46531
+detached
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/trusting-chaum-8cc8c5
+HEAD 684bffcea3080f8f1f31c5b9acc3a572907ec4f3
+branch refs/heads/claude/trusting-chaum-8cc8c5
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802
+HEAD c8b423d0c1de26253be4cec79ae6de77719d1074
+branch refs/heads/claude/zen-gates-ff6802
+
+[011] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git -C /Users/kelvin/Kelvin-WorkSpace/LotteryNew-main rev-parse --show-toplevel
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main
+
+[012] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git -C /Users/kelvin/Kelvin-WorkSpace/LotteryNew-main branch --show-current
+task/cto-roadmap-alignment-20260630
+
+[013] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git -C /Users/kelvin/Kelvin-WorkSpace/LotteryNew-main rev-parse HEAD
+afac66b26858527be161f64a58ddde5213f8e202
+
+[014] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git -C /Users/kelvin/Kelvin-WorkSpace/LotteryNew-main status --short --branch
+## task/cto-roadmap-alignment-20260630
+ M 00-Plan/roadmap/CTO-Analysis.md
+ M 00-Plan/roadmap/active_task.md
+ M 00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md
+ M 00-Plan/roadmap/agent_bootstrap/SHARED_AGENT_BOOTSTRAP.md
+ M 00-Plan/roadmap/agent_bootstrap/TASK_TEMPLATES.md
+ M 00-Plan/roadmap/roadmap.md
+
+[015] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=128 cmd=git -C /Users/kelvin/Kelvin-WorkSpace/LotteryNew-main rev-parse --abbrev-ref --symbolic-full-name @{u}
+fatal: no upstream configured for branch 'task/cto-roadmap-alignment-20260630'
+
+[016] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=128 cmd=git -C /Users/kelvin/Kelvin-WorkSpace/LotteryNew-main rev-list --left-right --count HEAD...@{u}
+fatal: no upstream configured for branch 'task/cto-roadmap-alignment-20260630'
+
+[017] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git -C /Users/kelvin/Kelvin-WorkSpace/LotteryNew-main diff --name-only --cached
+
+[NOT RUN] git commit / git push / PR / merge: prohibited.
+[NOT RUN] DB write / migration / WAL checkpoint / production apply: prohibited.
+[NOT RUN] registry publication or future-ticket creation/population: prohibited.
+[NOT RUN] repo governance/source edits: prohibited without separate owner authorization.
+[ARTIFACT WRITE] Generated files only under external evidence root: /Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000

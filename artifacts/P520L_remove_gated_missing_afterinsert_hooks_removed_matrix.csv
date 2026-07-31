@@ -1,0 +1,4 @@
+hook_name,status,import_module,imported_symbol,local_symbol,guard_symbol,source_residue_present,reason
+refresh_hedge_fund_outputs,REMOVED,analysis.payout.sync,refresh_hedge_fund_outputs,refresh_hedge_fund_outputs,,False,removed / no longer part of active or disabled surface
+weight_adjuster,REMOVED,engine.weight_adjuster,adjust_all_types,adjust_all_types,,False,removed / no longer part of active or disabled surface
+learning_integrator,REMOVED,engine.learning_integrator,apply_all_types,apply_learning,,False,removed / no longer part of active or disabled surface

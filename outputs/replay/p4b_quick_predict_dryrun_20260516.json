@@ -1,0 +1,67 @@
+{
+  "generated_at": "2026-05-17T02:36:38Z",
+  "final_classification": "P4B_QUICK_PREDICT_DRYRUN_READY",
+  "dry_run": true,
+  "db_written": false,
+  "prediction_items_inserted": false,
+  "prediction_runs_inserted": false,
+  "replay_rows_inserted": false,
+  "predictions": [
+    {
+      "lottery_type": "BIG_LOTTO",
+      "lottery_name": "大樂透",
+      "next_draw": "115000053",
+      "num_bets": 2,
+      "strategy": "偏差互補+回聲 P0",
+      "baseline": 3.69,
+      "last_draw": {
+        "draw": "115000052",
+        "date": "2026/05/12",
+        "numbers": [
+          6,
+          12,
+          18,
+          19,
+          32,
+          36
+        ],
+        "special": 34
+      },
+      "bets": [
+        {
+          "numbers": [
+            6,
+            10,
+            18,
+            25,
+            39,
+            48
+          ]
+        },
+        {
+          "numbers": [
+            3,
+            8,
+            30,
+            31,
+            34,
+            42
+          ]
+        }
+      ],
+      "coverage": {
+        "covered_numbers": 12,
+        "max_numbers": 49,
+        "coverage_rate": 24.5
+      },
+      "strategy_info": {
+        "strategy": "偏差互補+回聲 P0",
+        "edge": "+1.21%",
+        "verified": "1000期+10種子"
+      },
+      "warnings": [],
+      "input_history_count": 2134
+    }
+  ],
+  "warnings": []
+}

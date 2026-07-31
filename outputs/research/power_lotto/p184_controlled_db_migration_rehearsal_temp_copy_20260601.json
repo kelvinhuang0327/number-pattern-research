@@ -1,0 +1,210 @@
+{
+  "task_id": "P184_CONTROLLED_DB_MIGRATION_REHEARSAL_TEMP_COPY_ONLY",
+  "final_classification": "P184_CONTROLLED_DB_MIGRATION_REHEARSAL_TEMP_COPY_READY",
+  "date": "2026-06-01",
+  "authorization_phrase_detected": "YES start P184 controlled DB migration rehearsal on temp copy only",
+  "phase_0_verification": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "git_dir": ".git",
+    "is_worktree": false,
+    "main_db_rows_before": 54462,
+    "main_bet_index_before": "ABSENT",
+    "zen_gates_db_rows": 94924,
+    "zen_gates_bet_index": "PRESENT",
+    "p183_classification": "P183_CONTROLLED_DB_MIGRATION_REHEARSAL_PLAN_READY",
+    "p178a_to_p183_tests": "361 passed, 5 skipped",
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "status": "PASS"
+  },
+  "p183_classification_referenced": "P183_CONTROLLED_DB_MIGRATION_REHEARSAL_PLAN_READY",
+  "source_reference": {
+    "worktree": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "db_rows": 94924,
+    "bet_index": "PRESENT",
+    "bet_index_unique_constraint": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+    "bet_index_1_rows": 54302,
+    "bet_index_2_rows": 16581,
+    "bet_index_3_rows": 15041,
+    "bet_index_4_rows": 6000,
+    "bet_index_5_rows": 3000
+  },
+  "target_main_state": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "db_rows": 54462,
+    "bet_index": "ABSENT",
+    "unique_constraint": "UNIQUE(lottery_type, target_draw, strategy_id, replay_run_id)"
+  },
+  "temp_rehearsal_db": {
+    "path": "outputs/research/power_lotto/p184_rehearsal/lottery_v2_p184_temp_rehearsal_20260601.db",
+    "source": "lottery_api/data/lottery_v2.db",
+    "copy_verified": true,
+    "rows_at_copy": 54462,
+    "rows_after_schema_migration": 54302,
+    "bet_index_after_migration": "PRESENT",
+    "unique_constraint_after_migration": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)"
+  },
+  "schema_rehearsal_result": {
+    "status": "PASS",
+    "steps_executed": [
+      "Step 1: Initial temp DB state confirmed — 54462 rows, bet_index ABSENT",
+      "Step 2: Duplicate pre-check — 120 groups (80 with 2 rows, 40 with 3 rows = 280 rows, 160 to be deduplicated)",
+      "Step 3: New table created with bet_index INTEGER NOT NULL DEFAULT 1 and UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+      "Step 4: Deduplicated INSERT — MAX(id) per (lottery_type, target_draw, strategy_id) — 54302 rows inserted",
+      "Step 5: Row count verified — 54302 rows (expected 54302)",
+      "Step 6: Duplicate check — 0 duplicates under new UNIQUE constraint",
+      "Step 7: Original table dropped",
+      "Step 8: New table renamed to strategy_prediction_replays",
+      "Step 9: idx_spr_bet_index index created",
+      "Step 10: bet_index column present in final schema",
+      "Step 11: PRAGMA integrity_check = ok"
+    ],
+    "dedup_strategy": "MAX(id) per (lottery_type, target_draw, strategy_id) — keeps the row with the highest id (most recent insertion) per combination",
+    "dedup_finding": {
+      "duplicate_groups": 120,
+      "groups_with_2_rows": 80,
+      "groups_with_3_rows": 40,
+      "total_rows_in_dup_groups": 280,
+      "rows_dropped_by_dedup": 160,
+      "rows_after_dedup": 54302,
+      "dropped_rows_provenance": "All 160 dropped rows had controlled_apply_id=NULL, provenance_hash=NULL, truth_level=NULL — early integer replay_run_id (1-7) test rows with no production provenance. Safe to deduplicate.",
+      "duplicate_source": "Integer replay_run_id (1-7) rows only — 0 NULL-replay_run_id duplicates"
+    },
+    "critical_validation": {
+      "post_dedup_matches_zen_gates_bet_index_1": true,
+      "comparison": {
+        "BIG_LOTTO": {"temp_dedup": 16600, "zen_gates_bet_index_1": 16600, "match": true},
+        "DAILY_539": {"temp_dedup": 22600, "zen_gates_bet_index_1": 22600, "match": true},
+        "POWER_LOTTO": {"temp_dedup": 15102, "zen_gates_bet_index_1": 15102, "match": true},
+        "TOTAL": {"temp_dedup": 54302, "zen_gates_bet_index_1": 54302, "match": true}
+      },
+      "significance": "Post-dedup main DB rows EXACTLY match zen-gates bet_index=1 rows at every lottery_type. The dedup strategy is validated as correct and complete."
+    },
+    "schema_after_migration": {
+      "bet_index": "INTEGER NOT NULL DEFAULT 1",
+      "unique_constraint": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+      "new_index": "idx_spr_bet_index",
+      "integrity_check": "ok",
+      "duplicate_check": 0
+    }
+  },
+  "row_delta_audit": {
+    "main_db_rows_original": 54462,
+    "main_db_rows_post_dedup": 54302,
+    "zen_gates_total_rows": 94924,
+    "dedup_rows_removed": 160,
+    "multi_bet_delta_from_zen_gates": 40622,
+    "original_delta_calculation": 40462,
+    "delta_reconciliation_note": "Original stated delta=40462 was based on 54462 (pre-dedup main). After dedup, actual single-bet base=54302. Multi-bet rows to add=40622 (bet_index 2-5 from zen-gates). Both delta measures are valid in context.",
+    "bet_index_distribution_zen_gates": {
+      "bet_index_1": 54302,
+      "bet_index_2": 16581,
+      "bet_index_3": 15041,
+      "bet_index_4": 6000,
+      "bet_index_5": 3000,
+      "total": 94924
+    },
+    "delta_attribution": {
+      "bet_index_1_base": "54302 — post-dedup single-bet rows (matches main exactly after dedup)",
+      "bet_index_2_to_5": "40622 — multi-bet prediction slots from P126/P130-P135/P149-P159B controlled_apply waves",
+      "exact_provenance_by_wave": "REQUIRES_P185_ROW_DELTA_IMPORT_AUDIT — precise wave attribution needs controlled_apply_id analysis on zen-gates bet_index>1 rows"
+    },
+    "provenance_preservation": {
+      "controlled_apply_id_not_null_prod": 54002,
+      "controlled_apply_id_not_null_temp": 54002,
+      "provenance_hash_not_null_prod": 54000,
+      "provenance_hash_not_null_temp": 54000,
+      "truth_level_not_null_prod": 54002,
+      "truth_level_not_null_temp": 54002,
+      "result": "PASS — all provenance counts identical between prod and temp post-migration"
+    }
+  },
+  "acceptance_criteria_result": {
+    "production_db_unchanged": true,
+    "production_db_rows_before": 54462,
+    "production_db_rows_after": 54462,
+    "production_bet_index_unchanged": "ABSENT",
+    "temp_db_schema_migration_successful": true,
+    "temp_db_rows_after_schema_migration": 54302,
+    "temp_db_bet_index_present": true,
+    "temp_db_unique_constraint_matches_zen_gates": true,
+    "temp_db_duplicate_check_passed": true,
+    "row_delta_audit_complete": true,
+    "provenance_preserved": true,
+    "no_production_db_write": true,
+    "no_db_copy_to_production": true,
+    "no_controlled_apply": true,
+    "no_stage_commit_push": true,
+    "p185_row_delta_import_path_identified": true,
+    "open_item": "P185_ROW_DELTA_IMPORT_REHEARSAL_REQUIRED — 40622 multi-bet rows from zen-gates need a separate import rehearsal with provenance audit before production migration"
+  },
+  "risk_assessment": {
+    "dedup_row_loss_risk": {
+      "level": "LOW",
+      "finding": "160 rows dropped by dedup are all early integer-run rows (replay_run_id 1-7) with NULL provenance. Production-quality rows (from p31b/p37/p43/p48/P59/P66 waves) are fully preserved.",
+      "mitigation": "Verify dedup strategy against zen-gates bet_index=1 — EXACT MATCH confirmed."
+    },
+    "schema_mismatch_risk": {
+      "level": "RESOLVED_IN_REHEARSAL",
+      "finding": "Table recreation successful. UNIQUE constraint matches zen-gates semantics. 0 duplicates post-migration."
+    },
+    "row_delta_import_risk": {
+      "level": "MEDIUM",
+      "finding": "40622 multi-bet rows from zen-gates need provenance verification before import. Wave attribution unknown. Requires P185.",
+      "mitigation": "P185 row delta import rehearsal with controlled_apply_id audit."
+    },
+    "production_db_safety": {
+      "level": "VERIFIED",
+      "finding": "Production DB remained at 54462 rows throughout. No write operations on production DB."
+    }
+  },
+  "governance_confirmations": {
+    "production_main_db_rows_before": 54462,
+    "production_main_db_rows_after": 54462,
+    "production_main_db_unchanged": true,
+    "no_production_db_write": true,
+    "no_db_copy_to_production": true,
+    "no_controlled_apply": true,
+    "no_registry_mutation": true,
+    "no_merge": true,
+    "no_rebase": true,
+    "no_cherry_pick": true,
+    "no_checkout_other_branch": true,
+    "no_stage": true,
+    "no_commit": true,
+    "no_push": true,
+    "power_lotto_research_closed": true,
+    "main_zen_gates_split_still_unresolved": true,
+    "p178a_closure_policy": "ACTIVE — POWER_LOTTO research CLOSED"
+  },
+  "next_task_options": [
+    {
+      "phrase": "YES start P185 row delta import rehearsal on temp copy only",
+      "effect": "Rehearse importing 40622 multi-bet rows (bet_index 2-5) from zen-gates into temp DB. Includes controlled_apply_id audit and wave attribution.",
+      "recommended": true
+    },
+    {
+      "phrase": "YES start P185 production DB migration authorization gate only",
+      "effect": "Define exact authorization checklist and phrase for production migration. No execution.",
+      "recommended": false
+    },
+    {
+      "phrase": "YES start P185 DB migration risk review only",
+      "effect": "Independent risk review of P184 rehearsal results before row delta import.",
+      "recommended": false
+    },
+    {
+      "phrase": "YES start P185 maintain documented divergence and pause DB migration",
+      "effect": "Accept main/zen-gates split. Document reasons. No further migration.",
+      "recommended": false
+    },
+    {
+      "phrase": "YES start P185 replay product UI backlog implementation plan only",
+      "effect": "Plan for multi-bet display in replay UI. No DB migration.",
+      "recommended": false
+    }
+  ],
+  "next_task_blocked_by_user_authorization": true
+}

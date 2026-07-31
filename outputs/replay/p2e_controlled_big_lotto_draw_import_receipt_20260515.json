@@ -1,0 +1,52 @@
+{
+  "controlled_import_id": "P2E_20260515",
+  "generated_at": "2026-05-15T12:17:39Z",
+  "apply_mode": true,
+  "db_written": true,
+  "lottery_type": "BIG_LOTTO",
+  "source_p2d_json": "outputs/replay/p2d_big_lotto_official_draw_ingestion_dryrun_20260515.json",
+  "draws_imported": [
+    {
+      "draw": "115000051",
+      "date": "2026/05/08",
+      "numbers": [
+        10,
+        18,
+        25,
+        28,
+        39,
+        43
+      ],
+      "special": 48
+    },
+    {
+      "draw": "115000052",
+      "date": "2026/05/12",
+      "numbers": [
+        6,
+        12,
+        18,
+        19,
+        32,
+        36
+      ],
+      "special": 34
+    }
+  ],
+  "draws_skipped": [],
+  "draws_already_present": [],
+  "draws_failed": [],
+  "summary": {
+    "n_imported": 2,
+    "n_skipped": 0,
+    "n_already_present": 0,
+    "n_failed": 0
+  },
+  "safety": {
+    "db_written": true,
+    "replay_rows_generated": false,
+    "prediction_items_promoted": false,
+    "strategy_logic_changed": false
+  },
+  "next_step": "Run post-draw pipeline or P2C replay with newly imported draws"
+}

@@ -1,0 +1,171 @@
+# P51 Daily Handoff
+**Date:** 2026-05-13  
+**Agent:** Passive Monitoring & Deferred Scope Decision Agent  
+**Round:** P51  
+**Repo:** kelvinhuang0327/number-pattern-research  
+**Main SHA:** `7cc5b1b`
+
+---
+
+## 1. 本輪目標
+
+- 確認 P50 完成後 main 狀態（`7cc5b1b`）正確且乾淨
+- 執行輕量 passive monitoring smoke，確認 128/1/0 穩定
+- 掃描所有開放 PR，確認 P25/P32–P50 closure 無殘留
+- 產出 deferred scope decision matrix
+- 產出 passive monitoring report
+- 建立本輪 handoff 文件
+- 將三份文件 commit 並開 PR（待 YES merge）
+
+---
+
+## 2. 已完成事項
+
+| Stage | 項目 | 結果 |
+|---|---|---|
+| A | main 狀態確認 | SHA `7cc5b1b` ✅，working tree CLEAN ✅ |
+| B | Monitoring smoke (128/1/0) | ✅ PASS，DB restored CLEAN |
+| C | Open PR sweep | 僅剩 PR #52（stale，非 P25 closure）✅ |
+| D | Deferred scope decision matrix | 已建立 ✅ |
+| E | Passive monitoring report | 已建立 ✅ |
+| F | Daily handoff | 本文件 ✅ |
+| G | Commit / PR | 待執行 |
+
+---
+
+## 3. 修改或產出的檔案
+
+| 檔案 | 類型 | 說明 |
+|---|---|---|
+| `outputs/replay/p51_deferred_scope_decision_matrix_20260513.md` | 新建 | 6 個 deferred scope 的商業價值、風險、preconditions、YES 指令、優先順序 |
+| `outputs/replay/p51_passive_monitoring_report_20260513.md` | 新建 | main SHA、smoke、DB、PR sweep、evidence presence、監控頻率、next YES 指令 |
+| `outputs/replay/p51_daily_handoff_20260513.md` | 新建 | 本文件 |
+
+**無 runtime 程式碼修改。無 DB write。**
+
+---
+
+## 4. 驗證結果 / 測試結果
+
+### Smoke (2026-05-13)
+
+| Suite | Pass | Skip | Fail |
+|---|---|---|---|
+| `test_p25_display_only_catalog.py` | 35 | 0 | 0 |
+| `test_replay_api_contract.py` | 44 | 0 | 0 |
+| `test_replay_browser_smoke.py` | 49 | 1 | 0 |
+| **Total** | **128** | **1** | **0** |
+
+### DB
+
+- smoke 後: DIRTY（預期）
+- restore: `git checkout -- data/lottery_v2.db`
+- 最終: ✅ CLEAN
+
+### Main SHA 錨點
+
+| SHA | Commit | 確認 |
+|---|---|---|
+| `7cc5b1b` | P48 closure archive | ✅ |
+| `1dda789` | P47 demo evidence | ✅ |
+| `e66c03f` | P44 operator demo gate | ✅ |
+| `4590786` | P35 screenshot evidence | ✅ |
+| `2e4c1e7` | P25 feat (display-only catalog) | ✅ |
+
+---
+
+## 5. 目前結論
+
+**P25 Display-Only Catalog 已完整閉環。**
+
+- 所有 governance docs 在 main ✅
+- 7 張 live operator demo screenshots 在 main ✅
+- P48 closure archive 在 main ✅
+- 128/1/0 smoke 穩定 ✅
+- 無殘留 P25/P32–P50 PR ✅
+- PR #52（fixture-to-ui bridge spec）為 stale pre-P25 branch，需單獨 YES 才可關閉
+
+系統目前處於 passive monitoring 狀態。無需任何工程動作。
+
+---
+
+## 6. 尚未完成事項
+
+| 項目 | 原因 |
+|---|---|
+| PR #80（P51 docs）merge | 待 YES 指令 |
+| PR #52 close | 待 YES：`YES close PR #52` |
+| No-write backfill dry-run | 待 YES：`YES generate no-write backfill dry-run manifest` |
+| Production backfill | 待 YES（需 dry-run 先完成） |
+| Backend startup runbook | 待 YES：`YES create backend startup runbook` |
+| OFFLINE strategy generation | 待 YES（無 candidates） |
+| Strategy mining | 待 YES（framework prerequisites 未完成） |
+| Lifecycle promotion | 待 YES（無 evidence report） |
+
+---
+
+## 7. 風險與不確定點
+
+| 風險 | 等級 | 說明 |
+|---|---|---|
+| PR #52 stale branch 留存 | LOW | 不影響 main，不影響 smoke；可在任意時間 close |
+| `data/performance_history.json` 未追蹤 | LOW | untracked file，不影響 repo；可 `.gitignore` 或忽略 |
+| Backend `PYTHONPATH` 依賴 | LOW | 已知問題（P43），有 workaround；無 runbook 為弱點 |
+| 無 ONLINE strategy 新增 | NEUTRAL | 無 strategy mining 授權，系統維持現有 6 ONLINE |
+| Smoke 唯一的 skip | STABLE | 已知 skip（`test_replay_browser_smoke.py` 第 1 個 skip），非新問題 |
+
+---
+
+## 8. 建議今天優先處理的方向
+
+1. **YES merge PR #80（P51 docs）** — 低風險，完成本輪 documentation closure
+2. **考慮 YES close PR #52** — 清理 stale branch
+3. **評估 YES generate no-write backfill dry-run manifest** — 若希望解鎖 production backfill 路徑
+
+---
+
+## 9. 下一輪可直接執行的 Task Prompt
+
+```
+ROLE: LotteryNew Passive Monitoring Agent
+ROUND: P52 (週期性 smoke check)
+
+BASELINE: P51 完成
+- main = 7cc5b1b
+- smoke = 128/1/0
+- DB = CLEAN
+- P25 = FULLY CLOSED
+- P51 docs PR (#80) = [OPEN or MERGED — check status first]
+
+MISSION:
+1. git fetch origin && git checkout main && git pull --ff-only origin main
+2. Confirm SHA is still 7cc5b1b (or explain delta)
+3. Run smoke: /usr/bin/python3 -m pytest tests/test_p25_display_only_catalog.py tests/test_replay_api_contract.py tests/test_replay_browser_smoke.py --tb=no -q
+4. Restore DB if dirty
+5. Report any deviation from 128/1/0
+6. If any YES command was issued, execute accordingly
+7. Do not start new scope without YES
+
+STRICT RULES: No runtime code change, no DB write, no backfill, no mining, no lifecycle change.
+```
+
+---
+
+## 10. CTO Agent 10 行摘要
+
+```
+ROUND:    P51 — Passive Monitoring & Deferred Scope Decision Agent
+MISSION:  Confirm P25 closure + establish passive monitoring baseline
+MAIN:     7cc5b1b (P48 archive merged, all P32–P50 docs on main) ✅
+SMOKE:    128/1/0 — stable, matches all prior rounds ✅
+DB:       Dirty post-smoke → restored → CLEAN ✅
+PR SWEEP: 1 open PR (#52, stale fixture-to-ui spec, pre-P25, no action taken) ✅
+SCOPE:    6 deferred scopes documented with YES commands, risk, preconditions
+PRIORITY: Passive monitoring (now) → dry-run manifest → runbook (next YES)
+DOCS PR:  #80 docs(replay/p51): passive monitoring and deferred scope decision (pending merge YES)
+NEXT:     All clear — system in passive monitoring state — no action without explicit YES
+```
+
+---
+
+*Generated by Passive Monitoring & Deferred Scope Decision Agent, Round P51, 2026-05-13*

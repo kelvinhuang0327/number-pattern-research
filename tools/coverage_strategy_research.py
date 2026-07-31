@@ -6,26 +6,20 @@ from collections import Counter
 import itertools
 import os
 
+CANONICAL_DB_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "lottery_api",
+    "data",
+    "lottery_v2.db",
+)
+
 def check_db_path():
-    paths = ["lottery_api/data/lottery_v2.db", "lottery_api/data/lottery.db", "data/lottery_v2.db"]
-    for p in paths:
-        if os.path.exists(p):
-            try:
-                conn = sqlite3.connect(p)
-                cursor = conn.cursor()
-                cursor.execute("SELECT COUNT(*) FROM draws WHERE lottery_type IN ('BIG_LOTTO', 'BIG_LOTTO_BONUS')")
-                cnt = cursor.fetchone()[0]
-                conn.close()
-                if cnt > 100:
-                    return p
-            except Exception as e:
-                pass
-    return None
+    if not os.path.isfile(CANONICAL_DB_PATH):
+        raise FileNotFoundError(f"Canonical lottery DB not found: {CANONICAL_DB_PATH}")
+    return CANONICAL_DB_PATH
 
 def load_data():
     db_path = check_db_path()
-    if not db_path:
-        raise Exception("Cannot find populated DB")
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("SELECT draw, date, numbers FROM draws WHERE lottery_type IN ('BIG_LOTTO', 'BIG_LOTTO_BONUS') ORDER BY CAST(draw AS INTEGER) ASC")

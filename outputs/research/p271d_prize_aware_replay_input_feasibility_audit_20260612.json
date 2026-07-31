@@ -1,0 +1,290 @@
+{
+  "task_id": "P271D",
+  "generated_at": "2026-06-12T00:00:00Z",
+  "repo_head_before_task": "a1fc805b02ae4cb44348344fddf3f14abbc456c7",
+  "branch": "task/p271d-prize-aware-replay-input-feasibility",
+  "mode": "prize_aware_replay_input_feasibility_audit",
+
+  "canonical_db_path": "lottery_api/data/lottery_v2.db",
+  "db_open_mode": "sqlite3.connect('file:lottery_api/data/lottery_v2.db?mode=ro', uri=True)",
+
+  "source_contract_files": [
+    "outputs/research/p271a_prize_aware_endpoint_scoring_spec_20260611.json",
+    "outputs/research/p271b_official_prize_rule_scoring_engine_design_20260611.json",
+    "outputs/research/p271c_prize_aware_scorer_pure_function_implementation_20260612.json"
+  ],
+  "scorer_contract_file": "lottery_api/prize_aware_scorer.py",
+  "source_verification_status": "MANUAL_VERIFICATION_REQUIRED",
+
+  "tables_and_sources_inspected": [
+    "strategy_prediction_replays (replay table: predicted_numbers, predicted_special, actual_numbers, actual_special, hit_count, special_hit, history_cutoff_draw, target_draw, generated_at, bet_index, strategy_id, lottery_type)",
+    "draws (draw-result table: draw, lottery_type, numbers, special, date, numbers_positional) - used for join-coverage check only",
+    "tests/conftest.py (canonical DB path resolution: LOTTERY_TEST_DB_PATH override, default lottery_api/data/lottery_v2.db)",
+    "lottery_api/prize_aware_scorer.py (public contract / required input fields only, not imported or executed)"
+  ],
+
+  "lottery_type_mapping": {
+    "normalization": "lottery_type values in strategy_prediction_replays and draws are stored as exact uppercase strings ('POWER_LOTTO', 'BIG_LOTTO', 'DAILY_539'), matching lottery_api.prize_aware_scorer.SUPPORTED_LOTTERY_TYPES exactly. No case-folding or alias mapping is required.",
+    "deterministic": true
+  },
+
+  "field_inventory_by_lottery": {
+    "POWER_LOTTO": {
+      "replay_table": "strategy_prediction_replays",
+      "draw_result_table": "draws",
+      "prediction_key": "(lottery_type, target_draw, strategy_id, bet_index) - UNIQUE constraint",
+      "target_draw_key": "target_draw (TEXT)",
+      "predicted_main_number_field": "predicted_numbers (JSON array string, length 6, ints in [1,38], no duplicates - 36104/36104 valid)",
+      "actual_main_number_field": "actual_numbers (JSON array string, length 6, ints in [1,38], no duplicates - 36104/36104 valid)",
+      "predicted_auxiliary_field": "predicted_special (INTEGER 1-8, second-zone prediction). Present (non-NULL, in-range) for 9000/36104 rows (24.93%); NULL for the remaining 27104/36104 (75.07%).",
+      "actual_auxiliary_field": "actual_special (INTEGER 1-8, second-zone result). Present for 36104/36104 rows (100%).",
+      "field_encoding": "predicted_numbers/actual_numbers: JSON-encoded list of distinct ints; predicted_special/actual_special: plain INTEGER column",
+      "expected_cardinality": "6 main numbers (1-38) + 1 second-zone number (1-8)",
+      "null_count": {
+        "predicted_numbers": 0,
+        "actual_numbers": 0,
+        "predicted_special": 27104,
+        "actual_special": 0
+      },
+      "malformed_or_unparseable_count": 0,
+      "duplicate_key_count": 0,
+      "deterministic_join_coverage": "36104/36104 (100%)",
+      "history_cutoff_evidence": "history_cutoff_draw present for 36104/36104 rows; int(history_cutoff_draw) < int(target_draw) for 36104/36104 rows (0 violations)",
+      "causality_status": "CAUSALITY_VERIFIABLE_FOR_ALL_ROWS"
+    },
+    "BIG_LOTTO": {
+      "replay_table": "strategy_prediction_replays",
+      "draw_result_table": "draws",
+      "prediction_key": "(lottery_type, target_draw, strategy_id, bet_index) - UNIQUE constraint",
+      "target_draw_key": "target_draw (TEXT)",
+      "predicted_main_number_field": "predicted_numbers (JSON array string, length 6, ints in [1,49], no duplicates - 24140/24140 valid)",
+      "actual_main_number_field": "actual_numbers (JSON array string, length 6, ints in [1,49], no duplicates - 24140/24140 valid)",
+      "predicted_auxiliary_field": "NOT REQUIRED. predicted_special is NULL for 24140/24140 rows (100%), which is EXPECTED and CORRECT: the scorer's BIG_LOTTO special_hit_logic checks whether actual_special_number is a member of the 6 predicted_main_numbers - no separate predicted-special value is needed.",
+      "actual_auxiliary_field": "actual_special (INTEGER 1-49, separately drawn special number). Present for 24140/24140 rows (100%); 0/24140 rows have actual_special overlapping actual_numbers (consistent with TW Lottery rules).",
+      "field_encoding": "predicted_numbers/actual_numbers: JSON-encoded list of distinct ints; actual_special: plain INTEGER column",
+      "expected_cardinality": "6 main numbers (1-49) + 1 separately drawn special number (1-49, disjoint from the 6 main numbers)",
+      "null_count": {
+        "predicted_numbers": 0,
+        "actual_numbers": 0,
+        "predicted_special": 24140,
+        "actual_special": 0
+      },
+      "malformed_or_unparseable_count": 0,
+      "duplicate_key_count": 0,
+      "deterministic_join_coverage": "24140/24140 (100%)",
+      "history_cutoff_evidence": "history_cutoff_draw present for 24140/24140 rows; int(history_cutoff_draw) < int(target_draw) for 24140/24140 rows (0 violations)",
+      "causality_status": "CAUSALITY_VERIFIABLE_FOR_ALL_ROWS"
+    },
+    "DAILY_539": {
+      "replay_table": "strategy_prediction_replays",
+      "draw_result_table": "draws",
+      "prediction_key": "(lottery_type, target_draw, strategy_id, bet_index) - UNIQUE constraint",
+      "target_draw_key": "target_draw (TEXT)",
+      "predicted_main_number_field": "predicted_numbers (JSON array string, length 5, ints in [1,39], no duplicates - 34680/34680 valid)",
+      "actual_main_number_field": "actual_numbers (JSON array string, length 5, ints in [1,39], no duplicates - 34680/34680 valid)",
+      "predicted_auxiliary_field": "NOT APPLICABLE / NOT ALLOWED. predicted_special is NULL for 34680/34680 rows (100%), consistent with the scorer's requirement that predicted_second_zone/actual_second_zone/actual_special_number all be None for DAILY_539.",
+      "actual_auxiliary_field": "NOT APPLICABLE / NOT ALLOWED. actual_special is NULL for 34680/34680 rows (100%), consistent with the scorer's DAILY_539 contract (no auxiliary field).",
+      "field_encoding": "predicted_numbers/actual_numbers: JSON-encoded list of distinct ints",
+      "expected_cardinality": "5 main numbers (1-39), no auxiliary number",
+      "null_count": {
+        "predicted_numbers": 0,
+        "actual_numbers": 0,
+        "predicted_special": 34680,
+        "actual_special": 34680
+      },
+      "malformed_or_unparseable_count": 0,
+      "duplicate_key_count": 0,
+      "deterministic_join_coverage": "34680/34680 (100%)",
+      "history_cutoff_evidence": "history_cutoff_draw present for 34680/34680 rows; int(history_cutoff_draw) < int(target_draw) for 34680/34680 rows (0 violations)",
+      "causality_status": "CAUSALITY_VERIFIABLE_FOR_ALL_ROWS"
+    }
+  },
+
+  "structural_metrics_by_lottery": {
+    "POWER_LOTTO": {
+      "total_replay_rows": 36104,
+      "parseable_predicted_main_rows": 36104,
+      "rows_with_required_predicted_aux_field": 9000,
+      "target_draws_represented": 1551,
+      "rows_joinable_to_one_actual_draw": 36104,
+      "rows_missing_actual_main_result": 0,
+      "rows_missing_actual_aux_result": 0,
+      "rows_failing_cardinality_range_or_duplicate_validation": 0,
+      "causality_verifiable_rows": 36104,
+      "structurally_eligible_rows": 9000,
+      "structurally_eligible_percentage": 24.928
+    },
+    "BIG_LOTTO": {
+      "total_replay_rows": 24140,
+      "parseable_predicted_main_rows": 24140,
+      "rows_with_required_predicted_aux_field": 24140,
+      "target_draws_represented": 1552,
+      "rows_joinable_to_one_actual_draw": 24140,
+      "rows_missing_actual_main_result": 0,
+      "rows_missing_actual_aux_result": 0,
+      "rows_failing_cardinality_range_or_duplicate_validation": 0,
+      "causality_verifiable_rows": 24140,
+      "structurally_eligible_rows": 24140,
+      "structurally_eligible_percentage": 100.0
+    },
+    "DAILY_539": {
+      "total_replay_rows": 34680,
+      "parseable_predicted_main_rows": 34680,
+      "rows_with_required_predicted_aux_field": 34680,
+      "target_draws_represented": 1550,
+      "rows_joinable_to_one_actual_draw": 34680,
+      "rows_missing_actual_main_result": 0,
+      "rows_missing_actual_aux_result": 0,
+      "rows_failing_cardinality_range_or_duplicate_validation": 0,
+      "causality_verifiable_rows": 34680,
+      "structurally_eligible_rows": 34680,
+      "structurally_eligible_percentage": 100.0
+    }
+  },
+
+  "join_contract_by_lottery": {
+    "POWER_LOTTO": {
+      "join_key": "(lottery_type='POWER_LOTTO', target_draw) -> draws(lottery_type='POWER_LOTTO', draw)",
+      "join_cardinality": "many-to-one (many replay rows per target_draw, one draws row per (lottery_type, draw) due to UNIQUE(draw, lottery_type))",
+      "join_coverage": "36104/36104 (100%)",
+      "depends_on_strategy_performance_fields": false
+    },
+    "BIG_LOTTO": {
+      "join_key": "(lottery_type='BIG_LOTTO', target_draw) -> draws(lottery_type='BIG_LOTTO', draw)",
+      "join_cardinality": "many-to-one",
+      "join_coverage": "24140/24140 (100%)",
+      "depends_on_strategy_performance_fields": false
+    },
+    "DAILY_539": {
+      "join_key": "(lottery_type='DAILY_539', target_draw) -> draws(lottery_type='DAILY_539', draw)",
+      "join_cardinality": "many-to-one",
+      "join_coverage": "34680/34680 (100%)",
+      "depends_on_strategy_performance_fields": false
+    }
+  },
+
+  "causality_check_by_lottery": {
+    "POWER_LOTTO": {
+      "history_cutoff_precedes_target": "36104/36104 rows (100%), 0 violations",
+      "generated_at_present": "36104/36104 rows (100%)",
+      "post_draw_feature_required": false,
+      "causality_status": "CAUSALITY_VERIFIABLE"
+    },
+    "BIG_LOTTO": {
+      "history_cutoff_precedes_target": "24140/24140 rows (100%), 0 violations",
+      "generated_at_present": "24140/24140 rows (100%)",
+      "post_draw_feature_required": false,
+      "causality_status": "CAUSALITY_VERIFIABLE"
+    },
+    "DAILY_539": {
+      "history_cutoff_precedes_target": "34680/34680 rows (100%), 0 violations",
+      "generated_at_present": "34680/34680 rows (100%)",
+      "post_draw_feature_required": false,
+      "causality_status": "CAUSALITY_VERIFIABLE"
+    }
+  },
+
+  "scorer_input_mapping_by_lottery": {
+    "POWER_LOTTO": {
+      "lottery_type": "'POWER_LOTTO'",
+      "predicted_main_numbers": "json.loads(predicted_numbers)",
+      "actual_main_numbers": "json.loads(actual_numbers)",
+      "predicted_second_zone": "predicted_special (REQUIRED non-NULL by scorer; only 9000/36104 rows qualify)",
+      "actual_second_zone": "actual_special (always present)",
+      "actual_special_number": "must be None (not applicable for POWER_LOTTO)"
+    },
+    "BIG_LOTTO": {
+      "lottery_type": "'BIG_LOTTO'",
+      "predicted_main_numbers": "json.loads(predicted_numbers)",
+      "actual_main_numbers": "json.loads(actual_numbers)",
+      "predicted_second_zone": "must be None (not applicable for BIG_LOTTO)",
+      "actual_second_zone": "must be None (not applicable for BIG_LOTTO)",
+      "actual_special_number": "actual_special (always present, never overlaps actual_numbers)"
+    },
+    "DAILY_539": {
+      "lottery_type": "'DAILY_539'",
+      "predicted_main_numbers": "json.loads(predicted_numbers)",
+      "actual_main_numbers": "json.loads(actual_numbers)",
+      "predicted_second_zone": "must be None (always NULL in DB, consistent)",
+      "actual_second_zone": "must be None (always NULL in DB, consistent)",
+      "actual_special_number": "must be None (always NULL in DB, consistent)"
+    }
+  },
+
+  "feasibility_by_lottery": {
+    "POWER_LOTTO": "PARTIAL - structurally feasible only for the 9000/36104 (24.93%) rows where predicted_special (predicted second-zone) is non-NULL and in [1,8]. The remaining 27104/36104 rows (75.07%) lack a predicted second-zone value and cannot be scored via score_prize_aware_ticket without inventing a value (forbidden). All other fields (predicted/actual main numbers, actual second-zone, join, causality) are 100% available for all 36104 rows.",
+    "BIG_LOTTO": "FULL - 24140/24140 (100%) rows have all fields required by score_prize_aware_ticket: 6 predicted main numbers, 6 actual main numbers, and a separately-available actual special number (never overlapping the actual main numbers). No predicted-special column is required per the scorer's BIG_LOTTO special_hit_logic.",
+    "DAILY_539": "FULL - 34680/34680 (100%) rows have 5 predicted and 5 actual main numbers, and correctly have NO auxiliary fields populated (matching the scorer's requirement that all DAILY_539 auxiliary fields be None)."
+  },
+
+  "blocking_reasons_by_lottery": {
+    "POWER_LOTTO": "Missing predicted second-zone value (predicted_special IS NULL) for 27104/36104 rows (75.07%). This is a BLOCKING condition for FULL prize-aware replay evaluation of POWER_LOTTO, per explicit task instruction (a missing predicted second-zone must not be downgraded to a warning, must not be filled with a manufactured/random/default/most-frequent value, and must not be substituted from the actual second-zone). A future adapter MAY proceed on the 9000-row subset where predicted_special is present, excluding the other 27104 rows with an explicit exclusion reason (e.g. 'predicted_second_zone_missing').",
+    "BIG_LOTTO": null,
+    "DAILY_539": null
+  },
+
+  "future_adapter_design": {
+    "name": "prize_aware_replay_adapter (NOT IMPLEMENTED IN P271D)",
+    "description": "A future, separately-authorized, read-only adapter would: (1) SELECT rows from strategy_prediction_replays for one lottery_type at a time (optionally filtered by replay_status); (2) for each row, json.loads predicted_numbers/actual_numbers and read predicted_special/actual_special; (3) for POWER_LOTTO, SKIP (exclude, with explicit reason 'predicted_second_zone_missing') any row where predicted_special IS NULL; (4) map the remaining fields to the score_prize_aware_ticket(lottery_type, predicted_main_numbers, actual_main_numbers, predicted_second_zone, actual_second_zone, actual_special_number) signature exactly as documented in scorer_input_mapping_by_lottery; (5) call lottery_api.prize_aware_scorer.score_prize_aware_ticket (call deferred to the future adapter task, NOT performed in P271D); (6) write the per-row result dict to a NEW, separate, versioned artifact (e.g. JSONL under outputs/research/), tagged with strategy_id and bet_index as pass-through identifiers only; (7) perform NO writes to strategy_prediction_replays, draws, or any other existing table; (8) leave is_m3_plus / hit_count / special_hit / existing replay columns completely untouched; (9) be independently versioned (its own scoring_version / adapter_version) and toggleable per lottery_type (e.g. POWER_LOTTO disabled-by-default or scoped to the 9000-row subset until/unless predicted second-zone coverage improves).",
+    "db_write": false,
+    "modifies_existing_replay_rows": false,
+    "modifies_m3_plus_output": false,
+    "calls_scorer_in_this_task": false,
+    "preserves_identifiers": ["strategy_id", "bet_index", "target_draw", "lottery_type"],
+    "records_explicit_exclusion_reasons": true,
+    "independently_versioned": true,
+    "enableable_per_lottery_type": true
+  },
+
+  "parallel_feature_design": {
+    "principle": "Any future prize-aware replay adapter is a NEW PARALLEL read-only evaluation track. It must not replace, override, migrate, deprecate, or alter existing M3+/replay scoring (hit_count, special_hit, is_m3_plus, or any existing replay column/semantics).",
+    "existing_m3_definition_unchanged": "is_m3_plus = hit_count >= 3, special_hit excluded (P265A SSOT)",
+    "no_migration_path": "No schema migration, column addition, or row mutation to strategy_prediction_replays is implied or required by this audit."
+  },
+
+  "raw_outcomes_exported": false,
+  "prediction_outcome_comparison_run": false,
+  "scorer_called": false,
+  "prize_aware_evaluation_run": false,
+  "backtest_run": false,
+  "strategy_comparison_run": false,
+  "db_access": true,
+  "db_read_only": true,
+  "db_write": false,
+  "registry_write": false,
+  "existing_replay_modified": false,
+  "existing_m3_replay_scoring_changed": false,
+  "production_integration_added": false,
+  "strategy_generated": false,
+  "hit_rate_improvement_claimed": false,
+  "p270c_allowed": false,
+  "temporal_window_research_started": false,
+  "feature_mining_started": false,
+
+  "tests_result": {
+    "focused": "114/114 PASS (tests/test_p271d_prize_aware_replay_input_feasibility_audit.py)",
+    "combined": "322/322 PASS (test_p271a_prize_aware_endpoint_scoring_spec.py + test_p271b_official_prize_rule_scoring_engine_design.py + test_p271c_prize_aware_scorer.py + test_p271d_prize_aware_replay_input_feasibility_audit.py)",
+    "git_diff_check": "PASS (clean)"
+  },
+
+  "modified_files": [
+    "analysis/p271d_prize_aware_replay_input_feasibility_audit.py",
+    "tests/test_p271d_prize_aware_replay_input_feasibility_audit.py",
+    "outputs/research/p271d_prize_aware_replay_input_feasibility_audit_20260612.json",
+    "outputs/research/p271d_prize_aware_replay_input_feasibility_audit_20260612.md",
+    "00-Plan/roadmap/active_task.md",
+    "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md"
+  ],
+
+  "next_recommended_task": "HOLD / WAITING_FOR_USER_AUTHORIZATION. BIG_LOTTO and DAILY_539 replay data are structurally 100% feasible for a future read-only prize-aware adapter; POWER_LOTTO is feasible only for a 9000-row (24.93%) subset where predicted_special is populated, and is BLOCKED for full-dataset prize-aware replay evaluation until predicted second-zone coverage improves or a separate scoped POWER_LOTTO adapter is explicitly authorized. Any adapter implementation, scorer invocation, or historical evaluation requires a new explicit P271E (or later) authorization with its own STOP conditions and whitelist.",
+
+  "final_classification": "P271D_PARTIAL_LOTTERY_FEASIBILITY_GO_SCOPED_ADAPTER",
+
+  "limitations": [
+    "Official Taiwan Lottery prize-table pages remain MANUAL_VERIFICATION_REQUIRED (JS SPAs, not machine-readable), per P271A/P271B/P271C.",
+    "POWER_LOTTO predicted second-zone (predicted_special) is populated for only 9000/36104 (24.93%) of replay rows. A future adapter must explicitly exclude the remaining 27104 rows rather than substitute, default, or infer a value; this is a BLOCKING condition for full POWER_LOTTO prize-aware replay evaluation, not a warning.",
+    "This audit performed only structural/data-availability checks (schema, NULL counts, join coverage, causality ordering, cardinality/range/duplicate validation). It did not call lottery_api.prize_aware_scorer, did not compare predicted vs actual numbers, and did not compute hit counts, tier classes, endpoint flags, or any prize-aware/strategy-level metric.",
+    "Causality evidence is based on history_cutoff_draw < target_draw (draw-sequence ordering) and presence of a generated_at timestamp; no wall-clock prediction_cutoff_date/prediction_generated_at values were present in the inspected rows (both NULL in the sampled rows), so causality is verified via draw-sequence ordering rather than literal timestamps.",
+    "This audit is a feasibility/design document only. It does not implement, authorize, or schedule a prize-aware replay adapter, P270C, temporal-window research, or feature mining."
+  ]
+}

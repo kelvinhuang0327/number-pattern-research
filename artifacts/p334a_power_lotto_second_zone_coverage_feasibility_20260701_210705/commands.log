@@ -1,0 +1,77 @@
+# P334A commands.log — chronological record of read-only commands executed
+# All commands read-only; no repo write, no DB write.
+
+date; date -u
+pwd; git rev-parse --show-toplevel
+
+ls -la /Users/kelvin/Kelvin-WorkSpace/p333a_prize_aware_success_reconciliation_audit_20260701_205132
+
+git fetch origin
+git rev-parse origin/main
+git merge-base --is-ancestor ce2c042e7f4967841e6b31e17552d55bf4717f91 origin/main
+git branch --show-current
+git status --short
+git diff --cached --stat
+
+md5 -q lottery_api/data/lottery_v2.db data/lottery_v2.db  # note: this ls -la was for reference only, see shasum below
+shasum -a 256 lottery_api/data/lottery_v2.db
+stat -f "mtime=%Sm size=%z" lottery_api/data/lottery_v2.db
+shasum -a 256 data/lottery_v2.db
+stat -f "mtime=%Sm size=%z" data/lottery_v2.db
+
+mkdir -p /Users/kelvin/Kelvin-WorkSpace/p334a_power_lotto_second_zone_coverage_feasibility_20260701_210705
+
+# Read P333A evidence (predecessor)
+cat p333a_.../handoff_report.md
+cat p333a_.../power_lotto_second_zone_readiness.md
+cat p333a_.../source_field_inventory.md
+cat p333a_.../blockers.md
+
+# Codebase inventory (all against origin/main via git grep/git show — stale local worktree NOT trusted)
+git grep -l "predicted_special" origin/main
+git grep -l "second_zone" origin/main
+git grep -ln "POWER_LOTTO" origin/main -- '*.py'
+git show origin/main:tests/test_p48_powerlotto_special_null_policy.py
+git show origin/main:lottery_api/prize_aware_replay_adapter.py
+
+# Read-only DB query: coverage shape by strategy and controlled_apply_id
+python3 -c "sqlite3 read-only aggregation query, see field_verification-style script below"
+
+git grep -l "P132_MIDFREQ_FOURIER_MK_3BET_POWERLOTTO_V20260528" origin/main
+git grep -l "P133_PP3_FREQORT_4BET_POWERLOTTO_V20260528" origin/main
+git grep -l "P134_FOURIER_RHYTHM_3BET_POWERLOTTO_V20260528" origin/main
+git grep -l "P140_APPLY_POWER_PRECISION_3BET_v1" origin/main
+git grep -l "P141_APPLY_POWER_ORTHOGONAL_5BET_v1" origin/main
+git grep -l "P126B_POWER_FOURIER_RHYTHM_2BET_20260528" origin/main
+git log --all --oneline -S"P132_MIDFREQ_FOURIER_MK_3BET_POWERLOTTO_V20260528"
+git log --all --oneline -S"P140_APPLY_POWER_PRECISION_3BET_v1"
+git log --all --oneline -S"P141_APPLY_POWER_ORTHOGONAL_5BET_v1"
+
+git show --stat cfff33a   # P140: apply power_precision_3bet controlled replay rows
+git show --stat 6a3f49b   # P141: apply power_orthogonal_5bet controlled replay rows
+git show cfff33a:scripts/p140_apply_power_precision_3bet.py | grep -n -i "special|second_zone|INSERT INTO"
+git show 6a3f49b:scripts/p141_apply_power_orthogonal_5bet.py | grep -n -i "special|second_zone|INSERT INTO"
+
+git log --all --oneline --diff-filter=A -- '*p132_apply*' '*p133_apply*' '*p134_apply*' '*p126b_apply*'
+git show 436b2ca:scripts/p132_apply_midfreq_fourier_mk_3bet.py | grep -n -i "special|get_all_bets|second_zone"
+
+git show origin/main:scripts/p48_powerlotto_wave4_production_apply.py | grep -n -i "special|second_zone"
+git show origin/main:lottery_api/models/p47_wave4_powerlotto_adapters.py | grep -n "def |special"
+git show origin/main:lottery_api/models/p47_wave4_powerlotto_adapters.py | sed -n '260,335p'  # _P47BaseAdapter.get_one_bet / _special_predict
+
+git grep -n "predicted_special|_special_predict|second_zone" origin/main -- tools/quick_predict.py lottery_api/engine/rolling_strategy_monitor.py tools/post_draw_pipeline.py tools/rsm_bootstrap.py
+git show origin/main:tools/quick_predict.py | grep -n "POWER_LOTTO|special|def |import"
+git show origin/main:tools/quick_predict.py | grep -n "INSERT|cursor.execute|conn.execute|\.commit\("
+
+# Read-only DB: last generated_at / max target_draw per lottery type (staleness check)
+python3 -c "sqlite3 read-only MAX(generated_at) query"
+
+git grep -n "_special_predict|def get_one_bet" origin/main -- lottery_api/models/p56_wave5_powerlotto_adapters.py lottery_api/models/p93_tierb_replay_adapters.py
+git show origin/main:lottery_api/models/special_predictor.py | sed -n '1,40p'
+git show origin/main:public/demo-data/lottery-d5/p299a/powerlotto_exclusion_note.md
+
+# Final re-check (post-audit, before writing evidence files)
+git status --short
+git diff --cached --stat
+shasum -a 256 lottery_api/data/lottery_v2.db
+stat -f "mtime=%Sm size=%z" lottery_api/data/lottery_v2.db

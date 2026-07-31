@@ -1,0 +1,90 @@
+{
+  "acceptance_status": "PASS",
+  "active_completion_surface": [
+    "scheduler.load_data"
+  ],
+  "active_completion_surface_count": 1,
+  "artifact_prefix": "P520K_ingest_afterinsert_active_surface_acceptance",
+  "component_statuses": {
+    "DB side effects avoided": "PASS",
+    "P520I binding artifact read": "PASS",
+    "P520J disabled matrix artifact read": "PASS",
+    "P520J result artifact read": "PASS",
+    "P520J retained hooks artifact read": "PASS",
+    "P520J warning evidence artifact read": "PASS",
+    "gated missing-hook guard removed": "PASS",
+    "ingest source AST evaluation": "PASS",
+    "missing-target hook residue absent": "PASS",
+    "removed dead hook symbols absent": "PASS",
+    "runtime import avoided": "PASS",
+    "scheduler.load_data active": "PASS"
+  },
+  "disabled_guard": {
+    "line": "",
+    "symbol": "_MISSING_AFTERINSERT_HOOKS_ENABLED",
+    "value": null
+  },
+  "disabled_missing_target_surface": [],
+  "disabled_missing_target_surface_count": 0,
+  "fail_count": 0,
+  "failure_count": 0,
+  "failures": [],
+  "final_status": "PASS",
+  "missing_target_hooks_counted_as_active_completion_surface": [],
+  "notices": [
+    "source/AST/text-only active surface acceptance",
+    "reads committed P520J/P520I historical artifacts",
+    "parses lottery_api/routes/ingest.py without importing it",
+    "does not import live hook target modules",
+    "does not execute after-insert hooks",
+    "does not execute draw inserts",
+    "no canonical DB open/write",
+    "no migration/backfill",
+    "no deploy",
+    "does not modify hook implementation files",
+    "post-P520L acceptance expects no gated missing-hook residue in lottery_api/routes/ingest.py",
+    "no betting/future prediction claims"
+  ],
+  "p520i_summary": {
+    "binding_artifact": "artifacts/P520I_ingest_afterinsert_hook_static_binding_resolver_binding_chain.csv",
+    "unresolved_hooks": [],
+    "unresolved_reasons": []
+  },
+  "p520j_summary": {
+    "disabled_missing_hook_count": 0,
+    "final_status": "PASS",
+    "result_artifact": "artifacts/P520J_disable_missing_afterinsert_hooks_result.json",
+    "retained_hook_count": 1,
+    "retained_hooks": [
+      "scheduler.load_data"
+    ],
+    "warning_only_hooks": [
+      "learning_integrator",
+      "refresh_hedge_fund_outputs",
+      "weight_adjuster"
+    ]
+  },
+  "pass_count": 12,
+  "removed_dead_hook_symbols_absent": [
+    "_schedule_after_insert",
+    "prediction_tracker",
+    "snapshot_scheduler"
+  ],
+  "removed_dead_hook_symbols_present": [],
+  "removed_missing_target_surface": [
+    "learning_integrator",
+    "refresh_hedge_fund_outputs",
+    "weight_adjuster"
+  ],
+  "removed_missing_target_surface_count": 3,
+  "residue_present_by_hook": {},
+  "scheduler_load_data_active": true,
+  "scheduler_load_data_line": "164",
+  "scheduler_load_data_outside_missing_hook_guard": true,
+  "scope": "P520K parses lottery_api/routes/ingest.py and committed P520J/P520I artifacts only. scheduler.load_data is counted as retained active completion surface when outside any missing-hook guard. P520L acceptance passes when historical missing-target hooks from P520J/P520I are absent from source and therefore no disabled missing-target surface remains.",
+  "source_path": "lottery_api/routes/ingest.py",
+  "suggested_next_command": "python -m tools.ingest_afterinsert_active_surface_acceptance --status-block",
+  "warn_count": 0,
+  "warning_count": 0,
+  "warnings": []
+}

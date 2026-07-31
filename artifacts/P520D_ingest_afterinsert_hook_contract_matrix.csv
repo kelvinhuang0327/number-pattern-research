@@ -1,0 +1,2 @@
+hook_reference,expected_live,refresh_after_insert_present,reference_found,source_line,ast_node_type,reference_evidence,call_like_in_refresh_after_insert,call_line,call_evidence,imported_or_assigned_symbol,symbol_evidence,static_target_resolution,status,notes
+scheduler.load_data,True,True,True,163,ImportFrom,from utils.scheduler import scheduler,True,164,scheduler.load_data(),scheduler,from utils.scheduler import scheduler,PASS,PASS,"target module, imported instance symbol, and called class method resolved by source/AST"

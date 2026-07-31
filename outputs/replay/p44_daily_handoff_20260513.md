@@ -1,0 +1,163 @@
+# P44 — Daily Handoff
+
+**Date:** 2026-05-13
+**Agent:** Live Operator Demo & Docs/Repair Merge Gate Agent
+**To:** CTO / Next Session Agent
+**From:** P44 Agent
+
+---
+
+## 1. 本輪目標
+
+- 確認 main `4590786` 狀態
+- 檢查 PR #74/#75/#76 merge gate 條件
+- 若收到 YES merge，按順序合併
+- 若收到 YES start operator demo，執行 live browser demo
+- 產出 P44 demo report、next decision memo、daily handoff
+- 建立 docs/p44 PR
+
+**本輪 YES 狀態:**
+- `YES merge PR #74.` — ❌ 未收到
+- `YES merge PR #75.` — ❌ 未收到
+- `YES merge PR #76.` — ❌ 未收到
+- `YES start operator demo.` — ❌ 未收到
+
+---
+
+## 2. 已完成事項
+
+| 項目 | 狀態 |
+|---|---|
+| Stage A — main `4590786` 確認 | ✅ CLEAN |
+| Stage A — PR #74 gate check | ✅ OPEN / CLEAN / ALL PASS |
+| Stage A — PR #75 gate check | ✅ OPEN / CLEAN / ALL PASS |
+| Stage A — PR #76 gate check | ✅ OPEN / CLEAN / ALL PASS |
+| Stage B — Merge gate | ✅ 無 YES，未 merge |
+| Stage C — Regression smoke | ✅ 128/1/0 |
+| Stage C — DB restore | ✅ CLEAN |
+| Stage D — Demo gate | ✅ `OPERATOR_DEMO_WAITING_EXPLICIT_YES` |
+| Stage G — P44 demo report | ✅ 已建立 |
+| Stage H — Next decision memo | ✅ 已建立 |
+| Stage I — Daily handoff | ✅ 本文件 |
+
+---
+
+## 3. 產出檔案
+
+| 檔案 | 用途 |
+|---|---|
+| `outputs/replay/p44_live_operator_demo_report_20260513.md` | P44 demo report — `OPERATOR_DEMO_WAITING_EXPLICIT_YES` |
+| `outputs/replay/p44_next_decision_after_live_demo_20260513.md` | Next decision memo — 推薦 C → A → B |
+| `outputs/replay/p44_daily_handoff_20260513.md` | 本文件 |
+
+**注意：** P44 沒有產出 live screenshots（demo 未執行）。P35 mocked screenshots 仍為有效 evidence baseline。
+
+---
+
+## 4. 驗證結果
+
+| 測試項目 | 結果 |
+|---|---|
+| `test_p25_display_only_catalog.py` | 35 pass |
+| `test_replay_browser_smoke.py` | 49 pass / 1 skip |
+| `test_replay_api_contract.py` | 44 pass |
+| **Total** | **128 pass / 1 skip / 0 fail** |
+| `data/lottery_v2.db` | CLEAN (restored) |
+| P35 evidence | 7/7 scenarios — 全部 CAPTURED |
+
+---
+
+## 5. 目前結論
+
+- P25 feature 已上線、已驗證、已有完整 mocked evidence
+- P43 backend startup 修復已驗證（PYTHONPATH 方式，無源碼變更）
+- PR #74/#75/#76 全部技術上 ready（CLEAN / ALL PASS），等待 YES merge
+- Operator demo 技術上可行，等待 `YES start operator demo.`
+- 整個 display-only catalog project 卡在 CTO explicit YES gate
+
+---
+
+## 6. 尚未完成事項
+
+| 項目 | 狀態 | 需要 |
+|---|---|---|
+| PR #74 merge | ❌ 未 merge | `YES merge PR #74.` |
+| PR #75 merge | ❌ 未 merge | `YES merge PR #75.` |
+| PR #76 merge | ❌ 未 merge | `YES merge PR #76.` |
+| Live operator demo | ❌ 未執行 | `YES start operator demo.` |
+| P44 live screenshots | ❌ 未拍攝 | 需先執行 live demo |
+| Production DB backfill | ❌ 仍 deferred | 需要新的 governance review |
+| OFFLINE 策略登錄 | ❌ 仍 deferred | 無策略可登錄 |
+
+---
+
+## 7. 風險與不確定點
+
+| 風險 | 說明 | 嚴重程度 |
+|---|---|---|
+| PR #74 behind main if #75/#76 merged first | 標準 PR behind pattern，需 `gh pr update-branch 74` | LOW |
+| Backend port 8889 conflict | 需 kill 舊 process 後再啟動 | LOW |
+| `data/performance_history.json` untracked | 非 P25 file，不影響 smoke | LOW |
+| P35 evidence 為 mocked，非 live backend | CTO 若需 live 驗證仍需執行 Option C | MEDIUM |
+
+---
+
+## 8. 建議今天優先處理
+
+1. **給 YES:** `YES merge PR #74, #75, #76 in safe order.` 先清掉所有 OPEN PRs
+2. **給 YES:** `YES start operator demo.` 執行 live browser demo 拍攝 7 張截圖
+3. 若 live demo 成功 → 宣告 project complete（Option A）
+
+---
+
+## 9. 下一輪可直接執行的 Task Prompt
+
+若下一輪收到 `YES merge PR #74, #75, #76 in safe order.` 和 `YES start operator demo.`:
+
+```
+# P45 — Merge All PRs + Live Operator Demo Final Closure Agent
+
+Baseline: main 4590786
+PRs: #74 OPEN CLEAN PASS, #75 OPEN CLEAN PASS, #76 OPEN CLEAN PASS
+
+Tasks:
+1. git checkout main && git pull --ff-only origin main
+2. gh pr merge 74 --squash --delete-branch
+3. git pull --ff-only origin main (after merge)
+4. gh pr update-branch 75 (if BEHIND)
+5. gh pr merge 75 --squash --delete-branch
+6. git pull --ff-only origin main
+7. gh pr update-branch 76 (if BEHIND)
+8. gh pr merge 76 --squash --delete-branch
+9. git pull --ff-only origin main
+10. Run smoke: 128/1/0 expected
+11. Restore DB
+12. Backend: PYTHONPATH=$(pwd)/lottery_api /usr/bin/python3 -m uvicorn lottery_api.app:app --host 127.0.0.1 --port 8889
+13. Frontend: /usr/bin/python3 -m http.server 8081
+14. Run live Playwright demo for 7 scenarios
+15. Capture to outputs/replay/screenshots/p45/
+16. Create p45 closure report
+17. Stop processes
+```
+
+---
+
+## 10. CTO Agent 10 行摘要
+
+```
+ROUND:    P44 — Live Operator Demo & Docs/Repair Merge Gate
+MAIN:     4590786 — CLEAN — no changes this round
+SMOKE:    128 pass / 1 skip / 0 fail — DB CLEAN
+MERGE:    PR #74/#75/#76 all OPEN/CLEAN/PASS — NOT merged (no YES received)
+DEMO:     OPERATOR_DEMO_WAITING_EXPLICIT_YES — no YES start operator demo received
+BACKEND:  P43 fix (PYTHONPATH) already validated — technically unblocked
+EVIDENCE: P35 mocked screenshots (7/7) remain valid fallback baseline
+DOCS:     p44_live_operator_demo_report / p44_next_decision / p44_daily_handoff created
+NEXT:     Recommend YES merge PR #74, #75, #76 + YES start operator demo
+BLOCKED:  All forward progress gated on explicit CTO YES commands
+```
+
+---
+
+*Handoff generated by P44 Live Operator Demo & Docs/Repair Merge Gate Agent*
+*main SHA: 4590786 | Date: 2026-05-13*

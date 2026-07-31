@@ -1,0 +1,40 @@
+strategy_id,ticket_count_10_supported_by_interface,ticket_count_15_supported_by_interface,ticket_count_20_supported,nested_prefix_supported,nested_prefix_failure_reason,current_authoritative_ticket_count,historical_10_status,historical_15_status,historical_20_status
+acb_hot_fourier_3bet_biglotto,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+apriori_3bet_biglotto,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+bet2_fourier_expansion_biglotto@p42_p280_frozen_code,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+bet2_fourier_expansion_biglotto@rejected_json_historical,False,False,False,False,terminal governance identity has no independent completed 20-ticket portfolio (INSUFFICIENT_ALGORITHM_SPECIFICATION),20,NOT_RUN,NOT_RUN,TERMINAL_EXCLUSION
+biglotto_10bet_combined,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+biglotto_5bet_orthogonal,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+biglotto_deviation_2bet,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+biglotto_echo_aware_3bet,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+biglotto_p0_2bet,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+biglotto_social_wisdom_anti_popularity,False,False,False,False,terminal governance identity has no independent completed 20-ticket portfolio (EQUIVALENT_IMPLEMENTATION),20,NOT_RUN,NOT_RUN,TERMINAL_EXCLUSION
+biglotto_triple_strike,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+biglotto_ts3_acb_4bet,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+biglotto_ts3_markov_4bet_w30,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+biglotto_ts3_markov_freq_5bet,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+biglotto_zonal_pruning,False,False,False,False,terminal governance identity has no independent completed 20-ticket portfolio (OTHER_EVIDENCED_TERMINAL_EXCLUSION),20,NOT_RUN,NOT_RUN,TERMINAL_EXCLUSION
+biglotto_zone_split_3bet_bet1,False,False,False,False,terminal governance identity has no independent completed 20-ticket portfolio (EQUIVALENT_IMPLEMENTATION),20,NOT_RUN,NOT_RUN,TERMINAL_EXCLUSION
+cluster_pivot_biglotto,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+cold_complement_biglotto,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+coldpool15_biglotto,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+core_satellite_biglotto,False,False,False,False,terminal governance identity has no independent completed 20-ticket portfolio (EQUIVALENT_IMPLEMENTATION),20,NOT_RUN,NOT_RUN,TERMINAL_EXCLUSION
+fourier30_markov30_biglotto,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+gap_dynamic_threshold_biglotto,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+history::lottery_api/models/core_satellite.py,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+history::lottery_api/models/social_wisdom_predictor.py,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+history::lottery_api/models/zone_split.py,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+hot_gap_return_biglotto,False,False,False,False,terminal governance identity has no independent completed 20-ticket portfolio (INSUFFICIENT_ALGORITHM_SPECIFICATION),20,NOT_RUN,NOT_RUN,TERMINAL_EXCLUSION
+hot_stop_rebound_biglotto,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+markov_2bet_biglotto,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+markov_repeat_exception_biglotto,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+markov_single_biglotto,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+multiwindow_fourier_biglotto,False,False,False,False,terminal governance identity has no independent completed 20-ticket portfolio (MISSING_IMPLEMENTATION_CONFIRMED),20,NOT_RUN,NOT_RUN,TERMINAL_EXCLUSION
+neighbor_injection_biglotto,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+predict_biglotto_echo_2bet,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+predict_biglotto_echo_phase2,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+predict_biglotto_mixed_3bet,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+predict_biglotto_regime,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN
+ts3_acb_4bet_biglotto,False,False,False,False,terminal governance identity has no independent completed 20-ticket portfolio (DUPLICATE_ALIAS),20,NOT_RUN,NOT_RUN,TERMINAL_EXCLUSION
+ts3_markov_freq_5bet_biglotto,False,False,False,False,terminal governance identity has no independent completed 20-ticket portfolio (DUPLICATE_ALIAS),20,NOT_RUN,NOT_RUN,TERMINAL_EXCLUSION
+ts3_regime_3bet,True,True,True,True,,20,NOT_RUN,NOT_RUN,RUN

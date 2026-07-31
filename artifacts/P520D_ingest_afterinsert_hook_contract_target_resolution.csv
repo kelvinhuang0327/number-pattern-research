@@ -1,0 +1,2 @@
+hook_reference,import_module,imported_symbol,local_symbol,target_attribute,target_path,target_path_exists,target_symbol_found,target_symbol_line,target_attribute_found,target_attribute_line,static_target_resolution,notes
+scheduler.load_data,utils.scheduler,scheduler,scheduler,load_data,lottery_api/utils/scheduler.py,True,True,468,True,321,PASS,"target module, imported instance symbol, and called class method resolved by source/AST"

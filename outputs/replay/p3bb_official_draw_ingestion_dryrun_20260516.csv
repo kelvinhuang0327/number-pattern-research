@@ -1,0 +1,3 @@
+﻿lottery_type,draw,date,num1,num2,num3,num4,num5,num6,special,exists_in_db,fetch_status,validation_passed,validation_issues
+DAILY_539,115000106,2026/04/30,6,15,27,30,31,,,False,FETCHED,True,
+POWER_LOTTO,115000035,2026/04/30,1,4,13,19,27,30,8,False,FETCHED,True,

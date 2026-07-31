@@ -1,0 +1,246 @@
+{
+  "task_id": "P186_PRODUCTION_DB_MIGRATION_AUTHORIZATION_GATE_ONLY",
+  "final_classification": "P186_PRODUCTION_DB_MIGRATION_AUTHORIZATION_GATE_READY",
+  "date": "2026-06-01",
+  "authorization_phrase_detected": "YES start P186 production DB migration authorization gate only",
+  "phase_0_verification": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "git_dir": ".git",
+    "is_worktree": false,
+    "production_main_db_rows_before": 54462,
+    "production_main_bet_index_before": "ABSENT",
+    "zen_gates_db_rows": 94924,
+    "zen_gates_bet_index": "PRESENT",
+    "p185_classification": "P185_ROW_DELTA_IMPORT_REHEARSAL_TEMP_COPY_READY",
+    "p178a_to_p185_tests": "459 passed, 5 skipped",
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "status": "PASS"
+  },
+  "p185_classification_referenced": "P185_ROW_DELTA_IMPORT_REHEARSAL_TEMP_COPY_READY",
+  "p185_rehearsal_summary": {
+    "production_main_db_rows_unchanged": 54462,
+    "production_main_bet_index_unchanged": "ABSENT",
+    "temp_rehearsal_db": "outputs/research/power_lotto/p185_rehearsal/lottery_v2_p185_temp_rehearsal_20260601.db",
+    "temp_base_rows_after_dedup": 54302,
+    "dedup_dropped_rows": 160,
+    "dedup_dropped_rows_provenance": "ALL NULL (controlled_apply_id / provenance_hash / truth_level)",
+    "dedup_strategy": "MAX(id) per (lottery_type, target_draw, strategy_id)",
+    "duplicate_groups": 120,
+    "rows_in_dup_groups": 280,
+    "imported_rows": 40622,
+    "temp_final_rows": 94924,
+    "per_lottery_match_zen_gates": true,
+    "bet_index_distribution_match_zen_gates": true,
+    "duplicate_check_final": 0,
+    "integrity_check": "ok",
+    "provenance_coverage_imported": "99.7% (40502/40622)",
+    "wave_count": 11,
+    "p185_final_classification": "P185_ROW_DELTA_IMPORT_REHEARSAL_TEMP_COPY_READY"
+  },
+  "production_migration_gate": {
+    "gate_number": 12,
+    "all_conditions_must_be_met": true,
+    "conditions": {
+      "G1_approve_dedup_policy": {
+        "description": "CEO explicitly approves MAX(id) dedup policy: keep the row with highest id per (lottery_type, target_draw, strategy_id)",
+        "impact": "160 rows permanently removed from production DB (cannot be recovered without backup restore)",
+        "dropped_rows_provenance": "ALL NULL — confirmed no production-quality provenance",
+        "required": true
+      },
+      "G2_approve_dropping_160_rows": {
+        "description": "CEO explicitly approves dropping exactly 160 NULL-provenance duplicate rows",
+        "rows_to_drop": 160,
+        "rows_have_null_provenance": true,
+        "required": true
+      },
+      "G3_approve_table_recreation": {
+        "description": "CEO approves full table recreation (CREATE new / INSERT SELECT / DROP / RENAME) because UNIQUE constraint changes from (lottery_type, target_draw, strategy_id, replay_run_id) to (lottery_type, target_draw, strategy_id, bet_index)",
+        "reason": "SQLite has no DROP CONSTRAINT; ALTER TABLE alone is insufficient",
+        "required": true
+      },
+      "G4_approve_bet_index_column": {
+        "description": "CEO approves adding bet_index INTEGER NOT NULL DEFAULT 1 column to strategy_prediction_replays",
+        "required": true
+      },
+      "G5_approve_row_import": {
+        "description": "CEO approves importing 40622 multi-bet rows from zen-gates canonical research dataset (bet_index 2-5, 11 controlled_apply waves)",
+        "source": "claude/zen-gates-ff6802 branch — read-only reference",
+        "waves": "P126B/P126C/P126D/P126E/P126F/P131/P132/P133/P134/P140/P141",
+        "required": true
+      },
+      "G6_approve_backup": {
+        "description": "CEO approves creating a timestamped immutable backup before any migration step",
+        "backup_path_template": "lottery_api/data/lottery_v2.db.bak_p187_pre_migration_<YYYYMMDD_HHMMSS>",
+        "backup_must_be_verified": true,
+        "backup_must_be_chmod_444": true,
+        "required": true
+      },
+      "G7_approve_production_lock": {
+        "description": "CEO approves stopping all API writers (frontend/backend servers) before migration begins",
+        "required": true
+      },
+      "G8_approve_exact_sql": {
+        "description": "CEO approves exact SQL script derived from P185 rehearsal log (outputs/research/power_lotto/p185_rehearsal/p185_row_delta_import_sql_log_20260601.sql)",
+        "sql_log_path": "outputs/research/power_lotto/p185_rehearsal/p185_row_delta_import_sql_log_20260601.sql",
+        "required": true
+      },
+      "G9_approve_validation": {
+        "description": "CEO approves post-migration validation: SELECT COUNT(*) = 94924, bet_index PRESENT, 0 duplicates, PRAGMA integrity_check = ok, drift guard PASS at 94924",
+        "required": true
+      },
+      "G10_approve_rollback_plan": {
+        "description": "CEO approves rollback plan: if any validation fails, immediately restore from timestamped backup",
+        "rollback_trigger": "row count != 94924 OR duplicates > 0 OR integrity_check fails",
+        "rollback_command": "cp <backup_path> lottery_api/data/lottery_v2.db",
+        "required": true
+      },
+      "G11_approve_no_controlled_apply": {
+        "description": "CEO acknowledges no controlled_apply will run during migration",
+        "required": true
+      },
+      "G12_approve_no_research_restart": {
+        "description": "CEO acknowledges P178A closure policy remains active — no POWER_LOTTO research restart",
+        "required": true
+      }
+    }
+  },
+  "p187_execution_boundary": {
+    "allowed": [
+      "Create timestamped immutable backup of production DB",
+      "Stop API writers (frontend/backend processes)",
+      "Run reviewed migration SQL on production DB (dedup + table recreation + bet_index + row import)",
+      "Verify final production DB rows = 94924",
+      "Verify bet_index present in production DB",
+      "Verify UNIQUE(lottery_type, target_draw, strategy_id, bet_index) — 0 duplicates",
+      "Update drift guard expected count from 54462 to 94924",
+      "Verify drift guard PASS at 94924",
+      "Restart API writers after validation passes",
+      "Run contract tests (P161-P186) — DB-dependent tests should now PASS not SKIP",
+      "Produce P187 result artifact"
+    ],
+    "forbidden": [
+      "Strategy research of any kind",
+      "New replay controlled_apply outside the 40622 rehearsed rows",
+      "Registry mutation",
+      "UI/API new feature implementation",
+      "Deployment beyond restarting existing API servers",
+      "Importing rows beyond the 40622 validated in P185",
+      "Any DB write beyond the approved migration SQL"
+    ]
+  },
+  "exact_authorization_phrase": {
+    "phrase": "YES execute P187 production DB migration from main 54462 to reconciled 94924 using P185 rehearsal SQL, approve MAX(id) dedup dropping 160 null-provenance duplicate rows, create timestamped backup, no controlled_apply",
+    "required_verbatim": true,
+    "note": "P187 MUST NOT execute without this exact phrase. No paraphrase, partial quote, or synonym is accepted. If the phrase is absent, P187 must STOP and report P187_STOPPED_MISSING_EXACT_AUTHORIZATION_PHRASE."
+  },
+  "risk_review": {
+    "destructive_migration_risk": {
+      "level": "HIGH",
+      "note": "Table recreation drops and recreates strategy_prediction_replays. Any error mid-migration may leave DB in inconsistent state. Must run in single transaction with immediate rollback on failure."
+    },
+    "dedup_policy_risk": {
+      "level": "MEDIUM",
+      "note": "MAX(id) drops 160 rows permanently. Confirmed NULL provenance but cannot be recovered without backup. CEO explicit approval required."
+    },
+    "row_import_lineage_risk": {
+      "level": "LOW",
+      "note": "40622 rows imported from zen-gates via ATTACH read-only. Wave attribution verified (11 waves). 120 rows have NULL controlled_apply_id (pre-tagging) — acceptable."
+    },
+    "backup_restore_risk": {
+      "level": "MEDIUM",
+      "note": "If backup is not created or is corrupt, rollback is impossible. Backup must be created, verified (row count + file size), and chmod 444 before any migration SQL runs."
+    },
+    "production_lock_risk": {
+      "level": "HIGH",
+      "note": "Concurrent writes during table recreation would corrupt the new table. All API writers must be stopped and verified stopped before migration begins."
+    },
+    "test_compatibility_risk": {
+      "level": "MEDIUM",
+      "note": "After production migration: requires_zen_gates_db markers in contract tests should be removed or updated (main DB now has 94924 rows + bet_index). Drift guard expected count must be updated from 54462 to 94924. These are P187 post-migration cleanup steps."
+    },
+    "rollback_risk": {
+      "level": "LOW",
+      "note": "With a verified immutable backup, rollback is a single cp command. Risk is low if backup step is not skipped."
+    },
+    "accidental_stage_commit_push_risk": {
+      "level": "LOW",
+      "note": "P187 must not stage, commit, or push the DB file. DB file must remain in .gitignore or explicitly excluded."
+    },
+    "main_zen_gates_split_resolution_risk": {
+      "level": "MEDIUM",
+      "note": "After P187, main DB will match zen-gates DB row count. The split is RESOLVED for DB but code/schema parity must be verified. Contract tests that were SKIP due to requires_zen_gates_db should be re-evaluated."
+    }
+  },
+  "p187_preflight_checklist": {
+    "required_checks": [
+      {"step": "PF-1", "check": "pwd && git rev-parse --show-toplevel", "expected": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew"},
+      {"step": "PF-2", "check": "git branch --show-current", "expected": "main"},
+      {"step": "PF-3", "check": "git rev-parse --git-dir", "expected": ".git"},
+      {"step": "PF-4", "check": "sqlite3 lottery_api/data/lottery_v2.db 'SELECT COUNT(*) FROM strategy_prediction_replays;'", "expected": "54462"},
+      {"step": "PF-5", "check": "PRAGMA table_info — bet_index absent", "expected": "bet_index ABSENT"},
+      {"step": "PF-6", "check": "Verify zen-gates source DB accessible at .claude/worktrees/zen-gates-ff6802", "expected": "EXISTS"},
+      {"step": "PF-7", "check": "Verify P185 artifact classification", "expected": "P185_ROW_DELTA_IMPORT_REHEARSAL_TEMP_COPY_READY"},
+      {"step": "PF-8", "check": "Verify exact authorization phrase present in P187 prompt", "expected": "YES execute P187 production DB migration from main 54462 to reconciled 94924 using P185 rehearsal SQL, approve MAX(id) dedup dropping 160 null-provenance duplicate rows, create timestamped backup, no controlled_apply"},
+      {"step": "PF-9", "check": "git status --short — no unrelated dirty files; DB files not staged", "expected": "No forbidden paths staged"},
+      {"step": "PF-10", "check": "Drift guard PASS at 54462 before migration", "expected": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS"},
+      {"step": "PF-11", "check": "Stop all API writers (backend.pid / frontend.pid processes)", "expected": "All writers stopped"},
+      {"step": "PF-12", "check": "Create timestamped backup: cp lottery_api/data/lottery_v2.db lottery_api/data/lottery_v2.db.bak_p187_pre_migration_<timestamp>", "expected": "Backup file exists"},
+      {"step": "PF-13", "check": "Verify backup row count = 54462", "expected": "54462"},
+      {"step": "PF-14", "check": "chmod 444 <backup_path>", "expected": "Backup immutable"},
+      {"step": "PF-15", "check": "ONLY THEN: run migration SQL from P185 rehearsal log", "expected": "Migration proceeds"}
+    ],
+    "stop_if_any_fails": true
+  },
+  "governance_confirmations": {
+    "production_main_db_rows_before": 54462,
+    "production_main_db_rows_after": 54462,
+    "production_main_bet_index_before": "ABSENT",
+    "production_main_bet_index_after": "ABSENT",
+    "production_main_db_unchanged": true,
+    "no_production_db_write": true,
+    "no_db_migration_executed": true,
+    "no_db_copy_to_production": true,
+    "no_controlled_apply": true,
+    "no_registry_mutation": true,
+    "no_merge": true,
+    "no_rebase": true,
+    "no_cherry_pick": true,
+    "no_checkout_other_branch": true,
+    "no_stage": true,
+    "no_commit": true,
+    "no_push": true,
+    "power_lotto_research_closed": true,
+    "main_zen_gates_split_still_unresolved": true,
+    "p178a_closure_policy": "ACTIVE — POWER_LOTTO research CLOSED"
+  },
+  "next_task_options": [
+    {
+      "phrase": "YES execute P187 production DB migration from main 54462 to reconciled 94924 using P185 rehearsal SQL, approve MAX(id) dedup dropping 160 null-provenance duplicate rows, create timestamped backup, no controlled_apply",
+      "effect": "Execute full production DB migration: backup → dedup → schema recreate → import 40622 rows → validate 94924 → update drift guard → run contract tests.",
+      "recommended": true,
+      "warning": "DESTRUCTIVE — irreversible without backup restore. All 12 gate conditions must be met."
+    },
+    {
+      "phrase": "YES start P187 production DB migration dry-run checklist only",
+      "effect": "Produce detailed operator checklist from rehearsal SQL log. No DB write.",
+      "recommended": false
+    },
+    {
+      "phrase": "YES start P187 DB migration risk review only",
+      "effect": "Independent risk review of P184+P185 rehearsal results before committing to production migration.",
+      "recommended": false
+    },
+    {
+      "phrase": "YES start P187 maintain documented divergence and pause DB migration",
+      "effect": "Accept main/zen-gates DB split permanently. Document decision. No migration.",
+      "recommended": false
+    },
+    {
+      "phrase": "YES start P187 replay product UI backlog implementation plan only",
+      "effect": "Plan for multi-bet display in replay UI (Bet 1-5 filter, lifecycle tooltips). No DB migration.",
+      "recommended": false
+    }
+  ],
+  "next_task_blocked_by_user_authorization": true
+}

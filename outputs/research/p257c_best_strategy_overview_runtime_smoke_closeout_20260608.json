@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P257C",
+  "classification": "P257C_BEST_STRATEGY_OVERVIEW_RUNTIME_SMOKE_GOVERNANCE_CLOSEOUT_COMPLETE",
+  "phase0_summary": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch_at_run_time": "p257c-best-strategy-overview-runtime-smoke-closeout",
+    "DB_integrity": "ok",
+    "strategy_prediction_replays": 94924,
+    "HEAD_aligned": true,
+    "staged_files": 0,
+    "p257a_artifact_exists": true,
+    "p257b_artifact_exists": true,
+    "p257b_endpoint_registered": true,
+    "p257b_ui_section_present": true
+  },
+  "source_artifacts": {
+    "p257a": "outputs/research/p257a_best_nbet_strategy_overview_historical_replay_20260608.json",
+    "p257b": "outputs/research/p257b_best_strategy_overview_readonly_ui_20260608.json"
+  },
+  "api_smoke_result": {
+    "endpoint": "GET /api/replay/best-strategy-overview",
+    "http_status": 200,
+    "historical_replay_only": true,
+    "no_future_guarantee": true,
+    "no_betting_advice": true,
+    "no_strategy_promotion": true,
+    "best_strategy_by_lottery_and_bet_count_present": true,
+    "high_hit_events_by_lottery_present": true,
+    "high_hit_events_by_lottery_and_bet_count_present": true,
+    "warning_copy_or_page_contract_present": true,
+    "star_lottery_empty_state": "3_STAR and 4_STAR absent from best_strategy keys (no replay rows)",
+    "result": "PASS"
+  },
+  "ui_static_smoke_result": {
+    "nav_marker_data_section_p257_overview": "PASS",
+    "section_id_p257_overview_section": "PASS",
+    "title_zh_最佳策略總覽": "PASS",
+    "bet_labels_1_to_5": "PASS",
+    "tab_BIG_LOTTO": "PASS",
+    "tab_DAILY_539": "PASS",
+    "tab_POWER_LOTTO": "PASS",
+    "tab_3_STAR": "PASS",
+    "tab_4_STAR": "PASS",
+    "empty_state_copy": "PASS — '此彩種目前沒有可用回測資料' present and JS NO_DATA_LOTTERIES guard present",
+    "warning_historical_replay": "PASS",
+    "warning_no_future_guarantee": "PASS",
+    "result": "PASS"
+  },
+  "browser_smoke_result": {
+    "result": "NOT_RUN",
+    "reason": "Vanilla JS SPA; no browser automation tool available without package/config changes which are out of scope for P257C"
+  },
+  "forbidden_wording_check": {
+    "scope": "P257B section + JS block only (not whole index.html which contains pre-existing unrelated content)",
+    "保證": "ABSENT",
+    "必中": "ABSENT",
+    "推薦下注": "ABSENT",
+    "提高中獎率": "ABSENT",
+    "中大獎": "ABSENT",
+    "jackpot": "ABSENT",
+    "future_guarantee_positive": "ABSENT",
+    "betting_advice_positive": "ABSENT",
+    "result": "PASS"
+  },
+  "db_before": {
+    "integrity": "ok",
+    "strategy_prediction_replays": 94924
+  },
+  "db_after": {
+    "integrity": "ok",
+    "strategy_prediction_replays": 94924,
+    "changed": false
+  },
+  "governance_updates": [
+    "CURRENT_STATE.md: added P257A-P257C arc closure entry",
+    "active_task.md: updated status to WAITING_FOR_USER_AUTHORIZATION",
+    "roadmap.md: recorded P257A-P257C milestones"
+  ],
+  "tests_run": {
+    "p257c_runtime_smoke": "pytest tests/test_p257c_best_strategy_overview_runtime_smoke.py",
+    "p257b_contract": "pytest tests/test_p257b_best_strategy_overview_contract.py",
+    "p257b_api": "pytest tests/test_p257b_best_strategy_overview_readonly_api.py",
+    "p257a_regression": "pytest tests/test_p257a_best_nbet_strategy_overview_historical_replay.py",
+    "browser_smoke": "NOT_RUN — vanilla JS SPA, no browser runner in scope"
+  },
+  "current_accepted_baseline": {
+    "strategy_prediction_replays": 94924,
+    "BIG_LOTTO_raw": 22239,
+    "BIG_LOTTO_canonical": 2114,
+    "DAILY_539": 5882,
+    "POWER_LOTTO": 1917,
+    "3_STAR": 5850,
+    "4_STAR": 5850
+  },
+  "no_db_write_confirmed": true,
+  "no_replay_generation_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_strategy_promotion_confirmed": true,
+  "no_recommendation_logic_change_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "final_decision": "P257C_BEST_STRATEGY_OVERVIEW_RUNTIME_SMOKE_GOVERNANCE_CLOSEOUT_COMPLETE"
+}

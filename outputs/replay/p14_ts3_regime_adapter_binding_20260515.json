@@ -1,0 +1,165 @@
+{
+  "schema_version": "p14.1",
+  "generated_at": "2026-05-15T00:00:00+08:00",
+  "source_branch": "chore/p14-ts3-regime-adapter-binding-20260515",
+  "depends_on_pr": 106,
+  "phase": "P1.4",
+  "strategy_id": "ts3_regime_3bet",
+  "lottery_type": "BIG_LOTTO",
+
+  "final_classification": "P14_TS3_REGIME_ADAPTER_BINDING_READY",
+  "decision": "SAFE_RECONSTRUCTION",
+  "binding_status": "BOUND",
+
+  "pr_106_verification": {
+    "number": 106,
+    "title": "feat(replay): add online strategies to registry proposal",
+    "state": "OPEN",
+    "is_draft": true,
+    "mergeable": "MERGEABLE",
+    "merge_state_status": "CLEAN",
+    "head_ref": "chore/p13-registry-online-proposal-20260515",
+    "base_ref": "main",
+    "ci_checks": "2 passing, 1 skipped, 0 failing",
+    "verification_result": "PASS — PR #106 is OPEN/DRAFT, MERGEABLE, all CI checks green"
+  },
+
+  "evidence": [
+    {
+      "type": "callable_found",
+      "file": "tools/backtest_biglotto_enhancements.py",
+      "function": "generate_p1a_regime_adaptive",
+      "line_approx": 199,
+      "description": "4-bet function: fourier_rhythm_bet + cold_numbers_bet + tail_balance_bet + regime-adaptive 4th bet"
+    },
+    {
+      "type": "component_mapping",
+      "description": "ts3_regime_3bet = first 3 bets of generate_p1a_regime_adaptive (TS3 component, regime-invariant)"
+    },
+    {
+      "type": "regime_analysis",
+      "description": "detect_regime() only modifies bet4 (gray-zone vs Markov). Bets 1-3 are regime-invariant."
+    },
+    {
+      "type": "sub_callables_verified",
+      "callables": [
+        "tools.backtest_biglotto_enhancements.fourier_rhythm_bet",
+        "tools.backtest_biglotto_enhancements.cold_numbers_bet",
+        "tools.backtest_biglotto_enhancements.tail_balance_bet"
+      ],
+      "description": "All 3 sub-callables exist in tools/backtest_biglotto_enhancements.py"
+    },
+    {
+      "type": "production_usage",
+      "source": "memory/lessons.md:L843-L846",
+      "quote": "繼續使用 regime_2bet/ts3_regime_3bet/p1_dev_sum5bet 生產策略"
+    },
+    {
+      "type": "prediction_run_evidence",
+      "run_ids": [167, 174, 175],
+      "statuses": ["VALID", "VALID", "RECONSTRUCTED"],
+      "pending_items": [1069, 1070, 1071, 1090, 1091, 1092, 1093, 1094, 1095]
+    },
+    {
+      "type": "git_history",
+      "commit": "3d11378",
+      "message": "feat(replay): add online strategies to registry proposal",
+      "description": "P1.3 commit adding ts3_regime_3bet as ONLINE with PENDING binding"
+    },
+    {
+      "type": "p12_classification",
+      "classification": "PRODUCT_DENOMINATOR_ONLINE_CANDIDATE → ONLINE"
+    }
+  ],
+
+  "reconstruction_details": {
+    "wrapper_function": "_ts3_regime_3bet_predict",
+    "defined_in": "lottery_api/models/replay_strategy_registry.py",
+    "adapter_class": "_BigLottoTs3Regime3BetAdapter",
+    "imports_from": "tools.backtest_biglotto_enhancements",
+    "n_bets": 3,
+    "bet_composition": [
+      "bet1: fourier_rhythm_bet(history)",
+      "bet2: cold_numbers_bet(history, exclude=set(bet1))",
+      "bet3: tail_balance_bet(history, exclude=set(bet1)|set(bet2))"
+    ],
+    "excluded_from_reconstruction": "regime-adaptive bet4 (gray-zone or Markov)"
+  },
+
+  "test_results": {
+    "test_ts3_regime_adapter_binding.py": {
+      "passed": 22,
+      "failed": 0,
+      "status": "PASS"
+    },
+    "test_replay_strategy_registry_online_candidates.py": {
+      "passed": 44,
+      "failed": 0,
+      "status": "PASS"
+    },
+    "test_replay_strategy_lifecycle_registry.py": {
+      "included_in_full_suite": true,
+      "status": "PASS"
+    },
+    "test_replay_lifecycle_drift_guard.py": {
+      "included_in_full_suite": true,
+      "status": "PASS"
+    },
+    "test_replay_truth_level_contract.py": {
+      "included_in_full_suite": true,
+      "status": "PASS"
+    },
+    "test_replay_api_contract.py": {
+      "included_in_full_suite": true,
+      "status": "PASS"
+    },
+    "total_governance_suite": {
+      "passed": 175,
+      "failed": 0,
+      "status": "PASS"
+    }
+  },
+
+  "safety_flags": {
+    "db_written": false,
+    "replay_rows_generated": false,
+    "backfill_run": false,
+    "strategy_logic_changed": false,
+    "api_ui_backend_changed": false,
+    "drift_guard_baseline_changed": false,
+    "prediction_items_changed": false,
+    "prediction_runs_changed": false
+  },
+
+  "changed_files": [
+    "lottery_api/models/replay_strategy_registry.py",
+    "tests/test_replay_strategy_registry_online_candidates.py",
+    "tests/test_ts3_regime_adapter_binding.py",
+    "docs/replay/p14_ts3_regime_adapter_binding_report_20260515.md",
+    "outputs/replay/p14_ts3_regime_adapter_binding_20260515.json"
+  ],
+
+  "remaining_risks": [
+    {
+      "risk": "run_id=175 RECONSTRUCTED snapshot",
+      "severity": "LOW",
+      "description": "prediction_run 175 was marked RECONSTRUCTED in P1.3 — not a fresh prediction. Audit risk carried forward."
+    },
+    {
+      "risk": "9 PENDING prediction_items not yet promoted",
+      "severity": "LOW",
+      "description": "Items 1069-1071, 1090-1095 require P2 controlled backfill to generate strategy_prediction_replays rows."
+    },
+    {
+      "risk": "safe reconstruction != exact original callable",
+      "severity": "LOW",
+      "description": "No exact standalone ts3_regime_3bet function found in codebase. Reconstruction matches documented semantics but cannot be byte-identical to original."
+    }
+  ],
+
+  "next_step": {
+    "classification": "READY",
+    "recommended_action": "P2 controlled replay backfill dry-run",
+    "prerequisite": "PR #106 and this PR (#107) must be merged to main before P2 backfill"
+  }
+}

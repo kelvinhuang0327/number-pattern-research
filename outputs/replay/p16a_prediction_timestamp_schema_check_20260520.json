@@ -1,0 +1,47 @@
+{
+  "phase": "P16A_PREDICTION_TIMESTAMP_SCHEMA_CHECK",
+  "generated_at": "2026-05-20T12:52:59.257667+00:00",
+  "table": "strategy_prediction_replays",
+  "production_rows": 1960,
+  "existing_columns": [
+    "actual_numbers",
+    "actual_special",
+    "controlled_apply_id",
+    "dry_run",
+    "generated_at",
+    "history_cutoff_draw",
+    "hit_count",
+    "hit_numbers",
+    "id",
+    "lottery_type",
+    "predicted_numbers",
+    "predicted_special",
+    "provenance_hash",
+    "provenance_source",
+    "reject_reason",
+    "replay_run_id",
+    "replay_status",
+    "source",
+    "special_hit",
+    "strategy_id",
+    "strategy_name",
+    "strategy_version",
+    "target_date",
+    "target_draw",
+    "truth_level"
+  ],
+  "has_prediction_cutoff_date": false,
+  "has_prediction_generated_at": false,
+  "has_generated_at": true,
+  "has_target_date": true,
+  "has_history_cutoff_draw": true,
+  "schema_patch_required": true,
+  "recommended_columns": [
+    "prediction_cutoff_date",
+    "prediction_generated_at"
+  ],
+  "patch_sql": [
+    "ALTER TABLE strategy_prediction_replays ADD COLUMN prediction_cutoff_date TEXT;",
+    "ALTER TABLE strategy_prediction_replays ADD COLUMN prediction_generated_at TEXT;"
+  ]
+}

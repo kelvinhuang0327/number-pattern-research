@@ -1,0 +1,273 @@
+{
+  "task_id": "P258L",
+  "task_name": "D3 Strategy Status Audit Page Plan",
+  "artifact_date": "2026-06-09",
+  "task_status": "PLAN_ONLY",
+  "final_classification": "P258L_D3_STRATEGY_STATUS_AUDIT_PAGE_PLAN_READY",
+
+  "plan_only_declaration": {
+    "is_plan_only": true,
+    "no_ui_implementation": true,
+    "no_api_route_implementation": true,
+    "no_real_candidate_methods_used": true,
+    "no_executable_gate_evaluation": true,
+    "no_null_generation": true,
+    "no_p_values_computed": true,
+    "no_paired_tests": true,
+    "no_backtests": true,
+    "no_db_write": true,
+    "no_recommendation_changes": true,
+    "no_production_changes": true,
+    "no_registry_changes": true,
+    "no_controlled_apply_changes": true,
+    "no_deployment_changes": true
+  },
+
+  "mandatory_safety_semantics": {
+    "d3_is_not_a_prediction_model": true,
+    "contract_validation_is_not_strategy_evaluation": true,
+    "passing_contract_validation_does_not_imply_improved_prediction_accuracy": true,
+    "not_yet_rejected_is_not_approval": true,
+    "passing_validators_does_not_allow_production_use": true,
+    "passing_validators_does_not_allow_recommendation_use": true,
+    "no_betting_advice": true,
+    "no_lottery_edge_claimed": true,
+    "executable_gate_evaluation_remains_forbidden": true
+  },
+
+  "page_contract": {
+    "page_title": "D3 Strategy Status / Contract Audit",
+    "page_purpose": [
+      "Show all strategies and their current evidence/lifecycle status",
+      "Show D3 contract-readiness status separately from lifecycle and evidence status",
+      "Prevent users from interpreting D3 contract status as approval, promotion, or prediction endorsement",
+      "Provide a historical/read-only evidence index — not betting advice"
+    ],
+    "page_type": "read-only audit/index",
+    "page_is_historical_evidence_only": true,
+    "page_is_not_betting_advice": true,
+    "page_is_not_prediction_endorsement": true
+  },
+
+  "data_sources": {
+    "strategy_registry_lifecycle_status": {
+      "description": "Current strategy registry / lifecycle status as stored in the replay strategy registry",
+      "authorized_access": "read-only",
+      "db_write": false
+    },
+    "p251_evidence_dashboard_payload": {
+      "description": "P251 evidence dashboard payload if available (GET /api/replay/evidence-dashboard)",
+      "authorized_access": "read-only artifact-backed",
+      "db_write": false,
+      "conditional": "use if available; gracefully degrade if absent"
+    },
+    "p257_best_strategy_overview_payload": {
+      "description": "P257A best-N-bet strategy overview payload if available (GET /api/replay/best-strategy-overview)",
+      "authorized_access": "read-only artifact-backed",
+      "db_write": false,
+      "conditional": "use if available; gracefully degrade if absent"
+    },
+    "p258_d3_contract_validation_artifact_chain": {
+      "description": "P258A–P258K D3 contract-validation arc artifact chain; provides d3_contract_status metadata",
+      "authorized_access": "read-only artifact files",
+      "db_write": false
+    }
+  },
+
+  "required_row_fields": [
+    {
+      "field": "lottery_type",
+      "type": "string",
+      "required": true,
+      "description": "Lottery type identifier (e.g., DAILY_539, BIG_LOTTO, POWER_LOTTO)"
+    },
+    {
+      "field": "strategy_id",
+      "type": "string",
+      "required": true,
+      "description": "Unique strategy identifier from registry"
+    },
+    {
+      "field": "strategy_name",
+      "type": "string",
+      "required": false,
+      "description": "Human-readable strategy name if available"
+    },
+    {
+      "field": "lifecycle_status",
+      "type": "string",
+      "required": true,
+      "description": "Current lifecycle status (e.g., ADOPTED, PROVISIONAL, REJECTED, RETIRED, HISTORICAL_ARTIFACT, EXPERIMENTAL)"
+    },
+    {
+      "field": "evidence_status",
+      "type": "string",
+      "required": true,
+      "description": "Current evidence status (e.g., VALIDATED, PENDING, NULL, REJECTED_BY_OOS, OBSERVATION_ONLY)"
+    },
+    {
+      "field": "replay_row_count",
+      "type": "integer",
+      "required": false,
+      "description": "Number of replay rows for this strategy in strategy_prediction_replays"
+    },
+    {
+      "field": "draw_coverage",
+      "type": "string",
+      "required": false,
+      "description": "Draw coverage description (e.g., '1500 draws', 'short window only')"
+    },
+    {
+      "field": "best_n_bet_status",
+      "type": "string",
+      "required": false,
+      "description": "Best-N-bet strategy status from P257A overview if available"
+    },
+    {
+      "field": "latest_evidence_artifact",
+      "type": "string",
+      "required": false,
+      "description": "Path or identifier of the most recent evidence artifact for this strategy"
+    },
+    {
+      "field": "d3_contract_status",
+      "type": "string",
+      "required": true,
+      "description": "D3 contract-readiness status — one of the allowed values only",
+      "allowed_values": [
+        "NOT_EVALUATED_BY_D3",
+        "CONTRACT_READY",
+        "CONTRACT_BLOCKED",
+        "NOT_APPLICABLE_HISTORICAL_ARTIFACT",
+        "NOT_APPLICABLE_NO_REPLAY"
+      ],
+      "forbidden_values": [
+        "APPROVED",
+        "PROMOTED",
+        "PRODUCTION_READY",
+        "RECOMMENDED",
+        "PREDICTIVE_EDGE_CONFIRMED"
+      ]
+    },
+    {
+      "field": "d3_contract_reason",
+      "type": "string",
+      "required": true,
+      "description": "Human-readable reason for the d3_contract_status value"
+    },
+    {
+      "field": "d3_not_approval_warning",
+      "type": "string",
+      "required": true,
+      "description": "Mandatory warning: 'D3 contract status is NOT approval. NOT_YET_REJECTED is not approval.' Must always be present regardless of d3_contract_status."
+    },
+    {
+      "field": "no_prediction_claim",
+      "type": "string",
+      "required": true,
+      "description": "Mandatory disclaimer: 'D3 is not a prediction model. Contract validation does not imply improved prediction accuracy.'"
+    },
+    {
+      "field": "no_betting_advice",
+      "type": "string",
+      "required": true,
+      "description": "Mandatory disclaimer: 'This information is historical/read-only evidence only. It is not betting advice.'"
+    }
+  ],
+
+  "allowed_d3_contract_statuses": [
+    {
+      "status": "NOT_EVALUATED_BY_D3",
+      "meaning": "Strategy has not been submitted to D3 contract validation. This is the default state for all strategies.",
+      "implies_approval": false
+    },
+    {
+      "status": "CONTRACT_READY",
+      "meaning": "All D3 input contract boundaries are present and well-formed. NOT_YET_REJECTED — does not imply approval, improved accuracy, or production readiness.",
+      "implies_approval": false
+    },
+    {
+      "status": "CONTRACT_BLOCKED",
+      "meaning": "One or more D3 input contract boundaries failed validation (ContractValidationError raised). Strategy cannot proceed to gate evaluation without fixing contract issues.",
+      "implies_approval": false
+    },
+    {
+      "status": "NOT_APPLICABLE_HISTORICAL_ARTIFACT",
+      "meaning": "Strategy is a historical artifact (REJECTED, RETIRED, or HISTORICAL_ARTIFACT lifecycle). D3 contract evaluation is not applicable.",
+      "implies_approval": false
+    },
+    {
+      "status": "NOT_APPLICABLE_NO_REPLAY",
+      "meaning": "Strategy has no replay rows in strategy_prediction_replays. D3 contract evaluation requires replay data.",
+      "implies_approval": false
+    }
+  ],
+
+  "forbidden_d3_contract_statuses": [
+    "APPROVED",
+    "PROMOTED",
+    "PRODUCTION_READY",
+    "RECOMMENDED",
+    "PREDICTIVE_EDGE_CONFIRMED"
+  ],
+
+  "page_filters": [
+    {
+      "filter": "lottery_type",
+      "type": "enum",
+      "values": ["DAILY_539", "BIG_LOTTO", "POWER_LOTTO", "ALL"]
+    },
+    {
+      "filter": "lifecycle_status",
+      "type": "multi-select string"
+    },
+    {
+      "filter": "evidence_status",
+      "type": "multi-select string"
+    },
+    {
+      "filter": "d3_contract_status",
+      "type": "multi-select enum",
+      "allowed_values": [
+        "NOT_EVALUATED_BY_D3",
+        "CONTRACT_READY",
+        "CONTRACT_BLOCKED",
+        "NOT_APPLICABLE_HISTORICAL_ARTIFACT",
+        "NOT_APPLICABLE_NO_REPLAY"
+      ]
+    },
+    {
+      "filter": "has_replay",
+      "type": "boolean"
+    },
+    {
+      "filter": "has_artifact",
+      "type": "boolean"
+    }
+  ],
+
+  "required_safety_copy": {
+    "d3_not_prediction_model": "D3 is not a prediction model.",
+    "contract_validation_not_strategy_evaluation": "Contract validation is not strategy evaluation.",
+    "not_yet_rejected_not_approval": "NOT_YET_REJECTED is not approval.",
+    "no_accuracy_implication": "Passing contract validation does not imply improved prediction accuracy.",
+    "no_betting_advice": "This page is historical/read-only evidence only, not betting advice."
+  },
+
+  "future_task_split": {
+    "p258m_authorized_scope": "P258M may implement read-only artifact-backed API contract only, if explicitly authorized. Must not write DB, must not modify recommendation/production/registry/deployment paths.",
+    "p258n_authorized_scope": "P258N may implement UI display only, if explicitly authorized after P258M API contract is merged.",
+    "running_d3_on_real_candidates": "FORBIDDEN — requires separate future task and explicit authorization beyond P258N",
+    "each_task_requires_separate_explicit_authorization": true
+  },
+
+  "forbidden_executable_modules_confirmed_absent": [
+    "candidate_ingest.py",
+    "baseline_ingest.py",
+    "null_factory.py",
+    "gate_statistics.py",
+    "gate_orchestrator.py",
+    "gate_audit.py",
+    "integration_runner.py"
+  ]
+}

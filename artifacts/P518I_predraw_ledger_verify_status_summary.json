@@ -1,0 +1,167 @@
+{
+  "acceptance_decision": {
+    "case_summary": {
+      "failed_cases": [],
+      "missing_artifacts": [],
+      "passed_cases": 12,
+      "total_cases": 12
+    },
+    "final_status": "PASS"
+  },
+  "artifact_prefix": "P518I_predraw_ledger_verify_status",
+  "canonical_db_open_write_status": "PASS",
+  "canonical_db_refusal": {
+    "evidence": {
+      "actual_exit": 3,
+      "case_id": "canonical_db_basename_refusal",
+      "case_status": "PASS",
+      "expected_exit": 3,
+      "signal": "REFUSED",
+      "status": "PASS",
+      "transcript_status": "PASS"
+    },
+    "status": "PASS"
+  },
+  "canonical_db_refusal_status": "PASS",
+  "db_invariant": {
+    "checks": [
+      {
+        "canonical_db_exists_after": true,
+        "canonical_db_exists_before": true,
+        "canonical_db_opened": false,
+        "canonical_db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P518F-predraw-ledger-verifier-smoke/data/lottery_v2.db",
+        "canonical_db_written": false,
+        "fixture_scope": "temporary synthetic JSONL files only",
+        "migration_backfill_deploy_run": false,
+        "source": "P518F_smoke",
+        "status": "PASS"
+      },
+      {
+        "canonical_db_exists_after": true,
+        "canonical_db_exists_before": true,
+        "canonical_db_opened": false,
+        "canonical_db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P518G-predraw-ledger-verifier-edge-matrix/data/lottery_v2.db",
+        "canonical_db_written": false,
+        "fixture_scope": "temporary synthetic JSONL files only",
+        "migration_backfill_deploy_run": false,
+        "source": "P518G_edge_matrix",
+        "status": "PASS"
+      },
+      {
+        "canonical_db_exists_after": "not inspected by P518H",
+        "canonical_db_exists_before": "not inspected by P518H",
+        "canonical_db_opened": false,
+        "canonical_db_path": "data/lottery_v2.db",
+        "canonical_db_written": false,
+        "fixture_scope": "committed P518F/P518G artifacts only",
+        "migration_backfill_deploy_run": false,
+        "source": "P518H_acceptance",
+        "status": "PASS"
+      }
+    ],
+    "status": "PASS"
+  },
+  "edge_cases": {
+    "failed": 0,
+    "passed": 7,
+    "source": "P518G_edge_matrix",
+    "status": "PASS",
+    "total": 7
+  },
+  "failed_cases": [],
+  "failed_missing_case_count": 0,
+  "final_compact_status": "PASS",
+  "missing_case_artifacts": [],
+  "missing_required_source_artifacts": [],
+  "notices": [
+    "no canonical DB open/write",
+    "no migration/backfill",
+    "no deploy",
+    "synthetic fixture evidence only",
+    "not production release approval",
+    "no betting/future prediction claims"
+  ],
+  "required_notice_status": "PASS",
+  "scope": "P518I reads committed P518H acceptance artifacts only; no verifier, smoke, edge, or acceptance CLI execution; no canonical DB open/write; no migration/backfill; no deploy; synthetic fixture evidence only; not production release approval; no betting/future prediction claims.",
+  "smoke_cases": {
+    "failed": 0,
+    "passed": 5,
+    "source": "P518F_smoke",
+    "status": "PASS",
+    "total": 5
+  },
+  "source_acceptance_artifact_prefix": "P518H_predraw_ledger_verify_acceptance",
+  "source_artifacts": [
+    {
+      "bytes": 8038,
+      "exists": true,
+      "path": "artifacts/P518H_predraw_ledger_verify_acceptance_decision.json",
+      "sha256": "e6b045ccb2a4446662f505f89f6c2dacfb346f07a5196e15cc1597ea9590aa3a"
+    },
+    {
+      "bytes": 4842,
+      "exists": true,
+      "path": "artifacts/P518H_predraw_ledger_verify_acceptance_case_summary.csv",
+      "sha256": "4898043931df54666add476fe1ea7b565eed7156beac99eceaed79d65a17978f"
+    },
+    {
+      "bytes": 3093,
+      "exists": true,
+      "path": "artifacts/P518H_predraw_ledger_verify_acceptance_failure_matrix.csv",
+      "sha256": "04947866c4db1381e8280271528af4784d05336624aceb3b4f7755d1f4e397cf"
+    },
+    {
+      "bytes": 1891,
+      "exists": true,
+      "path": "artifacts/P518H_predraw_ledger_verify_acceptance_db_invariant.json",
+      "sha256": "a193dc236694d623900f94dc0e453385fa10c051d4620dc216c305fba0e7f2b3"
+    },
+    {
+      "bytes": 1886,
+      "exists": true,
+      "path": "artifacts/P518H_predraw_ledger_verify_acceptance_report.md",
+      "sha256": "c79a1a17227e819e987058afb001d9cd4fddaab96e0619f67d57d0f98db97130"
+    },
+    {
+      "bytes": 1787,
+      "exists": true,
+      "path": "artifacts/P518H_predraw_ledger_verify_acceptance_manifest.csv",
+      "sha256": "fd280c8be7ce09dbe60e0e09a48818e696e9dc27ad08c1a2a661e1d501868c18"
+    }
+  ],
+  "source_manifest_checks": [
+    {
+      "artifact_path": "artifacts/P518H_predraw_ledger_verify_acceptance_decision.json",
+      "notes": "sha256=e6b045ccb2a4446662f505f89f6c2dacfb346f07a5196e15cc1597ea9590aa3a; bytes=8038",
+      "status": "PASS"
+    },
+    {
+      "artifact_path": "artifacts/P518H_predraw_ledger_verify_acceptance_case_summary.csv",
+      "notes": "sha256=4898043931df54666add476fe1ea7b565eed7156beac99eceaed79d65a17978f; bytes=4842",
+      "status": "PASS"
+    },
+    {
+      "artifact_path": "artifacts/P518H_predraw_ledger_verify_acceptance_failure_matrix.csv",
+      "notes": "sha256=04947866c4db1381e8280271528af4784d05336624aceb3b4f7755d1f4e397cf; bytes=3093",
+      "status": "PASS"
+    },
+    {
+      "artifact_path": "artifacts/P518H_predraw_ledger_verify_acceptance_db_invariant.json",
+      "notes": "sha256=a193dc236694d623900f94dc0e453385fa10c051d4620dc216c305fba0e7f2b3; bytes=1891",
+      "status": "PASS"
+    },
+    {
+      "artifact_path": "artifacts/P518H_predraw_ledger_verify_acceptance_report.md",
+      "notes": "sha256=c79a1a17227e819e987058afb001d9cd4fddaab96e0619f67d57d0f98db97130; bytes=1886",
+      "status": "PASS"
+    },
+    {
+      "artifact_path": "artifacts/P518H_predraw_ledger_verify_acceptance_manifest.csv",
+      "notes": "manifest self-hash intentionally omitted",
+      "status": "PASS"
+    }
+  ],
+  "source_manifest_status": "PASS",
+  "warning_count": 0,
+  "warnings": []
+}

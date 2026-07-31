@@ -1,0 +1,378 @@
+{
+  "p46_version": "20260524",
+  "classification": "P46_POWERLOTTO_EXPANSION_PLANNING_MERGED_TO_MAIN",
+  "generated_at": "2026-05-24T00:00:00+00:00",
+  "branch": "p46-powerlotto-expansion-planning",
+  "production_rows_unchanged": 37960,
+  "note": "Read-only planning. No adapter code added. No dry-run rows generated. No DB writes.",
+  "context": "P45 merged (cb3aa1a). BIG_LOTTO Wave 3 complete (37960 rows). POWER_LOTTO is next expansion frontier.",
+  "powerlotto_pool_constants": {
+    "first_zone_pool": 38,
+    "first_zone_pick": 6,
+    "second_zone_pool": 8,
+    "second_zone_pick": 1,
+    "description": "First zone: 6 numbers from 1-38. Second zone / special: 1 number from 1-8 (separate pool)."
+  },
+  "powerlotto_draw_history": {
+    "total_draws_in_db": 1912,
+    "first_draw": "97000001",
+    "first_date": "2008/01/24",
+    "latest_draw": "115000040",
+    "latest_date": "2026/05/18",
+    "available_for_1500_window": true
+  },
+  "current_state_inventory": [
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "registry_lifecycle": "ONLINE",
+      "replay_status": "PREDICTED",
+      "dry_run": 0,
+      "production_row_count": 1500,
+      "draw_range": "101000002 to 115000040",
+      "replay_ui_visible": true,
+      "row_backed": true,
+      "in_p30_needs_promotion": false,
+      "p35_wave_assignment": "already_covered",
+      "note": "ONLINE production strategy. 1500 verified replay rows. Backfill covers 2014-2026. Edge: +3.16% (300p), Sharpe: 0.090.",
+      "tool_file": "tools/power_fourier_rhythm.py"
+    },
+    {
+      "strategy_id": "power_orthogonal_5bet",
+      "lottery_type": "POWER_LOTTO",
+      "registry_lifecycle": "ONLINE",
+      "replay_status": "PREDICTED",
+      "dry_run": 0,
+      "production_row_count": 1570,
+      "draw_range": "99000055 to 115000040",
+      "replay_ui_visible": true,
+      "row_backed": true,
+      "in_p30_needs_promotion": false,
+      "p35_wave_assignment": "already_covered",
+      "note": "ONLINE production strategy. 1570 rows (1500 verified backfill + 70 legacy). Edge: +2.76% (300p), Sharpe: 0.068.",
+      "tool_file": "tools/predict_power_orthogonal_5bet.py"
+    },
+    {
+      "strategy_id": "power_precision_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "registry_lifecycle": "ONLINE",
+      "replay_status": "PREDICTED",
+      "dry_run": 0,
+      "production_row_count": 1570,
+      "draw_range": "99000055 to 115000040",
+      "replay_ui_visible": true,
+      "row_backed": true,
+      "in_p30_needs_promotion": false,
+      "p35_wave_assignment": "already_covered",
+      "note": "ONLINE production strategy. 1570 rows (1500 verified backfill + 70 legacy). Edge: +3.40% (300p), Sharpe: 0.088.",
+      "tool_file": "tools/predict_power_precision_3bet.py"
+    },
+    {
+      "strategy_id": "h6_gate_mk20_ew85",
+      "lottery_type": "POWER_LOTTO",
+      "registry_lifecycle": "OBSERVATION",
+      "replay_status": "not_applicable",
+      "dry_run": "N/A",
+      "production_row_count": 0,
+      "replay_ui_visible": false,
+      "row_backed": false,
+      "in_p30_needs_promotion": true,
+      "p30_classification": "manual_review",
+      "p30_sub_class": "lifecycle_observation_needs_eval",
+      "p35_wave_assignment": "not_assessed",
+      "note": "OBSERVATION lifecycle. H6 is a monitoring/alerting framework (h6_report_generator.py, h6_scheduler.py, h6_alert_engine.py, h6_live_monitor.py). Cannot produce predicted_numbers deterministically. Not a prediction strategy.",
+      "blocking_issues": "H6 gate is not a prediction function; cannot produce a valid get_one_bet() returning 6 first-zone numbers."
+    },
+    {
+      "strategy_id": "power_shlc_midfreq",
+      "lottery_type": "POWER_LOTTO",
+      "registry_lifecycle": "REJECTED",
+      "replay_status": "not_applicable",
+      "dry_run": "N/A",
+      "production_row_count": 0,
+      "replay_ui_visible": false,
+      "row_backed": false,
+      "in_p30_needs_promotion": false,
+      "p30_classification": "executable_no",
+      "p30_sub_class": "registry_rejected_no_adapter",
+      "p35_wave_assignment": "not_assessed",
+      "note": "REJECTED. SHLC=Short-Hot-Long-Cold concept rejected in P0/P1 evaluation cycle. No tool implementation. Edge: -2.92%.",
+      "blocking_issues": "Statistically rejected; no executable code."
+    },
+    {
+      "strategy_id": "sgp_power_017_research",
+      "lottery_type": "POWER_LOTTO",
+      "registry_lifecycle": "not_registered",
+      "replay_status": "not_applicable",
+      "dry_run": "N/A",
+      "production_row_count": 0,
+      "replay_ui_visible": false,
+      "row_backed": false,
+      "in_p30_needs_promotion": false,
+      "p30_classification": "executable_no",
+      "p30_sub_class": "artifact_no_code",
+      "p35_wave_assignment": "not_assessed",
+      "note": "Research artifact only; no implementation. SGP Gap Pressure research for POWER_LOTTO. No executable code."
+    },
+    {
+      "strategy_id": "sgp_v9_apex_powerlotto",
+      "lottery_type": "POWER_LOTTO",
+      "registry_lifecycle": "not_registered",
+      "replay_status": "not_applicable",
+      "dry_run": "N/A",
+      "production_row_count": 0,
+      "replay_ui_visible": false,
+      "row_backed": false,
+      "in_p30_needs_promotion": false,
+      "p30_classification": "executable_no",
+      "p30_sub_class": "artifact_no_code",
+      "p35_wave_assignment": "not_assessed",
+      "note": "SGP V9 apex research artifact; no implementation."
+    },
+    {
+      "strategy_id": "shlc_midfreq_power",
+      "lottery_type": "POWER_LOTTO",
+      "registry_lifecycle": "not_registered",
+      "replay_status": "not_applicable",
+      "dry_run": "N/A",
+      "production_row_count": 0,
+      "replay_ui_visible": false,
+      "row_backed": false,
+      "in_p30_needs_promotion": false,
+      "p30_classification": "executable_no",
+      "p30_sub_class": "artifact_no_code",
+      "p35_wave_assignment": "not_assessed",
+      "note": "SHLC artifact; tested edge -2.92%; rejected."
+    },
+    {
+      "strategy_id": "gap_rebound_powerlotto",
+      "lottery_type": "POWER_LOTTO",
+      "registry_lifecycle": "not_registered",
+      "replay_status": "not_applicable",
+      "dry_run": "N/A",
+      "production_row_count": 0,
+      "replay_ui_visible": false,
+      "row_backed": false,
+      "in_p30_needs_promotion": false,
+      "p30_classification": "manual_review",
+      "p30_sub_class": "artifact_manual",
+      "p35_wave_assignment": "not_assessed",
+      "note": "Gap rebound concept only; in rejected/ artifact. No tool implementation. Blocked: no code path."
+    },
+    {
+      "strategy_id": "p1_conditional_branch_powerlotto",
+      "lottery_type": "POWER_LOTTO",
+      "registry_lifecycle": "not_registered",
+      "replay_status": "not_applicable",
+      "dry_run": "N/A",
+      "production_row_count": 0,
+      "replay_ui_visible": false,
+      "row_backed": false,
+      "in_p30_needs_promotion": false,
+      "p30_classification": "manual_review",
+      "p30_sub_class": "artifact_manual",
+      "p35_wave_assignment": "not_assessed",
+      "note": "Conditional branch concept only; no tool implementation. L67: conditional branch trigger rate <5% = NO-OP."
+    },
+    {
+      "strategy_id": "structural_zone_guard_pp3_power",
+      "lottery_type": "POWER_LOTTO",
+      "registry_lifecycle": "not_registered",
+      "replay_status": "not_applicable",
+      "dry_run": "N/A",
+      "production_row_count": 0,
+      "replay_ui_visible": false,
+      "row_backed": false,
+      "in_p30_needs_promotion": false,
+      "p30_classification": "manual_review",
+      "p30_sub_class": "artifact_manual",
+      "p35_wave_assignment": "not_assessed",
+      "note": "PP3+zone guard complex composite; no tool. Adapter effort HIGH."
+    },
+    {
+      "strategy_id": "special_mab_decay_adjustment_power",
+      "lottery_type": "POWER_LOTTO",
+      "registry_lifecycle": "not_registered",
+      "replay_status": "not_applicable",
+      "dry_run": "N/A",
+      "production_row_count": 0,
+      "replay_ui_visible": false,
+      "row_backed": false,
+      "in_p30_needs_promotion": false,
+      "p30_classification": "executable_no",
+      "p30_sub_class": "artifact_no_code",
+      "p35_wave_assignment": "not_assessed",
+      "note": "MAB decay; rejected special number strategy. No implementation."
+    }
+  ],
+  "current_state_summary": {
+    "total_powerlotto_rows_in_db": 4640,
+    "strategies_with_rows": 3,
+    "strategies_online": 3,
+    "strategies_rejected": 1,
+    "strategies_observation": 1,
+    "strategies_artifact_only": 7,
+    "covered_strategies": [
+      "fourier_rhythm_3bet (1500 rows)",
+      "power_orthogonal_5bet (1570 rows)",
+      "power_precision_3bet (1570 rows)"
+    ]
+  },
+  "expansion_candidates": [
+    {
+      "strategy_id": "pp3_freqort_4bet",
+      "classification": "ready_for_bootstrap",
+      "classification_rationale": "PP3+FreqOrt 4-bet strategy is referenced in MEMORY.md as active production prediction strategy with RSM edge +3.40% (300p), Sharpe 0.088, perm p=0.000. The Fourier rhythm and frequency orthogonal components are implemented in tools/predict_power_orthogonal_5bet.py (bets 1-3 are Power Precision, bets 4-5 are FreqOrt). Extracting 4-bet slice is LOW effort.",
+      "source_files": [
+        "tools/predict_power_orthogonal_5bet.py (bets 1-4 = pp3 3bet + freqort bet4)",
+        "tools/predict_power_precision_3bet.py"
+      ],
+      "adapter_effort": "LOW",
+      "expected_rows": 1500,
+      "blocking_issues": "None",
+      "rsm_evidence": "edge300=+3.40%, Sharpe=0.088, perm p=0.000 VALIDATED",
+      "recommended_action": "Include in P47 Wave 4 POWER_LOTTO bootstrap"
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "classification": "ready_for_bootstrap",
+      "classification_rationale": "midfreq_fourier_2bet appears in MEMORY.md as 'RSM monitored' with 300p edge +0.08%. Registered in registry with lifecycle=RETIRED (DAILY_539 alias), but the POWER_LOTTO variant uses Fourier rhythm + MidFreq signal combination already implemented in power_fourier_rhythm.py. MidFreq+Fourier orthogonal was validated for POWER_LOTTO (edge +2.27%, p=0.005, three-window PASS per MEMORY.md L83).",
+      "source_files": [
+        "tools/power_fourier_rhythm.py",
+        "tools/predict_power_precision_3bet.py (midfreq component)"
+      ],
+      "adapter_effort": "LOW",
+      "expected_rows": 1500,
+      "blocking_issues": "Needs explicit 2-bet POWER_LOTTO adapter (currently only DAILY_539 variant registered as RETIRED)",
+      "rsm_evidence": "edge300=+0.08% (RSM monitored — marginal but positive, below promotion threshold)",
+      "recommended_action": "Include in P47 Wave 4 POWER_LOTTO bootstrap — classify as WATCH after dry-run"
+    },
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "classification": "ready_for_bootstrap",
+      "classification_rationale": "midfreq_fourier_mk_3bet appears in MEMORY.md as 'RSM monitored' with edge +1.83%. MidFreq+Fourier+Markov 3注 was VALIDATED for POWER_LOTTO (edge +2.48%, p=0.015, three-window PASS per MEMORY.md L83-L84). Markov component is in lottery_api/models/unified_predictor.py::markov_predict.",
+      "source_files": [
+        "tools/power_fourier_rhythm.py",
+        "lottery_api/models/unified_predictor.py (markov_predict)",
+        "tools/predict_power_precision_3bet.py"
+      ],
+      "adapter_effort": "LOW to MEDIUM",
+      "expected_rows": 1500,
+      "blocking_issues": "Three-component composite; needs integration test. But all components exist.",
+      "rsm_evidence": "edge300=+1.83% (RSM monitored, positive but not yet at production threshold)",
+      "recommended_action": "Include in P47 Wave 4 POWER_LOTTO bootstrap — classify as DRY_RUN"
+    },
+    {
+      "strategy_id": "orthogonal_5bet",
+      "classification": "already_covered",
+      "classification_rationale": "Already in production as power_orthogonal_5bet with 1570 rows. strategy_id naming difference only.",
+      "production_row_count": 1570,
+      "recommended_action": "No action needed — covered"
+    }
+  ],
+  "expansion_candidates_summary": {
+    "ready_for_bootstrap": 3,
+    "needs_manual_review": 0,
+    "unsupported": 8,
+    "already_covered": 3,
+    "total_expected_new_rows_if_all_bootstrapped": "3 x 1500 = 4500 (ESTIMATE ONLY)"
+  },
+  "bootstrap_design": {
+    "description": "POWER_LOTTO replay adapter scaffold — analogous to p42_wave3_biglotto_adapters.py but for POWER_LOTTO (1-38 pick-6 + special 1-8 separate pool)",
+    "file_name_pattern": "p47_wave4_powerlotto_adapters.py",
+    "location": "lottery_api/models/p47_wave4_powerlotto_adapters.py",
+    "first_zone_format": "6 unique ints in [1, 38]",
+    "second_zone_special": "1 int in [1, 8] (separate pool, NOT same pool as first zone)",
+    "hit_count_semantics": "first zone matches only: len(intersection(predicted_numbers, actual_numbers))",
+    "special_hit_semantics": "predicted_special == actual_special (bool); None/0 when strategy does not predict special",
+    "cutoff_semantics": "All draws in history MUST have date STRICTLY BEFORE target draw date. No future draw data may be used.",
+    "lifecycle": "DRY_RUN",
+    "dry_run_value": 1,
+    "pool_constants": {
+      "POWER_LOTTO_FIRST_ZONE_POOL": 38,
+      "POWER_LOTTO_FIRST_ZONE_PICK": 6,
+      "POWER_LOTTO_SPECIAL_POOL": 8,
+      "POWER_LOTTO_SPECIAL_PICK": 1
+    },
+    "adapter_input_contract": {
+      "history": "List[dict] — each dict has 'draw' (str), 'date' (str YYYY/MM/DD), 'numbers' (List[int] of 6 ints in [1,38]), 'special' (int in [1,8])",
+      "cutoff_semantics": "All draws in history MUST have date STRICTLY BEFORE target draw date.",
+      "causal_slice": "history = draws[:target_idx] — exclude target draw itself"
+    },
+    "key_differences_from_biglotto": [
+      "BIG_LOTTO: 6 from 1-49 + 1 special from 1-49 (SAME pool as first zone)",
+      "POWER_LOTTO: 6 from 1-38 (first zone) + 1 from 1-8 (second zone, SEPARATE pool)",
+      "POWER_LOTTO first zone: pool=38, significantly smaller than BIG_LOTTO pool=49",
+      "POWER_LOTTO special pool=8 (vs BIG_LOTTO special pool=49), special is much easier to predict",
+      "Each POWER_LOTTO number appears on average 1912 * 6 / 38 = 301.9 times (vs BIG_LOTTO: 2136 * 6 / 49 = 261.5 times)"
+    ],
+    "prediction_record_schema": {
+      "strategy_id": "str — e.g. 'pp3_freqort_4bet'",
+      "lottery_type": "POWER_LOTTO",
+      "target_draw": "str — draw number of the predicted draw (TEXT type in DB)",
+      "target_date": "str — YYYY/MM/DD date of the predicted draw",
+      "history_cutoff_draw": "str — draw number of last draw used",
+      "prediction_cutoff_date": "str — date of last draw used (YYYY/MM/DD)",
+      "predicted_numbers": "JSON str of sorted list of 6 unique ints in [1,38]",
+      "predicted_special": "int in [1,8] if strategy predicts special; else None",
+      "actual_numbers": "JSON str of actual 6 first-zone numbers from draw",
+      "actual_special": "int in [1,8] — actual second-zone special from draw",
+      "hit_numbers": "JSON str of intersection of predicted_numbers and actual_numbers (first zone only)",
+      "hit_count": "int — len(hit_numbers) — first zone matches only",
+      "special_hit": "1 if predicted_special == actual_special; else 0",
+      "replay_status": "PREDICTED",
+      "dry_run": 1,
+      "prediction_generated_at": "ISO datetime string"
+    },
+    "duplicate_key_semantics": "Primary key: lottery_type + target_draw + strategy_id + replay_run_id (per DB UNIQUE constraint)",
+    "wave4_strategy_ids": [
+      "pp3_freqort_4bet",
+      "midfreq_fourier_2bet",
+      "midfreq_fourier_mk_3bet"
+    ]
+  },
+  "next_phase_recommendation": "P47: POWER_LOTTO Wave 4 dry-run + temp rehearsal",
+  "next_phase_rationale": "3 POWER_LOTTO strategies are ready for bootstrap (pp3_freqort_4bet, midfreq_fourier_2bet, midfreq_fourier_mk_3bet). All have RSM evidence, existing tool implementations, and LOW to MEDIUM adapter effort. The 38C6+8 pool is smaller than BIG_LOTTO 49C6, giving better signal detection probability. Bootstrap follows the same governance sequence as P42 (BIG_LOTTO): dry-run → temp rehearsal → production apply → analysis. Estimated 4500 new rows (3 × 1500).",
+  "next_phase_candidates": [
+    {
+      "strategy_id": "pp3_freqort_4bet",
+      "effort": "LOW",
+      "expected_rows": 1500,
+      "priority": 1,
+      "rationale": "Highest RSM edge (+3.40%), perm p=0.000, VALIDATED. Direct extension of power_orthogonal_5bet (bets 1-4)."
+    },
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "effort": "LOW to MEDIUM",
+      "expected_rows": 1500,
+      "priority": 2,
+      "rationale": "RSM edge +1.83%, MidFreq+Fourier+Markov VALIDATED for POWER_LOTTO (p=0.015). Components all exist."
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "effort": "LOW",
+      "expected_rows": 1500,
+      "priority": 3,
+      "rationale": "RSM monitored edge +0.08% marginal but positive. MidFreq+Fourier VALIDATED (edge +2.27%, p=0.005). 2-bet POWER_LOTTO adapter is distinct from DAILY_539 RETIRED variant."
+    }
+  ],
+  "estimated_dryrun_rows": "4500 (3 strategies x 1500 draws each) — ESTIMATE ONLY",
+  "p47_must_not_do": [
+    "No production apply (strategy_prediction_replays dry_run=0) until P47 analysis passes governance",
+    "No lifecycle promotion to ONLINE without CTO sign-off",
+    "No modification of replay_strategy_registry._ALL_ADAPTERS or _REGISTRY",
+    "No DB writes to lottery_v2.db main table (only /tmp/p47_temp.db for rehearsal)",
+    "No alteration of CEO-Decision.md"
+  ],
+  "guard_results": {
+    "pre_drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "pre_governance_guard": "BRANCH_GOVERNANCE_PASS",
+    "production_rows_before": 37960,
+    "production_rows_after": 37960
+  },
+  "forbidden_file_scan": {
+    "p47_wave4_powerlotto_adapters_exists": false,
+    "db_bak_added": false,
+    "dry_run_rows_generated": false
+  }
+}

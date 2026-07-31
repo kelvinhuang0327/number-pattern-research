@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P254B",
+  "classification": "FETCHER_REPAIR_GOVERNANCE_CLOSURE_COMPLETE",
+  "date": "2026-06-08",
+  "task_type": "Type B governance closure",
+
+  "phase0_summary": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch_at_start": "main",
+    "HEAD": "36f6862dc912af31115183cf6072dec939ed4dda",
+    "origin_main": "36f6862dc912af31115183cf6072dec939ed4dda",
+    "HEAD_equals_origin_main": true,
+    "dirty_files": "tolerated runtime only (backend.pid, frontend.pid, data/lottery_v2.db metadata-touch, claude-code-showcase, pre-existing p252/p253 research outputs not staged)",
+    "staged_files": "none",
+    "all_guards_passed": true
+  },
+
+  "pr360_status": {
+    "pr": 360,
+    "title": "ACCEPT_BACKFILL_DB_DRIFT_2026_0608: update P247G baseline to canonical=2114, raw=22239",
+    "state": "MERGED",
+    "merge_commit": "234cc02aee1c5d7a4e7990d3195ad4d987315a70",
+    "url": "https://github.com/kelvinhuang0327/number-pattern-research/pull/360",
+    "what_it_did": "Accepted 5 draws inserted by frontend auto-backfill (non-dry-run) during fetcher repair session. Declared the +1 BIG_LOTTO draw (115000059) as new canonical baseline. Updated P247G guard constants: EXPECTED_CANONICAL 2113→2114, EXPECTED_RAW 22238→22239.",
+    "db_write_in_pr360": false,
+    "reason_no_rollback": "All named backups predate P247G canonical table creation. Restoring any backup would destroy draws_big_lotto_canonical_main. Surgical DELETE not authorized."
+  },
+
+  "pr361_status": {
+    "pr": 361,
+    "title": "P254A repair fetcher backfill modules",
+    "state": "MERGED",
+    "merge_commit": "36f6862dc912af31115183cf6072dec939ed4dda",
+    "url": "https://github.com/kelvinhuang0327/number-pattern-research/pull/361",
+    "what_it_did": "Restored lottery_api/fetcher/* (5 modules deleted in commit 7306264). Hardened missing_issue_detector._detect_internal_gaps() to skip ADD_ON draw IDs via isdigit() guard.",
+    "db_write_in_pr361": false,
+    "files_restored": [
+      "lottery_api/fetcher/__init__.py",
+      "lottery_api/fetcher/backfill_engine.py",
+      "lottery_api/fetcher/ingest_logger.py",
+      "lottery_api/fetcher/missing_issue_detector.py",
+      "lottery_api/fetcher/taiwan_lottery_fetcher.py"
+    ]
+  },
+
+  "incident_chain": [
+    "commit 7306264: lottery_api/fetcher/* accidentally deleted",
+    "fetcher deletion → ModuleNotFoundError in routes/ingest.py → propagated before CORS headers added → CORS-blocked 500 on /api/ingest/log and /api/ingest/backfill",
+    "fetcher repair session 2026-06-08: files restored from 997e07a",
+    "after backend restart, frontend auto-backfill (non-dry-run) triggered /api/ingest/backfill",
+    "5 draws inserted: BIG_LOTTO 115000059, POWER_LOTTO 115000045, DAILY_539 115000136/137/138",
+    "regression gate detected P247G failure: 22239 ≠ 22238, 2114 ≠ 2113",
+    "worker STOPPED — user chose DATA_ACCEPTANCE path",
+    "PR #360 accepted drift as new baseline (no rollback — no safe backup)",
+    "PR #361 restored fetcher modules and ADD_ON safety fix"
+  ],
+
+  "accepted_draws": [
+    {"lottery_type": "BIG_LOTTO",    "draw": "115000059", "date": "2026/06/05"},
+    {"lottery_type": "POWER_LOTTO",  "draw": "115000045", "date": "2026/06/04"},
+    {"lottery_type": "DAILY_539",    "draw": "115000136", "date": "2026/06/04"},
+    {"lottery_type": "DAILY_539",    "draw": "115000137", "date": "2026/06/05"},
+    {"lottery_type": "DAILY_539",    "draw": "115000138", "date": "2026/06/06"}
+  ],
+
+  "accepted_db_baseline": {
+    "BIG_LOTTO_raw": 22239,
+    "BIG_LOTTO_canonical": 2114,
+    "BIG_LOTTO_add_on": 19100,
+    "POWER_LOTTO_raw": 1917,
+    "DAILY_539_raw": 5882,
+    "strategy_prediction_replays": 94924,
+    "db_integrity": "ok",
+    "stale_values_must_not_reuse": {
+      "BIG_LOTTO_raw_stale": 22238,
+      "BIG_LOTTO_canonical_stale": 2113,
+      "invalidated_date": "2026-06-08"
+    }
+  },
+
+  "endpoint_smoke_summary": {
+    "method": "FastAPI TestClient via .venv (python3.9 + fastapi + numpy)",
+    "GET_ingest_log": {"status": 200, "has_entries_key": true, "cors_header": "*", "result": "PASS"},
+    "POST_ingest_backfill_dry_run": {"status": 200, "success": true, "cors_header": "*", "result": "PASS"},
+    "OPTIONS_preflight": {"status": 200, "allow_origin": "http://localhost:8081", "result": "PASS"},
+    "ADD_ON_crash_103000009_01": {"crash": false, "gaps": [], "result": "PASS"}
+  },
+
+  "p254a_test_result": {
+    "total_passed": 249,
+    "total_skipped": 7,
+    "total_failed": 0,
+    "passed_suites": [
+      "test_p254a_fetcher_backfill_repair.py (28 tests — module presence, ADD_ON safety, DB baseline, JSON artifact)",
+      "test_p247g_big_lotto_canonical_isolation_final_guard.py (67 tests)",
+      "test_p253d_historical_draw_parser_inventory.py",
+      "test_p253e_historical_draw_parser_ssot.py",
+      "test_p253f_historical_draw_parser_adoption_audit.py",
+      "test_p251d_evidence_dashboard_readonly_api_route.py"
+    ]
+  },
+
+  "skipped_test_explanation": {
+    "count": 7,
+    "class": "TestIngestEndpoints",
+    "reason": "TestClient fixture in test_p254a_fetcher_backfill_repair.py requires FastAPI + numpy. The /opt/homebrew/bin/pytest environment uses Python 3.13 which does not have numpy installed (PEP 668 blocks system-level pip install). Fixture calls pytest.skip() gracefully — not a FAIL.",
+    "compensating_verification": ".venv (Python 3.9) TestClient smoke verified all 3 endpoint tests PASS: 200 status, CORS headers, success=true on dry_run backfill."
+  },
+
+  "governance_lessons": [
+    {
+      "id": "L_P254_01",
+      "title": "Separate DB baseline acceptance from fetcher code repair",
+      "lesson": "When a fetcher endpoint is repaired, the first non-dry-run call from the UI can insert legitimately missing draws before the regression gate runs. This silently moves DB counts. The code repair PR and the DB drift acceptance MUST be separate commits/PRs so audit trails are clean.",
+      "action": "Always run endpoint verification in dry_run=true mode during regression checks. Block non-dry-run calls from UI until regression gate is complete.",
+      "future_baseline_guard": "If baseline counts change unexpectedly during a regression session, STOP immediately and classify as OUT_OF_SCOPE_DB_WRITE before proceeding."
+    },
+    {
+      "id": "L_P254_02",
+      "title": "Stale BIG_LOTTO counts 22238/2113 are invalidated — do not reuse",
+      "lesson": "As of 2026-06-08, the accepted BIG_LOTTO baseline is raw=22239, canonical=2114. Any agent, test, or artifact referencing 22238 or 2113 as current counts is using a stale value. P247G guard was updated in PR #360.",
+      "invalidated_values": {"BIG_LOTTO_raw_stale": 22238, "BIG_LOTTO_canonical_stale": 2113}
+    },
+    {
+      "id": "L_P254_03",
+      "title": "ADD_ON draw IDs (hyphenated) must not be passed to int() conversion",
+      "lesson": "Draw IDs like '103000009-01' are ADD_ON_PRIZE_EXCLUDED records. Any code calling int(draw) or int(draw[-6:]) on these will crash with ValueError. Always guard with draw.isdigit() before numeric conversion.",
+      "affected_function": "lottery_api/fetcher/missing_issue_detector._detect_internal_gaps()"
+    }
+  ],
+
+  "updated_governance_files": [
+    "00-Plan/roadmap/active_task.md",
+    "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md",
+    "00-Plan/roadmap/roadmap.md",
+    "memory/lessons.md",
+    "memory/todo.md"
+  ],
+
+  "no_db_write_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_strategy_promotion_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "no_fetcher_code_changed_in_p254b": true,
+  "no_p247g_constants_changed_in_p254b": true,
+
+  "final_decision": "HOLD. P254A fetcher repair and P254B governance closure are both complete. The fetcher/backfill incident chain is fully documented. No active research or deployable candidate requires follow-up. System returns to WAITING_FOR_USER_AUTHORIZATION. DB baseline: BIG_LOTTO raw=22239, canonical=2114. Do not start new research, ingest UI/monitoring, or any non-dry-run backfill without explicit user authorization."
+}

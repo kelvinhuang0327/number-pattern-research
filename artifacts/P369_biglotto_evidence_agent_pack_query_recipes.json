@@ -1,0 +1,73 @@
+{
+  "constraints": [
+    "Historical descriptive evidence only.",
+    "No future prediction guarantee.",
+    "No betting advice.",
+    "No DB open/write.",
+    "No production registry import.",
+    "No deploy.",
+    "No adapter calls.",
+    "No new scoring cohort.",
+    "No blended leaderboard.",
+    "Shape-only and blocked targets remain excluded."
+  ],
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "recipes": [
+    {
+      "cli": "python3 -m recovered_strategies.biglotto.no_db_evidence_api --list-adapters",
+      "expected_result": "JSON array of adapter_function strings.",
+      "purpose": "List adapter function names exposed by the P367 facade.",
+      "python_api": "api.list_adapters()",
+      "recipe_id": "list_adapters"
+    },
+    {
+      "cli": "python3 -m recovered_strategies.biglotto.no_db_evidence_api --get-adapter adapt_predict_biglotto_echo_mixed_3bet",
+      "expected_result": "JSON object for one adapter detail card.",
+      "purpose": "Inspect one adapter detail card from committed evidence.",
+      "python_api": "api.get_adapter(adapter_function)",
+      "recipe_id": "inspect_one_adapter"
+    },
+    {
+      "cli": "python3 -m recovered_strategies.biglotto.no_db_evidence_api --compact-shortlist",
+      "expected_result": "CSV rows for compact historical evidence candidates.",
+      "purpose": "List the compact shortlist rows from P365 evidence through P367.",
+      "python_api": "api.get_compact_shortlist()",
+      "recipe_id": "list_compact_shortlist"
+    },
+    {
+      "cli": "python3 -m recovered_strategies.biglotto.no_db_evidence_api --compare-adapters adapt_biglotto_p0_2bet adapt_predict_biglotto_echo_2bet",
+      "expected_result": "JSON object for one pairwise historical comparison.",
+      "purpose": "Read one pairwise comparison row for two adapter names.",
+      "python_api": "api.compare_adapters(adapter_a, adapter_b)",
+      "recipe_id": "compare_two_adapters"
+    },
+    {
+      "cli": "python3 -m recovered_strategies.biglotto.no_db_evidence_api --validate",
+      "expected_result": "CSV validation rows with PASS status.",
+      "purpose": "Validate required source artifacts and P367 generated shapes.",
+      "python_api": "api.validate_evidence_stack()",
+      "recipe_id": "validate_evidence_stack"
+    },
+    {
+      "cli": "python3 -m recovered_strategies.biglotto.no_db_evidence_api_snapshots --compatibility-matrix",
+      "expected_result": "CSV compatibility rows with compatible TRUE and no drift FAIL rows.",
+      "purpose": "Inspect P368 compatibility and drift without new scoring.",
+      "python_api": "snapshots.build_compatibility_matrix(); snapshots.build_contract_drift_rows()",
+      "recipe_id": "inspect_snapshot_compatibility"
+    }
+  ],
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "blended_leaderboard": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "future_prediction_guarantee": false,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring_cohort": false,
+    "production_registry_imported": false,
+    "shape_only_and_blocked_targets_excluded": true
+  },
+  "task": "P369_biglotto_evidence_agent_pack"
+}

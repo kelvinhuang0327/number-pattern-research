@@ -1,0 +1,97 @@
+{
+  "task_id": "P271E_SCOPED_PRIZE_AWARE_REPLAY_ADAPTER_IMPLEMENTATION",
+  "artifact_type": "implementation_record",
+  "generated_at": "2026-06-12",
+  "branch": "task/p271e-scoped-prize-aware-replay-adapter",
+  "mode": "IMPLEMENTATION",
+  "adapter_version": "prize_aware_adapter_v1",
+  "scoring_version": "prize_aware_v1",
+  "module": "lottery_api/prize_aware_replay_adapter.py",
+  "test_file": "tests/test_p271e_prize_aware_replay_adapter.py",
+  "test_count": 53,
+  "test_skipped_count": 4,
+  "test_skipped_reason": "artifact files not yet on disk at test-run time",
+  "scorer_imported": true,
+  "scorer_called_in_tests": true,
+  "scorer_called_in_bounded_smoke": true,
+  "full_historical_evaluation_run": false,
+  "success_rate_calculated": false,
+  "strategy_comparison_run": false,
+  "canonical_db_path": "lottery_api/data/lottery_v2.db",
+  "db_access": true,
+  "db_access_description": "read-only (sqlite3 URI mode=ro)",
+  "db_read_only": true,
+  "db_write": false,
+  "temporal_window_research_started": false,
+  "feature_mining_started": false,
+  "prize_amount_logic_added": false,
+  "ev_roi_logic_added": false,
+  "registry_write": false,
+  "existing_replay_modified": false,
+  "existing_m3_replay_scoring_changed": false,
+  "production_integration_added": false,
+  "strategy_generated": false,
+  "strategy_ranked": false,
+  "hit_rate_improvement_claimed": false,
+  "p270c_allowed": false,
+  "public_api": [
+    "iter_structurally_eligible_rows(db_path, lottery_type=None, limit=None)",
+    "map_replay_row_to_scorer_input(row)",
+    "score_bounded_smoke_sample(db_path, limit_per_lottery=10)",
+    "summarize_structural_exclusions(db_path, lottery_type=None)"
+  ],
+  "exclusion_reason_constants": [
+    "EXCLUSION_MISSING_PREDICTED_SECOND_ZONE",
+    "EXCLUSION_INVALID_PREDICTED_MAIN",
+    "EXCLUSION_INVALID_ACTUAL_MAIN",
+    "EXCLUSION_INVALID_PREDICTED_SECOND_ZONE",
+    "EXCLUSION_INVALID_ACTUAL_AUXILIARY",
+    "EXCLUSION_MISSING_DRAW_JOIN",
+    "EXCLUSION_AMBIGUOUS_DRAW_JOIN",
+    "EXCLUSION_CAUSALITY_FAILURE",
+    "EXCLUSION_UNSUPPORTED_LOTTERY_TYPE"
+  ],
+  "p271d_feasibility_snapshot": {
+    "POWER_LOTTO": {
+      "total_rows": 36104,
+      "eligible_rows": 9000,
+      "excluded_MISSING_PREDICTED_SECOND_ZONE": 27104,
+      "feasibility_status": "PARTIAL",
+      "feasibility_reason": "Only rows with stored predicted_special in [1,8] are eligible; missing values are never filled or inferred."
+    },
+    "BIG_LOTTO": {
+      "total_rows": 24140,
+      "eligible_rows": 24140,
+      "excluded_count": 0,
+      "feasibility_status": "FULL",
+      "feasibility_reason": "All rows have actual_special and valid predicted/actual main numbers."
+    },
+    "DAILY_539": {
+      "total_rows": 34680,
+      "eligible_rows": 34680,
+      "excluded_count": 0,
+      "feasibility_status": "FULL",
+      "feasibility_reason": "All rows have valid predicted/actual main numbers; no auxiliary fields required."
+    }
+  },
+  "smoke_run_summary": {
+    "smoke_artifact": "outputs/research/p271e_scoped_prize_aware_replay_adapter_smoke_20260612.json",
+    "rows_processed_per_lottery": 10,
+    "all_schema_checks_passed": true,
+    "deterministic_repeat_passed": true,
+    "db_write_confirmed_absent": true
+  },
+  "key_safety_invariants_verified": [
+    "POWER_LOTTO rows with NULL predicted_special excluded with MISSING_PREDICTED_SECOND_ZONE — never filled or inferred",
+    "SQLite URI mode=ro enforced in _open_ro(); all connections are read-only",
+    "No INSERT/UPDATE/DELETE/DROP/CREATE TABLE in source",
+    "No import of lottery_api.routes.replay",
+    "No strategy selection, registry write, or production integration",
+    "Bounded iteration mandatory: limit must be a positive integer or ValueError is raised",
+    "existing_m3_replay_scoring_changed=False verified on all 30 smoke scorer calls",
+    "Replay rows not mutated in memory by map_replay_row_to_scorer_input()",
+    "No raw actual-number arrays exported in smoke summary",
+    "No success rates, tier frequencies, strategy aggregates, or rankings in smoke output"
+  ],
+  "final_classification": "P271E_SCOPED_PRIZE_AWARE_REPLAY_ADAPTER_COMPLETE"
+}

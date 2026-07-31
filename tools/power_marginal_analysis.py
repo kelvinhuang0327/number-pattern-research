@@ -17,6 +17,41 @@ from collections import Counter
 from pathlib import Path
 from scipy.fft import fft, fftfreq
 
+
+def _p291u_repo_root():
+    current = Path(__file__)
+    if not current.is_absolute():
+        raise FileNotFoundError(f"Source file path is not absolute: {current}")
+    for parent in (current.parent, *current.parents):
+        if (parent / "lottery_api").is_dir():
+            return parent
+    raise FileNotFoundError(f"Unable to locate repository root from source file: {current}")
+
+
+def _p291u_default_db_path():
+    db_path = _p291u_repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+    if not db_path.is_file():
+        raise FileNotFoundError(f"Default lottery DB path is missing or non-regular: {db_path}")
+    return db_path
+
+
+def _p291u_resolve_db_path(db_path=None):
+    if db_path is None:
+        return _p291u_default_db_path()
+    path = Path(db_path)
+    if not path.is_absolute():
+        raise ValueError(f"Explicit DB path must be absolute: {db_path}")
+    if not path.is_file():
+        raise FileNotFoundError(f"Explicit DB path is missing or non-regular: {path}")
+    return path
+
+
+def _p291u_connect_resolved(db_path, *, uri=False):
+    if uri:
+        return sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    return sqlite3.connect(str(db_path))
+
+
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
@@ -25,9 +60,10 @@ sys.path.insert(0, str(PROJECT_ROOT))
 BASELINES = {1: 3.87, 2: 7.59, 3: 11.17, 4: 14.60}
 
 def load_draws():
+    _p291u_db_path = _p291u_resolve_db_path()
     db_path = PROJECT_ROOT / 'lottery_api' / 'data' / 'lottery_v2.db'
     if not db_path.exists(): db_path = PROJECT_ROOT / 'lottery_api' / 'data' / 'lottery.db'
-    conn = sqlite3.connect(str(db_path))
+    conn = _p291u_connect_resolved(_p291u_db_path)
     cursor = conn.cursor()
     cursor.execute("SELECT numbers FROM draws WHERE lottery_type='POWER_LOTTO' ORDER BY date ASC")
     rows = cursor.fetchall()

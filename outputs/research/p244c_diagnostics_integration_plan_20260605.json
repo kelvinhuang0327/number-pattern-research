@@ -1,0 +1,121 @@
+{
+  "task_id": "P244C",
+  "classification": "P244C_DIAGNOSTICS_INTEGRATION_PLAN_COMPLETE",
+  "task_type": "Type B",
+  "task_type_description": "Read-only design doc / artifact under P240D governance simplification rules",
+  "generated_at": "2026-06-05",
+  "source_authorization": "Authorize P244C diagnostics integration plan (read-only design doc, no code changes)",
+
+  "source_components": [
+    "P241B: p241b_p234_statistical_diagnostics_inventory_20260605.md",
+    "P242: lottery_api/diagnostics/statistical_diagnostics_schema.py",
+    "P243A: p243a_diagnostic_report_fixture_pack_20260605.json"
+  ],
+
+  "integration_scope": "Maps P2.4 diagnostics layer to P211/P221F research task checkpoints. Provides confidence-language templates, blocker vocabulary, prompt snippet, and field mapping. Design-plan only; no code implementation.",
+
+  "no_code_changes": true,
+  "no_db_write": true,
+  "no_registry_mutation": true,
+  "no_production_change": true,
+  "no_monitoring_change": true,
+  "no_strategy_authorization": true,
+  "no_betting_advice": true,
+  "p211_restarted": false,
+  "p238b_interpretation": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+
+  "confidence_templates": [
+    "OBSERVATION_ONLY",
+    "NULL_NO_EDGE",
+    "UNDERPOWERED_NO_SIGNAL",
+    "WAIT_FOR_OOS_GATE_NOT_OPEN",
+    "REJECTED_BY_BACKWARD_OOS",
+    "HUMAN_REVIEW_ONLY",
+    "SCHEMA_VALIDATED_ONLY"
+  ],
+
+  "forbidden_claim_types": [
+    "prediction edge",
+    "improved win rate",
+    "betting advice",
+    "wagering recommendation",
+    "production-ready",
+    "recommended numbers",
+    "strategy authorized",
+    "registry write authorized",
+    "DB write authorized",
+    "deployable edge",
+    "statistically significant (without corrected p)",
+    "robust result (without robustness_sign_stable=True)"
+  ],
+
+  "blocker_vocabulary": [
+    "P221F_GATE_NOT_PASSED",
+    "SAMPLE_TOO_SMALL",
+    "FAMILY_SIZE_NOT_DECLARED",
+    "BASELINE_NOT_DECLARED",
+    "OOS_SPLIT_MISSING",
+    "MULTIPLE_TESTING_NOT_CORRECTED",
+    "ROBUSTNESS_FAILED",
+    "BACKWARD_OOS_NOT_CONFIRMED",
+    "RANDOMNESS_OBSERVATION_ONLY",
+    "NIST_HUMAN_REVIEW_ONLY",
+    "DB_WRITE_NOT_AUTHORIZED",
+    "REGISTRY_WRITE_NOT_AUTHORIZED",
+    "PRODUCTION_NOT_AUTHORIZED",
+    "P211_HELD_BY_USER",
+    "MCNEMAR_NOT_SIGNIFICANT",
+    "HISTORICAL_ARTIFACT"
+  ],
+
+  "schema_to_research_checkpoint_map": {
+    "Phase_0_verification": ["sample_size", "drift_guard_result", "window_definition"],
+    "pre_registration": ["diagnostic_subject", "lottery_type", "strategy_id", "window_definition", "family_size_k", "baseline_method", "baseline_value", "is_oos", "split_boundary"],
+    "baseline_and_metric": ["baseline_value", "observed_metric", "delta_vs_baseline", "n_blocks", "blocks_above_baseline"],
+    "multiple_testing": ["p_value_raw", "correction_method", "corrected_threshold", "is_corrected_significant", "mc_null_99th_pct", "is_above_mc_noise_floor"],
+    "robustness": ["robustness_check_description", "robustness_metric", "robustness_sign_stable"],
+    "feature_bottleneck": ["feature_bottleneck", "min_detectable_effect", "power_at_observed_effect", "overfit_ratio"],
+    "allowed_forbidden_next_action": ["classification", "blocker_classification", "allowed_next_action", "forbidden_next_action"],
+    "confidence_safety": ["confidence_language", "human_review_required", "db_write_authorized", "registry_write_authorized", "production_authorized", "betting_advice", "nist_alert_level"]
+  },
+
+  "required_before_claim_fields": [
+    "diagnostic_subject", "lottery_type", "sample_size", "window_definition",
+    "is_oos", "split_boundary", "family_size_k", "baseline_method", "baseline_value",
+    "p_value_raw", "correction_method", "corrected_threshold", "is_corrected_significant",
+    "robustness_check_description", "robustness_sign_stable", "drift_guard_result",
+    "feature_bottleneck", "classification", "confidence_language"
+  ],
+
+  "promotion_blocker_fields": [
+    "is_corrected_significant",
+    "robustness_sign_stable",
+    "db_write_authorized",
+    "registry_write_authorized",
+    "production_authorized",
+    "betting_advice",
+    "human_review_required",
+    "nist_alert_level"
+  ],
+
+  "prompt_snippet_included": true,
+
+  "same_pr_closeout": true,
+  "same_pr_closeout_reason": "Type B: all changes read-only; governance changes <=4 files, <=120 lines; CI passes; no merge conflict",
+  "separate_closeout_pr_required": false,
+
+  "targeted_tests": {
+    "test_file": "tests/test_p244c_diagnostics_integration_plan.py",
+    "result": "PASS"
+  },
+
+  "final_state": {
+    "active_task_status": "WAITING_FOR_USER_AUTHORIZATION",
+    "p211_status": "HELD_BY_USER",
+    "p238b_nist_status": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+    "db_rows": 94924,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "deployable_candidate_exists": false,
+    "separate_closeout_pr_needed": false
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "artifact_prefix": "P520J_disable_missing_afterinsert_hooks_warning_only_evidence",
+  "hooks": {
+    "learning_integrator": {
+      "call_line": "",
+      "disabled_by_guard": false,
+      "guard_symbol": "",
+      "guard_value": "",
+      "import_line": "",
+      "p520i_terminal_symbol_status": "REMOVED",
+      "p520i_unresolved_reason": "removed from source; no longer part of active or disabled surface",
+      "removed_from_source": true,
+      "warning_line": "",
+      "warning_message_fragment": "learning_integrator after weight_adjuster failed"
+    },
+    "refresh_hedge_fund_outputs": {
+      "call_line": "",
+      "disabled_by_guard": false,
+      "guard_symbol": "",
+      "guard_value": "",
+      "import_line": "",
+      "p520i_terminal_symbol_status": "REMOVED",
+      "p520i_unresolved_reason": "removed from source; no longer part of active or disabled surface",
+      "removed_from_source": true,
+      "warning_line": "",
+      "warning_message_fragment": "refresh_hedge_fund_outputs() failed"
+    },
+    "weight_adjuster": {
+      "call_line": "",
+      "disabled_by_guard": false,
+      "guard_symbol": "",
+      "guard_value": "",
+      "import_line": "",
+      "p520i_terminal_symbol_status": "REMOVED",
+      "p520i_unresolved_reason": "removed from source; no longer part of active or disabled surface",
+      "removed_from_source": true,
+      "warning_line": "",
+      "warning_message_fragment": "weight_adjuster after resolve failed"
+    }
+  },
+  "scheduler_load_data": {
+    "call_line": 165,
+    "disabled_by_guard": false,
+    "import_line": 164,
+    "retained": true,
+    "warning_line": 167
+  }
+}

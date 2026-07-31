@@ -1,0 +1,82 @@
+{
+  "task_id": "P271E_SCOPED_PRIZE_AWARE_REPLAY_ADAPTER_IMPLEMENTATION",
+  "artifact_type": "bounded_smoke_run",
+  "generated_at": "2026-06-12",
+  "db_path": "lottery_api/data/lottery_v2.db",
+  "adapter_version": "prize_aware_adapter_v1",
+  "scoring_version": "prize_aware_v1",
+  "db_read_only": true,
+  "requested_limit_by_lottery": {
+    "POWER_LOTTO": 10,
+    "BIG_LOTTO": 10,
+    "DAILY_539": 10
+  },
+  "processed_rows_by_lottery": {
+    "POWER_LOTTO": 10,
+    "BIG_LOTTO": 10,
+    "DAILY_539": 10
+  },
+  "successful_scorer_calls_by_lottery": {
+    "POWER_LOTTO": 10,
+    "BIG_LOTTO": 10,
+    "DAILY_539": 10
+  },
+  "schema_validation": {
+    "all_pass": true,
+    "errors_by_lottery": {
+      "POWER_LOTTO": [],
+      "BIG_LOTTO": [],
+      "DAILY_539": []
+    }
+  },
+  "deterministic_repeat_check": {
+    "passed": true
+  },
+  "exclusion_summary_by_lottery": {
+    "POWER_LOTTO": {
+      "MISSING_PREDICTED_SECOND_ZONE": 27104,
+      "INVALID_PREDICTED_MAIN_NUMBERS": 0,
+      "INVALID_ACTUAL_MAIN_NUMBERS": 0,
+      "INVALID_PREDICTED_SECOND_ZONE": 0,
+      "INVALID_ACTUAL_AUXILIARY": 0,
+      "MISSING_DRAW_JOIN": 0,
+      "AMBIGUOUS_DRAW_JOIN": 0,
+      "CAUSALITY_FAILURE": 0,
+      "UNSUPPORTED_LOTTERY_TYPE": 0
+    },
+    "BIG_LOTTO": {
+      "MISSING_PREDICTED_SECOND_ZONE": 0,
+      "INVALID_PREDICTED_MAIN_NUMBERS": 0,
+      "INVALID_ACTUAL_MAIN_NUMBERS": 0,
+      "INVALID_PREDICTED_SECOND_ZONE": 0,
+      "INVALID_ACTUAL_AUXILIARY": 0,
+      "MISSING_DRAW_JOIN": 0,
+      "AMBIGUOUS_DRAW_JOIN": 0,
+      "CAUSALITY_FAILURE": 0,
+      "UNSUPPORTED_LOTTERY_TYPE": 0
+    },
+    "DAILY_539": {
+      "MISSING_PREDICTED_SECOND_ZONE": 0,
+      "INVALID_PREDICTED_MAIN_NUMBERS": 0,
+      "INVALID_ACTUAL_MAIN_NUMBERS": 0,
+      "INVALID_PREDICTED_SECOND_ZONE": 0,
+      "INVALID_ACTUAL_AUXILIARY": 0,
+      "MISSING_DRAW_JOIN": 0,
+      "AMBIGUOUS_DRAW_JOIN": 0,
+      "CAUSALITY_FAILURE": 0,
+      "UNSUPPORTED_LOTTERY_TYPE": 0
+    }
+  },
+  "source_verification_status": "MANUAL_VERIFICATION_REQUIRED",
+  "full_historical_evaluation_run": false,
+  "success_rate_calculated": false,
+  "strategy_comparison_run": false,
+  "raw_actual_number_arrays_exported": false,
+  "smoke_interpretation": {
+    "POWER_LOTTO_note": "27104 rows excluded for MISSING_PREDICTED_SECOND_ZONE; 10 structurally eligible rows successfully scored with stored predicted_special in [1,8].",
+    "BIG_LOTTO_note": "All 24140 rows are structurally eligible (100%); 10 sample rows scored successfully.",
+    "DAILY_539_note": "All 34680 rows are structurally eligible (100%); 10 sample rows scored successfully.",
+    "schema_note": "All 30 scored rows (10 per lottery) returned scorer output with existing_m3_replay_scoring_changed=false. Schema contract verified.",
+    "determinism_note": "Two independent passes over each lottery type returned identical row ordering and scorer outputs."
+  }
+}

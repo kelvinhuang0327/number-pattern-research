@@ -1,0 +1,36 @@
+artifact_group,artifact_role,path,source_stage,sha256,row_count,object_count,no_db_open_write,no_adapter_calls,no_new_scoring,details
+source,p363_summary,artifacts/P363_biglotto_evidence_pack_summary.csv,P363,588d6450251b20b747ad0cd956898f215b91df322a49f70be47faad05cc8aad0,24,,YES,YES,YES,csv source evidence read by P367 facade.
+source,p363_adapter_cards,artifacts/P363_biglotto_evidence_pack_adapter_cards.csv,P363,9db24b6030f484b7d101ff1b7d9fa7441a3e2170a87e8d84219d285e11e3544f,5,,YES,YES,YES,csv source evidence read by P367 facade.
+source,p363_subset_cards,artifacts/P363_biglotto_evidence_pack_subset_cards.csv,P363,c973c7110e26516ea0248cee3d83d200e0e6fa5c53d63f7a4e6e24fe46110042,31,,YES,YES,YES,csv source evidence read by P367 facade.
+source,p363_consistency_checks,artifacts/P363_biglotto_evidence_pack_consistency_checks.csv,P363,854b4cc3b691da09328adb2159749c20e63bd957583905b5ab908cd852c386a6,9,,YES,YES,YES,csv source evidence read by P367 facade.
+source,p363_manifest,artifacts/P363_biglotto_evidence_pack_manifest.csv,P363,1cf583ffb60103e6d20973dd7e29f4ff5d25ad2c16894a1d969ae15bb3ef6e20,14,,YES,YES,YES,csv source evidence read by P367 facade.
+source,p363_report,artifacts/P363_biglotto_evidence_pack_report.md,P363,e7fab14e746a77aaf6cfb930eb8502496aa1a587fd828bbe09d8854b23fc2e82,,,YES,YES,YES,markdown source evidence read by P367 facade.
+source,p364_index,artifacts/P364_biglotto_evidence_dashboard_index.json,P364,630edbc4f2943376aeb3f5e111f21d676f462f28b6fac0daeadbc26b315a86f5,,1,YES,YES,YES,json source evidence read by P367 facade.
+source,p364_adapter_table,artifacts/P364_biglotto_evidence_dashboard_adapter_table.csv,P364,d424b766aeeabcd71353b53a08841757ab2d3836b43c5ea2675796789ec6dbd2,5,,YES,YES,YES,csv source evidence read by P367 facade.
+source,p364_subset_table,artifacts/P364_biglotto_evidence_dashboard_subset_table.csv,P364,2dc2f100f09e7c402f798739cd8461b9ee35c85ac50a78a40eca79f34efc4999,31,,YES,YES,YES,csv source evidence read by P367 facade.
+source,p364_html,artifacts/P364_biglotto_evidence_dashboard.html,P364,70d91a1b712fdd39e32da8bcf0bf2a0ea3c90e8ef0f9413f7b561c42b8ec518d,,,YES,YES,YES,html source evidence read by P367 facade.
+source,p364_manifest,artifacts/P364_biglotto_evidence_dashboard_manifest.csv,P364,ec281d48af2a9adbd2a5a870c9e6c0a9f41cddf71d36dbf458b2fcec824d7c45,12,,YES,YES,YES,csv source evidence read by P367 facade.
+source,p365_adapter_detail_cards,artifacts/P365_biglotto_evidence_explorer_adapter_detail_cards.json,P365,0127b67a1584d2d4428bb0fe7afeaa24574c07c85b4b95969005b42e15d4323d,,5,YES,YES,YES,json source evidence read by P367 facade.
+source,p365_subset_detail_cards,artifacts/P365_biglotto_evidence_explorer_subset_detail_cards.json,P365,91bf82fa024e9276b0fac2e3c8443e2fed22ed7ee726bad796a5960910a8be3d,,31,YES,YES,YES,json source evidence read by P367 facade.
+source,p365_pairwise_comparison,artifacts/P365_biglotto_evidence_explorer_pairwise_comparison.csv,P365,9fc70ceb327d7b4eed2066a398f7b478176ae8c4bd2fcf10f2a3171dc31eab6f,10,,YES,YES,YES,csv source evidence read by P367 facade.
+source,p365_compact_shortlist,artifacts/P365_biglotto_evidence_explorer_compact_shortlist.csv,P365,0389c8b5ce486a1dc02500260afa9242877114486d5c815e4dbdd25b3216f735,8,,YES,YES,YES,csv source evidence read by P367 facade.
+source,p365_query_snapshots,artifacts/P365_biglotto_evidence_explorer_query_snapshots.json,P365,c8bd77e8e9936793e23f5afa466537ad052f93aeab13b2bb48fd77e186a550ac,,1,YES,YES,YES,json source evidence read by P367 facade.
+source,p365_html,artifacts/P365_biglotto_evidence_explorer.html,P365,8668e270dd15219964ef5e7bbf944be0cb6a711254a3c417efea3ac68eb11590,,,YES,YES,YES,html source evidence read by P367 facade.
+source,p365_manifest,artifacts/P365_biglotto_evidence_explorer_manifest.csv,P365,7ea31a9d274239fe76e9dc85237e7ecc307d7b88ddf66b12c1dfb61047182836,20,,YES,YES,YES,csv source evidence read by P367 facade.
+source,p366_manifest,artifacts/P366_biglotto_evidence_release_bundle_manifest.json,P366,a493d2b3fd2082d3c3a81106acf3e3f1bc9269f0301a9060e8292423b28313f3,,1,YES,YES,YES,json source evidence read by P367 facade.
+source,p366_inventory,artifacts/P366_biglotto_evidence_release_bundle_inventory.csv,P366,18cca3e2f898790c24a7c92a30844e95189ab6d3f0365784d0385b2321d32460,28,,YES,YES,YES,csv source evidence read by P367 facade.
+source,p366_smoke_results,artifacts/P366_biglotto_evidence_release_bundle_smoke_results.csv,P366,9933ad916425af69f5f319a2a7b9792c1b2e05d370980a7a8f5c67df175d159b,46,,YES,YES,YES,csv source evidence read by P367 facade.
+source,p366_cli_examples,artifacts/P366_biglotto_evidence_release_bundle_cli_examples.json,P366,340c3a3fb23bea5fc96bdf457763290db0e849f73e9a63c4dd127d8ebf02c8f3,,1,YES,YES,YES,json source evidence read by P367 facade.
+source,p366_landing,artifacts/P366_biglotto_evidence_release_bundle_landing.html,P366,1c58c1046eb891134f5c1b0ae83194c4296471c6bb4bcfaebaea6476bfdb00f6,,,YES,YES,YES,html source evidence read by P367 facade.
+source,p366_readme,artifacts/P366_biglotto_evidence_release_bundle_readme.md,P366,033377fee5f1a075e25fb1b7474292aab0b1ee3b7f408327de222f707f47189f,,,YES,YES,YES,markdown source evidence read by P367 facade.
+source,p363_entry_source,recovered_strategies/biglotto/no_db_evidence_pack.py,P363,1d58f0af6ff642333815cdd8c0ea39366d97a57ab1681ee87ccaabb7cedac00c,,,YES,YES,YES,python source evidence read by P367 facade.
+source,p364_entry_source,recovered_strategies/biglotto/no_db_evidence_dashboard.py,P364,7cf3e2c674f3891c85811efb7d6a61af475d7d357e707a30a32f84218dd31033,,,YES,YES,YES,python source evidence read by P367 facade.
+source,p365_entry_source,recovered_strategies/biglotto/no_db_evidence_explorer.py,P365,7df33e5b4ea86cf6e3ea33b33a59c352c70d5df7adabcbc818ef8b8a80d9d2ef,,,YES,YES,YES,python source evidence read by P367 facade.
+source,p366_entry_source,recovered_strategies/biglotto/no_db_evidence_release_bundle.py,P366,d2e1ece20eb693625e25fcb858f6c5353aadbc6a74f114a624f963ab4565a06f,,,YES,YES,YES,python source evidence read by P367 facade.
+output,contract,artifacts/P367_biglotto_evidence_api_contract.json,P367,3a4c2b7c50029b8085f33c9edc0dd80b56ef41e2f13111401ddd4476395ff509,,1,YES,YES,YES,P367 generated API facade artifact.
+output,examples,artifacts/P367_biglotto_evidence_api_examples.json,P367,34b22c276e050fa9f11ae930f37e228ee8de10cd72aeb9ce454811f3adbe7915,,1,YES,YES,YES,P367 generated API facade artifact.
+output,validation,artifacts/P367_biglotto_evidence_api_validation.csv,P367,f362dfe281c931ebed204b22edb719dfb8ad591c0b95378ca6837c3beaea80a5,58,,YES,YES,YES,P367 generated API facade artifact.
+output,manifest,artifacts/P367_biglotto_evidence_api_manifest.csv,P367,,,,YES,YES,YES,P367 generated API facade artifact.
+output,readme,artifacts/P367_biglotto_evidence_api_readme.md,P367,63de70e989097b9a371048bd7f2c0bc2262581a3cdd1f1ec15251f0a0c70c39c,,,YES,YES,YES,P367 generated API facade artifact.
+statement,validation_summary,,P367,,58,,YES,YES,YES,validation_pass=58; validation_fail=0
+statement,scope,,P367,,,,YES,YES,YES,Historical descriptive evidence only; no future prediction guarantee; no betting advice; no DB open/write; no production registry import; no deploy; no adapter calls; no new scoring cohort; no blended leaderboard; shape-only and blocked targets remain excluded.

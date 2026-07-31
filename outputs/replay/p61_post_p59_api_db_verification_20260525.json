@@ -1,0 +1,79 @@
+{
+  "phase": "P61",
+  "classification": "P61_DB_LAYER_API_VERIFICATION_PASS",
+  "description": "Post-P59 API/DB verification. DB-layer mode used: live HTTP unavailable (torch missing prevents server start, unrelated to replay functionality). All data-correctness checks pass.",
+  "timestamp": "2026-05-25T00:00:00Z",
+  "branch": "p61-post-p59-api-db-verification",
+  "base_commit": "23edd42",
+
+  "db_verification": {
+    "total_rows": 43960,
+    "expected_total": 43960,
+    "p59_rows": 1500,
+    "expected_p59": 1500,
+    "power_lotto_rows": 10640,
+    "fourier30_markov30_2bet_rows": 1500,
+    "p59_caid": "P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525",
+    "status": "PASS"
+  },
+
+  "semantic_checks": {
+    "sample_size": 10,
+    "bad_predicted_numbers": 0,
+    "bad_predicted_special": 0,
+    "bad_dry_run": 0,
+    "status": "PASS"
+  },
+
+  "db_layer_api_verification": {
+    "mode": "DB_LAYER",
+    "reason": "torch not installed in venv; lottery_api server cannot start. replay.py routes are independent of torch but share app.py with prediction routes.",
+    "summary_query": {
+      "endpoint": "/api/replay/summary?lottery_type=POWER_LOTTO",
+      "strategies_visible": 7,
+      "fourier30_markov30_2bet_present": true,
+      "fourier30_total_draws": 1500,
+      "fourier30_avg_hit_count": 0.964,
+      "status": "PASS"
+    },
+    "history_query": {
+      "endpoint": "/api/replay/history?lottery_type=POWER_LOTTO&strategy_id=fourier30_markov30_2bet",
+      "rows_returned_limit5": 5,
+      "sample_replay_status": "PREDICTED",
+      "sample_dry_run": 0,
+      "dry_run_set": [0],
+      "status": "PASS"
+    },
+    "strategies_query": {
+      "endpoint": "/api/replay/strategies?lottery_type=POWER_LOTTO",
+      "distinct_strategies": 7,
+      "fourier30_markov30_2bet_visible": true,
+      "status": "PASS"
+    },
+    "p59_slice_query": {
+      "description": "P59 rows queryable via controlled_apply_id, dry_run=0, POWER_LOTTO",
+      "count": 1500,
+      "expected": 1500,
+      "status": "PASS"
+    }
+  },
+
+  "watchlist_not_applied": {
+    "cold_complement_2bet": 0,
+    "zonal_entropy_2bet": 0,
+    "status": "PASS"
+  },
+
+  "governance": {
+    "no_db_write": true,
+    "no_online_promotion": true,
+    "no_champion_replacement": true,
+    "no_registry_mutation": true,
+    "no_force_push": true,
+    "production_rows_unchanged": true,
+    "production_rows": 43960
+  },
+
+  "overall_status": "PASS",
+  "marker": "P61_POST_P59_API_DB_VERIFICATION_PASS_20260525"
+}

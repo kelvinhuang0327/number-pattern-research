@@ -11,6 +11,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 import json
 import logging
 import sqlite3
+from lottery_api.canonical_db_path import resolve_db_path
 from typing import List, Dict
 from collections import Counter
 import time
@@ -25,14 +26,7 @@ from lottery_api.models.fourier_rhythm import FourierRhythmPredictor
 
 def load_power_lotto_history(max_records: int = 2000) -> List[Dict]:
     """Load Power Lotto historical data from SQLite database"""
-    db_path = 'lottery_api/data/lottery_v2.db'
-    if not os.path.exists(db_path):
-        db_path = 'lottery_api/data/lottery.db'
-    
-    if not os.path.exists(db_path):
-        logger.error(f"❌ Database file not found")
-        return []
-    
+    db_path = resolve_db_path()
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     

@@ -1,0 +1,102 @@
+{
+  "task": "P165B_DESIGNATE_ZEN_GATES_AS_CANONICAL_RESEARCH_DATASET",
+  "date": "2026-06-01",
+  "final_classification": "P165B_ZEN_GATES_CANONICAL_RESEARCH_DATASET_DESIGNATED",
+  "authorization_phrase_detected": "YES designate zen-gates as canonical research dataset",
+  "authorized_option": "B",
+  "phase_0_verification": {
+    "all_checks_passed": true,
+    "authorization_phrase_present": true,
+    "worktree_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "head_commit": "c8b423d0c1de26253be4cec79ae6de77719d1074",
+    "db_rows": 94924,
+    "drift_guard": "PASS",
+    "p161_test": "PASS",
+    "p162_test": "PASS",
+    "p163_test": "PASS",
+    "p164_test": "PASS",
+    "p164_json_artifact": "outputs/research/power_lotto/p164_reconcile_plan_decision_gate_20260531.json",
+    "p164_md_artifact": "outputs/research/power_lotto/p164_reconcile_plan_decision_gate_20260531.md"
+  },
+  "canonical_research_dataset": {
+    "designation": "CANONICAL_RESEARCH_DATASET",
+    "worktree_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "db_path": "lottery_api/data/lottery_v2.db",
+    "db_rows": 94924,
+    "bet_index_column_present": true,
+    "schema_columns": 27,
+    "unique_constraint": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index)",
+    "power_lotto_rows": 36104,
+    "distinct_draws": 1551,
+    "effective_from": "2026-06-01"
+  },
+  "reason_for_option_b": [
+    "zen-gates DB (94924 rows, bet_index schema) is already migrated, validated, and drift-guard clean",
+    "All P161/P162/P163/P164 research tests pass against this dataset",
+    "Avoids immediate high-risk DB migration on main branch (Option C deferred)",
+    "All P149-P159B replay governance chain artifacts are present and valid in this worktree",
+    "Future POWER_LOTTO effectiveness research (P166+) requires full 36104-row dataset, not stale 15142-row main dataset",
+    "Option A (code/docs/tests merge only) does not solve research data completeness — main DB still lacks bet_index and 40462 rows",
+    "User explicitly authorized: YES designate zen-gates as canonical research dataset"
+  ],
+  "main_remains_stale_warning": {
+    "main_branch": "main",
+    "main_db_rows": 54462,
+    "main_bet_index_present": false,
+    "main_research_artifacts_present": false,
+    "split_status": "UNRESOLVED",
+    "warning": "main branch DB is stale at 54462 rows with no bet_index column. main/zen-gates DB split is NOT resolved by Option B designation. Production/mainline governance decisions still require a separate controlled DB migration (Option C) with its own authorization chain. Do not use main DB for research tasks.",
+    "agent_guard": "All research agents must target zen-gates worktree DB. Any agent that uses main DB for POWER_LOTTO research is operating on stale incomplete data."
+  },
+  "db_split_unresolved_warning": {
+    "status": "UNRESOLVED",
+    "delta_rows": 40462,
+    "delta_schema": "bet_index column absent in main",
+    "resolution_path": "Option C — controlled DB migration — requires separate authorization chain (P165C or equivalent). P165B does NOT authorize Option C.",
+    "no_merge_performed": true,
+    "no_db_migration_performed": true
+  },
+  "no_action_confirmations": {
+    "no_db_write": true,
+    "no_merge": true,
+    "no_rebase": true,
+    "no_cherry_pick": true,
+    "no_reset": true,
+    "no_registry_mutation": true,
+    "no_champion_promotion": true,
+    "no_controlled_apply": true,
+    "no_scheduler_cron": true,
+    "no_commit": true,
+    "no_push": true,
+    "no_checkout_main": true,
+    "no_new_branch": true,
+    "no_new_worktree": true,
+    "no_clone": true,
+    "no_betting_advice": true,
+    "no_win_guarantee": true,
+    "no_real_money_wording": true,
+    "no_replay_rows_added": true,
+    "no_api_ui_changes": true,
+    "no_strategy_implementation_changes": true
+  },
+  "worktree_preservation_guard": {
+    "guard": "ACTIVE",
+    "worktree_must_not_be_pruned": true,
+    "db_backup_recommended_before_any_worktree_removal": true,
+    "backup_directory": "backups/",
+    "warning": "If zen-gates worktree is removed before DB is copied to a permanent location, 94924 rows (including 40462 rows absent from main) are permanently lost. Verify worktree path exists at start of each new session."
+  },
+  "governance_invariants": {
+    "db_rows_must_remain": 94924,
+    "drift_guard_must_pass": true,
+    "no_commit_no_push": true,
+    "no_scheduler_installed": true,
+    "no_wagering_no_win_promise": true,
+    "main_zen_gates_split": "UNRESOLVED — not resolved by P165B"
+  },
+  "next_task": "P166_POWER_LOTTO_ENSEMBLE_VOTING_RESEARCH_PLAN_ONLY",
+  "next_task_scope": "Research plan only — no implementation, no DB write, no controlled_apply. Must produce a written research plan for POWER_LOTTO ensemble/voting strategy effectiveness evaluation using zen-gates canonical dataset (94924 rows, 36104 POWER_LOTTO rows). Must not begin implementation without separate authorization.",
+  "next_task_blocked_until": "User explicitly authorizes P166 research plan execution. P165B does NOT authorize P166 implementation."
+}

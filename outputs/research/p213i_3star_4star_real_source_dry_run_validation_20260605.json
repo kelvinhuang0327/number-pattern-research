@@ -1,0 +1,107 @@
+{
+  "task_id": "P213I",
+  "classification": "P213I_3STAR_4STAR_REAL_SOURCE_DRY_RUN_ARTIFACT_BUILD_COMPLETE",
+  "task_type": "Type C",
+  "source_status": "REAL_SOURCE_PRESENT_FORMAT_NEEDS_ADAPTATION",
+  "source_root": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/00-Plan/roadmap/number",
+  "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+  "production_db_write": false,
+  "production_db_rows_before": 94924,
+  "production_db_rows_after": 94924,
+  "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+  "files": {
+    "3_STAR": {
+      "file_count": 20,
+      "row_count": 5850,
+      "files": [
+        "00-Plan/roadmap/number/100/3星彩_2011.csv",
+        "00-Plan/roadmap/number/101/3星彩_2012.csv",
+        "00-Plan/roadmap/number/102/3星彩_2013.csv",
+        "00-Plan/roadmap/number/2014/3星彩_2014.csv",
+        "00-Plan/roadmap/number/2015/3星彩_2015.csv",
+        "00-Plan/roadmap/number/2016/3星彩_2016.csv",
+        "00-Plan/roadmap/number/2017/3星彩_2017.csv",
+        "00-Plan/roadmap/number/2018/3星彩_201801_201812.csv",
+        "00-Plan/roadmap/number/2019/3星彩_2019.csv",
+        "00-Plan/roadmap/number/2020/3星彩_202001_202012.csv",
+        "00-Plan/roadmap/number/2021/3星彩_2021.csv",
+        "00-Plan/roadmap/number/2022/3星彩_2022.csv",
+        "00-Plan/roadmap/number/2023/3星彩_2023.csv",
+        "00-Plan/roadmap/number/2024/3星彩_2024.csv",
+        "00-Plan/roadmap/number/2025/3星彩_2025.csv",
+        "00-Plan/roadmap/number/2026/3星彩_2026.csv",
+        "00-Plan/roadmap/number/96/3星彩_2007.csv",
+        "00-Plan/roadmap/number/97/3星彩_2008.csv",
+        "00-Plan/roadmap/number/98/3星彩_2009.csv",
+        "00-Plan/roadmap/number/99/3星彩_2010.csv"
+      ]
+    },
+    "4_STAR": {
+      "file_count": 20,
+      "row_count": 5850,
+      "files": [
+        "00-Plan/roadmap/number/100/4星彩_2011.csv",
+        "00-Plan/roadmap/number/101/4星彩_2012.csv",
+        "00-Plan/roadmap/number/102/4星彩_2013.csv",
+        "00-Plan/roadmap/number/2014/4星彩_2014.csv",
+        "00-Plan/roadmap/number/2015/4星彩_2015.csv",
+        "00-Plan/roadmap/number/2016/4星彩_2016.csv",
+        "00-Plan/roadmap/number/2017/4星彩_2017.csv",
+        "00-Plan/roadmap/number/2018/4星彩_201801_201812.csv",
+        "00-Plan/roadmap/number/2019/4星彩_2019.csv",
+        "00-Plan/roadmap/number/2020/4星彩_202001_202012.csv",
+        "00-Plan/roadmap/number/2021/4星彩_2021.csv",
+        "00-Plan/roadmap/number/2022/4星彩_2022.csv",
+        "00-Plan/roadmap/number/2023/4星彩_2023.csv",
+        "00-Plan/roadmap/number/2024/4星彩_2024.csv",
+        "00-Plan/roadmap/number/2025/4星彩_2025.csv",
+        "00-Plan/roadmap/number/2026/4星彩_2026.csv",
+        "00-Plan/roadmap/number/96/4星彩_2007.csv",
+        "00-Plan/roadmap/number/97/4星彩_2008.csv",
+        "00-Plan/roadmap/number/98/4星彩_2009.csv",
+        "00-Plan/roadmap/number/99/4星彩_2010.csv"
+      ]
+    }
+  },
+  "per_type": {
+    "3_STAR": {
+      "matched": 4179,
+      "missing": 1671,
+      "mismatched": 0,
+      "source_rows": 5850,
+      "db_rows": 4179
+    },
+    "4_STAR": {
+      "matched": 2922,
+      "missing": 2928,
+      "mismatched": 0,
+      "source_rows": 5850,
+      "db_rows": 2922
+    }
+  },
+  "duplicates": {
+    "3_STAR": {
+      "duplicate_count": 0,
+      "duplicate_draws": []
+    },
+    "4_STAR": {
+      "duplicate_count": 0,
+      "duplicate_draws": []
+    }
+  },
+  "status_counts": {
+    "MISSING_IN_DB": 4599,
+    "MATCH": 7101
+  },
+  "total_rows": 11700,
+  "total_matched": 7101,
+  "total_missing": 4599,
+  "total_mismatched": 0,
+  "real_source_files_found": true,
+  "real_source_file_count": 40,
+  "positional_order": "encoded in 獎號1..N columns",
+  "date_normalization_note": "Normalized source and DB dates to YYYY/MM/DD before comparison",
+  "next_task_recommendation": "P213H controlled production DB migration only if explicit DB-write authorization is later provided; otherwise HOLD",
+  "exact_authorization_phrase_for_next_task": "Authorize P213H 3_STAR/4_STAR controlled production DB migration (DB write authorized, backup confirmed, dry-run passed)",
+  "source_has_draw_order_equivalent": true
+}

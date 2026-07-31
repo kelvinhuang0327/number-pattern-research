@@ -1,0 +1,13 @@
+=== Wed Jul  1 19:59:44 CST 2026 TZ=CST ===
+$ python3 tools/lottery-d5/build_p326a_baseline_summary.py
+wrote /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p300a-d5-ui/public/demo-data/lottery-d5/p325a/baseline_summary.json
+wrote /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p300a-d5-ui/public/demo-data/lottery-d5/p325a/source_provenance.json
+--- exit=0 ---
+$ git status --porcelain (post-run)
+$ git diff --stat (post-run)
+$ node --check src/apps/lottery-d5/lottery-d5.js
+--- exit=0 ---
+$ pytest tests/test_p326a_d5_baseline_results_static_ui.py tests/test_p321a_d5_combination_results_static_ui.py tests/test_p300a_d5_artifact_backed_ui.py -q -p no:cacheprovider
+.......................                                                  [100%]
+23 passed in 0.17s
+--- exit=0 ---

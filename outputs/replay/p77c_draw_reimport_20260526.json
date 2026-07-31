@@ -1,0 +1,80 @@
+{
+  "task": "P77C",
+  "description": "Recovery re-import of POWER_LOTTO draw 115000041 — backup-wipe remediation",
+  "generated_at": "2026-05-26T07:52:34Z",
+  "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+  "branch": "p77c-draw-reimport-powerlotto-115000041",
+  "final_classification": "P77C_DRAW_REIMPORT_SUCCESS",
+  "context": {
+    "root_cause": "P77B inserted draw 115000041 into draws table. Subsequent DB recovery restored from lottery_v2.db.bak_p77b_draw_refresh_20260526_150549 which was a pre-insert safety backup, removing the draw.",
+    "recovery_from": "lottery_api/data/lottery_v2.db.bak_p77b_draw_refresh_20260526_150549",
+    "p77b_commit": "46c184837588ff664d291954eb2d8c19e86166e0",
+    "p78_plan_status": "PLAN_READY_FOR_P79_APPLY"
+  },
+  "db_backup": {
+    "path": "lottery_api/data/lottery_v2.db.bak_p77c_draw_reimport_20260526_155217",
+    "created_before_write": true
+  },
+  "preflight": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch_before_create": "main",
+    "branch_p77c": "p77c-draw-reimport-powerlotto-115000041",
+    "pr_201_state": "MERGED",
+    "pr_202_state": "MERGED",
+    "replay_rows_before": 46960,
+    "power_lotto_max_draw_before": 115000040,
+    "draw_115000041_existed_before": false,
+    "p78_artifact_exists": true,
+    "p78_final_plan_status": "PLAN_READY_FOR_P79_APPLY",
+    "p78_expected_delta": 2,
+    "all_stop_conditions_clear": true
+  },
+  "insert": {
+    "table": "draws",
+    "row": {
+      "draw": "115000041",
+      "lottery_type": "POWER_LOTTO",
+      "date": "2026/05/21",
+      "numbers": "[6, 14, 22, 28, 35, 38]",
+      "special": 1
+    },
+    "created_at_recorded": "2026-05-26 07:52:34",
+    "duplicate_guard_pre": "PASS — 0 existing rows",
+    "duplicate_guard_post": "PASS — exactly 1 row",
+    "sql": "INSERT INTO draws (draw, date, lottery_type, numbers, special) VALUES ('115000041', '2026/05/21', 'POWER_LOTTO', '[6, 14, 22, 28, 35, 38]', 1)"
+  },
+  "verification": {
+    "replay_rows_before": 46960,
+    "replay_rows_after": 46960,
+    "replay_rows_delta": 0,
+    "power_lotto_max_draw_before": 115000040,
+    "power_lotto_max_draw_after": 115000041,
+    "draw_115000041_row_count": 1,
+    "draw_date_verified": "2026/05/21",
+    "draw_numbers_verified": "[6, 14, 22, 28, 35, 38]",
+    "draw_special_verified": 1,
+    "strategy_prediction_replays_untouched": true,
+    "p78_plan_still_ready": true,
+    "all_assertions_passed": true
+  },
+  "p79_readiness": {
+    "can_proceed": true,
+    "blocker": null,
+    "power_lotto_max_draw": 115000041,
+    "replay_rows": 46960,
+    "p78_status": "PLAN_READY_FOR_P79_APPLY",
+    "expected_p79_insert_delta": 2,
+    "expected_replay_rows_after_p79": 46962,
+    "notes": [
+      "Draw 115000041 is now confirmed in production draws table.",
+      "Replay rows unchanged at 46960.",
+      "P78 plan remains PLAN_READY_FOR_P79_APPLY.",
+      "P79 may proceed with fourier_rhythm_3bet and fourier30_markov30_2bet inserts."
+    ]
+  },
+  "files_created": [
+    "outputs/replay/p77c_draw_reimport_20260526.json",
+    "docs/replay/p77c_draw_reimport_20260526.md",
+    "tests/test_p77c_draw_reimport.py"
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "phase": "P81_MONITORING_PIPELINE_VERIFICATION",
+  "task_date": "2026-05-26",
+  "branch": "p81-monitoring-pipeline-verification",
+  "operator": "kelvinhuang0327",
+  "preconditions": {
+    "replay_rows": 46962,
+    "max_draw": 115000041,
+    "p79_row_46961_present": true,
+    "p79_row_46962_present": true,
+    "p79_dry_run": 0,
+    "p80_merged_at": "d9c4da4"
+  },
+  "phase1_rsm": {
+    "data_path": "draws table via db.get_all_draws('POWER_LOTTO') — RSM does NOT read strategy_prediction_replays",
+    "draw_115000041_in_feed": true,
+    "draw_feed_entry": {
+      "draw": "115000041",
+      "date": "2026/05/21",
+      "numbers": "[6, 14, 22, 28, 35, 38]",
+      "special": 1
+    },
+    "draws_table_total_power_lotto": "present — draw 115000041 is latest",
+    "rsm_replay_rows_path": "NOT APPLICABLE — RSM reads draws table, not strategy_prediction_replays",
+    "performance_history_json": {
+      "path": "data/performance_history.json",
+      "type": "list",
+      "length": 20,
+      "note": "list of integers — not directly mapped to replay rows; RSM computes fresh on each bootstrap run",
+      "status": "NOT APPLICABLE"
+    },
+    "rsm_error": null,
+    "result": "PASS — draw 115000041 is present in RSM draw feed; will be included in next RSM bootstrap run for POWER_LOTTO"
+  },
+  "phase2_replay_api": {
+    "api_base": "http://localhost:8002",
+    "date_filter_note": "Slash format 2026/05/21 required; hyphen 2026-05-21 returns 0 rows",
+    "fourier_rhythm_3bet": {
+      "total_rows": 1501,
+      "draw_115000041_id": 46961,
+      "draw_115000041_hit_count": 1,
+      "draw_115000041_display_status": "SHOW_REPLAY_RESULT",
+      "avg_hit_count": 0.993,
+      "hit_3plus_count": 74,
+      "rejected_count": 0,
+      "error_count": 0,
+      "result": "PASS"
+    },
+    "fourier30_markov30_2bet": {
+      "total_rows": 1501,
+      "draw_115000041_id": 46962,
+      "draw_115000041_hit_count": 2,
+      "draw_115000041_display_status": "SHOW_REPLAY_RESULT",
+      "avg_hit_count": 0.965,
+      "hit_3plus_count": 61,
+      "rejected_count": 0,
+      "error_count": 0,
+      "result": "PASS"
+    },
+    "summary_consistency": "PASS — both strategies show 1501 rows, no errors, no rejected rows",
+    "dry_run_contamination": "NONE — all 1501 rows per strategy are production rows"
+  },
+  "phase3_microfish_prediction_logger": {
+    "prediction_logger_py_exists": false,
+    "note": "prediction_logger.py is referenced in MEMORY.md as part of MicroFish but the source file does not exist in lottery_api/engine/. Only a .pyc cache exists from a prior version. MicroFish is marked as EXPERIMENTAL ONLY in MEMORY.",
+    "ingest_log_115000041_entries": 0,
+    "prediction_items_pending_count": 0,
+    "prediction_items_resolved_count": 1134,
+    "prediction_runs_for_115000041": 0,
+    "prediction_runs_for_115000040": 0,
+    "latest_prediction_run_draw": "115000037",
+    "orchestrator_scheduler_state": "SCHEDULER_DISABLED (last entry 2026-05-15)",
+    "stale_pending_blocking_pipeline": false,
+    "result": "NOT APPLICABLE — prediction_logger.py does not exist in current codebase; all prediction_items are RESOLVED (1134/1134); orchestrator scheduler is disabled; no PENDING entries block pipeline"
+  },
+  "db_state": {
+    "replay_rows_before": 46962,
+    "replay_rows_after": 46962,
+    "no_writes_performed": true
+  },
+  "all_checks_passed": true,
+  "final_classification": "P81_MONITORING_PIPELINE_VERIFICATION_PASS",
+  "notes": [
+    "RSM reads draws table (not replay table) — draw 115000041 confirmed present in RSM feed",
+    "Replay API shows 1501 rows for both Batch A strategies (1500 historical + 1 P79 draw-ext each)",
+    "prediction_logger.py source not present — MicroFish EXPERIMENTAL ONLY, not wired to replay rows",
+    "All prediction_items RESOLVED, zero PENDING, orchestrator SCHEDULER_DISABLED since 2026-05-15",
+    "No stale PENDING predictions blocking any monitoring or scoring pipeline",
+    "P81 is read-only — no DB writes performed"
+  ]
+}

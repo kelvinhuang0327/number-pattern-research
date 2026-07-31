@@ -1,0 +1,191 @@
+{
+  "task_id": "P221F",
+  "title": "Freeze Cross-Lottery Feature Discovery Protocol",
+  "date": "2026-06-03",
+  "status": "PLAN-ONLY",
+  "classification": "P221F_PROTOCOL_FROZEN_FOR_P222_READ_ONLY_SCAN",
+  "authorization": {
+    "authorized_by": "User explicit task prompt 2026-06-03",
+    "scope": "Freeze protocol only; do not run P222; do not write DB; do not mutate registry; do not promote strategies"
+  },
+  "phase_0": {
+    "repo_root": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch_before_creation": "main",
+    "git_dir": ".git",
+    "head_equals_origin_main": true,
+    "staged_files": 0,
+    "db_rows_total": 94924,
+    "db_rows_by_lottery_type": {
+      "BIG_LOTTO": 24140,
+      "DAILY_539": 34680,
+      "POWER_LOTTO": 36104
+    },
+    "bet_index_nulls": 0,
+    "duplicate_replay_keys": 0,
+    "integrity_check": "ok",
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "p211a_artifacts_tracked": true
+  },
+  "protocol": {
+    "purpose": "Freeze a future read-only P222 cross-lottery feature discovery scan that is broad, leakage-safe, and resistant to false positives.",
+    "lottery_universe": [
+      "BIG_LOTTO",
+      "DAILY_539",
+      "POWER_LOTTO",
+      "3_STAR",
+      "4_STAR",
+      "any other lottery_type present in strategy_prediction_replays",
+      "any other lottery_type surfaced by registry or related catalog data"
+    ],
+    "strategy_universe": {
+      "strategy_ids": "all strategy_id values in replay rows",
+      "bet_indexes": "all bet_index values in replay rows",
+      "lifecycle_labels": [
+        "ONLINE",
+        "RETIRED",
+        "REJECTED",
+        "OBSERVATION",
+        "any additional label encountered during the scan"
+      ],
+      "zero_row_and_no_data": "must be reported explicitly, not dropped"
+    },
+    "observed_replay_snapshot": {
+      "lottery_types_seen": [
+        "BIG_LOTTO",
+        "DAILY_539",
+        "POWER_LOTTO"
+      ],
+      "bet_indexes_seen": [1, 2, 3, 4, 5],
+      "registry_lifecycle_labels_seen": [
+        "ONLINE",
+        "RETIRED",
+        "REJECTED",
+        "OBSERVATION"
+      ]
+    },
+    "window_families": {
+      "short": [100, 125, 150],
+      "mid": [500, 750, 1000],
+      "all_history": "baseline/reference only",
+      "rules": [
+        "window set is frozen before the scan starts",
+        "no post-hoc selection of the best-looking window",
+        "optional sensitivity windows are future follow-up only",
+        "all-history cannot be the primary selector"
+      ]
+    },
+    "feature_families": {
+      "frequency_recency": [
+        "hot number frequency",
+        "cold number frequency",
+        "frequency delta short vs mid",
+        "frequency delta mid vs all-history",
+        "EWMA frequency",
+        "overdue / gap length",
+        "last-seen distance"
+      ],
+      "distribution_structure": [
+        "odd/even balance",
+        "high/low balance",
+        "sum range",
+        "span",
+        "consecutive count",
+        "repeated last digit",
+        "modulo bucket",
+        "prime count",
+        "number-zone coverage"
+      ],
+      "co_occurrence": [
+        "pair frequency",
+        "triple frequency",
+        "number cluster stability",
+        "co-hit patterns by strategy"
+      ],
+      "strategy_behavior": [
+        "strategy_id",
+        "lifecycle",
+        "bet_index",
+        "strategy family",
+        "prediction concentration",
+        "prediction entropy",
+        "strategy diversity",
+        "consensus between strategies"
+      ],
+      "time_stability": [
+        "draw era",
+        "rolling-window stability",
+        "OOS block stability",
+        "monthly drift if dates exist",
+        "yearly drift if dates exist",
+        "cross-year validation if enough data exists"
+      ],
+      "special_zone": [
+        "POWER_LOTTO second-zone remains display-only",
+        "special-zone metrics may be reported separately",
+        "special-zone metrics must not affect scoring",
+        "special-zone metrics must not affect recommendation promotion"
+      ]
+    },
+    "outcome_metrics": [
+      "hit_count distribution",
+      "M1+ / M2+ / M3+ thresholds by lottery type where meaningful",
+      "exact-hit metrics for 3_STAR / 4_STAR if applicable",
+      "special_hit separated from main-number outcomes",
+      "draw-level metrics",
+      "row-level metrics",
+      "strategy-level metrics",
+      "bet-index-level metrics"
+    ],
+    "baselines": [
+      "random baseline by lottery type",
+      "simple uniform baseline",
+      "all-history reference baseline",
+      "best single pre-existing strategy baseline",
+      "lifecycle-stratified baseline",
+      "recent-window baseline",
+      "consensus baseline"
+    ]
+  },
+  "guardrails": {
+    "hard_stops": [
+      "repo / branch / HEAD / DB baseline diverges from Phase 0",
+      "drift guard fails",
+      "staged files are non-empty before the run",
+      "scan requires DB write, registry write, production write, or strategy promotion",
+      "scan uses post-hoc window selection",
+      "scan omits zero-row / no-data strategies",
+      "scan silently excludes lifecycle labels",
+      "scan mixes row-level, draw-level, strategy-level, or bet-index-level metrics without labeling the unit",
+      "scan promotes special-zone results into scoring or recommendation logic"
+    ],
+    "reporting_rules": [
+      "remain read-only",
+      "identify every source universe explicitly",
+      "keep lifecycle labels visible",
+      "keep zero-row / no-data strategies visible",
+      "separate descriptive findings from significance claims",
+      "distinguish artifact counts, replay rows, draws, strategies, and bets",
+      "state NULL honestly when evidence is null",
+      "avoid betting advice or guaranteed prediction claims"
+    ],
+    "validation_gates": [
+      "Phase 0 checks pass",
+      "DB and registry remain unchanged",
+      "scan uses only frozen windows and frozen universe rules",
+      "every lifecycle label is reported as a label",
+      "zero-row / no-data strategies are reported explicitly",
+      "every metric uses labeled units",
+      "special-zone metrics do not affect scoring logic",
+      "no post-hoc selection"
+    ]
+  },
+  "required_completion_check": [
+    "是否真的完成",
+    "測試結果 PASS / FAIL / NOT RUN",
+    "仍卡住的唯一問題",
+    "修改檔案清單",
+    "staged / commit / push 狀態",
+    "是否允許進入下一輪",
+    "Final Classification"
+  ]
+}

@@ -1,0 +1,178 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P246K",
+  "classification": "P246K_CANONICAL_BIG_LOTTO_RANDOMNESS_AUDIT_GREEN_RANDOM_COMPATIBLE",
+  "p246j_merged_pr": "PR #325 merged 2026-06-06T02:42:45Z",
+  "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+  "db_read": true,
+  "db_read_only": true,
+  "db_write_performed": false,
+  "input_population": "CANONICAL_MAIN_DRAW",
+  "raw_population_count": 22238,
+  "canonical_population_count": 2113,
+  "excluded_add_on_count": 20125,
+  "exclusion_rules_verified": {
+    "canonical_count": 2113,
+    "raw_count": 22238,
+    "excluded_count": 20125,
+    "hyphen_in_canonical": 0,
+    "date_format_in_canonical": 0,
+    "small_pool_in_canonical": 0,
+    "all_exclusions_verified": true,
+    "max_num_all_above_25": true,
+    "num_range_valid": true
+  },
+  "p238b_comparison": {
+    "artifact_found": true,
+    "classification": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+    "test_count": 37,
+    "is_corrected_significant": false,
+    "note": "P238B ran on raw mixed 22,238-row BIG_LOTTO population including ADD_ON_PRIZE_EXCLUDED, DATE_FORMAT_ALIEN, SMALL_POOL_ALIEN. P246K runs on canonical 2,113-row population only."
+  },
+  "audit_methods": {
+    "draw_sum_ks_test": "KS test vs normal distribution",
+    "number_frequency_chi2": "Chi-square uniformity test (pool_size=49, k=6)",
+    "runs_test": "Runs test on above/below-mean draw sums",
+    "ljung_box_lag10": "Ljung-Box autocorrelation test (lag=10)",
+    "shannon_entropy": "Normalized Shannon entropy of number frequencies",
+    "per_position_analysis": "Mean/range of sorted-position numbers",
+    "era_stability": "Per-year sum mean — temporal stability check"
+  },
+  "audit_results": {
+    "draw_sum_distribution": {
+      "n": 2113,
+      "mean": 151.03,
+      "sd": 32.19,
+      "min": 59,
+      "max": 246,
+      "theoretical_mean_6of49": 150.0,
+      "mean_deviation_from_theoretical": 1.03,
+      "ks_stat": 0.0222,
+      "ks_p": 0.2458,
+      "ks_interpretation": "consistent with normal",
+      "status": "GREEN"
+    },
+    "number_frequency_uniformity": {
+      "n_draws": 2113,
+      "n_numbers": 12678,
+      "expected_per_number": 258.73,
+      "max_frequency": 285,
+      "min_frequency": 221,
+      "chi2_stat": 40.4567,
+      "chi2_p": 0.772,
+      "df": 48,
+      "chi2_interpretation": "uniform distribution compatible",
+      "status": "GREEN"
+    },
+    "serial_randomness": {
+      "runs_test": {
+        "runs": 1056,
+        "n1_above": 1040,
+        "n2_below": 1073,
+        "z_stat": -0.0541,
+        "p_value": 0.9569,
+        "interpretation": "no serial pattern",
+        "status": "GREEN"
+      },
+      "ljung_box_lag10": {
+        "stat": 10.3199,
+        "p_value": 0.4129,
+        "interpretation": "no autocorrelation",
+        "status": "GREEN"
+      }
+    },
+    "entropy": {
+      "shannon_entropy": 5.612375,
+      "max_entropy_uniform": 5.61471,
+      "normalized_entropy": 0.999584,
+      "interpretation": "near-maximum entropy — consistent with uniform distribution",
+      "status": "GREEN"
+    },
+    "per_position": {
+      "pos_1": {
+        "mean": 7.05,
+        "min": 1,
+        "max": 32
+      },
+      "pos_2": {
+        "mean": 14.53,
+        "min": 2,
+        "max": 40
+      },
+      "pos_3": {
+        "mean": 21.79,
+        "min": 4,
+        "max": 46
+      },
+      "pos_4": {
+        "mean": 28.77,
+        "min": 7,
+        "max": 47
+      },
+      "pos_5": {
+        "mean": 35.91,
+        "min": 11,
+        "max": 48
+      },
+      "pos_6": {
+        "mean": 42.99,
+        "min": 26,
+        "max": 49
+      }
+    },
+    "era_stability": {
+      "2021": {
+        "n": 113,
+        "mean": 148.5
+      },
+      "2022": {
+        "n": 111,
+        "mean": 153.6
+      },
+      "2023": {
+        "n": 114,
+        "mean": 151.0
+      },
+      "2024": {
+        "n": 118,
+        "mean": 154.6
+      },
+      "2025": {
+        "n": 114,
+        "mean": 149.3
+      },
+      "2026": {
+        "n": 57,
+        "mean": 152.1
+      }
+    },
+    "summary": {
+      "total_tests": 5,
+      "green": 5,
+      "yellow": 0,
+      "overall_status": "GREEN"
+    }
+  },
+  "gate_implication": "CANONICAL BIG_LOTTO draws are consistent with a fair random 6/49 process. P238B YELLOW was driven by mixed-population contamination (DATE_FORMAT_ALIEN + SMALL_POOL_ALIEN). RANDOMNESS_AUDIT_YELLOW is NOT confirmed on the canonical population. NOTE: This GREEN result confirms randomness — it does NOT unlock BIG_LOTTO predictive research. BIG_LOTTO signal space was exhausted (L91: 6 randomness tests pass, MI=0.006 bits, zero signals at p<0.05). Gate remains GATE_RED for predictive/bias research. DB-level canonical separation (P247 Type D) is still recommended.",
+  "no_prediction_claim": true,
+  "no_betting_advice": true,
+  "no_strategy_promotion": true,
+  "anomaly_is_not_predictor": true,
+  "add_on_records_preserved": true,
+  "raw_access_preserved": "get_all_draws('BIG_LOTTO') still returns 22,238 rows",
+  "forbidden_actions_confirmed": [
+    "DB_write",
+    "DB_migration_apply",
+    "CREATE_VIEW",
+    "CREATE_TABLE",
+    "row_deletion",
+    "registry_mutation",
+    "production_recommendation_change",
+    "strategy_promotion",
+    "betting_advice",
+    "Type_D_apply",
+    "prediction_claim",
+    "GATE_OPEN_for_BIG_LOTTO_predictive_research"
+  ],
+  "final_decision": "P246K canonical BIG_LOTTO randomness audit complete on 2113 draws. All 5 tests: 5 GREEN / 0 YELLOW. P238B YELLOW (raw population) is NOT confirmed on canonical population. Canonical BIG_LOTTO draws are consistent with a fair random 6/49 process. This GREEN result supersedes P238B YELLOW for canonical randomness gating. NOTE: GREEN randomness ≠ exploitable signal. BIG_LOTTO predictive research remains blocked per L91 (zero signals pass p<0.05 even on canonical data). No DB write. No deletion. ADD_ON_PRIZE_EXCLUDED preserved. DB-level canonical separation (P247 Type D) still recommended."
+}

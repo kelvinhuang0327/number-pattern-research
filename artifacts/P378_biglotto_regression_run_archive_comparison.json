@@ -1,0 +1,70 @@
+{
+  "baseline_snapshot_id": "P378-P377-0fd6dfb95fcb",
+  "changed_metrics": {},
+  "comparison_status": "PASS",
+  "current_snapshot_id": "P378-P377-0fd6dfb95fcb",
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "initial_archive": true,
+  "notes": "Initial P378 archive: no previous committed P378 archive snapshot exists. The first comparison intentionally uses baseline=current so future P378 archives can compare against this deterministic snapshot.",
+  "scope_lines": [
+    "Historical descriptive evidence only.",
+    "No future prediction guarantee.",
+    "No betting advice.",
+    "No DB open/write.",
+    "No adapter calls.",
+    "No new scoring.",
+    "No new scoring cohort.",
+    "No production registry import.",
+    "No deploy.",
+    "No generated DB rows.",
+    "No strategy status changes.",
+    "No blended leaderboard.",
+    "No force operations.",
+    "Not production release approval.",
+    "P378 reads only merged P377 regression artifacts and writes only P378-prefixed archive artifacts."
+  ],
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "blended_leaderboard": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "force_operations": false,
+    "future_prediction_guarantee": false,
+    "generated_db_rows": false,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring": false,
+    "new_scoring_cohort": false,
+    "production_registry_imported": false,
+    "production_release_approval": false,
+    "strategy_status_changes": false
+  },
+  "task": "P378_biglotto_regression_run_archive",
+  "unchanged_metrics": {
+    "p377_artifact_count": {
+      "current": 50,
+      "previous": 50
+    },
+    "p377_command_count": {
+      "current": 6,
+      "previous": 6
+    },
+    "p377_fail_count": {
+      "current": 0,
+      "previous": 0
+    },
+    "p377_overall_status": {
+      "current": "PASS",
+      "previous": "PASS"
+    },
+    "p377_pass_count": {
+      "current": 6,
+      "previous": 6
+    },
+    "p377_warn_count": {
+      "current": 0,
+      "previous": 0
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "artifact_prefix": "P518I_predraw_ledger_verify_status",
+  "badges": {
+    "canonical_db_refusal": {
+      "badge": "passing",
+      "label": "canonical_db_refusal",
+      "message": "canonical DB basename refusal evidence from P518H",
+      "status": "PASS"
+    },
+    "db_invariant": {
+      "badge": "passing",
+      "label": "db_invariant",
+      "message": "no canonical DB open/write; no migration/backfill; no deploy",
+      "status": "PASS"
+    },
+    "edge_cases": {
+      "badge": "passing",
+      "label": "edge_cases",
+      "message": "7/7 P518G edge cases passed",
+      "status": "PASS"
+    },
+    "no_deploy": {
+      "badge": "passing",
+      "label": "no_deploy",
+      "message": "no deploy / migration / backfill; not production release approval",
+      "status": "PASS"
+    },
+    "smoke_cases": {
+      "badge": "passing",
+      "label": "smoke_cases",
+      "message": "5/5 P518F smoke cases passed",
+      "status": "PASS"
+    },
+    "verifier_health": {
+      "badge": "passing",
+      "label": "verifier_health",
+      "message": "P518H acceptance PASS; failed/missing=0; warnings=0",
+      "status": "PASS"
+    }
+  },
+  "notices": [
+    "no canonical DB open/write",
+    "no migration/backfill",
+    "no deploy",
+    "synthetic fixture evidence only",
+    "not production release approval",
+    "no betting/future prediction claims"
+  ]
+}

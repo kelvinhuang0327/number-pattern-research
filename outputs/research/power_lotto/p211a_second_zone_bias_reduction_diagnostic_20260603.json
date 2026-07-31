@@ -1,0 +1,196 @@
+{
+  "task_id": "P211A",
+  "title": "POWER_LOTTO Second-Zone Bias-Reduction Read-Only Diagnostic",
+  "date": "2026-06-03",
+  "status": "COMPLETE",
+  "classification": "P211A_SECOND_ZONE_BIAS_REDUCTION_DIAGNOSTIC_COMPLETE",
+
+  "governance": {
+    "authorized_by": "User explicit prompt 2026-06-03 (P211A only)",
+    "p210_protocol": "CEO-accepted 2026-06-02",
+    "p211_original": "HELD_BY_USER (this P211A is a narrower authorized sub-task)",
+    "db_write": false,
+    "registry_write": false,
+    "production_write": false,
+    "strategy_promotion": false,
+    "second_zone_scoring_promotion": false,
+    "null_accepted_as_success": true
+  },
+
+  "phase_0": {
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "branch": "main",
+    "head_equals_origin_main": true,
+    "db_rows": 94924,
+    "bet_index_nulls": 0,
+    "duplicate_keys": 0,
+    "power_lotto_rows": 36104,
+    "integrity_check": "ok",
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "p218_structural_head_fix_present": true,
+    "staged_files": 0,
+    "commit_gate": "nothing_authorized_to_commit"
+  },
+
+  "frozen_params": {
+    "mid_window": 250,
+    "short_window": 40,
+    "ewma_lambda": 0.97,
+    "baseline": 0.125,
+    "bonferroni_threshold": 0.0125,
+    "oos_window": 150,
+    "schemes_tested": ["long", "mid", "short", "ewma"],
+    "null_accepted": true
+  },
+
+  "dataset_summary": {
+    "total_draws": 1551,
+    "draw_range": ["99000055 (2010-07-12)", "115000041 (2026-05-21)"],
+    "draws_with_predicted_special": 1500,
+    "total_predicted_special_rows": 9000,
+    "oos_draws": 150,
+    "oos_range": ["113000101", "115000041"]
+  },
+
+  "current_system_baseline": {
+    "predicted_special_distribution": {
+      "1": {"count": 2065, "pct": 22.94},
+      "2": {"count": 1569, "pct": 17.43},
+      "3": {"count": 2035, "pct": 22.61},
+      "4": {"count": 929,  "pct": 10.32},
+      "5": {"count": 794,  "pct": 8.82},
+      "6": {"count": 548,  "pct": 6.09},
+      "7": {"count": 651,  "pct": 7.23},
+      "8": {"count": 409,  "pct": 4.54}
+    },
+    "low_ball_1_2_3_pct": 62.98,
+    "kl_divergence_from_uniform": 0.1515,
+    "concentration_index_hhi_normalized": 0.0441,
+    "all_bet_hit_rate_pct": 11.811,
+    "all_bet_hits": 1063,
+    "all_bet_total": 9000,
+    "draw_level_hit_rate_pct": 32.40,
+    "draw_level_hits": 486,
+    "draw_level_total": 1500
+  },
+
+  "actual_special_distribution": {
+    "note": "1551 total draws; approximately uniform consistent with SZC1 NO_SIGNAL_CONFIRMED",
+    "1": {"count": 189, "pct": 12.19},
+    "2": {"count": 229, "pct": 14.76},
+    "3": {"count": 184, "pct": 11.86},
+    "4": {"count": 198, "pct": 12.77},
+    "5": {"count": 213, "pct": 13.73},
+    "6": {"count": 178, "pct": 11.48},
+    "7": {"count": 173, "pct": 11.15},
+    "8": {"count": 187, "pct": 12.06}
+  },
+
+  "counterfactual_oos_150": {
+    "note": "Top-1 prediction per draw; each scheme uses only history before that draw",
+    "schemes": {
+      "long": {
+        "description": "Full-history frequency — always predicts ball with highest all-time freq",
+        "hits": 28, "n": 150,
+        "hit_rate": 0.1867,
+        "wilson_95ci": [0.1324, 0.2566],
+        "p_value_gt_baseline": 0.01931,
+        "bonferroni_significant_p_lt_0_0125": false,
+        "kl_divergence_from_uniform": 2.0794,
+        "concentration_index_hhi_normalized": 1.0000,
+        "low_ball_1_2_3_pct": 100.0,
+        "dominant_prediction": "ball_2 (100% of draws)"
+      },
+      "mid": {
+        "description": "Last-250-draw frequency window (P210 primary window)",
+        "hits": 24, "n": 150,
+        "hit_rate": 0.1600,
+        "wilson_95ci": [0.1099, 0.2270],
+        "p_value_gt_baseline": 0.12224,
+        "bonferroni_significant_p_lt_0_0125": false,
+        "kl_divergence_from_uniform": 1.3447,
+        "concentration_index_hhi_normalized": 0.4534,
+        "low_ball_1_2_3_pct": 34.67,
+        "dominant_prediction": "ball_5 (63.3%), ball_2 (34.7%)"
+      },
+      "short": {
+        "description": "Last-40-draw frequency window",
+        "hits": 24, "n": 150,
+        "hit_rate": 0.1600,
+        "wilson_95ci": [0.1099, 0.2270],
+        "p_value_gt_baseline": 0.12224,
+        "bonferroni_significant_p_lt_0_0125": false,
+        "kl_divergence_from_uniform": 0.8798,
+        "concentration_index_hhi_normalized": 0.2389,
+        "low_ball_1_2_3_pct": 44.0,
+        "dominant_prediction": "ball_2 (43.3%), ball_4 (32%), ball_5 (20.7%)"
+      },
+      "ewma": {
+        "description": "EWMA lambda=0.97 over last 250 draws",
+        "hits": 24, "n": 150,
+        "hit_rate": 0.1600,
+        "wilson_95ci": [0.1099, 0.2270],
+        "p_value_gt_baseline": 0.12224,
+        "bonferroni_significant_p_lt_0_0125": false,
+        "kl_divergence_from_uniform": 0.9265,
+        "concentration_index_hhi_normalized": 0.2400,
+        "low_ball_1_2_3_pct": 42.0,
+        "dominant_prediction": "ball_2 (42%), ball_5 (25.3%), ball_4 (30.7%)"
+      }
+    },
+    "per_ball_prediction_pct": {
+      "ball_1": {"long": 0.0, "mid": 0.0, "short": 0.0, "ewma": 0.0, "actual": 8.7},
+      "ball_2": {"long": 100.0, "mid": 34.7, "short": 43.3, "ewma": 42.0, "actual": 18.7},
+      "ball_3": {"long": 0.0, "mid": 0.0, "short": 0.7, "ewma": 0.0, "actual": 11.3},
+      "ball_4": {"long": 0.0, "mid": 2.0, "short": 32.0, "ewma": 30.7, "actual": 16.0},
+      "ball_5": {"long": 0.0, "mid": 63.3, "short": 20.7, "ewma": 25.3, "actual": 16.0},
+      "ball_6": {"long": 0.0, "mid": 0.0, "short": 0.0, "ewma": 0.0, "actual": 10.7},
+      "ball_7": {"long": 0.0, "mid": 0.0, "short": 0.0, "ewma": 0.0, "actual": 8.0},
+      "ball_8": {"long": 0.0, "mid": 0.0, "short": 3.3, "ewma": 2.0, "actual": 10.7}
+    }
+  },
+
+  "counterfactual_oos_500": {
+    "note": "Last 500 draws; each scheme uses only history before that draw",
+    "schemes": {
+      "long":  {"hits": 75, "n": 500, "hit_rate": 0.1500, "p_value": 0.0550, "bonferroni_significant": false, "kl_divergence": 2.0794, "low_1_2_3_pct": 100.0},
+      "mid":   {"hits": 64, "n": 500, "hit_rate": 0.1280, "p_value": 0.4397, "bonferroni_significant": false, "kl_divergence": 0.7121, "low_1_2_3_pct": 51.2},
+      "short": {"hits": 72, "n": 500, "hit_rate": 0.1440, "p_value": 0.1132, "bonferroni_significant": false, "kl_divergence": 0.2234, "low_1_2_3_pct": 39.4},
+      "ewma":  {"hits": 67, "n": 500, "hit_rate": 0.1340, "p_value": 0.2902, "bonferroni_significant": false, "kl_divergence": 0.2875, "low_1_2_3_pct": 35.6}
+    }
+  },
+
+  "walk_forward_blocks": {
+    "block_size": 150,
+    "n_blocks": 8,
+    "blocks": [
+      {"idx": 0, "start_draw": "102000097", "end_draw": "104000038", "long_pct": 14.0, "mid_pct": 14.0, "short_pct": 14.7, "ewma_pct": 18.7},
+      {"idx": 1, "start_draw": "104000039", "end_draw": "105000083", "long_pct": 15.3, "mid_pct": 11.3, "short_pct": 12.7, "ewma_pct": 14.7},
+      {"idx": 2, "start_draw": "105000084", "end_draw": "107000025", "long_pct": 13.3, "mid_pct": 13.3, "short_pct": 10.7, "ewma_pct": 12.0},
+      {"idx": 3, "start_draw": "107000026", "end_draw": "108000070", "long_pct": 14.0, "mid_pct": 18.7, "short_pct": 16.0, "ewma_pct": 18.0},
+      {"idx": 4, "start_draw": "108000071", "end_draw": "110000011", "long_pct": 12.7, "mid_pct": 8.0,  "short_pct": 10.0, "ewma_pct": 10.7},
+      {"idx": 5, "start_draw": "110000012", "end_draw": "111000057", "long_pct": 16.0, "mid_pct": 12.0, "short_pct": 15.3, "ewma_pct": 12.7},
+      {"idx": 6, "start_draw": "111000058", "end_draw": "112000103", "long_pct": 14.0, "mid_pct": 11.3, "short_pct": 12.0, "ewma_pct": 11.3},
+      {"idx": 7, "start_draw": "112000104", "end_draw": "114000044", "long_pct": 12.0, "mid_pct": 11.3, "short_pct": 14.0, "ewma_pct": 14.0}
+    ],
+    "blocks_above_12_5pct": {"long": "7/8", "mid": "3/8", "short": "5/8", "ewma": "5/8"},
+    "interpretation": "No scheme consistently beats baseline. High variance (8.0-18.7%) consistent with sampling noise from uniform distribution."
+  },
+
+  "conclusions": {
+    "bias_reduction_exists": true,
+    "hit_rate_edge_exists": false,
+    "all_schemes_statistically_null": true,
+    "second_zone_remains_display_only": true,
+    "p211b_worth_doing": false,
+    "p211b_reopen_condition": "Only if future draws show Bonferroni-corrected p<0.0125 deviation from uniform over >=500 new draws"
+  },
+
+  "validation": {
+    "git_cached_empty": true,
+    "db_rows_unchanged": 94924,
+    "full_test_suite": "NOT_RUN"
+  },
+
+  "final_classification": "P211A_SECOND_ZONE_BIAS_REDUCTION_DIAGNOSTIC_COMPLETE"
+}

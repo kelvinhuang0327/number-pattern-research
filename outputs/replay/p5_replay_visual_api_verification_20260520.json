@@ -1,0 +1,281 @@
+{
+  "phase": "P5_REPLAY_VISUAL_API_VERIFICATION",
+  "generated_at": "2026-05-20T07:01:52.222985Z",
+  "dry_run_only": true,
+  "db_write_performed": false,
+  "production_replay_rows_unchanged": 460,
+  "strategies_with_rows": 6,
+  "db_schema_audit": {
+    "table": "strategy_prediction_replays",
+    "column_count": 25,
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER"
+      },
+      {
+        "name": "lottery_type",
+        "type": "TEXT"
+      },
+      {
+        "name": "target_draw",
+        "type": "TEXT"
+      },
+      {
+        "name": "target_date",
+        "type": "TEXT"
+      },
+      {
+        "name": "strategy_id",
+        "type": "TEXT"
+      },
+      {
+        "name": "strategy_name",
+        "type": "TEXT"
+      },
+      {
+        "name": "strategy_version",
+        "type": "TEXT"
+      },
+      {
+        "name": "history_cutoff_draw",
+        "type": "TEXT"
+      },
+      {
+        "name": "replay_status",
+        "type": "TEXT"
+      },
+      {
+        "name": "reject_reason",
+        "type": "TEXT"
+      },
+      {
+        "name": "predicted_numbers",
+        "type": "TEXT"
+      },
+      {
+        "name": "predicted_special",
+        "type": "INTEGER"
+      },
+      {
+        "name": "actual_numbers",
+        "type": "TEXT"
+      },
+      {
+        "name": "actual_special",
+        "type": "INTEGER"
+      },
+      {
+        "name": "hit_numbers",
+        "type": "TEXT"
+      },
+      {
+        "name": "hit_count",
+        "type": "INTEGER"
+      },
+      {
+        "name": "special_hit",
+        "type": "INTEGER"
+      },
+      {
+        "name": "replay_run_id",
+        "type": "INTEGER"
+      },
+      {
+        "name": "generated_at",
+        "type": "TEXT"
+      },
+      {
+        "name": "truth_level",
+        "type": "TEXT"
+      },
+      {
+        "name": "controlled_apply_id",
+        "type": "TEXT"
+      },
+      {
+        "name": "source",
+        "type": "TEXT"
+      },
+      {
+        "name": "provenance_hash",
+        "type": "TEXT"
+      },
+      {
+        "name": "provenance_source",
+        "type": "TEXT"
+      },
+      {
+        "name": "dry_run",
+        "type": "INTEGER"
+      }
+    ]
+  },
+  "null_rate_audit": {
+    "truth_level": {
+      "null_count": 460,
+      "non_null_count": 0,
+      "null_pct": 100.0
+    },
+    "source": {
+      "null_count": 460,
+      "non_null_count": 0,
+      "null_pct": 100.0
+    },
+    "provenance_hash": {
+      "null_count": 460,
+      "non_null_count": 0,
+      "null_pct": 100.0
+    },
+    "controlled_apply_id": {
+      "null_count": 460,
+      "non_null_count": 0,
+      "null_pct": 100.0
+    }
+  },
+  "api_field_audit": {
+    "present_fields_count": 27,
+    "present_fields": [
+      "actual_numbers",
+      "actual_special",
+      "controlled_apply_id",
+      "generated_at",
+      "history_cutoff",
+      "hit_count",
+      "hit_numbers",
+      "id",
+      "lifecycle_status",
+      "lottery",
+      "lottery_type",
+      "predicted_numbers",
+      "predicted_special",
+      "provenance_hash",
+      "provenance_source",
+      "reject_reason",
+      "replay_run_id",
+      "replay_status",
+      "source",
+      "special_hit",
+      "strategy_id",
+      "strategy_lifecycle_status",
+      "strategy_name",
+      "strategy_version",
+      "target_date",
+      "target_draw",
+      "truth_level"
+    ],
+    "p3_required_fields": [
+      "display_status",
+      "should_count_as_success",
+      "source_trace",
+      "visibility_state"
+    ],
+    "missing_fields": [
+      "display_status",
+      "should_count_as_success",
+      "source_trace",
+      "visibility_state"
+    ],
+    "partial_fields": {
+      "truth_level": "present in schema but NULL for all legacy rows (100% NULL)",
+      "source": "present in schema but NULL for all legacy rows",
+      "provenance_hash": "present in schema but NULL for all legacy rows"
+    },
+    "gap_count": 4
+  },
+  "display_state_support": {
+    "SHOW_REPLAY_RESULT": {
+      "supported": true,
+      "source": "strategy_prediction_replays rows",
+      "note": "All 460 production rows are ROW_BACKED; /history returns these."
+    },
+    "SHOW_RECONSTRUCTIBLE_PENDING": {
+      "supported": false,
+      "source": "prediction_items (not in strategy_prediction_replays)",
+      "note": "RECONSTRUCTIBLE strategies (fourier_rhythm_3bet, ts3_regime_3bet, acb_1bet, acb_markov_midfreq_3bet, midfreq_acb_2bet) have no rows in strategy_prediction_replays yet. The /history endpoint cannot surface these — they are invisible to the UI until P7 apply is authorized."
+    },
+    "SHOW_NO_DATA": {
+      "supported": false,
+      "source": "registry-only (no rows)",
+      "note": "NO_DATA strategies (7 in registry) have no replay rows. The /history endpoint skips them entirely. A UI that shows 'no data available' for these requires a new /api/replay/coverage endpoint or enrichment of /history."
+    },
+    "SHOW_ARTIFACT_ONLY": {
+      "supported": false,
+      "source": "rejected/*.json (not in registry)",
+      "note": "ARTIFACT_ONLY strategies (41) are not in runtime registry. No API endpoint exposes them. Governance review required first."
+    }
+  },
+  "coverage_gap_summary": {
+    "total_display_states": 4,
+    "currently_supported": 1,
+    "unsupported": 3,
+    "p3_row_backed_cells": 300,
+    "p3_reconstructible_cells": 121,
+    "p3_no_data_cells": 867
+  },
+  "minimal_patch": {
+    "approach": "API_RESPONSE_FIELD_ENRICHMENT",
+    "description": "Add 3 computed fields to each record in GET /api/replay/history. No DB schema change. No UI restructure. Non-breaking addition.",
+    "fields_to_add": [
+      {
+        "field": "visibility_state",
+        "type": "string",
+        "values": [
+          "ROW_BACKED",
+          "RECONSTRUCTIBLE",
+          "NO_DATA",
+          "ARTIFACT_ONLY"
+        ],
+        "computation": "Always 'ROW_BACKED' for rows from strategy_prediction_replays",
+        "db_change": false,
+        "ui_change": false
+      },
+      {
+        "field": "display_status",
+        "type": "string",
+        "values": [
+          "SHOW_REPLAY_RESULT",
+          "SHOW_RECONSTRUCTIBLE_PENDING",
+          "SHOW_NO_DATA"
+        ],
+        "computation": "Always 'SHOW_REPLAY_RESULT' for rows from strategy_prediction_replays",
+        "db_change": false,
+        "ui_change": false
+      },
+      {
+        "field": "should_count_as_success",
+        "type": "boolean",
+        "computation": "True if actual_numbers IS NOT NULL AND hit_count IS NOT NULL",
+        "db_change": false,
+        "ui_change": false
+      }
+    ],
+    "endpoints_affected": [
+      "GET /api/replay/history"
+    ],
+    "endpoints_not_affected": [
+      "GET /api/replay/strategies",
+      "GET /api/replay/summary",
+      "GET /api/replay/runs",
+      "GET /api/replay/freshness"
+    ],
+    "coverage_gap_remaining_after_patch": "The /history endpoint still only returns ROW_BACKED rows. To surface RECONSTRUCTIBLE/NO_DATA states in the UI, a new GET /api/replay/coverage endpoint would be needed. This is deferred to a future phase.",
+    "implementation_status": "IMPLEMENTED — fields added to get_replay_history() response"
+  },
+  "ui_assessment": {
+    "ui_restructure_required": false,
+    "existing_list_view": "Maintained — no visual redesign",
+    "new_fields_surfaced": [
+      "visibility_state",
+      "display_status",
+      "should_count_as_success"
+    ],
+    "consumer_hint": "UI can use visibility_state to show a badge/label next to each record: 'ROW_BACKED' → full result shown; 'RECONSTRUCTIBLE' → 'Pending apply' banner; 'NO_DATA' → 'No data' placeholder."
+  },
+  "safety_flags": {
+    "db_write_performed": false,
+    "replay_rows_generated": false,
+    "strategy_executed": false,
+    "production_rows_unchanged": true
+  }
+}

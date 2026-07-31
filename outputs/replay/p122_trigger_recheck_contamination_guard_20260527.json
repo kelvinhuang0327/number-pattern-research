@@ -1,0 +1,122 @@
+{
+  "task_id": "P122_TRIGGER_RECHECK_CONTAMINATION_GUARD",
+  "classification": "P122_ALL_TRIGGERS_STILL_BLOCKED",
+  "p121_reference": {
+    "classification": "P121_ALL_TRIGGERS_STILL_BLOCKED",
+    "artifact_path": "outputs/replay/p121_trigger_recheck_20260527.json"
+  },
+  "db_writes": false,
+  "replay_rows_before": 54462,
+  "replay_rows_after": 54462,
+  "no_strategy_promotion": true,
+  "no_lifecycle_mutation": true,
+  "no_registry_mutation": true,
+  "no_actual_quarantine_applied": true,
+  "no_replay_row_delete": true,
+  "no_4star_backtest": true,
+  "no_special3_p108_rerun": true,
+  "no_powerlotto_oos_execution": true,
+  "source_unknown_caveat_preserved": true,
+  "cross_project_contamination_guard": {
+    "project_lock": "LotteryNew",
+    "canonical_repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+    "rejected_project_contexts": [
+      "Betting-pool",
+      "Stock-Prediction-System",
+      "Stock",
+      "Novel",
+      "SCB"
+    ],
+    "contamination_detected": false
+  },
+  "current_db_snapshot": {
+    "replay_rows": 54462,
+    "three_star_count": 4179,
+    "three_star_max_draw": "115000106",
+    "four_star_count": 2922,
+    "four_star_max_draw": "115000103",
+    "power_lotto_count": 1913,
+    "power_lotto_max_draw": "115000041"
+  },
+  "trigger_recheck": {
+    "P108_SPECIAL3_100DRAW_REEVALUATION": {
+      "current_count_after_p99_cutoff": 63,
+      "p99_cutoff_draw": "115000024",
+      "required_count": 100,
+      "remaining_needed": 37,
+      "trigger_met": false,
+      "status": "BLOCKED",
+      "blocked_reason": "Need 37 more Special3 draws (current 63/100)",
+      "next_task_if_met": "Plan P108 Special3 100-draw re-evaluation on a separate branch"
+    },
+    "P117_POWERLOTTO_OOS_RETRIGGER": {
+      "p116_baseline_draw": "115000041",
+      "current_new_draws_after_p116": 0,
+      "partial_required_count": 30,
+      "full_required_count": 40,
+      "remaining_needed_for_partial": 30,
+      "remaining_needed_for_full": 40,
+      "partial_trigger_met": false,
+      "full_trigger_met": false,
+      "status": "BLOCKED",
+      "blocked_reason": "Need 30 more POWER_LOTTO draws (current 0/30)",
+      "next_task_if_met": "Re-run P117 checkpoint script on a separate branch"
+    },
+    "P118_BIGLOTTO_ACTUAL_QUARANTINE": {
+      "exact_authorization_phrase": "YES quarantine strategy fourier30_markov30_biglotto for stable negative evidence",
+      "candidate_strategy": "fourier30_markov30_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "authorization_present": false,
+      "trigger_met": false,
+      "status": "BLOCKED",
+      "blocked_reason": "Exact authorization phrase not found in operator input",
+      "next_task_if_met": "Plan P118 BIG_LOTTO actual quarantine on a separate branch"
+    },
+    "P4STAR_PROVENANCE_AND_BACKTEST": {
+      "source_unknown_caveat_active": true,
+      "provenance_acceptance_artifact_present": false,
+      "backtest_authorization_present": false,
+      "trigger_met": false,
+      "status": "BLOCKED",
+      "blocked_reason": "4_STAR source remains unknown; no provenance acceptance artifact found",
+      "next_task_if_met": "Plan 4_STAR provenance acceptance task, then separately authorize backtest"
+    }
+  },
+  "priority_trigger": "NONE \u2014 all triggers still blocked",
+  "overall_recommendation": "All P121 triggers remain BLOCKED. No change since P121. Nearest: 37 more Special3 draws for P108, 30 more POWER_LOTTO draws for P117 partial. Continue monitoring.",
+  "blocked_task_register": [
+    {
+      "task": "P108_SPECIAL3_100DRAW_REEVALUATION",
+      "status": "BLOCKED",
+      "blocked_reason": "Need 37 more Special3 draws (current 63/100)",
+      "unblock_condition": "Plan P108 Special3 100-draw re-evaluation on a separate branch"
+    },
+    {
+      "task": "P117_POWERLOTTO_OOS_RETRIGGER",
+      "status": "BLOCKED",
+      "blocked_reason": "Need 30 more POWER_LOTTO draws (current 0/30)",
+      "unblock_condition": "Re-run P117 checkpoint script on a separate branch"
+    },
+    {
+      "task": "P118_BIGLOTTO_ACTUAL_QUARANTINE",
+      "status": "BLOCKED",
+      "blocked_reason": "Exact authorization phrase not found in operator input",
+      "unblock_condition": "Plan P118 BIG_LOTTO actual quarantine on a separate branch"
+    },
+    {
+      "task": "P4STAR_PROVENANCE_AND_BACKTEST",
+      "status": "BLOCKED",
+      "blocked_reason": "4_STAR source remains unknown; no provenance acceptance artifact found",
+      "unblock_condition": "Plan 4_STAR provenance acceptance task, then separately authorize backtest"
+    }
+  ],
+  "next_operator_action": "Wait for new draw data or provide the BIG_LOTTO authorization phrase. Re-run this script after new draws are ingested.",
+  "limitations": [
+    "P118 authorization_present defaults to false unless --operator-input supplies the exact phrase",
+    "4_STAR provenance check is file-system based; no live provenance registry exists",
+    "P108 count uses P99 cutoff draw 115000024; if cutoff changes the count will differ",
+    "No change detected since P121: Special3=63, POWER_LOTTO new draws=0",
+    "Contamination check is keyword-based on operator_input only; does not scan staged files"
+  ],
+  "final_classification": "P122_ALL_TRIGGERS_STILL_BLOCKED"
+}

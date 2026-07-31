@@ -1,0 +1,344 @@
+{
+  "phase": "P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN",
+  "date": "2026-06-04",
+  "execution_status": "DRYRUN_EXECUTED_OK",
+  "db_write_performed": false,
+  "db_rows_before": 94924,
+  "db_rows_after": 94924,
+  "candidate": {
+    "strategy_id": "midfreq_fourier_mk_3bet",
+    "lottery_type": "POWER_LOTTO",
+    "bet_index": 1,
+    "zone": "first_zone (1-38, pick 6)",
+    "prior_status": "CANDIDATE_NEEDS_MORE_OOS (P223B)",
+    "recorded_bet_semantics": "deterministic bet-1 = composite blend MidFreq*0.3 + Fourier*0.4 + Markov*0.3 (P47 adapter); in-window bets 2,3 are NOT in the deterministic adapter and are NOT invented (P230B1 discipline)"
+  },
+  "determinism": "adapter has no RNG (numpy argsort); fully reproducible, no seed required",
+  "inventory": {
+    "power_total_draws": 1915,
+    "window_min_draw": 101000002,
+    "backward_total_draws": 412,
+    "min_history_warmup": 30,
+    "warmup_skipped": 30,
+    "replayable_backward_targets": 382,
+    "replayable_under_conservative_100_warmup": 312,
+    "targets_generated": 382,
+    "first_backward_replayable": "97000031",
+    "first_backward_replayable_date": "2008/05/08",
+    "last_backward_target": "101000001",
+    "last_backward_target_date": "2012/01/02",
+    "limit_applied": null
+  },
+  "first_zone_baseline": 0.9473684210526315,
+  "first_zone_baseline_derivation": "pick(6)*draw(6)/pool(38) = 36/38 (era-invariant; bet-1 random expectation)",
+  "in_window_reference": {
+    "strategy_level_pooled": {
+      "n": 4500,
+      "mean_hit_count": 0.9895555555555555,
+      "mean_special_hit": 0.03955555555555555
+    },
+    "bet1_only": {
+      "n": 1500,
+      "mean_hit_count": 1.0273333333333334,
+      "mean_special_hit": 0.11866666666666667
+    }
+  },
+  "overall_first_zone": {
+    "n": 382,
+    "mean": 0.9685863874345549,
+    "std": 0.7985966694414444,
+    "se": 0.040859760170118484,
+    "ci95": [
+      0.8885012575011227,
+      1.0486715173679872
+    ],
+    "ci_crosses_baseline": true,
+    "z_vs_baseline": 0.5192875898826376,
+    "p_one_sided_vs_baseline": 0.3017801031096934,
+    "direction": "above",
+    "distribution": {
+      "0": 116,
+      "1": 173,
+      "2": 83,
+      "3": 9,
+      "4": 1
+    },
+    "max": 4
+  },
+  "block_stability": {
+    "50": {
+      "block_size": 50,
+      "n_blocks": 8,
+      "blocks_above_baseline": 4,
+      "majority_above_baseline": false,
+      "block_mean_sd": 0.11553839662099352,
+      "worst_block_mean": 0.74,
+      "best_block_mean": 1.12,
+      "blocks": [
+        {
+          "index": 1,
+          "n": 50,
+          "mean": 0.74,
+          "direction": "below"
+        },
+        {
+          "index": 2,
+          "n": 50,
+          "mean": 0.9,
+          "direction": "below"
+        },
+        {
+          "index": 3,
+          "n": 50,
+          "mean": 1.08,
+          "direction": "above"
+        },
+        {
+          "index": 4,
+          "n": 50,
+          "mean": 1.02,
+          "direction": "above"
+        },
+        {
+          "index": 5,
+          "n": 50,
+          "mean": 0.92,
+          "direction": "below"
+        },
+        {
+          "index": 6,
+          "n": 50,
+          "mean": 0.94,
+          "direction": "below"
+        },
+        {
+          "index": 7,
+          "n": 50,
+          "mean": 1.12,
+          "direction": "above"
+        },
+        {
+          "index": 8,
+          "n": 32,
+          "mean": 1.0625,
+          "direction": "above"
+        }
+      ]
+    },
+    "100": {
+      "block_size": 100,
+      "n_blocks": 4,
+      "blocks_above_baseline": 2,
+      "majority_above_baseline": false,
+      "block_mean_sd": 0.10804478878273262,
+      "worst_block_mean": 0.82,
+      "best_block_mean": 1.0975609756097562,
+      "blocks": [
+        {
+          "index": 1,
+          "n": 100,
+          "mean": 0.82,
+          "direction": "below"
+        },
+        {
+          "index": 2,
+          "n": 100,
+          "mean": 1.05,
+          "direction": "above"
+        },
+        {
+          "index": 3,
+          "n": 100,
+          "mean": 0.93,
+          "direction": "below"
+        },
+        {
+          "index": 4,
+          "n": 82,
+          "mean": 1.0975609756097562,
+          "direction": "above"
+        }
+      ]
+    },
+    "150": {
+      "block_size": 150,
+      "n_blocks": 3,
+      "blocks_above_baseline": 2,
+      "majority_above_baseline": true,
+      "block_mean_sd": 0.08042118546337575,
+      "worst_block_mean": 0.9066666666666666,
+      "best_block_mean": 1.0975609756097562,
+      "blocks": [
+        {
+          "index": 1,
+          "n": 150,
+          "mean": 0.9066666666666666,
+          "direction": "below"
+        },
+        {
+          "index": 2,
+          "n": 150,
+          "mean": 0.96,
+          "direction": "above"
+        },
+        {
+          "index": 3,
+          "n": 82,
+          "mean": 1.0975609756097562,
+          "direction": "above"
+        }
+      ]
+    }
+  },
+  "robustness": {
+    "exclude_hit_ge3": {
+      "n_removed": 10,
+      "n": 372,
+      "mean": 0.9112903225806451,
+      "at_or_above_baseline": false
+    },
+    "exclude_strongest_block": {
+      "block_size": 100,
+      "strongest_block_index_1based": 2,
+      "mean": 0.875,
+      "at_or_above_baseline": false
+    }
+  },
+  "year_splits": {
+    "2008": {
+      "n": 68,
+      "mean": 0.8088235294117647,
+      "std": 0.6914892909122796,
+      "se": 0.0838553936886702,
+      "ci95": [
+        0.6444669577819712,
+        0.9731801010415583
+      ],
+      "ci_crosses_baseline": true,
+      "z_vs_baseline": -1.6521881962088476,
+      "p_one_sided_vs_baseline": 0.9507519040204547,
+      "direction": "below",
+      "distribution": {
+        "0": 24,
+        "1": 33,
+        "2": 11
+      },
+      "max": 2
+    },
+    "2009": {
+      "n": 105,
+      "mean": 1.019047619047619,
+      "std": 0.7681883744790775,
+      "se": 0.07496750906923469,
+      "ci95": [
+        0.872111301271919,
+        1.165983936823319
+      ],
+      "ci_crosses_baseline": true,
+      "z_vs_baseline": 0.956136850282562,
+      "p_one_sided_vs_baseline": 0.16950154968811076,
+      "direction": "above",
+      "distribution": {
+        "0": 29,
+        "1": 46,
+        "2": 29,
+        "3": 1
+      },
+      "max": 3
+    },
+    "2010": {
+      "n": 104,
+      "mean": 0.9519230769230769,
+      "std": 0.7643474805387392,
+      "se": 0.07495043689293295,
+      "ci95": [
+        0.8050202206129283,
+        1.0988259332332255
+      ],
+      "ci_crosses_baseline": true,
+      "z_vs_baseline": 0.060768903548243394,
+      "p_one_sided_vs_baseline": 0.4757716279540856,
+      "direction": "above",
+      "distribution": {
+        "0": 31,
+        "1": 49,
+        "2": 22,
+        "3": 2
+      },
+      "max": 3
+    },
+    "2011": {
+      "n": 104,
+      "mean": 1.0384615384615385,
+      "std": 0.9085393700782861,
+      "se": 0.08908961494031688,
+      "ci95": [
+        0.8638458931785175,
+        1.2130771837445595
+      ],
+      "ci_crosses_baseline": true,
+      "z_vs_baseline": 1.0224886196885274,
+      "p_one_sided_vs_baseline": 0.15327484809503367,
+      "direction": "above",
+      "distribution": {
+        "0": 32,
+        "1": 44,
+        "2": 21,
+        "3": 6,
+        "4": 1
+      },
+      "max": 4
+    },
+    "2012": {
+      "n": 1,
+      "mean": 1.0,
+      "std": 0.0,
+      "se": 0.0,
+      "ci95": [
+        1.0,
+        1.0
+      ],
+      "ci_crosses_baseline": false,
+      "z_vs_baseline": 0.0,
+      "p_one_sided_vs_baseline": null,
+      "direction": "above",
+      "distribution": {
+        "0": 0,
+        "1": 1
+      },
+      "max": 1
+    }
+  },
+  "second_zone_display_only": {
+    "note": "DISPLAY ONLY — special_hit never enters first-zone scoring or final classification",
+    "baseline": 0.125,
+    "summary": {
+      "n": 382,
+      "mean": 0.1099476439790576,
+      "std": 0.31282448683329034,
+      "se": 0.016005493131205504,
+      "ci95": [
+        0.07857687744189482,
+        0.14131841051622038
+      ],
+      "ci_crosses_baseline": true,
+      "z_vs_baseline": -0.9404493755706412,
+      "p_one_sided_vs_baseline": 0.8265064472532506,
+      "direction": "below",
+      "distribution": {
+        "0": 340,
+        "1": 42
+      },
+      "max": 1
+    }
+  },
+  "interpretation_caveat": "Backward-OOS is older-regime (2008-2011) robustness/falsification, NOT true future OOS. It can FALSIFY a candidate if below baseline, but cannot confirm deployment. The independent older slice (~312-382) is far smaller than DAILY_539's 4,265, so power is limited. Only deterministic bet-1 is tested. NOT betting advice, NOT a guaranteed edge.",
+  "final_classification": "P231B_POWERLOTTO_FIRST_ZONE_BACKWARD_OOS_DRYRUN_NULL",
+  "classification_rationale": "backward-OOS mean 0.968586 ~ baseline 0.947368 (CI crosses, one-sided p=0.3018 not significant) -> NULL",
+  "authorization": {
+    "db_write_backfill": "NOT AUTHORIZED (separate explicit DB-write authorization required)",
+    "registry_production_recommendation": "NOT AUTHORIZED / unchanged",
+    "second_zone_promotion": "NOT AUTHORIZED (display-only per P211A)",
+    "strategy_promotion": "NOT AUTHORIZED regardless of outcome"
+  }
+}

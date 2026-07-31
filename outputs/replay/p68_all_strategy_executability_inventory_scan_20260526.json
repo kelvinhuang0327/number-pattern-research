@@ -1,0 +1,599 @@
+{
+  "task": "P68",
+  "title": "All-Strategy Executability Inventory Scan",
+  "date": "2026-05-26",
+  "status": "EVIDENCE_ONLY",
+  "project_context_lock": "LotteryNew",
+  "recovery_status": "RECOVERY_CONTINUED_AFTER_USAGE_LIMIT_INTERRUPTION",
+  "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+  "branch": "p68-all-strategy-executability-inventory-scan",
+  "head": "364a081",
+  "no_db_write": true,
+  "no_force_push": true,
+  "no_lifecycle_promotion": true,
+  "no_registry_mutation": true,
+  "db_writes": false,
+  "production_rows_before": 46960,
+  "production_rows_after": 46960,
+  "files_created": [
+    "docs/replay/p68_all_strategy_executability_inventory_scan_20260526.md",
+    "outputs/replay/p68_all_strategy_executability_inventory_scan_20260526.json",
+    "tests/test_p68_all_strategy_executability_inventory_scan.py"
+  ],
+  "forbidden_staging_scan_results": {
+    "scan1_fuse_pid_runtime": "STAGE_CLEAN",
+    "scan2_db_files": "DB_STAGE_CLEAN",
+    "scan3_unrelated_outputs": "OUTPUT_STAGE_CLEAN",
+    "scan4_unrelated_docs": "DOC_STAGE_CLEAN",
+    "scan5_unrelated_tests": "TEST_STAGE_CLEAN",
+    "scan6_roadmap": "ROADMAP_STAGE_CLEAN",
+    "scan7_gitignore": "GITIGNORE_STAGE_CLEAN",
+    "overall": "ALL_SCANS_CLEAN"
+  },
+  "controlled_apply_ids": {
+    "P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525": 1500,
+    "P66_POWERLOTTO_WAVE6_COLD_COMPLEMENT_1500_PROD_20260525": 1500,
+    "P66_POWERLOTTO_WAVE6_ZONAL_ENTROPY_1500_PROD_20260525": 1500
+  },
+  "guard_results": {
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "branch_governance_guard": "BRANCH_GOVERNANCE_PASS"
+  },
+  "strategy_universe_count": 512,
+  "row_backed_count": 31,
+  "strategy_disclosures": {
+    "fourier30_markov30_2bet": "prediction-helpful",
+    "cold_complement_2bet": "sub-baseline",
+    "zonal_entropy_2bet": "fallback-equivalent"
+  },
+  "final_classification": "P68_ALL_STRATEGY_EXECUTABILITY_INVENTORY_SCAN_MERGED_TO_MAIN",
+  "inventory_summary": {
+    "total_strategies_scanned": 45,
+    "row_backed": 31,
+    "executable_no_row": 0,
+    "adapter_needed": 0,
+    "unsupported": 2,
+    "rejected": 6,
+    "dependency_blocked": 0,
+    "manual_review": 0,
+    "no_data": 0,
+    "artifact_only": 4,
+    "code_only": 6,
+    "reconstructible": 0,
+    "sub_baseline": 2,
+    "fallback_equivalent": 1
+  },
+  "row_backed_strategies": [
+    {
+      "strategy_name": "今彩539 ACB 1注",
+      "strategy_id": "acb_1bet",
+      "lottery_type": "DAILY_539",
+      "rows": 1500,
+      "truth_level": "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P31B_DAILY539_RETIRED_7500_PROD_20260523",
+      "lifecycle": "RETIRED",
+      "m3plus_count": 16,
+      "m3plus_pct": 1.07
+    },
+    {
+      "strategy_name": "今彩539 ACB Single 1注",
+      "strategy_id": "acb_single_539",
+      "lottery_type": "DAILY_539",
+      "rows": 1500,
+      "truth_level": "DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P37_DAILY539_WAVE2_9000_PROD_20260523",
+      "lifecycle": "ACTIVE",
+      "m3plus_count": 16,
+      "m3plus_pct": 1.07
+    },
+    {
+      "strategy_name": "今彩539 ACB+Markov 中頻",
+      "strategy_id": "acb_markov_midfreq",
+      "lottery_type": "DAILY_539",
+      "rows": 1500,
+      "truth_level": "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P31B_DAILY539_RETIRED_7500_PROD_20260523",
+      "lifecycle": "RETIRED",
+      "m3plus_count": 20,
+      "m3plus_pct": 1.33
+    },
+    {
+      "strategy_name": "今彩539 ACB+Markov 中頻 3注",
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "DAILY_539",
+      "rows": 1500,
+      "truth_level": "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P31B_DAILY539_RETIRED_7500_PROD_20260523",
+      "lifecycle": "RETIRED",
+      "m3plus_count": 16,
+      "m3plus_pct": 1.07
+    },
+    {
+      "strategy_name": "今彩539 ACB+Markov+Fourier 正交 3注",
+      "strategy_id": "539_3bet_orthogonal",
+      "lottery_type": "DAILY_539",
+      "rows": 1500,
+      "truth_level": "DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P37_DAILY539_WAVE2_9000_PROD_20260523",
+      "lifecycle": "ACTIVE",
+      "m3plus_count": 16,
+      "m3plus_pct": 1.07
+    },
+    {
+      "strategy_name": "今彩539 F4 Cold",
+      "strategy_id": "daily539_f4cold",
+      "lottery_type": "DAILY_539",
+      "rows": 1590,
+      "truth_level": "null",
+      "controlled_apply_id": "null",
+      "lifecycle": "ONLINE",
+      "m3plus_count": 13,
+      "m3plus_pct": 0.82
+    },
+    {
+      "strategy_name": "今彩539 Fourier4正交 cold+midfreq 3注",
+      "strategy_id": "p0b_539_3bet_f_cold_fmid",
+      "lottery_type": "DAILY_539",
+      "rows": 1500,
+      "truth_level": "DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P37_DAILY539_WAVE2_9000_PROD_20260523",
+      "lifecycle": "ACTIVE",
+      "m3plus_count": 13,
+      "m3plus_pct": 0.87
+    },
+    {
+      "strategy_name": "今彩539 Fourier4正交 x2 cold 3注",
+      "strategy_id": "p0c_539_3bet_f_cold_x2",
+      "lottery_type": "DAILY_539",
+      "rows": 1500,
+      "truth_level": "DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P37_DAILY539_WAVE2_9000_PROD_20260523",
+      "lifecycle": "ACTIVE",
+      "m3plus_count": 13,
+      "m3plus_pct": 0.87
+    },
+    {
+      "strategy_name": "今彩539 Markov 1注",
+      "strategy_id": "markov_1bet_539",
+      "lottery_type": "DAILY_539",
+      "rows": 1500,
+      "truth_level": "DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P37_DAILY539_WAVE2_9000_PROD_20260523",
+      "lifecycle": "ACTIVE",
+      "m3plus_count": 17,
+      "m3plus_pct": 1.13
+    },
+    {
+      "strategy_name": "今彩539 Markov Cold",
+      "strategy_id": "daily539_markov_cold",
+      "lottery_type": "DAILY_539",
+      "rows": 1590,
+      "truth_level": "null",
+      "controlled_apply_id": "null",
+      "lifecycle": "ONLINE",
+      "m3plus_count": 18,
+      "m3plus_pct": 1.13
+    },
+    {
+      "strategy_name": "今彩539 Zone+Gap 3注",
+      "strategy_id": "zone_gap_3bet_539",
+      "lottery_type": "DAILY_539",
+      "rows": 1500,
+      "truth_level": "DAILY539_WAVE2_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P37_DAILY539_WAVE2_9000_PROD_20260523",
+      "lifecycle": "ACTIVE",
+      "m3plus_count": 11,
+      "m3plus_pct": 0.73
+    },
+    {
+      "strategy_name": "今彩539 中頻 ACB 2注",
+      "strategy_id": "midfreq_acb_2bet",
+      "lottery_type": "DAILY_539",
+      "rows": 1500,
+      "truth_level": "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P31B_DAILY539_RETIRED_7500_PROD_20260523",
+      "lifecycle": "RETIRED",
+      "m3plus_count": 19,
+      "m3plus_pct": 1.27
+    },
+    {
+      "strategy_name": "今彩539 中頻 Fourier 2注",
+      "strategy_id": "midfreq_fourier_2bet_539",
+      "lottery_type": "DAILY_539",
+      "rows": 1500,
+      "truth_level": "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P31B_DAILY539_RETIRED_7500_PROD_20260523",
+      "lifecycle": "RETIRED",
+      "m3plus_count": 19,
+      "m3plus_pct": 1.27
+    },
+    {
+      "strategy_name": "大樂透 Cold Complement 2注",
+      "strategy_id": "cold_complement_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "rows": 1500,
+      "truth_level": "BIGLOTTO_WAVE3_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P43_BIGLOTTO_WAVE3_9000_PROD_20260523",
+      "lifecycle": "ACTIVE",
+      "m3plus_count": 22,
+      "m3plus_pct": 1.47
+    },
+    {
+      "strategy_name": "大樂透 Cold Pool-15 Pick-6",
+      "strategy_id": "coldpool15_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "rows": 1500,
+      "truth_level": "BIGLOTTO_WAVE3_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P43_BIGLOTTO_WAVE3_9000_PROD_20260523",
+      "lifecycle": "ACTIVE",
+      "m3plus_count": 22,
+      "m3plus_pct": 1.47
+    },
+    {
+      "strategy_name": "大樂透 Deviation 2注",
+      "strategy_id": "biglotto_deviation_2bet",
+      "lottery_type": "BIG_LOTTO",
+      "rows": 1570,
+      "truth_level": "null",
+      "controlled_apply_id": "null",
+      "lifecycle": "ONLINE",
+      "m3plus_count": 37,
+      "m3plus_pct": 2.36
+    },
+    {
+      "strategy_name": "大樂透 Fourier 2注 Expansion",
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "rows": 1500,
+      "truth_level": "BIGLOTTO_WAVE3_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P43_BIGLOTTO_WAVE3_9000_PROD_20260523",
+      "lifecycle": "ACTIVE",
+      "m3plus_count": 36,
+      "m3plus_pct": 2.40
+    },
+    {
+      "strategy_name": "大樂透 Fourier30+Markov30",
+      "strategy_id": "fourier30_markov30_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "rows": 1500,
+      "truth_level": "BIGLOTTO_WAVE3_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P43_BIGLOTTO_WAVE3_9000_PROD_20260523",
+      "lifecycle": "ACTIVE",
+      "m3plus_count": 21,
+      "m3plus_pct": 1.40
+    },
+    {
+      "strategy_name": "大樂透 Markov 2注",
+      "strategy_id": "markov_2bet_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "rows": 1500,
+      "truth_level": "BIGLOTTO_WAVE3_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P43_BIGLOTTO_WAVE3_9000_PROD_20260523",
+      "lifecycle": "ACTIVE",
+      "m3plus_count": 23,
+      "m3plus_pct": 1.53
+    },
+    {
+      "strategy_name": "大樂透 Markov Single 1注",
+      "strategy_id": "markov_single_biglotto",
+      "lottery_type": "BIG_LOTTO",
+      "rows": 1500,
+      "truth_level": "BIGLOTTO_WAVE3_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P43_BIGLOTTO_WAVE3_9000_PROD_20260523",
+      "lifecycle": "ACTIVE",
+      "m3plus_count": 23,
+      "m3plus_pct": 1.53
+    },
+    {
+      "strategy_name": "大樂透 TS3+Regime 3注",
+      "strategy_id": "ts3_regime_3bet",
+      "lottery_type": "BIG_LOTTO",
+      "rows": 1500,
+      "truth_level": "BIGLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P14D_BIGLOTTO_TS3_1500_PROD_20260520",
+      "lifecycle": "ONLINE",
+      "m3plus_count": 36,
+      "m3plus_pct": 2.40
+    },
+    {
+      "strategy_name": "大樂透 Triple Strike",
+      "strategy_id": "biglotto_triple_strike",
+      "lottery_type": "BIG_LOTTO",
+      "rows": 1570,
+      "truth_level": "null",
+      "controlled_apply_id": "null",
+      "lifecycle": "ONLINE",
+      "m3plus_count": 39,
+      "m3plus_pct": 2.48
+    },
+    {
+      "strategy_name": "fourier30_markov30_2bet",
+      "strategy_id": "fourier30_markov30_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "rows": 1500,
+      "truth_level": "POWER_LOTTO_WAVE5_CONTROLLED_APPLY_VERIFIED",
+      "controlled_apply_id": "P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525",
+      "lifecycle": "ACTIVE",
+      "m3plus_count": 61,
+      "m3plus_pct": 4.07,
+      "performance_label": "prediction-helpful"
+    },
+    {
+      "strategy_name": "威力彩 Fourier Rhythm 3注",
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "rows": 1500,
+      "truth_level": "POWERLOTTO_SINGLE_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P19B_POWERLOTTO_FOURIER_1500_PROD_20260520",
+      "lifecycle": "ONLINE",
+      "m3plus_count": 74,
+      "m3plus_pct": 4.93
+    },
+    {
+      "strategy_name": "威力彩 MidFreq+Fourier 2注",
+      "strategy_id": "midfreq_fourier_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "rows": 1500,
+      "truth_level": "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P48_POWERLOTTO_WAVE4_4500_PROD_20260524",
+      "lifecycle": "ACTIVE",
+      "m3plus_count": 70,
+      "m3plus_pct": 4.67
+    },
+    {
+      "strategy_name": "威力彩 MidFreq+Fourier+Markov 3注",
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "rows": 1500,
+      "truth_level": "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P48_POWERLOTTO_WAVE4_4500_PROD_20260524",
+      "lifecycle": "ACTIVE",
+      "m3plus_count": 66,
+      "m3plus_pct": 4.40
+    },
+    {
+      "strategy_name": "威力彩 Orthogonal 5注",
+      "strategy_id": "power_orthogonal_5bet",
+      "lottery_type": "POWER_LOTTO",
+      "rows": 1570,
+      "truth_level": "null",
+      "controlled_apply_id": "null",
+      "lifecycle": "ONLINE",
+      "m3plus_count": 77,
+      "m3plus_pct": 4.90
+    },
+    {
+      "strategy_name": "威力彩 PP3+FreqOrt 4注",
+      "strategy_id": "pp3_freqort_4bet",
+      "lottery_type": "POWER_LOTTO",
+      "rows": 1500,
+      "truth_level": "POWERLOTTO_WAVE4_STRATEGY_BACKFILL_VERIFIED",
+      "controlled_apply_id": "P48_POWERLOTTO_WAVE4_4500_PROD_20260524",
+      "lifecycle": "ACTIVE",
+      "m3plus_count": 81,
+      "m3plus_pct": 5.40
+    },
+    {
+      "strategy_name": "威力彩 Precision 3注",
+      "strategy_id": "power_precision_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "rows": 1570,
+      "truth_level": "null",
+      "controlled_apply_id": "null",
+      "lifecycle": "ONLINE",
+      "m3plus_count": 77,
+      "m3plus_pct": 4.90
+    },
+    {
+      "strategy_name": "威力彩 Zonal Entropy 2注",
+      "strategy_id": "zonal_entropy_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "rows": 1500,
+      "truth_level": "POWER_LOTTO_WAVE6_CONTROLLED_APPLY_VERIFIED",
+      "controlled_apply_id": "P66_POWERLOTTO_WAVE6_ZONAL_ENTROPY_1500_PROD_20260525",
+      "lifecycle": "ACTIVE",
+      "m3plus_count": 55,
+      "m3plus_pct": 3.67,
+      "performance_label": "fallback-equivalent"
+    },
+    {
+      "strategy_name": "威力彩 冷號互補 2注",
+      "strategy_id": "cold_complement_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "rows": 1500,
+      "truth_level": "POWER_LOTTO_WAVE6_CONTROLLED_APPLY_VERIFIED",
+      "controlled_apply_id": "P66_POWERLOTTO_WAVE6_COLD_COMPLEMENT_1500_PROD_20260525",
+      "lifecycle": "ACTIVE",
+      "m3plus_count": 55,
+      "m3plus_pct": 3.67,
+      "performance_label": "sub-baseline"
+    }
+  ],
+  "executable_no_row_strategies": [],
+  "rejected_strategies": [
+    {
+      "strategy_id": "biglotto_ts3_acb_4bet",
+      "strategy_name": "大樂透 TS3+ACB 4注",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle": "REJECTED",
+      "reason": "McNemar p=0.074, marginal efficiency <80% (L56)"
+    },
+    {
+      "strategy_id": "biglotto_ts3_markov_freq_5bet",
+      "strategy_name": "大樂透 TS3+Markov 頻率正交 5注",
+      "lottery_type": "BIG_LOTTO",
+      "lifecycle": "REJECTED",
+      "reason": "SUPERSEDED by P1+deviation+sum; archived rejected/"
+    },
+    {
+      "strategy_id": "power_shlc_midfreq",
+      "strategy_name": "威力彩 SHLC 中頻指標",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle": "REJECTED",
+      "reason": "SHLC REJECTED (L50)"
+    },
+    {
+      "strategy_id": "p1_deviation_2bet_539",
+      "strategy_name": "今彩539 P1鄰號+偏差互補 2注",
+      "lottery_type": "DAILY_539",
+      "lifecycle": "REJECTED",
+      "reason": "Signal non-transferable from BIG_LOTTO (L84)"
+    },
+    {
+      "strategy_id": "lag_reversion_2bet",
+      "strategy_name": "威力彩 Lag Reversion 2注",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle": "REJECTED",
+      "reason": "P64b GATE_FAIL (mini-backtest 3-window failure)"
+    },
+    {
+      "strategy_id": "h6_gate_mk20_ew85",
+      "strategy_name": "威力彩 H6 Gate mk20 ew85",
+      "lottery_type": "POWER_LOTTO",
+      "lifecycle": "OBSERVATION",
+      "reason": "OBSERVATION stub; no rows; not deployable"
+    }
+  ],
+  "performance_disclosures": {
+    "fourier30_markov30_2bet": {
+      "label": "prediction-helpful",
+      "lottery_type": "POWER_LOTTO",
+      "m3_hit_rate": 0.0407,
+      "m3_hit_count": 61,
+      "m3_total_rows": 1500,
+      "baseline": 0.0387,
+      "edge_pp": 0.0020,
+      "note": "M3+ 4.07% > 3.87% baseline; exceeds random; suitable for prediction guidance"
+    },
+    "cold_complement_2bet": {
+      "label": "sub-baseline",
+      "lottery_type": "POWER_LOTTO",
+      "m3_hit_rate": 0.0367,
+      "m3_hit_count": 55,
+      "m3_total_rows": 1500,
+      "baseline": 0.0387,
+      "edge_pp": -0.0020,
+      "note": "M3+ 3.67% < 3.87% baseline; coverage/tracking only; not prediction-helpful"
+    },
+    "zonal_entropy_2bet": {
+      "label": "fallback-equivalent",
+      "lottery_type": "POWER_LOTTO",
+      "m3_hit_rate": 0.0367,
+      "m3_hit_count": 55,
+      "m3_total_rows": 1500,
+      "baseline": 0.0387,
+      "edge_pp": -0.0020,
+      "note": "M3+ 3.67% ~= baseline; regime 100% chaotic in Wave 6 window; useful as fallback only"
+    }
+  },
+  "row_impact_estimates": {
+    "next_prediction_only": {
+      "rows_per_draw": 1,
+      "description": "All ONLINE strategies generate 1 row per future draw via post_draw_pipeline"
+    },
+    "expansion_to_2000_draws": {
+      "additional_rows_per_strategy": 500,
+      "total_new_rows_all_31": 15500,
+      "note": "Requires draw history depth >= 2000 per lottery type"
+    },
+    "expansion_to_2500_draws": {
+      "additional_rows_per_strategy": 1000,
+      "total_new_rows_all_31": 31000,
+      "note": "May require historical data import beyond current DB depth"
+    },
+    "top_candidates_for_expansion": [
+      {
+        "strategy_id": "fourier30_markov30_2bet",
+        "lottery_type": "POWER_LOTTO",
+        "current_rows": 1500,
+        "priority": "HIGH",
+        "reason": "prediction-helpful; would benefit from more validation draws"
+      },
+      {
+        "strategy_id": "pp3_freqort_4bet",
+        "lottery_type": "POWER_LOTTO",
+        "current_rows": 1500,
+        "priority": "HIGH",
+        "reason": "best M3+ performance (5.40%); top production candidate"
+      },
+      {
+        "strategy_id": "539_3bet_orthogonal",
+        "lottery_type": "DAILY_539",
+        "current_rows": 1500,
+        "priority": "MEDIUM",
+        "reason": "best validated DAILY_539 strategy for current signal space"
+      },
+      {
+        "strategy_id": "ts3_regime_3bet",
+        "lottery_type": "BIG_LOTTO",
+        "current_rows": 1500,
+        "priority": "MEDIUM",
+        "reason": "best BIG_LOTTO coverage (2.40%); maintenance mode"
+      }
+    ]
+  },
+  "p0_inventory_summary": {
+    "total_p0_entries": 512,
+    "by_lottery_type": {
+      "DAILY_539": 67,
+      "BIG_LOTTO": 163,
+      "POWER_LOTTO": 80,
+      "UNSPECIFIED": 187,
+      "CROSS_GAME": 15
+    },
+    "note": "Most UNSPECIFIED and CROSS_GAME entries are research scripts, tool functions, or rejected hypotheses. This inventory focuses on actionable adapter-backed strategies."
+  },
+  "wave_adapter_summary": {
+    "wave1_p31a": {
+      "file": "lottery_api/models/p31a_wave1_retired_adapters.py",
+      "adapters": ["acb_1bet", "acb_markov_midfreq", "acb_markov_midfreq_3bet", "midfreq_acb_2bet", "midfreq_fourier_2bet"],
+      "count": 5,
+      "lifecycle": "RETIRED"
+    },
+    "wave2_p36": {
+      "file": "lottery_api/models/p36_wave2_daily539_adapters.py",
+      "adapters": ["markov_1bet_539", "acb_single_539", "zone_gap_3bet_539", "539_3bet_orthogonal", "p0b_539_3bet_f_cold_fmid", "p0c_539_3bet_f_cold_x2"],
+      "count": 6,
+      "lifecycle": "ACTIVE"
+    },
+    "wave3_p42": {
+      "file": "lottery_api/models/p42_wave3_biglotto_adapters.py",
+      "adapters": ["markov_single_biglotto", "markov_2bet_biglotto", "bet2_fourier_expansion_biglotto", "fourier30_markov30_biglotto", "cold_complement_biglotto", "coldpool15_biglotto"],
+      "count": 6,
+      "lifecycle": "ACTIVE"
+    },
+    "wave4_p47": {
+      "file": "lottery_api/models/p47_wave4_powerlotto_adapters.py",
+      "adapters": ["pp3_freqort_4bet", "midfreq_fourier_mk_3bet", "midfreq_fourier_2bet"],
+      "count": 3,
+      "lifecycle": "ACTIVE"
+    },
+    "wave5_p56": {
+      "file": "lottery_api/models/p56_wave5_powerlotto_adapters.py",
+      "adapters": ["cold_complement_2bet", "fourier30_markov30_2bet", "zonal_entropy_2bet"],
+      "count": 3,
+      "lifecycle": "ACTIVE"
+    },
+    "registry_online": {
+      "file": "lottery_api/models/replay_strategy_registry.py",
+      "adapters": ["power_precision_3bet", "power_orthogonal_5bet", "fourier_rhythm_3bet", "biglotto_triple_strike", "biglotto_deviation_2bet", "ts3_regime_3bet", "daily539_f4cold", "daily539_markov_cold"],
+      "count": 8,
+      "lifecycle": "ONLINE"
+    }
+  },
+  "governance": {
+    "drift_guard": "PASS",
+    "drift_guard_pre_classification": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "branch_governance_guard": "PASS",
+    "branch": "p68-all-strategy-executability-inventory-scan",
+    "project_context_lock": "LotteryNew",
+    "cross_project_scan_result": "NO_CROSS_PROJECT_CONTEXT_FOUND",
+    "db_files_staged": false,
+    "lifecycle_promotions": 0,
+    "controlled_apply_ids_verified": {
+      "P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525": 1500,
+      "P66_POWERLOTTO_WAVE6_COLD_COMPLEMENT_1500_PROD_20260525": 1500,
+      "P66_POWERLOTTO_WAVE6_ZONAL_ENTROPY_1500_PROD_20260525": 1500
+    }
+  }
+}

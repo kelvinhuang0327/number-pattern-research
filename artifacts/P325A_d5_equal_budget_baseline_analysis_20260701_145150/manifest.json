@@ -1,0 +1,108 @@
+{
+  "task_id": "P325A_D5_EQUAL_BUDGET_BASELINE_ANALYSIS_READ_ONLY",
+  "classification": "P325A_D5_EQUAL_BUDGET_BASELINE_COMPLETE_WITH_LIMITATIONS",
+  "analysis_timestamp": "20260701_145150",
+  "timezone": "Asia/Taipei (UTC+0800)",
+  "evidence_root": "/Users/kelvin/Kelvin-WorkSpace/p325a_d5_equal_budget_baseline_analysis_20260701_145150",
+  "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p300a-d5-ui",
+  "repo_head": "fce02f0dc271274f7cffc54de527f0262e4f4830",
+  "db_opened": false,
+  "randomness_used": false,
+  "source_static_artifacts": {
+    "strategy_combination_metrics.csv": {
+      "sha256": "0141b53f135a456fb3c2d02fe15f17aa5728a7ff8f47c88d26777c025e855ec5",
+      "verified": true
+    },
+    "top_descriptive_candidates.csv": {
+      "sha256": "e1b074aed742eab0306cdcd002082635899c215e289d2dd1208a61353087cabd",
+      "verified": true
+    },
+    "window_summary.csv": {
+      "sha256": "63e72bf7362542e072e4244361a1bc9b70fd5dd01e0067ff64a697c8e785a985",
+      "verified": true
+    }
+  },
+  "p320a_source_evidence_root": "/Users/kelvin/Kelvin-WorkSpace/p320a_d5_per_draw_combination_analysis_20260701_131917",
+  "lottery_rules": {
+    "BIG_LOTTO": {
+      "N": 49,
+      "D": 6,
+      "s": 6,
+      "label": "大樂透 6/49 main zone"
+    },
+    "DAILY_539": {
+      "N": 39,
+      "D": 5,
+      "s": 5,
+      "label": "今彩539 5/39"
+    }
+  },
+  "n_metric_rows": 2418,
+  "bonferroni": {
+    "k_levels": [
+      2,
+      3
+    ],
+    "n_tests": 4836,
+    "alpha": 0.05,
+    "corrected_alpha": 1.0339123242349049e-05,
+    "rows_passing": 41
+  },
+  "payload_artifacts": [
+    {
+      "path": "baseline_method.md",
+      "sha256": "8b1d5f1a62592e870b94af0e2e17249edf3fb640e0a27563965dc1b647bdbe92",
+      "bytes": 2604
+    },
+    {
+      "path": "budget_bias_diagnostics.csv",
+      "sha256": "e49f1909463fe976f7504bf0cae0d5efe7e469cae33dc4b957cdc152ccd69d50",
+      "bytes": 544983
+    },
+    {
+      "path": "build_p325a.py",
+      "sha256": "ad60a0f18739cec2924bdc6646ad575be4f86ec11ef80d0903a78076f0c215be",
+      "bytes": 34921
+    },
+    {
+      "path": "commands.log",
+      "sha256": "287d5cd3264de7007cec06093d77e73671d5982e4df13e931972abdd9a1de213",
+      "bytes": 703
+    },
+    {
+      "path": "equal_budget_baseline_metrics.csv",
+      "sha256": "74bd38c01b6b1e24cf3ead12d64528ce048f4585aae3b3fb712564b8ffbe3932",
+      "bytes": 1240225
+    },
+    {
+      "path": "equal_budget_baseline_summary.md",
+      "sha256": "e7af4c900db3929d4417173c8a910c3931e306cbfdcd73b5e23ad04ee75cea38",
+      "bytes": 10185
+    },
+    {
+      "path": "handoff_report.md",
+      "sha256": "3b428898fa5939e65e0dabc8f206c67f310ac333f8a7cb8296f6850e4888f57a",
+      "bytes": 5079
+    },
+    {
+      "path": "limitations.md",
+      "sha256": "4902a3f35028278fa70154621df7d9a6696d00662b2a022e020fc41ef31d9af2",
+      "bytes": 1349
+    },
+    {
+      "path": "phase0_state.md",
+      "sha256": "9b4cbbd8538b0307816dc63035190659123f522fbe652c0bf699a606eb0355d6",
+      "bytes": 1489
+    },
+    {
+      "path": "random_baseline_reference.csv",
+      "sha256": "2fe10a459c2abb0c8ef9853458095621f9ce0004095b7eae0d380f18de28e01b",
+      "bytes": 7002
+    },
+    {
+      "path": "source_readiness.md",
+      "sha256": "c0c6c1afb8c5d1a339bab4af1d307d99b5843d6ac5687468db393c90d4fcc132",
+      "bytes": 2604
+    }
+  ]
+}

@@ -18,12 +18,12 @@ logger = logging.getLogger(__name__)
 class BacktestFramework:
     """回測框架 - 用於驗證預測方法的實際表現"""
 
-    def __init__(self, db_path: str = "data/lottery_v2.db"):
+    def __init__(self, db_path: Optional[str] = None):
         """
         初始化回測框架
 
         Args:
-            db_path: 數據庫路徑
+            db_path: 絕對數據庫路徑；None 使用 canonical 路徑
         """
         self.db = DatabaseManager(db_path)
         self.predictor = UnifiedPredictionEngine()
@@ -65,8 +65,8 @@ class BacktestFramework:
         """
         logger.info(f"🔍 開始回測方法: {method_name} (彩票: {lottery_type})")
 
-        # 獲取所有歷史數據
-        all_history = self.db.get_all_draws(lottery_type)
+        # 獲取正規主開獎歷史（canonical helper 排除 BIG_LOTTO 加碼/特別獎記錄）
+        all_history = self.db.get_canonical_draws(lottery_type)
 
         if len(all_history) < min_history + test_size:
             logger.warning(

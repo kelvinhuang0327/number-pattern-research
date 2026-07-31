@@ -1,0 +1,277 @@
+{
+  "run_at": "2026-05-15T13:53:10.121804+00:00",
+  "db_written": false,
+  "db_path": "lottery_api/data/lottery_v2.db",
+  "strategy_id": "ts3_regime_3bet",
+  "target_item_ids": [
+    1069,
+    1070,
+    1071,
+    1093,
+    1094,
+    1095
+  ],
+  "total_items": 6,
+  "ok_items": 6,
+  "blocked_items": 0,
+  "would_insert_count": 0,
+  "already_exists_count": 6,
+  "blocked_reasons": [],
+  "final_classification": "P3BA_BIG_LOTTO_STALE_RESOLUTION_DRYRUN_READY",
+  "items": [
+    {
+      "item_id": 1069,
+      "run_id": 167,
+      "status": "OK",
+      "item_db_status": "PENDING",
+      "strategy_name": "ts3_regime_3bet",
+      "strategy_valid": true,
+      "snapshot_source": "VALID",
+      "target_draw": "115000049",
+      "target_date": "2026/05/01",
+      "predicted_numbers": [
+        5,
+        25,
+        26,
+        27,
+        31,
+        35
+      ],
+      "actual_numbers": [
+        7,
+        22,
+        27,
+        35,
+        43,
+        48
+      ],
+      "actual_special": 45,
+      "hit_count": 2,
+      "matched_numbers": [
+        27,
+        35
+      ],
+      "truth_level": "REGENERATED_RETROSPECTIVE",
+      "risk_flags": [],
+      "existing_replay_ids": [
+        1261
+      ],
+      "existing_controlled_apply_ids": [
+        "P2B_20260515"
+      ],
+      "already_exists": true,
+      "would_insert": false
+    },
+    {
+      "item_id": 1070,
+      "run_id": 167,
+      "status": "OK",
+      "item_db_status": "PENDING",
+      "strategy_name": "ts3_regime_3bet",
+      "strategy_valid": true,
+      "snapshot_source": "VALID",
+      "target_draw": "115000049",
+      "target_date": "2026/05/01",
+      "predicted_numbers": [
+        3,
+        12,
+        13,
+        15,
+        23,
+        43
+      ],
+      "actual_numbers": [
+        7,
+        22,
+        27,
+        35,
+        43,
+        48
+      ],
+      "actual_special": 45,
+      "hit_count": 1,
+      "matched_numbers": [
+        43
+      ],
+      "truth_level": "REGENERATED_RETROSPECTIVE",
+      "risk_flags": [],
+      "existing_replay_ids": [
+        1262
+      ],
+      "existing_controlled_apply_ids": [
+        "P2B_20260515"
+      ],
+      "already_exists": true,
+      "would_insert": false
+    },
+    {
+      "item_id": 1071,
+      "run_id": 167,
+      "status": "OK",
+      "item_db_status": "PENDING",
+      "strategy_name": "ts3_regime_3bet",
+      "strategy_valid": true,
+      "snapshot_source": "VALID",
+      "target_draw": "115000049",
+      "target_date": "2026/05/01",
+      "predicted_numbers": [
+        11,
+        28,
+        29,
+        33,
+        38,
+        45
+      ],
+      "actual_numbers": [
+        7,
+        22,
+        27,
+        35,
+        43,
+        48
+      ],
+      "actual_special": 45,
+      "hit_count": 0,
+      "matched_numbers": [],
+      "truth_level": "REGENERATED_RETROSPECTIVE",
+      "risk_flags": [],
+      "existing_replay_ids": [
+        1263
+      ],
+      "existing_controlled_apply_ids": [
+        "P2B_20260515"
+      ],
+      "already_exists": true,
+      "would_insert": false
+    },
+    {
+      "item_id": 1093,
+      "run_id": 175,
+      "status": "OK",
+      "item_db_status": "PENDING",
+      "strategy_name": "ts3_regime_3bet",
+      "strategy_valid": true,
+      "snapshot_source": "RECONSTRUCTED",
+      "target_draw": "115000050",
+      "target_date": "2026/05/05",
+      "predicted_numbers": [
+        12,
+        22,
+        23,
+        28,
+        34,
+        49
+      ],
+      "actual_numbers": [
+        4,
+        17,
+        23,
+        28,
+        33,
+        37
+      ],
+      "actual_special": 15,
+      "hit_count": 2,
+      "matched_numbers": [
+        23,
+        28
+      ],
+      "truth_level": "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE",
+      "risk_flags": [
+        "RECONSTRUCTED_SNAPSHOT_RISK"
+      ],
+      "existing_replay_ids": [
+        1264
+      ],
+      "existing_controlled_apply_ids": [
+        "P2B_20260515"
+      ],
+      "already_exists": true,
+      "would_insert": false
+    },
+    {
+      "item_id": 1094,
+      "run_id": 175,
+      "status": "OK",
+      "item_db_status": "PENDING",
+      "strategy_name": "ts3_regime_3bet",
+      "strategy_valid": true,
+      "snapshot_source": "RECONSTRUCTED",
+      "target_draw": "115000050",
+      "target_date": "2026/05/05",
+      "predicted_numbers": [
+        7,
+        18,
+        27,
+        42,
+        45,
+        47
+      ],
+      "actual_numbers": [
+        4,
+        17,
+        23,
+        28,
+        33,
+        37
+      ],
+      "actual_special": 15,
+      "hit_count": 0,
+      "matched_numbers": [],
+      "truth_level": "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE",
+      "risk_flags": [
+        "RECONSTRUCTED_SNAPSHOT_RISK"
+      ],
+      "existing_replay_ids": [
+        1265
+      ],
+      "existing_controlled_apply_ids": [
+        "P2B_20260515"
+      ],
+      "already_exists": true,
+      "would_insert": false
+    },
+    {
+      "item_id": 1095,
+      "run_id": 175,
+      "status": "OK",
+      "item_db_status": "PENDING",
+      "strategy_name": "ts3_regime_3bet",
+      "strategy_valid": true,
+      "snapshot_source": "RECONSTRUCTED",
+      "target_draw": "115000050",
+      "target_date": "2026/05/05",
+      "predicted_numbers": [
+        6,
+        26,
+        31,
+        43,
+        44,
+        48
+      ],
+      "actual_numbers": [
+        4,
+        17,
+        23,
+        28,
+        33,
+        37
+      ],
+      "actual_special": 15,
+      "hit_count": 0,
+      "matched_numbers": [],
+      "truth_level": "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE",
+      "risk_flags": [
+        "RECONSTRUCTED_SNAPSHOT_RISK"
+      ],
+      "existing_replay_ids": [
+        1266
+      ],
+      "existing_controlled_apply_ids": [
+        "P2B_20260515"
+      ],
+      "already_exists": true,
+      "would_insert": false
+    }
+  ]
+}

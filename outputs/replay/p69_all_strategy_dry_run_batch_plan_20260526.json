@@ -1,0 +1,438 @@
+{
+  "project_context_lock": "LotteryNew",
+  "phase": "P69",
+  "phase_name": "All-Strategy Dry-Run Batch Plan",
+  "date": "2026-05-26",
+  "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+  "branch": "p69-all-strategy-dry-run-batch-plan",
+  "head_local_main": "364a081",
+  "head_origin_main": "a736621",
+  "production_rows_before": 46960,
+  "production_rows_after": 46960,
+  "guard_results": {
+    "drift_guard_pre": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "branch_governance_pre_main": "BRANCH_GOVERNANCE_PASS -- branch='main' rows=46960",
+    "branch_governance_p69_branch": "BRANCH_GOVERNANCE_PASS -- branch='p69-all-strategy-dry-run-batch-plan' rows=46960",
+    "contamination_scan": "CLEAN"
+  },
+  "p2_gate_summary": {
+    "p2_phase": "P2",
+    "p2_audit_file": "outputs/replay/p2_prediction_helpfulness_audit_20260526.json",
+    "p2_merged_commit": "a736621",
+    "p2_pr": "PR #189",
+    "total_strategies_audited": 31,
+    "prediction_helpful_count": 10,
+    "baseline_equivalent_count": 5,
+    "sub_baseline_count": 9,
+    "fallback_equivalent_count": 1,
+    "insufficient_evidence_count": 6,
+    "authorized_for_p69_count": 8,
+    "baselines": {
+      "POWER_LOTTO": 0.0387,
+      "BIG_LOTTO": 0.0240,
+      "DAILY_539": 0.0100
+    }
+  },
+  "p68_inventory_summary": {
+    "p68_phase": "P68",
+    "p68_audit_file": "outputs/replay/p68_all_strategy_executability_inventory_scan_20260526.json",
+    "p68_merged_commit": "d2cec07",
+    "row_backed_strategies_total": 31,
+    "all_8_candidates_have_1500_rows": true,
+    "adapter_files_confirmed": [
+      "lottery_api/models/p31a_wave1_retired_adapters.py",
+      "lottery_api/models/p36_wave2_daily539_adapters.py",
+      "lottery_api/models/p47_wave4_powerlotto_adapters.py",
+      "lottery_api/models/p56_wave5_powerlotto_adapters.py"
+    ]
+  },
+  "authorized_candidate_count": 8,
+  "authorized_candidates": [
+    {
+      "strategy_id": "fourier_rhythm_3bet",
+      "lottery_type": "POWER_LOTTO",
+      "p2_label": "prediction-helpful",
+      "p2_recommendation": "prioritize-for-expansion",
+      "m3plus_pct": 4.93,
+      "m3plus_vs_baseline": 1.06,
+      "rows": 1500,
+      "controlled_apply_id": "P19B_POWERLOTTO_FOURIER_1500_PROD_20260520",
+      "lifecycle": "ONLINE",
+      "adapter_file": "lottery_api/models/p47_wave4_powerlotto_adapters.py",
+      "adapter_confirmed": true,
+      "dry_run_executable": true,
+      "dry_run_recommendation": "dry-run-now",
+      "batch": "A",
+      "batch_priority": 1,
+      "per_draw_row_impact": 1,
+      "expected_rows_100_draws": 100,
+      "expected_rows_500_draws": 500,
+      "expected_rows_1000_draws": 1000,
+      "expected_rows_1500_draws": 1500,
+      "p70_gate_requirements": [
+        "dry_run_artifact",
+        "temp_db_rehearsal",
+        "duplicate_draw_check",
+        "rollback_plan",
+        "branch_governance_guard_pass",
+        "drift_guard_pass",
+        "explicit_apply_authorization"
+      ],
+      "lifecycle_promotion_required_for_dry_run": false,
+      "risks": ["row_collision_with_P19B_apply_id_must_use_new_id"]
+    },
+    {
+      "strategy_id": "fourier30_markov30_2bet",
+      "lottery_type": "POWER_LOTTO",
+      "p2_label": "prediction-helpful",
+      "p2_recommendation": "prioritize-for-expansion",
+      "m3plus_pct": 4.07,
+      "m3plus_vs_baseline": 0.20,
+      "rows": 1500,
+      "controlled_apply_id": "P58_POWERLOTTO_WAVE5_FOURIER30_MARKOV30_1500_PROD_20260525",
+      "lifecycle": "ACTIVE",
+      "adapter_file": "lottery_api/models/p56_wave5_powerlotto_adapters.py",
+      "adapter_confirmed": true,
+      "dry_run_executable": true,
+      "dry_run_recommendation": "dry-run-now",
+      "batch": "A",
+      "batch_priority": 2,
+      "per_draw_row_impact": 1,
+      "expected_rows_100_draws": 100,
+      "expected_rows_500_draws": 500,
+      "expected_rows_1000_draws": 1000,
+      "expected_rows_1500_draws": 1500,
+      "p70_gate_requirements": [
+        "dry_run_artifact",
+        "temp_db_rehearsal",
+        "duplicate_draw_check",
+        "rollback_plan",
+        "branch_governance_guard_pass",
+        "drift_guard_pass",
+        "explicit_apply_authorization"
+      ],
+      "lifecycle_promotion_required_for_dry_run": false,
+      "risks": []
+    },
+    {
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "lottery_type": "DAILY_539",
+      "p2_label": "prediction-helpful",
+      "p2_recommendation": "prioritize-for-expansion",
+      "m3plus_pct": 1.07,
+      "m3plus_vs_baseline": 0.07,
+      "rows": 1500,
+      "controlled_apply_id": "P31B_DAILY539_RETIRED_7500_PROD_20260523",
+      "lifecycle": "RETIRED",
+      "adapter_file": "lottery_api/models/p31a_wave1_retired_adapters.py",
+      "adapter_confirmed": true,
+      "dry_run_executable": true,
+      "dry_run_recommendation": "dry-run-now",
+      "batch": "B",
+      "sub_batch": "B1",
+      "batch_priority": 3,
+      "per_draw_row_impact": 1,
+      "expected_rows_100_draws": 100,
+      "expected_rows_500_draws": 500,
+      "expected_rows_1000_draws": 1000,
+      "expected_rows_1500_draws": 1500,
+      "p70_gate_requirements": [
+        "dry_run_artifact",
+        "temp_db_rehearsal",
+        "duplicate_draw_check",
+        "rollback_plan",
+        "branch_governance_guard_pass",
+        "drift_guard_pass",
+        "explicit_apply_authorization",
+        "lifecycle_promotion_explicit_authorization"
+      ],
+      "lifecycle_promotion_required_for_dry_run": false,
+      "risks": ["RETIRED_lifecycle_requires_explicit_promotion_for_P70_apply"]
+    },
+    {
+      "strategy_id": "midfreq_acb_2bet",
+      "lottery_type": "DAILY_539",
+      "p2_label": "prediction-helpful",
+      "p2_recommendation": "prioritize-for-expansion",
+      "m3plus_pct": 1.27,
+      "m3plus_vs_baseline": 0.27,
+      "rows": 1500,
+      "controlled_apply_id": "P31B_DAILY539_RETIRED_7500_PROD_20260523",
+      "lifecycle": "RETIRED",
+      "adapter_file": "lottery_api/models/p31a_wave1_retired_adapters.py",
+      "adapter_confirmed": true,
+      "dry_run_executable": true,
+      "dry_run_recommendation": "dry-run-now",
+      "batch": "B",
+      "sub_batch": "B1",
+      "batch_priority": 4,
+      "per_draw_row_impact": 1,
+      "expected_rows_100_draws": 100,
+      "expected_rows_500_draws": 500,
+      "expected_rows_1000_draws": 1000,
+      "expected_rows_1500_draws": 1500,
+      "p70_gate_requirements": [
+        "dry_run_artifact",
+        "temp_db_rehearsal",
+        "duplicate_draw_check",
+        "rollback_plan",
+        "branch_governance_guard_pass",
+        "drift_guard_pass",
+        "explicit_apply_authorization",
+        "lifecycle_promotion_explicit_authorization"
+      ],
+      "lifecycle_promotion_required_for_dry_run": false,
+      "risks": [
+        "RETIRED_lifecycle_requires_explicit_promotion_for_P70_apply",
+        "highest_DAILY_539_signal_prioritize_in_B1"
+      ]
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "lottery_type": "DAILY_539",
+      "p2_label": "prediction-helpful",
+      "p2_recommendation": "prioritize-for-expansion",
+      "m3plus_pct": 1.27,
+      "m3plus_vs_baseline": 0.27,
+      "rows": 1500,
+      "controlled_apply_id": "P31B_DAILY539_RETIRED_7500_PROD_20260523",
+      "lifecycle": "RETIRED",
+      "adapter_file": "lottery_api/models/p31a_wave1_retired_adapters.py",
+      "adapter_confirmed": true,
+      "dry_run_executable": true,
+      "dry_run_recommendation": "dry-run-now",
+      "batch": "B",
+      "sub_batch": "B1",
+      "batch_priority": 5,
+      "per_draw_row_impact": 1,
+      "expected_rows_100_draws": 100,
+      "expected_rows_500_draws": 500,
+      "expected_rows_1000_draws": 1000,
+      "expected_rows_1500_draws": 1500,
+      "p70_gate_requirements": [
+        "dry_run_artifact",
+        "temp_db_rehearsal",
+        "duplicate_draw_check",
+        "rollback_plan",
+        "branch_governance_guard_pass",
+        "drift_guard_pass",
+        "explicit_apply_authorization",
+        "lifecycle_promotion_explicit_authorization",
+        "lottery_type_filter_confirmed_DAILY_539"
+      ],
+      "lifecycle_promotion_required_for_dry_run": false,
+      "risks": [
+        "RETIRED_lifecycle_requires_explicit_promotion_for_P70_apply",
+        "dual_strategy_id_POWER_LOTTO_version_also_exists_must_filter_by_lottery_type"
+      ]
+    },
+    {
+      "strategy_id": "acb_1bet",
+      "lottery_type": "DAILY_539",
+      "p2_label": "prediction-helpful",
+      "p2_recommendation": "prioritize-for-expansion",
+      "m3plus_pct": 1.07,
+      "m3plus_vs_baseline": 0.07,
+      "rows": 1500,
+      "controlled_apply_id": "P31B_DAILY539_RETIRED_7500_PROD_20260523",
+      "lifecycle": "RETIRED",
+      "adapter_file": "lottery_api/models/p31a_wave1_retired_adapters.py",
+      "adapter_confirmed": true,
+      "dry_run_executable": true,
+      "dry_run_recommendation": "dry-run-now",
+      "batch": "B",
+      "sub_batch": "B2",
+      "batch_priority": 6,
+      "per_draw_row_impact": 1,
+      "expected_rows_100_draws": 100,
+      "expected_rows_500_draws": 500,
+      "expected_rows_1000_draws": 1000,
+      "expected_rows_1500_draws": 1500,
+      "p70_gate_requirements": [
+        "dry_run_artifact",
+        "temp_db_rehearsal",
+        "duplicate_draw_check",
+        "rollback_plan",
+        "branch_governance_guard_pass",
+        "drift_guard_pass",
+        "explicit_apply_authorization",
+        "lifecycle_promotion_explicit_authorization"
+      ],
+      "lifecycle_promotion_required_for_dry_run": false,
+      "risks": ["RETIRED_lifecycle_requires_explicit_promotion_for_P70_apply"]
+    },
+    {
+      "strategy_id": "539_3bet_orthogonal",
+      "lottery_type": "DAILY_539",
+      "p2_label": "prediction-helpful",
+      "p2_recommendation": "prioritize-for-expansion",
+      "m3plus_pct": 1.07,
+      "m3plus_vs_baseline": 0.07,
+      "rows": 1500,
+      "controlled_apply_id": "P37_DAILY539_WAVE2_9000_PROD_20260523",
+      "lifecycle": "ACTIVE",
+      "adapter_file": "lottery_api/models/p36_wave2_daily539_adapters.py",
+      "adapter_confirmed": true,
+      "dry_run_executable": true,
+      "dry_run_recommendation": "dry-run-now",
+      "batch": "B",
+      "sub_batch": "B2",
+      "batch_priority": 7,
+      "per_draw_row_impact": 1,
+      "expected_rows_100_draws": 100,
+      "expected_rows_500_draws": 500,
+      "expected_rows_1000_draws": 1000,
+      "expected_rows_1500_draws": 1500,
+      "p70_gate_requirements": [
+        "dry_run_artifact",
+        "temp_db_rehearsal",
+        "duplicate_draw_check",
+        "rollback_plan",
+        "branch_governance_guard_pass",
+        "drift_guard_pass",
+        "explicit_apply_authorization"
+      ],
+      "lifecycle_promotion_required_for_dry_run": false,
+      "risks": []
+    },
+    {
+      "strategy_id": "acb_single_539",
+      "lottery_type": "DAILY_539",
+      "p2_label": "prediction-helpful",
+      "p2_recommendation": "prioritize-for-expansion",
+      "m3plus_pct": 1.07,
+      "m3plus_vs_baseline": 0.07,
+      "rows": 1500,
+      "controlled_apply_id": "P37_DAILY539_WAVE2_9000_PROD_20260523",
+      "lifecycle": "ACTIVE",
+      "adapter_file": "lottery_api/models/p36_wave2_daily539_adapters.py",
+      "adapter_confirmed": true,
+      "dry_run_executable": true,
+      "dry_run_recommendation": "dry-run-now",
+      "batch": "B",
+      "sub_batch": "B2",
+      "batch_priority": 8,
+      "per_draw_row_impact": 1,
+      "expected_rows_100_draws": 100,
+      "expected_rows_500_draws": 500,
+      "expected_rows_1000_draws": 1000,
+      "expected_rows_1500_draws": 1500,
+      "p70_gate_requirements": [
+        "dry_run_artifact",
+        "temp_db_rehearsal",
+        "duplicate_draw_check",
+        "rollback_plan",
+        "branch_governance_guard_pass",
+        "drift_guard_pass",
+        "explicit_apply_authorization"
+      ],
+      "lifecycle_promotion_required_for_dry_run": false,
+      "risks": []
+    }
+  ],
+  "excluded_candidates": {
+    "BIG_LOTTO_excluded_reason": "signal_space_exhausted_all_at_or_below_2.40_pct_baseline",
+    "cold_complement_2bet": {
+      "lottery_type": "POWER_LOTTO",
+      "reason": "sub-baseline",
+      "m3plus_pct": 3.67,
+      "vs_baseline": -0.20
+    },
+    "zonal_entropy_2bet": {
+      "lottery_type": "POWER_LOTTO",
+      "reason": "fallback-equivalent",
+      "m3plus_pct": 3.67,
+      "vs_baseline": -0.20
+    },
+    "midfreq_fourier_mk_3bet": {
+      "lottery_type": "POWER_LOTTO",
+      "reason": "deferred_pending_OOS_gates_150_300_500_draws",
+      "m3plus_pct": 4.40,
+      "vs_baseline": 0.53,
+      "deferred_until": "OOS_confirmation_at_150_300_500_draw_checkpoints"
+    }
+  },
+  "batch_plan": {
+    "batch_A": {
+      "game": "POWER_LOTTO",
+      "strategies": ["fourier_rhythm_3bet", "fourier30_markov30_2bet"],
+      "recommended_first_pass_periods": 500,
+      "execution_order": "sequential",
+      "rationale": "POWER_LOTTO draws weekly; smaller total row footprint per pass; run first to validate adapter pipeline before DAILY_539 batch"
+    },
+    "batch_B": {
+      "game": "DAILY_539",
+      "sub_batches": {
+        "B1_higher_margin": {
+          "strategies": ["midfreq_acb_2bet", "midfreq_fourier_2bet", "acb_markov_midfreq_3bet"],
+          "recommended_first_pass_periods": 500,
+          "rationale": "midfreq_acb_2bet and midfreq_fourier_2bet at +0.27% are highest DAILY_539 signal; run first within batch B"
+        },
+        "B2_standard_margin": {
+          "strategies": ["acb_1bet", "539_3bet_orthogonal", "acb_single_539"],
+          "recommended_first_pass_periods": 500
+        }
+      },
+      "execution_order": "B1_then_B2",
+      "rationale": "DAILY_539 draws 3x/week; prioritize highest-margin strategies for early validation evidence"
+    }
+  },
+  "row_impact_estimates": {
+    "dry_run_only": true,
+    "production_db_written": false,
+    "POWER_LOTTO_strategies": 2,
+    "DAILY_539_strategies": 6,
+    "total_strategies": 8,
+    "100_draws": {
+      "POWER_LOTTO_rows": 200,
+      "DAILY_539_rows": 600,
+      "total_temp_rows": 800
+    },
+    "500_draws": {
+      "POWER_LOTTO_rows": 1000,
+      "DAILY_539_rows": 3000,
+      "total_temp_rows": 4000
+    },
+    "1000_draws": {
+      "POWER_LOTTO_rows": 2000,
+      "DAILY_539_rows": 6000,
+      "total_temp_rows": 8000
+    },
+    "1500_draws": {
+      "POWER_LOTTO_rows": 3000,
+      "DAILY_539_rows": 9000,
+      "total_temp_rows": 12000
+    },
+    "if_p70_applies_all_8": {
+      "new_production_rows": 12000,
+      "production_rows_before": 46960,
+      "production_rows_after": 58960
+    }
+  },
+  "p70_gate_requirements": {
+    "required_per_strategy": [
+      "dry_run_artifact_json",
+      "temp_db_rehearsal_confirmed",
+      "duplicate_draw_check_clean",
+      "rollback_plan_documented",
+      "branch_governance_guard_pass",
+      "drift_guard_pass",
+      "explicit_apply_authorization_from_CTO"
+    ],
+    "required_for_RETIRED_lifecycle_strategies": [
+      "lifecycle_promotion_explicit_authorization"
+    ],
+    "required_for_midfreq_fourier_2bet_DAILY_539": [
+      "lottery_type_filter_confirmed_DAILY_539"
+    ],
+    "p70_cannot_start_until": "all_p69_dry_run_artifacts_reviewed"
+  },
+  "no_db_write": true,
+  "no_force_push": true,
+  "no_lifecycle_promotion": true,
+  "no_champion_replacement": true,
+  "no_registry_mutation": true,
+  "no_production_apply": true,
+  "p6_sync_debt": "local_main_19_ahead_2_behind_origin_main_do_not_resolve_in_P69",
+  "final_classification": "P69_ALL_STRATEGY_DRY_RUN_BATCH_PLAN_READY"
+}

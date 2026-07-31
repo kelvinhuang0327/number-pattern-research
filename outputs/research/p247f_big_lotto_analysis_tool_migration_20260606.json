@@ -1,0 +1,171 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P247F",
+  "classification": "ANALYSIS_TOOL_CANONICAL_MIGRATION",
+  "p247e_merged_state_verified": true,
+  "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+  "read_only_precheck": {
+    "view_exists": true,
+    "view_row_count": 2113,
+    "raw_big_lotto_count": 22238,
+    "add_on_count": 19100,
+    "helper_row_count": 2113,
+    "db_integrity": "ok",
+    "all_correct": true
+  },
+  "view_name": "draws_big_lotto_canonical_main",
+  "view_row_count": 2113,
+  "helper_row_count": 2113,
+  "raw_big_lotto_count": 22238,
+  "candidate_tools_scanned": 14,
+  "updated_tools": [
+    {
+      "path": "tools/analyze_banker_accuracy.py",
+      "classification": "UPDATED_TO_CANONICAL",
+      "change": "get_all_draws(lottery_type='BIG_LOTTO') → get_canonical_draws('BIG_LOTTO')"
+    },
+    {
+      "path": "tools/analyze_banker_plus_kill.py",
+      "classification": "UPDATED_TO_CANONICAL",
+      "change": "get_all_draws(lottery_type='BIG_LOTTO') → get_canonical_draws('BIG_LOTTO')"
+    },
+    {
+      "path": "tools/analyze_biglotto_special.py",
+      "classification": "UPDATED_TO_CANONICAL",
+      "change": "get_all_draws(lottery_type='BIG_LOTTO') → get_canonical_draws('BIG_LOTTO')"
+    },
+    {
+      "path": "tools/analyze_market_temperature.py",
+      "classification": "UPDATED_TO_CANONICAL",
+      "change": "get_all_draws(lottery_type='BIG_LOTTO') → get_canonical_draws('BIG_LOTTO')"
+    },
+    {
+      "path": "tools/analyze_top_n_for_2.py",
+      "classification": "UPDATED_TO_CANONICAL",
+      "change": "get_all_draws(lottery_type='BIG_LOTTO') → get_canonical_draws('BIG_LOTTO')"
+    },
+    {
+      "path": "tools/audit_big_lotto_3bet.py",
+      "classification": "UPDATED_TO_CANONICAL",
+      "change": "get_all_draws('BIG_LOTTO') → get_canonical_draws('BIG_LOTTO')"
+    },
+    {
+      "path": "tools/audit_big_lotto_baseline.py",
+      "classification": "UPDATED_TO_CANONICAL",
+      "change": "get_all_draws('BIG_LOTTO') → get_canonical_draws('BIG_LOTTO')"
+    },
+    {
+      "path": "tools/audit_big_lotto_hyper.py",
+      "classification": "UPDATED_TO_CANONICAL",
+      "change": "get_all_draws('BIG_LOTTO') → get_canonical_draws('BIG_LOTTO')"
+    },
+    {
+      "path": "tools/audit_big_lotto_rigorous.py",
+      "classification": "UPDATED_TO_CANONICAL",
+      "change": "get_all_draws('BIG_LOTTO') → get_canonical_draws('BIG_LOTTO')"
+    }
+  ],
+  "deferred_tools": [
+    {
+      "path": "lottery_api/routes/prediction.py",
+      "classification": "RAW_HISTORY_ALLOWED",
+      "reason": "API display/prediction routes must serve all BIG_LOTTO rows including add-on records."
+    },
+    {
+      "path": "lottery_api/routes/history.py",
+      "classification": "RAW_HISTORY_ALLOWED",
+      "reason": "History display endpoint must expose all row families for complete historical record."
+    },
+    {
+      "path": "lottery_api/common.py",
+      "classification": "RAW_HISTORY_ALLOWED",
+      "reason": "Common history loader for display paths; intentionally raw."
+    },
+    {
+      "path": "lottery_api/backtest_*.py [archived BIG_LOTTO scripts]",
+      "classification": "DEFERRED_ARCHIVED_OR_EXPLORATORY",
+      "reason": "One-off historical backtest scripts (backtest_115000012_*.py, backtest_big_lotto_2025_ensemble.py, backtest_oddeven_research_biglotto.py, etc.). Not in active prediction pipeline. Migration deferred — requires dedicated scope per script."
+    },
+    {
+      "path": "lottery_api/predict_*.py [archived BIG_LOTTO scripts]",
+      "classification": "DEFERRED_ARCHIVED_OR_EXPLORATORY",
+      "reason": "Archived one-off predict scripts (predict_biglotto_8_bets.py, predict_biglotto_monte_carlo_8.py, etc.). Not in active pipeline. Deferred."
+    }
+  ],
+  "migration_scan_results": {
+    "tool_results": [
+      {
+        "path": "tools/analyze_banker_accuracy.py",
+        "status": "OK",
+        "has_canonical": true,
+        "has_raw_big_lotto": false
+      },
+      {
+        "path": "tools/analyze_banker_plus_kill.py",
+        "status": "OK",
+        "has_canonical": true,
+        "has_raw_big_lotto": false
+      },
+      {
+        "path": "tools/analyze_biglotto_special.py",
+        "status": "OK",
+        "has_canonical": true,
+        "has_raw_big_lotto": false
+      },
+      {
+        "path": "tools/analyze_market_temperature.py",
+        "status": "OK",
+        "has_canonical": true,
+        "has_raw_big_lotto": false
+      },
+      {
+        "path": "tools/analyze_top_n_for_2.py",
+        "status": "OK",
+        "has_canonical": true,
+        "has_raw_big_lotto": false
+      },
+      {
+        "path": "tools/audit_big_lotto_3bet.py",
+        "status": "OK",
+        "has_canonical": true,
+        "has_raw_big_lotto": false
+      },
+      {
+        "path": "tools/audit_big_lotto_baseline.py",
+        "status": "OK",
+        "has_canonical": true,
+        "has_raw_big_lotto": false
+      },
+      {
+        "path": "tools/audit_big_lotto_hyper.py",
+        "status": "OK",
+        "has_canonical": true,
+        "has_raw_big_lotto": false
+      },
+      {
+        "path": "tools/audit_big_lotto_rigorous.py",
+        "status": "OK",
+        "has_canonical": true,
+        "has_raw_big_lotto": false
+      }
+    ],
+    "all_ok": true
+  },
+  "raw_access_preserved": true,
+  "add_on_records_raw_accessible": true,
+  "db_write_performed": false,
+  "no_row_insert_update_delete": true,
+  "forbidden_actions_confirmed": {
+    "DB write": "NOT PERFORMED",
+    "DB migration": "NOT PERFORMED",
+    "CREATE VIEW / CREATE TABLE": "NOT PERFORMED",
+    "DELETE rows": "NOT PERFORMED",
+    "UPDATE rows": "NOT PERFORMED",
+    "INSERT rows": "NOT PERFORMED",
+    "broad strategy/replay refactor": "NOT PERFORMED",
+    "frontend/API display behavior change": "NOT PERFORMED",
+    "registry mutation": "NOT PERFORMED",
+    "production recommendation change": "NOT PERFORMED"
+  },
+  "final_decision": "P247F complete. 9 BIG_LOTTO analysis/research tools migrated to get_canonical_draws('BIG_LOTTO') (view-backed via P247E). Canonical rows: 2113. Raw preserved: 22238. 3 RAW_HISTORY_ALLOWED paths unchanged. 2 archived/exploratory groups deferred. No DB write. No row mutation. Add-on records raw-accessible."
+}

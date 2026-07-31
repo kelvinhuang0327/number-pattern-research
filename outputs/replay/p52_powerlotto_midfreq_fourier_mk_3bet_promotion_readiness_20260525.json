@@ -1,0 +1,95 @@
+{
+  "task": "P52",
+  "description": "POWER_LOTTO midfreq_fourier_mk_3bet Promotion Readiness Decision",
+  "generated_at": "2026-05-25T04:02:21.650851+00:00",
+  "p51_source": "outputs/replay/p51_powerlotto_wave4_rolling_window_mcnemar_gate_20260525.json",
+  "p51_overall_classification": "P51_POWERLOTTO_PROMOTION_GATE_COMPLETED",
+  "p51_commit": "0415cc8",
+  "no_db_write": true,
+  "no_lifecycle_promotion": true,
+  "no_registry_mutation": true,
+  "production_rows": 42460,
+  "g4_mcnemar_policy": {
+    "policy": "G4_REQUIRES_WAIVER",
+    "b_strategy_wins": 42,
+    "c_champion_wins": 50,
+    "direction_favors": "CHAMPION",
+    "discordant_total": 92,
+    "discordant_ratio_b_over_c": 0.84,
+    "p_value": 0.465512,
+    "rationale": "c > b (50 > 42): champion outperforms candidate on hit_count>=3 event. This is not solely a statistical-power problem \u2014 the effect direction is adverse to the candidate. The candidate achieves higher mean_hit through moderate (1-2 hit) draws, not through high-value (3-hit) draws. Explicit CTO/CEO waiver required to promote despite this directional weakness on the high-value lottery event."
+  },
+  "candidate_decision": {
+    "strategy": "midfreq_fourier_mk_3bet",
+    "p51_classification": "P52_PROMOTION_CANDIDATE",
+    "p52_classification": "PROMOTION_WITH_WAIVER_REQUIRED",
+    "decision_matrix": {
+      "strategy": "midfreq_fourier_mk_3bet",
+      "mean_hit_overall": 1.027333,
+      "theoretical_baseline": 0.9474,
+      "champion_mean_hit": 0.9927,
+      "mean_hit_vs_theoretical_delta": 0.079933,
+      "mean_hit_vs_champion_delta": 0.034633,
+      "rolling_windows": {
+        "W150": 0.986667,
+        "W500": 1.008,
+        "W1500": 1.027333,
+        "all_above_theoretical_baseline": true,
+        "monotonic_improvement": true
+      },
+      "permutation_test": {
+        "p_value": 0.0003,
+        "significant": true,
+        "strength": "highly_significant"
+      },
+      "mcnemar_test": {
+        "p_value": 0.465512,
+        "significant": false,
+        "b_strategy_wins": 42,
+        "c_champion_wins": 50,
+        "direction_favors": "CHAMPION",
+        "g4_policy": "G4_REQUIRES_WAIVER"
+      },
+      "effect_sizes": {
+        "vs_theoretical_baseline": {
+          "cohens_d": 0.0888,
+          "interpretation": "negligible"
+        },
+        "vs_champion": {
+          "cohens_d": 0.0385,
+          "interpretation": "negligible"
+        }
+      },
+      "special_hit_rate": 0.118667,
+      "evidence_score": 7,
+      "evidence_notes": [
+        "G1 PASS: 1500 samples",
+        "G2 PASS: all rolling windows above theoretical baseline",
+        "G3 STRONG: permutation p=0.0003 (< 0.001)",
+        "G4 FAIL: McNemar p=0.4655, direction adverse (c>b)",
+        "G5 PASS: special hit rate in theoretical CI",
+        "G6 PASS: positive delta in all windows"
+      ],
+      "high_variance_caveat": "Lottery outcomes are inherently high-variance. A 1500-draw sample spans approximately 3 years of draws. Effect sizes are small. There is non-trivial probability that observed mean advantage reverts under regime change.",
+      "comparison_vs_champion_summary": "midfreq_fourier_mk_3bet mean_hit=1.0273 exceeds champion fourier_rhythm_3bet mean_hit=0.9927 by +0.0346. However, champion outperforms candidate on hit_count>=3 event (50 vs 42 discordant pairs). The candidate excels in moderate hits (1-2 per draw), not in high-value hits (3 per draw).",
+      "online_promotion_justified_now": false,
+      "online_promotion_justification": "No. G4 McNemar fails and direction favors champion on high-value event. Promotion to ONLINE without waiver would replace a champion that is stronger on the high-value prize tier with a candidate that is stronger only in average/moderate hits. Explicit waiver required.",
+      "watchlist_recommendation": "WATCHLIST is the safer classification. Monitor mean_hit trend over next 500 draws. If mean_hit advantage holds AND hit_count>=3 event parity improves, revisit for P53 promotion with McNemar threshold lowered to hit_count>=2 to capture moderate-hit advantage where the candidate is actually stronger.",
+      "p53_recommendation": "P53 controlled promotion task should be created IF CEO/CTO waiver is granted. P53 should: (1) lower McNemar threshold to hit_count>=2 for supplementary test, (2) run an additional 500-draw OOS holdout, (3) promote to WATCHLIST first (not ONLINE), (4) compare 90-day live WATCHLIST performance vs champion."
+    }
+  },
+  "other_strategies": {
+    "pp3_freqort_4bet": {
+      "p51_classification": "INCONCLUSIVE",
+      "p52_classification": "INCONCLUSIVE",
+      "note": "W1500 delta positive (+0.055) but early windows underperform. G2/G6 FAIL. Recommend 500 additional draws before re-evaluation."
+    },
+    "midfreq_fourier_2bet": {
+      "p51_classification": "INCONCLUSIVE",
+      "p52_classification": "INCONCLUSIVE",
+      "note": "G2/G3/G6 all FAIL. Mean hit 0.9727 does not significantly exceed theoretical baseline. Not a promotion candidate at this time."
+    }
+  },
+  "overall_p52_classification": "P52_PROMOTION_READINESS_WAIVER_REQUIRED",
+  "p52_governance_note": "P52 is promotion-readiness decision only. No lifecycle promotion performed. P53 requires separate explicit authorization before any promotion proceeds."
+}

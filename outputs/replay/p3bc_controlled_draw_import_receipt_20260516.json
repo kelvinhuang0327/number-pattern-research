@@ -1,0 +1,70 @@
+{
+  "generated_at": "2026-05-16T07:47:34Z",
+  "controlled_import_id": "P3BC_20260516",
+  "apply_mode": true,
+  "draws_imported": [
+    {
+      "lottery_type": "DAILY_539",
+      "draw": "115000106",
+      "date": "2026/04/30",
+      "numbers": [
+        6,
+        15,
+        27,
+        30,
+        31
+      ],
+      "special": null,
+      "applied": true
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "draw": "115000035",
+      "date": "2026/04/30",
+      "numbers": [
+        1,
+        4,
+        13,
+        19,
+        27,
+        30
+      ],
+      "special": 8,
+      "applied": true
+    }
+  ],
+  "draws_already_present": [],
+  "draws_conflict": [],
+  "replay_rows_inserted": false,
+  "prediction_items_modified": false,
+  "prediction_runs_modified": false,
+  "db_written": true,
+  "replay_total_after": 969,
+  "prediction_items_after": [
+    {
+      "id": 1072,
+      "status": "PENDING"
+    },
+    {
+      "id": 1073,
+      "status": "PENDING"
+    },
+    {
+      "id": 1074,
+      "status": "PENDING"
+    },
+    {
+      "id": 1087,
+      "status": "PENDING"
+    },
+    {
+      "id": 1088,
+      "status": "PENDING"
+    },
+    {
+      "id": 1089,
+      "status": "PENDING"
+    }
+  ],
+  "final_classification": "P3BC_CONTROLLED_DRAW_IMPORT_DRAFT_PR_READY"
+}

@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P34",
+  "task_name": "replay_ui_usability_gap_closure",
+  "created_at": "2026-05-23T08:49:58Z",
+  "classification": "P34_REPLAY_UI_USABILITY_GAP_CLOSURE_MERGED_TO_MAIN",
+  "branch": "p34-replay-ui-usability-gap-closure",
+  "base_branch": "main",
+  "base_commit": "1528b4c",
+  "production_rows": 19960,
+  "production_rows_unchanged": true,
+  "changes": {
+    "files_modified": ["index.html"],
+    "files_created": [
+      "tests/test_p34_replay_ui_usability_gap_closure.py",
+      "outputs/replay/p34_replay_ui_usability_gap_closure_20260523.json",
+      "docs/replay/p34_replay_ui_usability_gap_closure_20260523.md"
+    ],
+    "ui_changes": [
+      {
+        "change_id": "P34-1",
+        "description": "Default half-year date range for rp-date-from and rp-date-to",
+        "mechanism": "IIFE rpSetDefaultDates() called in DOMContentLoaded before rpRestoreFromURL()",
+        "url_override": true
+      },
+      {
+        "change_id": "P34-2",
+        "description": "RETIRED strategy dropdown label shows replay-backed status",
+        "mechanism": "rpLoadStrategies() consults rpStrategyRowCountMap; RETIRED shows [已退役 · 有回放資料] if rows > 0",
+        "fallback": "[已退役] when row count not yet loaded"
+      },
+      {
+        "change_id": "P34-3",
+        "description": "History table rows show 回放 badge for RETIRED strategies",
+        "mechanism": "rpBuildHistoryRows() checks lifecycle_status/strategy_lifecycle_status === RETIRED",
+        "visual": "Small blue badge appended to strategy_id column"
+      },
+      {
+        "change_id": "P34-4",
+        "description": "Lifecycle registry shows 有回放資料 badge for RETIRED strategies with rows",
+        "mechanism": "rpRenderLifecycleRegistryRows() checks rpStrategyRowCountMap[s.strategy_id] > 0 for RETIRED"
+      }
+    ]
+  },
+  "tests": {
+    "file": "tests/test_p34_replay_ui_usability_gap_closure.py",
+    "count": 22,
+    "passed": 22,
+    "failed": 0
+  },
+  "guard_results": {
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "governance_guard": "BRANCH_GOVERNANCE_PASS"
+  },
+  "p31b_strategies": [
+    {"strategy_id": "acb_1bet", "rows": 1500},
+    {"strategy_id": "acb_markov_midfreq", "rows": 1500},
+    {"strategy_id": "acb_markov_midfreq_3bet", "rows": 1500},
+    {"strategy_id": "midfreq_acb_2bet", "rows": 1500},
+    {"strategy_id": "midfreq_fourier_2bet", "rows": 1500}
+  ],
+  "no_db_writes": true,
+  "no_strategy_changes": true,
+  "preset_buttons": [100, 500, 1000, 1500]
+}

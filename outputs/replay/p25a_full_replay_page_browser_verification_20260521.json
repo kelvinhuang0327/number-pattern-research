@@ -1,0 +1,274 @@
+{
+  "p_series": "P25a",
+  "title": "Full Replay Page Browser Verification",
+  "date": "2026-05-21",
+  "final_classification": "P25A_FULL_REPLAY_PAGE_BROWSER_VERIFICATION_READY",
+  "browser_e2e_available": true,
+  "browser_tool_used": "Playwright (via gstack/run_playwright_code, pageId=81e7db87-0eb3-4bea-9037-37123927fe95)",
+  "replay_page_url": "http://127.0.0.1:8081/",
+  "api_base": "http://127.0.0.1:8002",
+  "api_base_injection": "window.API_BASE = 'http://127.0.0.1:8002' via addInitScript before page reload",
+  "backend_port": 8002,
+  "frontend_port": 8081,
+  "db_path": "lottery_api/data/lottery_v2.db",
+  "production_rows_baseline": 12460,
+  "console_error_triage": {
+    "error_a": {
+      "source": "src/core/App.js:981 updateMethodDescription()",
+      "description": "Missing DOM elements: #method-description-card, #method-icon, #method-title, #method-description",
+      "root_cause": "Elements exist only in tools/web-demos/index.html:356, not in root index.html. Called at startup when simulationMethodSelect initializes.",
+      "scope": "Simulation section only — no impact on replay UI",
+      "verdict": "NON_BLOCKING"
+    },
+    "error_b": {
+      "source": "src/ui/UIManager.js:19 updateWaterline()",
+      "description": "404 for relative path /api/performance/regime — hits port 8081 instead of 8002",
+      "root_cause": "UIManager.js uses relative URL, bypassing ApiClient.js absolute URL. Route exists at lottery_api/routes/prediction.py:1788.",
+      "scope": "Waterline widget display only — graceful failure in try/catch, no crash, no replay data loss",
+      "verdict": "NON_BLOCKING"
+    },
+    "overall_verdict": "ALL_NON_BLOCKING"
+  },
+  "e2e_results": {
+    "BIG_LOTTO": {
+      "status": "PASS",
+      "total_rows": 4640,
+      "strategy_options": 6,
+      "pagination_pages": 47,
+      "first_row_period": "115000053",
+      "first_row_causal": "Causal OK",
+      "http_errors": false
+    },
+    "POWER_LOTTO": {
+      "status": "PASS",
+      "total_rows": 4640,
+      "strategy_options": 6,
+      "pagination_pages": 47,
+      "first_row_period": "115000040",
+      "first_row_causal": "Causal OK",
+      "http_errors": false
+    },
+    "DAILY_539": {
+      "status": "PASS",
+      "total_rows": 3180,
+      "strategy_options": 9,
+      "pagination_pages": 32,
+      "first_row_period": "115000121",
+      "first_row_causal": "Causal OK",
+      "http_errors": false
+    }
+  },
+  "online_strategy_row_counts": {
+    "BIG_LOTTO::biglotto_deviation_2bet": {
+      "expected": 1570,
+      "actual": 1570,
+      "match": true
+    },
+    "BIG_LOTTO::biglotto_triple_strike": {
+      "expected": 1570,
+      "actual": 1570,
+      "match": true
+    },
+    "BIG_LOTTO::ts3_regime_3bet": {
+      "expected": 1500,
+      "actual": 1500,
+      "match": true
+    },
+    "POWER_LOTTO::fourier_rhythm_3bet": {
+      "expected": 1500,
+      "actual": 1500,
+      "match": true
+    },
+    "POWER_LOTTO::power_orthogonal_5bet": {
+      "expected": 1570,
+      "actual": 1570,
+      "match": true
+    },
+    "POWER_LOTTO::power_precision_3bet": {
+      "expected": 1570,
+      "actual": 1570,
+      "match": true
+    },
+    "DAILY_539::daily539_f4cold": {
+      "expected": 1590,
+      "actual": 1590,
+      "match": true
+    },
+    "DAILY_539::daily539_markov_cold": {
+      "expected": 1590,
+      "actual": 1590,
+      "match": true
+    }
+  },
+  "all_8_online_strategies_match": true,
+  "total_online_rows_sum": 12460,
+  "period_presets": {
+    "100": {
+      "status": "PASS",
+      "display": "前 100 期 / 共 100 筆",
+      "note": "date-constrained; shows exactly 100 rows"
+    },
+    "500": {
+      "status": "PASS",
+      "display": "共 159 筆 (date-constrained for BIG_LOTTO with date_from=2026-05-01)",
+      "note": "returns available rows within date window"
+    },
+    "1000": {
+      "status": "PASS",
+      "display": "共 159 筆 (date-constrained)",
+      "note": "returns available rows within date window"
+    },
+    "1500": {
+      "status": "PASS",
+      "display": "共 159 筆 (date-constrained)",
+      "note": "returns available rows within date window"
+    }
+  },
+  "cross_switching_matrix": {
+    "BIG_LOTTO_to_POWER_LOTTO_to_DAILY_539_cycle": {
+      "status": "PASS",
+      "note": "Correct counts + strategies on every switch; no errors"
+    },
+    "DAILY_539_to_BIG_LOTTO": {
+      "status": "PASS"
+    },
+    "POWER_LOTTO_strategy_switch": {
+      "status": "PASS",
+      "note": "fourier_rhythm_3bet → power_orthogonal_5bet → power_precision_3bet all return correct rows"
+    },
+    "BIG_LOTTO_strategy_then_DAILY_539": {
+      "status": "PASS",
+      "note": "biglotto_deviation_2bet → daily539_markov_cold; no cross-contamination"
+    },
+    "preset_1500_then_switch_lottery": {
+      "status": "PASS",
+      "note": "1500期 on BIG_LOTTO → switch to DAILY_539 → query returns correct rows"
+    }
+  },
+  "pagination": {
+    "status": "PASS",
+    "page_1_first_period": "115000121",
+    "page_2_first_period": "115000096",
+    "back_to_page_1_first_period": "115000121",
+    "note": "rp-next-btn / rp-prev-btn work correctly; page counter increments/decrements"
+  },
+  "hit_rate_summary": {
+    "status": "PASS",
+    "button_id": "rp-summary-btn",
+    "container_id": "rp-summary-cards",
+    "note": "rp-summary-cards rendered with '📊 命中率摘要（歷史回放）' header and strategy hit-rate table"
+  },
+  "lifecycle_registry": {
+    "status": "PASS",
+    "table_id": "rp-lc-table",
+    "total_rows": 28,
+    "strategy_count": 18,
+    "breakdown": {
+      "ONLINE": 8,
+      "REJECTED": 4,
+      "OBSERVATION": 1,
+      "RETIRED": 5
+    },
+    "note_rows": 10,
+    "all_online_truth_level_LIVE": true,
+    "p24_inventory_match": true
+  },
+  "freshness_coverage_table": {
+    "status": "PASS",
+    "rows": [
+      {
+        "lottery": "大樂透",
+        "run": "#5",
+        "status": "DONE",
+        "draws": 100,
+        "success": 100,
+        "failed": 0,
+        "coverage": "⚠️ LIMITED"
+      },
+      {
+        "lottery": "今彩539",
+        "run": "#7",
+        "status": "DONE",
+        "draws": 100,
+        "success": 100,
+        "failed": 0,
+        "coverage": "⚠️ LIMITED"
+      },
+      {
+        "lottery": "威力彩",
+        "run": "#6",
+        "status": "DONE",
+        "draws": 100,
+        "success": 100,
+        "failed": 0,
+        "coverage": "⚠️ LIMITED"
+      }
+    ],
+    "note": "LIMITED coverage is expected (100 draws per run, not full 1500); all runs DONE with 100% success"
+  },
+  "known_non_blockers": [
+    {
+      "id": "NB-01",
+      "component": "App.js updateMethodDescription()",
+      "description": "Missing simulation DOM elements in root index.html",
+      "fix_priority": "LOW — future P26 cleanup PR"
+    },
+    {
+      "id": "NB-02",
+      "component": "UIManager.js updateWaterline()",
+      "description": "Relative URL for /api/performance/regime hits wrong port",
+      "fix_priority": "LOW — waterline widget only, graceful failure"
+    }
+  ],
+  "governance": {
+    "db_rows_unchanged": true,
+    "expected_rows": 12460,
+    "causal_ok_verified": true,
+    "no_new_strategies_added": true,
+    "no_replay_generation": true,
+    "no_production_db_writes": true
+  },
+  "suite_verification": {
+    "run_at": "2026-05-21T00:00:00Z",
+    "p25a_suite": {
+      "tests": 81,
+      "passed": 81,
+      "status": "ALL_PASS"
+    },
+    "canonical_regression": {
+      "files": [
+        "test_replay_browser_smoke.py",
+        "test_replay_api_contract.py"
+      ],
+      "tests": 94,
+      "passed": 94,
+      "status": "ALL_PASS"
+    },
+    "production_rows_check": {
+      "file": "test_p14d_biglotto_production_apply_readiness.py",
+      "tests": 33,
+      "passed": 33,
+      "status": "ALL_PASS"
+    },
+    "drift_guard": {
+      "file": "test_replay_lifecycle_drift_guard.py",
+      "tests": 6,
+      "passed": 6,
+      "status": "ALL_PASS"
+    },
+    "branch_governance_guard": {
+      "file": "test_replay_branch_governance_guard.py",
+      "tests": 15,
+      "passed": 15,
+      "status": "ALL_PASS"
+    },
+    "total_tests": 248,
+    "total_passed": 248,
+    "overall": "ALL_PASS"
+  },
+  "nav_btn_fix_confirmed": {
+    "fix": "_open_replay_page: click button.nav-btn[data-section='replay'], then wait_for_selector('#replay-section', state='visible')",
+    "root_cause": "#rp-lottery-select not absent from DOM — replay section was hidden until nav-btn clicked",
+    "status": "VERIFIED"
+  }
+}

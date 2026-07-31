@@ -1,0 +1,175 @@
+{
+  "task_id": "P258K",
+  "task_name": "D3 Integration Contract Documentation Closeout",
+  "artifact_date": "2026-06-09",
+  "task_status": "DOCUMENTATION_CLOSEOUT_ONLY",
+  "final_classification": "P258K_D3_INTEGRATION_CONTRACT_DOCUMENTATION_CLOSEOUT_READY",
+
+  "documentation_closeout_only_declaration": {
+    "is_documentation_closeout_only": true,
+    "no_implementation_code_created": true,
+    "no_real_candidate_methods_used": true,
+    "no_executable_gate_evaluation": true,
+    "no_null_generation": true,
+    "no_p_values_computed": true,
+    "no_paired_tests": true,
+    "no_backtests": true,
+    "no_db_write": true,
+    "no_recommendation_changes": true,
+    "no_production_changes": true,
+    "no_registry_changes": true,
+    "no_controlled_apply_changes": true,
+    "no_deployment_changes": true
+  },
+
+  "mandatory_safety_semantics": {
+    "d3_is_not_a_prediction_model": true,
+    "contract_validation_is_not_strategy_evaluation": true,
+    "passing_contract_validation_does_not_imply_improved_prediction_accuracy": true,
+    "not_yet_rejected_is_not_approval": true,
+    "passing_validators_does_not_allow_production_use": true,
+    "passing_validators_does_not_allow_recommendation_use": true,
+    "no_lottery_edge_claimed": true,
+    "executable_gate_evaluation_remains_forbidden": true
+  },
+
+  "p258_arc_milestone_chain": [
+    {
+      "task": "P258A",
+      "classification": "P258A_PREDICTION_ACCURACY_RESEARCH_INTAKE_PROTOCOL_READY",
+      "description": "Prediction-accuracy-only research intake protocol (read-only). External-agent prompt (3 method directions), scoring rubric, hard rejection rules, P257A baseline + P256A NULL risk boundary. 22/22 tests PASS."
+    },
+    {
+      "task": "P258B",
+      "classification": "P258B_READ_ONLY_PREREGISTRATION_CANDIDATE_SELECTED",
+      "description": "External-response evaluation. D2 HARD_REJECT (L82/L91/L73/L104/L105). D1 REJECT_INSUFFICIENT_EVIDENCE. D3 AdversarialNullSurvivorGate ACCEPT — selected as pre-registration candidate (methodology gate only, not predictor). PR #373 merged. 40/40 tests PASS."
+    },
+    {
+      "task": "P258C",
+      "classification": "P258C_D3_READ_ONLY_PREREGISTRATION_DESIGN_READY",
+      "description": "D3 AdversarialNullSurvivorGate read-only pre-registration design. Matched adversarial-null family (M≥1000), provenance/leakage gates, chronological OOS, paired-vs-P257A + null-percentile endpoints, BH-FDR+Bonferroni, 6 risk-control triggers. Falsification-only. 26/26 tests PASS."
+    },
+    {
+      "task": "P258D",
+      "classification": "P258D_D3_READ_ONLY_IMPLEMENTATION_PLAN_READY",
+      "description": "D3 gate read-only implementation plan. Module boundaries (6 layers + import-ban), proposed future module names, data contracts, 6-point validation contract, artifact schema (gate_decision ∈ {REJECTED, NOT_YET_REJECTED}), 8 STOP gates. Plan only. PR #374 merged. 26/26 tests PASS."
+    },
+    {
+      "task": "P258E",
+      "classification": "P258E_D3_READ_ONLY_SKELETON_CONTRACT_TESTS_READY",
+      "description": "D3 gate read-only skeleton / contract tests. GateStatus limited to REJECTED / NOT_YET_REJECTED. Schema dataclasses (CandidateInput, P257ABaselineInput, MatchedNullFamily, GateOutput) and d3_gate package created. PR #376 merged."
+    },
+    {
+      "task": "P258F",
+      "classification": "P258F_D3_READ_ONLY_CONTRACT_VALIDATORS_READY",
+      "description": "D3 gate read-only contract validators implemented in gate_validation.py. 6 validators: no-approval-status, candidate-provenance, timestamp-cutoff, P257A-baseline, matched-null-family, correction-family. Contract validation only — no executable gate, no nulls, no p-values."
+    },
+    {
+      "task": "P258G",
+      "classification": "P258G_D3_SYNTHETIC_FIXTURE_VALIDATOR_HARDENING_READY",
+      "description": "Synthetic-fixture-only contract validator hardening. Synthetic fixture builders and edge-case tests for complete valid contracts, missing/invalid fields, timestamp violations, baseline/null mismatches, correction-family omissions, forbidden statuses. PR #377/378 merged."
+    },
+    {
+      "task": "P258H",
+      "classification": "P258H_D3_READ_ONLY_CONTRACT_VALIDATION_INTEGRATION_PLAN_READY",
+      "description": "Read-only contract-validation integration plan. Defines validator invocation order (6 steps, fail-closed), 5 allowed input contract boundaries, future validation report schema, import boundary plan (only schemas.py + gate_validation.py allowed), 7 STOP gates, future task split. PR #379 merged. 74/74 tests PASS."
+    },
+    {
+      "task": "P258I",
+      "classification": "P258I_D3_READ_ONLY_CONTRACT_VALIDATION_INTEGRATION_SKELETON_READY",
+      "description": "Read-only contract-validation integration skeleton. Created integration_skeleton.py with static metadata (VALIDATOR_INVOCATION_ORDER, ALLOWED_INPUT_CONTRACT_BOUNDARIES, FAIL_CLOSED_POLICY, FORBIDDEN_IMPORTS_AND_PATHS, safety constants), build_contract_validation_plan() (static dict), run_contract_validation_flow() (NotImplementedError). PR #380 merged. 85/85 tests PASS."
+    },
+    {
+      "task": "P258J",
+      "classification": "P258J_D3_READ_ONLY_SYNTHETIC_INTEGRATION_SKELETON_TESTS_READY",
+      "description": "Read-only synthetic integration skeleton tests / dry-contract fixtures. 114 tests covering complete 6-validator round-trip with synthetic fixtures, 13 invalid fixture cases, 4 static safety cases, validator order guards, fail-closed policy, forbidden import/function checks. PR #381 merged. 114/114 tests PASS."
+    }
+  ],
+
+  "final_d3_arc_status": {
+    "summary": "D3 contract-validation infrastructure is documentation/skeleton/contract-validation only. The arc is closed as a read-only foundation.",
+    "no_executable_gate_evaluation_exists": true,
+    "no_real_candidate_method_execution_exists": true,
+    "no_null_generation_exists": true,
+    "no_p_values_or_statistical_tests_or_backtests_exist": true,
+    "no_db_write_exists": true,
+    "no_recommendation_production_registry_controlled_apply_deployment_path_exists": true,
+    "arc_classification": "READ_ONLY_FOUNDATION_COMPLETE"
+  },
+
+  "module_inventory": {
+    "schemas_py": {
+      "path": "lottery_api/research/d3_gate/schemas.py",
+      "contents": "GateStatus enum (REJECTED / NOT_YET_REJECTED only), CandidateInput, P257ABaselineInput, MatchedNullFamily, GateOutput dataclasses",
+      "executable_code": false,
+      "db_access": false,
+      "statistical_computation": false
+    },
+    "gate_validation_py": {
+      "path": "lottery_api/research/d3_gate/gate_validation.py",
+      "contents": "6 read-only contract validators (validate_no_approval_status_contract, validate_candidate_provenance_contract, validate_timestamp_cutoff_contract, validate_p257a_baseline_contract, validate_matched_null_family_contract, validate_correction_family_contract), ContractValidationError, ValidationResult",
+      "executable_code": false,
+      "db_access": false,
+      "statistical_computation": false
+    },
+    "integration_skeleton_py": {
+      "path": "lottery_api/research/d3_gate/integration_skeleton.py",
+      "contents": "VALIDATOR_INVOCATION_ORDER, ALLOWED_INPUT_CONTRACT_BOUNDARIES, FAIL_CLOSED_POLICY, FORBIDDEN_IMPORTS_AND_PATHS, safety constants, build_contract_validation_plan() (static dict), run_contract_validation_flow() (NotImplementedError)",
+      "executable_code": false,
+      "db_access": false,
+      "statistical_computation": false
+    },
+    "forbidden_executable_modules_confirmed_absent": [
+      "candidate_ingest.py",
+      "baseline_ingest.py",
+      "null_factory.py",
+      "gate_statistics.py",
+      "gate_orchestrator.py",
+      "gate_audit.py",
+      "integration_runner.py"
+    ]
+  },
+
+  "test_inventory": {
+    "p258e_skeleton_tests": "tests/test_p258e_d3_gate_readonly_skeleton_contract_tests.py",
+    "p258f_validator_tests": "tests/test_p258f_d3_readonly_contract_validators.py",
+    "p258g_synthetic_fixture_tests": "tests/test_p258g_d3_synthetic_fixture_validator_hardening.py",
+    "p258h_integration_plan_tests": "tests/test_p258h_d3_readonly_contract_validation_integration_plan.py",
+    "p258i_skeleton_tests": "tests/test_p258i_d3_readonly_contract_validation_integration_skeleton.py",
+    "p258j_dry_contract_fixture_tests": "tests/test_p258j_d3_readonly_synthetic_integration_skeleton_tests.py",
+    "total_tests_across_arc": "372+ tests (P258E through P258J) — all PASS on main"
+  },
+
+  "governance_final_recommendation": {
+    "arc_status": "CLOSED — P258 D3 contract-validation infrastructure arc is complete as read-only foundation",
+    "recommended_next_state": "HOLD / WAITING_FOR_USER_AUTHORIZATION",
+    "do_not_proceed_automatically_to_executable_d3_evaluation": true,
+    "rationale": "The arc has established a robust read-only foundation: schemas, validators, integration plan, skeleton, and synthetic dry-contract test coverage. Executable gate evaluation, null generation, and real candidate method execution require separate future authorization and significant additional work."
+  },
+
+  "future_task_options_requiring_separate_explicit_authorization": [
+    {
+      "task": "P258L",
+      "description": "Read-only audit/index page for D3 contract artifacts only — documentation only, no executable gate"
+    },
+    {
+      "task": "P259A",
+      "description": "New prediction-hypothesis intake — only if user wants new research; separate explicit authorization required"
+    },
+    {
+      "task": "P258X",
+      "description": "Executable gate evaluation design only (not implementation) — only with explicit authorization; does not imply execution"
+    }
+  ],
+
+  "forbidden_next_tasks": [
+    "executable gate evaluation or backtest",
+    "running D3 on real candidate methods",
+    "null generation",
+    "p-value or paired statistical testing",
+    "production integration",
+    "recommendation mutation",
+    "DB write",
+    "treating NOT_YET_REJECTED as APPROVED"
+  ]
+}

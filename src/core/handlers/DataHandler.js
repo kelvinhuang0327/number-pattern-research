@@ -85,6 +85,16 @@ export class DataHandler {
         }
     }
 
+    _escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[char]));
+    }
+
     /**
      * 重新從後端載入數據並更新 UI
      * 用於在記錄新增/編輯/刪除後刷新數據
@@ -124,11 +134,11 @@ export class DataHandler {
         let html = `
             <div class="summary-item">
                 <div class="summary-label">總數據量</div>
-                <div class="summary-value">${stats.total.toLocaleString()}</div>
+                <div class="summary-value">${this._escapeHtml(stats.total.toLocaleString())}</div>
             </div>
             <div class="summary-item">
                 <div class="summary-label">彩券類型</div>
-                <div class="summary-value">${Object.keys(stats.byType).length} 種</div>
+                <div class="summary-value">${this._escapeHtml(Object.keys(stats.byType).length)} 種</div>
             </div>
         `;
 
@@ -150,8 +160,8 @@ export class DataHandler {
 
             html += `
                 <div class="summary-item">
-                    <div class="summary-label">${typeNames[type] || type}</div>
-                    <div class="summary-value">${count.toLocaleString()} 筆</div>
+                    <div class="summary-label">${this._escapeHtml(typeNames[type] || type)}</div>
+                    <div class="summary-value">${this._escapeHtml(count.toLocaleString())} 筆</div>
                 </div>
             `;
         });
@@ -193,12 +203,12 @@ export class DataHandler {
             const isActive = this.app.currentLotteryType === type ? 'active' : '';
 
             return `
-            <div class="lottery-type-card ${isActive}" data-type="${type}" style="--card-gradient: ${info.color}">
+            <div class="lottery-type-card ${isActive}" data-type="${this._escapeHtml(type)}" style="--card-gradient: ${info.color}">
                 <div class="card-bg"></div>
-                <div class="type-icon">${info.icon}</div>
+                <div class="type-icon">${this._escapeHtml(info.icon)}</div>
                 <div class="type-info">
-                    <div class="type-name">${info.name}</div>
-                    <div class="type-count">${count.toLocaleString()} 筆數據</div>
+                    <div class="type-name">${this._escapeHtml(info.name)}</div>
+                    <div class="type-count">${this._escapeHtml(count.toLocaleString())} 筆數據</div>
                 </div>
                 <div class="selected-indicator">
                     <span class="check-icon">✓</span>

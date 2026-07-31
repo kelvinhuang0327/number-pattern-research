@@ -1,0 +1,190 @@
+{
+  "task_id": "P213E",
+  "classification": "P213E_3STAR_4STAR_POSITIONAL_SCHEMA_IMPLEMENTATION_DESIGN_REVIEW_COMPLETE",
+  "task_type": "Type B",
+  "source_authorization": "Authorize P213E 3_STAR/4_STAR positional schema implementation design review (read-only, no DB write)",
+  "lottery_scope": ["3_STAR", "4_STAR"],
+  "date": "2026-06-05",
+
+  "p213d_recommended_option": "Option C — dual-write additive numbers_positional column; numbers remains sorted canonical; numbers_positional stores draw order for permutation games only; backward compatible; no breaking change",
+
+  "implementation_touchpoints": [
+    {
+      "file": "lottery_api/database.py",
+      "locations": [
+        "_init_database() CREATE TABLE draws block (~line 70)",
+        "_init_database() migration block (after existing ALTER TABLE patterns)",
+        "insert_draws() method, numbers_json assignment (~line 463)",
+        "insert_draws() INSERT SQL (~line 512)"
+      ],
+      "change_type": "additive",
+      "description": "Add numbers_positional column to schema; add try/except migration; dual-write positional field for permutation games in insert path",
+      "files_not_to_change": [
+        "lottery_api/utils/csv_validator.py",
+        "lottery_api/config.py",
+        "lottery_api/data/lottery_types.json",
+        "All read methods (get_draws, etc.)"
+      ]
+    }
+  ],
+
+  "proposed_p213f_scope": {
+    "files_to_modify": ["lottery_api/database.py"],
+    "files_not_to_modify": [
+      "lottery_api/utils/csv_validator.py",
+      "lottery_api/config.py",
+      "lottery_api/data/lottery_types.json",
+      "Any read path or strategy file"
+    ],
+    "behavior_changes": [
+      "CREATE TABLE draws gains numbers_positional TEXT DEFAULT NULL column",
+      "try/except ALTER TABLE migration adds column to existing installs safely",
+      "insert_draws() for permutation games: writes json.dumps(numbers) to numbers_positional (draw order)",
+      "insert_draws() for permutation games: still writes json.dumps(sorted(numbers)) to numbers field",
+      "insert_draws() for non-permutation games: numbers_positional = NULL",
+      "All read paths: unchanged (return sorted numbers)"
+    ],
+    "non_permutation_unchanged_guarantee": "BIG_LOTTO, POWER_LOTTO, DAILY_539 are completely unaffected; numbers field semantics unchanged for all types",
+    "permutation_order_preservation_guarantee": "3_STAR and 4_STAR new inserts will have draw order in numbers_positional",
+    "no_production_db_write_in_p213f": "All P213F tests use in-memory or temp SQLite; production DB not touched"
+  },
+
+  "schema_semantics": {
+    "numbers": {
+      "type": "TEXT NOT NULL",
+      "value": "JSON array of sorted integers",
+      "semantics": "Canonical sorted field; used by all existing consumers; unchanged for all game types",
+      "change": "None — unchanged"
+    },
+    "numbers_positional": {
+      "type": "TEXT DEFAULT NULL",
+      "value": "JSON array in original draw order for permutation games; NULL otherwise",
+      "semantics": "Draw order field for 3_STAR and 4_STAR only; infrastructure; not yet consumed by any strategy",
+      "for_non_permutation_games": "NULL",
+      "for_existing_historical_rows": "NULL — until P213H re-ingestion",
+      "strategy_use_prohibited": "No strategy may use numbers_positional until separately authorized"
+    }
+  },
+
+  "test_plan": {
+    "total_test_count": 17,
+    "test_file": "tests/test_p213f_star_positional_storage.py",
+    "test_groups": [
+      {
+        "group": "permutation_storage_semantics",
+        "tests": [
+          "test_insert_3star_stores_positional_order",
+          "test_insert_3star_stores_sorted_numbers",
+          "test_insert_4star_stores_positional_order",
+          "test_insert_4star_stores_sorted_numbers",
+          "test_duplicate_insert_ignored"
+        ]
+      },
+      {
+        "group": "non_permutation_backward_compatibility",
+        "tests": [
+          "test_insert_biglotto_numbers_positional_is_null",
+          "test_insert_power_lotto_numbers_positional_is_null",
+          "test_insert_daily_539_numbers_positional_is_null",
+          "test_existing_numbers_field_unchanged_for_all_types"
+        ]
+      },
+      {
+        "group": "db_schema_temp_db_only",
+        "tests": [
+          "test_draws_table_has_numbers_positional_column",
+          "test_numbers_positional_is_nullable",
+          "test_migration_is_idempotent"
+        ]
+      },
+      {
+        "group": "integration_fixture_mock_source",
+        "tests": [
+          "test_csv_validator_to_db_round_trip_preserves_order",
+          "test_csv_validator_output_order_matches_db_positional"
+        ]
+      },
+      {
+        "group": "safety",
+        "tests": [
+          "test_no_production_db_accessed",
+          "test_no_registry_mutation",
+          "test_strategy_prediction_replays_not_touched"
+        ]
+      }
+    ],
+    "db_isolation": "All tests use sqlite3 :memory: or a tempfile.mkstemp() path; production DB path must not appear in test code"
+  },
+
+  "migration_boundaries": {
+    "p213e": {"migration": "none — design only", "db_write": false, "authorization": "current task"},
+    "p213f": {
+      "migration": "schema migration to test/staging DB only; _init_database() pattern in database.py",
+      "db_write": false,
+      "production_db_write": false,
+      "authorization_phrase": "Authorize P213F 3_STAR/4_STAR positional code fix implementation and tests (no production DB write)"
+    },
+    "p213g": {
+      "migration": "source validation dry-run only; no DB write",
+      "db_write": false,
+      "authorization_phrase": "Authorize P213G 3_STAR/4_STAR historical draw re-download and dry-run source parser validation (no DB write to production)"
+    },
+    "p213h": {
+      "migration": "production schema migration + re-ingestion of historical draws",
+      "db_write": true,
+      "pre_conditions": [
+        "production DB backup confirmed",
+        "rollback plan documented",
+        "P213F tests pass on temp DB",
+        "P213G dry-run validates 開出順序 extraction from actual source files",
+        "row count before/after verified",
+        "drift guard passes before and after",
+        "strategy_prediction_replays row count unchanged at 94924"
+      ],
+      "authorization_phrase": "Authorize P213H 3_STAR/4_STAR controlled production DB migration (DB write authorized, backup confirmed, dry-run passed)"
+    }
+  },
+
+  "risks": [
+    {"risk": "Breaking existing sorted assumptions in numbers", "severity": "high", "mitigation": "numbers semantics unchanged; sorted always written"},
+    {"risk": "Consumers using numbers_positional incorrectly", "severity": "medium", "mitigation": "numbers is canonical; numbers_positional is infrastructure-only until authorized"},
+    {"risk": "Stale historical rows with NULL positional field", "severity": "medium", "mitigation": "NULL means not yet available, not invalid; documented"},
+    {"risk": "Source order ambiguity vs mock format", "severity": "medium", "mitigation": "P213G dry-run required before P213H"},
+    {"risk": "Accidental production DB write in P213F", "severity": "high", "mitigation": "All P213F tests must use :memory: or temp path; production path forbidden"},
+    {"risk": "Strategy overclaiming on positional data", "severity": "high", "mitigation": "3_STAR/4_STAR remain UNDERPOWERED_NO_SIGNAL (P227C); numbers_positional must not be used for strategy"},
+    {"risk": "Permutation detection failure", "severity": "medium", "mitigation": "Use lottery_types.json config lookup; test all permutation/non-permutation cases"},
+    {"risk": "Migration failure on existing installs", "severity": "low", "mitigation": "try/except pattern already used for 5+ columns in same file; safe and idempotent"}
+  ],
+
+  "recommended_next_direction": "P213F_additive_positional_storage_code_fix",
+  "exact_authorization_phrase_for_next_direction": "Authorize P213F 3_STAR/4_STAR positional code fix implementation and tests (no production DB write)",
+  "recommended_next_direction_rationale": "P213E confirms: only database.py needs modification; migration pattern established; csv_validator needs no changes; 17-test plan fully specified; non-permutation games provably unaffected",
+
+  "no_code_changes": true,
+  "no_db_write": true,
+  "no_schema_change": true,
+  "no_ingestion": true,
+  "no_migration": true,
+  "no_registry_mutation": true,
+  "no_production_change": true,
+  "no_monitoring_change": true,
+  "no_strategy_authorization": true,
+  "no_betting_advice": true,
+  "same_pr_closeout": true,
+
+  "p238b_interpretation": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY — observation only; not a strategy signal; not betting advice; not a production change; unchanged by this task",
+
+  "targeted_tests": "tests/test_p213e_3star_4star_positional_schema_implementation_design_review.py",
+
+  "final_state": {
+    "classification": "P213E_3STAR_4STAR_POSITIONAL_SCHEMA_IMPLEMENTATION_DESIGN_REVIEW_COMPLETE",
+    "db_rows_unchanged": 94924,
+    "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+    "p213d_remains_complete": true,
+    "p238b_remains_observation_only": true,
+    "star_games_remain_underpowered_no_signal": true,
+    "active_task_status": "WAITING_FOR_USER_AUTHORIZATION",
+    "no_active_worker": true,
+    "separate_closeout_pr_needed": false
+  }
+}

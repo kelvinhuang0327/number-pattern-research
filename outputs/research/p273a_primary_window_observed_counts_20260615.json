@@ -1,0 +1,3429 @@
+{
+  "meta": {
+    "task_id": "P273A_PRIMARY_WINDOW_OBSERVED_COUNTS_EXPORT",
+    "artifact_version": "p273a_primary_window_observed_counts_v1",
+    "policy_version": "primary_window_policy_v1_50_300_750",
+    "scoring_version": "prize_aware_v1",
+    "adapter_version": "prize_aware_adapter_v1",
+    "source_verification_status": "MANUAL_VERIFICATION_REQUIRED",
+    "generated_at": "2026-06-15T02:39:00.976163+00:00",
+    "frozen_strategy_cell_count": 36,
+    "lotteries": [
+      "DAILY_539",
+      "BIG_LOTTO",
+      "POWER_LOTTO"
+    ],
+    "primary_windows": [
+      50,
+      300,
+      750
+    ],
+    "analysis_unit": "distinct target_draw (draw-level any-bet)"
+  },
+  "window_policy": {
+    "owner_approved": true,
+    "policy_version": "primary_window_policy_v1_50_300_750",
+    "primary_windows": [
+      50,
+      300,
+      750
+    ],
+    "primary_window_labels": {
+      "50": "SHORT",
+      "300": "MID",
+      "750": "LONG"
+    },
+    "reference_only_windows": [
+      1500
+    ],
+    "reference_only_descriptions": [
+      "1500 draws",
+      "all-history frequency or distribution",
+      "any longer-horizon aggregate not in 50 / 300 / 750"
+    ],
+    "reference_only_prohibited_uses": [
+      "strategy_promotion",
+      "strategy_elimination",
+      "stability_pass_or_fail",
+      "go_recommendation",
+      "production_deployment_screening"
+    ],
+    "correction_family_planned": 108,
+    "correction_family_note": "36 frozen strategy×lottery cells × 3 primary windows = 108; this export records the intended family ONLY and performs no correction and no inference",
+    "window_adjustment_rule": "primary windows are frozen as 50/300/750 for this task; any statistical-expert adjustment requires a separate pre-outcome owner-approved task and a new export; do not adjust windows after viewing results",
+    "prior_artifact_now_reference_only": "outputs/research/p273a_prizeaware_observed_counts_20260614.json"
+  },
+  "safety_flags": {
+    "db_read_only": true,
+    "production_write": false,
+    "services_controlled": false,
+    "inference_performed": false,
+    "edge_claim_made": false,
+    "go_recommendation_made": false,
+    "registry_mutation": false,
+    "baseline_computed": false,
+    "p_value_computed": false,
+    "second_zone_manufactured": false
+  },
+  "provenance": {
+    "source_db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+    "db_open_mode": "sqlite3 URI mode=ro + PRAGMA query_only=ON",
+    "query_only_evidence": {
+      "connection_uri": "file:/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db?mode=ro",
+      "mode_ro": true,
+      "query_only_pragma_value": 1,
+      "query_only_enabled": true
+    },
+    "single_snapshot": true,
+    "single_connection": true,
+    "transaction_start_at": "2026-06-15T02:38:59.403498+00:00",
+    "transaction_end_at": "2026-06-15T02:39:00.976087+00:00",
+    "permitted_tables": [
+      "draws",
+      "strategy_prediction_replays"
+    ],
+    "normalized_cell_query": "SELECT r.lottery_type, r.target_draw, r.strategy_id, r.bet_index, r.history_cutoff_draw, r.predicted_numbers, r.predicted_special, r.actual_numbers, r.actual_special, (SELECT COUNT(*) FROM draws d WHERE d.lottery_type = r.lottery_type AND d.draw = r.target_draw) AS join_count FROM strategy_prediction_replays r WHERE r.lottery_type = ? AND r.strategy_id = ? AND r.replay_status = 'PREDICTED' AND r.dry_run = 0 ORDER BY CAST(r.target_draw AS INTEGER) DESC, r.bet_index ASC",
+    "schema": {
+      "user_version": 0,
+      "schema_version_cookie": 86,
+      "schema_fingerprint_sha256": "a08e78b9cf24fb97bb62d5d11c347464ab3c116b600e356b34e7dbbd9d7fb343",
+      "table_definition_sql": {
+        "strategy_prediction_replays": "CREATE TABLE \"strategy_prediction_replays\" ( id INTEGER PRIMARY KEY AUTOINCREMENT, lottery_type TEXT NOT NULL, target_draw TEXT NOT NULL, target_date TEXT, strategy_id TEXT NOT NULL, strategy_name TEXT, strategy_version TEXT, history_cutoff_draw TEXT, replay_status TEXT NOT NULL, reject_reason TEXT, predicted_numbers TEXT, predicted_special INTEGER, actual_numbers TEXT, actual_special INTEGER, hit_numbers TEXT, hit_count INTEGER DEFAULT 0, special_hit INTEGER DEFAULT 0, replay_run_id TEXT, generated_at TEXT DEFAULT (datetime('now')), truth_level TEXT DEFAULT NULL, controlled_apply_id TEXT DEFAULT NULL, source TEXT DEFAULT NULL, provenance_hash TEXT DEFAULT NULL, provenance_source TEXT DEFAULT NULL, dry_run INTEGER DEFAULT 0, prediction_cutoff_date TEXT, prediction_generated_at TEXT, bet_index INTEGER NOT NULL DEFAULT 1, UNIQUE(lottery_type, target_draw, strategy_id, bet_index) )",
+        "draws": "CREATE TABLE draws ( id INTEGER PRIMARY KEY AUTOINCREMENT, draw TEXT NOT NULL, date TEXT NOT NULL, lottery_type TEXT NOT NULL, numbers TEXT NOT NULL, special INTEGER DEFAULT 0, created_at TEXT DEFAULT CURRENT_TIMESTAMP, jackpot_amount REAL DEFAULT NULL, sell_amount REAL DEFAULT NULL, total_amount REAL DEFAULT NULL, numbers_positional TEXT DEFAULT NULL, UNIQUE(draw, lottery_type) )"
+      },
+      "column_inventory": {
+        "strategy_prediction_replays": [
+          "id",
+          "lottery_type",
+          "target_draw",
+          "target_date",
+          "strategy_id",
+          "strategy_name",
+          "strategy_version",
+          "history_cutoff_draw",
+          "replay_status",
+          "reject_reason",
+          "predicted_numbers",
+          "predicted_special",
+          "actual_numbers",
+          "actual_special",
+          "hit_numbers",
+          "hit_count",
+          "special_hit",
+          "replay_run_id",
+          "generated_at",
+          "truth_level",
+          "controlled_apply_id",
+          "source",
+          "provenance_hash",
+          "provenance_source",
+          "dry_run",
+          "prediction_cutoff_date",
+          "prediction_generated_at",
+          "bet_index"
+        ],
+        "draws": [
+          "id",
+          "draw",
+          "date",
+          "lottery_type",
+          "numbers",
+          "special",
+          "created_at",
+          "jackpot_amount",
+          "sell_amount",
+          "total_amount",
+          "numbers_positional"
+        ]
+      }
+    },
+    "source_hashes": {
+      "p271a_json_sha256": "73517f8be239a5638489b1b6291e2bb6a382b59be82d353e63916472939329ab",
+      "p267c_json_sha256": "3769596df51f6eaab5ef98cdf799ba9915f0c0349810f0899a7516004639a241",
+      "p271c_source_sha256": "907bdfa514aa18b33defe44869673cf43ce82fe143260564635cfc7284a76659",
+      "p271e_source_sha256": "3297481a05736dcefd79ed67b1f820651b723cd906e46e10a187b8433bf9e484"
+    },
+    "canonical_payload_digest_excludes": [
+      "canonical_payload_digest",
+      "connection_uri",
+      "generated_at",
+      "source_db_path",
+      "transaction_end_at",
+      "transaction_start_at"
+    ],
+    "frozen_cells": [
+      {
+        "lottery_type": "DAILY_539",
+        "strategy_id": "539_3bet_orthogonal"
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "strategy_id": "acb_1bet"
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "strategy_id": "acb_markov_midfreq"
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "strategy_id": "acb_markov_midfreq_3bet"
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "strategy_id": "acb_single_539"
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "strategy_id": "daily539_f4cold"
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "strategy_id": "daily539_f4cold_3bet"
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "strategy_id": "daily539_f4cold_5bet"
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "strategy_id": "daily539_markov_cold"
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "strategy_id": "markov_1bet_539"
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "strategy_id": "midfreq_acb_2bet"
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "strategy_id": "midfreq_fourier_2bet"
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "strategy_id": "p0b_539_3bet_f_cold_fmid"
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "strategy_id": "p0c_539_3bet_f_cold_x2"
+      },
+      {
+        "lottery_type": "DAILY_539",
+        "strategy_id": "zone_gap_3bet_539"
+      },
+      {
+        "lottery_type": "BIG_LOTTO",
+        "strategy_id": "bet2_fourier_expansion_biglotto"
+      },
+      {
+        "lottery_type": "BIG_LOTTO",
+        "strategy_id": "biglotto_deviation_2bet"
+      },
+      {
+        "lottery_type": "BIG_LOTTO",
+        "strategy_id": "biglotto_echo_aware_3bet"
+      },
+      {
+        "lottery_type": "BIG_LOTTO",
+        "strategy_id": "biglotto_triple_strike"
+      },
+      {
+        "lottery_type": "BIG_LOTTO",
+        "strategy_id": "biglotto_ts3_markov_4bet_w30"
+      },
+      {
+        "lottery_type": "BIG_LOTTO",
+        "strategy_id": "cold_complement_biglotto"
+      },
+      {
+        "lottery_type": "BIG_LOTTO",
+        "strategy_id": "coldpool15_biglotto"
+      },
+      {
+        "lottery_type": "BIG_LOTTO",
+        "strategy_id": "fourier30_markov30_biglotto"
+      },
+      {
+        "lottery_type": "BIG_LOTTO",
+        "strategy_id": "markov_2bet_biglotto"
+      },
+      {
+        "lottery_type": "BIG_LOTTO",
+        "strategy_id": "markov_single_biglotto"
+      },
+      {
+        "lottery_type": "BIG_LOTTO",
+        "strategy_id": "ts3_regime_3bet"
+      },
+      {
+        "lottery_type": "POWER_LOTTO",
+        "strategy_id": "cold_complement_2bet"
+      },
+      {
+        "lottery_type": "POWER_LOTTO",
+        "strategy_id": "fourier30_markov30_2bet"
+      },
+      {
+        "lottery_type": "POWER_LOTTO",
+        "strategy_id": "fourier_rhythm_3bet"
+      },
+      {
+        "lottery_type": "POWER_LOTTO",
+        "strategy_id": "midfreq_fourier_2bet"
+      },
+      {
+        "lottery_type": "POWER_LOTTO",
+        "strategy_id": "midfreq_fourier_mk_3bet"
+      },
+      {
+        "lottery_type": "POWER_LOTTO",
+        "strategy_id": "power_fourier_rhythm_2bet"
+      },
+      {
+        "lottery_type": "POWER_LOTTO",
+        "strategy_id": "power_orthogonal_5bet"
+      },
+      {
+        "lottery_type": "POWER_LOTTO",
+        "strategy_id": "power_precision_3bet"
+      },
+      {
+        "lottery_type": "POWER_LOTTO",
+        "strategy_id": "pp3_freqort_4bet"
+      },
+      {
+        "lottery_type": "POWER_LOTTO",
+        "strategy_id": "zonal_entropy_2bet"
+      }
+    ],
+    "reused_export_module": "analysis/p273a_prizeaware_replay_export.py"
+  },
+  "endpoint_definitions": {
+    "DAILY_539": {
+      "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+      "committed_condition_sql": "hit_count >= 2",
+      "task_shorthand": "governed prize-aware endpoint",
+      "min_qualifying_tier": "肆獎 (2-match)",
+      "scored_by": "lottery_api.prize_aware_scorer.any_prize_aware_win"
+    },
+    "BIG_LOTTO": {
+      "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+      "committed_condition_sql": "hit_count >= 3 OR (hit_count = 2 AND special_hit = 1)",
+      "task_shorthand": "M2-plus-special",
+      "min_qualifying_tier": "普獎 (2-match + special)",
+      "scored_by": "lottery_api.prize_aware_scorer.any_prize_aware_win"
+    },
+    "POWER_LOTTO": {
+      "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+      "committed_condition_sql": "hit_count >= 3 OR (hit_count >= 1 AND special_hit = 1)",
+      "task_shorthand": "M1-plus-second-zone",
+      "min_qualifying_tier": "普獎 (1-match + second-zone)",
+      "scored_by": "lottery_api.prize_aware_scorer.any_prize_aware_win"
+    }
+  },
+  "windowing_semantics": {
+    "selection": "most-recent N distinct target_draw, CAST(target_draw AS INTEGER) DESC",
+    "support_rule": "a draw counts toward support only if >= 1 eligible scoreable bet remains",
+    "success_rule": "draw success = any eligible bet is an any_prize_aware_win",
+    "bet_count_scope": "distinct scoreable bet_index per supported draw",
+    "power_exclusion": "POWER_LOTTO rows with NULL predicted_special excluded (never filled)",
+    "dedupe_rule": "rows deduplicated by (target_draw, bet_index) to avoid pseudo-replication",
+    "primary_windows": [
+      50,
+      300,
+      750
+    ],
+    "reference_only_excluded_from_export": [
+      1500
+    ]
+  },
+  "exclusion_summary_by_lottery": {
+    "DAILY_539": {},
+    "BIG_LOTTO": {},
+    "POWER_LOTTO": {
+      "MISSING_PREDICTED_SECOND_ZONE": 19803
+    }
+  },
+  "cells": [
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "539_3bet_orthogonal",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "539_3bet_orthogonal",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 8,
+          "observed_success_rate": 0.16,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "115000072",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "539_3bet_orthogonal",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 39,
+          "observed_success_rate": 0.13,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "114000138",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "539_3bet_orthogonal",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 93,
+          "observed_success_rate": 0.124,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "113000002",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "acb_1bet",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "acb_1bet",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 8,
+          "observed_success_rate": 0.16,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "115000072",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "acb_1bet",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 39,
+          "observed_success_rate": 0.13,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "114000138",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "acb_1bet",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 93,
+          "observed_success_rate": 0.124,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "113000002",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "acb_markov_midfreq",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "acb_markov_midfreq",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 0,
+          "observed_success_rate": 0.0,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "115000072",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "acb_markov_midfreq",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 32,
+          "observed_success_rate": 0.10666666666666667,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "114000138",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "acb_markov_midfreq",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 74,
+          "observed_success_rate": 0.09866666666666667,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "113000002",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "acb_markov_midfreq_3bet",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "acb_markov_midfreq_3bet",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 18,
+          "observed_success_rate": 0.36,
+          "scoreable_rows": 150,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 3,
+          "bet_count_max": 3,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "3": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "115000072",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "acb_markov_midfreq_3bet",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 120,
+          "observed_success_rate": 0.4,
+          "scoreable_rows": 900,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 3,
+          "bet_count_max": 3,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "3": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "114000138",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "acb_markov_midfreq_3bet",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 268,
+          "observed_success_rate": 0.35733333333333334,
+          "scoreable_rows": 2250,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 3,
+          "bet_count_max": 3,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "3": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "113000002",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "acb_single_539",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "acb_single_539",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 8,
+          "observed_success_rate": 0.16,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "115000072",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "acb_single_539",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 39,
+          "observed_success_rate": 0.13,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "114000138",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "acb_single_539",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 93,
+          "observed_success_rate": 0.124,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "113000002",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "daily539_f4cold",
+      "distinct_draws_available": 1550,
+      "windows": [
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "daily539_f4cold",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 11,
+          "observed_success_rate": 0.22,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "115000072",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "daily539_f4cold",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 44,
+          "observed_success_rate": 0.14666666666666667,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "114000138",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "daily539_f4cold",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 105,
+          "observed_success_rate": 0.14,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "113000002",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "daily539_f4cold_3bet",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "daily539_f4cold_3bet",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 23,
+          "observed_success_rate": 0.46,
+          "scoreable_rows": 150,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 3,
+          "bet_count_max": 3,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "3": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "115000072",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "daily539_f4cold_3bet",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 101,
+          "observed_success_rate": 0.33666666666666667,
+          "scoreable_rows": 900,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 3,
+          "bet_count_max": 3,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "3": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "114000138",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "daily539_f4cold_3bet",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 275,
+          "observed_success_rate": 0.36666666666666664,
+          "scoreable_rows": 2250,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 3,
+          "bet_count_max": 3,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "3": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "113000002",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "daily539_f4cold_5bet",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "daily539_f4cold_5bet",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 35,
+          "observed_success_rate": 0.7,
+          "scoreable_rows": 250,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 5,
+          "bet_count_max": 5,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "5": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "115000072",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "daily539_f4cold_5bet",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 170,
+          "observed_success_rate": 0.5666666666666667,
+          "scoreable_rows": 1500,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 5,
+          "bet_count_max": 5,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "5": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "114000138",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "daily539_f4cold_5bet",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 425,
+          "observed_success_rate": 0.5666666666666667,
+          "scoreable_rows": 3750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 5,
+          "bet_count_max": 5,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "5": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "113000002",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "daily539_markov_cold",
+      "distinct_draws_available": 1550,
+      "windows": [
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "daily539_markov_cold",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 4,
+          "observed_success_rate": 0.08,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "115000072",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "daily539_markov_cold",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 38,
+          "observed_success_rate": 0.12666666666666668,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "114000138",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "daily539_markov_cold",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 81,
+          "observed_success_rate": 0.108,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "113000002",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "markov_1bet_539",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "markov_1bet_539",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 4,
+          "observed_success_rate": 0.08,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "115000072",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "markov_1bet_539",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 38,
+          "observed_success_rate": 0.12666666666666668,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "114000138",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "markov_1bet_539",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 81,
+          "observed_success_rate": 0.108,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "113000002",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "midfreq_acb_2bet",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "midfreq_acb_2bet",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 6,
+          "observed_success_rate": 0.12,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "115000072",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "midfreq_acb_2bet",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 48,
+          "observed_success_rate": 0.16,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "114000138",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "midfreq_acb_2bet",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 101,
+          "observed_success_rate": 0.13466666666666666,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "113000002",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "midfreq_fourier_2bet",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "midfreq_fourier_2bet",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 6,
+          "observed_success_rate": 0.12,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "115000072",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "midfreq_fourier_2bet",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 48,
+          "observed_success_rate": 0.16,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "114000138",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "midfreq_fourier_2bet",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 101,
+          "observed_success_rate": 0.13466666666666666,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "113000002",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "p0b_539_3bet_f_cold_fmid",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "p0b_539_3bet_f_cold_fmid",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 11,
+          "observed_success_rate": 0.22,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "115000072",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "p0b_539_3bet_f_cold_fmid",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 45,
+          "observed_success_rate": 0.15,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "114000138",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "p0b_539_3bet_f_cold_fmid",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 106,
+          "observed_success_rate": 0.14133333333333334,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "113000002",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "p0c_539_3bet_f_cold_x2",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "p0c_539_3bet_f_cold_x2",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 11,
+          "observed_success_rate": 0.22,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "115000072",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "p0c_539_3bet_f_cold_x2",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 45,
+          "observed_success_rate": 0.15,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "114000138",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "p0c_539_3bet_f_cold_x2",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 106,
+          "observed_success_rate": 0.14133333333333334,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "113000002",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "strategy_id": "zone_gap_3bet_539",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "zone_gap_3bet_539",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 8,
+          "observed_success_rate": 0.16,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "115000072",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "zone_gap_3bet_539",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 31,
+          "observed_success_rate": 0.10333333333333333,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "114000138",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "DAILY_539",
+          "strategy_id": "zone_gap_3bet_539",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 76,
+          "observed_success_rate": 0.10133333333333333,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000121",
+          "earliest_target_draw": "113000002",
+          "endpoint_id": "D539_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "bet2_fourier_expansion_biglotto",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "bet2_fourier_expansion_biglotto",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 4,
+          "observed_success_rate": 0.08,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000054",
+          "earliest_target_draw": "115000005",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "bet2_fourier_expansion_biglotto",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 10,
+          "observed_success_rate": 0.03333333333333333,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000054",
+          "earliest_target_draw": "112000107",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "bet2_fourier_expansion_biglotto",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 25,
+          "observed_success_rate": 0.03333333333333333,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000054",
+          "earliest_target_draw": "108000109",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "biglotto_deviation_2bet",
+      "distinct_draws_available": 1550,
+      "windows": [
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "biglotto_deviation_2bet",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 2,
+          "observed_success_rate": 0.04,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000053",
+          "earliest_target_draw": "115000004",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "biglotto_deviation_2bet",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 10,
+          "observed_success_rate": 0.03333333333333333,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000053",
+          "earliest_target_draw": "112000106",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "biglotto_deviation_2bet",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 32,
+          "observed_success_rate": 0.042666666666666665,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000053",
+          "earliest_target_draw": "108000108",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "biglotto_echo_aware_3bet",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "biglotto_echo_aware_3bet",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 4,
+          "observed_success_rate": 0.08,
+          "scoreable_rows": 150,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 3,
+          "bet_count_max": 3,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "3": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000055",
+          "earliest_target_draw": "115000006",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "biglotto_echo_aware_3bet",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 33,
+          "observed_success_rate": 0.11,
+          "scoreable_rows": 900,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 3,
+          "bet_count_max": 3,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "3": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000055",
+          "earliest_target_draw": "112000108",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "biglotto_echo_aware_3bet",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 75,
+          "observed_success_rate": 0.1,
+          "scoreable_rows": 2250,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 3,
+          "bet_count_max": 3,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "3": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000055",
+          "earliest_target_draw": "108000110",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "biglotto_triple_strike",
+      "distinct_draws_available": 1550,
+      "windows": [
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "biglotto_triple_strike",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 4,
+          "observed_success_rate": 0.08,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000053",
+          "earliest_target_draw": "115000004",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "biglotto_triple_strike",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 10,
+          "observed_success_rate": 0.03333333333333333,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000053",
+          "earliest_target_draw": "112000106",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "biglotto_triple_strike",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 22,
+          "observed_success_rate": 0.029333333333333333,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000053",
+          "earliest_target_draw": "108000108",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "biglotto_ts3_markov_4bet_w30",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "biglotto_ts3_markov_4bet_w30",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 5,
+          "observed_success_rate": 0.1,
+          "scoreable_rows": 200,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 4,
+          "bet_count_max": 4,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "4": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000055",
+          "earliest_target_draw": "115000006",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "biglotto_ts3_markov_4bet_w30",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 38,
+          "observed_success_rate": 0.12666666666666668,
+          "scoreable_rows": 1200,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 4,
+          "bet_count_max": 4,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "4": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000055",
+          "earliest_target_draw": "112000108",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "biglotto_ts3_markov_4bet_w30",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 99,
+          "observed_success_rate": 0.132,
+          "scoreable_rows": 3000,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 4,
+          "bet_count_max": 4,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "4": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000055",
+          "earliest_target_draw": "108000110",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "cold_complement_biglotto",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "cold_complement_biglotto",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 2,
+          "observed_success_rate": 0.04,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000054",
+          "earliest_target_draw": "115000005",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "cold_complement_biglotto",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 10,
+          "observed_success_rate": 0.03333333333333333,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000054",
+          "earliest_target_draw": "112000107",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "cold_complement_biglotto",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 21,
+          "observed_success_rate": 0.028,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000054",
+          "earliest_target_draw": "108000109",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "coldpool15_biglotto",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "coldpool15_biglotto",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 2,
+          "observed_success_rate": 0.04,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000054",
+          "earliest_target_draw": "115000005",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "coldpool15_biglotto",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 10,
+          "observed_success_rate": 0.03333333333333333,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000054",
+          "earliest_target_draw": "112000107",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "coldpool15_biglotto",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 21,
+          "observed_success_rate": 0.028,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000054",
+          "earliest_target_draw": "108000109",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "fourier30_markov30_biglotto",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "fourier30_markov30_biglotto",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 1,
+          "observed_success_rate": 0.02,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000054",
+          "earliest_target_draw": "115000005",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "fourier30_markov30_biglotto",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 6,
+          "observed_success_rate": 0.02,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000054",
+          "earliest_target_draw": "112000107",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "fourier30_markov30_biglotto",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 19,
+          "observed_success_rate": 0.025333333333333333,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000054",
+          "earliest_target_draw": "108000109",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "markov_2bet_biglotto",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "markov_2bet_biglotto",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 1,
+          "observed_success_rate": 0.02,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000054",
+          "earliest_target_draw": "115000005",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "markov_2bet_biglotto",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 9,
+          "observed_success_rate": 0.03,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000054",
+          "earliest_target_draw": "112000107",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "markov_2bet_biglotto",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 18,
+          "observed_success_rate": 0.024,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000054",
+          "earliest_target_draw": "108000109",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "markov_single_biglotto",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "markov_single_biglotto",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 1,
+          "observed_success_rate": 0.02,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000054",
+          "earliest_target_draw": "115000005",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "markov_single_biglotto",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 9,
+          "observed_success_rate": 0.03,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000054",
+          "earliest_target_draw": "112000107",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "markov_single_biglotto",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 18,
+          "observed_success_rate": 0.024,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000054",
+          "earliest_target_draw": "108000109",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "strategy_id": "ts3_regime_3bet",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "ts3_regime_3bet",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 4,
+          "observed_success_rate": 0.08,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000053",
+          "earliest_target_draw": "115000004",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "ts3_regime_3bet",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 10,
+          "observed_success_rate": 0.03333333333333333,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000053",
+          "earliest_target_draw": "112000106",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "BIG_LOTTO",
+          "strategy_id": "ts3_regime_3bet",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 22,
+          "observed_success_rate": 0.029333333333333333,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000053",
+          "earliest_target_draw": "108000108",
+          "endpoint_id": "BIG_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "cold_complement_2bet",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "cold_complement_2bet",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 3,
+          "observed_success_rate": 0.06,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "114000095",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "cold_complement_2bet",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 36,
+          "observed_success_rate": 0.12,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "112000054",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "cold_complement_2bet",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 86,
+          "observed_success_rate": 0.11466666666666667,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "108000021",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "fourier30_markov30_2bet",
+      "distinct_draws_available": 1501,
+      "windows": [
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "fourier30_markov30_2bet",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 49,
+          "observed_successes": 4,
+          "observed_success_rate": 0.08163265306122448,
+          "scoreable_rows": 49,
+          "excluded_rows": 1,
+          "excluded_missing_special_rows": 1,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 1
+          },
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 49
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000041",
+          "earliest_target_draw": "114000096",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "fourier30_markov30_2bet",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 299,
+          "observed_successes": 35,
+          "observed_success_rate": 0.11705685618729098,
+          "scoreable_rows": 299,
+          "excluded_rows": 1,
+          "excluded_missing_special_rows": 1,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 1
+          },
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 299
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000041",
+          "earliest_target_draw": "112000055",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "fourier30_markov30_2bet",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 749,
+          "observed_successes": 84,
+          "observed_success_rate": 0.11214953271028037,
+          "scoreable_rows": 749,
+          "excluded_rows": 1,
+          "excluded_missing_special_rows": 1,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 1
+          },
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 749
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000041",
+          "earliest_target_draw": "108000022",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "fourier_rhythm_3bet",
+      "distinct_draws_available": 1501,
+      "windows": [
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "fourier_rhythm_3bet",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 0,
+          "observed_successes": 0,
+          "observed_success_rate": null,
+          "scoreable_rows": 0,
+          "excluded_rows": 150,
+          "excluded_missing_special_rows": 150,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 150
+          },
+          "bet_count_min": null,
+          "bet_count_max": null,
+          "bet_count_constant": null,
+          "bet_count_distribution": {},
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000041",
+          "earliest_target_draw": "114000096",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "fourier_rhythm_3bet",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 0,
+          "observed_successes": 0,
+          "observed_success_rate": null,
+          "scoreable_rows": 0,
+          "excluded_rows": 900,
+          "excluded_missing_special_rows": 900,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 900
+          },
+          "bet_count_min": null,
+          "bet_count_max": null,
+          "bet_count_constant": null,
+          "bet_count_distribution": {},
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000041",
+          "earliest_target_draw": "112000055",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "fourier_rhythm_3bet",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 0,
+          "observed_successes": 0,
+          "observed_success_rate": null,
+          "scoreable_rows": 0,
+          "excluded_rows": 2250,
+          "excluded_missing_special_rows": 2250,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 2250
+          },
+          "bet_count_min": null,
+          "bet_count_max": null,
+          "bet_count_constant": null,
+          "bet_count_distribution": {},
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000041",
+          "earliest_target_draw": "108000022",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "midfreq_fourier_2bet",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "midfreq_fourier_2bet",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 5,
+          "observed_success_rate": 0.1,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "114000095",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "midfreq_fourier_2bet",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 30,
+          "observed_success_rate": 0.1,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "112000054",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "midfreq_fourier_2bet",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 84,
+          "observed_success_rate": 0.112,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "108000021",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "midfreq_fourier_mk_3bet",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 7,
+          "observed_success_rate": 0.14,
+          "scoreable_rows": 50,
+          "excluded_rows": 100,
+          "excluded_missing_special_rows": 100,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 100
+          },
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "114000095",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "midfreq_fourier_mk_3bet",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 34,
+          "observed_success_rate": 0.11333333333333333,
+          "scoreable_rows": 300,
+          "excluded_rows": 600,
+          "excluded_missing_special_rows": 600,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 600
+          },
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "112000054",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "midfreq_fourier_mk_3bet",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 101,
+          "observed_success_rate": 0.13466666666666666,
+          "scoreable_rows": 750,
+          "excluded_rows": 1500,
+          "excluded_missing_special_rows": 1500,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 1500
+          },
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "108000021",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "power_fourier_rhythm_2bet",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "power_fourier_rhythm_2bet",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 0,
+          "observed_successes": 0,
+          "observed_success_rate": null,
+          "scoreable_rows": 0,
+          "excluded_rows": 100,
+          "excluded_missing_special_rows": 100,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 100
+          },
+          "bet_count_min": null,
+          "bet_count_max": null,
+          "bet_count_constant": null,
+          "bet_count_distribution": {},
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000041",
+          "earliest_target_draw": "114000096",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "power_fourier_rhythm_2bet",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 0,
+          "observed_successes": 0,
+          "observed_success_rate": null,
+          "scoreable_rows": 0,
+          "excluded_rows": 600,
+          "excluded_missing_special_rows": 600,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 600
+          },
+          "bet_count_min": null,
+          "bet_count_max": null,
+          "bet_count_constant": null,
+          "bet_count_distribution": {},
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000041",
+          "earliest_target_draw": "112000055",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "power_fourier_rhythm_2bet",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 0,
+          "observed_successes": 0,
+          "observed_success_rate": null,
+          "scoreable_rows": 0,
+          "excluded_rows": 1500,
+          "excluded_missing_special_rows": 1500,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 1500
+          },
+          "bet_count_min": null,
+          "bet_count_max": null,
+          "bet_count_constant": null,
+          "bet_count_distribution": {},
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000041",
+          "earliest_target_draw": "108000022",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "power_orthogonal_5bet",
+      "distinct_draws_available": 1550,
+      "windows": [
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "power_orthogonal_5bet",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 0,
+          "observed_successes": 0,
+          "observed_success_rate": null,
+          "scoreable_rows": 0,
+          "excluded_rows": 250,
+          "excluded_missing_special_rows": 250,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 250
+          },
+          "bet_count_min": null,
+          "bet_count_max": null,
+          "bet_count_constant": null,
+          "bet_count_distribution": {},
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "114000095",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "power_orthogonal_5bet",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 0,
+          "observed_successes": 0,
+          "observed_success_rate": null,
+          "scoreable_rows": 0,
+          "excluded_rows": 1500,
+          "excluded_missing_special_rows": 1500,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 1500
+          },
+          "bet_count_min": null,
+          "bet_count_max": null,
+          "bet_count_constant": null,
+          "bet_count_distribution": {},
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "112000054",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "power_orthogonal_5bet",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 0,
+          "observed_successes": 0,
+          "observed_success_rate": null,
+          "scoreable_rows": 0,
+          "excluded_rows": 3750,
+          "excluded_missing_special_rows": 3750,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 3750
+          },
+          "bet_count_min": null,
+          "bet_count_max": null,
+          "bet_count_constant": null,
+          "bet_count_distribution": {},
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "108000021",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "power_precision_3bet",
+      "distinct_draws_available": 1550,
+      "windows": [
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "power_precision_3bet",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 0,
+          "observed_successes": 0,
+          "observed_success_rate": null,
+          "scoreable_rows": 0,
+          "excluded_rows": 150,
+          "excluded_missing_special_rows": 150,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 150
+          },
+          "bet_count_min": null,
+          "bet_count_max": null,
+          "bet_count_constant": null,
+          "bet_count_distribution": {},
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "114000095",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "power_precision_3bet",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 0,
+          "observed_successes": 0,
+          "observed_success_rate": null,
+          "scoreable_rows": 0,
+          "excluded_rows": 900,
+          "excluded_missing_special_rows": 900,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 900
+          },
+          "bet_count_min": null,
+          "bet_count_max": null,
+          "bet_count_constant": null,
+          "bet_count_distribution": {},
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "112000054",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "power_precision_3bet",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 0,
+          "observed_successes": 0,
+          "observed_success_rate": null,
+          "scoreable_rows": 0,
+          "excluded_rows": 2250,
+          "excluded_missing_special_rows": 2250,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 2250
+          },
+          "bet_count_min": null,
+          "bet_count_max": null,
+          "bet_count_constant": null,
+          "bet_count_distribution": {},
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "108000021",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "pp3_freqort_4bet",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "pp3_freqort_4bet",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 6,
+          "observed_success_rate": 0.12,
+          "scoreable_rows": 50,
+          "excluded_rows": 150,
+          "excluded_missing_special_rows": 150,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 150
+          },
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "114000095",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "pp3_freqort_4bet",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 28,
+          "observed_success_rate": 0.09333333333333334,
+          "scoreable_rows": 300,
+          "excluded_rows": 900,
+          "excluded_missing_special_rows": 900,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 900
+          },
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "112000054",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "pp3_freqort_4bet",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 95,
+          "observed_success_rate": 0.12666666666666668,
+          "scoreable_rows": 750,
+          "excluded_rows": 2250,
+          "excluded_missing_special_rows": 2250,
+          "exclusion_by_reason": {
+            "MISSING_PREDICTED_SECOND_ZONE": 2250
+          },
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "108000021",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "strategy_id": "zonal_entropy_2bet",
+      "distinct_draws_available": 1500,
+      "windows": [
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "zonal_entropy_2bet",
+          "window": 50,
+          "requested_window": 50,
+          "support_draws": 50,
+          "observed_successes": 6,
+          "observed_success_rate": 0.12,
+          "scoreable_rows": 50,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 50
+          },
+          "distinct_draws_in_window": 50,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "114000095",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "SHORT"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "zonal_entropy_2bet",
+          "window": 300,
+          "requested_window": 300,
+          "support_draws": 300,
+          "observed_successes": 35,
+          "observed_success_rate": 0.11666666666666667,
+          "scoreable_rows": 300,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 300
+          },
+          "distinct_draws_in_window": 300,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "112000054",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "MID"
+        },
+        {
+          "lottery_type": "POWER_LOTTO",
+          "strategy_id": "zonal_entropy_2bet",
+          "window": 750,
+          "requested_window": 750,
+          "support_draws": 750,
+          "observed_successes": 80,
+          "observed_success_rate": 0.10666666666666667,
+          "scoreable_rows": 750,
+          "excluded_rows": 0,
+          "excluded_missing_special_rows": 0,
+          "exclusion_by_reason": {},
+          "bet_count_min": 1,
+          "bet_count_max": 1,
+          "bet_count_constant": true,
+          "bet_count_distribution": {
+            "1": 750
+          },
+          "distinct_draws_in_window": 750,
+          "latest_target_draw": "115000040",
+          "earliest_target_draw": "108000021",
+          "endpoint_id": "POWER_ANY_PRIZE_AWARE_WIN",
+          "endpoint_source_ref": "P271A",
+          "strategy_source_ref": "P267C",
+          "window_label": "LONG"
+        }
+      ]
+    }
+  ],
+  "canonical_payload_digest": "65a4cc59f5ab64d685890566e38493b0295e622f351e0527782f1dce2f38645f"
+}

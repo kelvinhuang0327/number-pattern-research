@@ -1,0 +1,436 @@
+{
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "no_adapter_calls_statement": "No adapters were called or executed.",
+  "no_db_open_write_statement": "No DB was opened or written.",
+  "no_new_scoring_statement": "No new scoring cohort, blended leaderboard, shape-only scoring, or blocked target scoring was created.",
+  "output_artifact_paths": [
+    "artifacts/P366_biglotto_evidence_release_bundle_manifest.json",
+    "artifacts/P366_biglotto_evidence_release_bundle_inventory.csv",
+    "artifacts/P366_biglotto_evidence_release_bundle_smoke_results.csv",
+    "artifacts/P366_biglotto_evidence_release_bundle_cli_examples.json",
+    "artifacts/P366_biglotto_evidence_release_bundle_landing.html",
+    "artifacts/P366_biglotto_evidence_release_bundle_readme.md"
+  ],
+  "output_artifacts": [
+    {
+      "artifact_path": "artifacts/P366_biglotto_evidence_release_bundle_manifest.json",
+      "artifact_type": "json",
+      "object_count": "",
+      "role": "release_bundle:manifest",
+      "row_count": "",
+      "sha256": "SELF_SHA256_OMITTED_RECURSIVE_ARTIFACT",
+      "source_stage": "P366"
+    },
+    {
+      "artifact_path": "artifacts/P366_biglotto_evidence_release_bundle_inventory.csv",
+      "artifact_type": "csv",
+      "object_count": "",
+      "role": "release_bundle:inventory",
+      "row_count": "",
+      "sha256": "SELF_SHA256_OMITTED_RECURSIVE_ARTIFACT",
+      "source_stage": "P366"
+    },
+    {
+      "artifact_path": "artifacts/P366_biglotto_evidence_release_bundle_smoke_results.csv",
+      "artifact_type": "csv",
+      "object_count": "",
+      "role": "release_bundle:smoke_results",
+      "row_count": "46",
+      "sha256": "9933ad916425af69f5f319a2a7b9792c1b2e05d370980a7a8f5c67df175d159b",
+      "source_stage": "P366"
+    },
+    {
+      "artifact_path": "artifacts/P366_biglotto_evidence_release_bundle_cli_examples.json",
+      "artifact_type": "json",
+      "object_count": "1",
+      "role": "release_bundle:cli_examples",
+      "row_count": "",
+      "sha256": "340c3a3fb23bea5fc96bdf457763290db0e849f73e9a63c4dd127d8ebf02c8f3",
+      "source_stage": "P366"
+    },
+    {
+      "artifact_path": "artifacts/P366_biglotto_evidence_release_bundle_landing.html",
+      "artifact_type": "html",
+      "object_count": "",
+      "role": "release_bundle:landing",
+      "row_count": "",
+      "sha256": "SELF_SHA256_OMITTED_RECURSIVE_ARTIFACT",
+      "source_stage": "P366"
+    },
+    {
+      "artifact_path": "artifacts/P366_biglotto_evidence_release_bundle_readme.md",
+      "artifact_type": "markdown",
+      "object_count": "",
+      "role": "release_bundle:readme",
+      "row_count": "",
+      "sha256": "033377fee5f1a075e25fb1b7474292aab0b1ee3b7f408327de222f707f47189f",
+      "source_stage": "P366"
+    }
+  ],
+  "output_sha256": {
+    "artifacts/P366_biglotto_evidence_release_bundle_cli_examples.json": "340c3a3fb23bea5fc96bdf457763290db0e849f73e9a63c4dd127d8ebf02c8f3",
+    "artifacts/P366_biglotto_evidence_release_bundle_inventory.csv": "SELF_SHA256_OMITTED_RECURSIVE_ARTIFACT",
+    "artifacts/P366_biglotto_evidence_release_bundle_landing.html": "SELF_SHA256_OMITTED_RECURSIVE_ARTIFACT",
+    "artifacts/P366_biglotto_evidence_release_bundle_manifest.json": "SELF_SHA256_OMITTED_RECURSIVE_ARTIFACT",
+    "artifacts/P366_biglotto_evidence_release_bundle_readme.md": "033377fee5f1a075e25fb1b7474292aab0b1ee3b7f408327de222f707f47189f",
+    "artifacts/P366_biglotto_evidence_release_bundle_smoke_results.csv": "9933ad916425af69f5f319a2a7b9792c1b2e05d370980a7a8f5c67df175d159b"
+  },
+  "recursive_sha256_note": "Manifest and inventory rows use SELF_SHA256_OMITTED_RECURSIVE_ARTIFACT because embedding a file's own digest would make the artifact recursive.",
+  "smoke_summary": {
+    "fail": 0,
+    "pass": 46,
+    "total": 46
+  },
+  "source_artifact_paths": [
+    "artifacts/P363_biglotto_evidence_pack_summary.csv",
+    "artifacts/P363_biglotto_evidence_pack_adapter_cards.csv",
+    "artifacts/P363_biglotto_evidence_pack_subset_cards.csv",
+    "artifacts/P363_biglotto_evidence_pack_consistency_checks.csv",
+    "artifacts/P363_biglotto_evidence_pack_manifest.csv",
+    "artifacts/P363_biglotto_evidence_pack_report.md",
+    "artifacts/P364_biglotto_evidence_dashboard_index.json",
+    "artifacts/P364_biglotto_evidence_dashboard_adapter_table.csv",
+    "artifacts/P364_biglotto_evidence_dashboard_subset_table.csv",
+    "artifacts/P364_biglotto_evidence_dashboard.html",
+    "artifacts/P364_biglotto_evidence_dashboard_manifest.csv",
+    "artifacts/P365_biglotto_evidence_explorer_adapter_detail_cards.json",
+    "artifacts/P365_biglotto_evidence_explorer_subset_detail_cards.json",
+    "artifacts/P365_biglotto_evidence_explorer_pairwise_comparison.csv",
+    "artifacts/P365_biglotto_evidence_explorer_compact_shortlist.csv",
+    "artifacts/P365_biglotto_evidence_explorer_query_snapshots.json",
+    "artifacts/P365_biglotto_evidence_explorer.html",
+    "artifacts/P365_biglotto_evidence_explorer_manifest.csv",
+    "recovered_strategies/biglotto/no_db_evidence_pack.py",
+    "recovered_strategies/biglotto/no_db_evidence_dashboard.py",
+    "recovered_strategies/biglotto/no_db_evidence_explorer.py",
+    "tests/test_p365_biglotto_evidence_explorer.py"
+  ],
+  "source_artifacts": [
+    {
+      "artifact_path": "artifacts/P363_biglotto_evidence_pack_summary.csv",
+      "artifact_type": "csv",
+      "object_count": "",
+      "role": "artifact:p363_summary",
+      "row_count": "24",
+      "sha256": "588d6450251b20b747ad0cd956898f215b91df322a49f70be47faad05cc8aad0",
+      "source_stage": "P363"
+    },
+    {
+      "artifact_path": "artifacts/P363_biglotto_evidence_pack_adapter_cards.csv",
+      "artifact_type": "csv",
+      "object_count": "",
+      "role": "artifact:p363_adapter_cards",
+      "row_count": "5",
+      "sha256": "9db24b6030f484b7d101ff1b7d9fa7441a3e2170a87e8d84219d285e11e3544f",
+      "source_stage": "P363"
+    },
+    {
+      "artifact_path": "artifacts/P363_biglotto_evidence_pack_subset_cards.csv",
+      "artifact_type": "csv",
+      "object_count": "",
+      "role": "artifact:p363_subset_cards",
+      "row_count": "31",
+      "sha256": "c973c7110e26516ea0248cee3d83d200e0e6fa5c53d63f7a4e6e24fe46110042",
+      "source_stage": "P363"
+    },
+    {
+      "artifact_path": "artifacts/P363_biglotto_evidence_pack_consistency_checks.csv",
+      "artifact_type": "csv",
+      "object_count": "",
+      "role": "artifact:p363_consistency_checks",
+      "row_count": "9",
+      "sha256": "854b4cc3b691da09328adb2159749c20e63bd957583905b5ab908cd852c386a6",
+      "source_stage": "P363"
+    },
+    {
+      "artifact_path": "artifacts/P363_biglotto_evidence_pack_manifest.csv",
+      "artifact_type": "csv",
+      "object_count": "",
+      "role": "artifact:p363_manifest",
+      "row_count": "14",
+      "sha256": "1cf583ffb60103e6d20973dd7e29f4ff5d25ad2c16894a1d969ae15bb3ef6e20",
+      "source_stage": "P363"
+    },
+    {
+      "artifact_path": "artifacts/P363_biglotto_evidence_pack_report.md",
+      "artifact_type": "markdown",
+      "object_count": "",
+      "role": "artifact:p363_report",
+      "row_count": "",
+      "sha256": "e7fab14e746a77aaf6cfb930eb8502496aa1a587fd828bbe09d8854b23fc2e82",
+      "source_stage": "P363"
+    },
+    {
+      "artifact_path": "artifacts/P364_biglotto_evidence_dashboard_index.json",
+      "artifact_type": "json",
+      "object_count": "1",
+      "role": "artifact:p364_index",
+      "row_count": "",
+      "sha256": "630edbc4f2943376aeb3f5e111f21d676f462f28b6fac0daeadbc26b315a86f5",
+      "source_stage": "P364"
+    },
+    {
+      "artifact_path": "artifacts/P364_biglotto_evidence_dashboard_adapter_table.csv",
+      "artifact_type": "csv",
+      "object_count": "",
+      "role": "artifact:p364_adapter_table",
+      "row_count": "5",
+      "sha256": "d424b766aeeabcd71353b53a08841757ab2d3836b43c5ea2675796789ec6dbd2",
+      "source_stage": "P364"
+    },
+    {
+      "artifact_path": "artifacts/P364_biglotto_evidence_dashboard_subset_table.csv",
+      "artifact_type": "csv",
+      "object_count": "",
+      "role": "artifact:p364_subset_table",
+      "row_count": "31",
+      "sha256": "2dc2f100f09e7c402f798739cd8461b9ee35c85ac50a78a40eca79f34efc4999",
+      "source_stage": "P364"
+    },
+    {
+      "artifact_path": "artifacts/P364_biglotto_evidence_dashboard.html",
+      "artifact_type": "html",
+      "object_count": "",
+      "role": "artifact:p364_html",
+      "row_count": "",
+      "sha256": "70d91a1b712fdd39e32da8bcf0bf2a0ea3c90e8ef0f9413f7b561c42b8ec518d",
+      "source_stage": "P364"
+    },
+    {
+      "artifact_path": "artifacts/P364_biglotto_evidence_dashboard_manifest.csv",
+      "artifact_type": "csv",
+      "object_count": "",
+      "role": "artifact:p364_manifest",
+      "row_count": "12",
+      "sha256": "ec281d48af2a9adbd2a5a870c9e6c0a9f41cddf71d36dbf458b2fcec824d7c45",
+      "source_stage": "P364"
+    },
+    {
+      "artifact_path": "artifacts/P365_biglotto_evidence_explorer_adapter_detail_cards.json",
+      "artifact_type": "json",
+      "object_count": "5",
+      "role": "artifact:p365_adapter_detail_cards",
+      "row_count": "",
+      "sha256": "0127b67a1584d2d4428bb0fe7afeaa24574c07c85b4b95969005b42e15d4323d",
+      "source_stage": "P365"
+    },
+    {
+      "artifact_path": "artifacts/P365_biglotto_evidence_explorer_subset_detail_cards.json",
+      "artifact_type": "json",
+      "object_count": "31",
+      "role": "artifact:p365_subset_detail_cards",
+      "row_count": "",
+      "sha256": "91bf82fa024e9276b0fac2e3c8443e2fed22ed7ee726bad796a5960910a8be3d",
+      "source_stage": "P365"
+    },
+    {
+      "artifact_path": "artifacts/P365_biglotto_evidence_explorer_pairwise_comparison.csv",
+      "artifact_type": "csv",
+      "object_count": "",
+      "role": "artifact:p365_pairwise_comparison",
+      "row_count": "10",
+      "sha256": "9fc70ceb327d7b4eed2066a398f7b478176ae8c4bd2fcf10f2a3171dc31eab6f",
+      "source_stage": "P365"
+    },
+    {
+      "artifact_path": "artifacts/P365_biglotto_evidence_explorer_compact_shortlist.csv",
+      "artifact_type": "csv",
+      "object_count": "",
+      "role": "artifact:p365_compact_shortlist",
+      "row_count": "8",
+      "sha256": "0389c8b5ce486a1dc02500260afa9242877114486d5c815e4dbdd25b3216f735",
+      "source_stage": "P365"
+    },
+    {
+      "artifact_path": "artifacts/P365_biglotto_evidence_explorer_query_snapshots.json",
+      "artifact_type": "json",
+      "object_count": "1",
+      "role": "artifact:p365_query_snapshots",
+      "row_count": "",
+      "sha256": "c8bd77e8e9936793e23f5afa466537ad052f93aeab13b2bb48fd77e186a550ac",
+      "source_stage": "P365"
+    },
+    {
+      "artifact_path": "artifacts/P365_biglotto_evidence_explorer.html",
+      "artifact_type": "html",
+      "object_count": "",
+      "role": "artifact:p365_html",
+      "row_count": "",
+      "sha256": "8668e270dd15219964ef5e7bbf944be0cb6a711254a3c417efea3ac68eb11590",
+      "source_stage": "P365"
+    },
+    {
+      "artifact_path": "artifacts/P365_biglotto_evidence_explorer_manifest.csv",
+      "artifact_type": "csv",
+      "object_count": "",
+      "role": "artifact:p365_manifest",
+      "row_count": "20",
+      "sha256": "7ea31a9d274239fe76e9dc85237e7ecc307d7b88ddf66b12c1dfb61047182836",
+      "source_stage": "P365"
+    },
+    {
+      "artifact_path": "recovered_strategies/biglotto/no_db_evidence_pack.py",
+      "artifact_type": "python",
+      "object_count": "",
+      "role": "python_source:p363_entry_source",
+      "row_count": "",
+      "sha256": "1d58f0af6ff642333815cdd8c0ea39366d97a57ab1681ee87ccaabb7cedac00c",
+      "source_stage": "P363"
+    },
+    {
+      "artifact_path": "recovered_strategies/biglotto/no_db_evidence_dashboard.py",
+      "artifact_type": "python",
+      "object_count": "",
+      "role": "python_source:p364_entry_source",
+      "row_count": "",
+      "sha256": "7cf3e2c674f3891c85811efb7d6a61af475d7d357e707a30a32f84218dd31033",
+      "source_stage": "P364"
+    },
+    {
+      "artifact_path": "recovered_strategies/biglotto/no_db_evidence_explorer.py",
+      "artifact_type": "python",
+      "object_count": "",
+      "role": "python_source:p365_entry_source",
+      "row_count": "",
+      "sha256": "7df33e5b4ea86cf6e3ea33b33a59c352c70d5df7adabcbc818ef8b8a80d9d2ef",
+      "source_stage": "P365"
+    },
+    {
+      "artifact_path": "tests/test_p365_biglotto_evidence_explorer.py",
+      "artifact_type": "python",
+      "object_count": "",
+      "role": "python_test:p365_explorer_tests",
+      "row_count": "",
+      "sha256": "25467a932d75a560a3a81afdb503636ecdb17c9cd09413d345cce2a6f1130054",
+      "source_stage": "P365"
+    }
+  ],
+  "source_counts": {
+    "artifacts/P363_biglotto_evidence_pack_adapter_cards.csv": {
+      "object_count": "",
+      "row_count": "5"
+    },
+    "artifacts/P363_biglotto_evidence_pack_consistency_checks.csv": {
+      "object_count": "",
+      "row_count": "9"
+    },
+    "artifacts/P363_biglotto_evidence_pack_manifest.csv": {
+      "object_count": "",
+      "row_count": "14"
+    },
+    "artifacts/P363_biglotto_evidence_pack_report.md": {
+      "object_count": "",
+      "row_count": ""
+    },
+    "artifacts/P363_biglotto_evidence_pack_subset_cards.csv": {
+      "object_count": "",
+      "row_count": "31"
+    },
+    "artifacts/P363_biglotto_evidence_pack_summary.csv": {
+      "object_count": "",
+      "row_count": "24"
+    },
+    "artifacts/P364_biglotto_evidence_dashboard.html": {
+      "object_count": "",
+      "row_count": ""
+    },
+    "artifacts/P364_biglotto_evidence_dashboard_adapter_table.csv": {
+      "object_count": "",
+      "row_count": "5"
+    },
+    "artifacts/P364_biglotto_evidence_dashboard_index.json": {
+      "object_count": "1",
+      "row_count": ""
+    },
+    "artifacts/P364_biglotto_evidence_dashboard_manifest.csv": {
+      "object_count": "",
+      "row_count": "12"
+    },
+    "artifacts/P364_biglotto_evidence_dashboard_subset_table.csv": {
+      "object_count": "",
+      "row_count": "31"
+    },
+    "artifacts/P365_biglotto_evidence_explorer.html": {
+      "object_count": "",
+      "row_count": ""
+    },
+    "artifacts/P365_biglotto_evidence_explorer_adapter_detail_cards.json": {
+      "object_count": "5",
+      "row_count": ""
+    },
+    "artifacts/P365_biglotto_evidence_explorer_compact_shortlist.csv": {
+      "object_count": "",
+      "row_count": "8"
+    },
+    "artifacts/P365_biglotto_evidence_explorer_manifest.csv": {
+      "object_count": "",
+      "row_count": "20"
+    },
+    "artifacts/P365_biglotto_evidence_explorer_pairwise_comparison.csv": {
+      "object_count": "",
+      "row_count": "10"
+    },
+    "artifacts/P365_biglotto_evidence_explorer_query_snapshots.json": {
+      "object_count": "1",
+      "row_count": ""
+    },
+    "artifacts/P365_biglotto_evidence_explorer_subset_detail_cards.json": {
+      "object_count": "31",
+      "row_count": ""
+    },
+    "recovered_strategies/biglotto/no_db_evidence_dashboard.py": {
+      "object_count": "",
+      "row_count": ""
+    },
+    "recovered_strategies/biglotto/no_db_evidence_explorer.py": {
+      "object_count": "",
+      "row_count": ""
+    },
+    "recovered_strategies/biglotto/no_db_evidence_pack.py": {
+      "object_count": "",
+      "row_count": ""
+    },
+    "tests/test_p365_biglotto_evidence_explorer.py": {
+      "object_count": "",
+      "row_count": ""
+    }
+  },
+  "source_sha256": {
+    "artifacts/P363_biglotto_evidence_pack_adapter_cards.csv": "9db24b6030f484b7d101ff1b7d9fa7441a3e2170a87e8d84219d285e11e3544f",
+    "artifacts/P363_biglotto_evidence_pack_consistency_checks.csv": "854b4cc3b691da09328adb2159749c20e63bd957583905b5ab908cd852c386a6",
+    "artifacts/P363_biglotto_evidence_pack_manifest.csv": "1cf583ffb60103e6d20973dd7e29f4ff5d25ad2c16894a1d969ae15bb3ef6e20",
+    "artifacts/P363_biglotto_evidence_pack_report.md": "e7fab14e746a77aaf6cfb930eb8502496aa1a587fd828bbe09d8854b23fc2e82",
+    "artifacts/P363_biglotto_evidence_pack_subset_cards.csv": "c973c7110e26516ea0248cee3d83d200e0e6fa5c53d63f7a4e6e24fe46110042",
+    "artifacts/P363_biglotto_evidence_pack_summary.csv": "588d6450251b20b747ad0cd956898f215b91df322a49f70be47faad05cc8aad0",
+    "artifacts/P364_biglotto_evidence_dashboard.html": "70d91a1b712fdd39e32da8bcf0bf2a0ea3c90e8ef0f9413f7b561c42b8ec518d",
+    "artifacts/P364_biglotto_evidence_dashboard_adapter_table.csv": "d424b766aeeabcd71353b53a08841757ab2d3836b43c5ea2675796789ec6dbd2",
+    "artifacts/P364_biglotto_evidence_dashboard_index.json": "630edbc4f2943376aeb3f5e111f21d676f462f28b6fac0daeadbc26b315a86f5",
+    "artifacts/P364_biglotto_evidence_dashboard_manifest.csv": "ec281d48af2a9adbd2a5a870c9e6c0a9f41cddf71d36dbf458b2fcec824d7c45",
+    "artifacts/P364_biglotto_evidence_dashboard_subset_table.csv": "2dc2f100f09e7c402f798739cd8461b9ee35c85ac50a78a40eca79f34efc4999",
+    "artifacts/P365_biglotto_evidence_explorer.html": "8668e270dd15219964ef5e7bbf944be0cb6a711254a3c417efea3ac68eb11590",
+    "artifacts/P365_biglotto_evidence_explorer_adapter_detail_cards.json": "0127b67a1584d2d4428bb0fe7afeaa24574c07c85b4b95969005b42e15d4323d",
+    "artifacts/P365_biglotto_evidence_explorer_compact_shortlist.csv": "0389c8b5ce486a1dc02500260afa9242877114486d5c815e4dbdd25b3216f735",
+    "artifacts/P365_biglotto_evidence_explorer_manifest.csv": "7ea31a9d274239fe76e9dc85237e7ecc307d7b88ddf66b12c1dfb61047182836",
+    "artifacts/P365_biglotto_evidence_explorer_pairwise_comparison.csv": "9fc70ceb327d7b4eed2066a398f7b478176ae8c4bd2fcf10f2a3171dc31eab6f",
+    "artifacts/P365_biglotto_evidence_explorer_query_snapshots.json": "c8bd77e8e9936793e23f5afa466537ad052f93aeab13b2bb48fd77e186a550ac",
+    "artifacts/P365_biglotto_evidence_explorer_subset_detail_cards.json": "91bf82fa024e9276b0fac2e3c8443e2fed22ed7ee726bad796a5960910a8be3d",
+    "recovered_strategies/biglotto/no_db_evidence_dashboard.py": "7cf3e2c674f3891c85811efb7d6a61af475d7d357e707a30a32f84218dd31033",
+    "recovered_strategies/biglotto/no_db_evidence_explorer.py": "7df33e5b4ea86cf6e3ea33b33a59c352c70d5df7adabcbc818ef8b8a80d9d2ef",
+    "recovered_strategies/biglotto/no_db_evidence_pack.py": "1d58f0af6ff642333815cdd8c0ea39366d97a57ab1681ee87ccaabb7cedac00c",
+    "tests/test_p365_biglotto_evidence_explorer.py": "25467a932d75a560a3a81afdb503636ecdb17c9cd09413d345cce2a6f1130054"
+  },
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "blended_leaderboard": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "future_prediction_guarantee": false,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring_cohort": false,
+    "production_registry_imported": false,
+    "shape_only_and_blocked_targets_excluded": true
+  },
+  "task": "P366_biglotto_evidence_release_bundle"
+}

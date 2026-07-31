@@ -1,0 +1,190 @@
+{
+  "task": "P169_POWER_LOTTO_SIGNAL_REVIEW_AND_THRESHOLD_SENSITIVITY_PLAN_ONLY",
+  "date": "2026-06-01",
+  "final_classification": "P169_POWER_LOTTO_SIGNAL_REVIEW_AND_THRESHOLD_SENSITIVITY_PLAN_READY",
+  "plan_only": true,
+  "authorization_phrase_detected": "YES produce P169 signal review and threshold sensitivity plan only, no rerun, no verdict change",
+  "phase_0_verification": {
+    "all_checks_passed": true,
+    "authorization_phrase_present": true,
+    "worktree_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "head_commit": "c8b423d0c1de26253be4cec79ae6de77719d1074",
+    "db_rows_before": 94924,
+    "db_rows_after": 94924,
+    "db_unchanged": true,
+    "drift_guard": "PASS",
+    "p161_test": "PASS",
+    "p162_test": "PASS",
+    "p163_test": "PASS",
+    "p164_test": "PASS",
+    "p165b_test": "PASS",
+    "p166_test": "PASS",
+    "p167_test": "PASS",
+    "p168_test": "PASS",
+    "p167_script_pass": true,
+    "p167_artifact": "outputs/research/power_lotto/p167_ensemble_voting_research_20260531.json",
+    "p168_artifact": "outputs/research/power_lotto/p168_research_decision_review_20260531.json"
+  },
+  "p167_summary": {
+    "final_classification": "P167_POWER_LOTTO_NO_DEFENSIBLE_EDGE_FOUND",
+    "null_result": true,
+    "module_a_in_sample_mean": 1.000667,
+    "module_a_p_bh": 0.038218,
+    "module_a_above_random": true,
+    "module_e_main_p_bh": 0.024,
+    "module_f_oos_window_1_mean": 1.04,
+    "module_f_oos_window_1_p_bh": 0.048718,
+    "module_f_oos_window_2_draws": 499,
+    "module_f_oos_window_2_required": 500,
+    "module_f_oos_window_2_status": "INSUFFICIENT_OOS_DATA",
+    "module_f_pass_final_gate": false
+  },
+  "p168_decision_summary": {
+    "final_classification": "P168_POWER_LOTTO_RESEARCH_DECISION_REVIEW_READY",
+    "p167_null_stands": true,
+    "recommended_option": "B + C",
+    "recommended_next_task": "P169_POWER_LOTTO_SIGNAL_REVIEW_AND_THRESHOLD_SENSITIVITY_PLAN_ONLY"
+  },
+  "p167_null_conclusion_preserved": {
+    "statement": "P167 final classification P167_POWER_LOTTO_NO_DEFENSIBLE_EDGE_FOUND is NOT changed by P169. OOS Window 2 (499 draws) does NOT retroactively pass the 500-draw minimum. No deployment evidence exists. P169 is a plan document only.",
+    "no_retroactive_reclassification": true,
+    "no_rerun_of_p167": true,
+    "no_verdict_change": true
+  },
+  "threshold_sensitivity_plan": {
+    "objective": "Evaluate whether the pre-declared 500-draw OOS window minimum is materially sensitive. Specifically: does the ensemble consensus voting result change direction or lose significance if the window minimum is set to 450, 475, 499, or 525 draws instead of 500?",
+    "type": "descriptive_sensitivity_only",
+    "label_requirement": "All results at thresholds other than 500 must be labeled RETROSPECTIVE_SENSITIVITY_ONLY — not as original gate passage, not as deployment evidence",
+    "allowed_scenarios": [
+      {"threshold": 450, "label": "RETROSPECTIVE_SENSITIVITY_ONLY"},
+      {"threshold": 475, "label": "RETROSPECTIVE_SENSITIVITY_ONLY"},
+      {"threshold": 499, "label": "RETROSPECTIVE_SENSITIVITY_ONLY"},
+      {"threshold": 500, "label": "ORIGINAL_PROTOCOL — reference result from P167 (Window 2 INSUFFICIENT)"},
+      {"threshold": 525, "label": "RETROSPECTIVE_SENSITIVITY_ONLY — applies to Window 1 only (500 draws < 525)"}
+    ],
+    "metrics_to_report_per_scenario": [
+      "Number of OOS windows meeting the threshold",
+      "Mean hit count per OOS window",
+      "Direction (above / at / below random baseline 0.9474)",
+      "Direction vs best-single-strategy (0.9749)",
+      "z-statistic and raw p-value per window",
+      "BH-corrected p across all windows in scenario",
+      "Stability: do all windows agree on direction?"
+    ],
+    "forbidden_future_interpretations": [
+      "Cannot rewrite P167 Module F final gate as PASSED",
+      "Cannot use sensitivity-only results as deployment evidence",
+      "Cannot reclassify P167 final classification based on sensitivity findings",
+      "Cannot claim 'would have passed' as equivalent to 'passed'",
+      "Cannot use sensitivity results to authorize controlled_apply or champion promotion"
+    ],
+    "interpretation_requirement": "If the effect holds at 400-draw windows AND all scenarios show consistent positive direction, this is evidence that the signal is threshold-robust — not that the P167 Module F gate was satisfied. Future data collection (≥ 1 new draw completing Window 2 at the 500-draw threshold) remains the only path to formal Module F gate passage.",
+    "data_source": "Existing zen-gates canonical dataset (94924 rows, 1499 POWER_LOTTO complete draws) — READ ONLY. No new rows added.",
+    "leakage_guard": "All scenarios evaluate existing data only. No future data peeking. No parameter selection after seeing per-scenario results.",
+    "pre_registration_required": "All threshold scenarios must be declared in this P169 plan BEFORE P170 executes any analysis. P170 must not add new scenarios after seeing results."
+  },
+  "signal_tracking_plan": {
+    "objective": "Pre-register a prospective tracking protocol for the two strongest signals from P167: (A) consensus voting ensemble (Module A) and (B) main-number signal (Module E). Evaluate these signals on future or genuinely held-out POWER_LOTTO draws.",
+    "target_signals": [
+      {
+        "signal_id": "A_consensus_voting",
+        "source": "P167 Module A",
+        "configuration": "Equal-weight voting, bet_index=1 only, top-6 by vote count across all 10 strategies",
+        "in_sample_reference": "P167 in-sample mean=1.001, p_bh=0.038",
+        "oos_window_1_reference": "P167 OOS Window 1 (500 draws), mean=1.040, p_bh=0.049",
+        "metric": "Per-draw ensemble hit count (target: > 0.9749, best P161 single-strategy)",
+        "baseline": "Random 0.9474; best single strategy 0.9749 (fourier_rhythm_3bet from P161)"
+      },
+      {
+        "signal_id": "E_main_number",
+        "source": "P167 Module E",
+        "configuration": "Per-draw mean hit count across all 10 strategies, bet_index=1 only, main numbers only (not special)",
+        "in_sample_reference": "P167 Module E main p_bh=0.024",
+        "metric": "Per-draw mean hit count across strategies (target: > 0.9749)",
+        "baseline": "Random 0.9474; best single strategy 0.9749"
+      }
+    ],
+    "tracking_method": {
+      "window_type": "prospective only — draws NOT yet in the P167 dataset (draw index > 115000041)",
+      "minimum_prospective_draws_for_evaluation": 100,
+      "statistical_unit": "per distinct target_draw (NOT per bet row)",
+      "correction": "Bonferroni and BH on pre-declared family (2 signals × N window variants)",
+      "success_criterion_for_each_signal": "OOS prospective mean > 0.9749 AND p_bh < 0.05 AND consistent direction across ≥ 2 non-overlapping prospective windows of ≥ 50 draws each"
+    },
+    "pre_registration_rules": [
+      "Fixed configurations from P167 must not be modified before evaluation",
+      "No new thresholds or parameter variants unless separately authorized in a new plan",
+      "Evaluation must happen on draws strictly AFTER the last P167 dataset draw (115000041)",
+      "Results must compare to random baseline AND best-single-strategy baseline",
+      "Must apply multiple-testing correction (BH) to both signals simultaneously",
+      "If fewer than 100 prospective draws are available at P170 execution time: report INSUFFICIENT_PROSPECTIVE_DATA and do not claim significance"
+    ],
+    "data_collection_trigger": "New POWER_LOTTO draws are added to the zen-gates canonical DB by the post-draw pipeline. Tracking begins when ≥ 1 draw with index > 115000041 is present in the DB.",
+    "forbidden_tracking_practices": [
+      "Adding tracking draws in retrospect (re-labeling old draws as 'prospective')",
+      "Selecting which draws to include after seeing results",
+      "Lowering the 100-draw minimum without re-authorization",
+      "Changing the signal configuration after seeing early tracking results"
+    ]
+  },
+  "p170_implementation_boundary": {
+    "scope": "P170 is the read-only implementation of P169 plan. It may execute the threshold sensitivity analysis and initiate prospective signal tracking data collection.",
+    "allowed": [
+      "Read-only DB queries (PRAGMA query_only=ON)",
+      "Threshold sensitivity analysis on existing 1499 draws for pre-declared scenarios",
+      "Report sensitivity results labeled RETROSPECTIVE_SENSITIVITY_ONLY",
+      "Check how many prospective draws (> 115000041) are now available",
+      "If ≥ 100 prospective draws available: evaluate Module A and E signals on them",
+      "Produce P170 artifact with clear separation of sensitivity vs prospective results"
+    ],
+    "forbidden": [
+      "Any DB write or new row insertion",
+      "Modifying P167 analysis script or re-running with different parameters",
+      "Changing P167 final classification",
+      "Retroactively reclassifying OOS Window 2 (499 draws) as passing 500-draw threshold",
+      "Champion promotion or controlled_apply",
+      "Registry or lifecycle mutations",
+      "Betting advice or win guarantees",
+      "Stage, commit, or push",
+      "Merge, rebase, or checkout"
+    ],
+    "success_criteria_for_p170": [
+      "Sensitivity analysis completed for all 5 pre-declared threshold scenarios",
+      "Each scenario clearly labeled RETROSPECTIVE_SENSITIVITY_ONLY or ORIGINAL_PROTOCOL",
+      "If prospective draws available: signal tracking evaluation completed",
+      "If prospective draws unavailable: status AWAITING_PROSPECTIVE_DATA documented",
+      "P167 NULL classification preserved in P170 artifact",
+      "DB rows confirmed 94924 before and after"
+    ],
+    "what_p170_cannot_claim": [
+      "P170 may NOT claim a defensible edge was found unless: (1) prospective Module A or E signal survives BH correction with ≥ 100 prospective draws AND (2) Module F walk-forward OOS protocol from P166 is formally re-run with ≥ 2 windows of ≥ 500 draws each",
+      "Sensitivity results are DESCRIPTIVE only — not grounds for deployment"
+    ]
+  },
+  "no_action_confirmations": {
+    "no_db_write": true,
+    "no_rerun_of_p167": true,
+    "no_verdict_change": true,
+    "no_retroactive_499_reclassification": true,
+    "no_registry_mutation": true,
+    "no_champion_promotion": true,
+    "no_controlled_apply": true,
+    "no_commit": true,
+    "no_push": true,
+    "no_merge": true,
+    "no_betting_advice": true,
+    "no_win_guarantee": true,
+    "no_real_money_wording": true
+  },
+  "governance_invariants": {
+    "db_rows": 94924,
+    "drift_guard": "PASS",
+    "main_zen_gates_split": "UNRESOLVED",
+    "p167_null_result_stands": true,
+    "no_success_rate_method_found": true
+  },
+  "next_task": "P170_POWER_LOTTO_THRESHOLD_SENSITIVITY_AND_SIGNAL_TRACKING_READ_ONLY",
+  "next_task_state": "WAITING_FOR_USER_AUTHORIZATION",
+  "next_task_note": "P169 defines the plan. P170 may not begin without explicit user authorization. P170 must be read-only only, must not change P167 verdict, and must not deploy any strategy."
+}

@@ -1,0 +1,88 @@
+{
+  "classification": "P96_GOVERNANCE_BASELINE_REPAIR_READY",
+  "date": "2026-05-27",
+  "task": "P96 Governance Baseline Repair",
+  "old_baseline": 46962,
+  "new_baseline": 54462,
+  "delta": 7500,
+  "reason": "P94 Tier B Controlled Apply (2026-05-26) added 7500 rows with controlled_apply_id=P94_TIERB_CONTROLLED_APPLY_20260526 and truth_level=TIERB_DRYRUN_VALIDATED",
+  "max_draw_unchanged": "115000041",
+  "db_writes": false,
+  "replay_rows_inserted": 0,
+  "special3_special4_touched": false,
+  "claude_code_showcase_touched": false,
+  "lifecycle_champion_registry_touched": false,
+  "updated_files": [
+    {
+      "path": "scripts/replay_lifecycle_drift_guard.py",
+      "changes": [
+        "Added p94_apply_id='P94_TIERB_CONTROLLED_APPLY_20260526' to BASELINE",
+        "Added p94_count=7500 to BASELINE",
+        "Updated total_count from 46962 to 54462",
+        "Added 'TIERB_DRYRUN_VALIDATED' to ALLOWED_TRUTH_LEVELS",
+        "Added p94_count query in run_checks()",
+        "Added p94 violation check",
+        "Added 'p94' key to row_counts output dict",
+        "Added BASELINE['p94_apply_id'] to known_apply_ids set"
+      ]
+    },
+    {
+      "path": "tests/test_replay_lifecycle_drift_guard.py",
+      "changes": [
+        "Added 'TIERB_DRYRUN_VALIDATED' to ALLOWED_TRUTH_LEVELS",
+        "Updated test_db_counts_match_baseline docstring to reflect P94 post-apply baseline",
+        "Added assertion rc.get('p94') == 7500",
+        "Updated total assertion from 46962 to 54462"
+      ]
+    },
+    {
+      "path": "tests/test_p82_replay_freshness_guard.py",
+      "changes": [
+        "Updated EXPECTED_REPLAY_ROWS from 46962 to 54462 (live DB guard)",
+        "Added HISTORICAL_P82_ARTIFACT_ROWS=46962 constant for historical artifact assertion",
+        "Updated test_09_replay_rows_total to use HISTORICAL_P82_ARTIFACT_ROWS (historical artifact check)",
+        "test_17_replay_rows_db continues to use EXPECTED_REPLAY_ROWS=54462 (live DB check)"
+      ]
+    },
+    {
+      "path": "tests/test_replay_branch_governance_guard.py",
+      "changes": [
+        "Updated --expected-rows argument from 46962 to 54462 in test_02_script_passes_on_canonical"
+      ]
+    }
+  ],
+  "intentionally_untouched_historical_files": [
+    "tests/test_p79_batch_a_controlled_apply.py (46962 = correct P79 post-apply historical state; tests historical artifacts)",
+    "tests/test_p83_stable_baseline_closure.py (46962 = historical P83 baseline; reads historical JSON artifact)",
+    "tests/test_p84_browser_e2e_launch_signoff.py (46962 = P84 launch baseline; id=46962 is row ID sentinel, not row count)",
+    "tests/test_p85_launch_closure_operator_release.py (46962 = P85 launch baseline; reads historical JSON artifact)",
+    "tests/test_p87_live_operations_runbook.py (46962 = P87 runbook baseline; reads historical artifact)",
+    "tests/test_p89_steady_state_monitoring_snapshot.py (46962 = P89 snapshot; reads historical artifact)",
+    "tests/test_p91_all_strategy_replay_expansion_inventory.py (46962 = P91 inventory baseline; historical)",
+    "tests/test_p92_tier_b_adapter_audit_dry_run_plan.py (46962 = P92 pre-apply baseline; historical artifact)",
+    "tests/test_p93_tier_b_replay_adapter_bootstrap_dryrun.py (46962 = P93 pre-apply expected; historical)",
+    "tests/test_p94_tier_b_controlled_apply.py (46962 = EXPECTED_BEFORE; correct pre-apply historical state)",
+    "tests/test_p94a_biglotto_all_strategy_betcount_benchmark.py (id=46962 is row ID sentinel, not row count)",
+    "outputs/replay/p82_replay_freshness_guard_20260526.json (historical snapshot from 2026-05-26 before P94)",
+    "docs/replay/ historical docs (reference 46962 as past baseline, not current)"
+  ],
+  "test_results": {
+    "p96_tests": "PASS",
+    "p95_tests": "30/30 PASS",
+    "p94a_regression": "27/27 PASS",
+    "p94b_regression": "27/27 PASS",
+    "p94c_regression": "27/27 PASS",
+    "p94d_regression": "27/27 PASS",
+    "p82_freshness_guard": "19/19 PASS",
+    "drift_guard": "8/8 PASS",
+    "branch_governance_guard": "15/15 PASS",
+    "total_active_guards": "42/42 PASS",
+    "total_regression": "138/138 PASS",
+    "browser_smoke": "NOT_RUN"
+  },
+  "replay_rows_before": 54462,
+  "replay_rows_after": 54462,
+  "power_lotto_max_draw_before": "115000041",
+  "power_lotto_max_draw_after": "115000041",
+  "forbidden_staging_scan": "CLEAN"
+}

@@ -1,0 +1,920 @@
+===== P297A /Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/manifest.json sha256=fa76f023220176860ce256f1a763c5d39699be7ecbe70f73eec265d2e9b0e7c7 bytes=4798 =====
+{
+  "task_id": "P297A_BIG649_UNIFIED_REPLAY_METRICS_CONTRACT_AND_STRATEGY_INVENTORY",
+  "authorization_phrase": "AUTHORIZE_P297A_READ_ONLY_INVENTORY_AND_CONTRACT",
+  "generated_at": "2026-06-30T07:38:29.278339+00:00",
+  "evidence_root": "/Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000",
+  "generation_command_summary": "python3 heredoc generated read-only artifact contract from git status, filesystem stat, immutable SQLite metadata, and existing JSON artifacts P250A/P267C/P271D/P273A.",
+  "read_only_assertions": {
+    "db_open_mode": "sqlite3 URI mode=ro&immutable=1",
+    "db_write": false,
+    "repo_write": false,
+    "governance_write": false,
+    "commit_push_pr_merge": false
+  },
+  "files": [
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/commands.log",
+      "filename": "commands.log",
+      "size_bytes": 6873,
+      "sha256": "f772d805b67b3aed394329d87f8260a8364f5c685ba8b1b1b28fe148d2683566"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/coverage_matrix.csv",
+      "filename": "coverage_matrix.csv",
+      "size_bytes": 958,
+      "sha256": "35c4e81508a00ad2139af1c2bdbea20f82c95c9b2d71b7116977b9841cb19a8a"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/db_readonly_metadata.json",
+      "filename": "db_readonly_metadata.json",
+      "size_bytes": 37941,
+      "sha256": "bfb3424ca3e580ff1988032cdddcf8adc8db7381c3d424b69c1b9cce77eeff83"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/db_sidecar_inventory_after.csv",
+      "filename": "db_sidecar_inventory_after.csv",
+      "size_bytes": 34518,
+      "sha256": "1bc862981ae4231f2610179ea441e04606d26d18634568a37ad9416f5567ae3b"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/db_sidecar_inventory_pre.csv",
+      "filename": "db_sidecar_inventory_pre.csv",
+      "size_bytes": 34518,
+      "sha256": "1bc862981ae4231f2610179ea441e04606d26d18634568a37ad9416f5567ae3b"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/handoff_report.md",
+      "filename": "handoff_report.md",
+      "size_bytes": 3671,
+      "sha256": "89663fed91e51877537a0802796f972b7d4830025730cc9af5cec92126eb46ca"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/limitations.md",
+      "filename": "limitations.md",
+      "size_bytes": 2250,
+      "sha256": "fd722a4f4b1d62c281646dc1c81d106a93e01d8c858d0ed062ce774ad3ec937a"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/phase0_status.json",
+      "filename": "phase0_status.json",
+      "size_bytes": 5125,
+      "sha256": "dcf192c2aef022efe60f7df1856063c6ac8207bc69f9b2b8af346b49d432cc69"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/sha256_inventory.txt",
+      "filename": "sha256_inventory.txt",
+      "size_bytes": 977,
+      "sha256": "6dff40539fe17b6c0c819f398af8cf78764aba4427af19bed512ec7e01c478ad"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/strategy_inventory.csv",
+      "filename": "strategy_inventory.csv",
+      "size_bytes": 17584,
+      "sha256": "bf270d4a41d66b81bc1ddc28d96d7750338e080199064377a55e385926e100f2"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/strategy_inventory.md",
+      "filename": "strategy_inventory.md",
+      "size_bytes": 12504,
+      "sha256": "335d039caa4675bbd5ec5b5e4bbf5749faf9a50f178d167069182ff528793f4b"
+    },
+    {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/unified_replay_metrics_contract.md",
+      "filename": "unified_replay_metrics_contract.md",
+      "size_bytes": 5218,
+      "sha256": "050f8efc737e6323fc5da255025e0fa84abf19eaf7394dcaff62b56b3f51cb01"
+    }
+  ],
+  "validation": {
+    "evidence_root_exists": true,
+    "manifest_covers_all_outputs": "PASS_FOR_ALL_NON_MANIFEST_PAYLOAD_ARTIFACTS; manifest self-hash excluded by self-reference design",
+    "sha256_recompute_consistent": true,
+    "no_repo_tracked_files_modified_by_this_run": "PASS_BY_DIFF_SNAPSHOT_UNCHANGED_EXPECTED; repo already dirty before run",
+    "no_staged_files": true,
+    "no_db_write_sidecar_creation": true,
+    "pre_existing_sidecars_count": 58,
+    "manifest_self_hash_policy": "manifest.json is not listed in its own files array; current manifest SHA can be recomputed externally but is not self-contained."
+  },
+  "manifest_sha256_first_pass": "19b5f8579a21abf9889f5458f0b88032e870104a79e10b090b66e408042b40cc"
+}
+
+
+===== P297A /Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/strategy_inventory.csv sha256=bf270d4a41d66b81bc1ddc28d96d7750338e080199064377a55e385926e100f2 bytes=17584 =====
+lottery,strategy_id,strategy_name,input_source,available_windows,replay_rows,distinct_target_draws,draw_range,max_bet_index,current_lifecycle_status,historical_snapshot_lifecycle_status,prize_aware,cross_lottery,m3_inferential_status,blocked_reason
+BIG_LOTTO,bet2_fourier_expansion_biglotto,bet2_fourier_expansion_biglotto,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1500,1500,102000011..115000054,1,REJECTED,LIFECYCLE_UNRESOLVED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+BIG_LOTTO,biglotto_deviation_2bet,大樂透 Deviation 2注,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1570,1550,99000056..115000053,2,ONLINE,ONLINE,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+BIG_LOTTO,biglotto_echo_aware_3bet,biglotto_echo_aware_3bet,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,4500,1500,102000012..115000055,3,RETIRED,LIFECYCLE_UNRESOLVED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+BIG_LOTTO,biglotto_triple_strike,大樂透 Triple Strike,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1570,1550,99000056..115000053,2,ONLINE,ONLINE,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+BIG_LOTTO,biglotto_ts3_acb_4bet,大樂透 TS3+ACB 4注,P250A inventory,,0,0,,,REJECTED,REJECTED,FULL,NO,NOT_READY,NO_REPLAY_ROWS
+BIG_LOTTO,biglotto_ts3_markov_4bet_w30,biglotto_ts3_markov_4bet_w30,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,6000,1500,102000012..115000055,4,RETIRED,LIFECYCLE_UNRESOLVED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+BIG_LOTTO,biglotto_ts3_markov_freq_5bet,大樂透 TS3+Markov 頻率正交 5注,P250A inventory,,0,0,,,REJECTED,REJECTED,FULL,NO,NOT_READY,NO_REPLAY_ROWS
+BIG_LOTTO,cold_complement_biglotto,cold_complement_biglotto,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1500,1500,102000011..115000054,1,REJECTED,LIFECYCLE_UNRESOLVED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+BIG_LOTTO,coldpool15_biglotto,coldpool15_biglotto,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1500,1500,102000011..115000054,1,REJECTED,LIFECYCLE_UNRESOLVED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+BIG_LOTTO,fourier30_markov30_biglotto,fourier30_markov30_biglotto,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1500,1500,102000011..115000054,1,REJECTED,LIFECYCLE_UNRESOLVED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+BIG_LOTTO,markov_2bet_biglotto,markov_2bet_biglotto,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1500,1500,102000011..115000054,1,REJECTED,LIFECYCLE_UNRESOLVED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+BIG_LOTTO,markov_single_biglotto,markov_single_biglotto,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1500,1500,102000011..115000054,1,REJECTED,LIFECYCLE_UNRESOLVED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+BIG_LOTTO,ts3_regime_3bet,大樂透 TS3+Regime 3注,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1500,1500,102000010..115000053,1,ONLINE,ONLINE,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+DAILY_539,539_3bet_orthogonal,539_3bet_orthogonal,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1500,1500,110000190..115000121,1,REJECTED,LIFECYCLE_UNRESOLVED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+DAILY_539,acb_1bet,今彩539 ACB 1注,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1500,1500,110000190..115000121,1,RETIRED,RETIRED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+DAILY_539,acb_markov_midfreq,今彩539 ACB+Markov 中頻,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1500,1500,110000190..115000121,1,RETIRED,RETIRED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+DAILY_539,acb_markov_midfreq_3bet,今彩539 ACB+Markov 中頻 3注,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,4500,1500,110000190..115000121,3,RETIRED,RETIRED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+DAILY_539,acb_single_539,acb_single_539,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1500,1500,110000190..115000121,1,REJECTED,LIFECYCLE_UNRESOLVED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+DAILY_539,daily539_f4cold,今彩539 F4 Cold,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1590,1550,99000212..115000121,3,ONLINE,ONLINE,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+DAILY_539,daily539_f4cold_3bet,daily539_f4cold_3bet,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,4500,1500,110000190..115000121,3,RETIRED,LIFECYCLE_UNRESOLVED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+DAILY_539,daily539_f4cold_5bet,daily539_f4cold_5bet,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,7500,1500,110000190..115000121,5,RETIRED,LIFECYCLE_UNRESOLVED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+DAILY_539,daily539_markov_cold,今彩539 Markov Cold,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1590,1550,99000212..115000121,3,ONLINE,ONLINE,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+DAILY_539,markov_1bet_539,markov_1bet_539,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1500,1500,110000190..115000121,1,REJECTED,LIFECYCLE_UNRESOLVED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+DAILY_539,midfreq_acb_2bet,今彩539 中頻 ACB 2注,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1500,1500,110000190..115000121,1,RETIRED,RETIRED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+DAILY_539,midfreq_fourier_2bet,今彩539 中頻 Fourier 2注,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1500,1500,110000190..115000121,1,RETIRED,RETIRED,FULL,YES,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+DAILY_539,p0b_539_3bet_f_cold_fmid,p0b_539_3bet_f_cold_fmid,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1500,1500,110000190..115000121,1,REJECTED,LIFECYCLE_UNRESOLVED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+DAILY_539,p0c_539_3bet_f_cold_x2,p0c_539_3bet_f_cold_x2,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1500,1500,110000190..115000121,1,REJECTED,LIFECYCLE_UNRESOLVED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+DAILY_539,p1_deviation_2bet_539,今彩539 P1鄰號+偏差互補 2注,P250A inventory,,0,0,,,REJECTED,REJECTED,FULL,NO,NOT_READY,NO_REPLAY_ROWS
+DAILY_539,zone_gap_3bet_539,zone_gap_3bet_539,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1500,1500,110000190..115000121,1,REJECTED,LIFECYCLE_UNRESOLVED,FULL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,
+POWER_LOTTO,cold_complement_2bet,cold_complement_2bet,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1500,1500,101000002..115000040,1,RETIRED,LIFECYCLE_UNRESOLVED,PARTIAL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,"Missing predicted second-zone value (predicted_special IS NULL) for 27104/36104 rows (75.07%). This is a BLOCKING condition for FULL prize-aware replay evaluation of POWER_LOTTO, per explicit task instruction (a missing predicted second-zone must not be downgraded to a warning, must not be filled with a manufactured/random/default/most-frequent value, and must not be substituted from the actual second-zone). A future adapter MAY proceed on the 9000-row subset where predicted_special is present, excluding the other 27104 rows with an explicit exclusion reason (e.g. 'predicted_second_zone_missing')."
+POWER_LOTTO,fourier30_markov30_2bet,fourier30_markov30_2bet,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1501,1501,101000002..115000041,1,RETIRED,LIFECYCLE_UNRESOLVED,PARTIAL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,"Missing predicted second-zone value (predicted_special IS NULL) for 27104/36104 rows (75.07%). This is a BLOCKING condition for FULL prize-aware replay evaluation of POWER_LOTTO, per explicit task instruction (a missing predicted second-zone must not be downgraded to a warning, must not be filled with a manufactured/random/default/most-frequent value, and must not be substituted from the actual second-zone). A future adapter MAY proceed on the 9000-row subset where predicted_special is present, excluding the other 27104 rows with an explicit exclusion reason (e.g. 'predicted_second_zone_missing')."
+POWER_LOTTO,fourier_rhythm_3bet,威力彩 Fourier Rhythm 3注,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,4503,1501,101000002..115000041,3,ONLINE,ONLINE,BLOCKED,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,"Missing predicted second-zone value (predicted_special IS NULL) for 27104/36104 rows (75.07%). This is a BLOCKING condition for FULL prize-aware replay evaluation of POWER_LOTTO, per explicit task instruction (a missing predicted second-zone must not be downgraded to a warning, must not be filled with a manufactured/random/default/most-frequent value, and must not be substituted from the actual second-zone). A future adapter MAY proceed on the 9000-row subset where predicted_special is present, excluding the other 27104 rows with an explicit exclusion reason (e.g. 'predicted_second_zone_missing')."
+POWER_LOTTO,h6_gate_mk20_ew85,威力彩 H6 Gate mk20 ew85,P250A inventory,,0,0,,,OBSERVATION,OBSERVATION,BLOCKED,NO,NOT_READY,"Missing predicted second-zone value (predicted_special IS NULL) for 27104/36104 rows (75.07%). This is a BLOCKING condition for FULL prize-aware replay evaluation of POWER_LOTTO, per explicit task instruction (a missing predicted second-zone must not be downgraded to a warning, must not be filled with a manufactured/random/default/most-frequent value, and must not be substituted from the actual second-zone). A future adapter MAY proceed on the 9000-row subset where predicted_special is present, excluding the other 27104 rows with an explicit exclusion reason (e.g. 'predicted_second_zone_missing')."
+POWER_LOTTO,midfreq_fourier_2bet,威力彩 MidFreq+Fourier 2注,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,1500,1500,101000002..115000040,1,ARTIFACT_ONLY,DRY_RUN,PARTIAL,YES,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,"Missing predicted second-zone value (predicted_special IS NULL) for 27104/36104 rows (75.07%). This is a BLOCKING condition for FULL prize-aware replay evaluation of POWER_LOTTO, per explicit task instruction (a missing predicted second-zone must not be downgraded to a warning, must not be filled with a manufactured/random/default/most-frequent value, and must not be substituted from the actual second-zone). A future adapter MAY proceed on the 9000-row subset where predicted_special is present, excluding the other 27104 rows with an explicit exclusion reason (e.g. 'predicted_second_zone_missing')."
+POWER_LOTTO,midfreq_fourier_mk_3bet,威力彩 MidFreq+Fourier+Markov 3注,DB strategy_prediction_replays; P250A inventory; P267C M3+ artifact; P273A frozen cell,100|150|500|1500,4500,1500,101000002..115000040,3,ARTIFACT_ONLY,DRY_RUN,PARTIAL,NO,NULL_OR_NO_GO_RETROSPECTIVE_ONLY,"Missing predicted second-zone value (predicted_special IS NULL) for 27104/36104 rows (75.07%). This is a BLOCKING condition for FULL prize-aware replay evaluation of POWER_LOTTO, per explicit task instruction (a missing predicted second-
+
+===== P297A /Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/strategy_inventory.md sha256=335d039caa4675bbd5ec5b5e4bbf5749faf9a50f178d167069182ff528793f4b bytes=12504 =====
+# P297A Strategy Inventory
+
+Generated: 2026-06-30T07:38:29.278339+00:00
+
+Scope: read-only inventory. Retrospective replay rows are evidence for historical scoring only, not future prediction ability.
+
+| Lottery | Strategy | Rows | Draws | Windows | Prize-aware | Cross-lottery | Inferential status | Blocked reason |
+|---|---:|---:|---:|---|---|---|---|---|
+| BIG_LOTTO | `bet2_fourier_expansion_biglotto` | 1500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| BIG_LOTTO | `biglotto_deviation_2bet` | 1570 | 1550 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| BIG_LOTTO | `biglotto_echo_aware_3bet` | 4500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| BIG_LOTTO | `biglotto_triple_strike` | 1570 | 1550 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| BIG_LOTTO | `biglotto_ts3_acb_4bet` | 0 | 0 |  | FULL | NO | NOT_READY | NO_REPLAY_ROWS |
+| BIG_LOTTO | `biglotto_ts3_markov_4bet_w30` | 6000 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| BIG_LOTTO | `biglotto_ts3_markov_freq_5bet` | 0 | 0 |  | FULL | NO | NOT_READY | NO_REPLAY_ROWS |
+| BIG_LOTTO | `cold_complement_biglotto` | 1500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| BIG_LOTTO | `coldpool15_biglotto` | 1500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| BIG_LOTTO | `fourier30_markov30_biglotto` | 1500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| BIG_LOTTO | `markov_2bet_biglotto` | 1500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| BIG_LOTTO | `markov_single_biglotto` | 1500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| BIG_LOTTO | `ts3_regime_3bet` | 1500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| DAILY_539 | `539_3bet_orthogonal` | 1500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| DAILY_539 | `acb_1bet` | 1500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| DAILY_539 | `acb_markov_midfreq` | 1500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| DAILY_539 | `acb_markov_midfreq_3bet` | 4500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| DAILY_539 | `acb_single_539` | 1500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| DAILY_539 | `daily539_f4cold` | 1590 | 1550 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| DAILY_539 | `daily539_f4cold_3bet` | 4500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| DAILY_539 | `daily539_f4cold_5bet` | 7500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| DAILY_539 | `daily539_markov_cold` | 1590 | 1550 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| DAILY_539 | `markov_1bet_539` | 1500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| DAILY_539 | `midfreq_acb_2bet` | 1500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| DAILY_539 | `midfreq_fourier_2bet` | 1500 | 1500 | 100|150|500|1500 | FULL | YES | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| DAILY_539 | `p0b_539_3bet_f_cold_fmid` | 1500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| DAILY_539 | `p0c_539_3bet_f_cold_x2` | 1500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| DAILY_539 | `p1_deviation_2bet_539` | 0 | 0 |  | FULL | NO | NOT_READY | NO_REPLAY_ROWS |
+| DAILY_539 | `zone_gap_3bet_539` | 1500 | 1500 | 100|150|500|1500 | FULL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY |  |
+| POWER_LOTTO | `cold_complement_2bet` | 1500 | 1500 | 100|150|500|1500 | PARTIAL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY | Missing predicted second-zone value (predicted_special IS NULL) for 27104/36104 rows (75.07%). This is a BLOCKING condition for FULL prize-aware replay evaluation of POWER_LOTTO, per explicit task instruction (a missing predicted second-zone must not be downgraded to a warning, must not be filled with a manufactured/random/default/most-frequent value, and must not be substituted from the actual second-zone). A future adapter MAY proceed on the 9000-row subset where predicted_special is present, excluding the other 27104 rows with an explicit exclusion reason (e.g. 'predicted_second_zone_missing'). |
+| POWER_LOTTO | `fourier30_markov30_2bet` | 1501 | 1501 | 100|150|500|1500 | PARTIAL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY | Missing predicted second-zone value (predicted_special IS NULL) for 27104/36104 rows (75.07%). This is a BLOCKING condition for FULL prize-aware replay evaluation of POWER_LOTTO, per explicit task instruction (a missing predicted second-zone must not be downgraded to a warning, must not be filled with a manufactured/random/default/most-frequent value, and must not be substituted from the actual second-zone). A future adapter MAY proceed on the 9000-row subset where predicted_special is present, excluding the other 27104 rows with an explicit exclusion reason (e.g. 'predicted_second_zone_missing'). |
+| POWER_LOTTO | `fourier_rhythm_3bet` | 4503 | 1501 | 100|150|500|1500 | BLOCKED | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY | Missing predicted second-zone value (predicted_special IS NULL) for 27104/36104 rows (75.07%). This is a BLOCKING condition for FULL prize-aware replay evaluation of POWER_LOTTO, per explicit task instruction (a missing predicted second-zone must not be downgraded to a warning, must not be filled with a manufactured/random/default/most-frequent value, and must not be substituted from the actual second-zone). A future adapter MAY proceed on the 9000-row subset where predicted_special is present, excluding the other 27104 rows with an explicit exclusion reason (e.g. 'predicted_second_zone_missing'). |
+| POWER_LOTTO | `h6_gate_mk20_ew85` | 0 | 0 |  | BLOCKED | NO | NOT_READY | Missing predicted second-zone value (predicted_special IS NULL) for 27104/36104 rows (75.07%). This is a BLOCKING condition for FULL prize-aware replay evaluation of POWER_LOTTO, per explicit task instruction (a missing predicted second-zone must not be downgraded to a warning, must not be filled with a manufactured/random/default/most-frequent value, and must not be substituted from the actual second-zone). A future adapter MAY proceed on the 9000-row subset where predicted_special is present, excluding the other 27104 rows with an explicit exclusion reason (e.g. 'predicted_second_zone_missing'). |
+| POWER_LOTTO | `midfreq_fourier_2bet` | 1500 | 1500 | 100|150|500|1500 | PARTIAL | YES | NULL_OR_NO_GO_RETROSPECTIVE_ONLY | Missing predicted second-zone value (predicted_special IS NULL) for 27104/36104 rows (75.07%). This is a BLOCKING condition for FULL prize-aware replay evaluation of POWER_LOTTO, per explicit task instruction (a missing predicted second-zone must not be downgraded to a warning, must not be filled with a manufactured/random/default/most-frequent value, and must not be substituted from the actual second-zone). A future adapter MAY proceed on the 9000-row subset where predicted_special is present, excluding the other 27104 rows with an explicit exclusion reason (e.g. 'predicted_second_zone_missing'). |
+| POWER_LOTTO | `midfreq_fourier_mk_3bet` | 4500 | 1500 | 100|150|500|1500 | PARTIAL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY | Missing predicted second-zone value (predicted_special IS NULL) for 27104/36104 rows (75.07%). This is a BLOCKING condition for FULL prize-aware replay evaluation of POWER_LOTTO, per explicit task instruction (a missing predicted second-zone must not be downgraded to a warning, must not be filled with a manufactured/random/default/most-frequent value, and must not be substituted from the actual second-zone). A future adapter MAY proceed on the 9000-row subset where predicted_special is present, excluding the other 27104 rows with an explicit exclusion reason (e.g. 'predicted_second_zone_missing'). |
+| POWER_LOTTO | `power_fourier_rhythm_2bet` | 3000 | 1500 | 100|150|500|1500 | BLOCKED | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY | Missing predicted second-zone value (predicted_special IS NULL) for 27104/36104 rows (75.07%). This is a BLOCKING condition for FULL prize-aware replay evaluation of POWER_LOTTO, per explicit task instruction (a missing predicted second-zone must not be downgraded to a warning, must not be filled with a manufactured/random/default/most-frequent value, and must not be substituted from the actual second-zone). A future adapter MAY proceed on the 9000-row subset where predicted_special is present, excluding the other 27104 rows with an explicit exclusion reason (e.g. 'predicted_second_zone_missing'). |
+| POWER_LOTTO | `power_orthogonal_5bet` | 7550 | 1550 | 100|150|500|1500 | BLOCKED | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY | Missing predicted second-zone value (predicted_special IS NULL) for 27104/36104 rows (75.07%). This is a BLOCKING condition for FULL prize-aware replay evaluation of POWER_LOTTO, per explicit task instruction (a missing predicted second-zone must not be downgraded to a warning, must not be filled with a manufactured/random/default/most-frequent value, and must not be substituted from the actual second-zone). A future adapter MAY proceed on the 9000-row subset where predicted_special is present, excluding the other 27104 rows with an explicit exclusion reason (e.g. 'predicted_second_zone_missing'). |
+| POWER_LOTTO | `power_precision_3bet` | 4550 | 1550 | 100|150|500|1500 | BLOCKED | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY | Missing predicted second-zone value (predicted_special IS NULL) for 27104/36104 rows (75.07%). This is a BLOCKING condition for FULL prize-aware replay evaluation of POWER_LOTTO, per explicit task instruction (a missing predicted second-zone must not be downgraded to a warning, must not be filled with a manufactured/random/default/most-frequent value, and must not be substituted from the actual second-zone). A future adapter MAY proceed on the 9000-row subset where predicted_special is present, excluding the other 27104 rows with an explicit exclusion reason (e.g. 'predicted_second_zone_missing'). |
+| POWER_LOTTO | `power_shlc_midfreq` | 0 | 0 |  | BLOCKED | NO | NOT_READY | Missing predicted second-zone value (predicted_special IS NULL) for 27104/36104 rows (75.07%). This is a BLOCKING condition for FULL prize-aware replay evaluation of POWER_LOTTO, per explicit task instruction (a missing predicted second-zone must not be downgraded to a warning, must not be filled with a manufactured/random/default/most-frequent value, and must not be substituted from the actual second-zone). A future adapter MAY proceed on the 9000-row subset where predicted_special is present, excluding the other 27104 rows with an explicit exclusion reason (e.g. 'predicted_second_zone_missing'). |
+| POWER_LOTTO | `pp3_freqort_4bet` | 6000 | 1500 | 100|150|500|1500 | PARTIAL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY | Missing predicted second-zone value (predicted_special IS NULL) for 27104/36104 rows (75.07%). This is a BLOCKING condition for FULL prize-aware replay evaluation of POWER_LOTTO, per explicit task instruction (a missing predicted second-zone must not be downgraded to a warning, must not be filled with a manufactured/random/default/most-frequent value, and must not be substituted from the actual second-zone). A future adapter MAY proceed on the 9000-row subset where predicted_special is present, excluding the other 27104 rows with an explicit exclusion reason (e.g. 'predicted_second_zone_missing'). |
+| POWER_LOTTO | `zonal_entropy_2bet` | 1500 | 1500 | 100|150|500|1500 | PARTIAL | NO | NULL_OR_NO_GO_RETROSPECTIVE_ONLY | Missing predicted second-zone value (predicted_special IS NULL) for 27104/36104 rows (75.07%). This is 
+
+===== P297A /Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/unified_replay_metrics_contract.md sha256=050f8efc737e6323fc5da255025e0fa84abf19eaf7394dcaff62b56b3f51cb01 bytes=5218 =====
+# Unified Replay Metrics Contract
+
+Generated: 2026-06-30T07:38:29.278339+00:00
+Task: P297A_BIG649_UNIFIED_REPLAY_METRICS_CONTRACT_AND_STRATEGY_INVENTORY
+Mode: read-only, artifact-only. This contract defines fields for retrospective replay metrics. It does not authorize DB writes, registry publication, production application, or betting claims.
+
+## Row Grain
+One record represents one metric value for one `(lottery, strategy_id, metric_family, window_segment, top_k, draw_range)` cell. The same strategy may have multiple rows for M1/M2/M3, prize tiers, special/zone metrics, and inferential summaries.
+
+## Required Identity Fields
+- `contract_version`: `p297a_unified_replay_metrics_contract_v1`.
+- `lottery`: exact enum `BIG_LOTTO`, `DAILY_539`, `POWER_LOTTO`.
+- `strategy_id`: stable replay/catalog identifier.
+- `strategy_name`: display name from registry/inventory when available.
+- `metric_family`: one of `HIT_RATE`, `M3PLUS`, `PRIZE_AWARE`, `SPECIAL_OR_ZONE`, `BASELINE`, `INFERENTIAL`, `FEASIBILITY`, `OPTIMIZER_INPUT`.
+- `window_segment`: canonical label such as `recent_100`, `recent_150`, `recent_500`, `recent_1500`, `block_500_1`, `block_500_2`, `block_500_3`, or `full_available`.
+- `top_k`: integer 1..6. For multi-bet strategies this is the maximum bet index included in the draw-level aggregation. For one-bet stored rows, use `1` even when the strategy name historically contains a larger bet count.
+- `draw_start`, `draw_end`: inclusive draw identifiers for the metric window, stored as text plus optional numeric cast fields.
+- `sample_size_draws`: number of distinct target draws in denominator.
+- `sample_size_rows`: number of replay rows used after eligibility/exclusion filters.
+- `source_artifact`: file path or DB table source used to derive the metric.
+- `source_artifact_sha256`: SHA256 of artifact when file-backed; NULL if not computed.
+
+## Required Metric Fields
+- `m1_hits`, `m2_hits`, `m3_hits`: counts by exact main-number hit depth where applicable.
+- `m3plus_draw_successes`: draw-level count where any included bet has `hit_count >= 3`.
+- `m1_rate`, `m2_rate`, `m3_rate`, `m3plus_hit_rate`: count divided by `sample_size_draws`; NULL when not applicable.
+- `special_hit_count`: BIG_LOTTO actual special hit count or POWER_LOTTO second-zone hit count when structurally available.
+- `special_or_zone_metric_id`: e.g. `BIG_SPECIAL_IN_PREDICTED_MAIN`, `POWER_SECOND_ZONE_HIT`, `DAILY_539_NOT_APPLICABLE`.
+- `special_or_zone_rate`: special/zone count divided by eligible denominator.
+- `prize_tier_id`: scorer tier identifier when using prize-aware scoring; NULL for M3+ only rows.
+- `prize_tier_success_count`: count for that tier.
+- `any_prize_aware_win_count`: governed draw-level prize-aware success count.
+- `any_prize_aware_win_rate`: governed count divided by eligible draw denominator.
+- `baseline_mode`: `exact_hypergeometric_1bet`, `per_draw_conditional_MC`, `official_prize_formula`, `empirical_null`, `not_computed`, or `not_applicable`.
+- `baseline_value`: baseline rate/expected value for the same denominator.
+- `delta`: observed rate minus baseline value in proportion units.
+- `delta_pp`: observed rate minus baseline in percentage points.
+- `confidence_method`: `exact_poisson_binomial`, `monte_carlo`, `wilson`, `bootstrap`, `not_computed`, or `not_applicable`.
+- `confidence_low`, `confidence_high`: interval bounds; NULL when not computed.
+- `p_value`: inferential p-value; NULL for descriptive-only artifacts.
+- `multiple_testing_family_size`: integer family size when applicable.
+- `correction_method`: `bonferroni`, `bh_fdr`, `none`, `not_computed`.
+- `inferential_status`: `GO`, `NO_GO`, `NULL`, or `NOT_READY`. `GO` is reserved for passed inferential evidence and still does not mean production-ready.
+- `readiness_status`: `GO`, `NO_GO`, `NULL`, `NOT_READY`. Use `NOT_READY` for missing prospective threshold/horizon or missing canonical source.
+
+## Eligibility and Exclusion Fields
+- `replay_status_filter`: e.g. `PREDICTED`.
+- `dry_run_filter`: normally `0` for durable replay metrics.
+- `causality_status`: `VERIFIED`, `VIOLATION`, `NOT_CHECKED`.
+- `eligibility_status`: `ELIGIBLE`, `PARTIAL`, `EXCLUDED`, `NOT_READY`.
+- `exclusion_reason`: explicit reason such as `MISSING_PREDICTED_SECOND_ZONE`, `NO_REPLAY_ROWS`, `NO_CANONICAL_VIEW`, or NULL.
+- `canonical_source_status`: `PRESENT`, `ABSENT`, `PARTIAL`, `UNKNOWN`. POWER_LOTTO canonical view is currently absent in this read-only inspection.
+
+## Consumer Coverage
+- D2 per-strategy hit-rate matrix consumes `HIT_RATE`, `M3PLUS`, `BASELINE`, and `INFERENTIAL` fields.
+- D3 prize-tier scoring consumes `PRIZE_AWARE`, `SPECIAL_OR_ZONE`, eligibility, and scorer provenance fields.
+- D4 cross-lottery feasibility consumes identity, canonical source, sample-size, eligibility, and blocked reason fields.
+- D5 combination optimizer consumes top-k, draw-range, hit-rate, baseline, delta, confidence, and readiness fields, but must not optimize cells marked `NOT_READY` or `NULL` as if they were future edge.
+
+## Non-Claims
+This contract is a reporting schema. It must not be interpreted as a strategy promotion, wagering recommendation, production readiness signal, or evidence of future predictive ability.
+
+
+===== P297A /Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/coverage_matrix.csv sha256=35c4e81508a00ad2139af1c2bdbea20f82c95c9b2d71b7116977b9841cb19a8a bytes=958 =====
+downstream,use_case,required_metrics,covered_by_contract,notes
+D2,per-strategy hit-rate matrix,lottery/strategy/window/top_k/draw_range/sample_size/M1/M2/M3/hit-rate/baseline/delta/confidence/inferential_status,YES,Needs producer implementation against this contract; P267C covers M3+ subset but not all M1/M2/M3 matrices.
+D3,prize-tier scoring,prize_tier_id/any_prize_aware_win/special_or_zone/eligibility/exclusion/scorer provenance,YES_WITH_RISK,P271D/P273A prove structure and observed counts; POWER_LOTTO is partial due missing predicted second zone.
+D4,cross-lottery feasibility,canonical_source_status/sample sizes/lottery enum/prize-aware availability/blocked reasons,YES,POWER_LOTTO canonical view absent must stay NOT_READY until resolved.
+D5,combination optimizer,top_k/draw windows/hit-rate/baseline/delta/confidence/readiness status,YES_WITH_RISK,Contract blocks optimizer use of NULL/NOT_READY cells; prospective threshold/horizon absent.
+
+
+===== P297A /Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/limitations.md sha256=fd722a4f4b1d62c281646dc1c81d106a93e01d8c858d0ed062ce774ad3ec937a bytes=2250 =====
+# P297A Limitations
+
+Generated: 2026-06-30T07:38:29.278339+00:00
+
+## Confirmed Limits
+- This run is read-only and artifact-only. No DB migration, production apply, registry publication, commit, push, PR, or roadmap/governance edit was performed.
+- Current worktree is `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` on `task/p273a-prize-aware-inferential-validation`, which is a stale/protected worktree named by the prompt. Repo governance was not edited.
+- Canonical worktree `/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main` exists, but its branch has no upstream configured and has dirty governance/roadmap files. Canonical branch relation is therefore not fully confirmed.
+- The canonical replay DB inferred from local evidence is `lottery_api/data/lottery_v2.db`; this run opened it only with SQLite URI `mode=ro&immutable=1`.
+- `POWER_LOTTO` canonical view is absent in inspected SQLite views. Only `draws_big_lotto_canonical_main` was found as a canonical draw view.
+- `POWER_LOTTO` prize-aware scoring is partial: P271D reports missing predicted second-zone values for 27,104 of 36,104 rows, so full POWER_LOTTO prize-aware replay is blocked.
+- Prospective thresholds and prospective evaluation horizon are absent. Retrospective hit-rate, prize-tier, or M3+ evidence must remain `NULL` or `NOT_READY` for future prediction claims until prospectively pre-registered and evaluated.
+
+## Unknowns
+- Whether `/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main` is the intended canonical branch for P297A is not fully knowable from read-only local state because no upstream is configured and the prompt explicitly says not to assume.
+- Current untracked files and dirty DB files in the stale worktree were not classified beyond read-only status capture.
+- No live service/API verification was run.
+
+## Prohibited Claims
+- Do not claim any strategy is bettable, production-ready, online-ready, or profitable from these artifacts.
+- Do not convert retrospective deltas, p-values, or observed counts into future predictive ability.
+- Do not use P273A observed counts as inference; P273A explicitly did not compute baseline, p-value, correction, edge, or verdict.
+- Do not treat `GO_CANDIDATE_REQUIRES_PROSPECTIVE_GATE` inventory text as actual production GO.
+
+
+===== P297A /Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/handoff_report.md sha256=89663fed91e51877537a0802796f972b7d4830025730cc9af5cec92126eb46ca bytes=3671 =====
+# P297A Handoff Report
+
+Generated: 2026-06-30T07:38:29.278339+00:00
+Final Classification: P297A_READ_ONLY_CONTRACT_COMPLETE_WITH_RISKS
+
+## Confirmed
+- Evidence root exists: `/Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000`.
+- Current worktree: `/Users/kelvin/Kelvin-WorkSpace/LotteryNew`.
+- Current branch/head: `task/p273a-prize-aware-inferential-validation` / `3d6df001da3a0633ab91f164d722b595ca76d2e1`.
+- Current branch upstream: `origin/task/p273a-prize-aware-inferential-validation`; ahead/behind: `1	0`.
+- Staged files in current worktree: `NONE`.
+- Canonical candidate worktree exists: `/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main`.
+- Canonical candidate branch/head: `task/cto-roadmap-alignment-20260630` / `afac66b26858527be161f64a58ddde5213f8e202`.
+- Canonical candidate upstream: `fatal: no upstream configured for branch 'task/cto-roadmap-alignment-20260630'`.
+- Read-only DB metadata query used `mode=ro&immutable=1`.
+- DB views include `draws_big_lotto_canonical_main`; no POWER_LOTTO canonical view was found.
+- Replay rows by lottery from immutable DB query: `[{'lottery_type': 'BIG_LOTTO', 'replay_rows': 24140, 'strategy_count': 11, 'distinct_target_draws': 1552, 'min_draw': 99000056, 'max_draw': 115000055, 'max_bet_index': 4}, {'lottery_type': 'DAILY_539', 'replay_rows': 34680, 'strategy_count': 15, 'distinct_target_draws': 1550, 'min_draw': 99000212, 'max_draw': 115000121, 'max_bet_index': 5}, {'lottery_type': 'POWER_LOTTO', 'replay_rows': 36104, 'strategy_count': 10, 'distinct_target_draws': 1551, 'min_draw': 99000055, 'max_draw': 115000041, 'max_bet_index': 5}]`.
+- Strategy inventory rows produced: 41.
+
+## Inferred
+- `lottery_api/data/lottery_v2.db` is the canonical replay DB based on P250A/P271D/P273A local artifact references and code constants.
+- P297A should not write governance/source in this checkout because prompt identified `/Users/kelvin/Kelvin-WorkSpace/LotteryNew` + `task/p273a-prize-aware-inferential-validation` as stale/protected risk and Phase 0 confirmed that exact state.
+- D2/D3/D4/D5 can share the proposed contract if producers preserve `GO/NO_GO/NULL/NOT_READY` semantics and do not conflate retrospective observation with prospective edge.
+
+## Unknown
+- Whether `LotteryNew-main` branch `task/cto-roadmap-alignment-20260630` is the final canonical branch for P297A; local upstream is not configured.
+- Whether current dirty files in either worktree are owner-intended changes or stale generated state; this run did not edit or revert them.
+- Prospective threshold/horizon remains undefined.
+
+## Validation
+- PASS: evidence root exists.
+- PASS_WITH_RISK: manifest covers all non-manifest payload artifacts; manifest self-hash is excluded by self-reference design.
+- PASS: manifest-listed payload SHA256 values can be recomputed and matched; `sha256_inventory.txt` intentionally excludes manifest self-hash.
+- PASS_WITH_RISK: no staged files in current worktree.
+- PASS_WITH_RISK: no repo tracked files intentionally modified by this run; repo was already dirty before this run.
+- PASS: sidecar set size/mtime snapshot unchanged before vs after immutable DB query.
+- NOT RUN: commit/push/PR/merge/registry publication/future-ticket creation.
+- NOT RUN: live services, production apply, DB migration, WAL checkpoint.
+
+## PASS / FAIL / NOT RUN Summary
+- PASS: artifact generation, manifest generation, strategy inventory, unified contract, coverage matrix, limitations, sidecar before/after capture.
+- FAIL: none observed in permitted verification scope.
+- NOT RUN: any prohibited operation; tests requiring writes/services; canonical remote sync because canonical branch has no upstream.
+
+
+===== P297A /Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/commands.log sha256=f772d805b67b3aed394329d87f8260a8364f5c685ba8b1b1b28fe148d2683566 bytes=6873 =====
+P297A commands log generated 2026-06-30T07:38:29.278339+00:00
+Commands are read-only unless explicitly noted as external artifact writes under evidence root.
+
+[001] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=pwd
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew
+
+[002] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git rev-parse --show-toplevel
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew
+
+[003] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git branch --show-current
+task/p273a-prize-aware-inferential-validation
+
+[004] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git rev-parse HEAD
+3d6df001da3a0633ab91f164d722b595ca76d2e1
+
+[005] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git status --short --branch
+## task/p273a-prize-aware-inferential-validation...origin/task/p273a-prize-aware-inferential-validation [ahead 1]
+ M 00-Plan/roadmap/agent_bootstrap/SHARED_AGENT_BOOTSTRAP.md
+ M 00-Plan/roadmap/agent_bootstrap/TASK_TEMPLATES.md
+ M backend.pid
+ M claude-code-showcase
+ M data/lottery_v2.db
+ M frontend.pid
+ M lottery_api/data/performance_history.json
+?? .gstack/
+?? ".schema strategy_replay_runs"
+?? claude-code-showcase.worktrees/
+?? data/performance_history.json
+?? lottery_api/data/ingest_log.jsonl
+?? outputs/research/p245a_external_predictive_method_scouting_20260605.json
+?? outputs/research/p245a_external_predictive_method_scouting_20260605.md
+?? outputs/research/p251d_evidence_dashboard_readonly_api_route_20260609.json
+?? outputs/research/p251d_evidence_dashboard_readonly_api_route_20260609.md
+?? runtime/
+?? tests/test_p245a_external_predictive_method_scouting.py
+
+[006] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git rev-parse --abbrev-ref --symbolic-full-name @{u}
+origin/task/p273a-prize-aware-inferential-validation
+
+[007] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git rev-list --left-right --count HEAD...@{u}
+1	0
+
+[008] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git diff --name-only --cached
+
+[009] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git diff --name-only
+00-Plan/roadmap/agent_bootstrap/SHARED_AGENT_BOOTSTRAP.md
+00-Plan/roadmap/agent_bootstrap/TASK_TEMPLATES.md
+backend.pid
+claude-code-showcase
+data/lottery_v2.db
+frontend.pid
+lottery_api/data/performance_history.json
+
+[010] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git worktree list --porcelain
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew
+HEAD 3d6df001da3a0633ab91f164d722b595ca76d2e1
+branch refs/heads/task/p273a-prize-aware-inferential-validation
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew-main
+HEAD afac66b26858527be161f64a58ddde5213f8e202
+branch refs/heads/task/cto-roadmap-alignment-20260630
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p277a
+HEAD 9000bb510c79478647e3dcdf3360af08a806bf0c
+branch refs/heads/task/p277a-historical-observation-status-reclassification
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p280amr
+HEAD eac749327218b839a8b81d369831c64f7edab95a
+branch refs/heads/task/p280amr-big649-local-replay-research
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p280aw
+HEAD d9306bb69478097b08a876ab8bd633631f5a0da7
+branch refs/heads/task/p280aw-big649-private-ticket-decision-runner
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p282b
+HEAD e0210462735b7f9e43c02700fe02ebf01dade63c
+branch refs/heads/task/p282b-big649-deduplicated-portfolio-replay
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew-worktrees/p274d-pre-g2-acceptance-evidence-gate-verification
+HEAD 3349631c9ec1f974f4b43bcca870ecf07620db1d
+branch refs/heads/task/p274d-pre-g2-acceptance-evidence-gate-verification
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/amazing-jepsen-b0a5b8
+HEAD d1a6817c47ee5378d3eb5b1c03c5514c99f46531
+detached
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7
+HEAD 7cd02b069407a3823b37d4da4157df666a03db4a
+branch refs/heads/claude/clever-villani-2f0ef7
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/gallant-taussig-6b9a4d
+HEAD d1a6817c47ee5378d3eb5b1c03c5514c99f46531
+detached
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/p218-external-methods-scouting
+HEAD 2478909a92d94397e4d188271972f1ca5bdd3d45
+branch refs/heads/worktree-p218-external-methods-scouting
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/peaceful-burnell-898024
+HEAD d1a6817c47ee5378d3eb5b1c03c5514c99f46531
+detached
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/trusting-chaum-8cc8c5
+HEAD 684bffcea3080f8f1f31c5b9acc3a572907ec4f3
+branch refs/heads/claude/trusting-chaum-8cc8c5
+
+worktree /Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802
+HEAD c8b423d0c1de26253be4cec79ae6de77719d1074
+branch refs/heads/claude/zen-gates-ff6802
+
+[011] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git -C /Users/kelvin/Kelvin-WorkSpace/LotteryNew-main rev-parse --show-toplevel
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main
+
+[012] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git -C /Users/kelvin/Kelvin-WorkSpace/LotteryNew-main branch --show-current
+task/cto-roadmap-alignment-20260630
+
+[013] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git -C /Users/kelvin/Kelvin-WorkSpace/LotteryNew-main rev-parse HEAD
+afac66b26858527be161f64a58ddde5213f8e202
+
+[014] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git -C /Users/kelvin/Kelvin-WorkSpace/LotteryNew-main status --short --branch
+## task/cto-roadmap-alignment-20260630
+ M 00-Plan/roadmap/CTO-Analysis.md
+ M 00-Plan/roadmap/active_task.md
+ M 00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md
+ M 00-Plan/roadmap/agent_bootstrap/SHARED_AGENT_BOOTSTRAP.md
+ M 00-Plan/roadmap/agent_bootstrap/TASK_TEMPLATES.md
+ M 00-Plan/roadmap/roadmap.md
+
+[015] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=128 cmd=git -C /Users/kelvin/Kelvin-WorkSpace/LotteryNew-main rev-parse --abbrev-ref --symbolic-full-name @{u}
+fatal: no upstream configured for branch 'task/cto-roadmap-alignment-20260630'
+
+[016] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=128 cmd=git -C /Users/kelvin/Kelvin-WorkSpace/LotteryNew-main rev-list --left-right --count HEAD...@{u}
+fatal: no upstream configured for branch 'task/cto-roadmap-alignment-20260630'
+
+[017] cwd=/Users/kelvin/Kelvin-WorkSpace/LotteryNew rc=0 cmd=git -C /Users/kelvin/Kelvin-WorkSpace/LotteryNew-main diff --name-only --cached
+
+[NOT RUN] git commit / git push / PR / merge: prohibited.
+[NOT RUN] DB write / migration / WAL checkpoint / production apply: prohibited.
+[NOT RUN] registry publication or future-ticket creation/population: prohibited.
+[NOT RUN] repo governance/source edits: prohibited without separate owner authorization.
+[ARTIFACT WRITE] Generated files only under external evidence root: /Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000
+
+
+===== P298A /Users/kelvin/Kelvin-WorkSpace/p298a_powerlotto_canonical_view_audit_20260630_155049/manifest.json sha256=3fd38656ff45183303744fa2729d6ecd278f12f0cd535a6083a37579c53d1157 bytes=2583 =====
+{
+  "task_id": "P298A_POWER_LOTTO_CANONICAL_VIEW_READINESS_AND_PREDICTED_SECOND_ZONE_AUDIT",
+  "created_at_taipei": "2026-06-30 15:57:24 UTC+08:00+0800",
+  "evidence_root": "/Users/kelvin/Kelvin-WorkSpace/p298a_powerlotto_canonical_view_audit_20260630_155049",
+  "manifest_self_hash": "excluded; manifest covers all non-manifest files present at generation time",
+  "sqlite_read_mode": "mode=ro&immutable=1",
+  "artifacts": [
+    {
+      "path": "commands.log",
+      "sha256": "1322d6807e7594e849342e9cd64332c60910d1db95cf171987c44e3b8636d86c",
+      "bytes": 3358
+    },
+    {
+      "path": "contract_mapping_patch.md",
+      "sha256": "e3535cae39d8d949d426bb3c7927eacb0a0f4ee3e4a2647c16f30edc38a28de9",
+      "bytes": 2484
+    },
+    {
+      "path": "db_sidecars_after.tsv",
+      "sha256": "6587a1301db0028cab51f2e4e4a52db9bca5b687f04a89f302faefd0e11ac81d",
+      "bytes": 22222
+    },
+    {
+      "path": "db_sidecars_before.tsv",
+      "sha256": "6587a1301db0028cab51f2e4e4a52db9bca5b687f04a89f302faefd0e11ac81d",
+      "bytes": 22222
+    },
+    {
+      "path": "db_sidecars_diff.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "handoff_report.md",
+      "sha256": "4916ac38fab881ca91d76398da3f439653b26330160fef95c2c6b9e78486251a",
+      "bytes": 4025
+    },
+    {
+      "path": "p297_evidence_excerpt.txt",
+      "sha256": "049ae838519ddf0a4436ef45182045b55efd685668b9c43b386580b5b5a0c9f1",
+      "bytes": 213860
+    },
+    {
+      "path": "phase0_state.md",
+      "sha256": "bbdb9db20cba85c3c7a477cb4e54873ae7d8cee95a803b4b7a345b6e72da2e14",
+      "bytes": 24687
+    },
+    {
+      "path": "powerlotto_readiness_matrix.csv",
+      "sha256": "29badc0792ef54a5d8ecc555bc3d577942de5b95d5754617d8c0970b5762f3bb",
+      "bytes": 4746
+    },
+    {
+      "path": "powerlotto_source_audit.md",
+      "sha256": "4716bd538cd779f10224c19779771274c36d232cef393579da5de67926891a78",
+      "bytes": 2108
+    },
+    {
+      "path": "predicted_second_zone_audit.csv",
+      "sha256": "65f35356fd203c214e3ebd89aa30b87ca5cef2984a921138cd9b45ba6679da79",
+      "bytes": 2145
+    },
+    {
+      "path": "repo_powerlotto_canonical_scan.txt",
+      "sha256": "e0c3152c8d168092a3780ea10d6d35982ad2081fe1c69961326fa69f9a30f8f3",
+      "bytes": 19599182
+    },
+    {
+      "path": "sqlite_metadata_inspection.txt",
+      "sha256": "521f04cab22809ad11a1f6af465f5986dc4586976a24489350f38b8cb6df8e88",
+      "bytes": 9693
+    }
+  ],
+  "final_classification": "P298A_POWERLOTTO_READINESS_AUDIT_COMPLETE_WITH_RISKS"
+}
+
+
+===== P298A /Users/kelvin/Kelvin-WorkSpace/p298a_powerlotto_canonical_view_audit_20260630_155049/commands.log sha256=1322d6807e7594e849342e9cd64332c60910d1db95cf171987c44e3b8636d86c bytes=3358 =====
+# commands.log
+Evidence root: /Users/kelvin/Kelvin-WorkSpace/p298a_powerlotto_canonical_view_audit_20260630_155049
+Started: 2026-06-30 15:50:49 CST
+
+## Commands run before evidence root creation
+- sed -n '1,240p' /Users/kelvin/.codex/attachments/49577d49-c0a7-4cbf-aaf6-ee4582809772/pasted-text.txt
+- pwd && rg --files | sed -n '1,200p'
+
+## Commands run after evidence root creation
+- ROOT="/Users/kelvin/Kelvin-WorkSpace/p298a_powerlotto_canonical_view_audit_20260630_155049"; mkdir -p "/Users/kelvin/Kelvin-WorkSpace/p298a_powerlotto_canonical_view_audit_20260630_155049"; initialize commands.log
+
+### Phase 0 state capture
+COMMAND: TZ=Asia/Taipei date; pwd; git branch/status metadata; P297 evidence existence; DB sidecar pre-snapshot
+
+### Phase 0 state capture retry
+COMMAND: Capture date, git state, P297 evidence state, and DB sidecar before snapshot with optional LotteryNew-main path guarded.
+NOTE: Previous phase0 capture command exited nonzero because optional LotteryNew-main path was absent under strict shell/pipefail handling.
+
+### Inspect P297A evidence inputs
+COMMAND: sed/head/rg over /Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000 required evidence files
+
+### SQLite immutable metadata inspection
+COMMAND: python3 sqlite3 immutable read-only schema/count inspection over DB candidates from db_sidecars_before.tsv
+SQLite URI pattern: file:<dbpath>?mode=ro&immutable=1
+
+### Diagnose failed SQLite metadata inspection
+COMMAND: ls and sed partial sqlite metadata artifacts after failed inspection
+
+### BSD-compatible DB sidecar pre-snapshot
+COMMAND: find DB and SQLite sidecar files with macOS stat before any actual SQLite open
+
+### Review DB sidecar pre-snapshot
+COMMAND: sed -n 1,200p db_sidecars_before.tsv
+
+### Extract P297A evidence keywords
+COMMAND: rg P297 evidence excerpt for DB path, POWER_LOTTO, predicted_special, canonical, status
+
+### SQLite immutable metadata inspection retry on inferred replay DB
+COMMAND: python3 sqlite3 immutable read-only schema/count inspection for /Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db
+SQLite URI: file:/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db?mode=ro&immutable=1
+
+### Review immutable metadata facts
+COMMAND: rg selected sections from sqlite_metadata_inspection.txt and diff db sidecars
+
+### Extract full POWER_LOTTO metadata sections
+COMMAND: sed selected line ranges from sqlite_metadata_inspection.txt
+
+### Repo text scan for POWER_LOTTO canonical/source references
+COMMAND: rg -n POWER_LOTTO/canonical/draws/source terms across repo excluding node_modules/coverage/.git
+
+### Inspect database canonical helper source
+COMMAND: rg/sed lottery_api/database.py get_canonical_draws and canonical view constants
+
+### Inspect database canonical helper body
+COMMAND: sed -n 700,845p lottery_api/database.py
+
+### Final artifact generation, validation capture, and manifest creation
+COMMAND: python3 inline script to parse P297A/immutable metadata outputs, write required P298A artifacts, capture final git state, mark prohibited commands NOT RUN, and create manifest.json
+
+### Prohibited/skipped commands
+NOT RUN: commit
+NOT RUN: push
+NOT RUN: pull request
+NOT RUN: merge
+NOT RUN: DB write
+NOT RUN: migration
+NOT RUN: checkpoint
+NOT RUN: registry publication
+NOT RUN: future-ticket creation
+NOT RUN: production apply
+
+
+===== P298A /Users/kelvin/Kelvin-WorkSpace/p298a_powerlotto_canonical_view_audit_20260630_155049/phase0_state.md sha256=bbdb9db20cba85c3c7a477cb4e54873ae7d8cee95a803b4b7a345b6e72da2e14 bytes=24687 =====
+# P298A Phase 0 State
+
+## Current Context
+- Current date/time: 2026-06-30 15:51:53 CST (+0800)
+- Repo path: /Users/kelvin/Kelvin-WorkSpace/LotteryNew
+- Branch: task/p273a-prize-aware-inferential-validation
+- HEAD: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+- Upstream: origin/task/p273a-prize-aware-inferential-validation
+- Ahead/behind: 0	1
+
+## Working Tree Status
+```
+ M 00-Plan/roadmap/agent_bootstrap/SHARED_AGENT_BOOTSTRAP.md
+ M 00-Plan/roadmap/agent_bootstrap/TASK_TEMPLATES.md
+ M backend.pid
+ M claude-code-showcase
+ M data/lottery_v2.db
+ M frontend.pid
+ M lottery_api/data/performance_history.json
+?? .gstack/
+?? ".schema strategy_replay_runs"
+?? claude-code-showcase.worktrees/
+?? data/performance_history.json
+?? lottery_api/data/ingest_log.jsonl
+?? outputs/research/p245a_external_predictive_method_scouting_20260605.json
+?? outputs/research/p245a_external_predictive_method_scouting_20260605.md
+?? outputs/research/p251d_evidence_dashboard_readonly_api_route_20260609.json
+?? outputs/research/p251d_evidence_dashboard_readonly_api_route_20260609.md
+?? runtime/
+?? tests/test_p245a_external_predictive_method_scouting.py
+```
+
+## Staged Status
+```
+```
+
+## Protected/Stale Worktree Check
+- Stale/protected worktree indicator: YES - current path is protected path and branch is task/p273a-prize-aware-inferential-validation.
+
+## LotteryNew-main State
+- Exists: NO
+
+## P297A Evidence Root
+- Exists: YES - /Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000
+- Required inputs:
+  - manifest.json: PRESENT
+  - handoff_report.md: PRESENT
+  - limitations.md: PRESENT
+  - strategy_inventory.csv: PRESENT
+  - unified_replay_metrics_contract.md: PRESENT
+
+## DB Candidates Before SQLite Read
+No SQLite database was successfully opened before this BSD-compatible snapshot. The earlier GNU find attempt produced an empty candidate list on macOS.
+```
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main/backups/p213h_lottery_v2_backup_20260605_20260605_142219.db	99368960	2026-06-20 13:13:48 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main/backups/p213l_lottery_v2_backup_20260605_20260605_151715.db	99368960	2026-06-20 13:13:48 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main/data/lottery.db	28672	2026-06-20 13:13:48 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main/data/lottery_v2.db	217088	2026-06-20 13:13:48 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main/lottery-api/data/lottery_v2.db	28672	2026-06-20 13:13:48 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main/lottery.db	0	2026-06-20 13:13:48 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main/lottery_api/data/lottery_v2.db	99368960	2026-06-28 19:23:39 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main/lottery_v2.db	0	2026-06-20 13:13:48 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew-main/tools/data/lottery_v2.db	28672	2026-06-20 13:13:50 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/amazing-jepsen-b0a5b8/data/lottery.db	28672	2026-06-01 13:56:16 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/amazing-jepsen-b0a5b8/data/lottery_v2.db	217088	2026-06-01 13:56:16 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/amazing-jepsen-b0a5b8/lottery-api/data/lottery_v2.db	28672	2026-06-01 13:56:16 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/amazing-jepsen-b0a5b8/lottery.db	0	2026-06-01 13:56:16 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/amazing-jepsen-b0a5b8/lottery_api/data/lottery_v2.db	44261376	2026-06-01 13:56:16 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/amazing-jepsen-b0a5b8/lottery_v2.db	0	2026-06-01 13:56:16 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/amazing-jepsen-b0a5b8/tools/data/lottery_v2.db	28672	2026-06-01 13:56:19 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7/data/lottery.db	28672	2026-05-19 19:59:55 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7/data/lottery_v2.db	217088	2026-05-19 19:59:55 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7/lottery-api/data/lottery_v2.db	28672	2026-05-19 19:59:55 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7/lottery.db	0	2026-05-19 19:59:55 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7/lottery_api/data/lottery_v2.db	14958592	2026-05-19 20:08:35 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7/lottery_api/data/lottery_v2.db-shm	32768	2026-05-19 21:09:55 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7/lottery_api/data/lottery_v2.db-wal	0	2026-05-19 20:08:39 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7/lottery_v2.db	0	2026-05-19 19:59:55 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/clever-villani-2f0ef7/tools/data/lottery_v2.db	28672	2026-05-19 19:59:56 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/gallant-taussig-6b9a4d/data/lottery.db	28672	2026-06-01 17:03:18 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/gallant-taussig-6b9a4d/data/lottery_v2.db	217088	2026-06-01 17:03:18 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/gallant-taussig-6b9a4d/lottery-api/data/lottery_v2.db	28672	2026-06-01 17:03:21 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/gallant-taussig-6b9a4d/lottery.db	0	2026-06-01 17:03:21 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/gallant-taussig-6b9a4d/lottery_api/data/lottery_v2.db	44261376	2026-06-01 17:03:21 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/gallant-taussig-6b9a4d/lottery_v2.db	0	2026-06-01 17:03:21 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/gallant-taussig-6b9a4d/tools/data/lottery_v2.db	28672	2026-06-01 17:03:26 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/p218-external-methods-scouting/backups/p213h_lottery_v2_backup_20260605_20260605_142219.db	99368960	2026-06-05 17:44:45 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/p218-external-methods-scouting/backups/p213l_lottery_v2_backup_20260605_20260605_151715.db	99368960	2026-06-05 17:44:46 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/p218-external-methods-scouting/data/lottery.db	28672	2026-06-05 17:44:46 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/p218-external-methods-scouting/data/lottery_v2.db	217088	2026-06-05 17:44:46 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/p218-external-methods-scouting/lottery-api/data/lottery_v2.db	28672	2026-06-05 17:44:46 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/p218-external-methods-scouting/lottery.db	0	2026-06-05 17:44:46 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/p218-external-methods-scouting/lottery_v2.db	0	2026-06-05 17:44:47 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/p218-external-methods-scouting/tools/data/lottery_v2.db	28672	2026-06-05 17:44:49 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/peaceful-burnell-898024/data/lottery.db	28672	2026-06-01 15:10:24 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/peaceful-burnell-898024/data/lottery_v2.db	217088	2026-06-01 15:10:24 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/peaceful-burnell-898024/lottery-api/data/lottery_v2.db	28672	2026-06-01 15:10:28 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/peaceful-burnell-898024/lottery.db	0	2026-06-01 15:10:28 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/peaceful-burnell-898024/lottery_api/data/lottery_v2.db	44261376	2026-06-01 15:10:28 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/peaceful-burnell-898024/lottery_v2.db	0	2026-06-01 15:10:28 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/peaceful-burnell-898024/tools/data/lottery_v2.db	28672	2026-06-01 15:10:33 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/trusting-chaum-8cc8c5/data/lottery.db	28672	2026-05-28 09:41:07 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/trusting-chaum-8cc8c5/data/lottery_v2.db	217088	2026-05-28 09:41:07 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/trusting-chaum-8cc8c5/lottery-api/data/lottery_v2.db	28672	2026-05-28 09:41:07 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/trusting-chaum-8cc8c5/lottery.db	0	2026-05-28 09:41:07 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/trusting-chaum-8cc8c5/lottery_api/data/lottery_v2.db	44261376	2026-05-28 09:41:07 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/trusting-chaum-8cc8c5/lottery_v2.db	0	2026-05-28 09:41:08 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/trusting-chaum-8cc8c5/tools/data/lottery_v2.db	28672	2026-05-28 09:41:10 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p131_backup_20260528T140744Z.db	71782400	2026-05-28 20:42:13 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p131_backup_20260528T140744Z.db-shm	32768	2026-05-28 22:07:44 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p131_backup_20260528T140744Z.db-wal	0	2026-05-28 22:07:44 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p132_backup_20260529T014550Z.db	71782400	2026-05-28 22:07:46 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p132_backup_20260529T014550Z.db-shm	32768	2026-05-29 09:45:50 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p132_backup_20260529T014550Z.db-wal	0	2026-05-29 09:45:50 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p133_backup_20260529T021339Z.db	71782400	2026-05-29 09:45:54 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p133_backup_20260529T021339Z.db-shm	32768	2026-05-29 10:13:39 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p133_backup_20260529T021339Z.db-wal	0	2026-05-29 10:13:39 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p134_backup_20260529T022924Z.db	71782400	2026-05-29 10:13:43 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p134_backup_20260529T022924Z.db-shm	32768	2026-05-29 10:29:24 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p134_backup_20260529T022924Z.db-wal	0	2026-05-29 10:29:24 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p138b_backup_20260529T034010Z.db	71782400	2026-05-29 10:29:29 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p138b_backup_20260529T034010Z.db-shm	32768	2026-05-29 11:40:10 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p138b_backup_20260529T034010Z.db-wal	0	2026-05-29 11:40:10 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p140_backup_20260529T043650Z.db	71782400	2026-05-29 11:40:10 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p140_backup_20260529T043650Z.db-shm	32768	2026-05-29 12:36:50 +0800
+/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802/backups/lottery_v2.db.p1
+
+===== P298A /Users/kelvin/Kelvin-WorkSpace/p298a_powerlotto_canonical_view_audit_20260630_155049/powerlotto_source_audit.md sha256=4716bd538cd779f10224c19779771274c36d232cef393579da5de67926891a78 bytes=2108 =====
+# POWER_LOTTO Source Audit
+
+## Scope
+Read-only repo inspection plus SQLite metadata reads through `file:/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db?mode=ro&immutable=1`.
+
+## Inspected DB Objects
+- `draws`: present. POWER_LOTTO raw/source draw rows observed: 1,924.
+- `strategy_prediction_replays`: present. POWER_LOTTO replay rows observed: 36,104.
+- `draws_big_lotto_canonical_main`: present as the only DB view whose name/schema contains `canonical`.
+- POWER_LOTTO canonical DB view: absent. No `draws_power_lotto_canonical_*` or equivalent POWER_LOTTO canonical view was found in `sqlite_master`.
+
+## Inspected Source Files / Evidence
+- `/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/database.py`: `get_canonical_draws()` has a BIG_LOTTO view-backed path and a non-BIG_LOTTO direct `draws WHERE lottery_type = ?` path. This confirms no POWER_LOTTO-specific canonical helper/view path in this file.
+- `/Users/kelvin/Kelvin-WorkSpace/LotteryNew/memory/lessons.md`: governance notes distinguish POWER_LOTTO draw rows from replay rows and document that BIG_LOTTO canonical isolation work was separate.
+- `/Users/kelvin/Kelvin-WorkSpace/p297a_read_only_contract_20260630_140000/*`: P297A states the canonical replay DB is inferred as `lottery_api/data/lottery_v2.db`, confirms no POWER_LOTTO canonical view, and records the 27,104 / 36,104 missing `predicted_special` blocker.
+
+## Findings
+- Confirmed: POWER_LOTTO raw/source draw data exists in `draws` within the inferred replay DB.
+- Confirmed: POWER_LOTTO replay rows exist in `strategy_prediction_replays`.
+- Confirmed: no POWER_LOTTO canonical view exists in inspected SQLite views.
+- Inferred: the minimum safe unblock path requires defining and validating a POWER_LOTTO canonical source/view contract before full prize-aware replay can be considered. The existing non-BIG_LOTTO `get_canonical_draws()` direct query is not a DB-level POWER_LOTTO canonical view.
+- Unknown: whether POWER_LOTTO needs exclusions analogous to BIG_LOTTO contamination families. This audit did not derive or apply a new canonical filter.
+
+
+===== P298A /Users/kelvin/Kelvin-WorkSpace/p298a_powerlotto_canonical_view_audit_20260630_155049/predicted_second_zone_audit.csv sha256=65f35356fd203c214e3ebd89aa30b87ca5cef2984a921138cd9b45ba6679da79 bytes=2145 =====
+lottery_type,strategy_id,sample_size_rows,distinct_target_draws,min_target_draw,max_target_draw,min_target_date,max_target_date,max_bet_index,predicted_special_null_rows,predicted_special_nonnull_rows,row_scope
+POWER_LOTTO,__ALL_POWER_LOTTO__,36104,1551,101000002,99000104,,,5,27104,9000,all POWER_LOTTO replay rows in strategy_prediction_replays
+POWER_LOTTO,cold_complement_2bet,1500,1500,101000002,115000040,2012/01/05,2026/05/18,1,0,1500,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,fourier30_markov30_2bet,1501,1501,101000002,115000041,2012/01/05,2026/05/21,1,1,1500,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,fourier_rhythm_3bet,4503,1501,101000002,115000041,2012/01/05,2026/05/21,3,4503,0,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,midfreq_fourier_2bet,1500,1500,101000002,115000040,2012/01/05,2026/05/18,1,0,1500,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,midfreq_fourier_mk_3bet,4500,1500,101000002,115000040,2012/01/05,2026/05/18,3,3000,1500,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,power_fourier_rhythm_2bet,3000,1500,101000003,115000041,2012/01/09,2026/05/21,2,3000,0,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,power_orthogonal_5bet,7550,1550,101000002,99000104,2010/07/12,2026/05/18,5,7550,0,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,power_precision_3bet,4550,1550,101000002,99000104,2010/07/12,2026/05/18,3,4550,0,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,pp3_freqort_4bet,6000,1500,101000002,115000040,2012/01/05,2026/05/18,4,4500,1500,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,zonal_entropy_2bet,1500,1500,101000002,115000040,2012/01/05,2026/05/18,1,0,1500,strategy_prediction_replays grouped by strategy_id
+POWER_LOTTO,__NONNULL_SUBSET__,9000,1500,101000002,115000040,2012/01/05,2026/05/18,,0,9000,valid research-only subset where predicted_special IS NOT NULL; no missing values filled or substituted
+POWER_LOTTO,__NULL_EXCLUDED_SUBSET__,,,,,,,,,0,excluded subset where predicted_special IS NULL; must not be filled or substituted
+
+
+===== P298A /Users/kelvin/Kelvin-WorkSpace/p298a_powerlotto_canonical_view_audit_20260630_155049/powerlotto_readiness_matrix.csv sha256=29badc0792ef54a5d8ecc555bc3d577942de5b95d5754617d8c0970b5762f3bb bytes=4746 =====
+lottery,strategy_id,strategy_name,p297_current_status,p297_lifecycle_status,db_replay_rows,db_distinct_target_draws,predicted_special_null_rows,predicted_special_nonnull_rows,canonical_source_status,readiness_classification,blocked_reason,valid_subset_description
+POWER_LOTTO,cold_complement_2bet,cold_complement_2bet,,,1500,1500,0,1500,ABSENT,PARTIAL_SUBSET_ONLY,POWER_LOTTO canonical draw view is absent and full POWER_LOTTO prize-aware replay remains blocked; this strategy has only rows where predicted_special IS NOT NULL eligible for research-only subset evaluation.,1500 rows with predicted_special IS NOT NULL; exclude NULL rows with exclusion_reason=predicted_second_zone_missing.
+POWER_LOTTO,fourier30_markov30_2bet,fourier30_markov30_2bet,,,1501,1501,1,1500,ABSENT,PARTIAL_SUBSET_ONLY,POWER_LOTTO canonical draw view is absent and full POWER_LOTTO prize-aware replay remains blocked; this strategy has only rows where predicted_special IS NOT NULL eligible for research-only subset evaluation. Exclude 1 rows where predicted_special IS NULL.,1500 rows with predicted_special IS NOT NULL; exclude NULL rows with exclusion_reason=predicted_second_zone_missing.
+POWER_LOTTO,fourier_rhythm_3bet,威力彩 Fourier Rhythm 3注,,,4503,1501,4503,0,ABSENT,BLOCKED,All inspected replay rows for this strategy have predicted_special IS NULL; missing second-zone predictions block prize-aware POWER_LOTTO evaluation.,No valid predicted_special non-null subset for this strategy.
+POWER_LOTTO,h6_gate_mk20_ew85,威力彩 H6 Gate mk20 ew85,,,0,0,0,0,ABSENT,NOT_READY,No POWER_LOTTO replay rows with predicted_special in inspected DB; cannot enter prize-aware replay evaluation.,No valid subset in inspected DB for this strategy.
+POWER_LOTTO,midfreq_fourier_2bet,威力彩 MidFreq+Fourier 2注,,,1500,1500,0,1500,ABSENT,PARTIAL_SUBSET_ONLY,POWER_LOTTO canonical draw view is absent and full POWER_LOTTO prize-aware replay remains blocked; this strategy has only rows where predicted_special IS NOT NULL eligible for research-only subset evaluation.,1500 rows with predicted_special IS NOT NULL; exclude NULL rows with exclusion_reason=predicted_second_zone_missing.
+POWER_LOTTO,midfreq_fourier_mk_3bet,威力彩 MidFreq+Fourier+Markov 3注,,,4500,1500,3000,1500,ABSENT,PARTIAL_SUBSET_ONLY,POWER_LOTTO canonical draw view is absent and full POWER_LOTTO prize-aware replay remains blocked; this strategy has only rows where predicted_special IS NOT NULL eligible for research-only subset evaluation. Exclude 3000 rows where predicted_special IS NULL.,1500 rows with predicted_special IS NOT NULL; exclude NULL rows with exclusion_reason=predicted_second_zone_missing.
+POWER_LOTTO,power_fourier_rhythm_2bet,power_fourier_rhythm_2bet,,,3000,1500,3000,0,ABSENT,BLOCKED,All inspected replay rows for this strategy have predicted_special IS NULL; missing second-zone predictions block prize-aware POWER_LOTTO evaluation.,No valid predicted_special non-null subset for this strategy.
+POWER_LOTTO,power_orthogonal_5bet,威力彩 Orthogonal 5注,,,7550,1550,7550,0,ABSENT,BLOCKED,All inspected replay rows for this strategy have predicted_special IS NULL; missing second-zone predictions block prize-aware POWER_LOTTO evaluation.,No valid predicted_special non-null subset for this strategy.
+POWER_LOTTO,power_precision_3bet,威力彩 Precision 3注,,,4550,1550,4550,0,ABSENT,BLOCKED,All inspected replay rows for this strategy have predicted_special IS NULL; missing second-zone predictions block prize-aware POWER_LOTTO evaluation.,No valid predicted_special non-null subset for this strategy.
+POWER_LOTTO,power_shlc_midfreq,威力彩 SHLC 中頻指標,,,0,0,0,0,ABSENT,NOT_READY,No POWER_LOTTO replay rows with predicted_special in inspected DB; cannot enter prize-aware replay evaluation.,No valid subset in inspected DB for this strategy.
+POWER_LOTTO,pp3_freqort_4bet,威力彩 PP3+FreqOrt 4注,,,6000,1500,4500,1500,ABSENT,PARTIAL_SUBSET_ONLY,POWER_LOTTO canonical draw view is absent and full POWER_LOTTO prize-aware replay remains blocked; this strategy has only rows where predicted_special IS NOT NULL eligible for research-only subset evaluation. Exclude 4500 rows where predicted_special IS NULL.,1500 rows with predicted_special IS NOT NULL; exclude NULL rows with exclusion_reason=predicted_second_zone_missing.
+POWER_LOTTO,zonal_entropy_2bet,zonal_entropy_2bet,,,1500,1500,0,1500,ABSENT,PARTIAL_SUBSET_ONLY,POWER_LOTTO canonical draw view is absent and full POWER_LOTTO prize-aware replay remains blocked; this strategy has only rows where predicted_special IS NOT NULL eligible for research-only subset evaluation.,1500 rows with predicted_special IS NOT NULL; exclude NULL rows with exclusion_reason=predicted_second_zone_missing.
+
+
+===== P298A /Users/kelvin/Kelvin-WorkSpace/p298a_powerlotto_canonical_view_audit_20260630_155049/contract_mapping_patch.md sha256=e3535cae39d8d949d426bb3c7927eacb0a0f4ee3e4a2647c16f30edc38a28de9 bytes=2484 =====
+# Contract Mapping Patch Proposal
+
+This is a proposal only. P297A contract files were not modified.
+
+## POWER_LOTTO Row Semantics
+- `eligibility_status=PARTIAL`: use only for rows where `lottery='POWER_LOTTO'`, `predicted_special IS NOT NULL`, replay identity fields are present, and the row is explicitly scoped to research-only partial subset evaluation.
+- `eligibility_status=EXCLUDED`: use for rows where `lottery='POWER_LOTTO'` and `predicted_special IS NULL`; set `exclusion_reason=predicted_second_zone_missing`.
+- `eligibility_status=NOT_READY`: use for POWER_LOTTO strategy rows with no replay rows or no eligible non-null second-zone replay subset.
+- `eligibility_status=ELIGIBLE`: do not use for full POWER_LOTTO prize-aware replay until a validated POWER_LOTTO canonical source/view exists and second-zone predictions are structurally complete for the intended scope.
+
+## Required Fields
+- `exclusion_reason`: `predicted_second_zone_missing` for the 27,104 NULL rows. Use `powerlotto_canonical_view_absent` when the row/scope is blocked by absent canonical source rather than row-level missing second-zone.
+- `canonical_source_status`: `ABSENT` for current full POWER_LOTTO replay readiness; `PARTIAL` only if a future contract explicitly scopes raw draw source use to research-only subset; `PRESENT` only after a verified POWER_LOTTO canonical view/source contract exists.
+- `inferential_status`: `NOT_READY` for rows lacking canonical source or prospective threshold/horizon. `NULL` or `NO_GO` may represent retrospective-only evidence, but must not imply future prediction ability.
+- `readiness_status`: `NOT_READY` for full POWER_LOTTO prize-aware replay today. `PARTIAL_SUBSET_ONLY` may be used in downstream matrices for the 9,000-row non-null subset, but not as production readiness.
+
+## Mapping
+| Condition | eligibility_status | exclusion_reason | canonical_source_status | inferential_status | readiness_status |
+|---|---|---|---|---|---|
+| POWER_LOTTO `predicted_special IS NULL` | EXCLUDED | predicted_second_zone_missing | ABSENT | NOT_READY | NOT_READY |
+| POWER_LOTTO `predicted_special IS NOT NULL`, no canonical view | PARTIAL |  | ABSENT | NULL_OR_NO_GO_RETROSPECTIVE_ONLY | PARTIAL_SUBSET_ONLY |
+| POWER_LOTTO strategy has no replay rows | NOT_READY | no_replay_rows | ABSENT | NOT_READY | NOT_READY |
+| Future validated canonical source and complete predicted second zone | ELIGIBLE |  | PRESENT | per prospective contract | per prospective contract |
+
+
+===== P298A /Users/kelvin/Kelvin-WorkSpace/p298a_powerlotto_canonical_view_audit_20260630_155049/handoff_report.md sha256=4916ac38fab881ca91d76398da3f439653b26330160fef95c2c6b9e78486251a bytes=4025 =====
+# P298A Handoff Report
+
+## Final Classification
+`P298A_POWERLOTTO_READINESS_AUDIT_COMPLETE_WITH_RISKS`
+
+Risk basis: the repo was dirty before this run, and the inferred replay DB has pre-existing sidecars. No repo tracked files were intentionally modified by this audit, and sidecar pre/after inventories are identical.
+
+## Answer
+POWER_LOTTO full prize-aware replay cannot be safely unblocked now. The blocking gaps are:
+
+1. No POWER_LOTTO canonical DB view/source contract exists in the inspected replay DB. The only canonical view found is `draws_big_lotto_canonical_main`.
+2. 27,104 of 36,104 POWER_LOTTO replay rows have `predicted_special IS NULL`, so full second-zone prize-aware scoring would require missing values. This audit did not fill, substitute, or manufacture those values.
+
+A valid research-only subset can be described as: `strategy_prediction_replays WHERE lottery_type='POWER_LOTTO' AND predicted_special IS NOT NULL`. It contains 9,000 rows across 6 strategies and 1,500 distinct target draws, with target draw range 101000002..115000040 and target date range 2012/01/05..2026/05/18. The excluded complement is 27,104 rows where `predicted_special IS NULL`.
+
+## Confirmed
+- P297A evidence root exists and required evidence inputs are present.
+- Inferred replay DB: `/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db`.
+- SQLite metadata reads used immutable read-only URI mode.
+- `draws` contains POWER_LOTTO source draw rows, but this is not a canonical POWER_LOTTO view.
+- `strategy_prediction_replays` contains POWER_LOTTO replay rows.
+- POWER_LOTTO predicted second-zone counts: 27,104 NULL and 9,000 non-null.
+- DB sidecar pre/after inventories are identical.
+
+## Inferred
+- The minimum safe unblock path is to define and validate a POWER_LOTTO canonical source/view contract, then replay or regenerate POWER_LOTTO predictions so `predicted_special` is structurally complete for the intended prize-aware scope.
+- Existing non-BIG_LOTTO `get_canonical_draws()` behavior is a direct source query and should not be treated as proof of a POWER_LOTTO canonical DB view.
+
+## Unknown
+- Whether POWER_LOTTO raw draw rows require exclusions analogous to BIG_LOTTO contamination families.
+- Which branch/worktree should become canonical for future apply work; this audit is read-only and did not sync or publish.
+
+## Validation
+- PASS: evidence root exists.
+- PASS: required output artifacts were created.
+- PASS: manifest covers all non-manifest artifacts in this evidence root; manifest self-hash is excluded and documented.
+- PASS: DB sidecar pre/after inventories are identical.
+- PASS_WITH_RISK: repo was already dirty before run; this audit made no intentional repo writes.
+- PASS: staged files after run: none observed if the staged-status section below is empty.
+- PASS: no DB sidecar creation caused by this run.
+- PASS: no missing predicted second-zone values were filled, substituted, or manufactured.
+- NOT RUN: commit, push, PR, merge.
+- NOT RUN: DB write, migration, checkpoint.
+- NOT RUN: registry publication.
+- NOT RUN: future-ticket creation.
+
+## Final Repo State Capture
+Captured: 2026-06-30 15:57:24 UTC+08:00+0800
+
+### `git status --short`
+```text
+M 00-Plan/roadmap/agent_bootstrap/SHARED_AGENT_BOOTSTRAP.md
+ M 00-Plan/roadmap/agent_bootstrap/TASK_TEMPLATES.md
+ M backend.pid
+ M claude-code-showcase
+ M data/lottery_v2.db
+ M frontend.pid
+ M lottery_api/data/performance_history.json
+?? .gstack/
+?? ".schema strategy_replay_runs"
+?? claude-code-showcase.worktrees/
+?? data/performance_history.json
+?? lottery_api/data/ingest_log.jsonl
+?? outputs/research/p245a_external_predictive_method_scouting_20260605.json
+?? outputs/research/p245a_external_predictive_method_scouting_20260605.md
+?? outputs/research/p251d_evidence_dashboard_readonly_api_route_20260609.json
+?? outputs/research/p251d_evidence_dashboard_readonly_api_route_20260609.md
+?? runtime/
+?? tests/test_p245a_external_predictive_method_scouting.py
+```
+
+### `git diff --cached --name-status`
+```text
+
+```
+

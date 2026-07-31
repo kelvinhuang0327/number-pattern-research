@@ -1,0 +1,67 @@
+{
+  "p47_version": "20260524",
+  "wave": 4,
+  "lottery_type": "POWER_LOTTO",
+  "total_dryrun_rows": 4500,
+  "strategies": [
+    {
+      "strategy_id": "pp3_freqort_4bet",
+      "row_count": 1500,
+      "lifecycle": "DRY_RUN"
+    },
+    {
+      "strategy_id": "midfreq_fourier_mk_3bet",
+      "row_count": 1500,
+      "lifecycle": "DRY_RUN"
+    },
+    {
+      "strategy_id": "midfreq_fourier_2bet",
+      "row_count": 1500,
+      "lifecycle": "DRY_RUN"
+    }
+  ],
+  "temp_rehearsal": {
+    "R1_insert_count": 4500,
+    "R2_duplicate_count": 0,
+    "R3_rollback": "PASS"
+  },
+  "production_rows_before": 37960,
+  "production_rows_after": 37960,
+  "first_zone_format": "6 unique ints in [1,38]",
+  "special_zone_format": "1 int in [1,8]",
+  "special_hit_semantics": "predicted_special == actual_special",
+  "hit_count_semantics": "first_zone_only",
+  "schema_validation": {
+    "valid": true,
+    "error_count": 0
+  },
+  "powerlotto_format_validation": {
+    "numbers_per_prediction": 6,
+    "first_zone_range": "1-38",
+    "special_zone_range": "1-8",
+    "no_duplicates": true,
+    "format_ok": true,
+    "special_format_ok": true
+  },
+  "leakage_check": {
+    "violation_count": 0,
+    "violations": [],
+    "pass": true
+  },
+  "all_rehearsals_pass": true,
+  "classification": "P47_POWERLOTTO_WAVE4_DRYRUN_REHEARSAL_READY",
+  "lifecycle_semantics": {
+    "all_rows_lifecycle": "DRY_RUN",
+    "online_rows": 0,
+    "retired_rows": 0,
+    "note": "P47 is dry-run only. Production apply requires P48 authorization."
+  },
+  "production_apply_readiness": {
+    "ready": true,
+    "requires_p48_authorization": true,
+    "blockers": []
+  },
+  "run_id": "p47_wave4_powerlotto_dryrun_20260524",
+  "started_at": "2026-05-24T13:09:46.868041+00:00",
+  "finished_at": "2026-05-24T13:10:01.685374+00:00"
+}

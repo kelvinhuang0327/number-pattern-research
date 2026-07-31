@@ -1,0 +1,180 @@
+{
+  "generated_at": "2026-05-17T03:49:15Z",
+  "final_classification": "P5_NEXT_DRAW_MONITORING_READY",
+  "db_counts": {
+    "prediction_runs": 177,
+    "prediction_items": 1101,
+    "replay_rows": 975
+  },
+  "target_prediction_runs": [
+    {
+      "id": 176,
+      "lottery_type": "BIG_LOTTO",
+      "latest_known_draw": "115000052",
+      "latest_known_date": "2026/05/12",
+      "strategy_name": "Triple Strike",
+      "notes": "controlled_apply_id=P4C3_20260516;source_sha256=9501d3d7b75f3debf231af3b79641a55b784f28a1038cb5f47bd2b73250aa424;fingerprint=a81e8366344b1173ebd68d6c2d7d1f7c8c622dc180fc949af3355ad15a10f756",
+      "created_at": "2026-05-17 03:38:37",
+      "snapshot_source": "VALID",
+      "analyzed": "未研究",
+      "analysis_note": "controlled_apply_id=P4C3_20260516",
+      "review_json": "{\n  \"apply_fingerprint\": \"a81e8366344b1173ebd68d6c2d7d1f7c8c622dc180fc949af3355ad15a10f756\",\n  \"controlled_apply_id\": \"P4C3_20260516\",\n  \"source_final_classification\": \"P4B_QUICK_PREDICT_DRYRUN_READY\",\n  \"source_path\": \"outputs/replay/p4c_quick_predict_dryrun_big_lotto_20260516.json\",\n  \"source_sha256\": \"9501d3d7b75f3debf231af3b79641a55b784f28a1038cb5f47bd2b73250aa424\",\n  \"source_summary\": {\n    \"baseline\": 5.49,\n    \"bets\": [\n      {\n        \"numbers\": [\n          7,\n          8,\n          15,\n          23,\n          37,\n          40\n        ]\n      },\n      {\n        \"numbers\": [\n          3,\n          21,\n          30,\n          31,\n          34,\n          49\n        ]\n      },\n      {\n        \"numbers\": [\n          14,\n          20,\n          22,\n          25,\n          39,\n          41\n        ]\n      }\n    ],\n    \"coverage\": {\n      \"coverage_rate\": 36.7,\n      \"covered_numbers\": 18,\n      \"max_numbers\": 49\n    },\n    \"input_history_count\": 2134,\n    \"last_draw\": {\n      \"date\": \"2026/05/12\",\n      \"draw\": \"115000052\",\n      \"numbers\": [\n        6,\n        12,\n        18,\n        19,\n        32,\n        36\n      ],\n      \"special\": 34\n    },\n    \"lottery_name\": \"大樂透\",\n    \"lottery_type\": \"BIG_LOTTO\",\n    \"next_draw\": \"115000053\",\n    \"num_bets\": 3,\n    \"strategy\": \"Triple Strike\",\n    \"strategy_info\": {\n      \"edge\": \"+0.98%\",\n      \"strategy\": \"Triple Strike\",\n      \"verified\": \"1500期 STABLE\"\n    },\n    \"warnings\": []\n  }\n}"
+    },
+    {
+      "id": 177,
+      "lottery_type": "POWER_LOTTO",
+      "latest_known_draw": "115000035",
+      "latest_known_date": "2026/04/30",
+      "strategy_name": "Power Precision (Edge +2.23%)",
+      "notes": "controlled_apply_id=P4C3_20260516;source_sha256=37bbfc0e5eb76ae3e02e6daf5b6b25c02f8e129576e8e6e964630a44149d0fca;fingerprint=652ee0caa5c3d9218e6f5444aad7f23ce4e79dc8ec669dd1704bdf3fbcd9e577",
+      "created_at": "2026-05-17 03:38:37",
+      "snapshot_source": "VALID",
+      "analyzed": "未研究",
+      "analysis_note": "controlled_apply_id=P4C3_20260516",
+      "review_json": "{\n  \"apply_fingerprint\": \"652ee0caa5c3d9218e6f5444aad7f23ce4e79dc8ec669dd1704bdf3fbcd9e577\",\n  \"controlled_apply_id\": \"P4C3_20260516\",\n  \"source_final_classification\": \"P4B_QUICK_PREDICT_DRYRUN_READY\",\n  \"source_path\": \"outputs/replay/p4c_quick_predict_dryrun_power_lotto_20260516.json\",\n  \"source_sha256\": \"37bbfc0e5eb76ae3e02e6daf5b6b25c02f8e129576e8e6e964630a44149d0fca\",\n  \"source_summary\": {\n    \"baseline\": 11.17,\n    \"bets\": [\n      {\n        \"numbers\": [\n          14,\n          15,\n          16,\n          22,\n          33,\n          37\n        ],\n        \"special\": 2\n      },\n      {\n        \"numbers\": [\n          11,\n          18,\n          24,\n          26,\n          29,\n          35\n        ],\n        \"special\": 2\n      },\n      {\n        \"numbers\": [\n          2,\n          6,\n          8,\n          27,\n          30,\n          38\n        ],\n        \"special\": 2\n      }\n    ],\n    \"coverage\": {\n      \"coverage_rate\": 47.4,\n      \"covered_numbers\": 18,\n      \"max_numbers\": 38\n    },\n    \"input_history_count\": 1907,\n    \"last_draw\": {\n      \"date\": \"2026/04/30\",\n      \"draw\": \"115000035\",\n      \"numbers\": [\n        1,\n        4,\n        13,\n        19,\n        27,\n        30\n      ],\n      \"special\": 8\n    },\n    \"lottery_name\": \"威力彩\",\n    \"lottery_type\": \"POWER_LOTTO\",\n    \"next_draw\": \"115000036\",\n    \"num_bets\": 3,\n    \"special_top3\": [\n      2,\n      4,\n      5\n    ],\n    \"strategy\": \"Power Precision (Edge +2.23%)\",\n    \"strategy_info\": {\n      \"edge\": \"+2.23%\",\n      \"strategy\": \"Power Precision\",\n      \"verified\": \"1500期 STABLE z=2.74\"\n    },\n    \"warnings\": []\n  }\n}"
+    }
+  ],
+  "target_prediction_items": [
+    {
+      "id": 1096,
+      "run_id": 176,
+      "bet_index": 1,
+      "numbers": "[7, 8, 15, 23, 37, 40]",
+      "special": null,
+      "status": "PENDING",
+      "created_at": "2026-05-17 03:38:37",
+      "strategy_name": "Triple Strike",
+      "num_bets": 3,
+      "zone_coverage": "{\"covered_numbers\": 18, \"max_numbers\": 49, \"coverage_rate\": 36.7}"
+    },
+    {
+      "id": 1097,
+      "run_id": 176,
+      "bet_index": 2,
+      "numbers": "[3, 21, 30, 31, 34, 49]",
+      "special": null,
+      "status": "PENDING",
+      "created_at": "2026-05-17 03:38:37",
+      "strategy_name": "Triple Strike",
+      "num_bets": 3,
+      "zone_coverage": "{\"covered_numbers\": 18, \"max_numbers\": 49, \"coverage_rate\": 36.7}"
+    },
+    {
+      "id": 1098,
+      "run_id": 176,
+      "bet_index": 3,
+      "numbers": "[14, 20, 22, 25, 39, 41]",
+      "special": null,
+      "status": "PENDING",
+      "created_at": "2026-05-17 03:38:37",
+      "strategy_name": "Triple Strike",
+      "num_bets": 3,
+      "zone_coverage": "{\"covered_numbers\": 18, \"max_numbers\": 49, \"coverage_rate\": 36.7}"
+    },
+    {
+      "id": 1099,
+      "run_id": 177,
+      "bet_index": 1,
+      "numbers": "[14, 15, 16, 22, 33, 37]",
+      "special": 2,
+      "status": "PENDING",
+      "created_at": "2026-05-17 03:38:37",
+      "strategy_name": "Power Precision (Edge +2.23%)",
+      "num_bets": 3,
+      "zone_coverage": "{\"covered_numbers\": 18, \"max_numbers\": 38, \"coverage_rate\": 47.4}"
+    },
+    {
+      "id": 1100,
+      "run_id": 177,
+      "bet_index": 2,
+      "numbers": "[11, 18, 24, 26, 29, 35]",
+      "special": 2,
+      "status": "PENDING",
+      "created_at": "2026-05-17 03:38:37",
+      "strategy_name": "Power Precision (Edge +2.23%)",
+      "num_bets": 3,
+      "zone_coverage": "{\"covered_numbers\": 18, \"max_numbers\": 38, \"coverage_rate\": 47.4}"
+    },
+    {
+      "id": 1101,
+      "run_id": 177,
+      "bet_index": 3,
+      "numbers": "[2, 6, 8, 27, 30, 38]",
+      "special": 2,
+      "status": "PENDING",
+      "created_at": "2026-05-17 03:38:37",
+      "strategy_name": "Power Precision (Edge +2.23%)",
+      "num_bets": 3,
+      "zone_coverage": "{\"covered_numbers\": 18, \"max_numbers\": 38, \"coverage_rate\": 47.4}"
+    }
+  ],
+  "latest_draws": [
+    {
+      "lottery_type": "3_STAR",
+      "latest_draw": 115000024
+    },
+    {
+      "lottery_type": "BIG_LOTTO",
+      "latest_draw": 115000052
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "latest_draw": 115000106
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "latest_draw": 115000035
+    }
+  ],
+  "target_draws": [
+    {
+      "lottery_type": "BIG_LOTTO",
+      "support_run_id": 176,
+      "latest_known_draw_in_prediction_run": "115000052",
+      "latest_known_date_in_prediction_run": "2026/05/12",
+      "latest_draw_in_db": "115000052",
+      "next_draw_needed": "115000053",
+      "next_draw_exists_in_draws_table": false,
+      "target_prediction_item_ids": [
+        1096,
+        1097,
+        1098
+      ],
+      "readiness_state": "WAITING_FOR_OFFICIAL_DRAW_PUBLICATION"
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "support_run_id": 177,
+      "latest_known_draw_in_prediction_run": "115000035",
+      "latest_known_date_in_prediction_run": "2026/04/30",
+      "latest_draw_in_db": "115000035",
+      "next_draw_needed": "115000036",
+      "next_draw_exists_in_draws_table": false,
+      "target_prediction_item_ids": [
+        1099,
+        1100,
+        1101
+      ],
+      "readiness_state": "WAITING_FOR_OFFICIAL_DRAW_PUBLICATION"
+    }
+  ],
+  "pending_by_lottery": [
+    {
+      "lottery_type": "BIG_LOTTO",
+      "pending_count": 3
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "pending_count": 3
+    }
+  ],
+  "safety": {
+    "db_written": false,
+    "draws_imported": false,
+    "replay_rows_inserted": false,
+    "prediction_items_modified": false,
+    "prediction_runs_modified": false,
+    "strategy_logic_changed": false,
+    "api_ui_backend_changed": false
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "phase": "P3_COVERAGE_SUMMARY",
+  "generated_at": "2026-05-20T06:49:12.778644Z",
+  "dry_run_only": true,
+  "db_write_performed": false,
+  "total_draws": 209,
+  "total_strategies": 18,
+  "product_visible_strategy_count": 8,
+  "total_matrix_cells": 1288,
+  "by_visibility_state": {
+    "NO_DATA": 867,
+    "RECONSTRUCTIBLE": 121,
+    "ROW_BACKED": 300
+  },
+  "by_display_status": {
+    "SHOW_NO_DATA": 867,
+    "SHOW_RECONSTRUCTIBLE_PENDING": 121,
+    "SHOW_REPLAY_RESULT": 300
+  },
+  "by_lottery_type": {
+    "BIG_LOTTO": {
+      "total": 330,
+      "ROW_BACKED": 100,
+      "RECONSTRUCTIBLE": 16,
+      "NO_DATA": 214
+    },
+    "DAILY_539": {
+      "total": 648,
+      "ROW_BACKED": 100,
+      "RECONSTRUCTIBLE": 93,
+      "NO_DATA": 455
+    },
+    "POWER_LOTTO": {
+      "total": 310,
+      "ROW_BACKED": 100,
+      "RECONSTRUCTIBLE": 12,
+      "NO_DATA": 198
+    }
+  },
+  "row_backed_coverage_pct": 23.29,
+  "reconstructible_coverage_pct": 9.39,
+  "no_data_pct": 67.31,
+  "artifact_only_count": 41,
+  "artifact_only_pct": "N/A (not in per-draw matrix — no lottery_type affiliation)",
+  "real_replay_success_count": 300,
+  "fake_success_count": 0,
+  "production_replay_rows_unchanged": 460,
+  "safety_flags": {
+    "db_write_performed": false,
+    "replay_rows_generated": false,
+    "strategy_executed": false,
+    "draw_data_imported": false,
+    "fake_success_count_is_zero": true
+  }
+}

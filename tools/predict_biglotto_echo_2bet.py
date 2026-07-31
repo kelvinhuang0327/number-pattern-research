@@ -7,8 +7,11 @@ Phase 1 改進: 基於 115000011 期檢討會議
 - 連續溫度評分: 取代 binary hot/cold 分類
 - 中溫號覆蓋: 消除 gap=8~15 的盲區
 
-基礎: deviation_complement_2bet (Edge +0.91%, 1000期+10種子確定性)
-改進目標: 保持確定性，提升 echo 覆蓋率
+基礎: deviation_complement_2bet (historical edge +0.91%; evidence_status=
+HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED)
+改進目標: 保持演算法確定性（無隨機成分），提升 echo 覆蓋率
+
+⚠️ No reliable predictive advantage is currently established for this strategy.
 
 使用方式:
     python3 tools/predict_biglotto_echo_2bet.py
@@ -21,6 +24,41 @@ import math
 from collections import Counter
 from pathlib import Path
 
+
+def _p291u_repo_root():
+    current = Path(__file__)
+    if not current.is_absolute():
+        raise FileNotFoundError(f"Source file path is not absolute: {current}")
+    for parent in (current.parent, *current.parents):
+        if (parent / "lottery_api").is_dir():
+            return parent
+    raise FileNotFoundError(f"Unable to locate repository root from source file: {current}")
+
+
+def _p291u_default_db_path():
+    db_path = _p291u_repo_root() / "lottery_api" / "data" / "lottery_v2.db"
+    if not db_path.is_file():
+        raise FileNotFoundError(f"Default lottery DB path is missing or non-regular: {db_path}")
+    return db_path
+
+
+def _p291u_resolve_db_path(db_path=None):
+    if db_path is None:
+        return _p291u_default_db_path()
+    path = Path(db_path)
+    if not path.is_absolute():
+        raise ValueError(f"Explicit DB path must be absolute: {db_path}")
+    if not path.is_file():
+        raise FileNotFoundError(f"Explicit DB path is missing or non-regular: {path}")
+    return path
+
+
+def _p291u_connect_resolved(db_path, *, uri=False):
+    if uri:
+        return sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+    return sqlite3.connect(str(db_path))
+
+
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT / 'lottery_api'))
 
@@ -30,11 +68,12 @@ PICK = 6
 
 def load_history(lottery_type='BIG_LOTTO'):
     """載入歷史數據"""
+    _p291u_db_path = _p291u_resolve_db_path()
     db_path = PROJECT_ROOT / 'lottery_api' / 'data' / 'lottery_v2.db'
     if not db_path.exists():
         db_path = PROJECT_ROOT / 'lottery_api' / 'data' / 'lottery.db'
 
-    conn = sqlite3.connect(str(db_path))
+    conn = _p291u_connect_resolved(_p291u_db_path)
     cursor = conn.cursor()
     cursor.execute(
         "SELECT draw, date, numbers, special FROM draws WHERE lottery_type=? ORDER BY date ASC",
@@ -285,8 +324,9 @@ def main():
             print(f"    {n:2d}: echo={echo_all[n]:.3f} {covered}")
 
     print(f"\n{'='*60}")
-    print(f"  基礎: 偏差互補 2注 (Edge +0.91%)")
+    print(f"  基礎: 偏差互補 2注 (historical edge +0.91%) — HISTORICAL_RESEARCH_ONLY")
     print(f"  改進: Echo Detector + 連續溫度 (待回測驗證)")
+    print(f"  警告: No reliable predictive advantage is currently established.")
     print()
 
 

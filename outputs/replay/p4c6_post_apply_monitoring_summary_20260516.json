@@ -1,0 +1,67 @@
+{
+  "generated_at": "2026-05-17T11:38:37.545412+08:00",
+  "final_classification": "P4C6_POST_APPLY_MONITORING_SUMMARY_READY",
+  "applied_controlled_apply_id": "P4C3_20260516",
+  "supported_lotteries": [
+    "BIG_LOTTO",
+    "POWER_LOTTO"
+  ],
+  "excluded_lotteries": [
+    "DAILY_539"
+  ],
+  "db_counts": {
+    "prediction_runs": 177,
+    "prediction_items": 1101,
+    "replay_rows": 975
+  },
+  "db_deltas_from_p4c5": {
+    "prediction_runs": 0,
+    "prediction_items": 0,
+    "replay_rows": 0
+  },
+  "inserted_prediction_runs": [
+    176,
+    177
+  ],
+  "inserted_prediction_items": [
+    1096,
+    1097,
+    1098,
+    1099,
+    1100,
+    1101
+  ],
+  "receipt_path": "outputs/replay/p4c5_supported_prediction_apply_receipt_20260516.json",
+  "pre_apply_drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+  "post_apply_drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+  "post_monitor_drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS",
+  "tests": {
+    "p4c3_contract": "6 passed",
+    "quick_predict_dryrun_contract": "2 passed",
+    "replay_governance_suite": "109 passed"
+  },
+  "idempotency_check": {
+    "final_classification": "P4C3_SUPPORTED_PREDICTION_APPLY_PATH_READY",
+    "mode": "dry-run",
+    "db_written": false,
+    "planned_prediction_runs_count": 2,
+    "planned_prediction_items_count": 6,
+    "duplicate_rows_count": 4,
+    "duplicate_run_ids": [
+      176,
+      177,
+      176,
+      177
+    ]
+  },
+  "safety": {
+    "replay_rows_inserted": false,
+    "existing_prediction_items_updated": false,
+    "existing_prediction_runs_updated": false,
+    "daily_539_in_scope": false
+  },
+  "remaining_risks": [
+    "Future reruns rely on the apply fingerprint stored in notes/review_json for idempotency detection.",
+    "DAILY_539 remains excluded from the supported production apply scope."
+  ]
+}

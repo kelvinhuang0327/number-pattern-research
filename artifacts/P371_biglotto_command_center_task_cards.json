@@ -1,0 +1,112 @@
+{
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "scope_lines": [
+    "Historical descriptive evidence only.",
+    "No future prediction guarantee.",
+    "No betting advice.",
+    "No DB open/write.",
+    "No adapter calls.",
+    "No new scoring.",
+    "No new scoring cohort.",
+    "No production registry import.",
+    "No deploy.",
+    "No generated DB rows.",
+    "Generated task cards are templates, not standing authorization."
+  ],
+  "source_merge_baseline": "30e4120060e41e8a6f7cf529c28d9b490c01f70b",
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "future_prediction_guarantee": false,
+    "generated_db_rows": false,
+    "generated_task_cards_templates_not_standing_authorization": true,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring": false,
+    "new_scoring_cohort": false,
+    "production_registry_imported": false
+  },
+  "task": "P371_biglotto_command_center",
+  "task_cards": [
+    {
+      "card_id": "status_triage",
+      "copy_paste_prompt": "Task: Status triage\n\nRoute: status\n\nObjective: Inspect current P363-P370 no-DB evidence availability and validation status.\n\nConstraints: Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.\n\nLocal command:\npython3 -m recovered_strategies.biglotto.no_db_evidence_command_center --query status\n\nThis card is a template only, not standing authorization. Stop before any DB open/write, adapter call, new scoring, production registry import, deploy, generated DB row, betting advice, or future-performance claim.",
+      "intended_agent": "Future Worker",
+      "no_adapter_calls": true,
+      "no_db_open_write": true,
+      "no_deploy": true,
+      "no_new_scoring": true,
+      "no_production_registry_import": true,
+      "route_id": "status",
+      "template_not_standing_authorization": true,
+      "title": "Status triage"
+    },
+    {
+      "card_id": "route_selection",
+      "copy_paste_prompt": "Task: Route selection\n\nRoute: routes\n\nObjective: Choose the safest local command-center route for a read-only evidence task.\n\nConstraints: Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.\n\nLocal command:\npython3 -m recovered_strategies.biglotto.no_db_evidence_command_center --query routes\n\nThis card is a template only, not standing authorization. Stop before any DB open/write, adapter call, new scoring, production registry import, deploy, generated DB row, betting advice, or future-performance claim.",
+      "intended_agent": "Future Worker",
+      "no_adapter_calls": true,
+      "no_db_open_write": true,
+      "no_deploy": true,
+      "no_new_scoring": true,
+      "no_production_registry_import": true,
+      "route_id": "routes",
+      "template_not_standing_authorization": true,
+      "title": "Route selection"
+    },
+    {
+      "card_id": "smoke_recheck",
+      "copy_paste_prompt": "Task: Smoke recheck\n\nRoute: smoke\n\nObjective: Run command-center smoke rows and report only PASS/FAIL historical evidence state.\n\nConstraints: Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.\n\nLocal command:\npython3 -m recovered_strategies.biglotto.no_db_evidence_command_center --query smoke\n\nThis card is a template only, not standing authorization. Stop before any DB open/write, adapter call, new scoring, production registry import, deploy, generated DB row, betting advice, or future-performance claim.",
+      "intended_agent": "Future Worker",
+      "no_adapter_calls": true,
+      "no_db_open_write": true,
+      "no_deploy": true,
+      "no_new_scoring": true,
+      "no_production_registry_import": true,
+      "route_id": "smoke",
+      "template_not_standing_authorization": true,
+      "title": "Smoke recheck"
+    },
+    {
+      "card_id": "tool_inventory",
+      "copy_paste_prompt": "Task: Tool inventory\n\nRoute: list_tools\n\nObjective: List available no-DB facade functions, recipes, and command-center routes.\n\nConstraints: Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.\n\nLocal command:\npython3 -m recovered_strategies.biglotto.no_db_evidence_command_center --query list_tools\n\nThis card is a template only, not standing authorization. Stop before any DB open/write, adapter call, new scoring, production registry import, deploy, generated DB row, betting advice, or future-performance claim.",
+      "intended_agent": "Future Worker",
+      "no_adapter_calls": true,
+      "no_db_open_write": true,
+      "no_deploy": true,
+      "no_new_scoring": true,
+      "no_production_registry_import": true,
+      "route_id": "list_tools",
+      "template_not_standing_authorization": true,
+      "title": "Tool inventory"
+    },
+    {
+      "card_id": "artifact_inventory",
+      "copy_paste_prompt": "Task: Artifact inventory\n\nRoute: list_artifacts\n\nObjective: Review source and generated artifact paths and SHA256 values.\n\nConstraints: Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.\n\nLocal command:\npython3 -m recovered_strategies.biglotto.no_db_evidence_command_center --query list_artifacts\n\nThis card is a template only, not standing authorization. Stop before any DB open/write, adapter call, new scoring, production registry import, deploy, generated DB row, betting advice, or future-performance claim.",
+      "intended_agent": "Future Worker",
+      "no_adapter_calls": true,
+      "no_db_open_write": true,
+      "no_deploy": true,
+      "no_new_scoring": true,
+      "no_production_registry_import": true,
+      "route_id": "list_artifacts",
+      "template_not_standing_authorization": true,
+      "title": "Artifact inventory"
+    },
+    {
+      "card_id": "recipe_query",
+      "copy_paste_prompt": "Task: Recipe query\n\nRoute: list_adapters\n\nObjective: Query a known P369 recipe through the P370 no-DB consumer path.\n\nConstraints: Historical descriptive evidence only. No future prediction guarantee. No betting advice. No DB open/write. No adapter calls. No new scoring. No new scoring cohort. No production registry import. No deploy. No generated DB rows. Generated task cards are templates, not standing authorization.\n\nLocal command:\npython3 -m recovered_strategies.biglotto.no_db_evidence_command_center --query list_adapters\n\nThis card is a template only, not standing authorization. Stop before any DB open/write, adapter call, new scoring, production registry import, deploy, generated DB row, betting advice, or future-performance claim.",
+      "intended_agent": "Future Worker",
+      "no_adapter_calls": true,
+      "no_db_open_write": true,
+      "no_deploy": true,
+      "no_new_scoring": true,
+      "no_production_registry_import": true,
+      "route_id": "list_adapters",
+      "template_not_standing_authorization": true,
+      "title": "Recipe query"
+    }
+  ]
+}

@@ -1,0 +1,422 @@
+{
+  "generated_at": "2026-05-12",
+  "main_sha": "186949e",
+  "db_read_only_proof": {
+    "db_path": "lottery_api/data/lottery_v2.db",
+    "sha256_before": "f7eb79455cc9a4b316d57cd83a2a79656baed10c1c286313c7c7de9e96081543",
+    "sha256_after": "f7eb79455cc9a4b316d57cd83a2a79656baed10c1c286313c7c7de9e96081543",
+    "match": true,
+    "note": "All DB queries were read-only SELECT statements. SHA256 identical before and after confirms no writes."
+  },
+  "inventory_summary": {
+    "total_strategies": 16,
+    "lifecycle_counts": {
+      "ONLINE": 6,
+      "REJECTED": 4,
+      "RETIRED": 5,
+      "OBSERVATION": 1,
+      "OFFLINE": 0
+    },
+    "total_replay_rows": 460,
+    "replay_status_distribution": {
+      "PREDICTED": 420,
+      "REPLAY_ERROR": 40
+    },
+    "provenance_counts": {
+      "PRODUCTION_REPLAY": 6,
+      "EVIDENCE_ONLY": 5,
+      "NOT_RECONSTRUCTABLE": 5
+    },
+    "truth_level_distribution": {
+      "PRODUCTION_REPLAY": 6,
+      "DISPLAY_ONLY": 5,
+      "MISSING_HISTORY": 5
+    }
+  },
+  "strategies": [
+    {
+      "name": "power_precision_3bet",
+      "display_name": "威力彩 Precision 3注",
+      "lifecycle": "ONLINE",
+      "lottery_type": "POWER_LOTTO",
+      "row_count": 70,
+      "status_counts": {
+        "PREDICTED": 70,
+        "REPLAY_ERROR": 0,
+        "INSUFFICIENT_HISTORY": 0
+      },
+      "has_existing_prediction_log": true,
+      "log_paths": [
+        "strategies/power_lotto/3bet_power_precision/performance_log.json",
+        "strategies/power_lotto/3bet_power_precision/sim_result.json",
+        "strategies/power_lotto/3bet_power_precision/backtest_report.md"
+      ],
+      "adapter_module": "tools/predict_power_precision_3bet.py",
+      "adapter_class": "ReplayStrategyAdapter (executable)",
+      "adapter_status": "EXECUTABLE",
+      "adapter_importable": true,
+      "adapter_importable_note": "Requires venv/numpy; confirmed executable via production DB rows",
+      "provenance_class": "PRODUCTION_REPLAY",
+      "truth_level_candidate": "PRODUCTION_REPLAY",
+      "blocker_reason": "None — 70/70 PREDICTED, 0 errors in production DB"
+    },
+    {
+      "name": "power_orthogonal_5bet",
+      "display_name": "威力彩 Orthogonal 5注",
+      "lifecycle": "ONLINE",
+      "lottery_type": "POWER_LOTTO",
+      "row_count": 70,
+      "status_counts": {
+        "PREDICTED": 70,
+        "REPLAY_ERROR": 0,
+        "INSUFFICIENT_HISTORY": 0
+      },
+      "has_existing_prediction_log": true,
+      "log_paths": [
+        "strategies/power_lotto/5bet_orthogonal/performance_log.json",
+        "strategies/power_lotto/5bet_orthogonal/sim_result.json",
+        "strategies/power_lotto/5bet_orthogonal/backtest_report.md",
+        "strategies/power_lotto/5bet_orthogonal/stat_test.txt"
+      ],
+      "adapter_module": "tools/predict_power_orthogonal_5bet.py",
+      "adapter_class": "ReplayStrategyAdapter (executable)",
+      "adapter_status": "EXECUTABLE",
+      "adapter_importable": true,
+      "adapter_importable_note": "Requires venv/numpy; confirmed executable via production DB rows",
+      "provenance_class": "PRODUCTION_REPLAY",
+      "truth_level_candidate": "PRODUCTION_REPLAY",
+      "blocker_reason": "None — 70/70 PREDICTED, 0 errors in production DB"
+    },
+    {
+      "name": "biglotto_triple_strike",
+      "display_name": "大樂透 Triple Strike",
+      "lifecycle": "ONLINE",
+      "lottery_type": "BIG_LOTTO",
+      "row_count": 70,
+      "status_counts": {
+        "PREDICTED": 70,
+        "REPLAY_ERROR": 0,
+        "INSUFFICIENT_HISTORY": 0
+      },
+      "has_existing_prediction_log": true,
+      "log_paths": [
+        "strategies/big_lotto/3bet_triple_strike_v2/performance_log.json",
+        "strategies/big_lotto/3bet_triple_strike_v2/sim_result.json",
+        "strategies/big_lotto/3bet_triple_strike_v2/backtest_report.md",
+        "strategies/big_lotto/3bet_triple_strike_v2/stat_test.txt"
+      ],
+      "adapter_module": "tools/predict_biglotto_triple_strike.py",
+      "adapter_class": "ReplayStrategyAdapter (executable)",
+      "adapter_status": "EXECUTABLE",
+      "adapter_importable": true,
+      "adapter_importable_note": "Requires venv/numpy; confirmed executable via production DB rows",
+      "provenance_class": "PRODUCTION_REPLAY",
+      "truth_level_candidate": "PRODUCTION_REPLAY",
+      "blocker_reason": "None — 70/70 PREDICTED, 0 errors in production DB"
+    },
+    {
+      "name": "biglotto_deviation_2bet",
+      "display_name": "大樂透 Deviation 2注",
+      "lifecycle": "ONLINE",
+      "lottery_type": "BIG_LOTTO",
+      "row_count": 70,
+      "status_counts": {
+        "PREDICTED": 70,
+        "REPLAY_ERROR": 0,
+        "INSUFFICIENT_HISTORY": 0
+      },
+      "has_existing_prediction_log": true,
+      "log_paths": [
+        "strategies/big_lotto/2bet_deviation_complement/performance_log.json",
+        "strategies/big_lotto/2bet_deviation_complement/sim_result.json",
+        "strategies/big_lotto/2bet_deviation_complement/backtest_report.md"
+      ],
+      "adapter_module": "tools/predict_biglotto_deviation_2bet.py",
+      "adapter_class": "ReplayStrategyAdapter (executable)",
+      "adapter_status": "EXECUTABLE",
+      "adapter_importable": true,
+      "adapter_importable_note": "Imported OK in /usr/bin/python3 (pure-Python compatible)",
+      "provenance_class": "PRODUCTION_REPLAY",
+      "truth_level_candidate": "PRODUCTION_REPLAY",
+      "blocker_reason": "None — 70/70 PREDICTED, 0 errors in production DB"
+    },
+    {
+      "name": "daily539_f4cold",
+      "display_name": "今彩539 F4 Cold",
+      "lifecycle": "ONLINE",
+      "lottery_type": "DAILY_539",
+      "row_count": 90,
+      "status_counts": {
+        "PREDICTED": 70,
+        "REPLAY_ERROR": 20,
+        "INSUFFICIENT_HISTORY": 0
+      },
+      "has_existing_prediction_log": true,
+      "log_paths": [
+        "strategies/daily_539/5bet_fourier4_cold/performance_log.json",
+        "strategies/daily_539/5bet_fourier4_cold/sim_result.json"
+      ],
+      "adapter_module": "tools/predict_539_5bet_f4cold.py",
+      "adapter_class": "ReplayStrategyAdapter (executable)",
+      "adapter_status": "EXECUTABLE",
+      "adapter_importable": true,
+      "adapter_importable_note": "Requires venv/numpy; confirmed executable via production DB rows",
+      "provenance_class": "PRODUCTION_REPLAY",
+      "truth_level_candidate": "PRODUCTION_REPLAY",
+      "blocker_reason": "22% REPLAY_ERROR rate (20/90) — error cause must be investigated before coverage extension"
+    },
+    {
+      "name": "daily539_markov_cold",
+      "display_name": "今彩539 Markov Cold",
+      "lifecycle": "ONLINE",
+      "lottery_type": "DAILY_539",
+      "row_count": 90,
+      "status_counts": {
+        "PREDICTED": 70,
+        "REPLAY_ERROR": 20,
+        "INSUFFICIENT_HISTORY": 0
+      },
+      "has_existing_prediction_log": false,
+      "log_paths": [],
+      "adapter_module": "tools/predict_539_markov_cold.py",
+      "adapter_class": "ReplayStrategyAdapter (executable)",
+      "adapter_status": "EXECUTABLE",
+      "adapter_importable": true,
+      "adapter_importable_note": "Requires venv/numpy; confirmed executable via production DB rows; no strategies/ performance_log found",
+      "provenance_class": "PRODUCTION_REPLAY",
+      "truth_level_candidate": "PRODUCTION_REPLAY",
+      "blocker_reason": "22% REPLAY_ERROR rate (20/90); no strategies/ performance_log committed — error cause must be investigated"
+    },
+    {
+      "name": "biglotto_ts3_acb_4bet",
+      "display_name": "大樂透 TS3+ACB 4注",
+      "lifecycle": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "row_count": 0,
+      "status_counts": {
+        "PREDICTED": 0,
+        "REPLAY_ERROR": 0,
+        "INSUFFICIENT_HISTORY": 0
+      },
+      "has_existing_prediction_log": true,
+      "log_paths": [
+        "rejected/ts3_acb_4bet_biglotto.json"
+      ],
+      "adapter_module": null,
+      "adapter_class": "_LifecycleStub",
+      "adapter_status": "STUB_ONLY",
+      "adapter_importable": false,
+      "adapter_importable_note": "_LifecycleStub always raises LifecycleNotExecutable; no predict tool file exists",
+      "provenance_class": "EVIDENCE_ONLY",
+      "truth_level_candidate": "DISPLAY_ONLY",
+      "blocker_reason": "REJECTED — stub only; evaluation evidence JSON exists but no predict tool for replay generation"
+    },
+    {
+      "name": "biglotto_ts3_markov_freq_5bet",
+      "display_name": "大樂透 TS3+Markov 頻率正交 5注",
+      "lifecycle": "REJECTED",
+      "lottery_type": "BIG_LOTTO",
+      "row_count": 0,
+      "status_counts": {
+        "PREDICTED": 0,
+        "REPLAY_ERROR": 0,
+        "INSUFFICIENT_HISTORY": 0
+      },
+      "has_existing_prediction_log": true,
+      "log_paths": [
+        "rejected/ts3_markov_freq_5bet_biglotto.json",
+        "strategies/big_lotto/5bet_ts3_markov_freq/performance_log.json",
+        "strategies/big_lotto/5bet_ts3_markov_freq/sim_result.json",
+        "strategies/big_lotto/5bet_ts3_markov_freq/backtest_report.md"
+      ],
+      "adapter_module": null,
+      "adapter_class": "_LifecycleStub",
+      "adapter_status": "STUB_ONLY",
+      "adapter_importable": false,
+      "adapter_importable_note": "_LifecycleStub always raises LifecycleNotExecutable; strategies/ dir uses legacy ID (big_lotto/5bet_ts3_markov_freq), not registry ID",
+      "provenance_class": "EVIDENCE_ONLY",
+      "truth_level_candidate": "DISPLAY_ONLY",
+      "blocker_reason": "REJECTED — stub only; strategies/ performance log uses legacy ID (ID mismatch with registry)"
+    },
+    {
+      "name": "power_shlc_midfreq",
+      "display_name": "威力彩 SHLC 中頻指標",
+      "lifecycle": "REJECTED",
+      "lottery_type": "POWER_LOTTO",
+      "row_count": 0,
+      "status_counts": {
+        "PREDICTED": 0,
+        "REPLAY_ERROR": 0,
+        "INSUFFICIENT_HISTORY": 0
+      },
+      "has_existing_prediction_log": true,
+      "log_paths": [
+        "rejected/shlc_midfreq_power.json"
+      ],
+      "adapter_module": null,
+      "adapter_class": "_LifecycleStub",
+      "adapter_status": "STUB_ONLY",
+      "adapter_importable": false,
+      "adapter_importable_note": "_LifecycleStub always raises LifecycleNotExecutable; no predict tool file exists",
+      "provenance_class": "EVIDENCE_ONLY",
+      "truth_level_candidate": "DISPLAY_ONLY",
+      "blocker_reason": "REJECTED — stub only; evaluation evidence JSON exists but no predict tool for replay generation"
+    },
+    {
+      "name": "p1_deviation_2bet_539",
+      "display_name": "今彩539 P1鄰號+偏差互補 2注",
+      "lifecycle": "REJECTED",
+      "lottery_type": "DAILY_539",
+      "row_count": 0,
+      "status_counts": {
+        "PREDICTED": 0,
+        "REPLAY_ERROR": 0,
+        "INSUFFICIENT_HISTORY": 0
+      },
+      "has_existing_prediction_log": true,
+      "log_paths": [
+        "rejected/p1_deviation_2bet_539.json"
+      ],
+      "adapter_module": null,
+      "adapter_class": "_LifecycleStub",
+      "adapter_status": "STUB_ONLY",
+      "adapter_importable": false,
+      "adapter_importable_note": "_LifecycleStub always raises LifecycleNotExecutable; no predict tool file exists",
+      "provenance_class": "EVIDENCE_ONLY",
+      "truth_level_candidate": "DISPLAY_ONLY",
+      "blocker_reason": "REJECTED — stub only; evaluation evidence JSON exists but no predict tool for replay generation"
+    },
+    {
+      "name": "acb_1bet",
+      "display_name": "今彩539 ACB 1注",
+      "lifecycle": "RETIRED",
+      "lottery_type": "DAILY_539",
+      "row_count": 0,
+      "status_counts": {
+        "PREDICTED": 0,
+        "REPLAY_ERROR": 0,
+        "INSUFFICIENT_HISTORY": 0
+      },
+      "has_existing_prediction_log": false,
+      "log_paths": [],
+      "adapter_module": null,
+      "adapter_class": "_LifecycleStub",
+      "adapter_status": "STUB_ONLY",
+      "adapter_importable": false,
+      "adapter_importable_note": "_LifecycleStub always raises LifecycleNotExecutable; no predict tool, no strategies/ dir, no dedicated log",
+      "provenance_class": "NOT_RECONSTRUCTABLE",
+      "truth_level_candidate": "MISSING_HISTORY",
+      "blocker_reason": "RETIRED — no predict tool, no prediction log, no strategies/ directory; history not recoverable"
+    },
+    {
+      "name": "acb_markov_midfreq",
+      "display_name": "今彩539 ACB+Markov 中頻",
+      "lifecycle": "RETIRED",
+      "lottery_type": "DAILY_539",
+      "row_count": 0,
+      "status_counts": {
+        "PREDICTED": 0,
+        "REPLAY_ERROR": 0,
+        "INSUFFICIENT_HISTORY": 0
+      },
+      "has_existing_prediction_log": false,
+      "log_paths": [],
+      "adapter_module": null,
+      "adapter_class": "_LifecycleStub",
+      "adapter_status": "STUB_ONLY",
+      "adapter_importable": false,
+      "adapter_importable_note": "_LifecycleStub always raises LifecycleNotExecutable; no predict tool, no strategies/ dir, no dedicated log",
+      "provenance_class": "NOT_RECONSTRUCTABLE",
+      "truth_level_candidate": "MISSING_HISTORY",
+      "blocker_reason": "RETIRED — no predict tool, no prediction log, no strategies/ directory; history not recoverable"
+    },
+    {
+      "name": "acb_markov_midfreq_3bet",
+      "display_name": "今彩539 ACB+Markov 中頻 3注",
+      "lifecycle": "RETIRED",
+      "lottery_type": "DAILY_539",
+      "row_count": 0,
+      "status_counts": {
+        "PREDICTED": 0,
+        "REPLAY_ERROR": 0,
+        "INSUFFICIENT_HISTORY": 0
+      },
+      "has_existing_prediction_log": false,
+      "log_paths": [],
+      "adapter_module": null,
+      "adapter_class": "_LifecycleStub",
+      "adapter_status": "STUB_ONLY",
+      "adapter_importable": false,
+      "adapter_importable_note": "_LifecycleStub always raises LifecycleNotExecutable; no predict tool, no strategies/ dir, no dedicated log",
+      "provenance_class": "NOT_RECONSTRUCTABLE",
+      "truth_level_candidate": "MISSING_HISTORY",
+      "blocker_reason": "RETIRED — no predict tool, no prediction log, no strategies/ directory; history not recoverable"
+    },
+    {
+      "name": "midfreq_acb_2bet",
+      "display_name": "今彩539 中頻 ACB 2注",
+      "lifecycle": "RETIRED",
+      "lottery_type": "DAILY_539",
+      "row_count": 0,
+      "status_counts": {
+        "PREDICTED": 0,
+        "REPLAY_ERROR": 0,
+        "INSUFFICIENT_HISTORY": 0
+      },
+      "has_existing_prediction_log": false,
+      "log_paths": [],
+      "adapter_module": null,
+      "adapter_class": "_LifecycleStub",
+      "adapter_status": "STUB_ONLY",
+      "adapter_importable": false,
+      "adapter_importable_note": "_LifecycleStub always raises LifecycleNotExecutable; no predict tool, no strategies/ dir, no dedicated log",
+      "provenance_class": "NOT_RECONSTRUCTABLE",
+      "truth_level_candidate": "MISSING_HISTORY",
+      "blocker_reason": "RETIRED — no predict tool, no prediction log, no strategies/ directory; history not recoverable"
+    },
+    {
+      "name": "midfreq_fourier_2bet",
+      "display_name": "今彩539 中頻 Fourier 2注",
+      "lifecycle": "RETIRED",
+      "lottery_type": "DAILY_539",
+      "row_count": 0,
+      "status_counts": {
+        "PREDICTED": 0,
+        "REPLAY_ERROR": 0,
+        "INSUFFICIENT_HISTORY": 0
+      },
+      "has_existing_prediction_log": false,
+      "log_paths": [],
+      "adapter_module": null,
+      "adapter_class": "_LifecycleStub",
+      "adapter_status": "STUB_ONLY",
+      "adapter_importable": false,
+      "adapter_importable_note": "_LifecycleStub always raises LifecycleNotExecutable; no predict tool, no strategies/ dir, no dedicated log",
+      "provenance_class": "NOT_RECONSTRUCTABLE",
+      "truth_level_candidate": "MISSING_HISTORY",
+      "blocker_reason": "RETIRED — no predict tool, no prediction log, no strategies/ directory; history not recoverable"
+    },
+    {
+      "name": "h6_gate_mk20_ew85",
+      "display_name": "威力彩 H6 Gate mk20 ew85",
+      "lifecycle": "OBSERVATION",
+      "lottery_type": "POWER_LOTTO",
+      "row_count": 0,
+      "status_counts": {
+        "PREDICTED": 0,
+        "REPLAY_ERROR": 0,
+        "INSUFFICIENT_HISTORY": 0
+      },
+      "has_existing_prediction_log": false,
+      "log_paths": [],
+      "adapter_module": null,
+      "adapter_class": "_LifecycleStub",
+      "adapter_status": "STUB_ONLY",
+      "adapter_importable": false,
+      "adapter_importable_note": "_LifecycleStub always raises LifecycleNotExecutable; governance task_result artifact not committed to repo; no predict tool file",
+      "provenance_class": "EVIDENCE_ONLY",
+      "truth_level_candidate": "DISPLAY_ONLY",
+      "blocker_reason": "OBSERVATION — stub only; governance task result artifact exists outside repo (not committed); awaiting explicit ONLINE promotion decision"
+    }
+  ]
+}

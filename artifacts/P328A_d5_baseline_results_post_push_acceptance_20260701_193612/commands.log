@@ -1,0 +1,46 @@
+cd /Users/kelvin/Kelvin-WorkSpace/LotteryNew-p300a-d5-ui
+date  -> Wed Jul  1 19:35:12 CST 2026
+git fetch origin
+git rev-parse origin/main  -> ce2c042e7f4967841e6b31e17552d55bf4717f91
+git rev-parse main         -> ce2c042e7f4967841e6b31e17552d55bf4717f91
+git branch --show-current  -> codex/p326a-d5-baseline-results-static-ui
+git status                 -> On branch codex/p326a-d5-baseline-results-static-ui; up to date with origin/main; nothing to commit, working tree clean
+git diff --cached --stat   -> (empty)
+git status --short lottery_api/data/lottery_v2.db -> (empty, clean)
+ls public/demo-data/lottery-d5/p325a/  -> 11 files present
+ls public/demo-data/lottery-d5/p325a/source_provenance.json -> present, 2659 bytes
+
+python3 tools/lottery-d5/build_p326a_baseline_summary.py
+  -> wrote .../baseline_summary.json
+  -> wrote .../source_provenance.json
+git status --short (post-build) -> (empty, no diff -> byte-identical)
+git diff --stat (post-build) -> (empty)
+
+node --check src/apps/lottery-d5/lottery-d5.js -> JS_SYNTAX_OK (no output = success)
+
+/opt/homebrew/bin/pytest tests/test_p326a_d5_baseline_results_static_ui.py \
+  tests/test_p321a_d5_combination_results_static_ui.py \
+  tests/test_p300a_d5_artifact_backed_ui.py -q -p no:cacheprovider
+  -> 23 passed in 0.15s
+
+ls package.json -> No such file (root package.json absent -> npm tests correctly NOT RUN)
+
+Browser smoke (adapted method, see browser_smoke.md):
+python3 -m http.server 8917 --bind 127.0.0.1 (background, temporary, outside repo config)
+curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8917/index.html -> 200
+curl -s http://127.0.0.1:8917/public/demo-data/lottery-d5/p325a/baseline_summary.json | python3 -m json.tool
+  -> full JSON confirmed matching all required fields (see browser_smoke.md)
+curl checks on all p325a static assets -> all 200
+curl check on src/apps/lottery-d5/lottery-d5.js?v=2 -> 200
+grep -niE "best strategy|betting pick|recommended numbers|guaranteed|production-ready optimizer" \
+  src/apps/lottery-d5/lottery-d5.js index.html
+  -> no hits inside the D5 baseline feature scope (unrelated pre-existing "Best Strategy Overview"
+     panel from P95/P257B is a different, out-of-scope feature; not part of P326A/P328A baseline section)
+grep -niE "prediction" src/apps/lottery-d5/lottery-d5.js index.html
+  -> all D5-baseline-scoped occurrences are negative caveats ("No future prediction.",
+     "not a prediction, not a betting recommendation")
+grep -niE "failed to load|error loading|loader.?fail" src/apps/lottery-d5/lottery-d5.js
+  -> one dormant defensive error-path string (setError on fetch failure); not triggered,
+     since curl confirmed all fetch targets return 200
+
+kill (temporary python3 http.server processes stopped)

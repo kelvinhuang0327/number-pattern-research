@@ -1,0 +1,282 @@
+{
+  "task": "P178A_POWER_LOTTO_R2_RESEARCH_CLOSURE_ARCHIVE",
+  "final_classification": "P178A_POWER_LOTTO_R2_RESEARCH_CLOSED_ARCHIVED",
+  "date": "2026-06-01",
+  "branch": "claude/zen-gates-ff6802",
+  "authorization_phrase_detected": "YES close R2 POWER_LOTTO research and archive findings",
+  "phase_0_verification": {
+    "result": "PASS",
+    "repo": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/.claude/worktrees/zen-gates-ff6802",
+    "branch": "claude/zen-gates-ff6802",
+    "head": "c8b423d0c1de26253be4cec79ae6de77719d1074",
+    "db_rows": 94924,
+    "db_rows_unchanged": true,
+    "draws_table_power_lotto_rows": 1913,
+    "drift_guard": "PASS",
+    "p167_script": "PASS",
+    "p170_script": "PASS",
+    "p173_script": "PASS",
+    "p176_script": "PASS",
+    "p161_to_p177_tests": "1054 PASSED (P161:23 standalone + P162-P177:1031)"
+  },
+  "closure_decision": {
+    "ceo_authorization_phrase": "YES close R2 POWER_LOTTO research and archive findings",
+    "p177_classification_confirmed": "P177_POWER_LOTTO_R2_CLOSURE_DECISION_REVIEW_READY",
+    "p177_option_a_authorized": true,
+    "r1_status": "CLOSED — NO_DEFENSIBLE_EDGE_FOUND",
+    "r2_status": "CLOSED — NULL_RESULT",
+    "active_power_lotto_feature_engineering": "CLOSED",
+    "passive_monitoring": "ALLOWED under future separate authorization only",
+    "new_prototype_development": "CLOSED",
+    "champion_promotion": "CLOSED",
+    "controlled_apply": "CLOSED",
+    "deployment": "CLOSED"
+  },
+  "archived_evidence_index": [
+    {
+      "task": "P161",
+      "title": "POWER_LOTTO Effectiveness Baseline",
+      "json_path": "outputs/research/power_lotto/p161_effectiveness_baseline_20260531.json",
+      "md_path": "outputs/research/power_lotto/p161_effectiveness_baseline_20260531.md",
+      "json_exists": true,
+      "md_exists": true,
+      "classification": "P161_POWER_LOTTO_EFFECTIVENESS_BASELINE_READY"
+    },
+    {
+      "task": "P162",
+      "title": "P161 Result Closure",
+      "json_path": "outputs/research/power_lotto/p162_p161_result_closure_20260531.json",
+      "md_path": "outputs/research/power_lotto/p162_p161_result_closure_20260531.md",
+      "json_exists": true,
+      "md_exists": true,
+      "classification": "P162_P161_RESULT_CLOSURE_READY"
+    },
+    {
+      "task": "P163",
+      "title": "Reconcile Readiness Audit",
+      "json_path": "outputs/research/power_lotto/p163_reconcile_readiness_audit_20260531.json",
+      "md_path": "outputs/research/power_lotto/p163_reconcile_readiness_audit_20260531.md",
+      "json_exists": true,
+      "md_exists": true,
+      "classification": "P163_RECONCILE_READINESS_AUDIT_READY"
+    },
+    {
+      "task": "P164",
+      "title": "Reconcile Plan Decision Gate",
+      "json_path": "outputs/research/power_lotto/p164_reconcile_plan_decision_gate_20260531.json",
+      "md_path": "outputs/research/power_lotto/p164_reconcile_plan_decision_gate_20260531.md",
+      "json_exists": true,
+      "md_exists": true,
+      "classification": "P164_RECONCILE_PLAN_DECISION_GATE_READY"
+    },
+    {
+      "task": "P165B",
+      "title": "Designate zen-gates Canonical Research Dataset",
+      "json_path": "outputs/research/power_lotto/p165b_designate_zen_gates_canonical_research_dataset_20260531.json",
+      "md_path": "outputs/research/power_lotto/p165b_designate_zen_gates_canonical_research_dataset_20260531.md",
+      "json_exists": true,
+      "md_exists": true,
+      "classification": "P165B_ZEN_GATES_CANONICAL_RESEARCH_DATASET_DESIGNATED"
+    },
+    {
+      "task": "P166",
+      "title": "Ensemble/Voting Research Plan",
+      "json_path": "outputs/research/power_lotto/p166_ensemble_voting_research_plan_20260531.json",
+      "md_path": "outputs/research/power_lotto/p166_ensemble_voting_research_plan_20260531.md",
+      "json_exists": true,
+      "md_exists": true,
+      "classification": "P166_POWER_LOTTO_ENSEMBLE_VOTING_RESEARCH_PLAN_READY"
+    },
+    {
+      "task": "P167",
+      "title": "Ensemble/Voting Research Implementation",
+      "json_path": "outputs/research/power_lotto/p167_ensemble_voting_research_20260531.json",
+      "md_path": "outputs/research/power_lotto/p167_ensemble_voting_research_20260531.md",
+      "json_exists": true,
+      "md_exists": true,
+      "classification": "P167_POWER_LOTTO_NO_DEFENSIBLE_EDGE_FOUND"
+    },
+    {
+      "task": "P168",
+      "title": "Research Decision Review",
+      "json_path": "outputs/research/power_lotto/p168_research_decision_review_20260531.json",
+      "md_path": "outputs/research/power_lotto/p168_research_decision_review_20260531.md",
+      "json_exists": true,
+      "md_exists": true,
+      "classification": "P168_POWER_LOTTO_RESEARCH_DECISION_REVIEW_READY"
+    },
+    {
+      "task": "P169",
+      "title": "Signal Review and Threshold Sensitivity Plan",
+      "json_path": "outputs/research/power_lotto/p169_signal_review_and_threshold_sensitivity_plan_20260531.json",
+      "md_path": "outputs/research/power_lotto/p169_signal_review_and_threshold_sensitivity_plan_20260531.md",
+      "json_exists": true,
+      "md_exists": true,
+      "classification": "P169_POWER_LOTTO_SIGNAL_REVIEW_AND_THRESHOLD_SENSITIVITY_PLAN_READY"
+    },
+    {
+      "task": "P170",
+      "title": "Threshold Sensitivity and Signal Tracking",
+      "json_path": "outputs/research/power_lotto/p170_threshold_sensitivity_and_signal_tracking_20260531.json",
+      "md_path": "outputs/research/power_lotto/p170_threshold_sensitivity_and_signal_tracking_20260531.md",
+      "json_exists": true,
+      "md_exists": true,
+      "classification": "P170_POWER_LOTTO_SENSITIVITY_DOES_NOT_SUPPORT_TRACKING"
+    },
+    {
+      "task": "P171",
+      "title": "New Strategy Feature Engineering Discovery Plan",
+      "json_path": "outputs/research/power_lotto/p171_new_strategy_feature_engineering_discovery_plan_20260531.json",
+      "md_path": "outputs/research/power_lotto/p171_new_strategy_feature_engineering_discovery_plan_20260531.md",
+      "json_exists": true,
+      "md_exists": true,
+      "classification": "P171_POWER_LOTTO_NEW_STRATEGY_FEATURE_ENGINEERING_DISCOVERY_PLAN_READY"
+    },
+    {
+      "task": "P172",
+      "title": "New Strategy Prototype Plan",
+      "json_path": "outputs/research/power_lotto/p172_new_strategy_prototype_plan_20260601.json",
+      "md_path": "outputs/research/power_lotto/p172_new_strategy_prototype_plan_20260601.md",
+      "json_exists": true,
+      "md_exists": true,
+      "classification": "P172_POWER_LOTTO_NEW_STRATEGY_PROTOTYPE_PLAN_READY"
+    },
+    {
+      "task": "P173",
+      "title": "New Strategy Minimal Prototype Read-Only",
+      "json_path": "outputs/research/power_lotto/p173_new_strategy_minimal_prototype_read_only_20260601.json",
+      "md_path": "outputs/research/power_lotto/p173_new_strategy_minimal_prototype_read_only_20260601.md",
+      "json_exists": true,
+      "md_exists": true,
+      "classification": "P173_POWER_LOTTO_R2_MINIMAL_PROTOTYPE_NULL_RESULT"
+    },
+    {
+      "task": "P174",
+      "title": "R2 Decision Review",
+      "json_path": "outputs/research/power_lotto/p174_r2_decision_review_20260601.json",
+      "md_path": "outputs/research/power_lotto/p174_r2_decision_review_20260601.md",
+      "json_exists": true,
+      "md_exists": true,
+      "classification": "P174_POWER_LOTTO_R2_DECISION_REVIEW_READY"
+    },
+    {
+      "task": "P175",
+      "title": "Advanced Feature Candidate Plan",
+      "json_path": "outputs/research/power_lotto/p175_advanced_feature_candidate_plan_20260601.json",
+      "md_path": "outputs/research/power_lotto/p175_advanced_feature_candidate_plan_20260601.md",
+      "json_exists": true,
+      "md_exists": true,
+      "classification": "P175_POWER_LOTTO_R2_ADVANCED_FEATURE_CANDIDATE_PLAN_READY"
+    },
+    {
+      "task": "P176",
+      "title": "Advanced Feature Minimal Prototype",
+      "json_path": "outputs/research/power_lotto/p176_advanced_feature_minimal_prototype_read_only_20260601.json",
+      "md_path": "outputs/research/power_lotto/p176_advanced_feature_minimal_prototype_read_only_20260601.md",
+      "json_exists": true,
+      "md_exists": true,
+      "classification": "P176_POWER_LOTTO_R2_ADVANCED_FEATURE_NULL_RESULT"
+    },
+    {
+      "task": "P177",
+      "title": "R2 Closure Decision Review",
+      "json_path": "outputs/research/power_lotto/p177_r2_closure_decision_review_20260601.json",
+      "md_path": "outputs/research/power_lotto/p177_r2_closure_decision_review_20260601.md",
+      "json_exists": true,
+      "md_exists": true,
+      "classification": "P177_POWER_LOTTO_R2_CLOSURE_DECISION_REVIEW_READY"
+    }
+  ],
+  "archive_completeness": {
+    "total_tasks_archived": 17,
+    "all_json_present": true,
+    "all_md_present": true,
+    "missing_artifacts": []
+  },
+  "closure_evidence_summary": {
+    "cumulative_strategies_evaluated": 17,
+    "corrected_significant_oos_edge_count": 0,
+    "p161_baseline": {
+      "strategies": 10,
+      "pass_corrected": 0,
+      "finding": "Zero strategies survive Bonferroni/BH correction (family=40). At-random baseline confirmed."
+    },
+    "p167_ensemble": {
+      "strategies": 1,
+      "pass_corrected": 0,
+      "finding": "Module F gate FAILED — OOS Window 2 below random. No defensible OOS edge."
+    },
+    "p170_sensitivity": {
+      "scenarios": 5,
+      "pass_corrected": 0,
+      "finding": "Window 2 below random at ALL sensitivity thresholds. Signal non-stationary."
+    },
+    "p173_r2_top3": {
+      "candidates": 3,
+      "pass_corrected": 0,
+      "candidates_list": ["C01 p_bonf=0.803", "C02 p_bonf=0.711", "C04 p_bonf=0.681"],
+      "finding": "All FAIL_CORRECTED (threshold=0.0167, family=3)."
+    },
+    "p176_r2_advanced4": {
+      "candidates": 4,
+      "pass_corrected": 0,
+      "candidates_list": ["C03 p_bonf=1.000", "C05 p_bonf=1.000 (below random)", "C06 p_bonf=1.000", "C07 p_bonf=0.292"],
+      "finding": "All FAIL_CORRECTED (threshold=0.0125, family=4). C05 dispersion below random."
+    },
+    "p177_decision": {
+      "option_a_authorized": true,
+      "finding": "CEO authorized Option A: formally close R2 and archive findings."
+    },
+    "overall_conclusion": "POWER_LOTTO draws are consistent with a fair random process across all 17 evaluated strategies and candidates spanning 2 research rounds."
+  },
+  "closure_policy": {
+    "no_further_active_power_lotto_strategy_research": "ENFORCED — No further active POWER_LOTTO strategy research is authorized.",
+    "no_new_power_lotto_feature_engineering_prototype": "ENFORCED — No new POWER_LOTTO feature engineering prototype is authorized.",
+    "no_champion_promotion": "ENFORCED — No champion promotion is authorized.",
+    "no_deployment": "ENFORCED — No deployment is authorized.",
+    "no_controlled_apply": "ENFORCED — No controlled_apply is authorized.",
+    "no_wagering_recommendation": "ENFORCED — No wagering recommendation is issued.",
+    "no_win_guarantee": "ENFORCED — No win guarantee is made.",
+    "fair_random_result_stands": "Results remain consistent with fair-random lottery behavior.",
+    "historical_replay_value": "Historical replay remains valuable for transparency and audit, not as proof of predictive edge."
+  },
+  "reopen_conditions": {
+    "requires_at_least_one_of": [
+      ">=500 new POWER_LOTTO draws after draw 115000041 (currently 0 available)",
+      "Documented structural change to draw process (pool size, rule change, draw mechanism)",
+      "Independent external evidence with clear hypothesis from published source",
+      "New pre-registered hypothesis with explicit null hypothesis and statistical power calculation",
+      "Explicit CEO authorization for a new research governance design (P178B or equivalent)"
+    ],
+    "current_new_draws_available": 0,
+    "last_known_draw": "115000041 (2026-05-21)"
+  },
+  "recommended_next_focus": {
+    "next_task": "P179_REPLAY_PRODUCT_GOVERNANCE_BACKLOG_DECISION_GATE",
+    "rationale": "With R2 POWER_LOTTO research formally closed, the highest-value near-term work is resolving the main/zen-gates governance split (40,462 row delta) and completing the replay product backlog. These are tractable and have clear business value.",
+    "scope": "decision gate / plan-only only — process main/zen-gates reconciliation options, replay product completeness, and long-term monitoring governance as a separate optional chain",
+    "blocked_by_user_authorization": true,
+    "authorization_phrase": "YES start P179 replay product governance backlog decision gate"
+  },
+  "governance_confirmations": {
+    "db_rows_before": 94924,
+    "db_rows_after": 94924,
+    "db_unchanged": true,
+    "no_db_write": true,
+    "no_registry_mutation": true,
+    "no_new_prototype": true,
+    "no_controlled_apply": true,
+    "no_champion_promotion": true,
+    "no_wagering_recommendations": true,
+    "no_win_guarantee_claim": true,
+    "no_stage": true,
+    "no_commit": true,
+    "no_push": true,
+    "p177_null_result_unchanged": true,
+    "p161_to_p177_null_results_unchanged": true,
+    "main_zen_gates_split_still_unresolved": true
+  },
+  "next_task": "P179_REPLAY_PRODUCT_GOVERNANCE_BACKLOG_DECISION_GATE",
+  "next_task_blocked_by_user_authorization": true,
+  "next_task_authorization_required_phrase": "YES start P179 replay product governance backlog decision gate"
+}

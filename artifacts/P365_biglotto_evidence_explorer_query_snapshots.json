@@ -1,0 +1,454 @@
+{
+  "counts": {
+    "adapter_detail_cards": 5,
+    "compact_shortlist_rows": 8,
+    "pairwise_comparison_rows": 10,
+    "source_artifacts": 11,
+    "subset_detail_cards": 31
+  },
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "query_examples": {
+    "compact_shortlist": [
+      {
+        "adapter_subset": "adapt_predict_biglotto_echo_mixed_3bet",
+        "caveat": "No recommendation language; descriptive-only historical shortlist.",
+        "compact_candidate_row_types": "best_subset_for_size;smallest_within_1_hit_of_full_cohort;smallest_within_3_hit_of_full_cohort;best_subset_for_size;best_subset_for_size;best_subset_for_size",
+        "compact_candidate_windows": "30;30;30;150;750;1500",
+        "display_rank": "1",
+        "p361_any_hit_count": "104",
+        "p361_coverage_rate": "0.06423718",
+        "p362_average_rank_by_coverage_rate": "14.0000",
+        "p362_top_3_window_count": "1",
+        "subset_size": "1",
+        "what_it_does_not_prove": "Does not prove future performance, expected profit, or betting suitability.",
+        "why_compact_historically": "Flagged by P363/P364 compact evidence as small subset coverage or full-cohort reference across historical windows."
+      },
+      {
+        "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "caveat": "No recommendation language; descriptive-only historical shortlist.",
+        "compact_candidate_row_types": "best_subset_for_size;p361_compact_pair_check;best_subset_for_size;p361_compact_pair_check;smallest_within_1_hit_of_full_cohort;smallest_within_3_hit_of_full_cohort;best_subset_for_size;p361_compact_pair_check;smallest_within_1_hit_of_full_cohort;smallest_within_3_hit_of_full_cohort;best_subset_for_size;p361_compact_pair_check;smallest_within_3_hit_of_full_cohort",
+        "compact_candidate_windows": "30;30;150;150;150;150;750;750;750;750;1500;1500;1500",
+        "display_rank": "2",
+        "p361_any_hit_count": "168",
+        "p361_coverage_rate": "0.10376776",
+        "p362_average_rank_by_coverage_rate": "4.0000",
+        "p362_top_3_window_count": "2",
+        "subset_size": "2",
+        "what_it_does_not_prove": "Does not prove future performance, expected profit, or betting suitability.",
+        "why_compact_historically": "Flagged by P363/P364 compact evidence as small subset coverage or full-cohort reference across historical windows."
+      },
+      {
+        "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "caveat": "No recommendation language; descriptive-only historical shortlist.",
+        "compact_candidate_row_types": "best_subset_for_size;best_subset_for_size;smallest_within_1_hit_of_full_cohort",
+        "compact_candidate_windows": "750;1500;1500",
+        "display_rank": "3",
+        "p361_any_hit_count": "171",
+        "p361_coverage_rate": "0.10562075",
+        "p362_average_rank_by_coverage_rate": "6.2500",
+        "p362_top_3_window_count": "2",
+        "subset_size": "3",
+        "what_it_does_not_prove": "Does not prove future performance, expected profit, or betting suitability.",
+        "why_compact_historically": "Flagged by P363/P364 compact evidence as small subset coverage or full-cohort reference across historical windows."
+      },
+      {
+        "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "caveat": "No recommendation language; descriptive-only historical shortlist.",
+        "compact_candidate_row_types": "best_subset_for_size;best_subset_for_size",
+        "compact_candidate_windows": "30;150",
+        "display_rank": "4",
+        "p361_any_hit_count": "168",
+        "p361_coverage_rate": "0.10376776",
+        "p362_average_rank_by_coverage_rate": "6.5000",
+        "p362_top_3_window_count": "1",
+        "subset_size": "3",
+        "what_it_does_not_prove": "Does not prove future performance, expected profit, or betting suitability.",
+        "why_compact_historically": "Flagged by P363/P364 compact evidence as small subset coverage or full-cohort reference across historical windows."
+      },
+      {
+        "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "caveat": "No recommendation language; descriptive-only historical shortlist.",
+        "compact_candidate_row_types": "best_subset_for_size",
+        "compact_candidate_windows": "750",
+        "display_rank": "5",
+        "p361_any_hit_count": "171",
+        "p361_coverage_rate": "0.10562075",
+        "p362_average_rank_by_coverage_rate": "9.0000",
+        "p362_top_3_window_count": "2",
+        "subset_size": "4",
+        "what_it_does_not_prove": "Does not prove future performance, expected profit, or betting suitability.",
+        "why_compact_historically": "Flagged by P363/P364 compact evidence as small subset coverage or full-cohort reference across historical windows."
+      },
+      {
+        "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "caveat": "No recommendation language; descriptive-only historical shortlist.",
+        "compact_candidate_row_types": "best_subset_for_size",
+        "compact_candidate_windows": "1500",
+        "display_rank": "6",
+        "p361_any_hit_count": "171",
+        "p361_coverage_rate": "0.10562075",
+        "p362_average_rank_by_coverage_rate": "9.5000",
+        "p362_top_3_window_count": "2",
+        "subset_size": "4",
+        "what_it_does_not_prove": "Does not prove future performance, expected profit, or betting suitability.",
+        "why_compact_historically": "Flagged by P363/P364 compact evidence as small subset coverage or full-cohort reference across historical windows."
+      },
+      {
+        "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "caveat": "No recommendation language; descriptive-only historical shortlist.",
+        "compact_candidate_row_types": "best_subset_for_size;best_subset_for_size",
+        "compact_candidate_windows": "30;150",
+        "display_rank": "7",
+        "p361_any_hit_count": "170",
+        "p361_coverage_rate": "0.10500309",
+        "p362_average_rank_by_coverage_rate": "9.7500",
+        "p362_top_3_window_count": "0",
+        "subset_size": "4",
+        "what_it_does_not_prove": "Does not prove future performance, expected profit, or betting suitability.",
+        "why_compact_historically": "Flagged by P363/P364 compact evidence as small subset coverage or full-cohort reference across historical windows."
+      },
+      {
+        "adapter_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "caveat": "No recommendation language; descriptive-only historical shortlist.",
+        "compact_candidate_row_types": "best_subset_for_size;best_subset_for_size;best_subset_for_size;best_subset_for_size",
+        "compact_candidate_windows": "30;150;750;1500",
+        "display_rank": "8",
+        "p361_any_hit_count": "171",
+        "p361_coverage_rate": "0.10562075",
+        "p362_average_rank_by_coverage_rate": "11.0000",
+        "p362_top_3_window_count": "0",
+        "subset_size": "5",
+        "what_it_does_not_prove": "Does not prove future performance, expected profit, or betting suitability.",
+        "why_compact_historically": "Flagged by P363/P364 compact evidence as small subset coverage or full-cohort reference across historical windows."
+      }
+    ],
+    "compare_two_adapters": {
+      "adapter_a": "adapt_biglotto_p0_2bet",
+      "adapter_b": "adapt_predict_biglotto_echo_2bet",
+      "adapter_pair": "adapt_biglotto_p0_2bet | adapt_predict_biglotto_echo_2bet",
+      "caveat": "Historical descriptive comparison only; no new scoring or recommendation.",
+      "display_rank": "1",
+      "p361_pair_any_hit_count": "135",
+      "p361_pair_coverage_rate": "0.08338481",
+      "p361_pair_duplicate_hit_events": "9",
+      "p361_pair_mean_pairwise_jaccard": "0.06666667",
+      "p361_period_count": "1619",
+      "p362_average_rank_by_coverage_rate": "19.7500",
+      "p362_top_3_window_count": "0",
+      "p362_windows_evaluated": "4",
+      "p362_within_3_hits_window_count": "1",
+      "p363_pair_subset": "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet",
+      "redundancy_scope": "Pairwise overlap fields are inherited from P363/P364 subset-size-2 evidence.",
+      "subset_size": "2"
+    },
+    "list_adapters": [
+      "adapt_predict_biglotto_echo_mixed_3bet",
+      "adapt_predict_biglotto_echo_phase2_3bet",
+      "adapt_biglotto_p0_2bet",
+      "adapt_predict_biglotto_echo_2bet",
+      "adapt_predict_biglotto_echo_phase2_2bet"
+    ],
+    "list_subsets_by_size": {
+      "1": [
+        "adapt_predict_biglotto_echo_mixed_3bet",
+        "adapt_predict_biglotto_echo_phase2_3bet",
+        "adapt_biglotto_p0_2bet",
+        "adapt_predict_biglotto_echo_2bet",
+        "adapt_predict_biglotto_echo_phase2_2bet"
+      ],
+      "2": [
+        "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_phase2_3bet",
+        "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet",
+        "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_phase2_2bet",
+        "adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_3bet",
+        "adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_phase2_3bet",
+        "adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_2bet"
+      ],
+      "3": [
+        "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_3bet",
+        "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_phase2_3bet",
+        "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_2bet",
+        "adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_phase2_3bet"
+      ],
+      "4": [
+        "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_mixed_3bet",
+        "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_phase2_3bet",
+        "adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet"
+      ],
+      "5": [
+        "adapt_biglotto_p0_2bet;adapt_predict_biglotto_echo_2bet;adapt_predict_biglotto_echo_phase2_2bet;adapt_predict_biglotto_echo_phase2_3bet;adapt_predict_biglotto_echo_mixed_3bet"
+      ]
+    },
+    "show_adapter": {
+      "adapter_function": "adapt_predict_biglotto_echo_mixed_3bet",
+      "bet_count": "3",
+      "caveats": [
+        "Historical descriptive evidence only.",
+        "No future prediction guarantee.",
+        "No betting advice.",
+        "No DB open/write.",
+        "No production registry import.",
+        "No deploy.",
+        "No new scoring cohort.",
+        "No adapter calls.",
+        "No blended leaderboard.",
+        "Shape-only and blocked targets remain excluded."
+      ],
+      "p360_performance_summary": {
+        "windows": {
+          "150": {
+            "edge": "0.01845643",
+            "hit_rate": "0.07333333"
+          },
+          "1500": {
+            "edge": "0.00978976",
+            "hit_rate": "0.06466667"
+          },
+          "30": {
+            "edge": "0.01178976",
+            "hit_rate": "0.06666667"
+          },
+          "750": {
+            "edge": "0.01445643",
+            "hit_rate": "0.06933333"
+          }
+        },
+        "windows_present": "30;150;750;1500"
+      },
+      "p361_contribution_redundancy": {
+        "candidate_marginal_share_full_context": "0.04807692",
+        "redundancy_note": "High overlap screen: max Jaccard 0.85185185 versus adapt_predict_biglotto_echo_phase2_3bet.",
+        "total_hit_count": "104",
+        "unique_hit_count": "5"
+      },
+      "p362_stability": {
+        "singleton_average_rank_by_coverage_rate": "14.0000",
+        "singleton_top_3_window_count": "1",
+        "singleton_within_3_hits_window_count": "1",
+        "stability_note": "Singleton evaluated across 4 windows; top-3 in 1 window(s)."
+      },
+      "scope": {
+        "adapter_calls": false,
+        "betting_advice": false,
+        "blended_leaderboard": false,
+        "db_opened": false,
+        "db_written": false,
+        "deployed": false,
+        "future_prediction_guarantee": false,
+        "historical_descriptive_evidence_only": true,
+        "new_scoring_cohort": false,
+        "production_registry_imported": false,
+        "shape_only_and_blocked_targets_excluded": true
+      },
+      "source_caveat": "Historical descriptive evidence only; no betting advice or future prediction guarantee.",
+      "strategy_id": "predict_biglotto_echo_mixed_3bet"
+    },
+    "show_subset": {
+      "adapter_subset": "adapt_predict_biglotto_echo_mixed_3bet",
+      "caveats": [
+        "Historical descriptive evidence only.",
+        "No future prediction guarantee.",
+        "No betting advice.",
+        "No DB open/write.",
+        "No production registry import.",
+        "No deploy.",
+        "No new scoring cohort.",
+        "No adapter calls.",
+        "No blended leaderboard.",
+        "Shape-only and blocked targets remain excluded."
+      ],
+      "compact_candidate_flags": {
+        "row_types": [
+          "best_subset_for_size",
+          "smallest_within_1_hit_of_full_cohort",
+          "smallest_within_3_hit_of_full_cohort",
+          "best_subset_for_size",
+          "best_subset_for_size",
+          "best_subset_for_size"
+        ],
+        "windows": [
+          "30",
+          "30",
+          "30",
+          "150",
+          "750",
+          "1500"
+        ]
+      },
+      "p361_coverage_utility": {
+        "any_hit_count": "104",
+        "best_subset_for_size": "true",
+        "coverage_rate": "0.06423718",
+        "duplicate_hit_events": "0",
+        "mean_pairwise_jaccard": "",
+        "period_count": "1619",
+        "rank_within_subset_size": "1",
+        "subset_is_full_cohort": "false"
+      },
+      "p362_stability": {
+        "average_rank_by_coverage_rate": "14.0000",
+        "rank_variance_by_coverage_rate": "67.5000",
+        "stability_note": "Ranked across 4 windows; within 3 hits of full cohort in 1 window(s).",
+        "top_1_window_count": "1",
+        "top_3_window_count": "1",
+        "windows_evaluated": "4",
+        "within_3_hits_window_count": "1"
+      },
+      "scope": {
+        "adapter_calls": false,
+        "betting_advice": false,
+        "blended_leaderboard": false,
+        "db_opened": false,
+        "db_written": false,
+        "deployed": false,
+        "future_prediction_guarantee": false,
+        "historical_descriptive_evidence_only": true,
+        "new_scoring_cohort": false,
+        "production_registry_imported": false,
+        "shape_only_and_blocked_targets_excluded": true
+      },
+      "source_caveat": "Subset card summarizes historical coverage only; no new scoring or recommendation.",
+      "subset_size": "1"
+    }
+  },
+  "scope": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "blended_leaderboard": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "future_prediction_guarantee": false,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring_cohort": false,
+    "production_registry_imported": false,
+    "shape_only_and_blocked_targets_excluded": true
+  },
+  "source_artifacts": [
+    {
+      "artifact_role": "p363_summary",
+      "file_type": "csv",
+      "line_count": "25",
+      "object_count": "",
+      "path": "artifacts/P363_biglotto_evidence_pack_summary.csv",
+      "row_count": "24",
+      "sha256": "588d6450251b20b747ad0cd956898f215b91df322a49f70be47faad05cc8aad0"
+    },
+    {
+      "artifact_role": "p363_adapter_cards",
+      "file_type": "csv",
+      "line_count": "6",
+      "object_count": "",
+      "path": "artifacts/P363_biglotto_evidence_pack_adapter_cards.csv",
+      "row_count": "5",
+      "sha256": "9db24b6030f484b7d101ff1b7d9fa7441a3e2170a87e8d84219d285e11e3544f"
+    },
+    {
+      "artifact_role": "p363_subset_cards",
+      "file_type": "csv",
+      "line_count": "32",
+      "object_count": "",
+      "path": "artifacts/P363_biglotto_evidence_pack_subset_cards.csv",
+      "row_count": "31",
+      "sha256": "c973c7110e26516ea0248cee3d83d200e0e6fa5c53d63f7a4e6e24fe46110042"
+    },
+    {
+      "artifact_role": "p363_consistency_checks",
+      "file_type": "csv",
+      "line_count": "10",
+      "object_count": "",
+      "path": "artifacts/P363_biglotto_evidence_pack_consistency_checks.csv",
+      "row_count": "9",
+      "sha256": "854b4cc3b691da09328adb2159749c20e63bd957583905b5ab908cd852c386a6"
+    },
+    {
+      "artifact_role": "p363_manifest",
+      "file_type": "csv",
+      "line_count": "15",
+      "object_count": "",
+      "path": "artifacts/P363_biglotto_evidence_pack_manifest.csv",
+      "row_count": "14",
+      "sha256": "1cf583ffb60103e6d20973dd7e29f4ff5d25ad2c16894a1d969ae15bb3ef6e20"
+    },
+    {
+      "artifact_role": "p363_report",
+      "file_type": "md",
+      "line_count": "82",
+      "object_count": "",
+      "path": "artifacts/P363_biglotto_evidence_pack_report.md",
+      "row_count": "",
+      "sha256": "e7fab14e746a77aaf6cfb930eb8502496aa1a587fd828bbe09d8854b23fc2e82"
+    },
+    {
+      "artifact_role": "p364_index",
+      "file_type": "json",
+      "line_count": "291",
+      "object_count": "1",
+      "path": "artifacts/P364_biglotto_evidence_dashboard_index.json",
+      "row_count": "",
+      "sha256": "630edbc4f2943376aeb3f5e111f21d676f462f28b6fac0daeadbc26b315a86f5"
+    },
+    {
+      "artifact_role": "p364_adapter_table",
+      "file_type": "csv",
+      "line_count": "6",
+      "object_count": "",
+      "path": "artifacts/P364_biglotto_evidence_dashboard_adapter_table.csv",
+      "row_count": "5",
+      "sha256": "d424b766aeeabcd71353b53a08841757ab2d3836b43c5ea2675796789ec6dbd2"
+    },
+    {
+      "artifact_role": "p364_subset_table",
+      "file_type": "csv",
+      "line_count": "32",
+      "object_count": "",
+      "path": "artifacts/P364_biglotto_evidence_dashboard_subset_table.csv",
+      "row_count": "31",
+      "sha256": "2dc2f100f09e7c402f798739cd8461b9ee35c85ac50a78a40eca79f34efc4999"
+    },
+    {
+      "artifact_role": "p364_html",
+      "file_type": "html",
+      "line_count": "144",
+      "object_count": "",
+      "path": "artifacts/P364_biglotto_evidence_dashboard.html",
+      "row_count": "",
+      "sha256": "70d91a1b712fdd39e32da8bcf0bf2a0ea3c90e8ef0f9413f7b561c42b8ec518d"
+    },
+    {
+      "artifact_role": "p364_manifest",
+      "file_type": "csv",
+      "line_count": "13",
+      "object_count": "",
+      "path": "artifacts/P364_biglotto_evidence_dashboard_manifest.csv",
+      "row_count": "12",
+      "sha256": "ec281d48af2a9adbd2a5a870c9e6c0a9f41cddf71d36dbf458b2fcec824d7c45"
+    }
+  ],
+  "source_sha256": {
+    "artifacts/P363_biglotto_evidence_pack_adapter_cards.csv": "9db24b6030f484b7d101ff1b7d9fa7441a3e2170a87e8d84219d285e11e3544f",
+    "artifacts/P363_biglotto_evidence_pack_consistency_checks.csv": "854b4cc3b691da09328adb2159749c20e63bd957583905b5ab908cd852c386a6",
+    "artifacts/P363_biglotto_evidence_pack_manifest.csv": "1cf583ffb60103e6d20973dd7e29f4ff5d25ad2c16894a1d969ae15bb3ef6e20",
+    "artifacts/P363_biglotto_evidence_pack_report.md": "e7fab14e746a77aaf6cfb930eb8502496aa1a587fd828bbe09d8854b23fc2e82",
+    "artifacts/P363_biglotto_evidence_pack_subset_cards.csv": "c973c7110e26516ea0248cee3d83d200e0e6fa5c53d63f7a4e6e24fe46110042",
+    "artifacts/P363_biglotto_evidence_pack_summary.csv": "588d6450251b20b747ad0cd956898f215b91df322a49f70be47faad05cc8aad0",
+    "artifacts/P364_biglotto_evidence_dashboard.html": "70d91a1b712fdd39e32da8bcf0bf2a0ea3c90e8ef0f9413f7b561c42b8ec518d",
+    "artifacts/P364_biglotto_evidence_dashboard_adapter_table.csv": "d424b766aeeabcd71353b53a08841757ab2d3836b43c5ea2675796789ec6dbd2",
+    "artifacts/P364_biglotto_evidence_dashboard_index.json": "630edbc4f2943376aeb3f5e111f21d676f462f28b6fac0daeadbc26b315a86f5",
+    "artifacts/P364_biglotto_evidence_dashboard_manifest.csv": "ec281d48af2a9adbd2a5a870c9e6c0a9f41cddf71d36dbf458b2fcec824d7c45",
+    "artifacts/P364_biglotto_evidence_dashboard_subset_table.csv": "2dc2f100f09e7c402f798739cd8461b9ee35c85ac50a78a40eca79f34efc4999"
+  },
+  "task": "P365_biglotto_evidence_explorer"
+}

@@ -52,24 +52,33 @@ def _run(coro):
 # Wrappers that explicitly supply None for all optional FastAPI Query params
 # (direct calls do not go through FastAPI's dependency injection)
 
-def _freshness():
-    return _run(get_replay_freshness())
+def _freshness(lifecycle_status: str | None = None):
+    return _run(get_replay_freshness(lifecycle_status=lifecycle_status))
 
 
-def _summary(lottery_type: str):
+def _summary(lottery_type: str, lifecycle_status: str | None = None):
     return _run(get_replay_summary(
         lottery_type=lottery_type,
         strategy_id=None,
+        lifecycle_status=lifecycle_status,
         date_from=None,
         date_to=None,
     ))
 
 
-def _history(lottery_type: str, page: int = 1, page_size: int = 50):
+def _history(
+    lottery_type: str,
+    page: int = 1,
+    page_size: int = 50,
+    lifecycle_status: str | None = None,
+    fixture_mode: bool = False,
+):
     return _run(get_replay_history(
         lottery_type=lottery_type,
         strategy_id=None,
         replay_status=None,
+        lifecycle_status=lifecycle_status,
+        fixture_mode=fixture_mode,
         date_from=None,
         date_to=None,
         page=page,
@@ -172,8 +181,23 @@ def _check_history_contract(data: Dict[str, Any]) -> None:
 
     assert isinstance(data["records"], list), "history: records must be a list"
 
+    for field in ("filter_lifecycle_status",):
+        assert field in data, f"history: required field missing: {field!r}"
+
     for rec in data["records"]:
-        for sub in ("target_draw", "history_cutoff"):
+        for sub in (
+            "lottery",
+            "target_draw",
+            "target_date",
+            "strategy_id",
+            "lifecycle_status",
+            "predicted_numbers",
+            "actual_numbers",
+            "hit_numbers",
+            "hit_count",
+            "replay_status",
+            "history_cutoff",
+        ):
             assert sub in rec, (
                 f"history: record id={rec.get('id')} missing required field {sub!r}"
             )
@@ -231,6 +255,12 @@ class TestFreshnessContract:
         with pytest.raises(AssertionError, match="legacy_error_count"):
             _check_freshness_contract(stripped)
 
+    @pytest.mark.parametrize("lifecycle_status", ["OFFLINE", "REJECTED", "OBSERVATION", "RETIRED"])
+    def test_freshness_accepts_lifecycle_filter(self, lifecycle_status):
+        data = _freshness(lifecycle_status=lifecycle_status)
+        assert isinstance(data, dict)
+        assert data.get("filter_lifecycle_status") == lifecycle_status
+
 
 # ── Summary tests ─────────────────────────────────────────────────────────────
 
@@ -269,6 +299,13 @@ class TestSummaryContract:
         stripped = {k: v for k, v in data.items() if k != "data_scope"}
         with pytest.raises(AssertionError, match="data_scope"):
             _check_summary_contract(stripped)
+
+    @pytest.mark.parametrize("lifecycle_status", ["OFFLINE", "REJECTED", "OBSERVATION", "RETIRED"])
+    def test_summary_accepts_lifecycle_filter(self, lifecycle_status):
+        data = _summary("BIG_LOTTO", lifecycle_status=lifecycle_status)
+        assert isinstance(data, dict)
+        assert data.get("filter_lifecycle_status") == lifecycle_status
+        _check_summary_contract(data)
 
 
 # ── History tests ─────────────────────────────────────────────────────────────
@@ -313,3 +350,73 @@ class TestHistoryContract:
     def test_history_all_lottery_types_respond(self):
         for lt in ("BIG_LOTTO", "POWER_LOTTO", "DAILY_539"):
             _check_history_contract(_history(lt))
+
+    @pytest.mark.parametrize("lifecycle_status", ["OFFLINE", "REJECTED", "OBSERVATION", "RETIRED"])
+    def test_history_accepts_lifecycle_filter(self, lifecycle_status):
+        data = _history("BIG_LOTTO", lifecycle_status=lifecycle_status)
+        assert isinstance(data, dict)
+        assert data.get("filter_lifecycle_status") == lifecycle_status
+        _check_history_contract(data)
+        if data["records"]:
+            rec = data["records"][0]
+            assert rec["lifecycle_status"] == lifecycle_status
+            assert rec["lottery"] == rec["lottery_type"]
+
+
+class TestHistoryFixtureModeContract:
+    def test_fixture_history_returns_dict(self):
+        assert isinstance(_history("BIG_LOTTO", fixture_mode=True), dict)
+
+    @pytest.mark.parametrize(
+        "lifecycle_status, expected_count",
+        [
+            ("REJECTED", 4),
+            ("RETIRED", 5),
+            ("OBSERVATION", 1),
+        ],
+    )
+    def test_fixture_history_counts_and_flags(self, lifecycle_status, expected_count):
+        data = _history("BIG_LOTTO", lifecycle_status=lifecycle_status, fixture_mode=True)
+        _check_history_contract(data)
+        assert data["total"] == expected_count
+        assert len(data["records"]) == expected_count
+        assert data["fixture_mode"] is True
+        assert data["source"] == "synthetic_fixture"
+        assert data["advisory_only"] is True
+        assert data["production_db_write"] is False
+        assert data["filter_lifecycle_status"] == lifecycle_status
+        for record in data["records"]:
+            assert record["source"] == "synthetic_fixture"
+            assert record["advisory_only"] is True
+            assert record["production_db_write"] is False
+            assert record["fixture_mode"] is True
+            assert record["lifecycle_status"] == lifecycle_status
+
+    def test_fixture_history_uses_synthetic_source(self):
+        data = _history("BIG_LOTTO", lifecycle_status="RETIRED", fixture_mode=True)
+        first = data["records"][0]
+        assert first["replay_status"] == "PREDICTED"
+        assert first["target_draw"]
+        assert first["strategy_version"] == "p21_20260511"
+        assert first["fixture_source"] == "non_online_lifecycle_fixture"
+
+    def test_fixture_history_does_not_return_db_marker(self):
+        data = _history("BIG_LOTTO", lifecycle_status="REJECTED", fixture_mode=True)
+        assert data.get("source") == "synthetic_fixture"
+        assert data.get("advisory_only") is True
+        assert data.get("production_db_write") is False
+
+    def test_fixture_history_rejects_non_predicted_replay_status_filter(self):
+        data = _run(get_replay_history(
+            lottery_type="BIG_LOTTO",
+            strategy_id=None,
+            replay_status="REPLAY_ERROR",
+            lifecycle_status="REJECTED",
+            fixture_mode=True,
+            date_from=None,
+            date_to=None,
+            page=1,
+            page_size=50,
+        ))
+        assert data["total"] == 0
+        assert data["records"] == []

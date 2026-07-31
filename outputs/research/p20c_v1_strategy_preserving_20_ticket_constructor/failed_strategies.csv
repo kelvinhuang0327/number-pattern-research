@@ -1,0 +1,607 @@
+strategy_id,governance_status,failure_stage,reason_code,target_draw,replicate_id,detailed_reason
+history::ai_lab/adapter.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::ai_lab/automl_biglotto/__init__.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::ai_lab/automl_biglotto/backtest_engine.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::ai_lab/automl_biglotto/config.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::ai_lab/automl_biglotto/main.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::ai_lab/automl_biglotto/portfolio_optimizer.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::ai_lab/automl_biglotto/report.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::ai_lab/scripts/attention_replay_predictor.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::ai_lab/scripts/automl_strategy_optimizer.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::ai_lab/scripts/benchmark_ai.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::ai_lab/scripts/benchmark_ai_zdp.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::ai_lab/scripts/benchmark_hybrid.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::ai_lab/scripts/benchmark_rl.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::ai_lab/scripts/benchmark_v3.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::ai_lab/scripts/export_data.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::ai_lab/scripts/finetune_transformer.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::ai_lab/scripts/graph_predictor.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::ai_lab/scripts/high_prize_trend_optimizer.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::ai_lab/scripts/train_critic.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::ai_lab/scripts/train_hybrid.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::ai_lab/scripts/train_rl.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::ai_lab/scripts/train_v3.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::ai_lab/train_lotto_gpt.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/big649_measurement_export.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p219_external_method_diagnostic_sweep.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p246_big_lotto_data_integrity_audit.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p246b_big_lotto_taxonomy_correction.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p246c_big_lotto_addon_impact_audit.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p246d_big_lotto_addon_segregation_design.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p246e_canonical_draw_helper_isolation.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p246f_research_caller_canonicalization_sweep.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p246g_remaining_big_lotto_caller_canonicalization.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p246h_advanced_learning_scheduler_trace.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p246i_big_lotto_population_assertion_cleanup.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p246j_big_lotto_addon_isolation_closure.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p246k_canonical_big_lotto_nist_reaudit.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p247a_big_lotto_canonical_view_annotation_dryrun_plan.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p247c_big_lotto_view_post_apply_reconciliation.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p247d_big_lotto_canonical_view_consumer_adoption_audit.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p247e_get_canonical_draws_view_adoption.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p247f_big_lotto_analysis_tool_migration.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p247g_big_lotto_canonical_isolation_final_guard.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p248a_big_lotto_canonical_isolation_governance_closure.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p249a_post_isolation_roadmap_triage.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p249b_roadmap_current_state_row_label_sync.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p250a_cross_lottery_strategy_replay_inventory.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p251a_cross_lottery_evidence_dashboard_dryrun_plan.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p251b_cross_lottery_evidence_dashboard_data_builder.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p251c_evidence_dashboard_api_payload_contract_plan.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p251d_evidence_dashboard_readonly_api_route.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p251e_evidence_dashboard_api_runtime_smoke_governance_closure.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p252b_unified_external_method_coverage_audit.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p252c_baseline_calculator_ssot.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p253a_p1_external_method_readiness_triage.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p253c_signal_stability_adoption_audit.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p253d_historical_draw_parser_inventory.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p253e_historical_draw_parser_ssot.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p253f_historical_draw_parser_adoption_audit.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p253g_feature_bottleneck_report_inventory.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p253h_feature_vocabulary_design.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p254b_fetcher_repair_governance_closure.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p255a_ingest_backfill_safety_audit.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p255b_ingest_write_guard_design.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p255c_ingest_write_guard_implementation.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p255d_ingest_write_guard_runtime_smoke_governance_closure.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p256a_feature_information_mi_null_framework.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p257a_best_nbet_strategy_overview_historical_replay.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p267c_m3plus_strategy_revalidation.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p268b_official_draw_order_positional_bias_audit.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p268d1_draw_order_full_history_artifact_backfill.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p268d2_draw_order_structure_validation_db_alignment.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p268d3_h1_draw_order_confirmatory_permutation_test.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p270b_outcome_blind_portfolio_geometry_power_audit.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::analysis/p271d_prize_aware_replay_input_feasibility_audit.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p271f_prize_aware_full_history_descriptive_evaluation.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p272b_prospective_oos_detectability_power.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p273a_distinct_ticket_identity_export.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p273a_prize_aware_inferential_validation.py,deprecated,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p273a_prizeaware_replay_export.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p275b_unified_prize_aware_success_matrix.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p276b_fixed_n_coverage_complementarity.py,deprecated,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p277a_historical_observation_status_reclassification.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p278a_hit_spectrum_data_contract.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p280d_big649_future_only_protocol.py,deprecated,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p333_strategy_pick_combination_scoreboard.py,deprecated,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::analysis/p536c_success_matrix_lift_extension.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analysis/p540a_full_replay_regeneration_readiness.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::analysis/p540b_daily539_incremental_replay_generation.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::analysis/p540c_daily539_post_replay_refresh.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::analyze_proximity_115000019.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::feature_discovery_and_retrospective.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::lottery_api/engine/core_satellite.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/engine/drift_detector.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/engine/hypothesis_registry.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/engine/multi_bet_optimizer.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/engine/predraw_ledger.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::lottery_api/engine/rolling_strategy_monitor.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/models/advanced_bayesian_analyzer.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/advanced_strategies.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/anti_consensus_strategy.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/auto_optimizer.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/autogluon_model.py,candidate,preflight,MISSING_ENTRYPOINT,,,No approved causal entrypoint is committed for this historical surface.
+history::lottery_api/models/bayesian_ensemble.py,candidate,preflight,MISSING_ENTRYPOINT,,,No approved causal entrypoint is committed for this historical surface.
+history::lottery_api/models/big_lotto_dual_bet_optimizer.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/big_lotto_optimizer.py,candidate,preflight,MISSING_ENTRYPOINT,,,No approved causal entrypoint is committed for this historical surface.
+history::lottery_api/models/biglotto_2bet_final.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/biglotto_2bet_optimizer.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/biglotto_2bet_optimizer_v2.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/biglotto_3bet_optimizer.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/biglotto_graph.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/models/biglotto_tme_optimizer.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/concentrated_pool_predictor.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/constraint_filter_predictor.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/cooccurrence_graph.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/dynamic_ensemble_predictor.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/enhanced_dual_bet_predictor.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/enhanced_predictor.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::lottery_api/models/ensemble_predictor.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/hpsb_optimizer.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/lottery_graph.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/models/lstm_attention_predictor.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/mcts_portfolio_optimizer.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/meta_learning.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/multi_bet_optimizer.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/negative_selection_biglotto.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/negative_selector.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/models/optimized_ensemble.py,candidate,preflight,MISSING_ENTRYPOINT,,,No approved causal entrypoint is committed for this historical surface.
+history::lottery_api/models/optimized_predictor.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/p47_wave4_powerlotto_adapters.py,candidate,preflight,MISSING_ENTRYPOINT,,,No approved causal entrypoint is committed for this historical surface.
+history::lottery_api/models/perball_lstm.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/power_lotto_second_zone.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/models/quantum_random_predictor.py,candidate,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::lottery_api/models/regime_detector.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/models/selective_ensemble.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/smart_multi_bet.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::lottery_api/models/stability_profile.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/models/transformer_model.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/ultra_optimized_predictor.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/unified_predictor.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/models/xgboost_model.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/tools/backtest_2025_clean.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/tools/backtest_2025_fixed.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/tools/backtest_6_bets.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::lottery_api/tools/backtest_8_bets_2025.py,candidate,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::lottery_api/tools/backtest_8_bets_2025_v2.py,candidate,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::lottery_api/tools/backtest_big_lotto_2025.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/tools/backtest_biglotto.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/tools/backtest_concentrated_pool.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/tools/backtest_constraint_filter.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/tools/backtest_dual_bet_big_lotto.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/tools/backtest_enhanced_methods.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/tools/debug_regression.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::lottery_api/tools/debug_validator.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::lottery_api/tools/evaluate_specific_numbers.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/tools/predict_6_bets.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/tools/predict_8_bets_lotto.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/tools/predict_next_draw.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::lottery_api/tools/quick_test_models.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::lottery_api/tools/rolling_backtest_2025.py,candidate,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::lottery_api/tools/test_advanced_models.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::lottery_api/tools/verification_suite.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::null_hypothesis_115000019.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::predict_49lotto_v2_phase2.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::predict_biglotto_115000002_zone_balance.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::recovered_strategies/biglotto/__init__.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/historical_adapters.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_acceptance_summary.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_answer_kit_scenario_runner.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_command_center_operator_console.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_command_center_regression_runner.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_command_center_route_replay.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_coverage_utility.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_evidence_agent_pack.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_evidence_agent_pack_consumer.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_evidence_api.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_evidence_api_snapshots.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_evidence_bundle.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_evidence_command_center.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_evidence_dashboard.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_evidence_e2e_smoke.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_evidence_explorer.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_evidence_pack.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_evidence_release_bundle.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_multiwindow_validation.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_operator_acceptance.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_operator_history.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_regression_archive_answer_kit.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_regression_archive_explorer.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_regression_archive_query.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_regression_run_archive.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_replay_readiness_harness.py,deprecated,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::recovered_strategies/biglotto/no_db_subset_stability.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/advanced_methods_benchmark.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/advanced_prediction_engine.py,candidate,preflight,MISSING_ENTRYPOINT,,,No approved causal entrypoint is committed for this historical surface.
+history::tools/ai_config_optimizer.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/analyze_115000003.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/analyze_banker_accuracy.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/analyze_banker_plus_kill.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/analyze_biglotto_special.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/analyze_cooccurrence.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/analyze_draw_115000019.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/analyze_draw_115000021.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/analyze_draw_115000023.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/analyze_jackpot_history.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/analyze_market_temperature.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/analyze_number_chains.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/analyze_pairings.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/analyze_prediction_115000019.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/analyze_specific_draw.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/analyze_theoretical_vs_actual.py,candidate,preflight,MISSING_ENTRYPOINT,,,No approved causal entrypoint is committed for this historical surface.
+history::tools/analyze_top_n_for_2.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/analyze_trios.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/arbitrage_analysis.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/audit_49lotto_irap_roi.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/audit_big_lotto_3bet.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/audit_big_lotto_baseline.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/audit_big_lotto_hyper.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/audit_big_lotto_rigorous.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/audit_cluster_potential.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/audit_ensemble_weights.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/audit_expert_overlap.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/audit_methods_biglotto.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/audit_p262a_replay_strategy_coverage.py,deprecated,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/audit_p263a_d3_strategy_status_coverage.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/audit_raw_experts.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/audit_regime_correlation.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/audit_scientific_integrity.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/audit_strategies_150.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/auto_discovery_agent.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/auto_discovery_biglotto.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/auto_optimizer_alpha.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/auto_optimizer_v2.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest/backtest_top3_methods_2025.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest/benchmark_dual_bet.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/backtest/big_lotto_2025_tournament.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest/optimize_training_window.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_10bet_biglotto.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_150_biglotto.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_2bet_orthogonal.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_39lotto_comprehensive.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/backtest_4expert.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_500_biglotto.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_5bets.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_6bets_optimized.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_6expert.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_7bets_optimized.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_7expert.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_ai_dominant.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_alpha_20.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_alpha_20_kill_5.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_alpha_20_kill_consecutive.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_alpha_20_no_kill.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_alpha_zero_portfolio.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_anomaly_regression.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_apriori.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_arima_500.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_arima_multi_term.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_bayesian_single.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_best_of_best_2bet.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_big_lotto_3bet.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_big_lotto_orthogonal_5bet.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_biglotto_2bet.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_biglotto_2bet_v2.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_biglotto_3bet.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_biglotto_5bet_ts3markov.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_biglotto_6bet.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_biglotto_6bet_ewma.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_biglotto_7bet_optimized.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_biglotto_7me.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_biglotto_coldpool_15.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_biglotto_comprehensive.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_biglotto_deviation_markov.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_biglotto_enhancements.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_biglotto_hot_stop_rebound.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_biglotto_markov_4bet.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_biglotto_p0_2bet.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_biglotto_portfolio.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_biglotto_triple_strike.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_biglotto_triple_strike_original.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_biglotto_triple_strike_v2.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_cluster_pivot_biglotto.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/backtest_conditional_prob_2bet.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_consensus_20.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_direction_3.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/backtest_diversified_2bet.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/backtest_diversified_3bet.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_echo_aware.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_echo_phase2.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_fcf_vs_ts3.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_gap_dynamic_1500.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_graph_method.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_high_prize_elite.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_hot_window.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_hpsb_150.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_hpsb_200.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_hpsb_v2.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_latest_200_integrated.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_lstm_500_tuning.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_markov_repeat_exception.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_meta_ensemble.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_ml_comprehensive_2025_biglotto.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_moderate_selection.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/backtest_must_hit.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_must_not_hit.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_negative_selection_2bet.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_negative_selector.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_optimized_multi_bet.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_orthogonal_3bet.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_orthogonal_graph.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_p0p1_upgrade.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/backtest_p1_dynamic.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_perball_lstm.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_phase1_comparison.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_phase2_comparison.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_power_pivot_biglotto.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_quad_strike.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_radical_strategy.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_single_precision.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_smart_2bet.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_smart_3bet_200.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_smart_p1_integrated_200.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_strategy_1.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_strategy_2.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_structural_3bet.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_structural_ai.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/backtest_structural_group.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_sum_constraint.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/backtest_synergy_2.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/baseline_validator.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/benchmark_cluster_size.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/benchmark_new_strategies.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/big649_no_db_strategy_output_adapter.py,deprecated,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/big649_one_shot_publication_runner.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/big649_real_publication_runner.py,deprecated,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/big_lotto_dual_path.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/big_lotto_exhaustive_audit.py,candidate,preflight,DATA_LEAKAGE_RISK,,,Outcome-aware evaluator consumes the target result and is excluded.
+history::tools/biglotto_2bet_hedging.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/biglotto_diversified_ensemble.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/biglotto_diversified_ensemble_v6.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/biglotto_diversified_ensemble_v6_backup.py,deprecated,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/biglotto_special_v4.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/biglotto_triple_strike.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/biglotto_zonal_pruning.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/champion_tuning.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/champion_tuning_v2.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/chaos_structural_invariant.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/check_7expert_overfitting.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/check_all_overfitting.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/check_db_dates.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/clean_database_big_lotto_only.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/compare_random_vs_smart.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/convert_taiwan_lottery_csv.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/coverage_strategy_research.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/covering_research.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/covering_strategy_research.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/debug_db_draws.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/debug_lottery_types.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/deep_review_115000007.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/diag_pool_efficiency.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/diagnose_ai_loading.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/discover_regime_hmm.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/discover_symbolic.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/download_lottery_data.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/draw_115000008_analysis.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/dump_db_tail.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/dynamic_frequency_predictor.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/edge_splicer.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/edge_splicer_5bet.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/edge_splicer_v2.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/eval_traits_115000021.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/evaluate_2_3_bets.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/evaluate_big_lotto_synergy.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/evaluate_big_lotto_v1.py,deprecated,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/evaluate_combinations.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/evaluate_concentrator.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/evaluate_strategies.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/evo_audit_rigorous.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/evolving_strategy_engine/data_loader.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/evolving_strategy_engine/evaluator.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/evolving_strategy_engine/evolution_engine.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/exhaustive_feature_analyzer.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/exhaustive_feature_sweep.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/exhaustive_feature_sweep_v2.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/exhaustive_nbet_benchmark.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/experimental/analyze_target_prediction.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/experimental/compare_models.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/experimental/evaluate_user_numbers.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/experimental/reproduce_issue.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/experimental/run_benchmark_and_report.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/experimental/train_lstm_model.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/explore_1_markov_window.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/explore_3_midfreq_analysis.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/feasibility_benchmark_biglotto.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/final_draw_v11.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/final_extreme_audit_49lotto.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/final_verify_ufe.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/find_best_success_rate.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/find_best_test_periods.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/find_draw_db.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/fix_database_data.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/generate_2_3_bets.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/generate_final_predictions.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/generate_realistic_data.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/generate_v7_predictions.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/get_more_bets.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/gridsearch_echo_weight.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/gridsearch_echo_weight_v2.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/historical_audit_rigorous.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/horizon_analyzer.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/hot_cooccurrence_analyzer.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/hybrid_integration_benchmark.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/hypothesis_39lotto_test.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/lottery-d5/build_p326a_baseline_summary.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/negative_selector.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/negative_selector_optimized.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/oos_validator.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/optimal_2bet_3bet_matrix.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/optimize_3bet_window.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/optimize_3rd_bet.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/optimize_5bet_weights.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/optimize_arima_params.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/optimize_biglotto_5bet.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/optimize_biglotto_cluster.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/optimize_deviation_extreme_generic.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/optimize_ensemble_weights.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/optimize_moderate_selection.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/orthogonal_diversification_benchmark.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/overfitting_detector.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/p280amr_big649_local_replay_research.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/p280at_big649_strategy_ranking_replay.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/p280aw_big649_private_ticket_decision_runner.py,deprecated,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/p281a_cross_lottery_prize_aware_validation.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/p282b_big649_deduplicated_portfolio_replay.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/p3_shuffle_permutation_test.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/power_fourier_rhythm.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_114000117.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/predict_114000118.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_5me_115000004.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_6expert.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_alpha_20.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/predict_big_lotto_115000003.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_big_lotto_5bets.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/predict_big_lotto_alternative.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/predict_big_lotto_double.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/predict_big_lotto_smart_2bet.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_biglotto_115000007_2bets.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_biglotto_6bets_cluster.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_biglotto_6bets_optimized.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_biglotto_7bets.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_biglotto_7bets_cluster.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_biglotto_7bets_optimized.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_biglotto_apriori.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_biglotto_best.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_biglotto_deviation_2bet.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/predict_biglotto_echo_2bet.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/predict_biglotto_echo_3bet.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/predict_biglotto_echo_phase2.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_biglotto_elite7.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_biglotto_mixed_3bet.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/predict_biglotto_quad_strike.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_biglotto_radical.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_biglotto_triple_strike.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_biglotto_zonal.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/predict_consensus_ensemble.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_daily539_114000312.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/predict_evolutionary_gum.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_next_draw.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_optimized_3bet.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/predict_optimized_final.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/predict_sequence_transformer.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/predict_smart_entry.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/predict_superlotto_best.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predict_ultimate_feature_ensemble.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/predict_v9_anomaly_cluster.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predictability_engine.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/predraw_ledger_verify_smoke.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/quick_backtest.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/quick_ml_predict.py,candidate,preflight,MISSING_ENTRYPOINT,,,No approved causal entrypoint is committed for this historical surface.
+history::tools/quick_predict.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/quick_refine_v71.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/random_bias_detector.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/reconcile_audit.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/refine_strategies_v71.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/reproduce_diagnostic.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/research_49lotto_signals.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/research_7bet_pool_quality.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/research_cluster_enhancements.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/research_cluster_fusion.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/research_graph_topology.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/research_hurst.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/research_lempel_ziv.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/research_model_tiers.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/research_regime_specific_discovery.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/research_true_orthogonal.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/research_variant_history.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/retrospective_115000009_biglotto.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/retrospective_analysis.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/review_biglotto_115000007.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/rgf_walkforward_validator.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/rsm_bootstrap.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/run_evolution.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/sbp_audit_biglotto_strike.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/sbp_baseline_check.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/scientific_audit_biglotto_v2.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/scientific_baseline_report.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/scrape_lottery_data.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/solve_7th_bet.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/stability_coverage_study.py,rejected,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/standard_benchmark_biglotto.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/standard_ts3_5bet.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/strategy_leaderboard.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/sync_converted_2024.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/sync_fix_to_main_db.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/synergy_matrix_scanner.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/test_4bet_dcb.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/test_5bet_optimization.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/test_asm.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/test_biglotto_2bet_combos.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/test_cag.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/test_ces.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/test_cluster_cover.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/test_dcb.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/test_dm_dms_biglotto.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/test_dms.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/test_dms_biglotto.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/test_ecp.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/test_greedy_optimizer.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/test_mwsc.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/test_new_features.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/test_pce.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/test_smh.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/test_tme.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/test_zdp.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/testing/test-advanced-learning.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/testing/test-all-optimizations.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/testing/test-optimization-b.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/testing/test-optimization-simple.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/testing/test_api_response.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/testing/test_connection_stability.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/testing/test_large_backtest.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/testing/test_lstm_model.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/testing/test_optimized_ensemble.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/testing/test_optimized_strategies.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/trace_consensus.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/trace_logits.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/tune_hyperparameters.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/tune_v11_parameters.py,unknown,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/update_115000002.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/update_115000009.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/update_db_115000012.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/update_db_latest.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/upload_big_lotto_csv.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/upload_lottery_data.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/verify_biglotto_3bet_comparison.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/verify_cluster_size.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/verify_elite7_claim.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/verify_gemini_2bet_claim.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/verify_gemini_3bet_claim.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/verify_gemini_phase2_claim.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+history::tools/verify_gemini_tuned_claims.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/verify_integrated_zonal.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/verify_markov_vs_triple_2bet.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/verify_match4_details.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/verify_no_data_leakage.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/verify_phase2_integration.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/verify_phase2_performance.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/verify_phase4_final.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/verify_randomness_impact.py,candidate,preflight,UNKNOWN_FAILURE,,,Identity or transitive safety remains unknown; fail-closed.
+history::tools/verify_roi_optimized_biglotto_500.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/verify_smart_2bet_plus_kill.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/verify_stability_id.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/verify_strategy_longterm.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/verify_v11_breakthrough.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/verify_v9_parity.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/verify_variant_overlap.py,unknown,preflight,DOCUMENT_ONLY,,,Committed classification says this is not an actual prediction method.
+history::tools/zonal_filter_autopsy.py,rejected,preflight,PARTIAL_IMPLEMENTATION,,,Committed classification cannot confirm a strategy identity.
+history::tools/zone_split_optimizer.py,rejected,preflight,UNSAFE_EXTERNAL_STATE,,,Static classification found unsafe or external-state behavior.
+registry::539_3bet_orthogonal,rejected,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::acb_1bet,deprecated,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::acb_markov_midfreq,deprecated,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::acb_markov_midfreq_3bet,deprecated,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::acb_single_539,rejected,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::biglotto_social_wisdom_anti_popularity,experimental,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::biglotto_ts3_acb_4bet,rejected,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::biglotto_ts3_markov_freq_5bet,rejected,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::biglotto_zone_split_3bet_bet1,experimental,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::cold_complement_2bet,deprecated,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::daily539_f4cold,accepted,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::daily539_f4cold_3bet,deprecated,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::daily539_f4cold_5bet,deprecated,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::daily539_markov_cold,accepted,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::fourier30_markov30_2bet,deprecated,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::fourier_rhythm_3bet,accepted,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::h6_gate_mk20_ew85,experimental,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::markov_1bet_539,rejected,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::midfreq_acb_2bet,deprecated,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::midfreq_fourier_2bet,deprecated,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::p0b_539_3bet_f_cold_fmid,rejected,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::p0c_539_3bet_f_cold_x2,rejected,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::p1_deviation_2bet_539,rejected,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::power_fourier_rhythm_2bet,deprecated,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::power_orthogonal_5bet,accepted,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::power_precision_3bet,accepted,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::power_shlc_midfreq,rejected,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::zonal_entropy_2bet,deprecated,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.
+registry::zone_gap_3bet_539,rejected,preflight,MISSING_APPROVED_MULTI_TICKET_ENTRYPOINT,,,Registry metadata is preserved; this task does not invent an unapproved generator entrypoint.

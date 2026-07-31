@@ -1,0 +1,21 @@
+check_id,source,case_id,status,severity,notes
+p518f_smoke_overall,P518F_smoke,,PASS,blocking,P518F committed smoke overall status
+p518g_edge_overall,P518G_edge_matrix,,PASS,blocking,P518G committed edge matrix overall status
+canonical_db_refusal,P518F_smoke,canonical_db_basename_refusal,PASS,blocking,canonical DB basename refusal evidence includes expected exit and REFUSED transcript signal
+case_P518F_smoke_valid_synthetic_ledger,P518F_smoke,valid_synthetic_ledger,PASS,none,valid synthetic ledger verifies successfully
+case_P518F_smoke_tampered_chain_invalid,P518F_smoke,tampered_chain_invalid,PASS,none,tampered ledger returns chain-invalid nonzero status
+case_P518F_smoke_missing_ledger_path,P518F_smoke,missing_ledger_path,PASS,none,missing ledger path returns file-not-found status
+case_P518F_smoke_canonical_db_basename_refusal,P518F_smoke,canonical_db_basename_refusal,PASS,none,ledger path with canonical DB basename is refused
+case_P518F_smoke_no_db_invariant_evidence,P518F_smoke,no_db_invariant_evidence,PASS,none,harness records no canonical DB open/write and no migration/backfill/deploy
+case_P518G_edge_matrix_malformed_jsonl_row,P518G_edge_matrix,malformed_jsonl_row,PASS,none,truncated JSONL row returns chain-invalid nonzero status
+case_P518G_edge_matrix_empty_ledger_file,P518G_edge_matrix,empty_ledger_file,PASS,none,empty ledger file is valid with zero records
+case_P518G_edge_matrix_missing_required_field,P518G_edge_matrix,missing_required_field,PASS,none,chain-consistent record missing strategy_id is reported malformed
+case_P518G_edge_matrix_duplicate_draw_record_supported,P518G_edge_matrix,duplicate_draw_record_supported,PASS,none,duplicate target draw identity remains valid under current verifier semantics
+case_P518G_edge_matrix_wrong_game_identifier_supported,P518G_edge_matrix,wrong_game_identifier_supported,PASS,none,unknown lottery_type remains valid under current verifier semantics
+case_P518G_edge_matrix_prev_hash_mismatch_chain_invalid,P518G_edge_matrix,prev_hash_mismatch_chain_invalid,PASS,none,stored prev_record_hash mismatch returns chain-invalid nonzero status
+case_P518G_edge_matrix_no_db_invariant_evidence,P518G_edge_matrix,no_db_invariant_evidence,PASS,none,harness records no canonical DB open/write and no migration/backfill/deploy
+db_invariant_P518F_smoke,P518F_smoke,no_db_invariant_evidence,PASS,none,no canonical DB open/write; no migration/backfill; no deploy
+db_invariant_P518G_edge_matrix,P518G_edge_matrix,no_db_invariant_evidence,PASS,none,no canonical DB open/write; no migration/backfill; no deploy
+db_invariant_P518H_acceptance,P518H_acceptance,no_db_invariant_evidence,PASS,none,no canonical DB open/write; no migration/backfill; no deploy
+source_manifest_artifacts/P518F_predraw_ledger_verify_smoke_manifest.csv,artifacts/P518F_predraw_ledger_verify_smoke_manifest.csv,,PASS,none,committed source manifest sha256/byte checks
+source_manifest_artifacts/P518G_predraw_ledger_verify_edge_matrix_manifest.csv,artifacts/P518G_predraw_ledger_verify_edge_matrix_manifest.csv,,PASS,none,committed source manifest sha256/byte checks

@@ -1,0 +1,8163 @@
+{
+  "generated_at": "2026-06-10T14:14:25.733130+00:00",
+  "start_month": "2007-01",
+  "end_month": "2026-05",
+  "max_calls_per_run": 60,
+  "ledger": [
+    {
+      "month": "2007-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2007-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "EMPTY",
+      "records_fetched": 0,
+      "error": null
+    },
+    {
+      "month": "2007-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2007-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2007-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2007-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2007-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "EMPTY",
+      "records_fetched": 0,
+      "error": null
+    },
+    {
+      "month": "2007-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 20,
+      "error": null
+    },
+    {
+      "month": "2007-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 20,
+      "error": null
+    },
+    {
+      "month": "2007-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 20,
+      "error": null
+    },
+    {
+      "month": "2007-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2007-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "EMPTY",
+      "records_fetched": 0,
+      "error": null
+    },
+    {
+      "month": "2007-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2007-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2007-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2007-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2007-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "EMPTY",
+      "records_fetched": 0,
+      "error": null
+    },
+    {
+      "month": "2007-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2007-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2007-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2007-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2007-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "EMPTY",
+      "records_fetched": 0,
+      "error": null
+    },
+    {
+      "month": "2007-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2007-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2007-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2007-06",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2007-06",
+      "lottery_type": "POWER_LOTTO",
+      "status": "EMPTY",
+      "records_fetched": 0,
+      "error": null
+    },
+    {
+      "month": "2007-06",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2007-06",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2007-06",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2007-07",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2007-07",
+      "lottery_type": "POWER_LOTTO",
+      "status": "EMPTY",
+      "records_fetched": 0,
+      "error": null
+    },
+    {
+      "month": "2007-07",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2007-07",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2007-07",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2007-08",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2007-08",
+      "lottery_type": "POWER_LOTTO",
+      "status": "EMPTY",
+      "records_fetched": 0,
+      "error": null
+    },
+    {
+      "month": "2007-08",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2007-08",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2007-08",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2007-09",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2007-09",
+      "lottery_type": "POWER_LOTTO",
+      "status": "EMPTY",
+      "records_fetched": 0,
+      "error": null
+    },
+    {
+      "month": "2007-09",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 20,
+      "error": null
+    },
+    {
+      "month": "2007-09",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 20,
+      "error": null
+    },
+    {
+      "month": "2007-09",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 20,
+      "error": null
+    },
+    {
+      "month": "2007-10",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2007-10",
+      "lottery_type": "POWER_LOTTO",
+      "status": "EMPTY",
+      "records_fetched": 0,
+      "error": null
+    },
+    {
+      "month": "2007-10",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2007-10",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2007-10",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2007-11",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2007-11",
+      "lottery_type": "POWER_LOTTO",
+      "status": "EMPTY",
+      "records_fetched": 0,
+      "error": null
+    },
+    {
+      "month": "2007-11",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2007-11",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2007-11",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2007-12",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2007-12",
+      "lottery_type": "POWER_LOTTO",
+      "status": "EMPTY",
+      "records_fetched": 0,
+      "error": null
+    },
+    {
+      "month": "2007-12",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2007-12",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2007-12",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2008-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2008-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 3,
+      "error": null
+    },
+    {
+      "month": "2008-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2008-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2008-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2008-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2008-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2008-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2008-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2008-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2008-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2008-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2008-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2008-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2008-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2008-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2008-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2008-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2008-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2008-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2008-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2008-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2008-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2008-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2008-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2008-06",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2008-06",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2008-06",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2008-06",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2008-06",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2008-07",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2008-07",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2008-07",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2008-07",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2008-07",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2008-08",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2008-08",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2008-08",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2008-08",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2008-08",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2008-09",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2008-09",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2008-09",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2008-09",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2008-09",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2008-10",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2008-10",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2008-10",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2008-10",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2008-10",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2008-11",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2008-11",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2008-11",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 20,
+      "error": null
+    },
+    {
+      "month": "2008-11",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 20,
+      "error": null
+    },
+    {
+      "month": "2008-11",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 20,
+      "error": null
+    },
+    {
+      "month": "2008-12",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2008-12",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2008-12",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2008-12",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2008-12",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2009-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2009-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2009-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2009-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2009-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2009-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2009-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2009-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 20,
+      "error": null
+    },
+    {
+      "month": "2009-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 20,
+      "error": null
+    },
+    {
+      "month": "2009-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 20,
+      "error": null
+    },
+    {
+      "month": "2009-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2009-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2009-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2009-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2009-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2009-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2009-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2009-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2009-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2009-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2009-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2009-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2009-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2009-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2009-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2009-06",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2009-06",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2009-06",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2009-06",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2009-06",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2009-07",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2009-07",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2009-07",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2009-07",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2009-07",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2009-08",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2009-08",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2009-08",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2009-08",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2009-08",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2009-09",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2009-09",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2009-09",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2009-09",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2009-09",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2009-10",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2009-10",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2009-10",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2009-10",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2009-10",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2009-11",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2009-11",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2009-11",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2009-11",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2009-11",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2009-12",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2009-12",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2009-12",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2009-12",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2009-12",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2010-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2010-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2010-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2010-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2010-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2010-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2010-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2010-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 20,
+      "error": null
+    },
+    {
+      "month": "2010-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 20,
+      "error": null
+    },
+    {
+      "month": "2010-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 20,
+      "error": null
+    },
+    {
+      "month": "2010-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2010-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2010-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2010-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2010-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2010-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2010-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2010-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2010-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2010-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2010-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2010-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2010-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2010-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2010-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2010-06",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2010-06",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2010-06",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2010-06",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2010-06",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2010-07",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2010-07",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2010-07",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2010-07",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2010-07",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2010-08",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2010-08",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2010-08",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2010-08",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2010-08",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2010-09",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2010-09",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2010-09",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2010-09",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2010-09",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2010-10",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2010-10",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2010-10",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2010-10",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2010-10",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2010-11",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2010-11",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2010-11",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2010-11",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2010-11",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 22,
+      "error": null
+    },
+    {
+      "month": "2010-12",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2010-12",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2010-12",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2010-12",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2010-12",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 23,
+      "error": null
+    },
+    {
+      "month": "2011-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2011-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2011-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2011-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2011-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2011-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2011-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2011-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2011-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2011-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2011-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2011-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2011-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2011-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2011-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2011-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2011-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-06",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2011-06",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2011-06",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-06",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-06",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-07",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2011-07",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2011-07",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-07",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-07",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-08",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2011-08",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2011-08",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2011-08",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2011-08",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2011-09",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2011-09",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2011-09",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-09",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-09",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-10",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2011-10",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2011-10",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-10",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-10",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-11",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2011-11",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2011-11",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-11",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-11",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2011-12",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2011-12",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2011-12",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2011-12",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2011-12",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2012-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2012-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2012-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2012-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2012-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2012-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2012-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2012-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2012-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2012-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2012-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2012-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2012-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2012-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2012-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2012-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2012-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2012-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2012-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2012-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2012-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2012-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2012-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2012-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2012-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2012-06",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2012-06",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2012-06",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2012-06",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2012-06",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2012-07",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2012-07",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2012-07",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2012-07",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2012-07",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2012-08",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2012-08",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2012-08",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2012-08",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2012-08",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2012-09",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2012-09",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2012-09",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2012-09",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2012-09",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2012-10",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2012-10",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2012-10",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2012-10",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2012-10",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2012-11",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2012-11",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2012-11",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2012-11",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2012-11",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2012-12",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2012-12",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2012-12",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2012-12",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2012-12",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2013-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2013-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2013-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2013-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2013-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2013-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 11,
+      "error": null
+    },
+    {
+      "month": "2013-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2013-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2013-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2013-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2013-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2013-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2013-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2013-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2013-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2013-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2013-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2013-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2013-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2013-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2013-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2013-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2013-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2013-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2013-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2013-06",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2013-06",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2013-06",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2013-06",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2013-06",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2013-07",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2013-07",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2013-07",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2013-07",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2013-07",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2013-08",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2013-08",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2013-08",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2013-08",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2013-08",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2013-09",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2013-09",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2013-09",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2013-09",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2013-09",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2013-10",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2013-10",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2013-10",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2013-10",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2013-10",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2013-11",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2013-11",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2013-11",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2013-11",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2013-11",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2013-12",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2013-12",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2013-12",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2013-12",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2013-12",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2014-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 10,
+      "error": null
+    },
+    {
+      "month": "2014-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2014-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2014-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2014-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2014-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 11,
+      "error": null
+    },
+    {
+      "month": "2014-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2014-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2014-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2014-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2014-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2014-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2014-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2014-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2014-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2014-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2014-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2014-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2014-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2014-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2014-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2014-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2014-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2014-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2014-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2014-06",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2014-06",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2014-06",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2014-06",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2014-06",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2014-07",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2014-07",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2014-07",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2014-07",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2014-07",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2014-08",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2014-08",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2014-08",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2014-08",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2014-08",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2014-09",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2014-09",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2014-09",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2014-09",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2014-09",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2014-10",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2014-10",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2014-10",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2014-10",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2014-10",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2014-11",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2014-11",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2014-11",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2014-11",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2014-11",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2014-12",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2014-12",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2014-12",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2014-12",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2014-12",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2015-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2015-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2015-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2015-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2015-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2015-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 13,
+      "error": null
+    },
+    {
+      "month": "2015-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2015-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2015-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2015-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2015-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2015-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2015-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2015-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2015-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2015-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2015-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2015-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2015-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2015-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2015-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2015-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2015-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2015-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2015-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2015-06",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2015-06",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2015-06",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2015-06",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2015-06",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2015-07",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2015-07",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2015-07",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2015-07",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2015-07",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2015-08",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2015-08",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2015-08",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2015-08",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2015-08",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2015-09",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2015-09",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2015-09",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2015-09",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2015-09",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2015-10",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2015-10",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2015-10",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2015-10",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2015-10",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2015-11",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2015-11",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2015-11",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2015-11",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2015-11",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2015-12",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2015-12",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2015-12",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2015-12",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2015-12",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2016-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2016-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2016-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 14,
+      "error": null
+    },
+    {
+      "month": "2016-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2016-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2016-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2016-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2016-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2016-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2016-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2016-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2016-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2016-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2016-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2016-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2016-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2016-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-06",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2016-06",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2016-06",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-06",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-06",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-07",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2016-07",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2016-07",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-07",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-07",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-08",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2016-08",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2016-08",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2016-08",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2016-08",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2016-09",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2016-09",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2016-09",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-09",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-09",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-10",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2016-10",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2016-10",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-10",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-10",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-11",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2016-11",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2016-11",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-11",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-11",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2016-12",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2016-12",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2016-12",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2016-12",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2016-12",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2017-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 12,
+      "error": null
+    },
+    {
+      "month": "2017-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2017-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2017-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2017-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2017-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2017-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2017-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2017-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2017-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2017-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2017-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2017-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2017-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2017-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2017-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2017-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2017-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2017-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2017-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2017-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2017-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2017-06",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2017-06",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2017-06",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-06",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-06",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-07",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2017-07",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2017-07",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-07",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-07",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-08",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2017-08",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2017-08",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2017-08",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2017-08",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2017-09",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2017-09",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2017-09",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-09",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-09",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-10",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2017-10",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2017-10",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-10",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-10",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-11",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2017-11",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2017-11",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-11",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-11",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-12",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2017-12",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2017-12",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-12",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2017-12",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2018-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2018-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2018-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2018-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2018-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2018-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 12,
+      "error": null
+    },
+    {
+      "month": "2018-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2018-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2018-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2018-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2018-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2018-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2018-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2018-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2018-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2018-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2018-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2018-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2018-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2018-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2018-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2018-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2018-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2018-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2018-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2018-06",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2018-06",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2018-06",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2018-06",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2018-06",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2018-07",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2018-07",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2018-07",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2018-07",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2018-07",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2018-08",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2018-08",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2018-08",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2018-08",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2018-08",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2018-09",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2018-09",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2018-09",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2018-09",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2018-09",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2018-10",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2018-10",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2018-10",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2018-10",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2018-10",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2018-11",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2018-11",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2018-11",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2018-11",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2018-11",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2018-12",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2018-12",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2018-12",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2018-12",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2018-12",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2019-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2019-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2019-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2019-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2019-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2019-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 15,
+      "error": null
+    },
+    {
+      "month": "2019-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2019-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2019-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2019-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2019-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2019-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2019-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2019-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2019-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2019-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2019-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2019-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2019-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2019-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2019-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2019-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2019-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2019-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2019-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2019-06",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2019-06",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2019-06",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2019-06",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2019-06",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2019-07",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2019-07",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2019-07",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2019-07",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2019-07",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2019-08",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2019-08",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2019-08",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2019-08",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2019-08",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2019-09",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2019-09",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2019-09",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2019-09",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2019-09",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2019-10",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2019-10",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2019-10",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2019-10",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2019-10",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2019-11",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2019-11",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2019-11",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2019-11",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2019-11",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2019-12",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2019-12",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2019-12",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2019-12",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2019-12",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2020-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 15,
+      "error": null
+    },
+    {
+      "month": "2020-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2020-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2020-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2020-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2020-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 10,
+      "error": null
+    },
+    {
+      "month": "2020-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2020-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2020-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2020-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2020-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2020-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2020-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2020-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2020-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2020-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2020-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2020-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2020-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2020-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2020-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2020-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2020-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2020-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2020-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2020-06",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2020-06",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2020-06",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2020-06",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2020-06",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2020-07",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2020-07",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2020-07",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2020-07",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2020-07",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2020-08",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2020-08",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2020-08",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2020-08",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2020-08",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2020-09",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2020-09",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2020-09",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2020-09",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2020-09",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2020-10",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2020-10",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2020-10",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2020-10",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2020-10",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2020-11",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2020-11",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2020-11",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2020-11",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2020-11",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2020-12",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2020-12",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2020-12",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2020-12",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2020-12",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2021-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2021-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2021-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 17,
+      "error": null
+    },
+    {
+      "month": "2021-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2021-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2021-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2021-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2021-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2021-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2021-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2021-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2021-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2021-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2021-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2021-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2021-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2021-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-06",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2021-06",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2021-06",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-06",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-06",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-07",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2021-07",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2021-07",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2021-07",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2021-07",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2021-08",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2021-08",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2021-08",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-08",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-08",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-09",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2021-09",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2021-09",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-09",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-09",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-10",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2021-10",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2021-10",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-10",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-10",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-11",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2021-11",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2021-11",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-11",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-11",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2021-12",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2021-12",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2021-12",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2021-12",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2021-12",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2022-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 11,
+      "error": null
+    },
+    {
+      "month": "2022-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2022-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 15,
+      "error": null
+    },
+    {
+      "month": "2022-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2022-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2022-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2022-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2022-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2022-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2022-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2022-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2022-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2022-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2022-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2022-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2022-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2022-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-06",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2022-06",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2022-06",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-06",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-06",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-07",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2022-07",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2022-07",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-07",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-07",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-08",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2022-08",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2022-08",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2022-08",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2022-08",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2022-09",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2022-09",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2022-09",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-09",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-09",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-10",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2022-10",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2022-10",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-10",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-10",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-11",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2022-11",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2022-11",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-11",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-11",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2022-12",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2022-12",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2022-12",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2022-12",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2022-12",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2023-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 17,
+      "error": null
+    },
+    {
+      "month": "2023-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2023-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 12,
+      "error": null
+    },
+    {
+      "month": "2023-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2023-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2023-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2023-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 24,
+      "error": null
+    },
+    {
+      "month": "2023-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2023-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2023-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2023-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2023-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2023-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2023-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2023-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2023-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2023-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2023-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2023-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2023-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2023-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2023-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2023-06",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2023-06",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2023-06",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-06",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-06",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-07",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2023-07",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2023-07",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-07",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-07",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-08",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2023-08",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2023-08",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2023-08",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2023-08",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2023-09",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2023-09",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2023-09",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-09",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-09",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-10",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2023-10",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2023-10",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-10",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-10",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-11",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2023-11",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2023-11",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-11",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-11",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-12",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2023-12",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2023-12",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-12",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2023-12",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2024-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2024-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2024-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2024-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2024-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2024-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 21,
+      "error": null
+    },
+    {
+      "month": "2024-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2024-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2024-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2024-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2024-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2024-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2024-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2024-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2024-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2024-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2024-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2024-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2024-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2024-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2024-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2024-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2024-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2024-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2024-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2024-06",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2024-06",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2024-06",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2024-06",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2024-06",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2024-07",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2024-07",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2024-07",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2024-07",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2024-07",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2024-08",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2024-08",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2024-08",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2024-08",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2024-08",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2024-09",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2024-09",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2024-09",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2024-09",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2024-09",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2024-10",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2024-10",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2024-10",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2024-10",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2024-10",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2024-11",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2024-11",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2024-11",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2024-11",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2024-11",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2024-12",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2024-12",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2024-12",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2024-12",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2024-12",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2025-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 14,
+      "error": null
+    },
+    {
+      "month": "2025-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2025-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 28,
+      "error": null
+    },
+    {
+      "month": "2025-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 28,
+      "error": null
+    },
+    {
+      "month": "2025-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 28,
+      "error": null
+    },
+    {
+      "month": "2025-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 17,
+      "error": null
+    },
+    {
+      "month": "2025-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2025-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2025-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2025-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2025-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2025-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2025-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2025-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2025-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2025-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2025-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2025-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2025-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2025-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2025-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2025-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2025-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2025-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2025-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2025-06",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2025-06",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2025-06",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2025-06",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2025-06",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2025-07",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2025-07",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2025-07",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2025-07",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2025-07",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2025-08",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2025-08",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2025-08",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2025-08",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2025-08",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2025-09",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2025-09",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2025-09",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2025-09",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2025-09",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2025-10",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2025-10",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2025-10",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2025-10",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2025-10",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2025-11",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2025-11",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2025-11",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2025-11",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2025-11",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 25,
+      "error": null
+    },
+    {
+      "month": "2025-12",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2025-12",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2025-12",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2025-12",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2025-12",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2026-01",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2026-01",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2026-01",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2026-01",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2026-01",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2026-02",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 20,
+      "error": null
+    },
+    {
+      "month": "2026-02",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2026-02",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2026-02",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2026-02",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2026-03",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 11,
+      "error": null
+    },
+    {
+      "month": "2026-03",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2026-03",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2026-03",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2026-03",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 27,
+      "error": null
+    },
+    {
+      "month": "2026-04",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2026-04",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2026-04",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2026-04",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2026-04",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2026-05",
+      "lottery_type": "BIG_LOTTO",
+      "status": "DONE",
+      "records_fetched": 9,
+      "error": null
+    },
+    {
+      "month": "2026-05",
+      "lottery_type": "POWER_LOTTO",
+      "status": "DONE",
+      "records_fetched": 8,
+      "error": null
+    },
+    {
+      "month": "2026-05",
+      "lottery_type": "DAILY_539",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2026-05",
+      "lottery_type": "3_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    },
+    {
+      "month": "2026-05",
+      "lottery_type": "4_STAR",
+      "status": "DONE",
+      "records_fetched": 26,
+      "error": null
+    }
+  ]
+}

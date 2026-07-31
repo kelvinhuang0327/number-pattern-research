@@ -1,0 +1,49 @@
+{
+  "generated_at": "2026-05-15T14:03:00Z",
+  "controlled_apply_id": "P3BA_20260515",
+  "action": "UPDATE_PREDICTION_ITEMS_STATUS_STALE_RESOLVED",
+  "items_updated": [
+    {
+      "item_id": 1069,
+      "old_status": "PENDING",
+      "new_status": "STALE_RESOLVED"
+    },
+    {
+      "item_id": 1070,
+      "old_status": "PENDING",
+      "new_status": "STALE_RESOLVED"
+    },
+    {
+      "item_id": 1071,
+      "old_status": "PENDING",
+      "new_status": "STALE_RESOLVED"
+    },
+    {
+      "item_id": 1093,
+      "old_status": "PENDING",
+      "new_status": "STALE_RESOLVED"
+    },
+    {
+      "item_id": 1094,
+      "old_status": "PENDING",
+      "new_status": "STALE_RESOLVED"
+    },
+    {
+      "item_id": 1095,
+      "old_status": "PENDING",
+      "new_status": "STALE_RESOLVED"
+    }
+  ],
+  "items_skipped": [],
+  "replay_rows_inserted": 0,
+  "db_written": true,
+  "safety": {
+    "replay_rows_inserted": false,
+    "prediction_runs_modified": false,
+    "rows_outside_authorized_items": false,
+    "strategy_logic_changed": false
+  },
+  "pending_remaining": 6,
+  "stale_resolved_total": 6,
+  "replay_total": 969
+}

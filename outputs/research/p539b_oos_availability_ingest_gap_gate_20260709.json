@@ -1,0 +1,485 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P539B",
+  "upstream_task_ids": [
+    "P539A",
+    "P538A",
+    "P537A",
+    "P536K",
+    "P536C",
+    "P333"
+  ],
+  "generated_at": "2026-07-09T05:49:21.717221+00:00",
+  "classification": "P539B_OOS_AVAILABILITY_INGEST_GAP_GATE_READY",
+  "oos_feasibility_summary": {
+    "feasible_now": false,
+    "classification": "blocked_needs_readonly_ingest_gap_audit",
+    "closest_predefined_category_caveat": "P539A's own readiness.new_draws_found_since_last_replay_cutoff=false is accurate only for the strategy_prediction_replays table; it should not be read as 'no new lottery draws have occurred' -- see new_draw_availability_by_lottery for the draws-table cross-check.",
+    "note": "Rolling/OOS evaluation is NOT feasible today for any candidate. New official draws already exist in the raw draws table beyond every candidate's recovered replay cutoff for at least one lottery, but zero of those draws have been run through strategy replay/prediction generation, so P539A's per-draw source table (strategy_prediction_replays) still has no post-cutoff rows. The primary blocker is therefore a replay-generation gap between the raw draws table and the strategy_prediction_replays table, not an absence of new lottery draws.",
+    "any_new_official_draws_beyond_cutoff": true,
+    "any_lottery_meets_minimum_support_draws_if_replayed": true,
+    "per_lottery": {
+      "BIG_LOTTO": {
+        "feasible_now": false,
+        "classification": "blocked_needs_readonly_ingest_gap_audit",
+        "note": "12 new official draw(s) already exist beyond the replay cutoff but have never been run through strategy replay/prediction generation; even after generation, this is short of P536C's minimum_support_draws floor -- both replay generation and further new draws are needed."
+      },
+      "DAILY_539": {
+        "feasible_now": false,
+        "classification": "blocked_needs_readonly_ingest_gap_audit",
+        "note": "42 new official draw(s) already exist beyond the replay cutoff and already meet P536C's minimum_support_draws floor, but none have been run through strategy replay/prediction generation yet -- the blocker is a replay-generation gap, not a shortage of new draws."
+      },
+      "POWER_LOTTO": {
+        "feasible_now": false,
+        "classification": "blocked_needs_readonly_ingest_gap_audit",
+        "note": "13 new official draw(s) already exist beyond the replay cutoff but have never been run through strategy replay/prediction generation; even after generation, this is short of P536C's minimum_support_draws floor -- both replay generation and further new draws are needed."
+      }
+    }
+  },
+  "p539a_source_export_findings": {
+    "task_id": "P539A",
+    "generated_at": "2026-07-09T04:59:30.263548+00:00",
+    "classification": "P539A_READONLY_PER_DRAW_REPLAY_EXPORT_READY",
+    "readiness_new_draws_found_since_last_replay_cutoff": false,
+    "readiness_p539b_rolling_oos_evaluator_feasible_from_this_export_alone": false,
+    "readiness_db_max_target_draw_by_lottery": {
+      "BIG_LOTTO": 115000055,
+      "DAILY_539": 115000121,
+      "POWER_LOTTO": 115000041
+    },
+    "distinct_strategy_ids_covered": 34,
+    "rows_exported_by_candidate_group": {
+      "stable_review_candidate": 177,
+      "combination_review_candidate": 102
+    },
+    "scope_caveat": "These P539A readiness figures are scoped to the strategy_prediction_replays table only. See oos_feasibility_summary and new_draw_availability_by_lottery in this artifact for the draws-table cross-check that refines this finding."
+  },
+  "new_draw_availability_by_lottery": {
+    "BIG_LOTTO": {
+      "draws_table_max_draw": 115000067,
+      "new_official_draws_beyond_all_candidates_cutoff": 12,
+      "new_official_draws_beyond_any_candidate_cutoff": 14,
+      "new_official_draws_sample": [
+        {
+          "draw": "115000056",
+          "date": "2026/05/26"
+        },
+        {
+          "draw": "115000057",
+          "date": "2026/05/29"
+        },
+        {
+          "draw": "115000058",
+          "date": "2026/06/02"
+        },
+        {
+          "draw": "115000059",
+          "date": "2026/06/05"
+        },
+        {
+          "draw": "115000060",
+          "date": "2026/06/09"
+        },
+        {
+          "draw": "115000061",
+          "date": "2026/06/12"
+        },
+        {
+          "draw": "115000062",
+          "date": "2026/06/16"
+        },
+        {
+          "draw": "115000063",
+          "date": "2026/06/19"
+        },
+        {
+          "draw": "115000064",
+          "date": "2026/06/23"
+        },
+        {
+          "draw": "115000065",
+          "date": "2026/06/26"
+        },
+        {
+          "draw": "115000066",
+          "date": "2026/06/30"
+        },
+        {
+          "draw": "115000067",
+          "date": "2026/07/03"
+        }
+      ],
+      "replay_table_max_target_draw": 115000055,
+      "recovered_replay_cutoff_min_latest_across_candidates": 115000053,
+      "recovered_replay_cutoff_max_latest_across_candidates": 115000055,
+      "n_candidates_with_recovered_cutoff": 120,
+      "meets_minimum_support_draws_if_replayed_today": false,
+      "additional_official_draws_needed_to_reach_minimum_support_draws": 18
+    },
+    "DAILY_539": {
+      "draws_table_max_draw": 115000163,
+      "new_official_draws_beyond_all_candidates_cutoff": 42,
+      "new_official_draws_beyond_any_candidate_cutoff": 42,
+      "new_official_draws_sample": [
+        {
+          "draw": "115000122",
+          "date": "2026/05/19"
+        },
+        {
+          "draw": "115000123",
+          "date": "2026/05/20"
+        },
+        {
+          "draw": "115000124",
+          "date": "2026/05/21"
+        },
+        {
+          "draw": "115000125",
+          "date": "2026/05/22"
+        },
+        {
+          "draw": "115000126",
+          "date": "2026/05/23"
+        },
+        {
+          "draw": "115000127",
+          "date": "2026/05/25"
+        },
+        {
+          "draw": "115000128",
+          "date": "2026/05/26"
+        },
+        {
+          "draw": "115000129",
+          "date": "2026/05/27"
+        },
+        {
+          "draw": "115000130",
+          "date": "2026/05/28"
+        },
+        {
+          "draw": "115000131",
+          "date": "2026/05/29"
+        },
+        {
+          "draw": "115000132",
+          "date": "2026/05/30"
+        },
+        {
+          "draw": "115000133",
+          "date": "2026/06/01"
+        },
+        {
+          "draw": "115000134",
+          "date": "2026/06/02"
+        },
+        {
+          "draw": "115000135",
+          "date": "2026/06/03"
+        },
+        {
+          "draw": "115000136",
+          "date": "2026/06/04"
+        },
+        {
+          "draw": "115000137",
+          "date": "2026/06/05"
+        },
+        {
+          "draw": "115000138",
+          "date": "2026/06/06"
+        },
+        {
+          "draw": "115000139",
+          "date": "2026/06/08"
+        },
+        {
+          "draw": "115000140",
+          "date": "2026/06/09"
+        },
+        {
+          "draw": "115000141",
+          "date": "2026/06/10"
+        },
+        {
+          "draw": "115000142",
+          "date": "2026/06/11"
+        },
+        {
+          "draw": "115000143",
+          "date": "2026/06/12"
+        },
+        {
+          "draw": "115000144",
+          "date": "2026/06/13"
+        },
+        {
+          "draw": "115000145",
+          "date": "2026/06/15"
+        },
+        {
+          "draw": "115000146",
+          "date": "2026/06/16"
+        },
+        {
+          "draw": "115000147",
+          "date": "2026/06/17"
+        },
+        {
+          "draw": "115000148",
+          "date": "2026/06/18"
+        },
+        {
+          "draw": "115000149",
+          "date": "2026/06/19"
+        },
+        {
+          "draw": "115000150",
+          "date": "2026/06/20"
+        },
+        {
+          "draw": "115000151",
+          "date": "2026/06/22"
+        },
+        {
+          "draw": "115000152",
+          "date": "2026/06/23"
+        },
+        {
+          "draw": "115000153",
+          "date": "2026/06/24"
+        },
+        {
+          "draw": "115000154",
+          "date": "2026/06/25"
+        },
+        {
+          "draw": "115000155",
+          "date": "2026/06/26"
+        },
+        {
+          "draw": "115000156",
+          "date": "2026/06/27"
+        },
+        {
+          "draw": "115000157",
+          "date": "2026/06/29"
+        },
+        {
+          "draw": "115000158",
+          "date": "2026/06/30"
+        },
+        {
+          "draw": "115000159",
+          "date": "2026/07/01"
+        },
+        {
+          "draw": "115000160",
+          "date": "2026/07/02"
+        },
+        {
+          "draw": "115000161",
+          "date": "2026/07/03"
+        },
+        {
+          "draw": "115000162",
+          "date": "2026/07/04"
+        },
+        {
+          "draw": "115000163",
+          "date": "2026/07/06"
+        }
+      ],
+      "replay_table_max_target_draw": 115000121,
+      "recovered_replay_cutoff_min_latest_across_candidates": 115000121,
+      "recovered_replay_cutoff_max_latest_across_candidates": 115000121,
+      "n_candidates_with_recovered_cutoff": 126,
+      "meets_minimum_support_draws_if_replayed_today": true,
+      "additional_official_draws_needed_to_reach_minimum_support_draws": 0
+    },
+    "POWER_LOTTO": {
+      "draws_table_max_draw": 115000054,
+      "new_official_draws_beyond_all_candidates_cutoff": 13,
+      "new_official_draws_beyond_any_candidate_cutoff": 14,
+      "new_official_draws_sample": [
+        {
+          "draw": "115000042",
+          "date": "2026/05/25"
+        },
+        {
+          "draw": "115000043",
+          "date": "2026/05/28"
+        },
+        {
+          "draw": "115000044",
+          "date": "2026/06/01"
+        },
+        {
+          "draw": "115000045",
+          "date": "2026/06/04"
+        },
+        {
+          "draw": "115000046",
+          "date": "2026/06/08"
+        },
+        {
+          "draw": "115000047",
+          "date": "2026/06/11"
+        },
+        {
+          "draw": "115000048",
+          "date": "2026/06/15"
+        },
+        {
+          "draw": "115000049",
+          "date": "2026/06/18"
+        },
+        {
+          "draw": "115000050",
+          "date": "2026/06/22"
+        },
+        {
+          "draw": "115000051",
+          "date": "2026/06/25"
+        },
+        {
+          "draw": "115000052",
+          "date": "2026/06/29"
+        },
+        {
+          "draw": "115000053",
+          "date": "2026/07/02"
+        },
+        {
+          "draw": "115000054",
+          "date": "2026/07/06"
+        }
+      ],
+      "replay_table_max_target_draw": 115000041,
+      "recovered_replay_cutoff_min_latest_across_candidates": 115000040,
+      "recovered_replay_cutoff_max_latest_across_candidates": 115000041,
+      "n_candidates_with_recovered_cutoff": 160,
+      "meets_minimum_support_draws_if_replayed_today": false,
+      "additional_official_draws_needed_to_reach_minimum_support_draws": 17
+    }
+  },
+  "missing_data_or_ingest_gaps": [
+    {
+      "lottery_type": "BIG_LOTTO",
+      "gap_type": "replay_generation_gap",
+      "description": "12 official draw(s) already ingested into the `draws` table (up to draw 115000067) beyond every candidate's recovered replay cutoff (max_latest=115000055), but strategy_prediction_replays.MAX(target_draw) for this lottery is still 115000055. No strategy replay/prediction row has ever been generated for these draws.",
+      "not_a_raw_ingestion_gap": "The raw draws table is up to date for this lottery; this is a downstream replay/prediction generation gap, not a missing-data-ingestion gap."
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "gap_type": "replay_generation_gap",
+      "description": "42 official draw(s) already ingested into the `draws` table (up to draw 115000163) beyond every candidate's recovered replay cutoff (max_latest=115000121), but strategy_prediction_replays.MAX(target_draw) for this lottery is still 115000121. No strategy replay/prediction row has ever been generated for these draws.",
+      "not_a_raw_ingestion_gap": "The raw draws table is up to date for this lottery; this is a downstream replay/prediction generation gap, not a missing-data-ingestion gap."
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "gap_type": "replay_generation_gap",
+      "description": "13 official draw(s) already ingested into the `draws` table (up to draw 115000054) beyond every candidate's recovered replay cutoff (max_latest=115000041), but strategy_prediction_replays.MAX(target_draw) for this lottery is still 115000041. No strategy replay/prediction row has ever been generated for these draws.",
+      "not_a_raw_ingestion_gap": "The raw draws table is up to date for this lottery; this is a downstream replay/prediction generation gap, not a missing-data-ingestion gap."
+    }
+  ],
+  "minimum_data_needed_for_p539c_or_oos_evaluator": [
+    {
+      "lottery_type": "BIG_LOTTO",
+      "minimum_support_draws_floor": 30,
+      "new_official_draws_available_now": 12,
+      "additional_official_draws_needed": 18,
+      "steps": [
+        "Run strategy replay/prediction generation for the existing 12 new official draw(s) (target_draw > 115000055) for this lottery's candidate strategies, so strategy_prediction_replays gains post-cutoff rows -- this is a distinct, separately-authorized task, not part of this read-only gate.",
+        "Wait for 18 more official draw(s) to be ingested (minimum_support_draws=30 per P536C's window_policy)."
+      ]
+    },
+    {
+      "lottery_type": "DAILY_539",
+      "minimum_support_draws_floor": 30,
+      "new_official_draws_available_now": 42,
+      "additional_official_draws_needed": 0,
+      "steps": [
+        "Run strategy replay/prediction generation for the existing 42 new official draw(s) (target_draw > 115000121) for this lottery's candidate strategies, so strategy_prediction_replays gains post-cutoff rows -- this is a distinct, separately-authorized task, not part of this read-only gate."
+      ]
+    },
+    {
+      "lottery_type": "POWER_LOTTO",
+      "minimum_support_draws_floor": 30,
+      "new_official_draws_available_now": 13,
+      "additional_official_draws_needed": 17,
+      "steps": [
+        "Run strategy replay/prediction generation for the existing 13 new official draw(s) (target_draw > 115000041) for this lottery's candidate strategies, so strategy_prediction_replays gains post-cutoff rows -- this is a distinct, separately-authorized task, not part of this read-only gate.",
+        "Wait for 17 more official draw(s) to be ingested (minimum_support_draws=30 per P536C's window_policy)."
+      ]
+    }
+  ],
+  "recommended_next_single_worker_task": {
+    "proposed_task_id": "P539C (proposed, not yet authorized)",
+    "title": "Read-write strategy replay/prediction generation for existing new draws",
+    "scope": "For each lottery with new_official_draws_beyond_all_candidates_cutoff > 0 (see new_draw_availability_by_lottery), run the existing replay/prediction generation pipeline for the shortlisted candidate strategy_ids against the specific new target_draw values already present in the `draws` table, writing new rows into strategy_prediction_replays. This is a DB-write task and requires its own explicit canonical-DB-write authorization; it is proposed here, not executed.",
+    "why_smallest_next_step": "This task (P539B) already establishes that the blocker is a replay-generation gap, not missing official draws, for at least one lottery. Generating replay rows for the draws that already exist is the smallest step that could make a first OOS window possible, and is strictly narrower than building a rolling/OOS evaluator.",
+    "not_run_in_this_task": true,
+    "excluded_from_this_proposed_task": [
+      "Any lottery still below minimum_support_draws even after replay generation (see minimum_data_needed_for_p539c_or_oos_evaluator) -- those still need to wait for more official draws regardless of replay generation.",
+      "cross_lottery_review_candidate / insufficient_context_candidate groups (excluded upstream by P538A/P539A; unchanged by this gate)."
+    ]
+  },
+  "provenance_and_limits": {
+    "source_artifacts": {
+      "P539A": {
+        "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P539B-oos-availability-ingest-gap-gate/outputs/research/p539a_readonly_per_draw_replay_export_20260709.json",
+        "file_sha256": "d104c47122a33d6d884e690e39c07d2ca49b8f46fbebc46be722e1d24e99d193",
+        "generated_at": "2026-07-09T04:59:30.263548+00:00"
+      },
+      "P538A": {
+        "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P539B-oos-availability-ingest-gap-gate/outputs/research/p538a_strategy_candidate_evaluation_readiness_20260709.json",
+        "file_sha256": "b05a9c6cb5f8da1c67d2b826f2a92473b3582aa43b25861dc5d413c114c4ce65",
+        "generated_at": "2026-07-09T03:54:18.970763+00:00"
+      },
+      "P537A": {
+        "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P539B-oos-availability-ingest-gap-gate/outputs/research/p537a_shortlist_robustness_review_20260709.json",
+        "file_sha256": "a2e5658ef40462d9e9bf5aac5429e9acc965f3b6ac2439a9d3e49492fe946a56"
+      },
+      "P536K": {
+        "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P539B-oos-availability-ingest-gap-gate/outputs/research/p536k_lift_candidate_shortlist_20260708.json",
+        "file_sha256": "07de31005900cce5192597ff48f684078a9b3a699aa8dd8320b98be06b62b768"
+      },
+      "P536C": {
+        "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P539B-oos-availability-ingest-gap-gate/outputs/research/p536c_success_matrix_lift_extension_20260708.json",
+        "file_sha256": "e98443bbe549ec23d46187689bd810423bfa07d2626fa2b98d919c96b54ac316",
+        "generated_at": "2026-07-08T07:42:01.782116+00:00"
+      }
+    },
+    "db_access": {
+      "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+      "tables": [
+        "draws",
+        "strategy_prediction_replays"
+      ],
+      "db_open_mode": "sqlite3 URI mode=ro + PRAGMA query_only=ON",
+      "purpose": "Read-only availability check only: MAX(draw)/COUNT(*) on `draws`, and MAX(target_draw) on `strategy_prediction_replays`, both grouped by lottery_type. No row-level prediction data is read or exported by this task.",
+      "db_sha256_before": "911591d2a24f624a6ad808b02225ee494c6327ea7c821ab5bea0a6bb51823544",
+      "db_sha256_after": "911591d2a24f624a6ad808b02225ee494c6327ea7c821ab5bea0a6bb51823544",
+      "db_unchanged": true
+    },
+    "minimum_support_draws_source": "P536C.window_policy.minimum_support_draws",
+    "minimum_support_draws_value": 30,
+    "feasibility_categories_reference": [
+      "feasible_now",
+      "blocked_no_new_draws",
+      "blocked_schema_mapping",
+      "blocked_missing_temporal_fields",
+      "blocked_needs_readonly_ingest_gap_audit"
+    ],
+    "selection_method": "All candidate identity and recovered cutoffs are read verbatim from the committed P539A artifact (no recomputation of candidate_index). The only new computation in this task is a read-only COUNT/MAX over the `draws` and strategy_prediction_replays tables, cross-referenced against those cutoffs.",
+    "limitations": [
+      "Availability gate only; does not compute any rolling/out-of-sample statistical test.",
+      "Does not rank, score, or promote any strategy.",
+      "additional_official_draws_needed_to_reach_minimum_support_draws assumes all new draws would be usable once replayed; does not account for any candidate-specific exclusion that might apply once replay rows actually exist.",
+      "Retrospective availability snapshot as of generated_at; re-run after any new ingestion or replay-generation run."
+    ],
+    "disclaimer_en": "Historical replay availability gate only; not a prediction, betting edge, future-winning, or production-readiness claim."
+  },
+  "disclaimer_en": "Historical replay availability gate only; not a prediction, betting edge, future-winning, or production-readiness claim."
+}

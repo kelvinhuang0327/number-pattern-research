@@ -1,0 +1,215 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P252F",
+  "classification": "ROLLING_WINDOW_STATISTICS_SSOT_IMPLEMENTED",
+  "generated_at": "2026-06-07T16:39:13.464252",
+  "p252b_dependency_verified": {
+    "found": true,
+    "path": "outputs/research/p252b_unified_external_method_coverage_audit_20260607.json",
+    "task_id": "P252B",
+    "classification": "UNIFIED_EXTERNAL_METHOD_COVERAGE_AUDIT",
+    "m_id_priority": "P0"
+  },
+  "p252c_dependency_verified": {
+    "found": true,
+    "path": "outputs/research/p252c_baseline_calculator_ssot_20260607.json",
+    "task_id": "P252C",
+    "classification": "BASELINE_CALCULATOR_SSOT_IMPLEMENTED",
+    "m_id_priority": null
+  },
+  "p252d_dependency_verified": {
+    "found": true,
+    "path": "outputs/research/p252d_correction_gate_ssot_20260607.json",
+    "task_id": "P252D",
+    "classification": "CORRECTION_GATE_SSOT_IMPLEMENTED",
+    "m_id_priority": null
+  },
+  "p252e_dependency_verified": {
+    "found": true,
+    "path": "outputs/research/p252e_permutation_test_ssot_20260607.json",
+    "task_id": "P252E",
+    "classification": "PERMUTATION_TEST_SSOT_IMPLEMENTED",
+    "m_id_priority": null
+  },
+  "implemented_module": "lottery_api/utils/rolling_window.py",
+  "implemented_functions": [
+    {
+      "name": "validate_window_config",
+      "signature": "(total_count, window_size, step_size=1, min_count=None) -> dict",
+      "description": "Validate window parameters; returns {valid, errors, warnings, window_count, underpowered}",
+      "note": "Flags UNDERPOWERED when total_count < window_size; never raises"
+    },
+    {
+      "name": "rolling_slices",
+      "signature": "(items, window_size, step_size=1, include_partial=False) -> list[list]",
+      "description": "Forward sliding window slices; step_size controls stride",
+      "note": "include_partial=True adds terminal partial window; default False for strict full-windows-only"
+    },
+    {
+      "name": "tail_window",
+      "signature": "(items, window_size) -> list",
+      "description": "RSM pattern: items[-window_size:] or all items if fewer available",
+      "note": "Matches records[-window_size:] pattern in rolling_strategy_monitor.py"
+    },
+    {
+      "name": "rolling_window_labels",
+      "signature": "(total_count, window_size, step_size=1) -> list[str]",
+      "description": "Labels like 'w150[0:150]' for each full window position",
+      "note": "Stable format; can be used as dict key or audit trace"
+    },
+    {
+      "name": "tail_window_label",
+      "signature": "(total_count, window_size) -> str",
+      "description": "Label for tail window: 'tail_150' or 'partial_80_of_150'",
+      "note": "Matches RSM/research convention; documents partial-window situation"
+    },
+    {
+      "name": "summarize_window",
+      "signature": "(values, label=None, start_index=0) -> dict",
+      "description": "Compute count/mean/min/max/std for a single window of values",
+      "note": "Returns None for non-numeric or mixed-type windows; deterministic"
+    },
+    {
+      "name": "rolling_summary",
+      "signature": "(items, window_sizes, step_size=1, value_getter=None, family_label=None, ...) -> dict",
+      "description": "Canonical SSOT output: all window series with no_edge_claim=True",
+      "note": "Accepts single int or tuple of window sizes; P221F_WINDOWS['short'] = (100,125,150)"
+    }
+  ],
+  "module_safety": {
+    "exists": true,
+    "forbidden_imports_found": [],
+    "safe": true
+  },
+  "exercise_results": {
+    "p221f_short_windows": [
+      100,
+      125,
+      150
+    ],
+    "p221f_mid_windows": [
+      500,
+      750,
+      1000
+    ],
+    "rsm_windows": {
+      "short": 30,
+      "medium": 100,
+      "long": 300
+    },
+    "p221f_short_contains_150": true,
+    "p221f_mid_contains_500": true,
+    "p221f_mid_contains_1000": true,
+    "rsm_short_is_30": true,
+    "validate_ok": true,
+    "validate_window_count": 51,
+    "validate_window_count_ok": true,
+    "validate_underpowered": true,
+    "validate_underpowered_valid": true,
+    "validate_bad_invalid": true,
+    "slices_3_count": 8,
+    "slices_3_count_ok": true,
+    "slices_3_first": [
+      0,
+      1,
+      2
+    ],
+    "slices_3_last": [
+      7,
+      8,
+      9
+    ],
+    "slices_3_first_ok": true,
+    "slices_3_last_ok": true,
+    "slices_step2_count": 4,
+    "slices_step2_count_ok": true,
+    "slices_partial_count": 3,
+    "slices_no_partial": [
+      [
+        0,
+        1,
+        2
+      ],
+      [
+        2,
+        3,
+        4
+      ]
+    ],
+    "tail_3": [
+      7,
+      8,
+      9
+    ],
+    "tail_3_ok": true,
+    "tail_short": [
+      1,
+      2
+    ],
+    "tail_short_ok": true,
+    "labels_count": 8,
+    "labels_first": "w3[0:3]",
+    "labels_first_ok": true,
+    "labels_last_ok": true,
+    "tail_label_full": "tail_150",
+    "tail_label_partial": "partial_80_of_150",
+    "tail_label_full_ok": true,
+    "tail_label_partial_ok": true,
+    "sw_count": 5,
+    "sw_mean": 3.0,
+    "sw_min": 1.0,
+    "sw_max": 5.0,
+    "sw_mean_ok": true,
+    "sw_label": "TEST",
+    "rs_no_edge_claim": true,
+    "rs_no_betting_advice": true,
+    "rs_schema_version": "1.0",
+    "rs_summary_type": "rolling_window_statistics",
+    "rs_total_count": 200,
+    "rs_series_count": 2,
+    "rs_series_count_ok": true,
+    "rs_family_label": "P252F_TEST",
+    "rs_deterministic": true
+  },
+  "rolling_window_schema": {
+    "required_fields": [
+      "schema_version",
+      "summary_type",
+      "family_label",
+      "total_count",
+      "step_size",
+      "include_partial",
+      "min_count",
+      "window_series",
+      "window_sizes_requested",
+      "no_edge_claim",
+      "no_betting_advice",
+      "assumptions",
+      "limitations"
+    ],
+    "no_edge_claim_always_true": true,
+    "no_betting_advice_always_true": true,
+    "p221f_windows_canonical": {
+      "short": [
+        100,
+        125,
+        150
+      ],
+      "mid": [
+        500,
+        750,
+        1000
+      ]
+    },
+    "rsm_windows": {
+      "short": 30,
+      "medium": 100,
+      "long": 300
+    }
+  },
+  "no_db_write_confirmed": true,
+  "no_registry_mutation_confirmed": true,
+  "no_strategy_promotion_confirmed": true,
+  "no_betting_advice_confirmed": true,
+  "final_decision": "P252F complete. rolling_window.py SSOT implemented at lottery_api/utils/rolling_window.py. 7 pure-Python functions + P221F/RSM window constants cover M3 rolling window gap. P221F frozen windows (short 100/125/150, mid 500/750/1000) and RSM windows (30/100/300) are both exposed as named constants. No DB write. No registry mutation. No strategy promotion. No betting advice. Recommended next: P252G — implement M7 signal stability diagnostics SSOT (P1)."
+}

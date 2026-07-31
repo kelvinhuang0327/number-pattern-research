@@ -1,0 +1,72 @@
+{
+  "future_worker_notes": [
+    "P375 source inventory contains 34 required files.",
+    "Rerun python3 -m recovered_strategies.biglotto.no_db_operator_acceptance --validate after any upstream evidence change.",
+    "Keep subsequent work in isolated worktrees and preserve no-DB/no-adapter/no-scoring/no-deploy boundaries."
+  ],
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "governance_risks": [
+    "Action cards and local commands are templates only, not standing authorization.",
+    "Acceptance does not authorize DB writes, adapter execution, strategy status changes, registry import, deploy, force operations, betting advice, or future-performance claims.",
+    "P375 is a release gate over historical descriptive evidence only."
+  ],
+  "known_non_goals": [
+    "No new scoring cohort.",
+    "No shape-only scoring.",
+    "No blocked target scoring.",
+    "No blended leaderboard.",
+    "No migration, backfill, deploy, or production registry import.",
+    "No external publication."
+  ],
+  "retained_worktree_notes": [
+    "P371 retained worktree/branch must remain untouched.",
+    "P373 retained worktree/branch must remain untouched.",
+    "P360 readonly worktree must remain untouched."
+  ],
+  "scope_lines": [
+    "Historical descriptive evidence only.",
+    "No future prediction guarantee.",
+    "No betting advice.",
+    "No DB open/write.",
+    "No adapter calls.",
+    "No new scoring.",
+    "No new scoring cohort.",
+    "No production registry import.",
+    "No deploy.",
+    "No generated DB rows.",
+    "No strategy status changes.",
+    "No blended leaderboard.",
+    "No force operations.",
+    "Acceptance decision is a read-only release gate over committed P371/P372/P373/P374 evidence."
+  ],
+  "source_baseline": {
+    "acceptance_mode": "read_only_no_db_release_gate",
+    "p371_source_merge_baseline": "30e4120060e41e8a6f7cf529c28d9b490c01f70b",
+    "p372_source_baseline": "1a971bd14a11de3e6e5967cfb543ab7069e97100",
+    "p373_source_merge_baseline": "992c0c33ca9e3db1bbe81914cd1de82b21c06bde",
+    "p374_merge_baseline": "e7a9a16224d3fec10500283bafef38701e1d0d21",
+    "required_origin_main_merge_commit": "e7a9a16224d3fec10500283bafef38701e1d0d21"
+  },
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "blended_leaderboard": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "force_operations": false,
+    "future_prediction_guarantee": false,
+    "generated_db_rows": false,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring": false,
+    "new_scoring_cohort": false,
+    "production_registry_imported": false,
+    "strategy_status_changes": false
+  },
+  "task": "P375_biglotto_operator_acceptance",
+  "technical_risks": [
+    "Acceptance is only as fresh as the committed P371/P372/P373/P374 artifacts.",
+    "Read-only route and operator health do not prove future strategy performance.",
+    "Any later source artifact change requires rerunning this deterministic gate."
+  ]
+}

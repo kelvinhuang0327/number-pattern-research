@@ -1,0 +1,228 @@
+{
+  "generated_at": "DETERMINISTIC_PLACEHOLDER",
+  "path_warnings": {
+    "p379_previous_worktree": {
+      "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p379",
+      "policy": "read-only presence check only; do not use or clean",
+      "status": "PRESENT"
+    },
+    "protected_historical_warning": "P380_WARN_PROTECTED_WORKTREES_ABSENT",
+    "protected_historical_worktrees": {
+      "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P360-fable5-biglotto-success-direction-readonly": "ABSENT",
+      "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P371-biglotto-command-center": "ABSENT",
+      "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P373-biglotto-command-center-operator-console": "ABSENT"
+    }
+  },
+  "recipe_transcripts": {
+    "all_artifacts": {
+      "command": "python3 -m recovered_strategies.biglotto.no_db_regression_archive_query --query all_artifacts",
+      "output_artifact": "artifacts/P380_biglotto_regression_archive_query_artifact_results.csv",
+      "rows": 24
+    },
+    "all_commands": {
+      "command": "python3 -m recovered_strategies.biglotto.no_db_regression_archive_query --query all_commands",
+      "output_artifact": "artifacts/P380_biglotto_regression_archive_query_command_results.csv",
+      "rows": 6
+    },
+    "all_deltas": {
+      "command": "python3 -m recovered_strategies.biglotto.no_db_regression_archive_query --query all_deltas",
+      "output_artifact": "artifacts/P380_biglotto_regression_archive_query_delta_results.csv",
+      "rows": 56
+    },
+    "handoff_digest": {
+      "command": "python3 -m recovered_strategies.biglotto.no_db_regression_archive_query --query handoff_digest",
+      "payload": {
+        "counts": {
+          "all_artifacts": 24,
+          "all_commands": 6,
+          "all_deltas": 56,
+          "non_pass_commands": 1,
+          "stale_or_missing_artifacts": 1,
+          "warn_or_fail_deltas": 1
+        },
+        "generated_at": "DETERMINISTIC_PLACEHOLDER",
+        "no_db_no_adapter_no_scoring_no_deploy_statement": "No DB was opened or written; no adapters were called; no new scoring, scoring cohort, shape-only scoring, blocked-target scoring, or blended leaderboard was created; no production registry import, deploy, or external publication was performed.",
+        "path_warnings": {
+          "p379_previous_worktree": {
+            "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew-p379",
+            "policy": "read-only presence check only; do not use or clean",
+            "status": "PRESENT"
+          },
+          "protected_historical_warning": "P380_WARN_PROTECTED_WORKTREES_ABSENT",
+          "protected_historical_worktrees": {
+            "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P360-fable5-biglotto-success-direction-readonly": "ABSENT",
+            "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P371-biglotto-command-center": "ABSENT",
+            "/Users/kelvin/Kelvin-WorkSpace/LotteryNew.worktrees/P373-biglotto-command-center-operator-console": "ABSENT"
+          }
+        },
+        "query_id": "handoff_digest",
+        "scope_lines": [
+          "Historical descriptive evidence only.",
+          "No future prediction guarantee.",
+          "No betting advice.",
+          "No DB open/write.",
+          "No adapter calls.",
+          "No new scoring.",
+          "No new scoring cohort.",
+          "No production registry import.",
+          "No deploy.",
+          "No generated DB rows.",
+          "No strategy status changes.",
+          "No blended leaderboard.",
+          "No force operations.",
+          "No production registry import or production release approval.",
+          "Not production release approval.",
+          "P380 reads only merged P377/P378/P379 regression archive artifacts and writes only P380-prefixed query artifacts."
+        ],
+        "source_baseline": {
+          "query_mode": "read_only_no_db_regression_archive_recipe_runner",
+          "required_origin_main_merge_commit": "e09c8cb6de9d95ff1e381104425bbbcc5c79b781",
+          "source_tasks": [
+            "P377_biglotto_command_center_regression_runner",
+            "P378_biglotto_regression_run_archive",
+            "P379_biglotto_regression_archive_explorer"
+          ]
+        },
+        "statements": {
+          "adapter_calls": false,
+          "betting_advice": false,
+          "blended_leaderboard": false,
+          "db_opened": false,
+          "db_written": false,
+          "deployed": false,
+          "force_operations": false,
+          "future_prediction_guarantee": false,
+          "generated_db_rows": false,
+          "historical_descriptive_evidence_only": true,
+          "new_scoring": false,
+          "new_scoring_cohort": false,
+          "production_registry_imported": false,
+          "production_release_approval": false,
+          "strategy_status_changes": false
+        },
+        "task": "P380_biglotto_regression_archive_query"
+      }
+    },
+    "non_pass_commands": {
+      "command": "python3 -m recovered_strategies.biglotto.no_db_regression_archive_query --query non_pass_commands",
+      "output_artifact": "artifacts/P380_biglotto_regression_archive_query_command_results.csv",
+      "rows": 1
+    },
+    "stale_or_missing_artifacts": {
+      "command": "python3 -m recovered_strategies.biglotto.no_db_regression_archive_query --query stale_or_missing_artifacts",
+      "output_artifact": "artifacts/P380_biglotto_regression_archive_query_artifact_results.csv",
+      "rows": 1
+    },
+    "warn_or_fail_deltas": {
+      "command": "python3 -m recovered_strategies.biglotto.no_db_regression_archive_query --query warn_or_fail_deltas",
+      "output_artifact": "artifacts/P380_biglotto_regression_archive_query_delta_results.csv",
+      "rows": 1
+    }
+  },
+  "scope_lines": [
+    "Historical descriptive evidence only.",
+    "No future prediction guarantee.",
+    "No betting advice.",
+    "No DB open/write.",
+    "No adapter calls.",
+    "No new scoring.",
+    "No new scoring cohort.",
+    "No production registry import.",
+    "No deploy.",
+    "No generated DB rows.",
+    "No strategy status changes.",
+    "No blended leaderboard.",
+    "No force operations.",
+    "No production registry import or production release approval.",
+    "Not production release approval.",
+    "P380 reads only merged P377/P378/P379 regression archive artifacts and writes only P380-prefixed query artifacts."
+  ],
+  "show_artifact_example": {
+    "command": "python3 -m recovered_strategies.biglotto.no_db_regression_archive_query --show-artifact recovered_strategies/biglotto/no_db_command_center_regression_runner.py",
+    "payload": {
+      "artifact": {
+        "artifact_path": "recovered_strategies/biglotto/no_db_command_center_regression_runner.py",
+        "exists": "YES",
+        "freshness_status": "ARCHIVED_SOURCE",
+        "notes": "Committed P377/P378/P379 evidence artifact read-only; no DB open/write.",
+        "query_id": "all_artifacts",
+        "related_delta": "SOURCE_INVENTORY",
+        "row_or_object_count": "text_lines=821",
+        "sha256": "244609d4779cc9b03c2d764df20504a8a7a2cf30f8f959ca251ffa9946b9ad84",
+        "source_stage": "P377"
+      },
+      "artifact_role": "p377_module",
+      "found": true,
+      "scope_lines": [
+        "Historical descriptive evidence only.",
+        "No future prediction guarantee.",
+        "No betting advice.",
+        "No DB open/write.",
+        "No adapter calls.",
+        "No new scoring.",
+        "No new scoring cohort.",
+        "No production registry import.",
+        "No deploy.",
+        "No generated DB rows.",
+        "No strategy status changes.",
+        "No blended leaderboard.",
+        "No force operations.",
+        "No production registry import or production release approval.",
+        "Not production release approval.",
+        "P380 reads only merged P377/P378/P379 regression archive artifacts and writes only P380-prefixed query artifacts."
+      ]
+    }
+  },
+  "show_command_example": {
+    "command": "python3 -m recovered_strategies.biglotto.no_db_regression_archive_query --show-command P377-CMD-001",
+    "payload": {
+      "command": {
+        "command": "python3 -m recovered_strategies.biglotto.no_db_evidence_command_center --validate",
+        "command_id": "P377-CMD-001",
+        "normalized_summary": "validation_rows=19 pass=19 warn=0 fail=0 stdout_sha256=8c6ff95462c894503b9ebbb560e76304d7d61080bedceff582621c5381b13935",
+        "notes": "Initial P378 archive baseline=current; P377 command row read-only, not re-executed.",
+        "query_id": "all_commands",
+        "related_delta": "PASS",
+        "stage": "P371",
+        "status": "PASS"
+      },
+      "found": true,
+      "scope_lines": [
+        "Historical descriptive evidence only.",
+        "No future prediction guarantee.",
+        "No betting advice.",
+        "No DB open/write.",
+        "No adapter calls.",
+        "No new scoring.",
+        "No new scoring cohort.",
+        "No production registry import.",
+        "No deploy.",
+        "No generated DB rows.",
+        "No strategy status changes.",
+        "No blended leaderboard.",
+        "No force operations.",
+        "No production registry import or production release approval.",
+        "Not production release approval.",
+        "P380 reads only merged P377/P378/P379 regression archive artifacts and writes only P380-prefixed query artifacts."
+      ]
+    }
+  },
+  "statements": {
+    "adapter_calls": false,
+    "betting_advice": false,
+    "blended_leaderboard": false,
+    "db_opened": false,
+    "db_written": false,
+    "deployed": false,
+    "force_operations": false,
+    "future_prediction_guarantee": false,
+    "generated_db_rows": false,
+    "historical_descriptive_evidence_only": true,
+    "new_scoring": false,
+    "new_scoring_cohort": false,
+    "production_registry_imported": false,
+    "production_release_approval": false,
+    "strategy_status_changes": false
+  },
+  "task": "P380_biglotto_regression_archive_query"
+}

@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "task_id": "P247B",
+  "classification": "TYPE_D_CONTROLLED_APPLY",
+  "mode": "APPLY",
+  "explicit_authorization_confirmed": "YES apply P247B CREATE VIEW draws_big_lotto_canonical_main for BIG_LOTTO canonical research separation",
+  "p247a_merged_pr": 327,
+  "db_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+  "backup_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/backups/p247b_lottery_v2_backup_20260606_113816.db",
+  "backup_sha256": "ad7dd4396de479188627d3d0a4bee6570d664f94101085a8bc469dc932d920ac",
+  "pre_apply_counts": {
+    "raw_big_lotto": 22238,
+    "add_on": 19100,
+    "dry_run_canonical": 2113
+  },
+  "pre_apply_all_checks_pass": true,
+  "applied_sql_summary": "CREATE VIEW IF NOT EXISTS draws_big_lotto_canonical_main — canonical BIG_LOTTO main-draw filter (lottery_type=BIG_LOTTO, no hyphen, no date-format, max(numbers)>25)",
+  "view_name": "draws_big_lotto_canonical_main",
+  "view_created": true,
+  "apply_idempotent": false,
+  "post_apply_counts": {
+    "view_rows": 2113,
+    "raw_big_lotto": 22238,
+    "add_on": 19100,
+    "replay_rows": -1
+  },
+  "raw_rows_preserved": true,
+  "canonical_count_correct": true,
+  "no_row_insert_update_delete": true,
+  "annotation_table_created": false,
+  "db_integrity_result": "ok",
+  "replay_rows_result": -1,
+  "post_apply_all_checks_pass": true,
+  "forbidden_actions_confirmed": {
+    "CREATE TABLE annotation table": "NOT PERFORMED",
+    "DELETE rows": "NOT PERFORMED",
+    "UPDATE rows": "NOT PERFORMED",
+    "INSERT rows": "NOT PERFORMED",
+    "registry mutation": "NOT PERFORMED",
+    "production recommendation change": "NOT PERFORMED",
+    "strategy promotion": "NOT PERFORMED",
+    "deployment": "NOT PERFORMED",
+    "force push": "NOT PERFORMED",
+    "branch deletion": "NOT PERFORMED"
+  },
+  "final_decision": "P247B APPLY: View draws_big_lotto_canonical_main created. Canonical rows: 2113. Raw BIG_LOTTO rows preserved: 22238. No row delete/update/insert. No annotation table. No registry mutation."
+}

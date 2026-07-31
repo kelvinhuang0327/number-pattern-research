@@ -1,0 +1,258 @@
+{
+  "phase": "P230A_DAILY539_BACKWARD_OOS_EXTENSION_PLAN",
+  "task": "P230A_DAILY539_SURVIVOR_BACKWARD_OOS_EXTENSION_PLAN_AND_REHEARSAL_DESIGN",
+  "date": "2026-06-03",
+  "timezone": "Asia/Taipei",
+  "status": "COMPLETE / PLAN-ONLY / READ-ONLY",
+  "mode": "design_and_rehearsal_only_no_db_write_no_code_change",
+  "authorized_by": "User explicit task prompt 2026-06-03",
+  "branch_note": "Artifacts written on branch p230a-daily539-backward-oos-extension-plan (user-authorized) because a repo PreToolUse hook blocks file writes on main. No commit/stage/push performed.",
+  "disclaimer": "Plan-only. No DB write, no replay rows created, no registry change, no production/recommendation change, no P225 start, no backward replay generation executed. Not betting advice and not a guaranteed predictive edge.",
+
+  "1_phase0_verification": {
+    "all_checks_pass": true,
+    "git": {
+      "show_toplevel": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew",
+      "branch_at_verification": "main",
+      "git_dir": ".git",
+      "head": "3b9933b03b436b5a5d4b69d5dcc00c9343272403",
+      "origin_main": "3b9933b03b436b5a5d4b69d5dcc00c9343272403",
+      "head_equals_origin_main": true,
+      "includes_p229": true,
+      "staged_files_count": 0
+    },
+    "db": {
+      "db_path": "lottery_api/data/lottery_v2.db",
+      "total_replay_rows": 94924,
+      "daily539_replay_rows_all_strategies": 34680,
+      "big_lotto_replay_rows": 24140,
+      "power_lotto_replay_rows": 36104,
+      "bet_index_nulls": 0,
+      "duplicate_replay_keys": 0,
+      "pragma_integrity_check": "ok",
+      "drift_guard": "REPLAY_LIFECYCLE_DRIFT_GUARD_PASS"
+    },
+    "p229_artifacts_tracked": {
+      "outputs/research/p229_lottery_research_closeout_report_20260603.md": "TRACKED",
+      "outputs/research/p229_lottery_research_closeout_report_20260603.json": "TRACKED"
+    },
+    "stop_conditions_triggered": false,
+    "dirty_worktree_note": "Pre-existing unrelated dirty/untracked files present; not touched, not staged, not cleaned."
+  },
+
+  "2_candidate_recap": {
+    "strategy_id": "midfreq_fourier_2bet",
+    "lottery_type": "DAILY_539",
+    "status": "WAIT_FOR_OOS",
+    "p224_classification": "P224_SURVIVOR_NEEDS_MORE_OOS",
+    "kind": "strategy (row grain)",
+    "recorded_bet_semantics": "Only bet-1 is recorded (bet_index=1). bet-1 of midfreq_fourier_2bet is PURE MidFreq (predict_midfreq), NOT Fourier. The 'fourier' component would be bet-2 and is NOT stored. The replay evidence is effectively a single-bet MidFreq signal despite the 2bet name.",
+    "existing_rows": 1500,
+    "existing_bet_index_values": [1],
+    "existing_replay_status": "PREDICTED (1500/1500)",
+    "replay_run_id": "p31b_wave1_prod_20260523",
+    "controlled_apply_id": "P31B_DAILY539_RETIRED_7500_PROD_20260523",
+    "source": "P31B_WAVE1_PRODUCTION_APPLY",
+    "truth_level": "DAILY539_RETIRED_STRATEGY_BACKFILL_VERIFIED",
+    "lifecycle_status": "RETIRED (not ONLINE, not in production registry _ALL_ADAPTERS)",
+    "p225_state": "deferred; separately authorized only"
+  },
+
+  "3_current_evidence_recap": {
+    "mean_hit_count": 0.6693333333333333,
+    "baseline_used": 0.6410256410256411,
+    "baseline_derivation": "theoretical random hypergeometric mean = pick(5) * draw(5) / pool(39) = 25/39 = 0.6410256410256411; era-invariant for DAILY_539 (pool/pick/draw unchanged across all history).",
+    "one_sided_p_value": 0.0673719479414372,
+    "ci_95": [0.6322371303354622, 0.7064295363312044],
+    "ci_crosses_baseline": true,
+    "all_history_reference_baseline": 0.6251612903225806,
+    "w100_baseline": 0.6096774193548387,
+    "w500_baseline": 0.6470967741935484,
+    "consensus_baseline": 0.68,
+    "best_competing_non_candidate_baseline": {"name": "daily539_f4cold", "mean": 0.678616},
+    "hit_distribution": {"0": 714, "1": 587, "2": 180, "3": 19},
+    "derived_rates": {"M1plus": 0.524, "M2plus": 0.13266666666666665, "M3plus": 0.012666666666666666, "max_hit_count": 3},
+    "block_summary": {"n_blocks": 10, "blocks_above_baseline": 6, "worst_block": 0.5866666666666667, "best_block": 0.76, "block_mean_sd": 0.05934456822471436},
+    "year_2024_below_baseline": {"n": 314, "mean": 0.6146496815286624, "direction": "below"},
+    "robustness_exclude_hit3": {"n": 1481, "mean": 0.6394328156650911, "below_baseline": true, "note": "removing the 19 hit_count=3 rows drops mean below baseline"},
+    "deployable": false,
+    "ready_for_p225": false
+  },
+
+  "4_backward_oos_data_inventory": {
+    "source_table_for_draws": "draws",
+    "daily539_total_draws": 5876,
+    "daily539_draw_id_range": {"min": "96000001", "max": "115000132"},
+    "daily539_date_range": {"min": "2007/01/01", "max": "2026/05/30"},
+    "candidate_replay_window": {
+      "rows": 1500,
+      "distinct_draws": 1500,
+      "draw_id_range": {"min": "110000190", "max": "115000121"},
+      "date_range": {"min": "2021/08/10", "max": "2026/05/18"},
+      "in_window_gaps": 0,
+      "contiguous": true
+    },
+    "partition_of_full_history": {
+      "backward_strictly_earlier_than_window": {"count": 4365, "draw_id_range": {"min": "96000001", "max": "110000189"}, "date_range": {"min": "2007/01/01", "max": "2021/08/09"}},
+      "in_window_already_replayed": {"count": 1500, "draw_id_range": {"min": "110000190", "max": "115000121"}},
+      "forward_later_than_window": {"count": 11, "draw_id_range": {"min": "115000122", "max": "115000132"}, "date_range": {"min": "2026/05/19", "max": "2026/05/30"}},
+      "sum_check": "4365 + 1500 + 11 = 5876 (PASS)"
+    },
+    "warmup_unreplayable_min_history_100": {
+      "count": 100,
+      "reason": "MidfreqFourier2BetAdapter.min_history = 100; first 100 DAILY_539 draws have <100 prior history and would return replay_status=INSUFFICIENT_HISTORY.",
+      "draw_id_range": {"min": "96000001", "max": "96000100"}
+    },
+    "replayable_backward_oos": {
+      "count": 4265,
+      "first_replayable_draw": {"draw": "96000101", "date": "2007/05/21", "ordinal": 101},
+      "last_replayable_backward_draw": {"draw": "110000189", "date": "2021/08/09", "ordinal": 4365},
+      "span_years": "2007/05 -> 2021/08 (~14.2 years)"
+    },
+    "current_state_4376_reconciliation": {
+      "cited": "~4,376 un-replayed older draws (CURRENT_STATE.md / roadmap P1.2)",
+      "actual": "un-replayed = 4365 backward + 11 forward = 4376 (EXACT). Strictly-backward = 4365. Replayable-backward after 100-draw warmup = 4265.",
+      "verdict": "CONFIRMED with refinement: 4376 includes 11 forward draws; truly-backward replayable count is 4265, not 4376."
+    },
+    "daily539_replay_rows_clarification": "The 34,680 DAILY_539 replay rows span MANY strategies; the candidate midfreq_fourier_2bet has exactly 1500 rows. Backward-OOS extension concerns ONLY the candidate slice (currently 0 backward rows for this strategy_id).",
+    "era_split_proposed": {
+      "early_era_2007_05_to_2011": {"approx_draws": 1258, "note": "2007 partial (161 replayable after warmup) + 2008-2011"},
+      "middle_era_2012_to_2016": {"approx_draws": 1566},
+      "late_pre_p224_boundary_2017_to_2021_08": {"approx_draws": 1441, "note": "ends at 110000189, immediately before the existing window boundary 110000190"},
+      "balance": "roughly balanced (1258 / 1566 / 1441); sum = 4265 (PASS)",
+      "p224_era_boundary": {"boundary_draw": "110000190", "boundary_date": "2021/08/10", "meaning": "first draw of the existing 1500-row P224 window; backward eras must end strictly before this."}
+    },
+    "draw_order_validation": {
+      "ordering_rule": "ORDER BY date ASC, CAST(draw AS INTEGER) ASC",
+      "date_inversions_under_integer_order": 0,
+      "verdict": "CAST(draw AS INTEGER) order is perfectly monotonic with date (0 inversions). Leakage-safe chronological ordering confirmed. Never use string ORDER BY draw (per project DB rule)."
+    }
+  },
+
+  "5_feasibility_analysis": {
+    "code_can_generate_backward_predictions": true,
+    "required_source_modules": {
+      "strategy_adapter": "lottery_api/models/p31a_wave1_retired_adapters.py :: MidfreqFourier2BetAdapter (min_history=100; _predict -> predict_midfreq; predict_midfreq -> _midfreq_scores window=100)",
+      "generator_template": "scripts/p31b_wave1_daily539_retired_production_apply.py (causal-slice loop, single-draw runner _run_one_prediction, provenance hashing, transactional apply)",
+      "adapter_registry_note": "MidfreqFourier2BetAdapter is a P31A dry-run wrapper NOT registered in replay_strategy_registry._ALL_ADAPTERS; safe to reuse without registry side-effects."
+    },
+    "db_tables_read": ["draws"],
+    "db_tables_write_future_p230b": ["strategy_prediction_replays"],
+    "feature_reconstruction_without_leakage": {
+      "feasible": true,
+      "reason": "predict_midfreq is pure-functional on history[-100:] (frequency mean-reversion). No external state (DB/files/env) is read during prediction. Deterministic -> reproducible -> no leakage when history is a strict causal slice.",
+      "constraint": "Requires >=100 prior DAILY_539 draws per target -> first 100 historical draws excluded (warmup). Effective replayable backward window = 4265 draws."
+    },
+    "determinism": "Same algorithm + same fixed historical data => byte-stable predictions; provenance_hash = sha256(strategy_id|target_draw|sorted(numbers))[:16] for verification. Consistent with the existing 1500 in-window rows generated by the identical adapter.",
+    "isolation_preference": "ARTIFACT-ONLY dry-run FIRST (no DB). Then, only if authorized, temp-table/backup-DB rehearsal. Production apply is the LAST resort and requires explicit DB-write authorization.",
+    "precedent_for_rehearsal": ["outputs/research/power_lotto/p184_rehearsal/lottery_v2_p184_temp_rehearsal_20260601.db", "outputs/research/power_lotto/p185_rehearsal/lottery_v2_p185_temp_rehearsal_20260601.db", "backups/p188_lottery_v2_backup_20260601_153821.db"]
+  },
+
+  "6_leakage_guard": {
+    "cutoff_rule": "history_cutoff_draw = the immediately preceding DAILY_539 draw of target_draw in (date ASC, draw ASC) ordinal order.",
+    "literal_minus_one_warning": "The phrase 'target_draw - 1' MUST be interpreted as ORDINAL PREDECESSOR, NOT numeric subtraction. DAILY_539 draw IDs reset across ROC-year boundaries (e.g., 110000313 -> 111000001), so numeric target_draw-1 is WRONG at year boundaries. Use history = all_draws[:target_idx]; cutoff = history[-1]['draw'] (exactly what P31B does).",
+    "no_same_draw_or_future_outcome": "history slice is all_draws[:target_idx] (strictly before target). actual_numbers taken only from the target row itself, never fed into prediction.",
+    "draw_order_validation_rule": "Assert 0 date inversions under CAST(draw AS INTEGER) order before any run (verified now: 0).",
+    "duplicate_target_protection": "UNIQUE(lottery_type, target_draw, strategy_id, bet_index) on strategy_prediction_replays. Pre-run duplicate guard: assert 0 existing rows for (strategy_id=midfreq_fourier_2bet) with target_draw in the backward set.",
+    "post_generation_leakage_assertions": [
+      "count(history_cutoff_draw with ordinal >= target ordinal) == 0",
+      "count(prediction_cutoff_date >= target_date) == 0",
+      "rows == distinct target_draw",
+      "every predicted bet has exactly 5 distinct integers in [1..39]",
+      "predicted_special is NULL (DAILY_539 has no special)"
+    ],
+    "unique_key_strategy_if_db_write_authorized": "Reuse UNIQUE(lottery_type, target_draw, strategy_id, bet_index); backward rows differ from in-window rows only by target_draw so no collision. Tag with distinct provenance (see architecture) to keep backward rows separable.",
+    "rollback_backup_requirements_if_db_write_authorized": [
+      "Take a full timestamped DB backup first (precedent: backups/p188_lottery_v2_backup_*.db).",
+      "Pre-flight assert total rows == 94924 (or the live baseline at run time).",
+      "BEGIN EXCLUSIVE transaction; rollback on ANY exception (P31B pattern).",
+      "Post-apply assert total rows == 94924 + inserted, inserted == expected, duplicates == 0.",
+      "Run replay_lifecycle_drift_guard.py --strict post-apply; must remain PASS."
+    ]
+  },
+
+  "7_proposed_dry_run_backfill_architecture": {
+    "principle": "artifact-only before any DB write; deterministic reuse of the existing adapter; full provenance separability of backward rows from in-window rows.",
+    "p230b1_artifact_only_dry_run": {
+      "goal": "Generate backward-OOS predictions to an ARTIFACT FILE only. ZERO DB writes. Requires code-change authorization (new read-only script).",
+      "proposed_new_script": "scripts/p230b1_daily539_backward_oos_artifact_dryrun.py",
+      "reads": ["draws (DAILY_539, ORDER BY date ASC, draw ASC)"],
+      "reuses": "lottery_api/models/p31a_wave1_retired_adapters.MidfreqFourier2BetAdapter + P31B causal-slice loop",
+      "writes": ["outputs/research/p230b1_daily539_backward_oos_artifact_<date>.jsonl (one row per backward target)", "outputs/research/p230b1_daily539_backward_oos_manifest_<date>.json (counts, hashes, leakage assertions)"],
+      "db_writes": 0,
+      "row_schema_per_record": ["lottery_type", "target_draw", "target_date", "strategy_id", "bet_index=1", "history_cutoff_draw", "predicted_numbers", "actual_numbers", "hit_numbers", "hit_count", "replay_status", "provenance_hash"],
+      "expected_records": "<= 4265 PREDICTED + up to 100 INSUFFICIENT_HISTORY if first-100 attempted (recommend skipping warmup -> exactly 4265 PREDICTED)"
+    },
+    "p230b2_temp_table_or_backup_db_rehearsal": {
+      "goal": "Load artifact rows into an ISOLATED temp DB copy or a temp table with dry_run=1, validate guards, NEVER into production rows.",
+      "requires": "explicit DB-write authorization phrase",
+      "isolation_options": ["temp DB copy (precedent P184/P185 rehearsal DBs)", "or temp table within a backed-up DB", "rows tagged dry_run=1"],
+      "guards": "mirror P31B: pre-flight row count, duplicate guard by controlled_apply_id, BEGIN EXCLUSIVE, rollback on exception, post verification, drift guard PASS"
+    },
+    "p230c_validation": {
+      "goal": "Read-only validation/metrics over the P230B1 artifact (and/or temp rehearsal). No production write.",
+      "produces": "outputs/research/p230c_daily539_backward_oos_validation_<date>.{md,json}"
+    },
+    "p230d_governance_and_commit": {
+      "goal": "Optional: commit artifacts + sync governance docs. Separate authorization.",
+      "note": "Production apply (dry_run=0 into lottery_v2.db) is OUT OF SCOPE for the whole P230B/C chain unless a distinct explicit DB-write/backfill authorization is given."
+    },
+    "provenance_separability": {
+      "replay_run_id": "p230b_backward_oos_<date>",
+      "controlled_apply_id": "P230B_DAILY539_BACKWARD_OOS_<N>_<MODE>_<date>",
+      "source": "P230B_DAILY539_BACKWARD_OOS_EXTENSION",
+      "truth_level": "DAILY539_BACKWARD_OOS_EXTENSION",
+      "rationale": "Distinct from the in-window P31B markers so analysis can always separate backward-OOS rows from the original 1500 in-window rows."
+    }
+  },
+
+  "8_validation_metrics_and_gates": {
+    "interpretation_caveat": "Backward-OOS is a HISTORICAL EXTENSION across OLDER regimes, NOT true future OOS. It tests robustness across earlier regimes but CANNOT replace the P224B future 300/500-draw monitoring gate.",
+    "required_splits": ["early_era (2007/05-2011)", "middle_era (2012-2016)", "late_pre_p224_boundary_era (2017-2021/08)", "block_level 100/150/300-draw non-overlapping blocks"],
+    "comparison_baselines": ["P224 theoretical baseline 0.6410256 (era-invariant primary anchor)", "all-history DAILY_539 reference baseline 0.6251613", "daily539_f4cold (requires its own backward replay for a fair comparison)", "consensus baseline 0.68 (reconstructable only if competing strategies are also backfilled backward)"],
+    "required_metrics": ["mean hit_count", "M1+", "M2+", "M3+", "95% CI (explicit lower/upper)", "one-sided p-value vs baseline", "per-era + per-block stability", "robustness excluding hit_count=3 rows", "robustness excluding strongest block"],
+    "decision_gates_for_p230b_p230c": {
+      "below_baseline": "If backward-OOS mean is below baseline -> classify survivor as HISTORICAL ARTIFACT.",
+      "mixed": "If mixed -> keep WAIT_FOR_OOS; do NOT start P225.",
+      "above_but_weak": "If consistently above baseline but CI/p-value still weak -> keep NEEDS_MORE_OOS.",
+      "strong": "If above baseline, block-stable, robust to hit_count=3 removal, robust to strongest-block removal, AND competitive vs baselines -> CTO MAY consider P230C deeper validation.",
+      "hard_ceiling": "Even if backward-OOS passes, NO production promotion is allowed. P225 model design remains separately authorized only."
+    }
+  },
+
+  "9_authorization_matrix": {
+    "read_only_inventory": "ALLOWED in this task (P230A)",
+    "artifact_only_dry_run_p230b1": "NOT YET — requires separate code-change authorization (new read-only script, no DB write)",
+    "db_write_backfill_p230b2_or_production": "NOT AUTHORIZED — requires explicit 'YES DB write/backfill' authorization",
+    "registry_mutation": "NOT AUTHORIZED",
+    "production_or_recommendation_change": "NOT AUTHORIZED",
+    "p225_model_design": "NOT AUTHORIZED (separately authorized only)",
+    "commit_stage_push_branch_merge": "Branch creation was separately authorized by the user for THIS artifact write only; commit/stage/push/merge remain NOT AUTHORIZED."
+  },
+
+  "10_recommended_next_step": {
+    "primary": "Authorize P230B1 (code-only artifact dry-run generator) as the next task: a NEW read-only script that emits backward-OOS predictions for the 4265 replayable draws to an artifact file with full leakage assertions and provenance, writing ZERO DB rows.",
+    "then": "Run P230C read-only validation on that artifact against the era/block splits and gates above.",
+    "defer": "P230B2 (temp-table/backup-DB rehearsal) only after P230B1 artifact review AND explicit DB-write authorization. Production apply (dry_run=0) remains out of scope pending a distinct explicit DB-write/backfill authorization.",
+    "parallel_reminder": "Backward-OOS does NOT substitute for the P224B future-OOS gate (>=300, preferred 500, NEW DAILY_539 draws). Passive monitoring continues regardless.",
+    "expected_db_effect_if_production_apply_ever_authorized": "94924 -> up to 94924 + 4265 = 99189 rows (only if a future, separately-authorized production apply runs)."
+  },
+
+  "11_final_classification": "P230A_DAILY539_BACKWARD_OOS_EXTENSION_PLAN_READY",
+  "classification_rationale": "Data sufficient (4265 replayable backward draws), schema intact and supportive (UNIQUE key, dry_run flag, full provenance columns), code feasibility confirmed (adapter + generator template reusable, deterministic, leakage-safe), no blockers. Not BLOCKED_INSUFFICIENT_DATA (4265 >> 0), not BLOCKED_SCHEMA (integrity ok, key present), not BLOCKED.",
+
+  "validation_self_check": {
+    "json_parses": true,
+    "db_total_rows_unchanged": 94924,
+    "daily539_rows_unchanged": 34680,
+    "bet_index_nulls": 0,
+    "duplicate_replay_keys": 0,
+    "pragma_integrity_check": "ok",
+    "drift_guard": "PASS",
+    "staged_files": 0,
+    "db_write_performed": false,
+    "code_changed": false,
+    "p225_started": false,
+    "backward_replay_executed": false
+  }
+}

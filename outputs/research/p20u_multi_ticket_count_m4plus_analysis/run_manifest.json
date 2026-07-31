@@ -1,0 +1,688 @@
+{
+  "completed_strategy_count": 30,
+  "completed_strategy_ids": [
+    "acb_hot_fourier_3bet_biglotto",
+    "apriori_3bet_biglotto",
+    "bet2_fourier_expansion_biglotto@p42_p280_frozen_code",
+    "biglotto_10bet_combined",
+    "biglotto_5bet_orthogonal",
+    "biglotto_deviation_2bet",
+    "biglotto_echo_aware_3bet",
+    "biglotto_p0_2bet",
+    "biglotto_triple_strike",
+    "biglotto_ts3_acb_4bet",
+    "biglotto_ts3_markov_4bet_w30",
+    "biglotto_ts3_markov_freq_5bet",
+    "cluster_pivot_biglotto",
+    "cold_complement_biglotto",
+    "coldpool15_biglotto",
+    "fourier30_markov30_biglotto",
+    "gap_dynamic_threshold_biglotto",
+    "history::lottery_api/models/core_satellite.py",
+    "history::lottery_api/models/social_wisdom_predictor.py",
+    "history::lottery_api/models/zone_split.py",
+    "hot_stop_rebound_biglotto",
+    "markov_2bet_biglotto",
+    "markov_repeat_exception_biglotto",
+    "markov_single_biglotto",
+    "neighbor_injection_biglotto",
+    "predict_biglotto_echo_2bet",
+    "predict_biglotto_echo_phase2",
+    "predict_biglotto_mixed_3bet",
+    "predict_biglotto_regime",
+    "ts3_regime_3bet"
+  ],
+  "confirmatory_family_definition": "unique independent_algorithm_id x ticket_count across the frozen 30-strategy universe and ticket counts 10,15,20; one-sided exact draw-cluster sign-flip p-values; credible adjusted advantage requires paired CI lower bound > 0 and Bonferroni-adjusted p < 0.05; BH-FDR is reported as a secondary adjustment",
+  "confirmatory_family_size": 90,
+  "constructor_version": "strategy_preserving_20_ticket/v1",
+  "data": {
+    "canonical_db_read": true,
+    "canonical_db_written": false,
+    "common_window_draws": 2025,
+    "database_path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db",
+    "database_sha256_after": "bf608f13d05e8ceae59e457c0b72a2eb30329eeb6415a09930bb8fde6971fd77",
+    "database_sha256_before": "bf608f13d05e8ceae59e457c0b72a2eb30329eeb6415a09930bb8fde6971fd77",
+    "dataset_sha256": "cd56bcca2fd61152f1812bc9c524dcbff3070f06d1c457e81a64bb4d441dd93f",
+    "historical_draws": 2125,
+    "historical_source": "draws_big_lotto_canonical_main",
+    "quality": {
+      "big_lotto_replay_distinct_targets": 1552,
+      "big_lotto_replay_ticket_rows": 24140,
+      "canonical_dataset_sha256": "cd56bcca2fd61152f1812bc9c524dcbff3070f06d1c457e81a64bb4d441dd93f",
+      "canonical_main_rows": 2125,
+      "common_window_rows": 2025,
+      "database_sha256": "bf608f13d05e8ceae59e457c0b72a2eb30329eeb6415a09930bb8fde6971fd77",
+      "date_format_counts": {
+        "YYYY/MM/DD": 2125
+      },
+      "duplicate_dates": 0,
+      "duplicate_draw_ids": 0,
+      "duplicate_main_number_rows": 0,
+      "excluded_noncanonical_rows": 1025,
+      "first_date": "2007/01/02",
+      "first_draw": "96000001",
+      "invalid_json_rows": 0,
+      "invalid_or_overlapping_special_rows": 0,
+      "last_date": "2026/07/14",
+      "last_draw": "115000070",
+      "negative_financial_rows": 0,
+      "null_numbers_positional_rows": 2125,
+      "out_of_range_rows": 0,
+      "outside_selected_window_rows": 0,
+      "raw_big_lotto_rows": 3150,
+      "replay_noncausal_cutoff_rows": 0,
+      "replay_rows_missing_from_canonical_view": 336,
+      "replay_targets_missing_from_canonical_view": 21,
+      "sample_first_rows": [
+        {
+          "date": "2007/01/02",
+          "draw": "96000001",
+          "numbers": [
+            13,
+            21,
+            23,
+            27,
+            31,
+            49
+          ],
+          "special": 19
+        },
+        {
+          "date": "2007/01/05",
+          "draw": "96000002",
+          "numbers": [
+            12,
+            19,
+            23,
+            42,
+            44,
+            48
+          ],
+          "special": 33
+        },
+        {
+          "date": "2007/01/09",
+          "draw": "96000003",
+          "numbers": [
+            26,
+            28,
+            35,
+            39,
+            44,
+            45
+          ],
+          "special": 18
+        },
+        {
+          "date": "2007/01/12",
+          "draw": "96000004",
+          "numbers": [
+            10,
+            16,
+            26,
+            28,
+            31,
+            33
+          ],
+          "special": 44
+        },
+        {
+          "date": "2007/01/16",
+          "draw": "96000005",
+          "numbers": [
+            13,
+            28,
+            33,
+            38,
+            43,
+            48
+          ],
+          "special": 4
+        }
+      ],
+      "sample_last_rows": [
+        {
+          "date": "2026/06/30",
+          "draw": "115000066",
+          "numbers": [
+            4,
+            10,
+            16,
+            29,
+            36,
+            45
+          ],
+          "special": 14
+        },
+        {
+          "date": "2026/07/03",
+          "draw": "115000067",
+          "numbers": [
+            11,
+            16,
+            19,
+            23,
+            39,
+            47
+          ],
+          "special": 15
+        },
+        {
+          "date": "2026/07/07",
+          "draw": "115000068",
+          "numbers": [
+            8,
+            13,
+            15,
+            18,
+            19,
+            42
+          ],
+          "special": 37
+        },
+        {
+          "date": "2026/07/10",
+          "draw": "115000069",
+          "numbers": [
+            3,
+            4,
+            15,
+            18,
+            29,
+            49
+          ],
+          "special": 13
+        },
+        {
+          "date": "2026/07/14",
+          "draw": "115000070",
+          "numbers": [
+            10,
+            25,
+            34,
+            36,
+            45,
+            46
+          ],
+          "special": 7
+        }
+      ],
+      "wrong_main_number_count_rows": 0
+    },
+    "sidecars_after": [
+      {
+        "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db-shm",
+        "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+        "size": 32768
+      },
+      {
+        "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db-wal",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    ],
+    "sidecars_before": [
+      {
+        "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db-shm",
+        "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+        "size": 32768
+      },
+      {
+        "path": "/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db-wal",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0
+      }
+    ]
+  },
+  "database_sha256": "bf608f13d05e8ceae59e457c0b72a2eb30329eeb6415a09930bb8fde6971fd77",
+  "dataset_sha256": "cd56bcca2fd61152f1812bc9c524dcbff3070f06d1c457e81a64bb4d441dd93f",
+  "excluded_strategy_count": 9,
+  "excluded_strategy_ids": [
+    "bet2_fourier_expansion_biglotto@rejected_json_historical",
+    "biglotto_social_wisdom_anti_popularity",
+    "biglotto_zonal_pruning",
+    "biglotto_zone_split_3bet_bet1",
+    "core_satellite_biglotto",
+    "hot_gap_return_biglotto",
+    "multiwindow_fourier_biglotto",
+    "ts3_acb_4bet_biglotto",
+    "ts3_markov_freq_5bet_biglotto"
+  ],
+  "execution": {
+    "checkpoint_byte_reproduction": true,
+    "checkpoint_primary_reused": 0,
+    "checkpoint_resume_reused": 31,
+    "count_specific_random_portfolios": 60750,
+    "count_specific_strategy_portfolios": 346230,
+    "detail_files_retained": false,
+    "random_replicates": 10,
+    "strategy_runs": [
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/a7742236f05f3eda33d3.csv.gz",
+        "detail_rows": 20250,
+        "detail_sha256": "b5bd20354bdf28c70269211c5e0c6c3fe0eaeced6703b69bf240f3a5fe831396",
+        "detail_stream_sha256": "d110ab8f2bcb6de5d21e818730e73aa147405b67b4cd68e0efd2002e835fa8ca",
+        "execution_strategy_id": "baseline::uniform_random_20",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 7.954316,
+        "strategy_id": "baseline::uniform_random_20"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/bc0803b9f29fc393eea5.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "375a09ee4385a053f0b5a9036a5922b9bdb51c148984a6205033957319a346e9",
+        "detail_stream_sha256": "bfdaab0134d27f5a6efa6fb73e9e56e0987c55956ee654e6fa99bf5837b3dccf",
+        "execution_strategy_id": "acb_hot_fourier_3bet_biglotto",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 27.405342,
+        "strategy_id": "acb_hot_fourier_3bet_biglotto"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/d35dd317244b10cb9ece.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "bbe22c960b0a17c9c607a4fe46b943c6899bbe3e6dca10e2f614598fc938dedc",
+        "detail_stream_sha256": "860957e7e4af960feeaf314d903289212782203e7cb7d9c84456c4ce68229bce",
+        "execution_strategy_id": "apriori_3bet_biglotto",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 23.18687,
+        "strategy_id": "apriori_3bet_biglotto"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/677be08bb9c27f4b1227.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "ec9e6cb404f7d7848f3d665f2af0cf7fd49854e2178a50e3c5edb645fed5c00a",
+        "detail_stream_sha256": "b4d134b270fe7a41b216edad10f4f0f2dab77cedb0cb00b50faf0a3c8a343b33",
+        "execution_strategy_id": "registry::bet2_fourier_expansion_biglotto",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 22.501476,
+        "strategy_id": "bet2_fourier_expansion_biglotto@p42_p280_frozen_code"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/5302346ce19421390428.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "acbb8bc4f8a0793273621003a7512717070b9c08aa36b8da12a9593ace7dab24",
+        "detail_stream_sha256": "9f9af43d74e6e597e352859fd947529df6b4d63a89a282da4d964281b13932ef",
+        "execution_strategy_id": "biglotto_10bet_combined",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 33.78829,
+        "strategy_id": "biglotto_10bet_combined"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/c597a6ee8b51adc97eae.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "ad9bc0a6a84e7c25c3afc57e0d27fbd92ff1b2044409f2fa2f19e3dad0a37f9c",
+        "detail_stream_sha256": "5c70c83f3032474c38d5f2ba10ed6c7192cf23304c987ddda8ed8191c254f49f",
+        "execution_strategy_id": "biglotto_5bet_orthogonal",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 25.641561,
+        "strategy_id": "biglotto_5bet_orthogonal"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/684a81245925ac619dac.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "36d511f3457739563e6d557451bcf559fc4d25fb52de0baa590d8ba4db4056d0",
+        "detail_stream_sha256": "f1d7fc8a95d97cce0a8a1f7be04361113f745d3535d1e8f546cba708fe55af5a",
+        "execution_strategy_id": "registry::biglotto_deviation_2bet",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 18.722813,
+        "strategy_id": "biglotto_deviation_2bet"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/68cab926f93f1120afdd.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "ae8cde4d4c1be523365f1c53a0f9ebff751bb63156ca666e2620c449d65796db",
+        "detail_stream_sha256": "5434975ff57d2691b4bca5417415cf067780fa0bd343d0c3573b42ad2c1688ed",
+        "execution_strategy_id": "registry::biglotto_echo_aware_3bet",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 22.875582,
+        "strategy_id": "biglotto_echo_aware_3bet"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/3bd9cdcd93024e48c07f.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "0343883861f13859048fe8584ac595aeb257c3f152edbbb5615b22e507c22109",
+        "detail_stream_sha256": "52faa01ecb77abb9ffe82d6cbe8b354c0c35a7d25878870450a4e32a50b4eead",
+        "execution_strategy_id": "biglotto_p0_2bet",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 21.23591,
+        "strategy_id": "biglotto_p0_2bet"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/a1751b1d19971c6b9752.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "5ba8acef1a13d3e457bfabc653054dc8d03e79cc132eb56db91b02624d2ebf57",
+        "detail_stream_sha256": "6aa4971245abb46f8ada65496ebfa102a3b7f1b7ea44b8bb9dd1d338c756903c",
+        "execution_strategy_id": "registry::biglotto_triple_strike",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 22.027415,
+        "strategy_id": "biglotto_triple_strike"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/098f902587b4def75a5b.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "855765631db3ea95d0f87ce47beba02af2dd0546b0f2dd9773ee195bd1ca37aa",
+        "detail_stream_sha256": "20e78bd84bc3a21dcd00772ebc5932ee5a126d6d1aa19d70c40008bf79a1eb86",
+        "execution_strategy_id": "biglotto_ts3_acb_4bet",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 25.251622,
+        "strategy_id": "biglotto_ts3_acb_4bet"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/de7f2058ef37243f0a56.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "9492cdab7230a5debe2d5b0a78fb57a68b8c279947b6cb4639e07ec89aa535d3",
+        "detail_stream_sha256": "b772f80aa081a79364ae77f80413db53d71ff7d739b2f174fa6ca0a09b125cef",
+        "execution_strategy_id": "registry::biglotto_ts3_markov_4bet_w30",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 24.114648,
+        "strategy_id": "biglotto_ts3_markov_4bet_w30"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/9cfca5863d249c5fdab3.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "8a1e63c9e2977a78b7329c42947423bd79f052c13de4fb25e16352b3aedd74ac",
+        "detail_stream_sha256": "7ad7ecb08027692e05f0969559c8b6cfe150ff4539fd035f6dd07d04b33d180a",
+        "execution_strategy_id": "biglotto_ts3_markov_freq_5bet",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 29.887318,
+        "strategy_id": "biglotto_ts3_markov_freq_5bet"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/a777804e855ca79914b9.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "451a47dbdd190be5706d39fcd6dac4ff3443bd896d78f225b7d4b93502709b2c",
+        "detail_stream_sha256": "d705698c43507facb6fed220c5ae3718931b859608f911d98fea837385bf1e8e",
+        "execution_strategy_id": "cluster_pivot_biglotto",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 32.02054,
+        "strategy_id": "cluster_pivot_biglotto"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/a4f5f4745bf5f10558cf.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "2d4e81df3aea30853fc3a09bc246e9695b033da851f7ab32cdcfe8070b760dcb",
+        "detail_stream_sha256": "22aa9ee2052c1b1683e782e4efd38154988ced669f9952caa90d30c6aee26b8e",
+        "execution_strategy_id": "registry::cold_complement_biglotto",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 23.154501,
+        "strategy_id": "cold_complement_biglotto"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/5073d71e1baaeb846074.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "e8ae2959f3d02f37a655277f760f939f4b57b24d2405868295e3c98285231c3a",
+        "detail_stream_sha256": "e6bb6e3fab87745b70edebca1936d9b50871016e81c43c90440085776e4a1d40",
+        "execution_strategy_id": "registry::coldpool15_biglotto",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 21.413272,
+        "strategy_id": "coldpool15_biglotto"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/813705ffddb2660267ce.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "060e6a35775165c2e508f44a0d330166d43bae4c5a9820b814c1d48a97d3c991",
+        "detail_stream_sha256": "55260c578e6b9736999b4dbdcd897fc6238e2b1434a9203712b31cba87855990",
+        "execution_strategy_id": "registry::fourier30_markov30_biglotto",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 21.427391,
+        "strategy_id": "fourier30_markov30_biglotto"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/8098e1a2e34f5b4bc9e0.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "c77ec5a227444e00a071a1e4181317015358c3dfaa0536315e2d27f1d4f8add1",
+        "detail_stream_sha256": "f47dbc2da2cb2836d44bd273ae62632430af50cada40580ba1835f0f3f3f52e9",
+        "execution_strategy_id": "gap_dynamic_threshold_biglotto",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 22.727478,
+        "strategy_id": "gap_dynamic_threshold_biglotto"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/6dafc3c1d593e4a80230.csv.gz",
+        "detail_rows": 20250,
+        "detail_sha256": "84c971bdbb20367e51d1bb65d6c7abd23b091f1a8e24f05be418a935de4412a8",
+        "detail_stream_sha256": "50bfc483b60ce5d285a0850b6bdeee6076a88872da4fdf8f855b751a3bf012fc",
+        "execution_strategy_id": "history::lottery_api/models/core_satellite.py",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 8.405288,
+        "strategy_id": "history::lottery_api/models/core_satellite.py"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/68832387f42b2cd9563f.csv.gz",
+        "detail_rows": 20250,
+        "detail_sha256": "75f37fec372eb6e39e001060cbe1ec7ef2eee3f49cd30134939d4fcaf1687ff9",
+        "detail_stream_sha256": "76db784250530b05a66acdfe4a848b6f2cf69fae22a5e340121ed6047e249107",
+        "execution_strategy_id": "history::lottery_api/models/social_wisdom_predictor.py",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 131.771384,
+        "strategy_id": "history::lottery_api/models/social_wisdom_predictor.py"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/e53e2ab5b1b509c36def.csv.gz",
+        "detail_rows": 20250,
+        "detail_sha256": "68f086b4c300f3926a773a66da5485ea51b39c777eb077f052ac361df6d36fd5",
+        "detail_stream_sha256": "b899c9b4aac80a7d577e717370e4e908d7ddc46ec6078825ce0ad0bed9354146",
+        "execution_strategy_id": "history::lottery_api/models/zone_split.py",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 8.207933,
+        "strategy_id": "history::lottery_api/models/zone_split.py"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/f68f155b452ab1e28e23.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "f5e4e9659592218e797988ff0bbd9042707e3af65a50bdf7117ac3d8dc195f6b",
+        "detail_stream_sha256": "dd3cd12872edede50136cde401fa3f48393f2884aff6d1ab46947b94f0da39c4",
+        "execution_strategy_id": "hot_stop_rebound_biglotto",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 20.923638,
+        "strategy_id": "hot_stop_rebound_biglotto"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/8cc3689bb456da99f1a5.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "f4ae3ef54e478014697bb9dcfc0b4b26926a328c56142d8c353bd9817c7d5a49",
+        "detail_stream_sha256": "572e4bca09fd10770a3c255ce7ff57d21990e3263987658848d618e04e47da13",
+        "execution_strategy_id": "registry::markov_2bet_biglotto",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 18.77535,
+        "strategy_id": "markov_2bet_biglotto"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/f053aca3a8e5212b1c9d.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "15ef2d140420d0a4a03f8cb1beb2ee25569458914a159b9bb72f85412664e036",
+        "detail_stream_sha256": "549fdd5eced8748224632603c4a347e3c9c980b28967b38caba8747491fee444",
+        "execution_strategy_id": "markov_repeat_exception_biglotto",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 21.947737,
+        "strategy_id": "markov_repeat_exception_biglotto"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/92fb6bee810aa89a8901.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "5da4c0a9532c041230250891cede5bb62097f6d5e18fdbc2b9745264136625b3",
+        "detail_stream_sha256": "e42b614fbcab4ff78d480a22077ac041f9f0c7594231c4d025d0178f05550c5b",
+        "execution_strategy_id": "registry::markov_single_biglotto",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 18.35602,
+        "strategy_id": "markov_single_biglotto"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/37b1f26b9a8539ff1c0c.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "e80f8e8108e8cdca110ffc8909627830984348c97176adfd0e14095543194d98",
+        "detail_stream_sha256": "a791436d154d8b988d3791d6bf90444dca978da3aa5d2922478eee63e23ea5f0",
+        "execution_strategy_id": "neighbor_injection_biglotto",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 28.099546,
+        "strategy_id": "neighbor_injection_biglotto"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/75aaf9d769cdb447515c.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "20a138a83a4f53c6c84537c2e0915f6ddcc8fb8b636d72eaca04f2e862da20da",
+        "detail_stream_sha256": "55b5c69c5c47bfd070f2fdadfed77f840d0bbb078bee1bd7961d2f1a6a3be6af",
+        "execution_strategy_id": "predict_biglotto_echo_2bet",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 19.295731,
+        "strategy_id": "predict_biglotto_echo_2bet"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/64393537a297a9a69eec.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "9da60d63051fd7eddcddbdbc972bfe0f83b1b6756ccdebfe685f27b87431dd81",
+        "detail_stream_sha256": "9c44aad28d61af8f231936c8093314c89f283e755fb0eabd7e6f8f18011eddc1",
+        "execution_strategy_id": "predict_biglotto_echo_phase2",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 26.398324,
+        "strategy_id": "predict_biglotto_echo_phase2"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/323363a1d3f421bf72ae.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "0cf426d091c403c6c51327b28f8c34322a40e1ebd2a5fc232f2b0200622603be",
+        "detail_stream_sha256": "eff037f6f8fcac2eaf74b5e963fa1c921d8ee2d574836e9bb7d1a65c630d8bfc",
+        "execution_strategy_id": "predict_biglotto_mixed_3bet",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 17.470179,
+        "strategy_id": "predict_biglotto_mixed_3bet"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/f85baa564a2f7795ca53.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "61581deee3f8d483f4ae6d5a7ddd97371ec53abe15669ca01180528ae2f553fb",
+        "detail_stream_sha256": "dcc812d6ec43bfa6c870c407244f7239fb7a74ba863a14eddc041bf0ff3ac94e",
+        "execution_strategy_id": "predict_biglotto_regime",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 22.631092,
+        "strategy_id": "predict_biglotto_regime"
+      },
+      {
+        "detail_path": "/private/tmp/p20u_multi_ticket_count_ecc2752d362276028c96e22671128c0bda4d84ec/4842f22a91636458a415.csv.gz",
+        "detail_rows": 2025,
+        "detail_sha256": "8ba0b7ac2dab5b530bf465c5a96b3d39921cea9b315c24db281f85bdd5ca0162",
+        "detail_stream_sha256": "010178d4c55d9358813583fb1a7d6365244ae8ff40e6065793f5556293155230",
+        "execution_strategy_id": "registry::ts3_regime_3bet",
+        "run_status": "COMPLETE",
+        "runtime_seconds": 19.211174,
+        "strategy_id": "ts3_regime_3bet"
+      }
+    ],
+    "ticket_counts": [
+      10,
+      15,
+      20
+    ],
+    "ticket_evaluations": 6104700
+  },
+  "guards": {
+    "canonical_db_read": true,
+    "canonical_db_written": false,
+    "canonical_repo_touched": false,
+    "dependencies_installed": false,
+    "deployment_performed": false,
+    "live_external_services_called": false,
+    "predecessor_artifacts_modified": false
+  },
+  "metric_contract_version": "p20u-m4plus-marginal/v1",
+  "origin_main": "e74a23092047f5c7113ad972101512593d3381fe",
+  "outputs": {
+    "completed_30_strategy_universe.csv": "25b45f22e36088d1e66baa18bf4752e80f8e58393f467c79508d1185284e0729",
+    "final_report.md": "a854313ec9b5e82214814608c4c54f7655f287747e30b5dcfcdc6f96a88ac006",
+    "marginal_gain_10_to_15.csv": "4b58da7c0a8aee8a22eda3c77e8735ce361043b6c057c1cc72c47f4d39b198e1",
+    "marginal_gain_10_to_20.csv": "99b2367ab6d5a81197b43a5621cd72afe584cdf7a51db67dadab711b2e8ab6e2",
+    "marginal_gain_15_to_20.csv": "85d55ec27f32db5cba136b320332cfcc9b7ac77ce243c59d122da78cccc71891",
+    "marginal_gain_vs_random.csv": "54d219c9b09f559cafde1a0383dafecabf5b2e2d7729738f4e94dc9ef19dd14b",
+    "multiplicity_adjustment_results.csv": "7efb1429a63e8e041730a9b153b85765da7a3443540908de4247a8415c4b6d69",
+    "p20t_20_ticket_parity.csv": "c832539c94d7b8c7fd61fa1bd57339432a9e92024d1d6b7bfbb9f60cb7fb4e92",
+    "paired_strategy_vs_random.csv": "feca3aa919fe6f7915d6e2a02ce330cc135723826368cb566721625863b33b02",
+    "portfolio_nesting_validation.csv": "f88fb36921d136356526b424a584975454ba2a5b626644696c04d212a67212e8",
+    "random_ticket_count_metrics.csv": "7cdac2573b8104c22b42df4b4c7ffc824697137bfe8ff6b069c120966a498e58",
+    "ranking_10_ticket_m4plus.csv": "ce6598b3520f0c2c0b5e4abb0f832d0730c319b6d0ba6367374409a6035658da",
+    "ranking_15_ticket_m4plus.csv": "dbb8643c39ade03ca7ea21362cabb8f9586e01e40970ceb777ed3f6bbe0229e8",
+    "ranking_20_ticket_m4plus.csv": "1821ec5ef400dd8bc9b93ddb3302427337a4e3225fb4d196d3ccfb4d3c45275e",
+    "ranking_marginal_gain.csv": "2c711ec425adf1d1a5918621d972b8ff9ce93e732f8d19fd3f5a20067e398f22",
+    "ranking_same_count_random_uplift.csv": "515fdc4c6e71cb3a9160b65899db67236c12517e381d75c2de61244f91157945",
+    "strategy_ticket_count_metrics.csv": "feca3aa919fe6f7915d6e2a02ce330cc135723826368cb566721625863b33b02",
+    "ticket_count_configuration.json": "99fdce109fee3a1e1398849042507192440bb03e049629032512c7a367fd0354",
+    "ticket_efficiency_metrics.csv": "490dd843ce2ecd25eef357d3f19fc95501bd96f9f28ae9299d93564931762cf1",
+    "validation_results.json": "5f44c761ba24f0efb6b7c8f101eefd28f14787fcaf5954ae709a4bc082bfce52"
+  },
+  "parity": {
+    "all_pass": true,
+    "baseline_direct_details": {
+      "new_digest": "c126b977e3e57643a619a7dec83d95843bfd77b7a20eb89d7738be175118e398",
+      "rows": 20250,
+      "upstream_digest": "c126b977e3e57643a619a7dec83d95843bfd77b7a20eb89d7738be175118e398"
+    },
+    "direct_strategy_detail_comparisons": 12,
+    "effective_identity_set": true,
+    "metric_parity": true,
+    "portfolio_hash_parity": true,
+    "random_metric_parity": true,
+    "random_portfolio_hash_parity": true,
+    "ranking_parity": true,
+    "source_bound_p20s_reexecutions": 18,
+    "strategy_identity_set": true
+  },
+  "portfolio_contract": "nested_prefix_from_single_ordered_20",
+  "random_replicates": 10,
+  "results": {
+    "credible_advantages_adjusted": {
+      "10": 0,
+      "15": 0,
+      "20": 0
+    },
+    "credible_advantages_unadjusted": {
+      "10": 0,
+      "15": 0,
+      "20": 0
+    },
+    "overall_conclusion_changed": false
+  },
+  "runner_source_sha256": "794b145ad1a264d80c94c1278fe5afc6ad0456c1342b7f21782de8b66c8e0dae",
+  "runner_version": "p20u-v1-nested-multi-ticket-count",
+  "source_head": "ecc2752d362276028c96e22671128c0bda4d84ec",
+  "source_unchanged_after_reproduction": true,
+  "status": "COMPLETED",
+  "task": "P20U_MULTI_TICKET_COUNT_M4PLUS_ANALYSIS",
+  "ticket_counts": [
+    10,
+    15,
+    20
+  ],
+  "upstream_p20t_manifest_sha256": "12abef07b6223de3661aae6def9e40bbe56a2771a26824649e1aa255e273d46c",
+  "upstream_p20t_merge_commit": "e74a23092047f5c7113ad972101512593d3381fe",
+  "upstream_p20t_tree_digest": "16c410724503afa062e51137808d04c20bf8f096084a1ad51122a599c27016cf",
+  "validation_status": "PASS",
+  "verification": {
+    "aggregate_recomputation": true,
+    "artifact_hashes": "PASS",
+    "byte_reproduction": "PASS",
+    "canonical_branch_unchanged": true,
+    "canonical_head_unchanged": true,
+    "canonical_status_unchanged": true,
+    "database_sidecars_unchanged": true,
+    "database_unchanged": true,
+    "detail_recomputation": true,
+    "p20t_tree_unchanged": true,
+    "source_unchanged_after_reproduction": true,
+    "tests": {
+      "commands": [
+        "py_compile P20U runner and tests",
+        "ruff format --check P20U runner and tests",
+        "ruff check P20U runner and tests",
+        "pytest -q tests/test_p20u_multi_ticket_count_m4plus_analysis.py (51 passed)",
+        "pytest -q P20C/P20S/P20T/constructor regressions (107 passed)",
+        "real 3-draw 31-group nested smoke on ecc2752d with checkpoint replay and aggregate recomputation",
+        "actual frozen P20T 30-row ranking parity probe",
+        "full-precision P20T random-metric parity probe"
+      ],
+      "deselected": 0,
+      "failed": 0,
+      "passed": 158,
+      "skipped": 0
+    },
+    "unrelated_worktrees_unchanged": true
+  }
+}

@@ -247,14 +247,38 @@ class AutoLearningScheduler:
     def get_data(self, lottery_type: str) -> list:
         """
         🚀 快速獲取指定類型數據（O(1) 時間複雜度）
-        
+
+        For BIG_LOTTO, applies canonical filter before returning:
+          - Excludes ADD_ON_PRIZE_EXCLUDED: hyphenated draw IDs (add-on/special prize records;
+            valid lottery records but excluded from canonical 6/49 research/learning samples)
+          - Excludes DATE_FORMAT_ALIEN: 8-digit YYYYMMDD draw IDs
+          - Excludes SMALL_POOL_ALIEN: max(numbers) <= 25
+        Raw records remain accessible via get_all_draws() for display/history.
+
         Args:
             lottery_type: 彩券類型（如 'BIG_LOTTO'）
-        
+
         Returns:
-            該類型的所有數據，如果不存在則返回空列表
+            該類型的正規開獎數據（BIG_LOTTO 已排除加碼/特別獎記錄），如果不存在則返回空列表
         """
-        return self.data_by_type.get(lottery_type, [])
+        data = self.data_by_type.get(lottery_type, [])
+        if lottery_type == 'BIG_LOTTO':
+            canonical = []
+            for d in data:
+                draw_id = str(d.get('draw', ''))
+                # Exclude ADD_ON_PRIZE_EXCLUDED (hyphenated IDs)
+                if '-' in draw_id:
+                    continue
+                # Exclude DATE_FORMAT_ALIEN (8-digit YYYYMMDD)
+                if len(draw_id) == 8 and draw_id.startswith('20'):
+                    continue
+                # Exclude SMALL_POOL_ALIEN (max number <= 25)
+                numbers = d.get('numbers', [])
+                if numbers and max(numbers) <= 25:
+                    continue
+                canonical.append(d)
+            return canonical
+        return data
     
     def get_all_types(self) -> list:
         """

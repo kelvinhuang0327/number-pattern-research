@@ -1,0 +1,229 @@
+{
+  "strategy": "position_cold_rebound_topk",
+  "dry_run": true,
+  "generated": "20260527",
+  "results": {
+    "150": {
+      "10": {
+        "n_test": 3965,
+        "direct_hit_rate": 0.0,
+        "box_hit_rate": 0.050189,
+        "position_digit_accuracy": 0.037747,
+        "sum_band_accuracy": 0.954098,
+        "span_band_accuracy": 0.50971,
+        "monthly_stability_std": 0.0,
+        "n_months": 220,
+        "mc_null": {
+          "mc_mean": 0.009948,
+          "mc_std": 0.00156008,
+          "mc_p99": 0.013622,
+          "analytical_p": 0.01
+        },
+        "random_baseline": 0.01,
+        "edge_vs_random": -0.01
+      },
+      "20": {
+        "n_test": 3965,
+        "direct_hit_rate": 0.0,
+        "box_hit_rate": 0.098108,
+        "position_digit_accuracy": 0.096511,
+        "sum_band_accuracy": 1.0,
+        "span_band_accuracy": 0.829508,
+        "monthly_stability_std": 0.0,
+        "n_months": 220,
+        "mc_null": {
+          "mc_mean": 0.019982,
+          "mc_std": 0.00214766,
+          "mc_p99": 0.025475,
+          "analytical_p": 0.02
+        },
+        "random_baseline": 0.02,
+        "edge_vs_random": -0.02
+      },
+      "50": {
+        "n_test": 3965,
+        "direct_hit_rate": 0.0,
+        "box_hit_rate": 0.248424,
+        "position_digit_accuracy": 0.23884,
+        "sum_band_accuracy": 1.0,
+        "span_band_accuracy": 0.977301,
+        "monthly_stability_std": 0.0,
+        "n_months": 220,
+        "mc_null": {
+          "mc_mean": 0.04969,
+          "mc_std": 0.00346683,
+          "mc_p99": 0.057758,
+          "analytical_p": 0.05
+        },
+        "random_baseline": 0.05,
+        "edge_vs_random": -0.05
+      },
+      "100": {
+        "n_test": 3965,
+        "direct_hit_rate": 0.000252,
+        "box_hit_rate": 0.461034,
+        "position_digit_accuracy": 0.329634,
+        "sum_band_accuracy": 1.0,
+        "span_band_accuracy": 1.0,
+        "monthly_stability_std": 0.003957,
+        "n_months": 220,
+        "mc_null": {
+          "mc_mean": 0.09987,
+          "mc_std": 0.00473309,
+          "mc_p99": 0.111223,
+          "analytical_p": 0.1
+        },
+        "random_baseline": 0.1,
+        "edge_vs_random": -0.099748
+      }
+    },
+    "500": {
+      "10": {
+        "n_test": 3615,
+        "direct_hit_rate": 0.0,
+        "box_hit_rate": 0.044537,
+        "position_digit_accuracy": 0.036883,
+        "sum_band_accuracy": 1.0,
+        "span_band_accuracy": 0.49018,
+        "monthly_stability_std": 0.0,
+        "n_months": 198,
+        "mc_null": {
+          "mc_mean": 0.01002,
+          "mc_std": 0.0015527,
+          "mc_p99": 0.013555,
+          "analytical_p": 0.01
+        },
+        "random_baseline": 0.01,
+        "edge_vs_random": -0.01
+      },
+      "20": {
+        "n_test": 3615,
+        "direct_hit_rate": 0.0,
+        "box_hit_rate": 0.092393,
+        "position_digit_accuracy": 0.095805,
+        "sum_band_accuracy": 1.0,
+        "span_band_accuracy": 0.82047,
+        "monthly_stability_std": 0.0,
+        "n_months": 198,
+        "mc_null": {
+          "mc_mean": 0.019983,
+          "mc_std": 0.00232841,
+          "mc_p99": 0.025729,
+          "analytical_p": 0.02
+        },
+        "random_baseline": 0.02,
+        "edge_vs_random": -0.02
+      },
+      "50": {
+        "n_test": 3615,
+        "direct_hit_rate": 0.0,
+        "box_hit_rate": 0.24343,
+        "position_digit_accuracy": 0.239465,
+        "sum_band_accuracy": 1.0,
+        "span_band_accuracy": 0.977593,
+        "monthly_stability_std": 0.0,
+        "n_months": 198,
+        "mc_null": {
+          "mc_mean": 0.049589,
+          "mc_std": 0.00363362,
+          "mc_p99": 0.058091,
+          "analytical_p": 0.05
+        },
+        "random_baseline": 0.05,
+        "edge_vs_random": -0.05
+      },
+      "100": {
+        "n_test": 3615,
+        "direct_hit_rate": 0.000277,
+        "box_hit_rate": 0.450346,
+        "position_digit_accuracy": 0.327893,
+        "sum_band_accuracy": 1.0,
+        "span_band_accuracy": 1.0,
+        "monthly_stability_std": 0.00417,
+        "n_months": 198,
+        "mc_null": {
+          "mc_mean": 0.099771,
+          "mc_std": 0.00499552,
+          "mc_p99": 0.111757,
+          "analytical_p": 0.1
+        },
+        "random_baseline": 0.1,
+        "edge_vs_random": -0.099723
+      }
+    },
+    "1500": {
+      "10": {
+        "n_test": 2615,
+        "direct_hit_rate": 0.0,
+        "box_hit_rate": 0.043595,
+        "position_digit_accuracy": 0.036711,
+        "sum_band_accuracy": 1.0,
+        "span_band_accuracy": 0.477629,
+        "monthly_stability_std": 0.0,
+        "n_months": 141,
+        "mc_null": {
+          "mc_mean": 0.009956,
+          "mc_std": 0.00186429,
+          "mc_p99": 0.014149,
+          "analytical_p": 0.01
+        },
+        "random_baseline": 0.01,
+        "edge_vs_random": -0.01
+      },
+      "20": {
+        "n_test": 2615,
+        "direct_hit_rate": 0.0,
+        "box_hit_rate": 0.092543,
+        "position_digit_accuracy": 0.097769,
+        "sum_band_accuracy": 1.0,
+        "span_band_accuracy": 0.809178,
+        "monthly_stability_std": 0.0,
+        "n_months": 141,
+        "mc_null": {
+          "mc_mean": 0.019856,
+          "mc_std": 0.00274436,
+          "mc_p99": 0.02639,
+          "analytical_p": 0.02
+        },
+        "random_baseline": 0.02,
+        "edge_vs_random": -0.02
+      },
+      "50": {
+        "n_test": 2615,
+        "direct_hit_rate": 0.0,
+        "box_hit_rate": 0.242447,
+        "position_digit_accuracy": 0.242065,
+        "sum_band_accuracy": 1.0,
+        "span_band_accuracy": 0.978585,
+        "monthly_stability_std": 0.0,
+        "n_months": 141,
+        "mc_null": {
+          "mc_mean": 0.049617,
+          "mc_std": 0.00414565,
+          "mc_p99": 0.059656,
+          "analytical_p": 0.05
+        },
+        "random_baseline": 0.05,
+        "edge_vs_random": -0.05
+      },
+      "100": {
+        "n_test": 2615,
+        "direct_hit_rate": 0.000382,
+        "box_hit_rate": 0.442065,
+        "position_digit_accuracy": 0.32747,
+        "sum_band_accuracy": 1.0,
+        "span_band_accuracy": 1.0,
+        "monthly_stability_std": 0.004936,
+        "n_months": 141,
+        "mc_null": {
+          "mc_mean": 0.099634,
+          "mc_std": 0.00583712,
+          "mc_p99": 0.113576,
+          "analytical_p": 0.1
+        },
+        "random_baseline": 0.1,
+        "edge_vs_random": -0.099618
+      }
+    }
+  }
+}

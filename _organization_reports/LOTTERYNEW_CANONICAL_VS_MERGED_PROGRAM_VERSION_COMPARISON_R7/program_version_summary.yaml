@@ -1,0 +1,41 @@
+task: LOTTERYNEW_CANONICAL_VS_MERGED_PROGRAM_VERSION_COMPARISON_R7
+program_verdict: BIDIRECTIONAL_DIVERGENCE
+canonical_to_merged:
+  missing_in_merged: 8
+  newer_in_canonical_reviewed: 13
+  semantic_conflict_paths: 2
+merged_to_canonical:
+  verified_unpublished_feature_paths: 10
+  merged_only_verified: 8
+  merged_only_unverified: 1179
+  unverified_extra_paths: 1179
+  dirty_collisions: 1
+functional_coverage:
+  confirmed_equivalent: 1963
+  confirmed_canonical_ahead: 13
+  confirmed_merged_ahead: 8
+  unresolved: 1317
+semantic_review:
+  reviewed: 30
+  semantic_equivalent: 0
+  canonical_ahead: 13
+  merged_ahead_verified: 8
+  merged_ahead_unverified: 5
+  bidirectional_divergence: 2
+  contract_conflict: 2
+  insufficient_evidence: 0
+  unreviewed_nonidentical: 1308
+release_readiness:
+  safe_to_replace_merged_with_canonical: false
+  safe_to_replace_canonical_with_merged: false
+  direct_merge_safe: false
+  reason: >-
+    Canonical is 602 commits ahead and has canonical-only safety and adapter work,
+    while merged contains verified unpublished verticals plus two incompatible
+    contract surfaces and extensive unattributed untracked content.
+byte_level:
+  total_paths: 3301
+  identical: 1963
+  canonical_only: 8
+  merged_only: 1187
+  content_different: 143

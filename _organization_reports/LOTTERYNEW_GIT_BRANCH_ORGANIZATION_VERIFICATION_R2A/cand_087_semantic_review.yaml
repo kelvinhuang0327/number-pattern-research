@@ -1,0 +1,57 @@
+{
+  "candidate_id": "cand_087_p273a_prize_aware_inferential_validation",
+  "claimed_title": "Prize-Aware Inferential Validation Vertical (P273A)",
+  "actual_functional_name": "Predraw Strategy Freeze & Ledger Capture Vertical",
+  "branch_name_derived_title_accurate": false,
+  "has_prize_aware_inferential_validation_logic": false,
+  "public_entrypoints": {
+    "cli_commands": [
+      "python3 tools/predraw_capture_runner.py",
+      "python3 tools/predraw_ledger_verify.py",
+      "python3 tools/quick_predict.py --opt-in-predraw-ledger"
+    ],
+    "api_routes": [
+      "lottery_api/routes/replay.py"
+    ],
+    "scheduled_runners": [
+      "tools/predraw_capture_runner.py"
+    ]
+  },
+  "consumer_chain": {
+    "consumer_paths": [
+      "tools/quick_predict.py",
+      "tools/predraw_capture_runner.py",
+      "tools/predraw_ledger_verify.py",
+      "lottery_api/routes/replay.py"
+    ],
+    "config_dependencies": [
+      "lottery_api/data/predraw_schedule_config.json",
+      "lottery_api/data/predraw_strategy_freeze_registry.json"
+    ]
+  },
+  "side_effects": {
+    "filesystem_write": true,
+    "database_read": true,
+    "database_write": false,
+    "network_access": false,
+    "runtime_output_roots": [
+      "outputs/predraw_ledger/",
+      "outputs/research/"
+    ],
+    "configuration_dependency": true
+  },
+  "scope_assessment": {
+    "sub_verticals_identified": [
+      "Predraw Ledger Engine (lottery_api/engine/predraw_ledger.py, tools/predraw_capture_runner.py, tools/predraw_ledger_verify.py)",
+      "Quick Predict Ledger Integration (tools/quick_predict.py predraw functions)",
+      "Replay Route Query Normalization (lottery_api/routes/replay.py, test_p354a/p355a/p261a)"
+    ],
+    "contains_multiple_verticals": true,
+    "recommendation": "CANDIDATE_MUST_BE_SPLIT"
+  },
+  "risk_reassessment": {
+    "r2_claimed_risk": "LOW",
+    "verified_risk": "MEDIUM",
+    "reason": "Bundles 3 separable sub-verticals across engine, quick_predict CLI, and replay routes. Low DB risk (0 DB writes), but medium scope complexity."
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "gate": "VERIFICATION_GATE_2_MATERIALIZATION_DRIFT",
+  "r1_claims": {
+    "materialized_exact_heads": 85,
+    "materialized_equivalent_trees": 0,
+    "total_materialized": 85
+  },
+  "r2_claims": {
+    "materialized_total_records": 87,
+    "claimed_exact_heads": 85,
+    "claimed_equivalent_trees": 2
+  },
+  "verified_actuals": {
+    "correct_exact_head_unique_refs": 85,
+    "correct_exact_head_total_repo_records": 87,
+    "correct_equivalent_tree_count": 0,
+    "claimed_equivalent_tree_refs": []
+  },
+  "classification": "R2_CLASSIFICATION_ERROR",
+  "r1_difference_reason": "R1 counted distinct ref_names (85 exact heads, 0 equivalent trees).",
+  "r2_difference_reason": "R2 counted total local ref inventory records across 3 repositories (87 records for materialized refs due to repo duplication of refs/heads/main, refs/remotes/origin/HEAD, and refs/remotes/origin/main) and mistakenly mislabeled the 87 - 85 = 2 delta as '2 equivalent trees' in summary text, when in fact 0 equivalent tree refs exist."
+}

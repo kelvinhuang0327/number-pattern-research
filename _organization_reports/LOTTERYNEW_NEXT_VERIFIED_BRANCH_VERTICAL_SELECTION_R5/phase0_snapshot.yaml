@@ -1,0 +1,21 @@
+task: LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R5
+task_class: PLANNING_ONLY
+repository: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+expected_branch: task/p273a-prize-aware-inferential-validation
+observed_branch: task/p273a-prize-aware-inferential-validation
+expected_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+observed_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+observed_toplevel: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+identity_gate: PASS
+resource_mode:
+  language_server_used: false
+  workspace_indexing_used: false
+  background_commands_used: false
+  parallel_commands_used: false
+  global_git_status_used: false
+  full_workspace_scan_used: false
+  candidate_commands_executed: false
+  database_accessed: false
+  path_scoped_checks: true
+allowed_write_root: _organization_reports/LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R5
+

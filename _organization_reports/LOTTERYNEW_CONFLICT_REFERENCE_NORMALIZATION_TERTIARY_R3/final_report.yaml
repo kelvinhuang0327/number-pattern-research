@@ -1,0 +1,104 @@
+task: LOTTERYNEW_CONFLICT_REFERENCE_NORMALIZATION_TERTIARY_R3
+status: COMPLETED
+workspace:
+  root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  branch: task/p273a-prize-aware-inferential-validation
+  head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  dirty_before: true
+  dirty_after: true
+scope:
+  included_roots:
+    - scripts
+    - analysis
+    - src
+    - ai_lab
+  roots_present:
+    - scripts
+    - analysis
+    - src
+    - ai_lab
+  roots_absent:
+
+  root_level_files_included: true
+results:
+  scoped_conflict_files_found: 1755
+  moved_to_reference: 1755
+  orphaned_conflicts: 0
+  exact_duplicate_files: 1722
+  unique_conflict_contents: 147
+  symlinks_skipped: 0
+  collisions_resolved: 0
+  failures: 0
+by_root:
+  scripts: 982
+  analysis: 418
+  src: 197
+  ai_lab: 42
+  _root_files: 116
+integrity:
+  moved_hash_verification: PASS
+  ordinary_file_hash_verification: PASS
+  previous_r1_reference_unchanged: PASS
+  previous_r2_reference_unchanged: PASS
+  overwritten_files: 0
+  ordinary_files_removed: 0
+  content_loss_count: 0
+  partial_files_remaining: 0
+reference:
+  root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged/_conflict_reference/LOTTERY_TERTIARY_R3
+  index: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged/_conflict_reference/LOTTERY_TERTIARY_R3/index.jsonl
+  clusters: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged/_conflict_reference/LOTTERY_TERTIARY_R3/clusters.json
+  orphaned_index: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged/_conflict_reference/LOTTERY_TERTIARY_R3/orphaned.jsonl
+  duplicates_index: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged/_conflict_reference/LOTTERY_TERTIARY_R3/duplicates.jsonl
+remaining:
+  total_conflict_files: 38
+  highest_conflict_roots:
+    telegram_bot: 4
+    rejected: 2
+    .claude: 3
+    models: 4
+    examples: 4
+    .github: 9
+    report: 4
+    .ai: 8
+  recommended_next_roots:
+    - LOTTERYNEW_CONFLICT_REFERENCE_NORMALIZATION_FINAL_SWEEP_R4
+safety:
+  ordinary_content_modified: false
+  conflict_content_modified: false
+  scope_outside_paths_modified: false
+  previous_reference_roots_modified: false
+  registry_modified: false
+  strategy_identity_modified: false
+  database_accessed: false
+  secret_accessed: false
+  dependency_installed: false
+  commit_created: false
+  push_run: false
+  pr_created: false
+verification:
+  index_cross_check: PASS
+  scoped_conflict_paths_remaining: 0
+  root_level_conflict_paths_remaining: 0
+  remaining_count_cross_check: PASS
+  diff_check: PASS
+  unit_tests: NOT_RUN
+  application_boot: NOT_RUN
+claim_boundary:
+  scoped_conflict_files_organized_as_reference: true
+  semantic_conflicts_resolved: false
+  canonical_versions_verified: false
+  functional_merge_completed: false
+  production_ready_claimed: false
+not_run:
+  - unit_tests
+  - integration_tests
+  - lint
+  - typecheck
+  - application_boot
+  - database_validation
+blocked:
+
+remaining_risks:
+
+next_recommended_scope: LOTTERYNEW_CONFLICT_REFERENCE_NORMALIZATION_FINAL_SWEEP_R4

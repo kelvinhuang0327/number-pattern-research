@@ -1,0 +1,10 @@
+{
+  "same_path_same_content": 54940,
+  "same_path_different_content": 1406,
+  "target_path_missing": 12493,
+  "target_path_is_directory": 0,
+  "skipped_sensitive": 24,
+  "skipped_large": 491,
+  "deleted_in_ref": 273,
+  "renamed_paths": 0
+}

@@ -1,0 +1,45 @@
+task: LOTTERYNEW_CURRENT_STATE_CONFIRMATION_AND_NEXT_STEP_R9
+task_class: READ_ONLY_COMPLETION_REVIEW
+worker_route: STANDARD_JUDGED
+judge_mode: FRESH_CONTEXT
+judge_depth: BOUNDED
+
+repository:
+  expected_root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  observed_root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  expected_branch: task/p273a-prize-aware-inferential-validation
+  observed_branch: task/p273a-prize-aware-inferential-validation
+  expected_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  observed_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  identity_result: PASS
+  stop_token_triggered: false
+
+phase0_commands:
+  - git -C /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged rev-parse --show-toplevel
+  - git -C /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged rev-parse HEAD
+  - git -C /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged branch --show-current
+
+bounded_roots:
+  r6: _organization_reports/LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R6
+  r7: _organization_reports/LOTTERYNEW_CANONICAL_VS_MERGED_PROGRAM_VERSION_COMPARISON_R7
+  r8: _organization_reports/P541F_STRATEGY_ID_AND_LIFECYCLE_OWNER_DECISION_R8
+  r9_write_root: _organization_reports/LOTTERYNEW_CURRENT_STATE_CONFIRMATION_AND_NEXT_STEP_R9
+
+resource_mode:
+  language_server_used: false
+  workspace_indexing_used: false
+  background_commands_used: false
+  parallel_commands_used: false
+  global_git_status_used: false
+  full_workspace_scan_used: false
+  full_repository_test_used: false
+  full_repository_typecheck_used: false
+  network_used: false
+  fetch_used: false
+
+safety:
+  ordinary_source_modified: false
+  tests_modified: false
+  registry_modified: false
+  database_accessed: false
+  git_refs_modified: false

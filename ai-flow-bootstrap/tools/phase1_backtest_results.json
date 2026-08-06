@@ -1,0 +1,274 @@
+{
+  "old_system": {
+    "system": "舊系統 (硬懲罰300)",
+    "test_periods": 50,
+    "total_tests": 50,
+    "total_wins": 4,
+    "win_rate": 8.0,
+    "match_distribution": {
+      "1": 22,
+      "2": 24,
+      "3": 3,
+      "4": 1
+    },
+    "consecutive_stats": {
+      "total_with_consecutive": 31,
+      "covered_count": 31,
+      "coverage_rate": 100.0
+    },
+    "consecutive_details": [
+      {
+        "draw": "115000005",
+        "target_consecutive": 2,
+        "predicted_consecutive": 4,
+        "covered": true
+      },
+      {
+        "draw": "115000004",
+        "target_consecutive": 2,
+        "predicted_consecutive": 4,
+        "covered": true
+      },
+      {
+        "draw": "115000003",
+        "target_consecutive": 2,
+        "predicted_consecutive": 4,
+        "covered": true
+      },
+      {
+        "draw": "115000002",
+        "target_consecutive": 2,
+        "predicted_consecutive": 4,
+        "covered": true
+      },
+      {
+        "draw": "114000115",
+        "target_consecutive": 2,
+        "predicted_consecutive": 5,
+        "covered": true
+      },
+      {
+        "draw": "114000114",
+        "target_consecutive": 2,
+        "predicted_consecutive": 6,
+        "covered": true
+      },
+      {
+        "draw": "114000111",
+        "target_consecutive": 2,
+        "predicted_consecutive": 4,
+        "covered": true
+      },
+      {
+        "draw": "114000108",
+        "target_consecutive": 2,
+        "predicted_consecutive": 7,
+        "covered": true
+      },
+      {
+        "draw": "114000107",
+        "target_consecutive": 2,
+        "predicted_consecutive": 4,
+        "covered": true
+      },
+      {
+        "draw": "114000106",
+        "target_consecutive": 3,
+        "predicted_consecutive": 6,
+        "covered": true
+      },
+      {
+        "draw": "114000105",
+        "target_consecutive": 2,
+        "predicted_consecutive": 4,
+        "covered": true
+      },
+      {
+        "draw": "114000103",
+        "target_consecutive": 2,
+        "predicted_consecutive": 8,
+        "covered": true
+      },
+      {
+        "draw": "114000102",
+        "target_consecutive": 2,
+        "predicted_consecutive": 4,
+        "covered": true
+      },
+      {
+        "draw": "114000101",
+        "target_consecutive": 2,
+        "predicted_consecutive": 4,
+        "covered": true
+      },
+      {
+        "draw": "114000100",
+        "target_consecutive": 2,
+        "predicted_consecutive": 4,
+        "covered": true
+      },
+      {
+        "draw": "114000099",
+        "target_consecutive": 2,
+        "predicted_consecutive": 7,
+        "covered": true
+      },
+      {
+        "draw": "114000097",
+        "target_consecutive": 2,
+        "predicted_consecutive": 5,
+        "covered": true
+      },
+      {
+        "draw": "114000094",
+        "target_consecutive": 2,
+        "predicted_consecutive": 5,
+        "covered": true
+      },
+      {
+        "draw": "114000093",
+        "target_consecutive": 2,
+        "predicted_consecutive": 4,
+        "covered": true
+      },
+      {
+        "draw": "114000092",
+        "target_consecutive": 2,
+        "predicted_consecutive": 6,
+        "covered": true
+      },
+      {
+        "draw": "114000091",
+        "target_consecutive": 2,
+        "predicted_consecutive": 6,
+        "covered": true
+      },
+      {
+        "draw": "114000088",
+        "target_consecutive": 2,
+        "predicted_consecutive": 4,
+        "covered": true
+      },
+      {
+        "draw": "114000087",
+        "target_consecutive": 3,
+        "predicted_consecutive": 4,
+        "covered": true
+      },
+      {
+        "draw": "114000086",
+        "target_consecutive": 2,
+        "predicted_consecutive": 4,
+        "covered": true
+      },
+      {
+        "draw": "114000085",
+        "target_consecutive": 2,
+        "predicted_consecutive": 4,
+        "covered": true
+      },
+      {
+        "draw": "114000084",
+        "target_consecutive": 2,
+        "predicted_consecutive": 4,
+        "covered": true
+      },
+      {
+        "draw": "114000083",
+        "target_consecutive": 2,
+        "predicted_consecutive": 4,
+        "covered": true
+      },
+      {
+        "draw": "114000078",
+        "target_consecutive": 2,
+        "predicted_consecutive": 4,
+        "covered": true
+      },
+      {
+        "draw": "114000077",
+        "target_consecutive": 2,
+        "predicted_consecutive": 6,
+        "covered": true
+      },
+      {
+        "draw": "114000076",
+        "target_consecutive": 2,
+        "predicted_consecutive": 5,
+        "covered": true
+      },
+      {
+        "draw": "114000075",
+        "target_consecutive": 2,
+        "predicted_consecutive": 7,
+        "covered": true
+      }
+    ],
+    "results": [
+      {
+        "draw": "115000005",
+        "date": "2026/01/16",
+        "target": [
+          9,
+          10,
+          21,
+          22,
+          25,
+          36
+        ],
+        "total_covered": 26,
+        "best_match": 1,
+        "best_bet": [
+          2,
+          5,
+          18,
+          21,
+          40,
+          42
+        ],
+        "win": false,
+        "has_consecutive": true,
+        "max_consecutive": 2
+      },
+      {
+        "draw": "115000004",
+        "date": "2026/01/13",
+        "target": [
+          2,
+          10,
+          18,
+          19,
+          39,
+          49
+        ],
+        "total_covered": 25,
+        "best_match": 2,
+        "best_bet": [
+          2,
+          5,
+          18,
+          21,
+          40,
+          42
+        ],
+        "win": false,
+        "has_consecutive": true,
+        "max_consecutive": 2
+      },
+      {
+        "draw": "115000003",
+        "date": "2026/01/09",
+        "target": [
+          1,
+          7,
+          13,
+          14,
+          34,
+          45
+        ],
+        "total_covered": 26,
+        "best_match": 2,
+        "best_bet": [
+          1,
+          13,
+          

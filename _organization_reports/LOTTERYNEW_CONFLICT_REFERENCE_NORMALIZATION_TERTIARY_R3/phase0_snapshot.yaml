@@ -1,0 +1,14 @@
+task: LOTTERYNEW_CONFLICT_REFERENCE_NORMALIZATION_TERTIARY_R3
+live_state:
+  top_level: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  branch: task/p273a-prize-aware-inferential-validation
+previous_references:
+  r1_index: a95b701a61f06cd40ef85468ada0b22b496e3c5e08c0d7776e386f1a63f6e9c2
+  r2_index: ad63f428cae9a9df16561e1d182b070f831073844d220a778e28f1da942b39ae
+  r1_report: ed006ac597f29a5d537f4c499b4a1200ae512cb1397af56ddb6633bb32aa6386
+  r2_report: f58ed98294d7dcf610c073cf28d1185de1fb079675943fea0ad6db4504351921
+snapshots:
+  snapshot_1_count: 1755
+  snapshot_2_count: 1755
+  snapshots_identical: true

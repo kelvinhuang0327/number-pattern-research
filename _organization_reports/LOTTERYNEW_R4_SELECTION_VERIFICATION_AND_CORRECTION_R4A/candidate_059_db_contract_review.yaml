@@ -1,0 +1,37 @@
+candidate_id: cand_059_feat/p0_schema_stabilization_20260518
+source_ref: refs/heads/feat/p0-schema-stabilization-20260518
+
+database_contract:
+  database_paths:
+    - lottery_api/data/lottery_v2.db
+  connection_modes:
+    p0_per_draw_coverage_matrix.py: read-only queries
+    apply_p0_schema_migration.py: read-write connection with --apply flag
+    test_p0_schema_migration_idempotent.py: temporary copy for write test, live DB for read test
+  read_queries:
+    - PRAGMA table_info(strategy_prediction_replays)
+    - SELECT name FROM sqlite_master WHERE type='index'
+    - SELECT draw, date FROM draws WHERE lottery_type = ? ORDER BY CAST(draw AS INTEGER) DESC LIMIT ?
+    - SELECT strategy_id, COUNT(*) as row_count, GROUP_CONCAT(DISTINCT truth_level) as truth_levels, MIN(generated_at) as first_generated FROM strategy_prediction_replays WHERE lottery_type = ? AND target_draw = ? GROUP BY strategy_id
+  write_queries:
+    - conn.commit()
+    - conn.rollback()
+  ddl_queries:
+    - ALTER TABLE strategy_prediction_replays ADD COLUMN truth_level TEXT
+    - ALTER TABLE strategy_prediction_replays ADD COLUMN source TEXT
+    - ALTER TABLE strategy_prediction_replays ADD COLUMN provenance_hash TEXT
+    - ALTER TABLE strategy_prediction_replays ADD COLUMN provenance_source TEXT
+    - ALTER TABLE strategy_prediction_replays ADD COLUMN controlled_apply_id TEXT
+    - ALTER TABLE strategy_prediction_replays ADD COLUMN dry_run_only INTEGER DEFAULT 0
+    - CREATE INDEX IF NOT EXISTS idx_spr_truth_level ON strategy_prediction_replays(truth_level)
+    - CREATE INDEX IF NOT EXISTS idx_spr_controlled_apply ON strategy_prediction_replays(controlled_apply_id)
+    - CREATE INDEX IF NOT EXISTS idx_spr_dry_run ON strategy_prediction_replays(dry_run_only)
+  transaction_behavior: DDL executed with explicit conn.commit() and conn.rollback() handling on exceptions.
+  temporary_fixture_db_usage: YES (shutil.copy2 in test_p0_schema_migration_idempotent.py)
+  production_db_usage: YES (scripts/apply_p0_schema_migration.py targets lottery_api/data/lottery_v2.db when --apply is passed)
+  schema_mutation: true
+  idempotency_test_behavior: Uses temporary copy for double-apply write testing; live DB check is read-only PRAGMA inspection.
+
+classification: PRODUCTION_DB_WRITE_OR_MIGRATION
+final_disposition: OWNER_DECISION_REQUIRED
+standalone_owner_authorization_required: true

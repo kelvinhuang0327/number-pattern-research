@@ -1,0 +1,12 @@
+candidate_id: cand_059a_canonical_strategy_universe_inventory
+
+entrypoint_review:
+  standalone_cli: scripts/p0_per_draw_coverage_matrix.py
+  importable_module: scripts.p0_per_draw_coverage_matrix
+  required_cli_arguments: []
+  default_db_path: lottery_api/data/lottery_v2.db
+  output_path_argument: --json-out
+  runtime_consumer: null
+  downstream_consumer: Governance audit report & replay strategy research
+  core_product_function: false
+  audit_or_research_tool_only: true

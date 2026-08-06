@@ -1,0 +1,55 @@
+task: LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R6
+reviewed_task: P2_CONTROLLED_REPLAY_BACKFILL_DRYRUN_MIGRATION_R5
+review_result: PASS
+
+authority:
+  final_report: _integration_reports/P2_CONTROLLED_REPLAY_BACKFILL_DRYRUN_MIGRATION_R5/final_report.yaml
+  judge_report: _integration_reports/P2_CONTROLLED_REPLAY_BACKFILL_DRYRUN_MIGRATION_R5/judge_report.md
+  runtime_write_ledger: _integration_reports/P2_CONTROLLED_REPLAY_BACKFILL_DRYRUN_MIGRATION_R5/runtime_write_ledger.json
+
+completion:
+  task: P2_CONTROLLED_REPLAY_BACKFILL_DRYRUN_MIGRATION_R5
+  status: COMPLETED_VERTICAL_ONLY
+  current_tree_technical_verdict: VERIFIED
+  task_boundary_compliance_verdict: VERIFIED
+  current_task_execution_provenance: VERIFIED
+  final_judge_verdict: VERIFIED
+  accepted: true
+
+verification:
+  focused_tests:
+    passed: 12
+    evidence: "final Worker run 12 passed in 12.10s"
+  delta_regression:
+    passed: 3
+    evidence: "DELTA Judge regression slice 3 passed in 1.16s"
+  implementation_sha256:
+    expected: cbdca8b3382ff67bb2c4e1b236e34cb0bc54761789fad8687414397d8b04cd52
+    observed: cbdca8b3382ff67bb2c4e1b236e34cb0bc54761789fad8687414397d8b04cd52
+  test_sha256:
+    expected: 9551b9e4e625fa54aab5aa07a8a41492053da1abfbe07fc001cff77b3926406f
+    observed: 9551b9e4e625fa54aab5aa07a8a41492053da1abfbe07fc001cff77b3926406f
+
+judge_continuity:
+  initial_judge_verdict: REFUTED
+  initial_finding: invalid CSV output path must not leave partial JSON output
+  post_initial_judge_source_or_test_edit: true
+  initial_judge_evidence_valid_for_final_tree: false
+  bounded_remediation: PASS
+  delta_rejudge_verdict: VERIFIED
+  post_delta_judge_source_or_test_edit: false
+  delta_judge_evidence_valid_for_final_tree: true
+  final_tree_judge_continuity: PASS
+
+safety:
+  production_db_accessed: false
+  production_db_modified: false
+  schema_migration_performed: false
+  formal_backfill_executed: false
+  git_refs_mutated: false
+
+gate_results:
+  r5_completion_evidence_verified: PASS
+  r5_initial_judge_finding_closed: PASS
+  r5_delta_judge_verified: PASS
+

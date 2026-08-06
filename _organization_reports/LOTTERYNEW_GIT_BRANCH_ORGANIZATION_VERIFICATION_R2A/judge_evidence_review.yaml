@@ -1,0 +1,18 @@
+{
+  "gate": "VERIFICATION_GATE_5_FRESH_JUDGE_EVIDENCE",
+  "r2_claim": "JUDGE_MODE: FRESH_CONTEXT",
+  "r2_evidence_found": {
+    "judge_report_md_exists": false,
+    "judge_manifest_hashes_recorded": false,
+    "judge_verdict_file_exists": false,
+    "remediation_record_exists": false,
+    "delta_rejudge_record_exists": false
+  },
+  "classification": "JUDGE_DECLARED_BUT_NOT_EXECUTED",
+  "r2a_judge_execution": {
+    "judge_mode": "FRESH_CONTEXT",
+    "judge_depth": "BOUNDED",
+    "judge_verdict": "PASS_WITH_CAVEATS",
+    "judge_report_path": "_organization_reports/LOTTERYNEW_GIT_BRANCH_ORGANIZATION_VERIFICATION_R2A/judge_report.md"
+  }
+}

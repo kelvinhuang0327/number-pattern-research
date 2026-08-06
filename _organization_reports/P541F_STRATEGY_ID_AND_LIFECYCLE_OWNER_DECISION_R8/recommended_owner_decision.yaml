@@ -1,0 +1,52 @@
+task: P541F_STRATEGY_ID_AND_LIFECYCLE_OWNER_DECISION_R8
+recommendation_is_owner_authorization: false
+recommended_option: P541F_OPTION_A_ADOPT_CANONICAL_FOUR
+recommended_response_token: AUTHORIZE_P541F_OPTION_A_ADOPT_CANONICAL_FOUR_R1
+recommended_authoritative_ids:
+  - biglotto_social_wisdom_anti_popularity
+  - biglotto_zone_split_3bet_bet1
+  - biglotto_zone_split_3bet_bet2
+  - biglotto_zone_split_3bet_bet3
+recommended_lifecycle_by_id:
+  biglotto_social_wisdom_anti_popularity: ONLINE
+  biglotto_zone_split_3bet_bet1: ONLINE
+  biglotto_zone_split_3bet_bet2: ONLINE
+  biglotto_zone_split_3bet_bet3: ONLINE
+recommended_stub_test_disposition:
+  tests/test_p541d_r2_biglotto_selected_adapters.py:
+    action: REWRITE_OR_SUPERSEDE
+    reason: >-
+      It validates a duplicate two-adapter OBSERVATION proposal, references a
+      missing design fixture, and pins a registry state that is not live.
+      Preserve unique behavior vectors only after retargeting them to the
+      canonical target-native implementation.
+  tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py:
+    action: REWRITE
+    reason: >-
+      Replace the two metadata-only OBSERVATION-stub expectations with the four
+      canonical target-native ONLINE executable identities and exact registry
+      membership.
+canonical_source_commit: 3b32beb4543de9169dbfb2469b0577f8cc8a6f58
+canonical_source_tree: 077c39c7fd9dc82c19907815535f45efeee750e9
+canonical_remote_freshness: UNVERIFIED_NO_FETCH
+implementation_scope:
+  - migrate or reconstruct lottery_api/models/biglotto_social_wisdom_adapter.py
+  - migrate or reconstruct lottery_api/models/biglotto_zone_split_adapter.py
+  - reconcile lottery_api/models/replay_strategy_registry.py
+  - add canonical zone fixture and focused target-native tests
+  - rewrite or supersede the two untracked merged tests without duplicate public identities
+implementation_authorized: false
+registry_mutation_authorized: false
+test_mutation_authorized: false
+reason:
+  - The pinned canonical tree has four registry-present, implementation-present, adapter-resolvable, focused-tested ONLINE strategies.
+  - The merged live registry has zero P541F records; its two-ID contract exists only in untracked source/tests.
+  - The two merged IDs are exact identities of canonical IDs, so parallel OBSERVATION records would create lifecycle authority conflicts rather than new products.
+  - Canonical preserves the full three-ticket zone family without inventing aliases or aggregate IDs.
+  - Metadata-only or untracked proposals should not override complete executable public contracts.
+residual_risks:
+  - Canonical remote freshness is UNVERIFIED_NO_FETCH.
+  - No tests or strategy execution were authorized in this review.
+  - R7 semantic review was bounded; 1308 nonidentical paths remain outside it.
+  - The later implementation task must preserve unrelated merged functionality and may not replace either tree wholesale.
+  - The untracked P541D design fixture is absent, so its historical product rationale cannot be independently reproduced here.

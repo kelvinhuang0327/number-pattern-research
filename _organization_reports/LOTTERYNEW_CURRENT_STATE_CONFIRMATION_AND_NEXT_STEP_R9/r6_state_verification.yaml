@@ -1,0 +1,69 @@
+task: LOTTERYNEW_CURRENT_STATE_CONFIRMATION_AND_NEXT_STEP_R9
+source_root: _organization_reports/LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R6
+
+r6:
+  accepted_status: NO_SAFE_IMPLEMENTATION_CANDIDATE
+  internally_consistent: true
+  artifact_count: 10
+  all_required_artifacts_present: true
+  yaml_parse: PASS
+  jsonl_parse: PASS
+  final_status: NO_SAFE_IMPLEMENTATION_CANDIDATE
+  safe_candidate_count: 0
+  worker_packet_issued: false
+  implementation_started: false
+  database_accessed: false
+  git_refs_modified: false
+
+required_artifacts:
+  - phase0_snapshot.yaml
+  - r5_completion_review.yaml
+  - remaining_candidate_inventory.jsonl
+  - candidate_screening.jsonl
+  - excluded_candidates.jsonl
+  - owner_decision_candidates.jsonl
+  - top_verified_candidates.md
+  - next_single_vertical.yaml
+  - worker_task_packet.md
+  - final_report.yaml
+
+parse_evidence:
+  yaml_files_parsed: 4
+  jsonl_files_parsed: 4
+  jsonl_rows:
+    remaining_candidate_inventory: 33
+    candidate_screening: 5
+    excluded_candidates: 25
+    owner_decision_candidates: 17
+
+candidate_reconciliation:
+  reviewed_content_candidates: 5
+  reviewed_excluded: 3
+  reviewed_owner_decision_required: 2
+  reviewed_safe: 0
+  deferred_content_candidates: 5
+  deferred_still_marked_remaining: 5
+  deferred_marked_completed: 0
+  deferred_marked_permanently_excluded: 0
+  owner_decision_ledger_records: 17
+  final_report_owner_decision_ledger_records: 17
+  counts_reconciled: true
+
+selection_evidence:
+  next_single_vertical_result: NO_SAFE_IMPLEMENTATION_CANDIDATE
+  single_candidate_selected: false
+  worker_task_packet_status: NOT_ISSUED
+  implementation_packet_present: false
+
+r6_next_signal:
+  category: OWNER_DECISION_OR_NEW_BOUNDED_SELECTION
+  version_comparison_named: false
+  owner_decision_named: true
+
+claim_boundary:
+  deferred_candidate_claims_preserved: true
+  deferred_candidates_treated_as_completed: false
+  deferred_candidates_treated_as_permanently_excluded: false
+
+caveats:
+  - R6 itself used JUDGE_MODE NOT_APPLICABLE; R9 independently re-verifies its report consistency.

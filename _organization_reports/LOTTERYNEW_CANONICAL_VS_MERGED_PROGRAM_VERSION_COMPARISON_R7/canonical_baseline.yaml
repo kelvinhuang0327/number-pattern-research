@@ -1,0 +1,14 @@
+canonical_repository: /Users/kelvin/Kelvin-WorkSpace/LotteryNew
+canonical_ref: refs/remotes/origin/main
+canonical_branch: origin/main
+canonical_commit_oid: 3b32beb4543de9169dbfb2469b0577f8cc8a6f58
+canonical_tree_oid: 077c39c7fd9dc82c19907815535f45efeee750e9
+canonical_remote_freshness: UNVERIFIED_NO_FETCH
+authority_basis: locally configured refs/remotes/origin/HEAD -> refs/remotes/origin/main
+current_checkout_branch: task/p273a-prize-aware-inferential-validation
+current_checkout_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+canonical_worktree_dirty: true
+dirty_paths_in_scope:
+  - " M lottery_api/fetcher/taiwan_lottery_fetcher.py"
+  - "?? lottery_api/data/ingest_log.jsonl"
+comparison_source: exact canonical ref tree; live canonical worktree dirt was not used

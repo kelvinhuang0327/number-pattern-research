@@ -1,0 +1,95 @@
+task: "LOTTERYNEW_GIT_BRANCH_REF_INVENTORY_EXTRACTION_R1"
+status: "COMPLETED_REFERENCE_EXTRACTION_ONLY"
+paths:
+  source_discovery_root: "/Users/kelvin/Kelvin-WorkSpace"
+  target_reference_workspace: "/Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged"
+  git_ref_reference_root: "/Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged/_git_ref_reference/LOTTERY_BRANCH_REF_EXTRACTION_R1/"
+  report_root: "/Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged/_organization_reports/LOTTERYNEW_GIT_BRANCH_REF_INVENTORY_EXTRACTION_R1/"
+repositories:
+  candidates_found: 61
+  accepted_lottery_repositories: 3
+  unique_git_common_dirs: 3
+  linked_worktrees: 58
+  dirty_worktrees: 1
+  remotes_found: 3
+refs:
+  local_heads: 356
+  local_remote_tracking_refs: 365
+  local_tags: 114
+  other_local_refs: 0
+  remote_advertised_heads: 245
+  remote_advertised_tags: 114
+  remote_inventory_blocked: 0
+  unique_commits: 442
+  unique_trees: 391
+materialization:
+  materialized_exact_heads: 85
+  materialized_equivalent_trees: 0
+  unmaterialized_refs: 712
+  duplicate_tree_ref_groups: 119
+extraction:
+  refs_planned: 391
+  refs_extracted: 391
+  refs_manifest_only: 0
+  refs_blocked: 0
+  eligible_delta_files: 68839
+  extracted_files: 68839
+  extracted_bytes: 1329002393
+  unique_blobs: 6487
+  sensitive_paths_skipped: 24
+  database_or_data_paths_skipped: 491
+  large_or_binary_paths_skipped: 0
+  submodule_entries: 804
+  lfs_pointer_entries: 0
+target_coverage:
+  same_path_same_content: 54940
+  same_path_different_content: 1406
+  target_path_missing: 12493
+  deleted_in_branch: 273
+  renamed_in_branch: 0
+remote_failures:
+  repositories: 0
+  remotes: 0
+  reasons:
+
+safety:
+  source_repositories_modified: false
+  source_refs_modified: false
+  source_worktrees_created: false
+  target_ordinary_files_modified: false
+  conflict_reference_modified: false
+  sensitive_contents_extracted: false
+  database_contents_extracted: false
+  credentials_logged: false
+  git_lfs_downloaded: false
+  submodules_initialized: false
+  commits_created: false
+  pushes_run: false
+  prs_created: false
+  branches_merged: false
+verification:
+  repository_count_cross_check: "PASS"
+  local_ref_cross_check: "PASS"
+  remote_ref_cross_check: "PASS"
+  tree_manifest_cross_check: "PASS"
+  extracted_blob_cross_check: "PASS"
+  source_before_after: "PASS"
+  output_parse: "PASS"
+  active_conflict_scan: "PASS"
+  diff_check: "PASS"
+  judge: "PASS"
+claim_boundary:
+  available_git_refs_inventoried: true
+  unmaterialized_ref_content_extracted_as_reference: true
+  all_remote_refs_accessible: true
+  branches_merged: false
+  semantic_conflicts_resolved: false
+  functional_migration_completed: false
+  production_ready_claimed: false
+not_run:
+
+blocked:
+
+remaining_risks:
+
+next_recommended_task: "LOTTERYNEW_BRANCH_ONLY_FUNCTION_MIGRATION_MAP_R2"

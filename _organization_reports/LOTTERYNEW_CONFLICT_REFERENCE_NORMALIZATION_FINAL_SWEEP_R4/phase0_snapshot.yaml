@@ -1,0 +1,122 @@
+timestamp: "2026-07-28T10:01:57.695671+00:00"
+branch: "task/p273a-prize-aware-inferential-validation"
+head: "3d6df001da3a0633ab91f164d722b595ca76d2e1"
+total_conflicts: 39
+snapshot:
+  .ai/ai-context/PROJECT_CONTEXT.md.__CONFLICT__Betting-pool-agent__DETACHED__92f7d34b__DETACHED__8095919d:
+    size: 14470
+    sha256: "8095919dedb19fb47ca1e15ba78f1355b02f14d07f83042ecc639dc77ba5a6f0"
+  .ai/ai-context/PROJECT_CONTEXT.md.__CONFLICT__Betting-pool__task-p242a-result-only-paper-workflow-bu__03b2fcf4__task-p242a-result-only-paper-workflow-bu__845c05c5:
+    size: 13850
+    sha256: "845c05c51122245491981260f398527b7bfb8a2649ba66e099a83b62fa6c5888"
+  .ai/ai-context/PROJECT_PROFILE.md.__CONFLICT__Betting-pool-agent__DETACHED__92f7d34b__DETACHED__54784bb2:
+    size: 9182
+    sha256: "54784bb203e29c245ef9d653eb66a6e1413adcbf0806a7a703798e951ff4493c"
+  .ai/ai-context/PROJECT_PROFILE.md.__CONFLICT__Betting-pool__task-p242a-result-only-paper-workflow-bu__03b2fcf4__task-p242a-result-only-paper-workflow-bu__54784bb2:
+    size: 9182
+    sha256: "54784bb203e29c245ef9d653eb66a6e1413adcbf0806a7a703798e951ff4493c"
+  .ai/ai-context/RUNBOOK.md.__CONFLICT__Betting-pool-agent__DETACHED__92f7d34b__DETACHED__7baaa78a:
+    size: 14484
+    sha256: "7baaa78a2edeb3269155436884f68e0fba67840c07d5028c6450bc9871a9c104"
+  .ai/ai-context/RUNBOOK.md.__CONFLICT__Betting-pool__task-p242a-result-only-paper-workflow-bu__03b2fcf4__task-p242a-result-only-paper-workflow-bu__d910358c:
+    size: 10984
+    sha256: "d910358c9662371e049ab9060604e5fe08afe38ea42f837f99fca99a245d01a7"
+  .ai/ai-memory/MEMORY_LOG.md.__CONFLICT__Betting-pool-agent__DETACHED__92f7d34b__DETACHED__df41dadc:
+    size: 1271
+    sha256: "df41dadcbeab09fa655c0538004f89041fb62157f049e4787dacd05002ea61c1"
+  .ai/ai-memory/MEMORY_LOG.md.__CONFLICT__Betting-pool__task-p242a-result-only-paper-workflow-bu__03b2fcf4__task-p242a-result-only-paper-workflow-bu__14480929:
+    size: 971
+    sha256: "144809293e6bfc595be0d4628ec70f7bfdd7b7f19175a36a4099fa414c0a8a7b"
+  .claude/.gitignore.__CONFLICT__claude-code-showcase__main__fb9f1a5f__main__3f648186:
+    size: 141
+    sha256: "3f648186627d5146ba711b278084e6671d664c3046a194c3b925e9885678be33"
+  .claude/.gitignore.__CONFLICT__copilot-worktree-2026-03-11T07-56-45__copilot-worktree-2026-03-11T07-56-45__a95518f0__copilot-worktree-2026-03-11T07-56-45__3f648186:
+    size: 141
+    sha256: "3f648186627d5146ba711b278084e6671d664c3046a194c3b925e9885678be33"
+  .claude/.gitignore.__CONFLICT__copilot-worktree-2026-03-11T10-02-55__copilot-worktree-2026-03-11T10-02-55__3b7d66f2__copilot-worktree-2026-03-11T10-02-55__3f648186:
+    size: 141
+    sha256: "3f648186627d5146ba711b278084e6671d664c3046a194c3b925e9885678be33"
+  .github/workflows/daily_update.yml.__CONFLICT__Betting-pool-p13__DETACHED__NOHEAD__DETACHED__730815c1:
+    size: 1136
+    sha256: "730815c1022751c55446c8eee83629ba4ba85da61e449fa43ec03cffe6490446"
+  .github/workflows/daily_update.yml.__CONFLICT__awesome-mclean-f52768__claude-awesome-mclean-f52768__51588d69__claude-awesome-mclean-f52768__730815c1:
+    size: 1136
+    sha256: "730815c1022751c55446c8eee83629ba4ba85da61e449fa43ec03cffe6490446"
+  .github/workflows/daily_update.yml.__CONFLICT__beautiful-carson-bd520d__claude-beautiful-carson-bd520d__51588d69__claude-beautiful-carson-bd520d__730815c1:
+    size: 1136
+    sha256: "730815c1022751c55446c8eee83629ba4ba85da61e449fa43ec03cffe6490446"
+  .github/workflows/daily_update.yml.__CONFLICT__confident-haibt-7b14e9__DETACHED__51588d69__DETACHED__730815c1:
+    size: 1136
+    sha256: "730815c1022751c55446c8eee83629ba4ba85da61e449fa43ec03cffe6490446"
+  .github/workflows/daily_update.yml.__CONFLICT__confident-shamir-1ab80b__claude-confident-shamir-1ab80b__021a8a8d__claude-confident-shamir-1ab80b__730815c1:
+    size: 1136
+    sha256: "730815c1022751c55446c8eee83629ba4ba85da61e449fa43ec03cffe6490446"
+  .github/workflows/daily_update.yml.__CONFLICT__dreamy-faraday-5f9184__claude-dreamy-faraday-5f9184__70623ed8__claude-dreamy-faraday-5f9184__730815c1:
+    size: 1136
+    sha256: "730815c1022751c55446c8eee83629ba4ba85da61e449fa43ec03cffe6490446"
+  .github/workflows/daily_update.yml.__CONFLICT__serene-curran-221f5b__DETACHED__f0816ba6__DETACHED__730815c1:
+    size: 1136
+    sha256: "730815c1022751c55446c8eee83629ba4ba85da61e449fa43ec03cffe6490446"
+  .github/workflows/daily_update.yml.__CONFLICT__suspicious-banzai-8bf6bc__DETACHED__2221f0f5__DETACHED__730815c1:
+    size: 1136
+    sha256: "730815c1022751c55446c8eee83629ba4ba85da61e449fa43ec03cffe6490446"
+  .github/workflows/replay_default_validation.yml.__CONFLICT__Betting-pool-agent__DETACHED__92f7d34b__DETACHED__962f6ebb:
+    size: 2035
+    sha256: "962f6ebb584435c8ae6a83bb99daf8cd7f45f569f512dae7bb6e9dfaba5e8c5f"
+  docs/README.md.__CONFLICT__copilot-worktree-2026-03-11T10-02-55__copilot-worktree-2026-03-11T10-02-55__3b7d66f2__copilot-worktree-2026-03-11T10-02-55__d7615926:
+    size: 722
+    sha256: "d76159269b7bbfae2e2b415e1694b0e94a9fe79108f99facc4e7eed9cb34f57c"
+  examples/run_pipeline.py.__CONFLICT__Betting-pool-p13__DETACHED__NOHEAD__DETACHED__124cd5f5:
+    size: 494
+    sha256: "124cd5f580d74f8b2a76663ce7c23aec71134793db1d417e13f8e2ace805c9e3"
+  examples/run_pipeline.py.__CONFLICT__awesome-mclean-f52768__claude-awesome-mclean-f52768__51588d69__claude-awesome-mclean-f52768__124cd5f5:
+    size: 494
+    sha256: "124cd5f580d74f8b2a76663ce7c23aec71134793db1d417e13f8e2ace805c9e3"
+  examples/run_pipeline.py.__CONFLICT__beautiful-carson-bd520d__claude-beautiful-carson-bd520d__51588d69__claude-beautiful-carson-bd520d__124cd5f5:
+    size: 494
+    sha256: "124cd5f580d74f8b2a76663ce7c23aec71134793db1d417e13f8e2ace805c9e3"
+  examples/run_pipeline.py.__CONFLICT__confident-haibt-7b14e9__DETACHED__51588d69__DETACHED__124cd5f5:
+    size: 494
+    sha256: "124cd5f580d74f8b2a76663ce7c23aec71134793db1d417e13f8e2ace805c9e3"
+  models/adapters.py.__CONFLICT__Betting-pool-p13__DETACHED__NOHEAD__DETACHED__fa0c2fa8:
+    size: 5711
+    sha256: "fa0c2fa824a22314d1fe2abee8ac7da90ae642b406894e14384a7f52a90452e7"
+  models/adapters.py.__CONFLICT__awesome-mclean-f52768__claude-awesome-mclean-f52768__51588d69__claude-awesome-mclean-f52768__fa0c2fa8:
+    size: 5711
+    sha256: "fa0c2fa824a22314d1fe2abee8ac7da90ae642b406894e14384a7f52a90452e7"
+  models/adapters.py.__CONFLICT__beautiful-carson-bd520d__claude-beautiful-carson-bd520d__51588d69__claude-beautiful-carson-bd520d__fa0c2fa8:
+    size: 5711
+    sha256: "fa0c2fa824a22314d1fe2abee8ac7da90ae642b406894e14384a7f52a90452e7"
+  models/adapters.py.__CONFLICT__confident-haibt-7b14e9__DETACHED__51588d69__DETACHED__fa0c2fa8:
+    size: 5711
+    sha256: "fa0c2fa824a22314d1fe2abee8ac7da90ae642b406894e14384a7f52a90452e7"
+  rejected/README.md.__CONFLICT__nifty-meitner-d9c302__claude-nifty-meitner-d9c302__2aaa1874__claude-nifty-meitner-d9c302__eea292d0:
+    size: 6085
+    sha256: "eea292d0039b816993b85c3e7ac0272a11215a8ef5ee74781b1e7bf62b4ba788"
+  rejected/README.md.__CONFLICT__objective-carson-fa5c72__claude-objective-carson-fa5c72__2aaa1874__claude-objective-carson-fa5c72__e8ada669:
+    size: 6825
+    sha256: "e8ada6693e6e1bbc4ac1acbdb9a018299ca505be721cd35ffa436d7accb83b9d"
+  report/formatter.py.__CONFLICT__Betting-pool-p13__DETACHED__NOHEAD__DETACHED__bd1a66d5:
+    size: 28372
+    sha256: "bd1a66d55d933153194330daafcb29636c946ad403809cb74e595b2612806746"
+  report/formatter.py.__CONFLICT__awesome-mclean-f52768__claude-awesome-mclean-f52768__51588d69__claude-awesome-mclean-f52768__bd1a66d5:
+    size: 28372
+    sha256: "bd1a66d55d933153194330daafcb29636c946ad403809cb74e595b2612806746"
+  report/formatter.py.__CONFLICT__beautiful-carson-bd520d__claude-beautiful-carson-bd520d__51588d69__claude-beautiful-carson-bd520d__bd1a66d5:
+    size: 28372
+    sha256: "bd1a66d55d933153194330daafcb29636c946ad403809cb74e595b2612806746"
+  report/formatter.py.__CONFLICT__confident-haibt-7b14e9__DETACHED__51588d69__DETACHED__bd1a66d5:
+    size: 28372
+    sha256: "bd1a66d55d933153194330daafcb29636c946ad403809cb74e595b2612806746"
+  telegram_bot/bot.py.__CONFLICT__Betting-pool-p13__DETACHED__NOHEAD__DETACHED__93c4047b:
+    size: 7298
+    sha256: "93c4047b572dc3fe97f4047b75c84b3eccb2ca090770019b5093cc3de57d13a5"
+  telegram_bot/bot.py.__CONFLICT__awesome-mclean-f52768__claude-awesome-mclean-f52768__51588d69__claude-awesome-mclean-f52768__93c4047b:
+    size: 7298
+    sha256: "93c4047b572dc3fe97f4047b75c84b3eccb2ca090770019b5093cc3de57d13a5"
+  telegram_bot/bot.py.__CONFLICT__beautiful-carson-bd520d__claude-beautiful-carson-bd520d__51588d69__claude-beautiful-carson-bd520d__93c4047b:
+    size: 7298
+    sha256: "93c4047b572dc3fe97f4047b75c84b3eccb2ca090770019b5093cc3de57d13a5"
+  telegram_bot/bot.py.__CONFLICT__confident-haibt-7b14e9__DETACHED__51588d69__DETACHED__93c4047b:
+    size: 7298
+    sha256: "93c4047b572dc3fe97f4047b75c84b3eccb2ca090770019b5093cc3de57d13a5"

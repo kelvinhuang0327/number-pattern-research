@@ -1,0 +1,41 @@
+candidate_id: cand_059_feat/p0_schema_stabilization_20260518
+source_ref: refs/heads/feat/p0-schema-stabilization-20260518
+
+candidate_059_cohesion:
+  runtime_entrypoints:
+    - scripts/apply_p0_schema_migration.py
+    - scripts/p0_per_draw_coverage_matrix.py
+  consumers: []
+  focused_tests:
+    - tests/test_p0_canonical_universe.py
+    - tests/test_p0_schema_migration_idempotent.py
+  independently_testable_components:
+    - name: canonical_strategy_universe_inventory_and_coverage_matrix
+      files:
+        - scripts/p0_per_draw_coverage_matrix.py
+        - tests/test_p0_canonical_universe.py
+        - docs/replay/p0_canonical_strategy_universe_20260518.md
+        - outputs/replay/p0_canonical_strategy_universe_20260518.json
+        - outputs/replay/p0_per_draw_coverage_matrix_20260518.json
+    - name: p0_schema_migration_ddl_and_idempotency_engine
+      files:
+        - scripts/apply_p0_schema_migration.py
+        - lottery_api/migrations/0001_p0_schema_stabilization.sql
+        - tests/test_p0_schema_migration_idempotent.py
+        - outputs/replay/p0_migration_log_20260518.json
+    - name: schema_diff_documentation_and_artifact
+      files:
+        - docs/replay/p0_schema_diff_20260518.md
+        - outputs/replay/p0_schema_diff_20260518.json
+  generated_outputs:
+    - outputs/replay/p0_canonical_strategy_universe_20260518.json
+    - outputs/replay/p0_migration_log_20260518.json
+    - outputs/replay/p0_per_draw_coverage_matrix_20260518.json
+    - outputs/replay/p0_schema_diff_20260518.json
+  historical_evidence:
+    - outputs/replay/p0_migration_log_20260518.json
+    - outputs/replay/p0_schema_diff_20260518.json
+  single_vertical: false
+  split_required: true
+
+verdict: CANDIDATE_059_MUST_BE_SPLIT

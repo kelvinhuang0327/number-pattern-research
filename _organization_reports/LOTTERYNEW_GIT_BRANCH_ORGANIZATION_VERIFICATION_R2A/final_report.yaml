@@ -1,0 +1,73 @@
+{
+  "task": "LOTTERYNEW_GIT_BRANCH_ORGANIZATION_VERIFICATION_R2A",
+  "status": "COMPLETED_BRANCH_ORGANIZATION_VERIFIED",
+  "task_class": "READ_ONLY_COMPLETION_REVIEW",
+  "worker_route": "STANDARD_JUDGED",
+  "judge_mode": "FRESH_CONTEXT",
+  "judge_depth": "BOUNDED",
+  "judge_verdict": "PASS_WITH_CAVEATS",
+  "phase0_status": "PASS",
+  "repositories": {
+    "accepted_lottery_repositories": 3,
+    "unique_git_common_dirs": 3
+  },
+  "refs": {
+    "total_local_refs": 835,
+    "total_remote_advertised_refs": 359,
+    "remote_represented_by_local": 357,
+    "remote_tag_peeled_alias": 1,
+    "remote_only_advertised_refs": 1,
+    "remote_oid_mismatch": 0,
+    "remote_symbolic_refs": 0,
+    "total_available_refs_classified": 836
+  },
+  "materialization": {
+    "r1_exact_heads": 85,
+    "r1_equivalent_trees": 0,
+    "r2_claimed_materialized": 87,
+    "correct_exact_head_count": 85,
+    "correct_equivalent_tree_count": 0,
+    "classification": "R2_CLASSIFICATION_ERROR"
+  },
+  "candidate_clustering": {
+    "original_candidates": 115,
+    "merged_into_multi_ref_clusters": 32,
+    "multi_ref_clusters_formed": 7,
+    "valid_single_ref_candidates": 30,
+    "isolated_file_candidates": 32,
+    "historical_alias_candidates": 18,
+    "equivalent_exclusions": 3,
+    "unresolved_candidates": 0
+  },
+  "cand_087_review": {
+    "claimed_title": "Prize-Aware Inferential Validation Vertical (P273A)",
+    "actual_functional_title": "Predraw Strategy Freeze and Ledger Capture Vertical",
+    "scope_assessment": "CANDIDATE_MUST_BE_SPLIT",
+    "sub_verticals_count": 3,
+    "reassessed_risk": "MEDIUM"
+  },
+  "recommended_next_single_vertical": {
+    "candidate_id": "cand_087a_predraw_ledger_engine",
+    "title": "Predraw Strategy Freeze and Ledger Capture Vertical",
+    "source_ref": "refs/remotes/origin/task/p273a-prize-aware-inferential-validation",
+    "migration_risk": "LOW",
+    "estimated_hours": 12
+  },
+  "safety": {
+    "source_repositories_modified": false,
+    "source_refs_modified": false,
+    "mirrors_modified": false,
+    "upstream_reports_modified": false,
+    "target_ordinary_files_modified": false,
+    "branches_merged": false,
+    "branches_deleted": false,
+    "database_accessed": false,
+    "dependency_installed": false
+  },
+  "claim_boundary": {
+    "all_available_git_refs_reconciled_and_classified": true,
+    "branches_merged": false,
+    "functional_migration_completed": false,
+    "production_ready_claimed": false
+  }
+}

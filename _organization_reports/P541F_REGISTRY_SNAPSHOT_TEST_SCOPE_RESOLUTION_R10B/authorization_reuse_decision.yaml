@@ -1,0 +1,28 @@
+task: P541F_REGISTRY_SNAPSHOT_TEST_SCOPE_RESOLUTION_R10B
+previous_task: P541F_REGISTRY_SNAPSHOT_TEST_CONTRACT_MIGRATION_R10A
+previous_stop_token: STOP_P541F_SNAPSHOT_TEST_PATHS_UNRESOLVED
+previous_authorization_token: AUTHORIZE_P541F_REGISTRY_SNAPSHOT_TEST_CONTRACT_MIGRATION_R10A
+reuse_decision: REUSE_AUTHORIZATION_ALLOWED
+second_confirmation_required: false
+reason:
+  exact_paths_derived_from_r10_nodes: true
+  stale_assertions_match_r10_legacy_registry_count_or_exact_set_caveat: true
+  production_scope_added: false
+  product_semantics_added: false
+  lifecycle_semantics_added: false
+  p541d_proposal_modified_or_included: false
+  only_missing_exact_allowlist_supplied: true
+  unrelated_preexisting_total_16_contract_excluded: true
+authorized_continuation_scope:
+  paths:
+    - tests/test_replay_strategy_lifecycle_registry.py
+    - tests/test_replay_strategy_registry_online_candidates.py
+  stale_node_count: 8
+frozen_out_of_scope:
+  - tests/test_replay_strategy_lifecycle_contract.py
+  - tests/test_p541d_r2_biglotto_selected_adapters.py
+  - production code
+  - registry implementation
+  - lifecycle definitions
+  - commit, push, PR, merge, or deployment
+

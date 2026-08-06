@@ -1,0 +1,1462 @@
+{
+  "run_timestamp": "2026-06-02T06:57:02.982982",
+  "re_attestation_timestamp": "2026-06-30T13:42:02.321987",
+  "reanalysis_performed": false,
+  "new_draws_analyzed": false,
+  "re_attestation_type": "HUMAN_REVIEW_OF_UNCHANGED_COMMITTED_EVIDENCE",
+  "re_attestation_basis": "Re-attestation only; scripts/randomness_audit.py is absent from the repository (never existed). No new statistical analysis performed. Original audit covered data through 2026-04-29. Human review confirmed committed evidence is unchanged. See P203 commit d119ea6 for precedent.",
+  "simulations": 2000,
+  "seed": 42,
+  "alpha": 0.05,
+  "games": {
+    "power_lotto": {
+      "validation": {
+        "game": "power_lotto",
+        "row_count": 1906,
+        "date_min": "2008-01-24",
+        "date_max": "2026-04-27",
+        "duplicate_ids": 0,
+        "missing_values": 0,
+        "duplicated_draws": 0,
+        "out_of_range_balls": 0,
+        "special_out_of_range": 0,
+        "wrong_ball_count": 0,
+        "issues": [
+          "316 draws where special ball appears in main balls"
+        ],
+        "status": "WARN"
+      },
+      "pattern_tests": [
+        {
+          "game": "power_lotto",
+          "pattern": "consecutive_count",
+          "obs_mean": 0.7591815320041972,
+          "exp_mean": 0.789659758656873,
+          "exp_sd": 0.018254478876187332,
+          "z_score": -1.6696300595266014,
+          "p_raw": 0.09499257928919312
+        },
+        {
+          "game": "power_lotto",
+          "pattern": "same_tail_count",
+          "obs_mean": 1.1469045120671564,
+          "exp_mean": 1.1528646379853094,
+          "exp_sd": 0.020988257684117058,
+          "z_score": -0.28397430638863025,
+          "p_raw": 0.776430070953358
+        },
+        {
+          "game": "power_lotto",
+          "pattern": "odd_count",
+          "obs_mean": 2.987408184679958,
+          "exp_mean": 2.9994942287513116,
+          "exp_sd": 0.02617731986461508,
+          "z_score": -0.4616990636879868,
+          "p_raw": 0.6442971426233961
+        },
+        {
+          "game": "power_lotto",
+          "pattern": "low_count",
+          "obs_mean": 3.016264428121721,
+          "exp_mean": 2.9999658971668413,
+          "exp_sd": 0.02646470012227252,
+          "z_score": 0.6158592721465529,
+          "p_raw": 0.537987403840386
+        },
+        {
+          "game": "power_lotto",
+          "pattern": "sum",
+          "obs_mean": 116.66526757607555,
+          "exp_mean": 117.00788090241342,
+          "exp_sd": 0.5790913079909402,
+          "z_score": -0.5916395594444476,
+          "p_raw": 0.5540919775454176
+        },
+        {
+          "game": "power_lotto",
+          "pattern": "span",
+          "obs_mean": 27.921301154249736,
+          "exp_mean": 27.85964113326338,
+          "exp_sd": 0.12917626410085856,
+          "z_score": 0.47733243731381275,
+          "p_raw": 0.6331254162794017
+        },
+        {
+          "game": "power_lotto",
+          "pattern": "repeat_from_prev",
+          "obs_mean": 0.9328436516264428,
+          "exp_mean": 0.9462208814270725,
+          "exp_sd": 0.01898638376286133,
+          "z_score": -0.7045696520048489,
+          "p_raw": 0.48107809014557945
+        },
+        {
+          "game": "power_lotto",
+          "pattern": "pair_cooccurrence_gini",
+          "obs_mean": 0.08581828639264992,
+          "exp_mean": 0.08772581804757208,
+          "exp_sd": 0.002918385557588353,
+          "z_score": -0.6536256492779784,
+          "p_raw": 0.5133530151882362
+        },
+        {
+          "game": "power_lotto",
+          "pattern": "gap_distribution",
+          "obs_mean": 5.584260230849947,
+          "exp_mean": 5.571928226652675,
+          "exp_sd": 0.025835252820171704,
+          "z_score": 0.4773324373138335,
+          "p_raw": 0.6331254162793869
+        }
+      ],
+      "serial_tests": [
+        {
+          "game": "power_lotto",
+          "test": "sum_autocorrelation_ljungbox",
+          "lag_window": 20,
+          "statistic": 14.944701430040174,
+          "p_raw": 0.7795630138151534
+        },
+        {
+          "game": "power_lotto",
+          "test": "odd_count_runs_test",
+          "lag_window": "N/A",
+          "statistic": 0.4260511248308942,
+          "p_raw": 0.6700705930994986,
+          "runs": 850
+        },
+        {
+          "game": "power_lotto",
+          "test": "repeat_overlap_runs_test",
+          "lag_window": "N/A",
+          "statistic": 1.206598627539301,
+          "p_raw": 0.2275867555751936,
+          "runs": 869
+        },
+        {
+          "game": "power_lotto",
+          "test": "rolling_window_drift",
+          "lag_window": "first_half_953_vs_second_half_953",
+          "statistic": 27.367936221243284,
+          "p_raw": 0.876065727065513
+        }
+      ]
+    },
+    "big_lotto": {
+      "validation": {
+        "game": "big_lotto",
+        "row_count": 2130,
+        "date_min": "2007-01-02",
+        "date_max": "2026-04-28",
+        "duplicate_ids": 0,
+        "missing_values": 0,
+        "duplicated_draws": 0,
+        "out_of_range_balls": 0,
+        "special_out_of_range": 243,
+        "wrong_ball_count": 0,
+        "issues": [
+          "243 draws with special out of range [1..43]"
+        ],
+        "status": "WARN"
+      },
+      "pattern_tests": [
+        {
+          "game": "big_lotto",
+          "pattern": "consecutive_count",
+          "obs_mean": 0.6262910798122066,
+          "exp_mean": 0.6132342723004695,
+          "exp_sd": 0.01526041556032914,
+          "z_score": 0.8555997351526572,
+          "p_raw": 0.3922192165030849
+        },
+        {
+          "game": "big_lotto",
+          "pattern": "same_tail_count",
+          "obs_mean": 1.2225352112676056,
+          "exp_mean": 1.2249032863849765,
+          "exp_sd": 0.0211334533248888,
+          "z_score": -0.11205339141530841,
+          "p_raw": 0.910781072864322
+        },
+        {
+          "game": "big_lotto",
+          "pattern": "odd_count",
+          "obs_mean": 3.091549295774648,
+          "exp_mean": 3.0614265258215965,
+          "exp_sd": 0.024821205932324734,
+          "z_score": 1.2135901065879535,
+          "p_raw": 0.2249042868590475
+        },
+        {
+          "game": "big_lotto",
+          "pattern": "low_count",
+          "obs_mean": 2.932394366197183,
+          "exp_mean": 2.938111502347418,
+          "exp_sd": 0.024905601444078124,
+          "z_score": -0.2295522219397844,
+          "p_raw": 0.8184397367749765
+        },
+        {
+          "game": "big_lotto",
+          "pattern": "sum",
+          "obs_mean": 150.07276995305165,
+          "exp_mean": 150.0094218309859,
+          "exp_sd": 0.7065767889691735,
+          "z_score": 0.08965497176629021,
+          "p_raw": 0.9285613991012326
+        },
+        {
+          "game": "big_lotto",
+          "pattern": "span",
+          "obs_mean": 35.7169014084507,
+          "exp_mean": 35.71393544600939,
+          "exp_sd": 0.15989524179852477,
+          "z_score": 0.01854941027609118,
+          "p_raw": 0.9852005606336248
+        },
+        {
+          "game": "big_lotto",
+          "pattern": "repeat_from_prev",
+          "obs_mean": 0.7356807511737089,
+          "exp_mean": 0.7342467136150235,
+          "exp_sd": 0.01673827821923202,
+          "z_score": 0.08567413803874664,
+          "p_raw": 0.9317254613749942
+        },
+        {
+          "game": "big_lotto",
+          "pattern": "pair_cooccurrence_gini",
+          "obs_mean": 0.10337676854779466,
+          "exp_mean": 0.10719635112260865,
+          "exp_sd": 0.0028066806414246085,
+          "z_score": -1.3608896282817753,
+          "p_raw": 0.17354857167207982
+        },
+        {
+          "game": "big_lotto",
+          "pattern": "gap_distribution",
+          "obs_mean": 7.14338028169014,
+          "exp_mean": 7.142787089201878,
+          "exp_sd": 0.03197904835970495,
+          "z_score": 0.018549410276057856,
+          "p_raw": 0.9852005606336514
+        }
+      ],
+      "serial_tests": [
+        {
+          "game": "big_lotto",
+          "test": "sum_autocorrelation_ljungbox",
+          "lag_window": 20,
+          "statistic": 12.902006311381854,
+          "p_raw": 0.881548794855112
+        },
+        {
+          "game": "big_lotto",
+          "test": "odd_count_runs_test",
+          "lag_window": "N/A",
+          "statistic": 2.77165862452323,
+          "p_raw": 0.005577149159447764,
+          "runs": 951
+        },
+        {
+          "game": "big_lotto",
+          "test": "repeat_overlap_runs_test",
+          "lag_window": "N/A",
+          "statistic": 0.3523791673151678,
+          "p_raw": 0.7245539233969751,
+          "runs": 1061
+        },
+        {
+          "game": "big_lotto",
+          "test": "rolling_window_drift",
+          "lag_window": "first_half_1065_vs_second_half_1065",
+          "statistic": 41.265756873799894,
+          "p_raw": 0.7432619167734006
+        }
+      ]
+    },
+    "daily_539": {
+      "validation": {
+        "game": "daily_539",
+        "row_count": 5849,
+        "date_min": "2007-01-01",
+        "date_max": "2026-04-29",
+        "duplicate_ids": 0,
+        "missing_values": 0,
+        "duplicated_draws": 33,
+        "out_of_range_balls": 0,
+        "special_out_of_range": 0,
+        "wrong_ball_count": 0,
+        "issues": [
+          "33 duplicated ball combinations"
+        ],
+        "status": "WARN"
+      },
+      "pattern_tests": [
+        {
+          "game": "daily_539",
+          "pattern": "consecutive_count",
+          "obs_mean": 0.5076081381432723,
+          "exp_mean": 0.5134024619593093,
+          "exp_sd": 0.008360233347611106,
+          "z_score": -0.6930815893664797,
+          "p_raw": 0.488258350723359
+        },
+        {
+          "game": "daily_539",
+          "pattern": "same_tail_count",
+          "obs_mean": 0.7816720806975551,
+          "exp_mean": 0.7694125491537014,
+          "exp_sd": 0.010234231750597924,
+          "z_score": 1.1978946581053804,
+          "p_raw": 0.23095802964976453
+        },
+        {
+          "game": "daily_539",
+          "pattern": "odd_count",
+          "obs_mean": 2.571550692426056,
+          "exp_mean": 2.5643132159343476,
+          "exp_sd": 0.014352008801878495,
+          "z_score": 0.5042831698069302,
+          "p_raw": 0.6140624026140222
+        },
+        {
+          "game": "daily_539",
+          "pattern": "low_count",
+          "obs_mean": 2.4400752265344505,
+          "exp_mean": 2.435843904941015,
+          "exp_sd": 0.01386179421121289,
+          "z_score": 0.3052506428073048,
+          "p_raw": 0.7601752643401698
+        },
+        {
+          "game": "daily_539",
+          "pattern": "sum",
+          "obs_mean": 99.91947341425885,
+          "exp_mean": 100.00087108907505,
+          "exp_sd": 0.310900427051671,
+          "z_score": -0.2618126825624265,
+          "p_raw": 0.7934658607684757
+        },
+        {
+          "game": "daily_539",
+          "pattern": "span",
+          "obs_mean": 26.73260386390836,
+          "exp_mean": 26.66593588647632,
+          "exp_sd": 0.0844431739076134,
+          "z_score": 0.7895010851318702,
+          "p_raw": 0.42981919579773864
+        },
+        {
+          "game": "daily_539",
+          "pattern": "repeat_from_prev",
+          "obs_mean": 0.6459223798939989,
+          "exp_mean": 0.640533253547615,
+          "exp_sd": 0.009274121064909472,
+          "z_score": 0.5810929476405852,
+          "p_raw": 0.5611778114547272
+        },
+        {
+          "game": "daily_539",
+          "pattern": "pair_cooccurrence_gini",
+          "obs_mean": 0.06071107117979727,
+          "exp_mean": 0.06344281558216464,
+          "exp_sd": 0.0019177383796423685,
+          "z_score": -1.424461454891879,
+          "p_raw": 0.1543129353646258
+        },
+        {
+          "game": "daily_539",
+          "pattern": "gap_distribution",
+          "obs_mean": 6.68315096597709,
+          "exp_mean": 6.66648397161908,
+          "exp_sd": 0.02111079347690335,
+          "z_score": 0.7895010851318702,
+          "p_raw": 0.42981919579773864
+        }
+      ],
+      "serial_tests": [
+        {
+          "game": "daily_539",
+          "test": "sum_autocorrelation_ljungbox",
+          "lag_window": 20,
+          "statistic": 10.274962046296757,
+          "p_raw": 0.962907648870301
+        },
+        {
+          "game": "daily_539",
+          "test": "odd_count_runs_test",
+          "lag_window": "N/A",
+          "statistic": -0.005816381194110865,
+          "p_raw": 0.9953592254119481,
+          "runs": 2919
+        },
+        {
+          "game": "daily_539",
+          "test": "repeat_overlap_runs_test",
+          "lag_window": "N/A",
+          "statistic": 0.42158397015215493,
+          "p_raw": 0.673328708653108,
+          "runs": 2936
+        },
+        {
+          "game": "daily_539",
+          "test": "rolling_window_drift",
+          "lag_window": "first_half_2924_vs_second_half_2925",
+          "statistic": 34.75395900092429,
+          "p_raw": 0.6203454533544285
+        }
+      ]
+    }
+  },
+  "tests": [
+    {
+      "test_id": "power_lotto_overall_frequency",
+      "game": "power_lotto",
+      "hypothesis": "Main balls uniform over [1..38]",
+      "statistic": 32.264428121720876,
+      "p_raw": 0.6905671881449631,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_position_1",
+      "game": "power_lotto",
+      "hypothesis": "Position 1 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 4904.692549842605,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "power_lotto_position_2",
+      "game": "power_lotto",
+      "hypothesis": "Position 2 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 1945.4375655823715,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "power_lotto_position_3",
+      "game": "power_lotto",
+      "hypothesis": "Position 3 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 1400.5582371458554,
+      "p_raw": 3.1635453906320595e-270,
+      "confirmatory": false,
+      "p_bonferroni": 1.391959971878106e-268,
+      "q_bh_fdr": 3.1635453906320595e-270,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "power_lotto_position_4",
+      "game": "power_lotto",
+      "hypothesis": "Position 4 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 1389.1143756558236,
+      "p_raw": 8.37361604540473e-268,
+      "confirmatory": false,
+      "p_bonferroni": 3.684391059978081e-266,
+      "q_bh_fdr": 8.37361604540473e-268,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "power_lotto_position_5",
+      "game": "power_lotto",
+      "hypothesis": "Position 5 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 1875.6579223504718,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "power_lotto_position_6",
+      "game": "power_lotto",
+      "hypothesis": "Position 6 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 4875.464847848898,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "power_lotto_special_uniformity",
+      "game": "power_lotto",
+      "hypothesis": "Special ball uniform over [1..8]",
+      "statistic": 9.332633788037775,
+      "p_raw": 0.2296482136214672,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_pattern_consecutive_count",
+      "game": "power_lotto",
+      "hypothesis": "Pattern 'consecutive_count' consistent with random",
+      "statistic": -1.6696300595266014,
+      "p_raw": 0.09499257928919312,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_pattern_same_tail_count",
+      "game": "power_lotto",
+      "hypothesis": "Pattern 'same_tail_count' consistent with random",
+      "statistic": -0.28397430638863025,
+      "p_raw": 0.776430070953358,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_pattern_odd_count",
+      "game": "power_lotto",
+      "hypothesis": "Pattern 'odd_count' consistent with random",
+      "statistic": -0.4616990636879868,
+      "p_raw": 0.6442971426233961,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_pattern_low_count",
+      "game": "power_lotto",
+      "hypothesis": "Pattern 'low_count' consistent with random",
+      "statistic": 0.6158592721465529,
+      "p_raw": 0.537987403840386,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_pattern_sum",
+      "game": "power_lotto",
+      "hypothesis": "Pattern 'sum' consistent with random",
+      "statistic": -0.5916395594444476,
+      "p_raw": 0.5540919775454176,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_pattern_span",
+      "game": "power_lotto",
+      "hypothesis": "Pattern 'span' consistent with random",
+      "statistic": 0.47733243731381275,
+      "p_raw": 0.6331254162794017,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_pattern_repeat_from_prev",
+      "game": "power_lotto",
+      "hypothesis": "Pattern 'repeat_from_prev' consistent with random",
+      "statistic": -0.7045696520048489,
+      "p_raw": 0.48107809014557945,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_pattern_pair_cooccurrence_gini",
+      "game": "power_lotto",
+      "hypothesis": "Pattern 'pair_cooccurrence_gini' consistent with random",
+      "statistic": -0.6536256492779784,
+      "p_raw": 0.5133530151882362,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_pattern_gap_distribution",
+      "game": "power_lotto",
+      "hypothesis": "Pattern 'gap_distribution' consistent with random",
+      "statistic": 0.4773324373138335,
+      "p_raw": 0.6331254162793869,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_ljungbox_sum",
+      "game": "power_lotto",
+      "hypothesis": "Draw sums are serially independent (Ljung-Box)",
+      "statistic": 14.944701430040174,
+      "p_raw": 0.7795630138151534,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_runs_odd",
+      "game": "power_lotto",
+      "hypothesis": "Odd-heavy draws are random sequence (runs test)",
+      "statistic": 0.4260511248308942,
+      "p_raw": 0.6700705930994986,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_runs_repeat",
+      "game": "power_lotto",
+      "hypothesis": "Repeat-overlap draws are random sequence (runs test)",
+      "statistic": 1.206598627539301,
+      "p_raw": 0.2275867555751936,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "power_lotto_drift_halves",
+      "game": "power_lotto",
+      "hypothesis": "Frequency distribution stable across first/second half",
+      "statistic": 27.367936221243284,
+      "p_raw": 0.876065727065513,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_overall_frequency",
+      "game": "big_lotto",
+      "hypothesis": "Main balls uniform over [1..49]",
+      "statistic": 35.1716744913928,
+      "p_raw": 0.9159914770493536,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_position_1",
+      "game": "big_lotto",
+      "hypothesis": "Position 1 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 5412.779342723003,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "big_lotto_position_2",
+      "game": "big_lotto",
+      "hypothesis": "Position 2 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 1919.5624413145538,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "big_lotto_position_3",
+      "game": "big_lotto",
+      "hypothesis": "Position 3 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 1454.0394366197181,
+      "p_raw": 4.746323306710296e-273,
+      "confirmatory": false,
+      "p_bonferroni": 2.0883822549525304e-271,
+      "q_bh_fdr": 4.746323306710296e-273,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "big_lotto_position_4",
+      "game": "big_lotto",
+      "hypothesis": "Position 4 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 1407.293896713615,
+      "p_raw": 3.17022947563408e-263,
+      "confirmatory": false,
+      "p_bonferroni": 1.394900969278995e-261,
+      "q_bh_fdr": 3.17022947563408e-263,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "big_lotto_position_5",
+      "game": "big_lotto",
+      "hypothesis": "Position 5 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 2006.1521126760563,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "big_lotto_position_6",
+      "game": "big_lotto",
+      "hypothesis": "Position 6 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 5072.907981220656,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "big_lotto_special_uniformity",
+      "game": "big_lotto",
+      "hypothesis": "Special ball uniform over [1..43]",
+      "statistic": 56.93269740328564,
+      "p_raw": 0.06186414691894039,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_pattern_consecutive_count",
+      "game": "big_lotto",
+      "hypothesis": "Pattern 'consecutive_count' consistent with random",
+      "statistic": 0.8555997351526572,
+      "p_raw": 0.3922192165030849,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_pattern_same_tail_count",
+      "game": "big_lotto",
+      "hypothesis": "Pattern 'same_tail_count' consistent with random",
+      "statistic": -0.11205339141530841,
+      "p_raw": 0.910781072864322,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_pattern_odd_count",
+      "game": "big_lotto",
+      "hypothesis": "Pattern 'odd_count' consistent with random",
+      "statistic": 1.2135901065879535,
+      "p_raw": 0.2249042868590475,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_pattern_low_count",
+      "game": "big_lotto",
+      "hypothesis": "Pattern 'low_count' consistent with random",
+      "statistic": -0.2295522219397844,
+      "p_raw": 0.8184397367749765,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_pattern_sum",
+      "game": "big_lotto",
+      "hypothesis": "Pattern 'sum' consistent with random",
+      "statistic": 0.08965497176629021,
+      "p_raw": 0.9285613991012326,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_pattern_span",
+      "game": "big_lotto",
+      "hypothesis": "Pattern 'span' consistent with random",
+      "statistic": 0.01854941027609118,
+      "p_raw": 0.9852005606336248,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_pattern_repeat_from_prev",
+      "game": "big_lotto",
+      "hypothesis": "Pattern 'repeat_from_prev' consistent with random",
+      "statistic": 0.08567413803874664,
+      "p_raw": 0.9317254613749942,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_pattern_pair_cooccurrence_gini",
+      "game": "big_lotto",
+      "hypothesis": "Pattern 'pair_cooccurrence_gini' consistent with random",
+      "statistic": -1.3608896282817753,
+      "p_raw": 0.17354857167207982,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_pattern_gap_distribution",
+      "game": "big_lotto",
+      "hypothesis": "Pattern 'gap_distribution' consistent with random",
+      "statistic": 0.018549410276057856,
+      "p_raw": 0.9852005606336514,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_ljungbox_sum",
+      "game": "big_lotto",
+      "hypothesis": "Draw sums are serially independent (Ljung-Box)",
+      "statistic": 12.902006311381854,
+      "p_raw": 0.881548794855112,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_runs_odd",
+      "game": "big_lotto",
+      "hypothesis": "Odd-heavy draws are random sequence (runs test)",
+      "statistic": 2.77165862452323,
+      "p_raw": 0.005577149159447764,
+      "confirmatory": true,
+      "p_bonferroni": 0.24539456301570162,
+      "q_bh_fdr": 0.24539456301570162,
+      "verdict": "WEAK_DEVIATION_NOT_SIGNIFICANT_AFTER_CORRECTION"
+    },
+    {
+      "test_id": "big_lotto_runs_repeat",
+      "game": "big_lotto",
+      "hypothesis": "Repeat-overlap draws are random sequence (runs test)",
+      "statistic": 0.3523791673151678,
+      "p_raw": 0.7245539233969751,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "big_lotto_drift_halves",
+      "game": "big_lotto",
+      "hypothesis": "Frequency distribution stable across first/second half",
+      "statistic": 41.265756873799894,
+      "p_raw": 0.7432619167734006,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_overall_frequency",
+      "game": "daily_539",
+      "hypothesis": "Main balls uniform over [1..39]",
+      "statistic": 32.65672764575141,
+      "p_raw": 0.7145611535531262,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_position_1",
+      "game": "daily_539",
+      "hypothesis": "Position 1 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 11554.248247563688,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "daily_539_position_2",
+      "game": "daily_539",
+      "hypothesis": "Position 2 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 4021.2538895537696,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "daily_539_position_3",
+      "game": "daily_539",
+      "hypothesis": "Position 3 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 2995.385194050265,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "daily_539_position_4",
+      "game": "daily_539",
+      "hypothesis": "Position 4 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 3881.790049581124,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "daily_539_position_5",
+      "game": "daily_539",
+      "hypothesis": "Position 5 uniform [SORTED-ORDER-ARTIFACT]",
+      "statistic": 11459.25867669687,
+      "p_raw": 0.0,
+      "confirmatory": false,
+      "p_bonferroni": 0.0,
+      "q_bh_fdr": 0.0,
+      "verdict": "SIGNIFICANT_DEVIATION_REQUIRES_REVIEW"
+    },
+    {
+      "test_id": "daily_539_pattern_consecutive_count",
+      "game": "daily_539",
+      "hypothesis": "Pattern 'consecutive_count' consistent with random",
+      "statistic": -0.6930815893664797,
+      "p_raw": 0.488258350723359,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_pattern_same_tail_count",
+      "game": "daily_539",
+      "hypothesis": "Pattern 'same_tail_count' consistent with random",
+      "statistic": 1.1978946581053804,
+      "p_raw": 0.23095802964976453,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_pattern_odd_count",
+      "game": "daily_539",
+      "hypothesis": "Pattern 'odd_count' consistent with random",
+      "statistic": 0.5042831698069302,
+      "p_raw": 0.6140624026140222,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_pattern_low_count",
+      "game": "daily_539",
+      "hypothesis": "Pattern 'low_count' consistent with random",
+      "statistic": 0.3052506428073048,
+      "p_raw": 0.7601752643401698,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_pattern_sum",
+      "game": "daily_539",
+      "hypothesis": "Pattern 'sum' consistent with random",
+      "statistic": -0.2618126825624265,
+      "p_raw": 0.7934658607684757,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_pattern_span",
+      "game": "daily_539",
+      "hypothesis": "Pattern 'span' consistent with random",
+      "statistic": 0.7895010851318702,
+      "p_raw": 0.42981919579773864,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_pattern_repeat_from_prev",
+      "game": "daily_539",
+      "hypothesis": "Pattern 'repeat_from_prev' consistent with random",
+      "statistic": 0.5810929476405852,
+      "p_raw": 0.5611778114547272,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_pattern_pair_cooccurrence_gini",
+      "game": "daily_539",
+      "hypothesis": "Pattern 'pair_cooccurrence_gini' consistent with random",
+      "statistic": -1.424461454891879,
+      "p_raw": 0.1543129353646258,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_pattern_gap_distribution",
+      "game": "daily_539",
+      "hypothesis": "Pattern 'gap_distribution' consistent with random",
+      "statistic": 0.7895010851318702,
+      "p_raw": 0.42981919579773864,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_ljungbox_sum",
+      "game": "daily_539",
+      "hypothesis": "Draw sums are serially independent (Ljung-Box)",
+      "statistic": 10.274962046296757,
+      "p_raw": 0.962907648870301,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_runs_odd",
+      "game": "daily_539",
+      "hypothesis": "Odd-heavy draws are random sequence (runs test)",
+      "statistic": -0.005816381194110865,
+      "p_raw": 0.9953592254119481,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_runs_repeat",
+      "game": "daily_539",
+      "hypothesis": "Repeat-overlap draws are random sequence (runs test)",
+      "statistic": 0.42158397015215493,
+      "p_raw": 0.673328708653108,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    },
+    {
+      "test_id": "daily_539_drift_halves",
+      "game": "daily_539",
+      "hypothesis": "Frequency distribution stable across first/second half",
+      "statistic": 34.75395900092429,
+      "p_raw": 0.6203454533544285,
+      "confirmatory": true,
+      "p_bonferroni": 1.0,
+      "q_bh_fdr": 0.9953592254119481,
+      "verdict": "CONSISTENT_WITH_UNIFORM"
+    }
+  ],
+  "multiple_testing": {
+    "total_tests": 44,
+    "alpha": 0.05,
+    "bonferroni_threshold": 0.0011363636363636365,
+    "methods": [
+      "bonferroni",
+      "bh_fdr"
+    ]
+  },
+  "final_verdict": "WEAK_DEVIATIONS_NOT_SIGNIFICANT_AFTER_CORRECTION",
+  "strategy_implication": "NO_EXPLOITABLE_EDGE_FROM_DRAW_PROCESS",
+  "artifact_schema_version": "2.0",
+  "legacy_44_test_evidence": {
+    "status": "IMMUTABLE_LEGACY_EVIDENCE",
+    "reproducible_from_committed_source": false,
+    "historical_confirmatory_test_count": 44,
+    "producer_source_status": "scripts/randomness_audit.py was absent for the historical run",
+    "immutable_top_level_keys": [
+      "run_timestamp",
+      "re_attestation_timestamp",
+      "reanalysis_performed",
+      "new_draws_analyzed",
+      "re_attestation_type",
+      "re_attestation_basis",
+      "simulations",
+      "seed",
+      "alpha",
+      "games",
+      "tests",
+      "multiple_testing",
+      "final_verdict",
+      "strategy_implication"
+    ],
+    "canonical_payload_sha256": "24283ecaae136c17ab3447f2b9b49555e87aaff44c9fc58bee909108eee51b90",
+    "original_artifact_file_sha256": "7d5f95b84bd5214d6f9bcb07dd17113cea47deca96189d43fb40d977b93693cf",
+    "original_summary_file_sha256": "f1f5aa1631c4250428742138fa5429c6c799bc6e0b350dccc41d94e2bc4489ea",
+    "statistical_values_mutated": false
+  },
+  "current_executable_audit": {
+    "task_id": "P691_RANDOMNESS_EXISTING_LOGIC_TRANSFER_R1",
+    "audit_type": "EXISTING_LOGIC_MIGRATION",
+    "historical_44_test_reproduction": false,
+    "executed_at_utc": "2026-07-18T13:37:50Z",
+    "scope": {
+      "lottery_type": "BIG_LOTTO",
+      "population": "CANONICAL_MAIN_DRAW",
+      "statistical_controller": "P246K"
+    },
+    "implementation_sources": [
+      {
+        "implementation_id": "P246K",
+        "role": "canonical BIG_LOTTO statistical controller",
+        "source_path": "analysis/p246k_canonical_big_lotto_nist_reaudit.py",
+        "source_sha256": "3ddd1453ae562c0ac6bec1ada0bc6c2ca3339012ec8a2a26dc233bc1fac83157",
+        "entry_symbol": "run_canonical_nist_reaudit",
+        "transitive_statistical_symbols": [
+          "verify_exclusions",
+          "draw_sum_analysis",
+          "number_frequency_analysis",
+          "serial_randomness_tests",
+          "entropy_analysis",
+          "per_position_analysis",
+          "era_stability"
+        ],
+        "reuse_mode": "unchanged_through_read_only_population_adapter"
+      },
+      {
+        "implementation_id": "P238B",
+        "role": "population-independent SQLite read-only connection helper only",
+        "source_path": "scripts/p238b_nist_randomness_audit_artifact_build.py",
+        "source_sha256": "6eee50f61101b016737863eb426da6a0e893bc2d3f38387aa232ac1b4b86dcd8",
+        "entry_symbol": "_connect_ro",
+        "reuse_mode": "unchanged",
+        "excluded": [
+          "raw BIG_LOTTO population",
+          "all P238B statistical helpers",
+          "multiple-testing corrections",
+          "classification and verdict logic",
+          "artifact rendering"
+        ]
+      }
+    ],
+    "input_provenance": {
+      "db_identity": "canonical_big_lotto_store",
+      "db_open_mode": "sqlite_uri_mode_ro",
+      "sqlite_immutable": true,
+      "sqlite_cache": "private",
+      "wal_precondition": "empty_or_absent",
+      "pragma_query_only": true,
+      "selected_population": "BIG_LOTTO/CANONICAL_MAIN_DRAW",
+      "canonical_view": "draws_big_lotto_canonical_main",
+      "sql": {
+        "canonical_population": "SELECT draw, date, numbers, special\nFROM draws_big_lotto_canonical_main\nORDER BY CAST(draw AS INTEGER) DESC, draw DESC",
+        "raw_population_count": "SELECT COUNT(*) FROM draws WHERE lottery_type = ?",
+        "raw_population_count_params": [
+          "BIG_LOTTO"
+        ]
+      },
+      "raw_population_count": 3150,
+      "selected_row_count": 2125,
+      "oldest_selected_row": {
+        "draw": "96000001",
+        "date": "2007/01/02"
+      },
+      "newest_selected_row": {
+        "draw": "115000070",
+        "date": "2026/07/14"
+      },
+      "selected_date_min": "2007/01/02",
+      "selected_date_max": "2026/07/14",
+      "selected_row_stream_serialization": "UTF-8 JSON Lines; each row has draw/date/numbers/special; keys sorted; compact separators; SQL result order",
+      "selected_row_stream_sha256": "7d48306f31746ec3ea8976b4d0b88f2577decd52191391ee5c059f2fd4588a09"
+    },
+    "p246k_existing_logic_payload_metadata": {
+      "status": "UNCHANGED_SOURCE_DIAGNOSTIC_PAYLOAD",
+      "statistical_payload_unchanged": true,
+      "authoritative_for_proving_randomness": false,
+      "equivalent_to_historical_44_test_audit": false,
+      "evidence_of_no_exploitable_edge": false,
+      "validates_another_lottery": false,
+      "authorizes_prediction": false,
+      "authorizes_betting": false,
+      "scientific_limitations": [
+        {
+          "id": "fitted_normal_ks_discrete_sum_calibration",
+          "statement": "The fitted-normal KS diagnostic is applied to a discrete draw-sum distribution and is not a fully calibrated goodness-of-fit proof."
+        },
+        {
+          "id": "entropy_threshold_not_p_value",
+          "statement": "The entropy threshold is not a p-value."
+        },
+        {
+          "id": "five_diagnostics_no_multiplicity_correction",
+          "statement": "The five P246K diagnostics have no multiplicity correction."
+        },
+        {
+          "id": "power_and_mde_not_established",
+          "statement": "Statistical power and minimum-detectable-effect have not been established for the published five-test diagnostic."
+        },
+        {
+          "id": "p246k_green_not_randomness_proof",
+          "statement": "P246K GREEN does not prove randomness."
+        },
+        {
+          "id": "historical_frequency_extrema_conflict",
+          "statement": "Earlier JSON and Markdown frequency-extrema values were inconsistent (JSON max/min 285/221; Markdown max/min 284/243). The current migration preserves both as conflicting historical evidence, selects neither historical value, and reports the separately recomputed current canonical extrema 286/222 only as part of the unchanged P246K source diagnostic payload."
+        }
+      ]
+    },
+    "p246k_existing_logic_result": {
+      "schema_version": "1.0",
+      "task_id": "P246K",
+      "classification": "P246K_CANONICAL_BIG_LOTTO_RANDOMNESS_AUDIT_GREEN_RANDOM_COMPATIBLE",
+      "p246j_merged_pr": "PR #325 merged 2026-06-06T02:42:45Z",
+      "db_read": true,
+      "db_read_only": true,
+      "db_write_performed": false,
+      "input_population": "CANONICAL_MAIN_DRAW",
+      "raw_population_count": 3150,
+      "canonical_population_count": 2125,
+      "excluded_add_on_count": 1025,
+      "exclusion_rules_verified": {
+        "canonical_count": 2125,
+        "raw_count": 3150,
+        "excluded_count": 1025,
+        "hyphen_in_canonical": 0,
+        "date_format_in_canonical": 0,
+        "small_pool_in_canonical": 0,
+        "all_exclusions_verified": true,
+        "max_num_all_above_25": true,
+        "num_range_valid": true
+      },
+      "p238b_comparison": {
+        "artifact_found": true,
+        "classification": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
+        "test_count": 37,
+        "is_corrected_significant": false,
+        "note": "P238B ran on raw mixed 22,238-row BIG_LOTTO population including ADD_ON_PRIZE_EXCLUDED, DATE_FORMAT_ALIEN, SMALL_POOL_ALIEN. P246K runs on canonical 2,113-row population only."
+      },
+      "audit_methods": {
+        "draw_sum_ks_test": "KS test vs normal distribution",
+        "number_frequency_chi2": "Chi-square uniformity test (pool_size=49, k=6)",
+        "runs_test": "Runs test on above/below-mean draw sums",
+        "ljung_box_lag10": "Ljung-Box autocorrelation test (lag=10)",
+        "shannon_entropy": "Normalized Shannon entropy of number frequencies",
+        "per_position_analysis": "Mean/range of sorted-position numbers",
+        "era_stability": "Per-year sum mean — temporal stability check"
+      },
+      "audit_results": {
+        "draw_sum_distribution": {
+          "n": 2125,
+          "mean": 151.0,
+          "sd": 32.17,
+          "min": 59,
+          "max": 246,
+          "theoretical_mean_6of49": 150.0,
+          "mean_deviation_from_theoretical": 1.0,
+          "ks_stat": 0.022,
+          "ks_p": 0.2504,
+          "ks_interpretation": "consistent with normal",
+          "status": "GREEN"
+        },
+        "number_frequency_uniformity": {
+          "n_draws": 2125,
+          "n_numbers": 12750,
+          "expected_per_number": 260.2,
+          "max_frequency": 286,
+          "min_frequency": 222,
+          "chi2_stat": 40.03,
+          "chi2_p": 0.7865,
+          "df": 48,
+          "chi2_interpretation": "uniform distribution compatible",
+          "status": "GREEN"
+        },
+        "serial_randomness": {
+          "runs_test": {
+            "runs": 1063,
+            "n1_above": 1046,
+            "n2_below": 1079,
+            "z_stat": -0.0106,
+            "p_value": 0.9916,
+            "interpretation": "no serial pattern",
+            "status": "GREEN"
+          },
+          "ljung_box_lag10": {
+            "stat": 9.5168,
+            "p_value": 0.4839,
+            "interpretation": "no autocorrelation",
+            "status": "GREEN"
+          }
+        },
+        "entropy": {
+          "shannon_entropy": 5.612411,
+          "max_entropy_uniform": 5.61471,
+          "normalized_entropy": 0.999591,
+          "interpretation": "near-maximum entropy — consistent with uniform distribution",
+          "status": "GREEN"
+        },
+        "per_position": {
+          "pos_1": {
+            "mean": 7.05,
+            "min": 1,
+            "max": 32
+          },
+          "pos_2": {
+            "mean": 14.52,
+            "min": 2,
+            "max": 40
+          },
+          "pos_3": {
+            "mean": 21.78,
+            "min": 4,
+            "max": 46
+          },
+          "pos_4": {
+            "mean": 28.75,
+            "min": 7,
+            "max": 47
+          },
+          "pos_5": {
+            "mean": 35.89,
+            "min": 11,
+            "max": 48
+          },
+          "pos_6": {
+            "mean": 42.99,
+            "min": 26,
+            "max": 49
+          }
+        },
+        "era_stability": {
+          "2021": {
+            "n": 113,
+            "mean": 148.5
+          },
+          "2022": {
+            "n": 111,
+            "mean": 153.6
+          },
+          "2023": {
+            "n": 114,
+            "mean": 151.0
+          },
+          "2024": {
+            "n": 118,
+            "mean": 154.6
+          },
+          "2025": {
+            "n": 114,
+            "mean": 149.3
+          },
+          "2026": {
+            "n": 69,
+            "mean": 150.9
+          }
+        },
+        "summary": {
+          "total_tests": 5,
+          "green": 5,
+          "yellow": 0,
+          "overall_status": "GREEN"
+        }
+      },
+      "gate_implication": "CANONICAL BIG_LOTTO draws are consistent with a fair random 6/49 process. P238B YELLOW was driven by mixed-population contamination (DATE_FORMAT_ALIEN + SMALL_POOL_ALIEN). RANDOMNESS_AUDIT_YELLOW is NOT confirmed on the canonical population. NOTE: This GREEN result confirms randomness — it does NOT unlock BIG_LOTTO predictive research. BIG_LOTTO signal space was exhausted (L91: 6 randomness tests pass, MI=0.006 bits, zero signals at p<0.05). Gate remains GATE_RED for predictive/bias research. DB-level canonical separation (P247 Type D) is still recommended.",
+      "no_prediction_claim": true,
+      "no_betting_advice": true,
+      "no_strategy_promotion": true,
+      "anomaly_is_not_predictor": true,
+      "add_on_records_preserved": true,
+      "raw_access_preserved": "get_all_draws('BIG_LOTTO') still returns 22,238 rows",
+      "forbidden_actions_confirmed": [
+        "DB_write",
+        "DB_migration_apply",
+        "CREATE_VIEW",
+        "CREATE_TABLE",
+        "row_deletion",
+        "registry_mutation",
+        "production_recommendation_change",
+        "strategy_promotion",
+        "betting_advice",
+        "Type_D_apply",
+        "prediction_claim",
+        "GATE_OPEN_for_BIG_LOTTO_predictive_research"
+      ],
+      "final_decision": "P246K canonical BIG_LOTTO randomness audit complete on 2125 draws. All 5 tests: 5 GREEN / 0 YELLOW. P238B YELLOW (raw population) is NOT confirmed on canonical population. Canonical BIG_LOTTO draws are consistent with a fair random 6/49 process. This GREEN result supersedes P238B YELLOW for canonical randomness gating. NOTE: GREEN randomness ≠ exploitable signal. BIG_LOTTO predictive research remains blocked per L91 (zero signals pass p<0.05 even on canonical data). No DB write. No deletion. ADD_ON_PRIZE_EXCLUDED preserved. DB-level canonical separation (P247 Type D) still recommended.",
+      "db_identity": "canonical_big_lotto_store"
+    },
+    "p246k_semantic_output_sha256": "48f72f61764e09de20702a853d124930eb3275ce49eb7e9b4b9e26e84f5d9dd1",
+    "current_authoritative_conclusion": {
+      "status": "DIAGNOSTIC_ONLY",
+      "p246k_overall_status": "GREEN",
+      "total_checks": 5,
+      "green_checks": 5,
+      "yellow_checks": 0,
+      "statement": "The unchanged P246K source diagnostics report 5 GREEN and 0 YELLOW outcomes across 5 checks for the current canonical BIG_LOTTO population. This bounded diagnostic result does not prove randomness, establish absence of an exploitable edge, validate another lottery, or authorize prediction or betting."
+    },
+    "historical_date_conflict": {
+      "wiki_historical_date": "2026-05-01",
+      "preserved_historical_artifact_date": "2026-06-02",
+      "protected_historical_producer_status": "ABSENT",
+      "wiki_date_is_currently_reproducible": false,
+      "artifact_date_is_currently_reproducible": false,
+      "current_existing_logic_migration_is_separate": true,
+      "continuity_or_direct_comparability_claimed": false,
+      "disclosure": "The wiki historically cited 2026-05-01, while the preserved historical artifact timestamp is 2026-06-02. The protected historical producer is absent, so neither historical date represents a currently reproducible audit. The current executable existing-logic migration is separate; no continuity or direct comparability is claimed."
+    },
+    "p246k_result_retained_unchanged": true,
+    "p246k_nonsemantic_location_sanitized": true,
+    "p246k_static_narrative_caveat": "The unchanged P246K payload contains historical raw-access prose referencing 22,238 rows and the legacy aggregate field name excluded_add_on_count. They are retained for exact equivalence and are not current row-family provenance. Current raw and canonical counts are the exact SQL results recorded above: 3150 and 2125.",
+    "cadence_anchor": {
+      "real_executable_audit_timestamp_utc": "2026-07-18T13:37:50Z",
+      "canonical_draw_count": 2125,
+      "selected_row_stream_sha256": "7d48306f31746ec3ea8976b4d0b88f2577decd52191391ee5c059f2fd4588a09",
+      "oldest_selected_row": {
+        "draw": "96000001",
+        "date": "2007/01/02"
+      },
+      "newest_selected_row": {
+        "draw": "115000070",
+        "date": "2026/07/14"
+      }
+    },
+    "cadence_policy": {
+      "max_calendar_days": 14,
+      "max_new_canonical_draws": 50,
+      "trigger": "whichever_occurs_first",
+      "timestamp_only_re_attestation_is_gating": false
+    },
+    "orchestration_additions_only": [
+      "provenance",
+      "cadence",
+      "publication_containment"
+    ],
+    "new_statistical_procedure_introduced": false,
+    "combined_p238b_p246k_verdict": false,
+    "db_write_performed": false
+  }
+}

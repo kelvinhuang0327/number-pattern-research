@@ -475,9 +475,17 @@ from .biglotto_zone_split_adapter import build_zone_split_adapters  # noqa: E402
 from .biglotto_social_wisdom_adapter import (  # noqa: E402
     build_social_wisdom_adapter,
 )
+from .biglotto_p0_2bet_adapter import build_p0_2bet_adapters  # noqa: E402
 
 
 _BIGLOTTO_ZONE_SPLIT_ADAPTERS = build_zone_split_adapters(
+    adapter_base=ReplayStrategyAdapter,
+    meta_type=_StrategyMeta,
+    invalid_output=InvalidOutput,
+    unsupported_lottery_type=UnsupportedLotteryType,
+)
+
+_BIGLOTTO_P0_2BET_ADAPTERS = build_p0_2bet_adapters(
     adapter_base=ReplayStrategyAdapter,
     meta_type=_StrategyMeta,
     invalid_output=InvalidOutput,
@@ -727,6 +735,7 @@ _ALL_ADAPTERS: List[ReplayStrategyAdapter] = [
     # P1.3: ts3_regime_3bet — live BIG_LOTTO production strategy (2026-05-15)
     # P1.4: adapter binding RESOLVED (SAFE_RECONSTRUCTION, 2026-05-15)
     _BigLottoTs3Regime3BetAdapter(),
+    *_BIGLOTTO_P0_2BET_ADAPTERS,
     *_BIGLOTTO_ZONE_SPLIT_ADAPTERS,
     _Daily539F4ColdAdapter(),
     _Daily539MarkovColdAdapter(),

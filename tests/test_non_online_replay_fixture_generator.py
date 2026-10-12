@@ -12,6 +12,9 @@ from lottery_api.models import replay_strategy_registry
 from scripts import generate_non_online_replay_fixture as fixture_gen
 
 
+EXPECTED_ELIGIBLE_STATUSES = {"REJECTED", "RETIRED", "OBSERVATION"}
+
+
 def _write_and_load(path: Path) -> dict:
     rc = fixture_gen.main(["--output", str(path)])
     assert rc == 0
@@ -29,7 +32,7 @@ def _current_eligible_registry_rows() -> list[dict[str, str]]:
         status = item["lifecycle_status"]
         if (
             strategy_id not in non_executable
-            or status not in fixture_gen.ALLOWED_STATUSES
+            or status not in EXPECTED_ELIGIBLE_STATUSES
         ):
             continue
         lottery_type = item.get("lottery_type")
@@ -102,10 +105,11 @@ def test_lifecycle_status_preserved_and_online_excluded(tmp_path: Path):
     out = tmp_path / "outputs" / "replay" / "fixture.json"
     data = _write_and_load(out)
     statuses = {record["lifecycle_status"] for record in data["records"]}
+    assert fixture_gen.ALLOWED_STATUSES == EXPECTED_ELIGIBLE_STATUSES
     assert statuses == {
         row["lifecycle_status"] for row in _current_eligible_registry_rows()
     }
-    assert statuses <= fixture_gen.ALLOWED_STATUSES
+    assert statuses <= EXPECTED_ELIGIBLE_STATUSES
     assert "ONLINE" not in statuses
 
 

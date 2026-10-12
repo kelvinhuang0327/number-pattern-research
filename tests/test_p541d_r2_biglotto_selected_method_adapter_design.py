@@ -8,6 +8,7 @@ import json
 import os
 import subprocess
 import sys
+import types
 from pathlib import Path
 
 import pytest
@@ -35,13 +36,52 @@ def artifact():
     return mod.strict_json_load_bytes(mod.JSON_OUTPUT.read_bytes(), str(mod.JSON_OUTPUT))
 
 
+def _historical_packet():
+    mod = _module()
+    source_path = "analysis/p541d_r2_biglotto_selected_method_adapter_design.py"
+    completed = subprocess.run(
+        [
+            "git",
+            "-C",
+            str(REPO_ROOT),
+            "show",
+            f"{mod.P541D_GENERATION_BASE_COMMIT}:{source_path}",
+        ],
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    historical = types.ModuleType("p541d_pre_pin_adoption")
+    filename = str(REPO_ROOT / source_path)
+    historical.__file__ = filename
+    code = compile(completed.stdout.decode("utf-8"), filename, "exec")
+    exec(code, historical.__dict__)
+    return historical.build_packet(REPO_ROOT)
+
+
+def _normalized_designs(packet):
+    normalized = copy.deepcopy(packet["method_designs"])
+    reconciled_ids = {
+        "lottery_api/models/social_wisdom_predictor.py",
+        "lottery_api/models/zone_split.py",
+    }
+    for design in normalized:
+        design.pop("p541c_provenance", None)
+        design.pop("current_registry_observation", None)
+        design.pop("deferred_registry_lifecycle_changes", None)
+        design["proposed_strategy"].pop("lifecycle", None)
+        if design["source_path"] in reconciled_ids:
+            design.pop("future_implementation_files", None)
+    return normalized
+
+
 def test_exact_p541c_upstream_identity_and_shortlist(packet):
     mod = _module()
     identity = packet["upstream_identity"]
     assert identity == {
         **mod.UPSTREAM_IDENTITY,
         "verification": "PASS",
-        "read_mechanism": "pinned Git blob",
+        "read_mechanism": "git show <artifact commit>:<relative-path>",
     }
     assert [item["source_path"] for item in packet["method_designs"]] == mod.SELECTED_PATHS
     for design in packet["method_designs"]:
@@ -51,6 +91,94 @@ def test_exact_p541c_upstream_identity_and_shortlist(packet):
         assert provenance["low_risk_eligible"] is True
         assert provenance["identity_confirmed"] is True
         assert provenance["confidence"] == "high"
+
+
+def test_p541c_artifact_source_reference_and_generation_bases_are_separate(packet):
+    mod = _module()
+    assert packet["source_bases"]["p541c_artifact"] == {
+        "commit": "a68b5ca8663e82b7dad5da7c66d53eec10e517c0",
+        "git_blob_sha": "0406f78c4d42b5551b12843f2d0d1443a55a9971",
+        "path": mod.UPSTREAM_PATH,
+    }
+    assert packet["source_bases"]["p541c_declared_source_reference"] == {
+        "commit": "1777e15556d41f1ff829f9ac18aa3f58d7f8f54f",
+        "tree": "5582783e56a930d7c9e637485b3c9749e66f470a",
+        "declared_by_artifact_commit": "a68b5ca8663e82b7dad5da7c66d53eec10e517c0",
+    }
+    assert packet["source_bases"]["p541d_generation_source"] == {
+        "commit": "8db53f9cb829d658ea47f01476ec52a61c5c583c",
+        "tree": "f0d26bd7235e3af02ba12790e18964b947e79d6f",
+    }
+    assert packet["source_bases"]["selected_method_sources"]["commit"] == (
+        "9572d994e94fae44cf7730297e7537c0901d5a78"
+    )
+
+
+def test_record_uniqueness_and_order_match_historical_p541c(packet):
+    comparison = packet["historical_input_comparison"]
+    assert comparison["record_count"] == 580
+    assert comparison["unique_method_id_count"] == 580
+    assert comparison["unique_source_path_count"] == 580
+    assert comparison["record_method_id_order_matches_historical"] is True
+    assert comparison["record_source_path_order_matches_historical"] is True
+    assert comparison["shortlist_count"] == 5
+    assert comparison["shortlist_order_matches_historical"] is True
+    assert comparison["shortlist_order"] == _module().SELECTED_PATHS
+
+
+def test_stale_p541c_v4_pin_rejects_canonical_v5_blob():
+    mod = _module()
+    raw = mod.git_blob_bytes(REPO_ROOT, mod.UPSTREAM_PATH, mod.P541C_ARTIFACT_COMMIT)
+    with pytest.raises(mod.P541DR2ValidationError, match="pinned P541C_R2 byte identity mismatch"):
+        mod._verify_upstream_bytes(
+            raw,
+            mod.HISTORICAL_UPSTREAM_PIN,
+            mod.UPSTREAM_IDENTITY["git_blob_sha"],
+        )
+
+
+def test_synthetic_p541c_negative_matrix_rejects_pin_and_gate_drift():
+    mod = _module()
+    raw = mod.git_blob_bytes(REPO_ROOT, mod.UPSTREAM_PATH, mod.P541C_ARTIFACT_COMMIT)
+    with pytest.raises(mod.P541DR2ValidationError, match="byte identity mismatch"):
+        mod._verify_upstream_bytes(
+            raw,
+            {**mod.UPSTREAM_IDENTITY, "sha256": "0" * 64},
+            mod.UPSTREAM_IDENTITY["git_blob_sha"],
+        )
+
+    upstream = mod.strict_json_load_bytes(raw, mod.UPSTREAM_PATH)
+    mutations = {
+        "selector": lambda value: value.update(selector_version="p541c-r2-selector-v4"),
+        "record_count": lambda value: value["reviewed_method_decisions"].pop(),
+        "shortlist_order": lambda value: value["high_priority_candidate_shortlist"].reverse(),
+        "low_eligibility": lambda value: value["high_priority_candidate_shortlist"][0]["p541b_r2_status"].update(low_risk_eligible=False),
+        "identity": lambda value: value["high_priority_candidate_shortlist"][0]["historical_p541b_status"].update(is_actual_prediction_method=False),
+        "duplicate_method_id": lambda value: value["reviewed_method_decisions"][0].update(method_id=value["reviewed_method_decisions"][1]["method_id"]),
+        "duplicate_source_path": lambda value: value["reviewed_method_decisions"][0].update(source_path=value["reviewed_method_decisions"][1]["source_path"]),
+    }
+    expected_errors = {
+        "selector": "selector mismatch",
+        "record_count": "exactly 580",
+        "shortlist_order": "exact shortlist/order",
+        "low_eligibility": "low-risk gate failed",
+        "identity": "shortlist identity/confidence gate failed",
+        "duplicate_method_id": "record identity duplicate or invalid",
+        "duplicate_source_path": "record identity duplicate or invalid",
+    }
+    for name, mutate in mutations.items():
+        changed = copy.deepcopy(upstream)
+        mutate(changed)
+        with pytest.raises(mod.P541DR2ValidationError, match=expected_errors[name]):
+            mod.validate_upstream(changed)
+
+
+def test_wrong_canonical_registry_pin_fails_closed(packet):
+    mod = _module()
+    changed = copy.deepcopy(packet)
+    changed["canonical_adapter_references"][0]["git_blob_sha"] = "0" * 40
+    with pytest.raises(mod.P541DR2ValidationError, match="reference blob pin mismatch"):
+        mod.validate_packet(changed)
 
 
 @pytest.mark.parametrize(
@@ -96,6 +224,7 @@ def test_duplicate_strategy_id_rejected(packet):
 
 
 def test_five_source_identities_and_ast_parsing(packet):
+    mod = _module()
     expected = {
         "tools/advanced_prediction_engine.py": (
             "5c72f7e87de6d2f7721d7fc9eb7eb57f4e848744",
@@ -126,6 +255,8 @@ def test_five_source_identities_and_ast_parsing(packet):
     assert len(packet["selected_source_manifest"]) == 5
     for record in packet["selected_source_manifest"]:
         blob, size, sha256 = expected[record["source_path"]]
+        assert record["source_commit"] == mod.SELECTED_METHOD_SOURCE_COMMIT
+        assert record["source_tree"] == mod.SELECTED_METHOD_SOURCE_TREE
         assert (record["git_blob_sha"], record["byte_size"], record["sha256"]) == (
             blob,
             size,
@@ -155,7 +286,8 @@ def test_selected_targets_are_never_imported_or_executed(packet):
     evidence = packet["no_db_no_execution_evidence"]
     assert evidence["selected_modules_imported"] is False
     assert evidence["selected_modules_executed"] is False
-    assert evidence["source_read_mechanism"] == "git show <base>:<relative-path>"
+    assert evidence["source_read_mechanism"] == "git show <pinned commit>:<relative-path>"
+    assert evidence["selected_method_source_commit"] == mod.SELECTED_METHOD_SOURCE_COMMIT
 
 
 def test_build_opens_no_db_csv_runtime_or_network_file(monkeypatch):
@@ -311,7 +443,13 @@ def test_quickml_method9_defect_from_pinned_source_without_import(packet):
     mod = _module()
     path = "tools/quick_ml_predict.py"
     completed = subprocess.run(
-        ["git", "-C", str(REPO_ROOT), "show", f"{mod.BASE_COMMIT}:{path}"],
+        [
+            "git",
+            "-C",
+            str(REPO_ROOT),
+            "show",
+            f"{mod.SELECTED_METHOD_SOURCE_COMMIT}:{path}",
+        ],
         check=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -472,6 +610,58 @@ def test_canonical_adapter_contract_is_reused(packet):
     ]
     paths = [item["path"] for item in packet["canonical_adapter_references"]]
     assert paths == _module().ADAPTER_REFERENCE_PATHS
+
+
+def test_adapter_reference_delta_is_explicit_and_scoped(packet):
+    mod = _module()
+    references = {item["path"]: item for item in packet["canonical_adapter_references"]}
+    registry = references["lottery_api/models/replay_strategy_registry.py"]
+    assert registry["historical_git_blob_sha"] == "45770dabaa46c80e6f564b61e5dae96b03bd856e"
+    assert registry["git_blob_sha"] == "21be32d9f0db2a600683dc1788a57f28b87f2529"
+    assert registry["contract_delta"] == mod.REGISTRY_CONTRACT_DELTA
+    assert [item["strategy_id"] for item in registry["registered_factory_evidence"]] == [
+        "biglotto_social_wisdom_anti_popularity",
+        "biglotto_zone_split_3bet_bet1",
+    ]
+    assert all(
+        item["source_declared_status"] == "ONLINE"
+        and item["runtime_state_observed"] is False
+        for item in registry["registered_factory_evidence"]
+    )
+    assert all(
+        references[path]["historical_git_blob_sha"] == references[path]["git_blob_sha"]
+        and references[path]["change_class"] == "UNCHANGED"
+        for path in (
+            "lottery_api/models/p42_wave3_biglotto_adapters.py",
+            "lottery_api/models/p93_tierb_replay_adapters.py",
+        )
+    )
+    assert packet["p541c_readiness_context"]["ready_for_replay_readiness_now"] == 0
+
+
+def test_historical_normalized_designs_keep_statuses_gates_and_contracts(packet):
+    old = _historical_packet()
+    assert _normalized_designs(packet) == _normalized_designs(old)
+    assert packet["historical_design_comparison"]["normalized_design_delta"] == (
+        "EXACT_EXPLAINED_DIFF"
+    )
+    for path in (
+        "lottery_api/models/social_wisdom_predictor.py",
+        "lottery_api/models/zone_split.py",
+    ):
+        new_design = next(item for item in packet["method_designs"] if item["source_path"] == path)
+        old_design = next(item for item in old["method_designs"] if item["source_path"] == path)
+        assert new_design["future_implementation_files"] == []
+        assert old_design["future_implementation_files"]
+        assert new_design["design_status"] == old_design["design_status"]
+
+
+def test_two_restricted_generations_produce_identical_json_and_markdown():
+    mod = _module()
+    first = mod.build_packet(REPO_ROOT)
+    second = mod.build_packet(REPO_ROOT)
+    assert mod.canonical_json_bytes(first) == mod.canonical_json_bytes(second)
+    assert mod.render_markdown(first).encode("utf-8") == mod.render_markdown(second).encode("utf-8")
 
 
 def test_json_markdown_agree(packet):

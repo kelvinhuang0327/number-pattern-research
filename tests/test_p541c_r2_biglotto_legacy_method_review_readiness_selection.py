@@ -13,6 +13,7 @@ import inspect
 import json
 import os
 import sys
+from collections import Counter
 from pathlib import Path
 
 import pytest
@@ -111,7 +112,9 @@ def test_input_matches_pinned_identity(input_provenance):
     assert input_provenance["byte_size"] == mod.INPUT_IDENTITY["byte_size"]
     assert input_provenance["sha256"] == mod.INPUT_IDENTITY["sha256"]
     assert input_provenance["schema_version"] == "p541b-r2-evidence-v1"
-    assert input_provenance["detector_version"] == "p541b-r2-detector-v4"
+    assert input_provenance["detector_version"] == "p541b-r2-detector-v10"
+    assert input_provenance["byte_size"] == 10490289
+    assert input_provenance["sha256"] == "6e1c84b899dbc0b8a662f54c378d0bb2c8812b53b0377447c9c7e94b52fda61e"
     assert input_provenance["source_manifest_sha256"] == mod.SOURCE_MANIFEST_SHA256
     assert input_provenance["record_count"] == 580
     assert input_provenance["verification"] == "PASS"
@@ -120,6 +123,81 @@ def test_input_matches_pinned_identity(input_provenance):
         "UTF-8 decoding, and strict JSON parsing are all applied to the same immutable "
         "byte buffer."
     )
+
+
+def test_historical_v4_pin_rejects_current_r9_input():
+    mod = _module()
+    stale_identity = {
+        **mod.INPUT_IDENTITY,
+        "byte_size": 10478598,
+        "sha256": "9c9a28d871113c63f3de024f056d7a4e2d6949e934e76da161a9c891e662103f",
+        "detector_version": "p541b-r2-detector-v4",
+    }
+    with pytest.raises(mod.P541CR2ValidationError, match="committed input identity mismatch"):
+        mod.read_verified_input_bytes(Path(REPO_ROOT), stale_identity)
+
+
+@pytest.mark.parametrize("mutation", ["order", "entry", "record_identity"])
+def test_ordered_manifest_content_and_record_binding_fail_closed(p541b_r2, mutation):
+    mod = _module()
+    modified = copy.deepcopy(p541b_r2)
+    if mutation == "order":
+        modified["method_classification_records"].reverse()
+    elif mutation == "entry":
+        modified["provenance"]["source_manifest"]["ordered_entries"][0]["sha256"] = "0" * 64
+    else:
+        modified["method_classification_records"][0]["source_identity"]["sha256"] = "0" * 64
+    with pytest.raises(mod.P541CR2ValidationError, match="ordered source manifest mismatch"):
+        mod.validate_upstream_contract(modified)
+
+
+@pytest.mark.parametrize("field", ["schema_version", "detector_version"])
+def test_record_version_mismatch_fails_closed(p541b_r2, field):
+    mod = _module()
+    modified = copy.deepcopy(p541b_r2)
+    modified["method_classification_records"][0][field] = "retired-version"
+    with pytest.raises(mod.P541CR2ValidationError, match=f"record {field} mismatch"):
+        mod.validate_upstream_contract(modified)
+
+
+def test_r9_risk_distribution_and_new_low_members_preserve_readiness(p541b_r2):
+    mod = _module()
+    decisions = mod.classify_all(p541b_r2)
+    assert Counter(d["p541b_r2_status"]["risk_level"] for d in decisions) == {
+        "low": 24, "medium": 4, "high": 71, "unknown": 481,
+    }
+    by_id = {d["method_id"]: d for d in decisions}
+    adapter = by_id["lottery_api/models/advanced_strategies.py"]
+    unresolved = by_id["lottery_api/models/power_lotto_second_zone.py"]
+    for decision in (adapter, unresolved):
+        assert decision["p541b_r2_status"]["low_risk_eligible"] is True
+    assert adapter["p541c_r2_bucket"] == mod.BUCKET_NEEDS_ADAPTER
+    assert adapter["required_change_before_replay"] == "adapter_wrapper"
+    assert adapter["replay_readiness_priority"] == "medium"
+    assert unresolved["p541c_r2_bucket"] == mod.BUCKET_NEEDS_CTO_REVIEW
+    assert unresolved["required_change_before_replay"] == "identity_confirmation"
+    shortlist_ids = {d["method_id"] for d in mod.build_shortlist(decisions)}
+    assert {adapter["method_id"], unresolved["method_id"]}.isdisjoint(shortlist_ids)
+    blocked = by_id["lottery_api/models/ultra_optimized_predictor.py"]
+    assert blocked["p541b_r2_status"]["risk_level"] == "high"
+    assert blocked["p541c_r2_bucket"] == mod.BUCKET_EXCLUDED
+
+
+def test_r9_incomplete_or_unresolved_evidence_never_becomes_low_or_ready(p541b_r2):
+    mod = _module()
+    decisions = {d["method_id"]: d for d in mod.classify_all(p541b_r2)}
+    shortlist_ids = {d["method_id"] for d in mod.build_shortlist(list(decisions.values()))}
+    incomplete = [r for r in p541b_r2["method_classification_records"] if r["scan_status"] != "complete"]
+    assert Counter(r["scan_status"] for r in incomplete) == {"unsupported": 35, "syntax_error": 1}
+    for record in p541b_r2["method_classification_records"]:
+        decision = decisions[record["method_id"]]
+        if record["scan_status"] != "complete" or any(
+            item["state"] == "unknown" for item in record["evidence"].values()
+        ):
+            assert decision["p541b_r2_status"]["low_risk_eligible"] is False
+            assert decision["p541c_r2_bucket"] != mod.BUCKET_READY
+            assert decision["method_id"] not in shortlist_ids
+    assert sum(d["historical_p541b_status"]["is_actual_prediction_method"] == "unknown" for d in decisions.values()) == 312
 
 
 def test_load_verified_input_reads_pinned_path_exactly_once(
@@ -521,7 +599,7 @@ def test_bucket_totals_sum_to_580(p541b_r2):
     total = sum(summary[b] for b in mod.ALL_BUCKETS)
     assert total == 580
     assert summary["total_reviewed_from_p541b_r2"] == 580
-    assert [summary[b] for b in mod.ALL_BUCKETS] == [0, 12, 0, 458, 110]
+    assert [summary[b] for b in mod.ALL_BUCKETS] == [0, 13, 0, 496, 71]
 
 
 def test_source_path_is_identifier_only(p541b_r2):
@@ -603,7 +681,7 @@ def test_invariant_low_risk_does_not_erase_upstream_readiness_contract(p541b_r2)
         and d["historical_p541b_status"]["is_actual_prediction_method"] is True
         and d["historical_p541b_status"]["runnable_status"] == "needs_adapter_wrapper"
     ]
-    assert len(low_confirmed_adapter) == 12
+    assert len(low_confirmed_adapter) == 13
     assert all(d["p541c_r2_bucket"] == mod.BUCKET_NEEDS_ADAPTER for d in low_confirmed_adapter)
     assert all(d["required_change_before_replay"] == "adapter_wrapper" for d in low_confirmed_adapter)
 
@@ -687,7 +765,7 @@ def test_build_artifact_has_all_required_sections(p541b_r2, input_provenance):
 def test_selector_version_is_exact_and_fails_closed(p541b_r2, input_provenance):
     mod = _module()
     artifact = mod.build_artifact(p541b_r2, input_provenance, generated_at="TEST")
-    assert artifact["selector_version"] == "p541c-r2-selector-v4"
+    assert artifact["selector_version"] == "p541c-r2-selector-v5"
 
     missing = copy.deepcopy(artifact)
     del missing["selector_version"]
@@ -769,7 +847,7 @@ def test_render_markdown_contains_key_sections(p541b_r2, input_provenance):
     assert "## Contract Reconciliation" in md
     assert "## Bucket Definitions" in md
     assert "## Shortlist" in md
-    assert "> selector_version: p541c-r2-selector-v4" in md
+    assert "> selector_version: p541c-r2-selector-v5" in md
     assert mod.ATOMIC_INPUT_BINDING_STATEMENT in md
     assert artifact["next_task_recommendation"] in md
     assert artifact["disclaimer"] in md
@@ -785,7 +863,7 @@ def test_committed_json_and_markdown_agree():
         Path(REPO_ROOT)
         / "outputs/research/p541c_r2_biglotto_legacy_method_review_readiness_selection_20260712.md"
     ).read_text(encoding="utf-8")
-    assert committed_json["selector_version"] == "p541c-r2-selector-v4"
+    assert committed_json["selector_version"] == "p541c-r2-selector-v5"
     assert f"> selector_version: {committed_json['selector_version']}" in committed_md
     for key, value in committed_json["summary"].items():
         assert f"| {key} | {value} |" in committed_md

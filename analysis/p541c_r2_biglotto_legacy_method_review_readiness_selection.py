@@ -21,17 +21,17 @@ P541B_R2_JSON = REPO_ROOT / "outputs/research/p541b_r2_biglotto_legacy_method_cl
 
 INPUT_IDENTITY = {
     "path": "outputs/research/p541b_r2_biglotto_legacy_method_classification_audit_20260711.json",
-    "byte_size": 10_478_598,
-    "sha256": "9c9a28d871113c63f3de024f056d7a4e2d6949e934e76da161a9c891e662103f",
+    "byte_size": 10_490_289,
+    "sha256": "6e1c84b899dbc0b8a662f54c378d0bb2c8812b53b0377447c9c7e94b52fda61e",
     "schema_version": "p541b-r2-evidence-v1",
-    "detector_version": "p541b-r2-detector-v4",
+    "detector_version": "p541b-r2-detector-v10",
     "source_manifest_sha256": "ca0f84b23f1a3f6613c5f78d6020ec954a3e28fb702152fbf1fa1fb53dbf4e40",
     "record_count": 580,
 }
 SOURCE_MANIFEST_SHA256 = "ca0f84b23f1a3f6613c5f78d6020ec954a3e28fb702152fbf1fa1fb53dbf4e40"
 SOURCE_MANIFEST_COUNT = 580
-IMPLEMENTATION_BASE_COMMIT = "137dbff5938a74117bb33a4a3db5ccc5de2e8454"
-GENERATED_AT = "2026-07-12T00:00:00+00:00"
+IMPLEMENTATION_BASE_COMMIT = "1777e15556d41f1ff829f9ac18aa3f58d7f8f54f"
+GENERATED_AT = "2026-10-12T00:00:00+00:00"
 
 DISCLAIMER = (
     "Historical legacy method review and replay-readiness selection only; "
@@ -67,8 +67,8 @@ ALLOWED_RUNNABLE_STATUSES = {
 }
 
 SHORTLIST_MAX = 20
-SELECTOR_VERSION = "p541c-r2-selector-v4"
-FINALIZATION_TASK_ID = "P541C_R2_PR686_ATOMIC_PINNED_INPUT_BINDING_REPAIR_R4"
+SELECTOR_VERSION = "p541c-r2-selector-v5"
+FINALIZATION_TASK_ID = "P541B_R9_P541C_R2_CURRENT_INPUT_ADOPTION_R1"
 ATOMIC_INPUT_BINDING_STATEMENT = (
     "The pinned upstream input is read once into bytes; byte size, SHA-256, strict "
     "UTF-8 decoding, and strict JSON parsing are all applied to the same immutable "
@@ -214,6 +214,10 @@ def validate_upstream_contract(p541b_r2: dict[str, Any]) -> None:
             raise P541CR2ValidationError(f"invalid or duplicate source_path at index {index}")
         method_ids.add(method_id)
         source_paths.add(source_path)
+        if record.get("schema_version") != INPUT_IDENTITY["schema_version"]:
+            raise P541CR2ValidationError(f"record schema_version mismatch: {method_id}")
+        if record.get("detector_version") != INPUT_IDENTITY["detector_version"]:
+            raise P541CR2ValidationError(f"record detector_version mismatch: {method_id}")
         safety = record["safety_classification"]
         if not isinstance(safety, dict) or not required_safety <= set(safety):
             raise P541CR2ValidationError(f"safety_classification contract mismatch: {method_id}")
@@ -245,6 +249,13 @@ def validate_upstream_contract(p541b_r2: dict[str, Any]) -> None:
             raise P541CR2ValidationError(f"invalid method_family: {method_id}")
         if not isinstance(historical["why_not_runnable"], str):
             raise P541CR2ValidationError(f"invalid why_not_runnable: {method_id}")
+
+    identities = [record.get("source_identity") for record in records]
+    if (
+        manifest.get("ordered_entries") != identities
+        or hashlib.sha256(canonical_bytes(identities)).hexdigest() != SOURCE_MANIFEST_SHA256
+    ):
+        raise P541CR2ValidationError("P541B_R2 ordered source manifest mismatch")
 
 
 def classify_record(rec: dict[str, Any]) -> dict[str, Any]:
@@ -543,9 +554,9 @@ def build_artifact(
             "reason": (
                 "Pre-R2 P541C consumed the retired boolean-only P541B v1 evidence schema, "
                 "which has no unknown state and coerces missing/absent evidence flags to "
-                "low risk. Cross-checked against P541B_R2: 135/140 (96%) of its shortlist- "
-                "eligible pool and 19/20 of its published shortlist are no longer "
-                "confirmed low-risk under the fail-closed P541B_R2 audit."
+                "low risk. Current safety, eligibility and replay-readiness decisions "
+                "are recomputed from the accepted P541B R9 artifact; historical "
+                "shortlist decisions are not reused."
             ),
         },
         "input_provenance": {
@@ -720,7 +731,7 @@ def render_markdown(artifact: dict[str, Any]) -> str:
     for k, v in artifact["bucket_definitions"].items():
         lines.append(f"- **{k}**: {v}")
     lines.append("")
-    lines.append(f"## Shortlist Rule")
+    lines.append("## Shortlist Rule")
     lines.append("")
     lines.append(artifact["selection_policy"]["shortlist_rule"])
     lines.append("")

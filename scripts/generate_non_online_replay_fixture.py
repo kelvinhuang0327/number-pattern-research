@@ -15,18 +15,30 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import sys
 from pathlib import Path
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
-DEFAULT_OUTPUT = PROJECT_ROOT / "outputs/replay/non_online_replay_fixture_20260511.json"
+HISTORICAL_FIXTURE_PATH = (
+    PROJECT_ROOT / "outputs/replay/non_online_replay_fixture_20260511.json"
+)
+DEFAULT_OUTPUT = PROJECT_ROOT / "outputs/replay/non_online_replay_fixture_current.json"
 FIXTURE_VERSION = "p21_20260511"
 FIXTURE_NAME = "non_online_lifecycle_replay_fixture"
 FIXTURE_SOURCE = "non_online_lifecycle_fixture"
 GOVERNANCE_MARKER = "P21_NON_ONLINE_FIXTURE_ROW"
 ALLOWED_STATUSES = {"REJECTED", "RETIRED", "OBSERVATION"}
+KNOWN_LIFECYCLE_STATUSES = {
+    "ONLINE",
+    "OFFLINE",
+    "REJECTED",
+    "RETIRED",
+    "OBSERVATION",
+}
+KNOWN_LOTTERY_TYPES = {"BIG_LOTTO", "POWER_LOTTO", "DAILY_539"}
 
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
@@ -86,31 +98,124 @@ def _build_record(strategy_id: str, lottery_type: str, lifecycle_status: str) ->
     }
 
 
-def build_fixture() -> dict:
-    metadata = list_strategy_lifecycle_metadata()
-    non_executable = set(list_non_executable_strategy_ids())
+def _validated_registry_rows(metadata: list, non_executable_ids: list) -> list[dict]:
+    if not isinstance(metadata, list):
+        raise ValueError("Strategy lifecycle metadata must be a list.")
+    if not isinstance(non_executable_ids, list):
+        raise ValueError("Non-executable strategy IDs must be a list.")
 
-    filtered = []
+    if any(
+        not isinstance(strategy_id, str) or not strategy_id.strip()
+        for strategy_id in non_executable_ids
+    ):
+        raise ValueError("Non-executable strategy IDs must be non-empty strings.")
+    if len(non_executable_ids) != len(set(non_executable_ids)):
+        raise ValueError("Duplicate non-executable strategy ID in registry.")
+    non_executable = set(non_executable_ids)
+
+    metadata_by_id: dict[str, dict] = {}
     for item in metadata:
+        if not isinstance(item, dict):
+            raise ValueError("Each lifecycle metadata entry must be a mapping.")
+
         strategy_id = item.get("strategy_id")
+        if not isinstance(strategy_id, str) or not strategy_id.strip():
+            raise ValueError("Lifecycle metadata requires a non-empty strategy_id.")
+        if strategy_id in metadata_by_id:
+            raise ValueError(f"Duplicate strategy ID in lifecycle metadata: {strategy_id}")
+
         lifecycle_status = item.get("lifecycle_status")
-        if strategy_id in non_executable and lifecycle_status in ALLOWED_STATUSES:
-            filtered.append(
-                {
-                    "strategy_id": strategy_id,
-                    "lottery_type": _normalize_lottery_type(item.get("lottery_type")),
-                    "lifecycle_status": lifecycle_status,
-                }
+        if (
+            not isinstance(lifecycle_status, str)
+            or lifecycle_status not in KNOWN_LIFECYCLE_STATUSES
+        ):
+            raise ValueError(
+                f"Invalid lifecycle status for {strategy_id}: {lifecycle_status!r}"
             )
 
+        supported_types = item.get("supported_lottery_types")
+        if (
+            not isinstance(supported_types, list)
+            or not supported_types
+            or any(
+                not isinstance(lottery_type, str)
+                or lottery_type not in KNOWN_LOTTERY_TYPES
+                for lottery_type in supported_types
+            )
+            or len(supported_types) != len(set(supported_types))
+        ):
+            raise ValueError(
+                f"Invalid supported_lottery_types metadata for {strategy_id}."
+            )
+
+        metadata_by_id[strategy_id] = item
+
+    expected_non_executable = {
+        strategy_id
+        for strategy_id, item in metadata_by_id.items()
+        if item["lifecycle_status"] != "ONLINE"
+    }
+    if non_executable != expected_non_executable:
+        raise ValueError(
+            "Non-executable strategy IDs do not match lifecycle metadata."
+        )
+
+    filtered = []
+    for strategy_id, item in metadata_by_id.items():
+        lifecycle_status = item["lifecycle_status"]
+        if (
+            strategy_id not in non_executable
+            or lifecycle_status not in ALLOWED_STATUSES
+        ):
+            continue
+
+        declared_lottery_type = item.get("lottery_type")
+        if declared_lottery_type is not None and (
+            not isinstance(declared_lottery_type, str)
+            or declared_lottery_type not in KNOWN_LOTTERY_TYPES
+        ):
+            raise ValueError(f"Invalid lottery_type metadata for {strategy_id}.")
+        lottery_type = _normalize_lottery_type(declared_lottery_type)
+        if lottery_type == "UNKNOWN":
+            lottery_type = sorted(item["supported_lottery_types"])[0]
+
+        filtered.append(
+            {
+                "strategy_id": strategy_id,
+                "lottery_type": lottery_type,
+                "lifecycle_status": lifecycle_status,
+            }
+        )
+
     filtered.sort(
-        key=lambda x: (x["lifecycle_status"], x["lottery_type"], x["strategy_id"])
+        key=lambda row: (
+            row["lifecycle_status"],
+            row["lottery_type"],
+            row["strategy_id"],
+        )
     )
+    return filtered
+
+
+def build_fixture() -> dict:
+    metadata = list_strategy_lifecycle_metadata()
+    non_executable_ids = list_non_executable_strategy_ids()
+    filtered = _validated_registry_rows(metadata, non_executable_ids)
 
     records = [
-        _build_record(x["strategy_id"], x["lottery_type"], x["lifecycle_status"])
-        for x in filtered
+        _build_record(
+            row["strategy_id"], row["lottery_type"], row["lifecycle_status"]
+        )
+        for row in filtered
     ]
+    strategy_ids = [record.get("strategy_id") for record in records]
+    if len(strategy_ids) != len(set(strategy_ids)):
+        raise ValueError("Duplicate strategy ID in generated fixture records.")
+    fixture_row_ids = [record.get("fixture_row_id") for record in records]
+    if any(not isinstance(row_id, str) or not row_id for row_id in fixture_row_ids):
+        raise ValueError("Every generated record must have a fixture_row_id.")
+    if len(fixture_row_ids) != len(set(fixture_row_ids)):
+        raise ValueError("Duplicate fixture_row_id in generated fixture records.")
 
     return {
         "fixture_name": FIXTURE_NAME,
@@ -133,7 +238,32 @@ def build_fixture() -> dict:
 
 
 def _assert_output_path(path: Path) -> None:
-    resolved = path.resolve()
+    candidate = path.expanduser()
+    try:
+        resolved = candidate.resolve()
+        frozen_resolved = HISTORICAL_FIXTURE_PATH.resolve()
+    except (OSError, RuntimeError) as exc:
+        raise ValueError(f"Cannot resolve output path safely: {candidate}") from exc
+
+    normalized = Path(os.path.abspath(candidate))
+    frozen_normalized = Path(os.path.abspath(HISTORICAL_FIXTURE_PATH))
+    aliases_frozen_path = (
+        normalized == frozen_normalized or resolved == frozen_resolved
+    )
+    if (
+        not aliases_frozen_path
+        and candidate.exists()
+        and HISTORICAL_FIXTURE_PATH.exists()
+    ):
+        try:
+            aliases_frozen_path = os.path.samefile(candidate, HISTORICAL_FIXTURE_PATH)
+        except OSError:
+            aliases_frozen_path = False
+    if aliases_frozen_path:
+        raise ValueError(
+            "The historical 20260511 fixture is frozen and cannot be an output target."
+        )
+
     parts = list(resolved.parts)
     has_outputs_replay = any(
         i + 1 < len(parts) and parts[i] == "outputs" and parts[i + 1] == "replay"
@@ -161,6 +291,7 @@ def main(argv: list[str] | None = None) -> int:
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     fixture = build_fixture()
+    _assert_output_path(output_path)
     output_path.write_text(json.dumps(fixture, indent=2), encoding="utf-8")
 
     print(str(output_path))

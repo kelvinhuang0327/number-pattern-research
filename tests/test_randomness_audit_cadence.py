@@ -1,5 +1,10 @@
-<<<<<<< HEAD
-"""Fail-closed cadence contract for the executable randomness audit."""
+"""Fail-closed cadence contract for the executable randomness audit.
+
+The gate binds the real audit execution to an independent canonical DB
+population. Human or timestamp-only re-attestation is legacy metadata and
+resets neither the 14-day calendar nor the 50-new-canonical-draw trigger.
+"""
+
 from __future__ import annotations
 
 import hashlib
@@ -7,26 +12,15 @@ import json
 import os
 import re
 import sqlite3
-=======
-"""Cadence contract for the real existing-logic randomness audit.
-
-The gate is anchored only to a real executable audit and to an independent
-canonical DB population.  Human or timestamp-only re-attestation is legacy
-metadata and resets neither the 14-day nor the 50-new-draw trigger.
-"""
-from __future__ import annotations
-
 from copy import deepcopy
->>>>>>> archive/p692-r6-superseded-deeb3af-20260719
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
 import pytest
 
-<<<<<<< HEAD
+from scripts import randomness_audit as audit
 from scripts.randomness_audit import AuditContractError, _load_json
-
 
 REPO = Path(__file__).resolve().parent.parent
 RESULTS_FILE = REPO / "outputs" / "randomness_audit" / "randomness_audit_results.json"
@@ -298,9 +292,6 @@ class TestLiveDatasetCadence:
         assert new_rows < CADENCE_MAX_NEW_DRAWS, (
             f"CADENCE GATE FAILURE: {new_rows} new canonical draws since audit"
         )
-=======
-from scripts import randomness_audit as audit
-
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 RESULTS_PATH = REPO_ROOT / "outputs" / "randomness_audit" / "randomness_audit_results.json"
@@ -949,4 +940,3 @@ def test_wiki_policy_routes_to_real_execution_and_both_triggers():
     assert audit.LOGICAL_DB_IDENTITY in wiki
     assert "scripts/randomness_audit.py" in wiki
     assert "P246K" in wiki
->>>>>>> archive/p692-r6-superseded-deeb3af-20260719

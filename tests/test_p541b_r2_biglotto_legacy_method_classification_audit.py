@@ -16,6 +16,34 @@ import pytest
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+GENERATOR_PATH = (
+    REPO_ROOT / "analysis/p541b_r2_biglotto_legacy_method_classification_audit.py"
+)
+PROTECTED_JSON_PATH = (
+    REPO_ROOT
+    / "outputs/research/p541b_r2_biglotto_legacy_method_classification_audit_20260711.json"
+)
+PROTECTED_MARKDOWN_PATH = (
+    REPO_ROOT
+    / "outputs/research/p541b_r2_biglotto_legacy_method_classification_audit_20260711.md"
+)
+PROTECTED_JSON_BYTE_SIZE = 10490289
+PROTECTED_JSON_SHA256 = "6e1c84b899dbc0b8a662f54c378d0bb2c8812b53b0377447c9c7e94b52fda61e"
+PROTECTED_MARKDOWN_BYTE_SIZE = 5579
+PROTECTED_MARKDOWN_SHA256 = "af92cf54340def8bb4e36c548a149561ed449f67784bb4304bfb8e93bc1c55c8"
+ALLOWED_SELF_IDENTITY_JSON_POINTERS = frozenset(
+    {"/generator/byte_size", "/generator/sha256"}
+)
+GENERATOR_BLOCK_PATTERN = re.compile(
+    rb"(?m)^  \"generator\": \{\n"
+    rb"    \"path\": \"(?P<path>[^\"\r\n]+)\",\n"
+    rb"    \"byte_size\": (?P<byte_size>0|[1-9][0-9]*),\n"
+    rb"    \"sha256\": \"(?P<sha256>[^\"\r\n]*)\"\n"
+    rb"  \},$"
+)
+MARKDOWN_GENERATOR_SHA_PATTERN = re.compile(
+    rb"^- Generator SHA-256: `(?P<sha256>[^`\r\n]*)`$"
+)
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
@@ -24,6 +52,337 @@ def _module():
     from analysis import p541b_r2_biglotto_legacy_method_classification_audit as mod
 
     return mod
+
+
+def _sha256(raw: bytes) -> str:
+    return hashlib.sha256(raw).hexdigest()
+
+
+def _canonical_generator_path() -> Path:
+    module_path = Path(_module().__file__).resolve()
+    assert module_path == GENERATOR_PATH.resolve(), "canonical generator path mismatch"
+    return module_path
+
+
+def _generator_identity(generator_path: Path) -> dict[str, object]:
+    raw = generator_path.read_bytes()
+    digest = _sha256(raw)
+    assert re.fullmatch(r"[0-9a-f]{64}", digest), "generator SHA-256 is not lowercase hex"
+    return {"byte_size": len(raw), "sha256": digest}
+
+
+def _assert_protected_artifact_pins(
+    protected_json_raw: bytes, protected_markdown_raw: bytes
+) -> None:
+    assert len(protected_json_raw) == PROTECTED_JSON_BYTE_SIZE, (
+        "protected JSON pin byte-size drift"
+    )
+    assert _sha256(protected_json_raw) == PROTECTED_JSON_SHA256, (
+        "protected JSON pin SHA-256 drift"
+    )
+    assert len(protected_markdown_raw) == PROTECTED_MARKDOWN_BYTE_SIZE, (
+        "protected Markdown pin byte-size drift"
+    )
+    assert _sha256(protected_markdown_raw) == PROTECTED_MARKDOWN_SHA256, (
+        "protected Markdown pin SHA-256 drift"
+    )
+
+
+def _strict_json_load(raw: bytes):
+    def reject_constant(value: str):
+        raise AssertionError(f"non-finite JSON constant is forbidden: {value}")
+
+    def reject_duplicate_keys(pairs):
+        result = {}
+        for key, value in pairs:
+            assert key not in result, f"duplicate JSON key: {key}"
+            result[key] = value
+        return result
+
+    try:
+        text = raw.decode("utf-8")
+        return json.loads(
+            text,
+            object_pairs_hook=reject_duplicate_keys,
+            parse_constant=reject_constant,
+        )
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise AssertionError(f"strict JSON parse failed: {exc}") from exc
+
+
+def _json_pointer_child(pointer: str, token) -> str:
+    escaped = str(token).replace("~", "~0").replace("/", "~1")
+    return f"{pointer}/{escaped}" if pointer else f"/{escaped}"
+
+
+def _json_differences(protected, regenerated, pointer: str = "") -> list[dict[str, str]]:
+    differences = []
+    if type(protected) is not type(regenerated):
+        return [{"pointer": pointer or "/", "kind": "type"}]
+    if isinstance(protected, dict):
+        protected_keys = list(protected)
+        regenerated_keys = list(regenerated)
+        if protected_keys != regenerated_keys:
+            kind = "key_order" if set(protected_keys) == set(regenerated_keys) else "key_set"
+            differences.append({"pointer": pointer or "/", "kind": kind})
+        for key in protected_keys:
+            if key in regenerated:
+                differences.extend(
+                    _json_differences(
+                        protected[key],
+                        regenerated[key],
+                        _json_pointer_child(pointer, key),
+                    )
+                )
+        return differences
+    if isinstance(protected, list):
+        if len(protected) != len(regenerated):
+            differences.append({"pointer": pointer or "/", "kind": "list_length"})
+        for index, (left, right) in enumerate(zip(protected, regenerated)):
+            differences.extend(
+                _json_differences(left, right, _json_pointer_child(pointer, index))
+            )
+        return differences
+    if protected != regenerated:
+        differences.append({"pointer": pointer or "/", "kind": "value"})
+    return differences
+
+
+def _generator_block_match(raw: bytes):
+    matches = list(GENERATOR_BLOCK_PATTERN.finditer(raw))
+    assert len(matches) == 1, "generator identity block must occur exactly once"
+    return matches[0]
+
+
+def _replace_captured_spans(raw: bytes, replacements) -> bytes:
+    result = raw
+    for start, end, value in sorted(replacements, reverse=True):
+        result = result[:start] + value + result[end:]
+    return result
+
+
+def _expected_json_with_current_identity(
+    protected_json_raw: bytes, identity: dict[str, object]
+) -> bytes:
+    match = _generator_block_match(protected_json_raw)
+    assert match.group("path").decode("utf-8") == GENERATOR_PATH.relative_to(
+        REPO_ROOT
+    ).as_posix()
+    return _replace_captured_spans(
+        protected_json_raw,
+        [
+            (
+                match.start("byte_size"),
+                match.end("byte_size"),
+                str(identity["byte_size"]).encode("ascii"),
+            ),
+            (
+                match.start("sha256"),
+                match.end("sha256"),
+                str(identity["sha256"]).encode("ascii"),
+            ),
+        ],
+    )
+
+
+def _assert_json_self_identity_contract(
+    regenerated_json_raw: bytes,
+    *,
+    generator_path: Path,
+    protected_json_raw: bytes,
+    protected_markdown_raw: bytes,
+) -> None:
+    _assert_protected_artifact_pins(protected_json_raw, protected_markdown_raw)
+    identity = _generator_identity(generator_path)
+    protected = _strict_json_load(protected_json_raw)
+    regenerated = _strict_json_load(regenerated_json_raw)
+    assert type(protected) is dict, "protected JSON root must be an object"
+    assert type(regenerated) is dict, "regenerated JSON root must be an object"
+    generator = regenerated.get("generator")
+    assert type(generator) is dict, "regenerated /generator must be an object"
+    assert "byte_size" in generator, "regenerated /generator/byte_size is missing"
+    assert "sha256" in generator, "regenerated /generator/sha256 is missing"
+    assert type(generator["byte_size"]) is int, (
+        "regenerated /generator/byte_size must be an integer"
+    )
+    assert type(generator["sha256"]) is str, (
+        "regenerated /generator/sha256 must be a string"
+    )
+    assert re.fullmatch(r"[0-9a-f]{64}", generator["sha256"]), (
+        "regenerated /generator/sha256 must be 64-character lowercase hex"
+    )
+    assert generator["byte_size"] == identity["byte_size"], (
+        "regenerated /generator/byte_size does not match generator bytes"
+    )
+    assert generator["sha256"] == identity["sha256"], (
+        "regenerated /generator/sha256 does not match generator bytes"
+    )
+    differences = _json_differences(protected, regenerated)
+    signature = {(item["pointer"], item["kind"]) for item in differences}
+    expected_signature = {
+        (pointer, "value") for pointer in ALLOWED_SELF_IDENTITY_JSON_POINTERS
+    }
+    assert len(differences) == 2 and signature == expected_signature, (
+        f"closed JSON exception mismatch: {differences}"
+    )
+    expected_raw = _expected_json_with_current_identity(protected_json_raw, identity)
+    assert regenerated_json_raw == expected_raw, (
+        "JSON bytes differ outside the two exact self-identity scalar spans"
+    )
+
+
+def _line_ending(line: bytes) -> bytes:
+    if line.endswith(b"\r\n"):
+        return b"\r\n"
+    if line.endswith(b"\n"):
+        return b"\n"
+    if line.endswith(b"\r"):
+        return b"\r"
+    return b""
+
+
+def _markdown_generator_sha_candidates(raw: bytes):
+    lines = raw.splitlines(keepends=True)
+    candidates = []
+    for index, line in enumerate(lines):
+        ending = _line_ending(line)
+        body = line[: -len(ending)] if ending else line
+        match = MARKDOWN_GENERATOR_SHA_PATTERN.fullmatch(body)
+        if match:
+            candidates.append(
+                {
+                    "index": index,
+                    "line": line,
+                    "ending": ending,
+                    "sha256": match.group("sha256"),
+                }
+            )
+    return lines, candidates
+
+
+def _expected_markdown_with_current_identity(
+    protected_markdown_raw: bytes, identity: dict[str, object]
+) -> bytes:
+    lines, candidates = _markdown_generator_sha_candidates(protected_markdown_raw)
+    assert len(candidates) == 1, (
+        "protected Markdown must contain exactly one Generator SHA-256 line"
+    )
+    candidate = candidates[0]
+    lines[candidate["index"]] = (
+        b"- Generator SHA-256: `"
+        + str(identity["sha256"]).encode("ascii")
+        + b"`"
+        + candidate["ending"]
+    )
+    return b"".join(lines)
+
+
+def _assert_markdown_self_identity_contract(
+    regenerated_markdown_raw: bytes,
+    regenerated_json_raw: bytes,
+    *,
+    generator_path: Path,
+    protected_json_raw: bytes,
+    protected_markdown_raw: bytes,
+) -> None:
+    _assert_protected_artifact_pins(protected_json_raw, protected_markdown_raw)
+    identity = _generator_identity(generator_path)
+    regenerated_json = _strict_json_load(regenerated_json_raw)
+    assert type(regenerated_json) is dict, "regenerated JSON root must be an object"
+    generator = regenerated_json.get("generator")
+    assert type(generator) is dict, "regenerated JSON /generator must be an object"
+    json_sha256 = generator.get("sha256")
+    assert type(json_sha256) is str, (
+        "regenerated JSON /generator/sha256 must be a string"
+    )
+    assert re.fullmatch(r"[0-9a-f]{64}", json_sha256), (
+        "regenerated JSON /generator/sha256 must be 64-character lowercase hex"
+    )
+    protected_lines, protected_candidates = _markdown_generator_sha_candidates(
+        protected_markdown_raw
+    )
+    regenerated_lines, regenerated_candidates = _markdown_generator_sha_candidates(
+        regenerated_markdown_raw
+    )
+    assert len(protected_candidates) == 1, (
+        "protected Markdown must contain exactly one Generator SHA-256 line"
+    )
+    assert len(regenerated_candidates) == 1, (
+        "regenerated Markdown must contain exactly one Generator SHA-256 line"
+    )
+    assert len(regenerated_lines) == len(protected_lines), (
+        "Markdown line count differs from the protected artifact"
+    )
+    protected_candidate = protected_candidates[0]
+    regenerated_candidate = regenerated_candidates[0]
+    assert regenerated_candidate["index"] == protected_candidate["index"], (
+        "Generator SHA-256 line moved"
+    )
+    try:
+        markdown_sha256 = regenerated_candidate["sha256"].decode("ascii")
+    except UnicodeDecodeError as exc:
+        raise AssertionError("Markdown generator SHA-256 is not ASCII") from exc
+    assert re.fullmatch(r"[0-9a-f]{64}", markdown_sha256), (
+        "Markdown generator SHA-256 must be 64-character lowercase hex"
+    )
+    assert markdown_sha256 == json_sha256, (
+        "Markdown generator SHA-256 is inconsistent with regenerated JSON"
+    )
+    assert json_sha256 == identity["sha256"], (
+        "regenerated JSON/Markdown generator SHA-256 is inconsistent with generator bytes"
+    )
+    assert markdown_sha256 == identity["sha256"], (
+        "Markdown generator SHA-256 is inconsistent with generator bytes"
+    )
+    expected_line = (
+        b"- Generator SHA-256: `"
+        + str(identity["sha256"]).encode("ascii")
+        + b"`"
+        + protected_candidate["ending"]
+    )
+    assert regenerated_candidate["line"] == expected_line, (
+        "Markdown Generator SHA-256 line is not the deterministic expected line"
+    )
+    for index, (protected_line, regenerated_line) in enumerate(
+        zip(protected_lines, regenerated_lines)
+    ):
+        if index != protected_candidate["index"]:
+            assert regenerated_line == protected_line, (
+                f"Markdown line {index + 1} differs outside the closed exception"
+            )
+    expected_raw = _expected_markdown_with_current_identity(
+        protected_markdown_raw, identity
+    )
+    assert regenerated_markdown_raw == expected_raw, (
+        "Markdown bytes differ outside the one exact Generator SHA-256 line"
+    )
+
+
+def _canonical_json_bytes(value) -> bytes:
+    return (json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + "\n").encode(
+        "utf-8"
+    )
+
+
+@pytest.fixture(scope="module")
+def self_identity_contract_samples():
+    protected_json_raw = PROTECTED_JSON_PATH.read_bytes()
+    protected_markdown_raw = PROTECTED_MARKDOWN_PATH.read_bytes()
+    _assert_protected_artifact_pins(protected_json_raw, protected_markdown_raw)
+    generator_path = _canonical_generator_path()
+    identity = _generator_identity(generator_path)
+    return {
+        "generator_path": generator_path,
+        "identity": identity,
+        "protected_json": protected_json_raw,
+        "protected_markdown": protected_markdown_raw,
+        "regenerated_json": _expected_json_with_current_identity(
+            protected_json_raw, identity
+        ),
+        "regenerated_markdown": _expected_markdown_with_current_identity(
+            protected_markdown_raw, identity
+        ),
+    }
 
 
 def _analyze(source: str, path: str = "sample.py", *, resolve_transitive: bool = True):
@@ -834,7 +1193,7 @@ def test_one_hop_function_local_import_detects_network_effect(tmp_path):
     assert any(finding["resolved_api"] == "requests.get" for finding in result["findings"])
 
 
-def test_uninvoked_nested_project_import_is_unknown_without_promoted_effect(tmp_path):
+def test_uninvoked_outer_project_import_is_dormant_without_promoted_effect(tmp_path):
     repo, commit = _synthetic_repo(
         tmp_path,
         {
@@ -843,8 +1202,7 @@ def test_uninvoked_nested_project_import_is_unknown_without_promoted_effect(tmp_
         },
     )
     result = _one_hop(repo, commit, "main.py")
-    assert result["state"] == "unknown"
-    assert result["reason"] == "import_resolution_incomplete"
+    assert result["state"] == "not_detected"
     assert result["findings"] == []
 
 
@@ -1123,6 +1481,3041 @@ def test_uninvoked_definition_deeper_project_import_remains_dormant(tmp_path):
             "main.py": "import helper\n",
             "helper.py": "def dormant():\n    import deeper\n    return 1\n",
             "deeper.py": "import sqlite3\nsqlite3.connect('x.db')\n",
+        },
+    )
+    assert _one_hop(repo, commit, "main.py")["state"] == "not_detected"
+
+
+def test_reached_outer_function_uncalled_nested_helper_import_is_dormant(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def run():\n"
+                "    def never_called():\n"
+                "        import deeper\n"
+                "    return 1\n"
+            ),
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    assert _one_hop(repo, commit, "main.py")["state"] == "not_detected"
+
+
+def test_reached_outer_function_uncalled_nested_method_import_is_dormant(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def run():\n"
+                "    class Nested:\n"
+                "        def never_called(self):\n"
+                "            import deeper\n"
+                "    return 1\n"
+            ),
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    assert _one_hop(repo, commit, "main.py")["state"] == "not_detected"
+
+
+def test_reached_outer_function_invoked_nested_helper_import_is_unknown(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def run():\n"
+                "    def called():\n"
+                "        import deeper\n"
+                "    called()\n"
+            ),
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_reached_outer_function_invoked_nested_method_import_is_unknown(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def run():\n"
+                "    class Nested:\n"
+                "        def called(self):\n"
+                "            import deeper\n"
+                "    Nested().called()\n"
+            ),
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_reached_outer_function_nested_class_body_import_is_unknown(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": "def run():\n    class Nested:\n        import deeper\n",
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_nested_function_definition_time_dependency_is_unknown(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def run():\n"
+                "    from deeper import decorate, default\n"
+                "    @decorate\n"
+                "    def nested(value=default()):\n"
+                "        return value\n"
+                "    return 1\n"
+            ),
+            "deeper.py": "def decorate(value):\n    return value\ndef default():\n    return 1\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+@pytest.mark.parametrize(
+    "class_statement",
+    [
+        "@deeper.decorate\n    class Nested:\n        pass",
+        "class Nested(deeper.Base):\n        pass",
+        "class Nested(metaclass=deeper.Meta):\n        pass",
+    ],
+)
+def test_nested_class_definition_time_dependency_is_unknown(tmp_path, class_statement):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def run():\n"
+                "    import deeper\n"
+                f"    {class_statement}\n"
+                "    return 1\n"
+            ),
+            "deeper.py": (
+                "def decorate(value):\n    return value\n"
+                "class Base:\n    pass\n"
+                "class Meta(type):\n    pass\n"
+            ),
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+@pytest.mark.parametrize("module_name", ["json", "requests"])
+def test_reached_definition_nonrepository_import_does_not_taint(tmp_path, module_name):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": f"def run():\n    import {module_name}\n    return 1\n",
+        },
+    )
+    assert _one_hop(repo, commit, "main.py")["state"] == "not_detected"
+
+
+@pytest.mark.parametrize(
+    ("main_source", "helper_source"),
+    [
+        (
+            "from helper import run\nrun()\n",
+            "def run():\n    import deeper\n",
+        ),
+        (
+            "from helper import Worker\nWorker().run()\n",
+            "class Worker:\n    def run(self):\n        import deeper\n",
+        ),
+    ],
+)
+def test_existing_direct_reached_definition_imports_remain_unknown(
+    tmp_path, main_source, helper_source
+):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": main_source,
+            "helper.py": helper_source,
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_nested_import_unknown_preserves_reached_known_finding(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "import sqlite3\n"
+                "def run():\n"
+                "    sqlite3.connect('x.db')\n"
+                "    def called():\n"
+                "        import deeper\n"
+                "    called()\n"
+            ),
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert any(finding["resolved_api"] == "sqlite3.connect" for finding in result["findings"])
+
+
+@pytest.mark.parametrize(
+    "nested_source",
+    [
+        (
+            "    def never_called():\n"
+            "        import deeper\n"
+        ),
+        (
+            "    class Nested:\n"
+            "        def never_called(self):\n"
+            "            import deeper\n"
+        ),
+    ],
+)
+def test_primary_reached_outer_dormant_nested_import_is_not_detected(
+    tmp_path, nested_source
+):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": f"def run():\n{nested_source}    return 1\nrun()\n",
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    assert _one_hop(repo, commit, "main.py")["state"] == "not_detected"
+
+
+@pytest.mark.parametrize(
+    "run_body",
+    [
+        (
+            "    def called():\n"
+            "        import deeper\n"
+            "    called()\n"
+        ),
+        (
+            "    class Nested:\n"
+            "        def called(self):\n"
+            "            import deeper\n"
+            "    Nested().called()\n"
+        ),
+    ],
+)
+def test_primary_reached_outer_invoked_nested_import_is_unknown(tmp_path, run_body):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": f"def run():\n{run_body}run()\n",
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_nested_sibling_call_reaches_deeper_import(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def run():\n"
+                "    def a():\n"
+                "        b()\n"
+                "    def b():\n"
+                "        import deeper\n"
+                "    a()\n"
+            ),
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+@pytest.mark.parametrize("import_owner", ["a", "b"])
+def test_mutually_recursive_nested_helpers_are_bounded_and_unknown(
+    tmp_path, import_owner
+):
+    import_a = "        import deeper\n" if import_owner == "a" else ""
+    import_b = "        import deeper\n" if import_owner == "b" else ""
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def run():\n"
+                "    def a():\n"
+                f"{import_a}"
+                "        b()\n"
+                "    def b():\n"
+                f"{import_b}"
+                "        a()\n"
+                "    a()\n"
+            ),
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_direct_self_recursive_nested_helper_is_bounded_and_unknown(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def run():\n"
+                "    def recurse():\n"
+                "        import deeper\n"
+                "        recurse()\n"
+                "    recurse()\n"
+            ),
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    assert _one_hop(repo, commit, "main.py")["state"] == "unknown"
+
+
+def test_dormant_nested_sibling_import_remains_not_detected(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def run():\n"
+                "    def called():\n"
+                "        return 1\n"
+                "    def dormant():\n"
+                "        import deeper\n"
+                "    return called()\n"
+            ),
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    assert _one_hop(repo, commit, "main.py")["state"] == "not_detected"
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        "    alias = dangerous\n    alias()\n",
+        (
+            "    alias = dangerous\n"
+            "    if enabled:\n"
+            "        alias = safe\n"
+            "    alias()\n"
+        ),
+        (
+            "    def factory():\n"
+            "        return dangerous\n"
+            "    callback = factory()\n"
+            "    callback()\n"
+        ),
+        (
+            "    def invoke(callback):\n"
+            "        callback()\n"
+            "    invoke(dangerous)\n"
+        ),
+    ],
+)
+def test_nested_callable_alias_factory_and_callback_flows_fail_closed(
+    tmp_path, flow_source
+):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def run():\n"
+                "    def dangerous():\n"
+                "        import deeper\n"
+                "    def safe():\n"
+                "        return 1\n"
+                f"{flow_source}"
+            ),
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        "    obj = Dangerous()\n    obj.method()\n",
+        (
+            "    obj = Dangerous()\n"
+            "    callback = obj.method\n"
+            "    callback()\n"
+        ),
+        (
+            "    obj = Dangerous()\n"
+            "    if enabled:\n"
+            "        obj = Safe()\n"
+            "    obj.method()\n"
+        ),
+    ],
+)
+def test_nested_instance_and_bound_method_aliases_fail_closed(tmp_path, flow_source):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def run():\n"
+                "    class Dangerous:\n"
+                "        def method(self):\n"
+                "            import deeper\n"
+                "    class Safe:\n"
+                "        def method(self):\n"
+                "            return 1\n"
+                f"{flow_source}"
+            ),
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_partially_resolved_nested_alias_is_unknown_and_preserves_finding(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "import sqlite3\n"
+                "def run():\n"
+                "    sqlite3.connect('x.db')\n"
+                "    def dangerous():\n"
+                "        import deeper\n"
+                "    target = dangerous\n"
+                "    if enabled:\n"
+                "        target = unresolved\n"
+                "    target()\n"
+            ),
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert any(finding["resolved_api"] == "sqlite3.connect" for finding in result["findings"])
+
+
+@pytest.mark.parametrize(
+    ("main_source", "helper_source"),
+    [
+        (
+            "def run(callback):\n    callback()\nrun(unresolved)\n",
+            None,
+        ),
+        (
+            "from helper import run\nrun()\n",
+            (
+                "def run():\n"
+                "    callback = unresolved_factory()\n"
+                "    callback()\n"
+            ),
+        ),
+    ],
+)
+def test_unresolved_callback_without_project_import_is_unknown(
+    tmp_path, main_source, helper_source
+):
+    files = {"main.py": main_source}
+    if helper_source is not None:
+        files["helper.py"] = helper_source
+    repo, commit = _synthetic_repo(tmp_path, files)
+    result = _one_hop(repo, commit, "main.py")
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def _escaped_nested_callable_result(
+    tmp_path,
+    helper_source: str,
+    *,
+    main_source: str = "from helper import run\nrun()\n",
+):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": main_source,
+            "helper.py": helper_source,
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    return _one_hop(repo, commit, "main.py")
+
+
+@pytest.mark.parametrize(
+    "escape_statement",
+    [
+        "    register(dangerous)\n",
+        "    register(callback=dangerous)\n",
+        "    scheduler.submit(dangerous)\n",
+        "    register((dangerous,))\n",
+        "    register([dangerous])\n",
+        "    register({dangerous})\n",
+        "    register({'callback': dangerous})\n",
+    ],
+)
+def test_escaped_nested_callable_argument_and_container_references_are_unknown(
+    tmp_path, escape_statement
+):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    async def dangerous():\n"
+            "        import deeper\n"
+            f"{escape_statement}"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+@pytest.mark.parametrize(
+    ("escape_statement", "main_source"),
+    [
+        ("    return dangerous\n", "from helper import run\nrun()\n"),
+        ("    yield dangerous\n", "from helper import run\nnext(run())\n"),
+    ],
+)
+def test_returned_or_yielded_nested_callable_is_unknown(
+    tmp_path, escape_statement, main_source
+):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    def dangerous():\n"
+            "        import deeper\n"
+            f"{escape_statement}"
+        ),
+        main_source=main_source,
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_bound_nested_class_method_passed_externally_is_unknown(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    class Nested:\n"
+            "        def dangerous(self):\n"
+            "            import deeper\n"
+            "    register(Nested().dangerous)\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+@pytest.mark.parametrize(
+    "wrapper_source",
+    [
+        "    register(lambda: dangerous())\n",
+        (
+            "    def wrapper():\n"
+            "        dangerous()\n"
+            "    register(wrapper)\n"
+        ),
+    ],
+)
+def test_escaping_lambda_or_local_wrapper_capture_is_unknown(
+    tmp_path, wrapper_source
+):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    def dangerous():\n"
+            "        import deeper\n"
+            f"{wrapper_source}"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+@pytest.mark.parametrize(
+    "storage_source",
+    [
+        (
+            "    class Holder:\n"
+            "        pass\n"
+            "    holder = Holder()\n"
+            "    holder.callback = dangerous\n"
+            "    register(holder)\n"
+        ),
+        (
+            "    callbacks = {}\n"
+            "    callbacks['callback'] = dangerous\n"
+            "    register(callbacks)\n"
+        ),
+    ],
+)
+def test_callable_stored_on_escaping_owner_is_unknown(tmp_path, storage_source):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    def dangerous():\n"
+            "        import deeper\n"
+            f"{storage_source}"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_local_callable_used_directly_as_decorator_is_unknown(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    def dangerous(callback):\n"
+            "        import deeper\n"
+            "        return callback\n"
+            "    @dangerous\n"
+            "    def wrapped():\n"
+            "        return 1\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_local_callable_passed_to_unresolved_decorator_factory_is_unknown(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    def dangerous():\n"
+            "        import deeper\n"
+            "    @decorate(dangerous)\n"
+            "    def wrapped():\n"
+            "        return 1\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_escaped_known_target_with_unresolved_target_preserves_finding(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "def run():\n"
+            "    sqlite3.connect('x.db')\n"
+            "    def dangerous():\n"
+            "        import deeper\n"
+            "    register(dangerous, unresolved)\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert any(
+        finding["resolved_api"] == "sqlite3.connect"
+        for finding in result["findings"]
+    )
+
+
+def test_escaped_target_does_not_taint_unrelated_dormant_nested_callable(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    def escaped():\n"
+            "        return 1\n"
+            "    def dormant():\n"
+            "        import deeper\n"
+            "    register(escaped)\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+
+
+@pytest.mark.parametrize(
+    "local_storage",
+    [
+        "    callbacks = (dangerous,)\n",
+        "    callbacks = [dangerous]\n",
+        "    callbacks = {dangerous}\n",
+        "    callbacks = {'callback': dangerous}\n",
+    ],
+)
+def test_callable_in_provably_local_container_remains_dormant(
+    tmp_path, local_storage
+):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    def dangerous():\n"
+            "        import deeper\n"
+            f"{local_storage}"
+            "    return 1\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+
+
+def test_escaped_nested_same_name_remains_scope_correct(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def dangerous():\n"
+            "    import deeper\n"
+            "def run():\n"
+            "    def dangerous():\n"
+            "        return 1\n"
+            "    register(dangerous)\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+
+
+def test_fully_local_consumer_does_not_escape_callable_argument(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    def dangerous():\n"
+            "        import deeper\n"
+            "    def consume(callback):\n"
+            "        return 1\n"
+            "    consume(dangerous)\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+
+
+@pytest.mark.parametrize("reference", ["json.dumps", "requests.get"])
+def test_external_callable_reference_does_not_create_repository_taint(
+    tmp_path, reference
+):
+    module_name = reference.split(".", 1)[0]
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            f"    import {module_name}\n"
+            f"    register({reference})\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+
+
+def _r6_callable_flow_result(tmp_path, flow_source: str):
+    return _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "def run(callbacks=()):\n"
+            "    def dangerous():\n"
+            "        import deeper\n"
+            "        sqlite3.connect('x.db')\n"
+            "    def safe():\n"
+            "        return 1\n"
+            f"{flow_source}"
+        ),
+    )
+
+
+def _assert_r6_dangerous_reached(result):
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert any(
+        finding["resolved_api"] == "sqlite3.connect"
+        for finding in result["findings"]
+    )
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        (
+            "    def forward(cb):\n"
+            "        register(cb)\n"
+            "    forward(dangerous)\n"
+        ),
+        (
+            "    def forward(cb):\n"
+            "        register(callback=cb)\n"
+            "    forward(cb=dangerous)\n"
+        ),
+        (
+            "    def second(cb):\n"
+            "        register(cb)\n"
+            "    def first(cb):\n"
+            "        second(cb)\n"
+            "    first(dangerous)\n"
+        ),
+        (
+            "    def third(cb):\n"
+            "        register(cb)\n"
+            "    def second(cb):\n"
+            "        third(cb)\n"
+            "    def first(cb):\n"
+            "        second(cb)\n"
+            "    first(dangerous)\n"
+        ),
+        (
+            "    def forward(prefix, /, *, cb):\n"
+            "        register(cb)\n"
+            "    forward(1, cb=dangerous)\n"
+        ),
+        (
+            "    def forward(cb=dangerous):\n"
+            "        register(cb)\n"
+            "    forward()\n"
+        ),
+        (
+            "    def forward(cb):\n"
+            "        register(cb)\n"
+            "    forward(*(dangerous,))\n"
+        ),
+        (
+            "    def forward(*, cb):\n"
+            "        register(cb)\n"
+            "    forward(**{'cb': dangerous})\n"
+        ),
+    ],
+    ids=[
+        "positional",
+        "keyword",
+        "two-level",
+        "three-level",
+        "positional-only-keyword-only",
+        "default",
+        "bounded-star-args",
+        "bounded-star-kwargs",
+    ],
+)
+def test_r6_actual_arguments_propagate_to_formals(tmp_path, flow_source):
+    _assert_r6_dangerous_reached(_r6_callable_flow_result(tmp_path, flow_source))
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        (
+            "    def forward(cb, *rest):\n"
+            "        register(cb)\n"
+            "    forward(dangerous, *callbacks)\n"
+        ),
+        (
+            "    def forward(cb, **rest):\n"
+            "        register(cb)\n"
+            "    forward(dangerous, **unknown_keywords)\n"
+        ),
+    ],
+    ids=["unbounded-star-args", "unbounded-star-kwargs"],
+)
+def test_r6_unbounded_expansion_fails_closed_and_preserves_known_target(
+    tmp_path, flow_source
+):
+    _assert_r6_dangerous_reached(_r6_callable_flow_result(tmp_path, flow_source))
+
+
+def test_r6_multiple_invocations_keep_distinct_callable_actuals(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "def run():\n"
+            "    def database_callback():\n"
+            "        import deeper\n"
+            "        sqlite3.connect('x.db')\n"
+            "    def filesystem_callback():\n"
+            "        import deeper\n"
+            "        open('x.txt', 'w')\n"
+            "    def forward(cb):\n"
+            "        register(cb)\n"
+            "    forward(database_callback)\n"
+            "    forward(filesystem_callback)\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert {finding["resolved_api"] for finding in result["findings"]} >= {
+        "sqlite3.connect",
+        "open",
+    }
+
+
+def test_r6_known_and_unresolved_invocations_preserve_finding_and_unknown(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    def forward(cb):\n"
+            "        register(cb)\n"
+            "    forward(dangerous)\n"
+            "    forward(unresolved)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        (
+            "    def escaped(cb=dangerous):\n"
+            "        register(cb)\n"
+            "    register(escaped)\n"
+        ),
+        (
+            "    def decorator(cb):\n"
+            "        def apply(function):\n"
+            "            register(cb)\n"
+            "            return function\n"
+            "        return apply\n"
+            "    @decorator(dangerous)\n"
+            "    def wrapped():\n"
+            "        return 1\n"
+        ),
+        (
+            "    async def forward(cb):\n"
+            "        register(cb)\n"
+            "    forward(dangerous)\n"
+        ),
+        (
+            "    def factory(cb):\n"
+            "        def wrapper():\n"
+            "            register(cb)\n"
+            "        return wrapper\n"
+            "    register(factory(dangerous))\n"
+        ),
+    ],
+    ids=[
+        "escaped-callable-default",
+        "parameterized-decorator-factory",
+        "async-callback-factory",
+        "factory-returning-forwarder",
+    ],
+)
+def test_r6_defaults_decorators_async_and_factory_wrappers_propagate(
+    tmp_path, flow_source
+):
+    _assert_r6_dangerous_reached(_r6_callable_flow_result(tmp_path, flow_source))
+
+
+@pytest.mark.parametrize(
+    "escaping_expression",
+    [
+        "[dangerous for _ in (1,)]",
+        "{dangerous for _ in (1,)}",
+        "{dangerous: dangerous for _ in (1,)}",
+        "(dangerous for _ in (1,))",
+        "[dangerous for _ in [item for item in (1,)]]",
+        "([dangerous for _ in (1,)],)",
+        "[dangerous for _ in (1,) if dangerous]",
+    ],
+    ids=[
+        "list",
+        "set",
+        "dict-key-value",
+        "generator",
+        "nested",
+        "literal-container",
+        "filter",
+    ],
+)
+def test_r6_comprehensions_expose_local_callable_references(
+    tmp_path, escaping_expression
+):
+    result = _r6_callable_flow_result(
+        tmp_path, f"    register({escaping_expression})\n"
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+@pytest.mark.parametrize(
+    "escape_statement",
+    [
+        "    register(*[dangerous])\n",
+        "    register(**{'callback': dangerous})\n",
+    ],
+    ids=["starred-positional-literal", "dictionary-unpacked-literal"],
+)
+def test_r6_bounded_unpacking_exposes_local_callable(tmp_path, escape_statement):
+    _assert_r6_dangerous_reached(
+        _r6_callable_flow_result(tmp_path, escape_statement)
+    )
+
+
+def test_r6_comprehension_target_shadows_outer_callable(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    import json\n"
+            "    values = (json.dumps,)\n"
+            "    register([dangerous for dangerous in values])\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r6_external_comprehension_values_do_not_create_repository_taint(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "import json\n"
+            "def run():\n"
+            "    register([json.dumps for _ in range(1)])\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r6_escaped_function_with_unresolved_formal_is_incomplete(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "def run():\n"
+            "    def escaped(callback):\n"
+            "        register(callback)\n"
+            "    register(escaped)\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert result["findings"] == []
+
+
+def test_r6_escaped_function_ambiguous_local_call_preserves_known_target(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    def escaped():\n"
+            "        callback = dangerous\n"
+            "        if enabled:\n"
+            "            callback = unresolved\n"
+            "        callback()\n"
+            "    register(escaped)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r6_escape_then_reached_invocation_keeps_distinct_binding_states(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    def worker(callback):\n"
+            "        register(callback)\n"
+            "    register(worker)\n"
+            "    worker(dangerous)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r6_mixed_escape_and_mutual_recursion_is_bounded(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    def first(callback):\n"
+            "        register(callback)\n"
+            "        second(callback)\n"
+            "    def second(callback):\n"
+            "        if enabled:\n"
+            "            first(callback)\n"
+            "    register(first)\n"
+            "    first(dangerous)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        (
+            "    callback = dangerous\n"
+            "    callback = None\n"
+            "    register(callback)\n"
+        ),
+        (
+            "    callback = None\n"
+            "    register(callback)\n"
+            "    callback = dangerous\n"
+        ),
+        (
+            "    callback = dangerous\n"
+            "    callback = safe\n"
+            "    register(callback)\n"
+        ),
+    ],
+    ids=["overwritten-none", "future-assignment", "latest-unconditional"],
+)
+def test_r6_name_bindings_use_reaching_assignment_at_escape(
+    tmp_path, flow_source
+):
+    result = _r6_callable_flow_result(tmp_path, flow_source)
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r6_conditional_name_binding_merges_possible_values(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    callback = safe\n"
+            "    if enabled:\n"
+            "        callback = dangerous\n"
+            "    register(callback)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        (
+            "    class Holder:\n"
+            "        pass\n"
+            "    holder = Holder()\n"
+            "    holder.callback = dangerous\n"
+            "    holder.safe = safe\n"
+            "    register(holder.safe)\n"
+        ),
+        (
+            "    class Holder:\n"
+            "        pass\n"
+            "    first = Holder()\n"
+            "    second = Holder()\n"
+            "    first.callback = dangerous\n"
+            "    second.callback = safe\n"
+            "    register(second.callback)\n"
+        ),
+        (
+            "    callbacks = {}\n"
+            "    callbacks['dangerous'] = dangerous\n"
+            "    callbacks['safe'] = safe\n"
+            "    register(callbacks['safe'])\n"
+        ),
+        (
+            "    callbacks = {}\n"
+            "    callbacks[0] = dangerous\n"
+            "    callbacks['0'] = safe\n"
+            "    register(callbacks['0'])\n"
+        ),
+        (
+            "    class Holder:\n"
+            "        pass\n"
+            "    holder = Holder()\n"
+            "    holder.callback = dangerous\n"
+            "    holder.callback = None\n"
+            "    register(holder)\n"
+        ),
+    ],
+    ids=[
+        "distinct-attributes",
+        "distinct-owners",
+        "distinct-string-keys",
+        "string-int-keys",
+        "storage-overwrite",
+    ],
+)
+def test_r6_exact_storage_paths_do_not_taint_unrelated_escape(
+    tmp_path, flow_source
+):
+    result = _r6_callable_flow_result(tmp_path, flow_source)
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r6_whole_owner_escape_includes_callable_fields(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    class Holder:\n"
+            "        pass\n"
+            "    holder = Holder()\n"
+            "    holder.callback = dangerous\n"
+            "    register(holder)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r6_conditional_storage_assignment_merges_possible_values(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    class Holder:\n"
+            "        pass\n"
+            "    holder = Holder()\n"
+            "    holder.callback = safe\n"
+            "    if enabled:\n"
+            "        holder.callback = dangerous\n"
+            "    register(holder.callback)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r6_dynamic_subscript_fails_closed_without_exact_key_taint(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    callbacks = {}\n"
+            "    callbacks[key] = dangerous\n"
+            "    register(callbacks['safe'])\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert not any(
+        finding["resolved_api"] == "sqlite3.connect"
+        for finding in result["findings"]
+    )
+
+
+def test_r6_nested_scope_storage_owners_do_not_collide(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    class Holder:\n"
+            "        pass\n"
+            "    holder = Holder()\n"
+            "    holder.callback = dangerous\n"
+            "    def inner():\n"
+            "        class Holder:\n"
+            "            pass\n"
+            "        holder = Holder()\n"
+            "        holder.callback = safe\n"
+            "        register(holder.callback)\n"
+            "    inner()\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def _assert_r7_unknown_without_dangerous_finding(result):
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert not any(
+        finding["resolved_api"] == "sqlite3.connect"
+        for finding in result["findings"]
+    )
+
+
+def test_r7_original_iteration_bound_dispatch_reproduction(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    for f in [dangerous]:\n        f()\n",
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        "    for f in (dangerous,):\n        f()\n",
+        "    for f in {dangerous}:\n        f()\n",
+        "    for f in [safe, dangerous]:\n        f()\n",
+        "    for _, f in [(0, dangerous)]:\n        f()\n",
+        "    for *_, f in [(0, 1, dangerous)]:\n        f()\n",
+        (
+            "    callbacks = [dangerous]\n"
+            "    for f in callbacks:\n"
+            "        f()\n"
+        ),
+        (
+            "    pair = (0, dangerous)\n"
+            "    for _, f in [pair]:\n"
+            "        f()\n"
+        ),
+        "    for f in {dangerous: 1}:\n        f()\n",
+    ],
+    ids=[
+        "tuple",
+        "set",
+        "multiple-candidates",
+        "destructuring",
+        "starred-destructuring",
+        "bounded-alias",
+        "destructured-element-alias",
+        "dict-keys",
+    ],
+)
+def test_r7_bounded_for_dispatch_reaches_local_callable(tmp_path, flow_source):
+    _assert_r6_dangerous_reached(
+        _r6_callable_flow_result(tmp_path, flow_source)
+    )
+
+
+def test_r7_empty_bounded_for_body_does_not_dispatch(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    for f in []:\n        f()\n",
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r7_dynamic_for_dispatch_fails_closed(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    for f in unresolved_callbacks:\n        f()\n",
+    )
+    _assert_r7_unknown_without_dangerous_finding(result)
+
+
+def test_r7_async_for_dispatch_fails_closed(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "async def run():\n"
+            "    async for f in unresolved_callbacks:\n"
+            "        f()\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert result["findings"] == []
+
+
+def test_r7_post_loop_dispatch_uses_guaranteed_nonempty_binding(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    for f in [dangerous]:\n        pass\n    f()\n",
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r7_post_loop_dispatch_from_unresolved_iterable_is_incomplete(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    for f in unresolved_callbacks:\n        pass\n    f()\n",
+    )
+    _assert_r7_unknown_without_dangerous_finding(result)
+
+
+def test_r7_dynamic_post_loop_binding_preserves_known_candidate(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    f = dangerous\n"
+            "    for f in unresolved_callbacks:\n"
+            "        pass\n"
+            "    f()\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r7_future_loop_binding_does_not_reach_earlier_call(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    f()\n    for f in [dangerous]:\n        pass\n",
+    )
+    _assert_r7_unknown_without_dangerous_finding(result)
+
+
+@pytest.mark.parametrize(
+    "expression",
+    [
+        "[f() for f in [dangerous]]",
+        "{f() for f in [dangerous]}",
+        "{f(): 1 for f in [dangerous]}",
+        "(f() for f in [dangerous])",
+        "[[f() for f in [dangerous]] for _ in [0]]",
+        "[f() for _ in [0] for f in [dangerous]]",
+    ],
+    ids=[
+        "list",
+        "set",
+        "dict",
+        "generator",
+        "nested",
+        "multiple-generators",
+    ],
+)
+def test_r7_comprehension_local_dispatch_reaches_callable(
+    tmp_path, expression
+):
+    _assert_r6_dangerous_reached(
+        _r6_callable_flow_result(tmp_path, f"    {expression}\n")
+    )
+
+
+def test_r7_later_comprehension_generator_shadows_earlier_binding(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    [f() for f in [dangerous] for f in [safe]]\n",
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r7_comprehension_target_shadows_outer_binding_locally(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    f = dangerous\n    [f() for f in [safe]]\n",
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r7_comprehension_binding_does_not_overwrite_outer_binding(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    f = dangerous\n    [f for f in [safe]]\n    f()\n",
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r7_empty_comprehension_does_not_dispatch(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    [f() for f in []]\n",
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r7_dynamic_comprehension_dispatch_fails_closed(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    [f() for f in unresolved_callbacks]\n",
+    )
+    _assert_r7_unknown_without_dangerous_finding(result)
+
+
+def test_r7_known_comprehension_target_survives_later_dynamic_generator(
+    tmp_path,
+):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    [f() for f in [dangerous] "
+            "for _ in unresolved_callbacks]\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        "    import json\n    [f() for f in [json.dumps]]\n",
+        "    import json\n    for f in [json.dumps]:\n        f()\n",
+    ],
+    ids=["comprehension", "for"],
+)
+def test_r7_external_iteration_values_do_not_create_repository_taint(
+    tmp_path, flow_source
+):
+    result = _r6_callable_flow_result(tmp_path, flow_source)
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r7_named_expression_is_a_reaching_assignment(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    (f := dangerous)\n    f()\n",
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        "    if (f := dangerous):\n        f()\n",
+        "    while (f := dangerous):\n        f()\n        break\n",
+    ],
+    ids=["if", "while"],
+)
+def test_r7_named_expression_in_condition_reaches_body(tmp_path, flow_source):
+    _assert_r6_dangerous_reached(
+        _r6_callable_flow_result(tmp_path, flow_source)
+    )
+
+
+def test_r7_conditional_named_expression_preserves_candidate_and_unknown(
+    tmp_path,
+):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    if enabled:\n        (f := dangerous)\n    f()\n",
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r7_named_expression_obeys_later_overwrite(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    (f := dangerous)\n    f = safe\n    f()\n",
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        "    [(f := dangerous) for _ in [0]]\n    f()\n",
+        "    [f() for _ in [0] if (f := dangerous)]\n",
+    ],
+    ids=["binding-escapes-comprehension", "filter-dispatch"],
+)
+def test_r7_named_expression_inside_comprehension_reaches_callable(
+    tmp_path, flow_source
+):
+    _assert_r6_dangerous_reached(
+        _r6_callable_flow_result(tmp_path, flow_source)
+    )
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        "    with manager() as f:\n        f()\n",
+        (
+            "    with manager() as first, other_manager() as f:\n"
+            "        f()\n"
+        ),
+        "    with manager() as (_, f):\n        f()\n",
+        (
+            "    try:\n"
+            "        return 1\n"
+            "    except SomeError as f:\n"
+            "        f()\n"
+        ),
+    ],
+    ids=["with", "multiple-with-items", "destructured-with", "except"],
+)
+def test_r7_context_and_exception_bound_calls_fail_closed(
+    tmp_path, flow_source
+):
+    result = _r6_callable_flow_result(tmp_path, flow_source)
+    _assert_r7_unknown_without_dangerous_finding(result)
+
+
+def test_r7_async_with_bound_call_fails_closed(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "async def run():\n"
+            "    async with manager() as f:\n"
+            "        f()\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert result["findings"] == []
+
+
+def test_r7_unused_context_binding_does_not_taint_siblings(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    with manager() as f:\n        safe()\n",
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r7_dormant_context_bound_dispatch_does_not_taint_reached_sibling(
+    tmp_path,
+):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    def dormant():\n"
+            "        with manager() as f:\n"
+            "            f()\n"
+            "    safe()\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r7_known_candidate_with_conditional_context_binding_is_preserved(
+    tmp_path,
+):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    f = dangerous\n"
+            "    if enabled:\n"
+            "        with manager() as f:\n"
+            "            pass\n"
+            "    f()\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "    callbacks.append(dangerous)\n",
+        "    callbacks.extend([dangerous])\n",
+        "    callbacks += [dangerous]\n",
+    ],
+    ids=["append", "extend", "iadd"],
+)
+def test_r8_mutation_aware_iterable_dispatch_reaches_candidate(
+    tmp_path, mutation
+):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    callbacks = []\n"
+        f"{mutation}"
+        "    for callback in callbacks:\n"
+        "        callback()\n",
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "    alias.append(dangerous)\n",
+        "    alias += [dangerous]\n",
+    ],
+    ids=["append", "iadd"],
+)
+def test_r8_alias_mutation_updates_original_iterable(tmp_path, mutation):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    callbacks = []\n"
+        "    alias = callbacks\n"
+        f"{mutation}"
+        "    for callback in callbacks:\n"
+        "        callback()\n",
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r8_dict_update_reconstructs_bounded_key_candidates(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    callbacks = {}\n"
+            "    callbacks.update({dangerous: 1})\n"
+            "    for callback in callbacks:\n"
+            "        callback()\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r8_unresolved_dict_update_fails_closed(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    callbacks = {safe: 1}\n"
+            "    callbacks.update(unresolved_mapping)\n"
+            "    for callback in callbacks:\n"
+            "        callback()\n"
+        ),
+    )
+    _assert_r7_unknown_without_dangerous_finding(result)
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "    callbacks.reorder_somehow()\n",
+        "    mutate(callbacks)\n",
+        "    callbacks[key] = unresolved\n",
+    ],
+    ids=["unknown-method", "unknown-consumer", "subscript-write"],
+)
+def test_r8_unknown_iterable_mutation_fails_closed(tmp_path, mutation):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    callbacks = [safe]\n"
+        f"{mutation}"
+        "    for callback in callbacks:\n"
+        "        callback()\n",
+    )
+    _assert_r7_unknown_without_dangerous_finding(result)
+
+
+def test_r8_mutation_before_loop_is_reaching(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    callbacks = []\n"
+            "    callbacks += [dangerous]\n"
+            "    for callback in callbacks:\n"
+            "        callback()\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r8_mutation_after_loop_does_not_flow_backward(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    callbacks = []\n"
+            "    for callback in callbacks:\n"
+            "        callback()\n"
+            "    callbacks.append(dangerous)\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r8_unrelated_literal_iterable_is_not_globally_tainted(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    unrelated = []\n"
+            "    unrelated.reorder_somehow()\n"
+            "    for callback in (safe,):\n"
+            "        callback()\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r8_known_candidate_survives_unresolved_append(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    callbacks = [dangerous]\n"
+            "    callbacks.append(unresolved)\n"
+            "    for callback in callbacks:\n"
+            "        callback()\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def _r8_module_scope_result(tmp_path, helper_source: str):
+    return _escaped_nested_callable_result(
+        tmp_path,
+        helper_source,
+        main_source="import helper\n",
+    )
+
+
+@pytest.mark.parametrize(
+    "dispatch",
+    [
+        "alias = dangerous\nalias()\n",
+        "for callback in [dangerous]:\n    callback()\n",
+    ],
+    ids=["alias", "for"],
+)
+def test_r8_module_scope_binding_dispatch_reaches_local_definition(
+    tmp_path, dispatch
+):
+    result = _r8_module_scope_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "def dangerous():\n"
+            "    import deeper\n"
+            "    sqlite3.connect('x.db')\n"
+            f"{dispatch}"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r8_module_conditional_binding_preserves_candidate_and_unknown(
+    tmp_path,
+):
+    result = _r8_module_scope_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "def dangerous():\n"
+            "    import deeper\n"
+            "    sqlite3.connect('x.db')\n"
+            "def safe():\n"
+            "    return 1\n"
+            "callback = safe\n"
+            "if enabled:\n"
+            "    callback = dangerous\n"
+            "callback()\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r8_future_module_binding_does_not_leak_backward(tmp_path):
+    result = _r8_module_scope_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "def dangerous():\n"
+            "    import deeper\n"
+            "    sqlite3.connect('x.db')\n"
+            "callback()\n"
+            "callback = dangerous\n"
+        ),
+    )
+    _assert_r7_unknown_without_dangerous_finding(result)
+
+
+def test_r8_main_guard_binding_dispatch_remains_fail_closed(tmp_path):
+    result = _r8_module_scope_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "def dangerous():\n"
+            "    import deeper\n"
+            "    sqlite3.connect('x.db')\n"
+            "if __name__ == '__main__':\n"
+            "    alias = dangerous\n"
+            "    alias()\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+@pytest.mark.parametrize(
+    "class_body",
+    [
+        "    alias = dangerous\n    alias()\n",
+        "    for callback in [dangerous]:\n        callback()\n",
+        "    [callback() for callback in [dangerous]]\n",
+        "    (alias,) = (dangerous,)\n    alias()\n",
+    ],
+    ids=["alias", "for", "comprehension", "destructuring"],
+)
+def test_r8_eager_class_body_binding_dispatch_reaches_local_definition(
+    tmp_path, class_body
+):
+    result = _r8_module_scope_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "def dangerous():\n"
+            "    import deeper\n"
+            "    sqlite3.connect('x.db')\n"
+            "class Eager:\n"
+            f"{class_body}"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r8_dormant_class_method_body_remains_isolated(tmp_path):
+    result = _r8_module_scope_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "class Eager:\n"
+            "    def dormant(self):\n"
+            "        import deeper\n"
+            "        sqlite3.connect('x.db')\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+@pytest.mark.parametrize(
+    "class_body",
+    [
+        "        alias = dangerous\n        alias()\n",
+        "        for callback in [dangerous]:\n            callback()\n",
+        "        [callback() for callback in [dangerous]]\n",
+    ],
+    ids=["alias", "for", "comprehension"],
+)
+def test_r8_reached_function_nested_class_body_is_eager(
+    tmp_path, class_body
+):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        "    class Nested:\n" f"{class_body}",
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r8_unresolved_class_binding_is_scope_local(tmp_path):
+    result = _r8_module_scope_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "def dangerous():\n"
+            "    import deeper\n"
+            "    sqlite3.connect('x.db')\n"
+            "def safe():\n"
+            "    return 1\n"
+            "class Broken:\n"
+            "    callback = unresolved\n"
+            "    callback()\n"
+            "class Unrelated:\n"
+            "    callback = safe\n"
+            "    callback()\n"
+        ),
+    )
+    _assert_r7_unknown_without_dangerous_finding(result)
+
+
+@pytest.mark.parametrize(
+    "flow_source",
+    [
+        (
+            "    callbacks = []\n"
+            "    callbacks.append((safe, dangerous))\n"
+            "    for _, callback in callbacks:\n"
+            "        callback()\n"
+        ),
+        (
+            "    callbacks = []\n"
+            "    callbacks.extend([(0, 1, dangerous)])\n"
+            "    for *_, callback in callbacks:\n"
+            "        callback()\n"
+        ),
+        (
+            "    head, *callbacks = (safe, dangerous)\n"
+            "    for callback in callbacks:\n"
+            "        callback()\n"
+        ),
+    ],
+    ids=["tuple", "starred-loop", "starred-assignment"],
+)
+def test_r8_destructuring_preserves_mutated_candidates(tmp_path, flow_source):
+    result = _r6_callable_flow_result(tmp_path, flow_source)
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r8_mutation_dispatch_cycle_terminates_with_known_finding(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    callbacks = []\n"
+            "    def first():\n"
+            "        second()\n"
+            "    def second():\n"
+            "        callbacks.append(dangerous)\n"
+            "        first()\n"
+            "    second()\n"
+            "    for callback in callbacks:\n"
+            "        callback()\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r9_min_loop_carried_append_preserves_candidate(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    fs = []\n"
+            "    for item in [1, 2]:\n"
+            "        for f in fs:\n"
+            "            f()\n"
+            "        fs.append(dangerous)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r9_min_loop_carried_alias_append_preserves_candidate(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    fs = []\n"
+            "    alias = fs\n"
+            "    for item in [1, 2]:\n"
+            "        for f in fs:\n"
+            "            f()\n"
+            "        alias.append(dangerous)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r9_min_loop_carried_mutation_before_and_after_use_preserves_candidate(
+    tmp_path,
+):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    fs = []\n"
+            "    for item in [1, 2]:\n"
+            "        fs.append(safe)\n"
+            "        for f in fs:\n"
+            "            f()\n"
+            "        fs.append(dangerous)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r9_min_loop_carried_augassign_preserves_candidate(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    fs = []\n"
+            "    for item in [1, 2]:\n"
+            "        for f in fs:\n"
+            "            f()\n"
+            "        fs += [dangerous]\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r9_min_loop_carried_nested_suite_preserves_candidate(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    fs = []\n"
+            "    for item in [1, 2]:\n"
+            "        if item:\n"
+            "            for f in fs:\n"
+            "                f()\n"
+            "            fs.append(dangerous)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r9_min_loop_carried_branch_split_ordering_fails_closed(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    fs = []\n"
+            "    for item in [1, 2]:\n"
+            "        if item == 1:\n"
+            "            for f in fs:\n"
+            "                f()\n"
+            "        else:\n"
+            "            fs.append(dangerous)\n"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def test_r9_min_loop_carried_unrelated_owner_stays_sealed(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    fs = []\n"
+            "    other = [safe]\n"
+            "    for item in [1, 2]:\n"
+            "        fs.append(dangerous)\n"
+            "        for f in other:\n"
+            "            f()\n"
+        ),
+    )
+    assert result["state"] in {"not_detected", "unknown"}
+    assert not any(
+        finding["resolved_api"] == "sqlite3.connect"
+        for finding in result["findings"]
+    )
+
+
+def test_r9_min_loop_carried_unrelated_alias_stays_sealed(tmp_path):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    fs = []\n"
+            "    other = []\n"
+            "    alias = other\n"
+            "    for item in [1, 2]:\n"
+            "        for f in fs:\n"
+            "            f()\n"
+            "        alias.append(dangerous)\n"
+        ),
+    )
+    assert result["state"] in {"not_detected", "unknown"}
+    assert not any(
+        finding["resolved_api"] == "sqlite3.connect"
+        for finding in result["findings"]
+    )
+
+
+@pytest.mark.parametrize(
+    "consumer",
+    [
+        "    unknown(callbacks)\n",
+        "    unknown(callback=callbacks)\n",
+        (
+            "    def forward(values):\n"
+            "        unknown(values)\n"
+            "    forward(callbacks)\n"
+        ),
+        "    return callbacks\n",
+        "    yield callbacks\n",
+        (
+            "    class Holder:\n"
+            "        pass\n"
+            "    holder = Holder()\n"
+            "    holder.callbacks = callbacks\n"
+            "    unknown(holder)\n"
+        ),
+        (
+            "    box = {}\n"
+            "    box['callbacks'] = callbacks\n"
+            "    unknown(box)\n"
+        ),
+        (
+            "    box = [callbacks]\n"
+            "    unknown(box)\n"
+        ),
+        (
+            "    import json\n"
+            "    json.dumps(callbacks)\n"
+        ),
+        (
+            "    for cb in callbacks:\n"
+            "        cb()\n"
+        ),
+        (
+            "    def run_all(values):\n"
+            "        for value in values:\n"
+            "            value()\n"
+            "    run_all(callbacks)\n"
+        ),
+        "    scheduler.submit(callbacks)\n",
+    ],
+    ids=[
+        "positional-escape",
+        "keyword-escape",
+        "parameter-flow",
+        "return",
+        "yield",
+        "attribute-storage",
+        "subscript-storage",
+        "container-storage",
+        "serialization",
+        "iteration-consumer",
+        "local-call-transfer",
+        "attribute-call-consumer",
+    ],
+)
+def test_r9_min_modeled_mutator_consumer_preserves_candidate(tmp_path, consumer):
+    result = _r6_callable_flow_result(
+        tmp_path,
+        (
+            "    callbacks = []\n"
+            "    callbacks.append(dangerous)\n"
+            f"{consumer}"
+        ),
+    )
+    _assert_r6_dangerous_reached(result)
+
+
+def _r8_constructor_result(tmp_path, helper_source: str):
+    return _r8_module_scope_result(tmp_path, helper_source)
+
+
+def _r8_sqlite_findings(result):
+    return [
+        finding
+        for finding in result["findings"]
+        if finding["resolved_api"] == "sqlite3.connect"
+        and finding["imported_module_path"] == "helper.py"
+    ]
+
+
+def test_r8_local_default_constructor_is_complete_and_methods_stay_dormant(
+    tmp_path,
+):
+    result = _r8_constructor_result(
+        tmp_path,
+        (
+            "class Local:\n"
+            "    def ordinary(self):\n"
+            "        import deeper\n"
+            "value = Local()\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r8_benign_local_init_is_reached_without_false_unknown(tmp_path):
+    result = _r8_constructor_result(
+        tmp_path,
+        (
+            "class Local:\n"
+            "    def __init__(self, value=1):\n"
+            "        self.value = value\n"
+            "instance = Local(2)\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r8_dangerous_local_init_is_reached(tmp_path):
+    result = _r8_constructor_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "class Local:\n"
+            "    def __init__(self):\n"
+            "        sqlite3.connect('init.db')\n"
+            "instance = Local()\n"
+        ),
+    )
+    assert result["state"] == "detected"
+    assert len(_r8_sqlite_findings(result)) == 1
+
+
+def test_r8_deeper_import_in_local_init_fails_closed(tmp_path):
+    result = _r8_constructor_result(
+        tmp_path,
+        (
+            "class Local:\n"
+            "    def __init__(self):\n"
+            "        import deeper\n"
+            "instance = Local()\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_r8_inherited_local_init_is_reached(tmp_path):
+    result = _r8_constructor_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "class Base:\n"
+            "    def __init__(self):\n"
+            "        sqlite3.connect('base.db')\n"
+            "class Child(Base):\n"
+            "    pass\n"
+            "instance = Child()\n"
+        ),
+    )
+    assert result["state"] == "detected"
+    assert len(_r8_sqlite_findings(result)) == 1
+
+
+def test_r8_local_custom_new_is_reached(tmp_path):
+    result = _r8_constructor_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "class Local:\n"
+            "    def __new__(cls):\n"
+            "        sqlite3.connect('new.db')\n"
+            "        return object.__new__(cls)\n"
+            "instance = Local()\n"
+        ),
+    )
+    assert result["state"] != "not_detected"
+    assert len(_r8_sqlite_findings(result)) == 1
+
+
+@pytest.mark.parametrize(
+    "base_source",
+    [
+        "class Local(MissingBase):\n    pass\n",
+        "from deeper import Base\nclass Local(Base):\n    pass\n",
+        (
+            "from deeper import Base\n"
+            "class Local(Base):\n"
+            "    def __init__(self):\n"
+            "        self.value = 1\n"
+        ),
+    ],
+    ids=["unresolved", "external-project", "external-with-local-init"],
+)
+def test_r8_external_or_unresolved_base_fails_closed(tmp_path, base_source):
+    result = _r8_constructor_result(
+        tmp_path,
+        f"{base_source}instance = Local()\n",
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_r8_bounded_local_metaclass_uses_default_type_call(tmp_path):
+    result = _r8_constructor_result(
+        tmp_path,
+        (
+            "class LocalMeta(type):\n"
+            "    pass\n"
+            "class Local(metaclass=LocalMeta):\n"
+            "    pass\n"
+            "instance = Local()\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r8_local_metaclass_call_is_reached(tmp_path):
+    result = _r8_constructor_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "class LocalMeta(type):\n"
+            "    def __call__(self, *args, **kwargs):\n"
+            "        sqlite3.connect('meta.db')\n"
+            "        return object()\n"
+            "class Local(metaclass=LocalMeta):\n"
+            "    pass\n"
+            "instance = Local()\n"
+        ),
+    )
+    assert result["state"] == "detected"
+    assert len(_r8_sqlite_findings(result)) == 1
+
+
+def test_r8_unresolved_metaclass_fails_closed(tmp_path):
+    result = _r8_constructor_result(
+        tmp_path,
+        (
+            "class Local(metaclass=make_meta()):\n"
+            "    pass\n"
+            "instance = Local()\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_r8_unresolved_class_decorator_fails_closed(tmp_path):
+    result = _r8_constructor_result(
+        tmp_path,
+        (
+            "@decorate\n"
+            "class Local:\n"
+            "    pass\n"
+            "instance = Local()\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_r8_external_class_decorator_fails_closed(tmp_path):
+    result = _r8_constructor_result(
+        tmp_path,
+        (
+            "from deeper import decorate\n"
+            "@decorate\n"
+            "class Local:\n"
+            "    pass\n"
+            "instance = Local()\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_r8_dynamic_subscript_class_target_fails_closed(tmp_path):
+    result = _r8_constructor_result(
+        tmp_path,
+        (
+            "class Local:\n"
+            "    pass\n"
+            "registry = {'local': Local}\n"
+            "instance = registry[key]()\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] in {
+        "import_resolution_incomplete",
+        "imported_scan_incomplete",
+    }
+
+
+def test_r8_module_list_preserves_every_local_constructor(tmp_path):
+    result = _r8_constructor_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "class First:\n"
+            "    def __init__(self):\n"
+            "        sqlite3.connect('first.db')\n"
+            "class Second:\n"
+            "    def __init__(self):\n"
+            "        sqlite3.connect('second.db')\n"
+            "class Third:\n"
+            "    def __init__(self):\n"
+            "        sqlite3.connect('third.db')\n"
+            "instances = [First(), Second(), Third()]\n"
+        ),
+    )
+    assert result["state"] == "detected"
+    assert len(_r8_sqlite_findings(result)) == 3
+
+
+def test_r8_diamond_mro_reaches_inherited_constructor_once(tmp_path):
+    result = _r8_constructor_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "class Root:\n"
+            "    def __init__(self):\n"
+            "        sqlite3.connect('root.db')\n"
+            "class Left(Root):\n"
+            "    pass\n"
+            "class Right(Root):\n"
+            "    pass\n"
+            "class Child(Left, Right):\n"
+            "    pass\n"
+            "instance = Child()\n"
+        ),
+    )
+    assert result["state"] == "detected"
+    assert len(_r8_sqlite_findings(result)) == 1
+
+
+def test_r8_class_body_metadata_constructor_is_eager_but_methods_are_dormant(
+    tmp_path,
+):
+    result = _r8_constructor_result(
+        tmp_path,
+        (
+            "class Metadata:\n"
+            "    def __init__(self, name):\n"
+            "        self.name = name\n"
+            "class Adapter:\n"
+            "    meta = Metadata('bounded')\n"
+            "    def ordinary(self):\n"
+            "        import deeper\n"
+            "instance = Adapter()\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r8_module_class_constructor_called_inside_function_is_complete(
+    tmp_path,
+):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "class Bounded:\n"
+            "    def __init__(self):\n"
+            "        self.value = 1\n"
+            "    def dormant(self):\n"
+            "        import deeper\n"
+            "def run():\n"
+            "    Bounded()\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r8_outside_class_constructor_preserves_known_effect(tmp_path):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "class Effectful:\n"
+            "    def __init__(self):\n"
+            "        sqlite3.connect('constructor.db')\n"
+            "def run():\n"
+            "    Effectful()\n"
+        ),
+    )
+    assert result["state"] == "detected"
+    assert len(_r8_sqlite_findings(result)) == 1
+
+
+def test_r8_read_only_constructor_is_non_gating_and_preserved(tmp_path):
+    source = (
+        "from pathlib import Path\n"
+        "class Reader:\n"
+        "    def __init__(self, path):\n"
+        "        self.data = Path(path).read_text()\n"
+        "def run():\n"
+        "    Reader('bounded.txt')\n"
+    )
+    transitive = _escaped_nested_callable_result(tmp_path, source)
+    assert transitive["state"] == "not_detected"
+    assert transitive["findings"] == []
+    direct = _analyze(source)
+    assert _state(direct, "filesystem_read") == "detected"
+    assert _state(direct, "transitive_external_state") == "not_detected"
+    assert direct["safety_classification"]["risk_level"] == "low"
+
+
+def test_r8_pandas_read_csv_is_classified_as_filesystem_read():
+    result = _analyze(
+        "import pandas as pd\n"
+        "class Reader:\n"
+        "    def __init__(self, path):\n"
+        "        self.data = pd.read_csv(path)\n"
+    )
+    finding = result["evidence"]["filesystem_read"]["findings"][0]
+    assert finding["resolved_api"] == "pandas.read_csv"
+    assert result["safety_classification"]["risk_level"] == "low"
+
+
+def test_r8_conditional_class_constructor_fails_closed_with_candidate(
+    tmp_path,
+):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "class Conditional:\n"
+            "    if enabled:\n"
+            "        def __init__(self):\n"
+            "            sqlite3.connect('conditional.db')\n"
+            "def run():\n"
+            "    Conditional()\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert len(_r8_sqlite_findings(result)) == 1
+
+
+@pytest.mark.parametrize(
+    "class_suite",
+    [
+        (
+            "    try:\n"
+            "        def __init__(self):\n"
+            "            sqlite3.connect('try.db')\n"
+            "    except Exception:\n"
+            "        pass\n"
+        ),
+        (
+            "    for option in options:\n"
+            "        def __init__(self):\n"
+            "            sqlite3.connect('for.db')\n"
+        ),
+        (
+            "    with manager:\n"
+            "        def __init__(self):\n"
+            "            sqlite3.connect('with.db')\n"
+        ),
+        (
+            "    while options:\n"
+            "        def __init__(self):\n"
+            "            sqlite3.connect('while.db')\n"
+        ),
+    ],
+    ids=["try", "for", "with", "while"],
+)
+def test_r8_dynamic_class_suites_fail_closed_and_preserve_constructor(
+    tmp_path, class_suite
+):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "class Dynamic:\n"
+            f"{class_suite}"
+            "def run():\n"
+            "    Dynamic()\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert len(_r8_sqlite_findings(result)) == 1
+
+
+def test_r8_match_constructor_binding_support_is_runtime_gated():
+    mod = _module()
+    match_node = getattr(ast, "Match", None)
+    if match_node is None:
+        assert sys.version_info[:2] == (3, 9)
+        assert 'hasattr(ast, "Match")' in inspect.getsource(mod)
+    else:
+        assert match_node in mod.CONTROL_FLOW_NODES
+
+
+def test_r8_final_unresolved_constructor_rebinding_shadows_prior_method(
+    tmp_path,
+):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "class Rebound:\n"
+            "    def __init__(self):\n"
+            "        sqlite3.connect('dormant.db')\n"
+            "    __init__ = unresolved\n"
+            "def run():\n"
+            "    Rebound()\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert _r8_sqlite_findings(result) == []
+
+
+def test_r8_conditional_constructor_rebinding_preserves_both_paths(
+    tmp_path,
+):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "class Rebound:\n"
+            "    def __init__(self):\n"
+            "        self.value = 1\n"
+            "    def alternate(self):\n"
+            "        sqlite3.connect('alternate.db')\n"
+            "    if enabled:\n"
+            "        __init__ = alternate\n"
+            "def run():\n"
+            "    Rebound()\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert len(_r8_sqlite_findings(result)) == 1
+
+
+def test_r8_conditional_constructor_preserves_inherited_fallthrough(
+    tmp_path,
+):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "class Base:\n"
+            "    def __init__(self):\n"
+            "        sqlite3.connect('base.db')\n"
+            "class Child(Base):\n"
+            "    if enabled:\n"
+            "        def __init__(self):\n"
+            "            sqlite3.connect('child.db')\n"
+            "def run():\n"
+            "    Child()\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+    assert len(_r8_sqlite_findings(result)) == 2
+
+
+def test_r8_later_direct_constructor_clears_conditional_uncertainty(
+    tmp_path,
+):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "class FinalBinding:\n"
+            "    if enabled:\n"
+            "        __init__ = unresolved\n"
+            "    def __init__(self):\n"
+            "        self.value = 1\n"
+            "def run():\n"
+            "    FinalBinding()\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+@pytest.mark.parametrize(
+    ("constructors", "expected_state", "expected_findings"),
+    [
+        (
+            "    def __init__(self):\n"
+            "        sqlite3.connect('overwritten.db')\n"
+            "    def __init__(self):\n"
+            "        self.value = 1\n",
+            "not_detected",
+            0,
+        ),
+        (
+            "    def __init__(self):\n"
+            "        self.value = 1\n"
+            "    def __init__(self):\n"
+            "        sqlite3.connect('effective.db')\n",
+            "detected",
+            1,
+        ),
+    ],
+    ids=["final-benign", "final-effectful"],
+)
+def test_r8_duplicate_direct_init_uses_final_effective_binding(
+    tmp_path, constructors, expected_state, expected_findings
+):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            "class Duplicate:\n"
+            f"{constructors}"
+            "def run():\n"
+            "    Duplicate()\n"
+        ),
+    )
+    assert result["state"] == expected_state
+    assert len(_r8_sqlite_findings(result)) == expected_findings
+
+
+@pytest.mark.parametrize(
+    "binding_source",
+    [
+        (
+            "def initialize(self):\n"
+            "    sqlite3.connect('module-local.db')\n"
+            "class Assigned:\n"
+            "    __init__ = initialize\n"
+        ),
+        (
+            "class Assigned:\n"
+            "    def initialize(self):\n"
+            "        sqlite3.connect('class-local.db')\n"
+            "    __init__ = initialize\n"
+        ),
+    ],
+    ids=["module-local", "class-local"],
+)
+def test_r8_constructor_assignment_to_exact_local_callable_is_bounded(
+    tmp_path, binding_source
+):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "import sqlite3\n"
+            f"{binding_source}"
+            "def run():\n"
+            "    Assigned()\n"
+        ),
+    )
+    assert result["state"] == "detected"
+    assert len(_r8_sqlite_findings(result)) == 1
+
+
+def test_r8_constructor_assignment_to_unresolved_callable_is_unknown(
+    tmp_path,
+):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "class Assigned:\n"
+            "    __init__ = unresolved\n"
+            "def run():\n"
+            "    Assigned()\n"
+        ),
+    )
+    assert result["state"] == "unknown"
+    assert result["reason"] == "import_resolution_incomplete"
+
+
+def test_r8_new_phase_precedes_init_phase_in_execution_expansion():
+    mod = _module()
+    tree = ast.parse(
+        "import sqlite3\n"
+        "class Phased:\n"
+        "    def __init__(self):\n"
+        "        sqlite3.connect('init.db')\n"
+        "    def __new__(cls):\n"
+        "        sqlite3.connect('new.db')\n"
+        "        return object.__new__(cls)\n"
+        "def run():\n"
+        "    Phased()\n"
+    )
+    functions = {
+        node.name: node
+        for node in tree.body
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
+    classes = {
+        node.name: node for node in tree.body if isinstance(node, ast.ClassDef)
+    }
+    nodes, _states, _calls, _incomplete = mod._definition_execution_nodes(
+        functions["run"],
+        mod.collect_aliases(tree),
+        None,
+        functions,
+        classes,
+    )
+    phase_paths = [
+        node.args[0].value
+        for node in nodes
+        if isinstance(node, ast.Call)
+        and mod._dotted_name(node.func, mod.collect_aliases(tree))
+        == "sqlite3.connect"
+        and node.args
+        and isinstance(node.args[0], ast.Constant)
+    ]
+    assert phase_paths == ["new.db", "init.db"]
+
+
+def test_r8_module_class_alias_inside_reached_function_fixes_parent_map(
+    tmp_path,
+):
+    result = _escaped_nested_callable_result(
+        tmp_path,
+        (
+            "class Outside:\n"
+            "    def __init__(self):\n"
+            "        self.value = 1\n"
+            "def run():\n"
+            "    constructor = Outside\n"
+            "    constructor()\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+@pytest.mark.parametrize(
+    ("helper_source", "has_read"),
+    [
+        (
+            "class RangeModel:\n"
+            "    def __init__(self, maximum=49):\n"
+            "        self.minimum = 1\n"
+            "        self.maximum = maximum\n"
+            "    def produce(self):\n"
+            "        return list(range(self.minimum, self.maximum))\n"
+            "def run():\n"
+            "    model = RangeModel(38)\n"
+            "    model.produce()\n",
+            False,
+        ),
+        (
+            "class CoverageModel:\n"
+            "    def __init__(self, groups=6):\n"
+            "        self.groups = groups\n"
+            "    def describe(self):\n"
+            "        return {'groups': self.groups}\n"
+            "def run():\n"
+            "    model = CoverageModel()\n"
+            "    model.describe()\n",
+            False,
+        ),
+        (
+            "class EnsembleModel:\n"
+            "    def __init__(self):\n"
+            "        self.models = {}\n"
+            "        print('ready')\n"
+            "    def load(self):\n"
+            "        return []\n"
+            "    def train(self, rows):\n"
+            "        self.models['rows'] = rows\n"
+            "def run():\n"
+            "    model = EnsembleModel()\n"
+            "    rows = model.load()\n"
+            "    model.train(rows)\n",
+            False,
+        ),
+        (
+            "import pandas as pd\n"
+            "class TableModel:\n"
+            "    def __init__(self, path):\n"
+            "        self.rows = pd.read_csv(path)\n"
+            "    def predict(self):\n"
+            "        return len(self.rows)\n"
+            "def run():\n"
+            "    model = TableModel('bounded.csv')\n"
+            "    model.predict()\n",
+            True,
+        ),
+    ],
+    ids=["bounded-range", "bounded-coverage", "bounded-engine", "bounded-reader"],
+)
+def test_r8_generic_outside_class_equivalents_remain_complete(
+    tmp_path, helper_source, has_read
+):
+    transitive = _escaped_nested_callable_result(tmp_path, helper_source)
+    assert transitive["state"] == "not_detected"
+    assert transitive["findings"] == []
+    direct = _analyze(helper_source)
+    assert (_state(direct, "filesystem_read") == "detected") is has_read
+
+
+def test_r8_function_header_annotations_follow_future_semantics():
+    eager_tree = ast.parse("def run(value: marker()) -> result():\n    pass\n")
+    postponed_tree = ast.parse(
+        "from __future__ import annotations\n"
+        "def run(value: marker()) -> result():\n"
+        "    pass\n"
+    )
+    eager_names = {
+        _module()._dotted_name(call.func, {})
+        for call in _module().import_time_calls(eager_tree)
+    }
+    postponed_names = {
+        _module()._dotted_name(call.func, {})
+        for call in _module().import_time_calls(postponed_tree)
+    }
+    assert eager_names == {"marker", "result"}
+    assert postponed_names == set()
+
+
+def test_r8_three_local_adapter_shape_is_conclusively_not_detected(tmp_path):
+    result = _r8_constructor_result(
+        tmp_path,
+        (
+            "class Metadata:\n"
+            "    def __init__(self, name, minimum):\n"
+            "        self.name = name\n"
+            "        self.minimum = minimum\n"
+            "class AdapterBase:\n"
+            "    def get_value(self, history):\n"
+            "        return self._predict(history)\n"
+            "    def _predict(self, history):\n"
+            "        raise NotImplementedError\n"
+            "class First(AdapterBase):\n"
+            "    meta = Metadata('first', 10)\n"
+            "    def _predict(self, history):\n"
+            "        import deeper\n"
+            "        return history\n"
+            "class Second(AdapterBase):\n"
+            "    meta = Metadata('second', 20)\n"
+            "class Third(AdapterBase):\n"
+            "    meta = Metadata('third', 30)\n"
+            "adapters = [First(), Second(), Third()]\n"
+            "adapter_map = {item.meta.name: item for item in adapters}\n"
+        ),
+    )
+    assert result["state"] == "not_detected"
+    assert result["findings"] == []
+
+
+def test_r8_frozen_p47_local_construction_remains_complete_and_low():
+    result = _frozen_one_hop_analysis(
+        "lottery_api/models/p47_wave4_powerlotto_adapters.py"
+    )
+    assert result["scan_status"] == "complete"
+    assert result["scan"]["complete"] is True
+    transitive = result["evidence"]["transitive_external_state"]
+    assert transitive["state"] == "not_detected"
+    assert transitive["scope"] == "transitive"
+    assert transitive["findings"] == []
+    assert "reason" not in transitive
+    assert result["safety_classification"]["risk_level"] == "low"
+    assert result["safety_classification"]["low_risk_eligible"] is True
+
+
+def test_r8_generator_write_scope_is_exactly_two_canonical_artifacts():
+    _source, tree = _generator_source_tree()
+    main = next(
+        node
+        for node in tree.body
+        if isinstance(node, ast.FunctionDef) and node.name == "main"
+    )
+    assignments = {
+        target.id: ast.unparse(node.value)
+        for node in main.body
+        if isinstance(node, ast.Assign)
+        for target in node.targets
+        if isinstance(target, ast.Name)
+    }
+    writes = [
+        node
+        for node in ast.walk(main)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and node.func.attr in {
+            "mkdir", "open", "rename", "replace", "unlink",
+            "write_bytes", "write_text",
+        }
+    ]
+    assert [ast.unparse(node.func) for node in writes] == [
+        "json_path.write_text",
+        "markdown_path.write_text",
+    ]
+    assert assignments["json_path"] == "REPO_ROOT / OUTPUT_JSON"
+    assert assignments["markdown_path"] == "REPO_ROOT / OUTPUT_MARKDOWN"
+
+
+def test_r8_frozen_hypothesis_mutated_dispatch_is_fail_closed():
+    result = _frozen_one_hop_analysis("tools/hypothesis_39lotto_test.py")
+    transitive = result["evidence"]["transitive_external_state"]
+    assert transitive["state"] == "unknown"
+    assert transitive["reason"] == "import_resolution_incomplete"
+    assert transitive["findings"] == []
+
+
+def test_nested_same_name_does_not_fall_through_to_top_level(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def choose():\n"
+                "    import deeper\n"
+                "def run():\n"
+                "    def choose():\n"
+                "        return 1\n"
+                "    return choose()\n"
+            ),
+            "deeper.py": "VALUE = 1\n",
+        },
+    )
+    assert _one_hop(repo, commit, "main.py")["state"] == "not_detected"
+
+
+def test_two_nested_classes_with_same_method_name_are_scope_correct(tmp_path):
+    repo, commit = _synthetic_repo(
+        tmp_path,
+        {
+            "main.py": "from helper import run\nrun()\n",
+            "helper.py": (
+                "def run():\n"
+                "    class Dangerous:\n"
+                "        def method(self):\n"
+                "            import deeper\n"
+                "    class Safe:\n"
+                "        def method(self):\n"
+                "            return 1\n"
+                "    Safe().method()\n"
+            ),
+            "deeper.py": "VALUE = 1\n",
         },
     )
     assert _one_hop(repo, commit, "main.py")["state"] == "not_detected"
@@ -1820,13 +5213,370 @@ def test_blob_read_failure_retains_order_continues_and_is_byte_deterministic(
 
 def test_json_regeneration_equals_committed_json(artifact):
     mod = _module()
-    expected = json.dumps(artifact, ensure_ascii=False, indent=2, allow_nan=False) + "\n"
-    assert (REPO_ROOT / mod.OUTPUT_JSON).read_text(encoding="utf-8") == expected
+    protected_json_path = (REPO_ROOT / mod.OUTPUT_JSON).resolve()
+    protected_markdown_path = (REPO_ROOT / mod.OUTPUT_MARKDOWN).resolve()
+    assert protected_json_path == PROTECTED_JSON_PATH.resolve()
+    assert protected_markdown_path == PROTECTED_MARKDOWN_PATH.resolve()
+    _assert_json_self_identity_contract(
+        _canonical_json_bytes(artifact),
+        generator_path=_canonical_generator_path(),
+        protected_json_raw=protected_json_path.read_bytes(),
+        protected_markdown_raw=protected_markdown_path.read_bytes(),
+    )
 
 
 def test_markdown_regeneration_equals_committed_markdown(artifact):
     mod = _module()
-    assert (REPO_ROOT / mod.OUTPUT_MARKDOWN).read_text(encoding="utf-8") == mod.render_markdown(artifact)
+    protected_json_path = (REPO_ROOT / mod.OUTPUT_JSON).resolve()
+    protected_markdown_path = (REPO_ROOT / mod.OUTPUT_MARKDOWN).resolve()
+    assert protected_json_path == PROTECTED_JSON_PATH.resolve()
+    assert protected_markdown_path == PROTECTED_MARKDOWN_PATH.resolve()
+    _assert_markdown_self_identity_contract(
+        mod.render_markdown(artifact).encode("utf-8"),
+        _canonical_json_bytes(artifact),
+        generator_path=_canonical_generator_path(),
+        protected_json_raw=protected_json_path.read_bytes(),
+        protected_markdown_raw=protected_markdown_path.read_bytes(),
+    )
+
+
+def test_self_identity_contract_allows_exact_two_json_substitutions(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    _assert_json_self_identity_contract(
+        sample["regenerated_json"],
+        generator_path=sample["generator_path"],
+        protected_json_raw=sample["protected_json"],
+        protected_markdown_raw=sample["protected_markdown"],
+    )
+
+
+def test_self_identity_contract_allows_exact_one_markdown_substitution(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    _assert_markdown_self_identity_contract(
+        sample["regenerated_markdown"],
+        sample["regenerated_json"],
+        generator_path=sample["generator_path"],
+        protected_json_raw=sample["protected_json"],
+        protected_markdown_raw=sample["protected_markdown"],
+    )
+
+
+def test_self_identity_contract_rejects_wrong_generator_byte_size(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    forged = _strict_json_load(sample["regenerated_json"])
+    forged["generator"]["byte_size"] += 1
+    with pytest.raises(AssertionError, match="byte_size"):
+        _assert_json_self_identity_contract(
+            _canonical_json_bytes(forged),
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_wrong_generator_hash(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    forged = _strict_json_load(sample["regenerated_json"])
+    forged["generator"]["sha256"] = "0" * 64
+    with pytest.raises(AssertionError, match="sha256"):
+        _assert_json_self_identity_contract(
+            _canonical_json_bytes(forged),
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+@pytest.mark.parametrize("variant", ["uppercase", "shortened"])
+def test_self_identity_contract_rejects_noncanonical_generator_hash(
+    self_identity_contract_samples, variant
+):
+    sample = self_identity_contract_samples
+    forged = _strict_json_load(sample["regenerated_json"])
+    current = forged["generator"]["sha256"]
+    forged["generator"]["sha256"] = (
+        current.upper() if variant == "uppercase" else current[:-1]
+    )
+    with pytest.raises(AssertionError, match="64-character lowercase hex"):
+        _assert_json_self_identity_contract(
+            _canonical_json_bytes(forged),
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+@pytest.mark.parametrize("field", ["byte_size", "sha256"])
+def test_self_identity_contract_rejects_missing_json_identity_field(
+    self_identity_contract_samples, field
+):
+    sample = self_identity_contract_samples
+    forged = _strict_json_load(sample["regenerated_json"])
+    del forged["generator"][field]
+    with pytest.raises(AssertionError, match=f"generator/{field}"):
+        _assert_json_self_identity_contract(
+            _canonical_json_bytes(forged),
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+@pytest.mark.parametrize(
+    ("field", "wrong_value"),
+    [("byte_size", "304503"), ("sha256", 520313)],
+)
+def test_self_identity_contract_rejects_wrong_json_identity_type(
+    self_identity_contract_samples, field, wrong_value
+):
+    sample = self_identity_contract_samples
+    forged = _strict_json_load(sample["regenerated_json"])
+    forged["generator"][field] = wrong_value
+    with pytest.raises(AssertionError, match=f"generator/{field}"):
+        _assert_json_self_identity_contract(
+            _canonical_json_bytes(forged),
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_any_third_json_pointer_difference(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    forged = _strict_json_load(sample["regenerated_json"])
+    forged["task_id"] += "_DRIFT"
+    with pytest.raises(AssertionError, match="closed JSON exception mismatch"):
+        _assert_json_self_identity_contract(
+            _canonical_json_bytes(forged),
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_json_key_order_difference(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    forged = _strict_json_load(sample["regenerated_json"])
+    forged["generator"] = dict(reversed(list(forged["generator"].items())))
+    with pytest.raises(AssertionError, match="closed JSON exception mismatch"):
+        _assert_json_self_identity_contract(
+            _canonical_json_bytes(forged),
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_json_whitespace_or_serialization_difference(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    marker = b'{\n  "schema_version"'
+    assert sample["regenerated_json"].count(marker) == 1
+    forged = sample["regenerated_json"].replace(
+        marker, b'{\n   "schema_version"', 1
+    )
+    with pytest.raises(AssertionError, match="JSON bytes differ"):
+        _assert_json_self_identity_contract(
+            forged,
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_duplicate_json_semantic_location(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    sha256 = str(sample["identity"]["sha256"]).encode("ascii")
+    line = b'    "sha256": "' + sha256 + b'"\n'
+    assert sample["regenerated_json"].count(line) == 1
+    forged = sample["regenerated_json"].replace(
+        line, line[:-1] + b",\n" + line, 1
+    )
+    with pytest.raises(AssertionError, match="duplicate JSON key"):
+        _assert_json_self_identity_contract(
+            forged,
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_zero_markdown_sha_lines(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    prefix = b"- Generator SHA-256: `"
+    assert sample["regenerated_markdown"].count(prefix) == 1
+    forged = sample["regenerated_markdown"].replace(
+        prefix, b"- Generator digest: `", 1
+    )
+    with pytest.raises(AssertionError, match="exactly one Generator SHA-256 line"):
+        _assert_markdown_self_identity_contract(
+            forged,
+            sample["regenerated_json"],
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_duplicate_markdown_sha_lines(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    _lines, candidates = _markdown_generator_sha_candidates(
+        sample["regenerated_markdown"]
+    )
+    assert len(candidates) == 1
+    line = candidates[0]["line"]
+    forged = sample["regenerated_markdown"].replace(line, line + line, 1)
+    with pytest.raises(AssertionError, match="exactly one Generator SHA-256 line"):
+        _assert_markdown_self_identity_contract(
+            forged,
+            sample["regenerated_json"],
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_wrong_markdown_hash(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    current = str(sample["identity"]["sha256"]).encode("ascii")
+    forged = sample["regenerated_markdown"].replace(current, b"0" * 64, 1)
+    with pytest.raises(AssertionError, match="inconsistent with regenerated JSON"):
+        _assert_markdown_self_identity_contract(
+            forged,
+            sample["regenerated_json"],
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_markdown_hash_inconsistent_with_json(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    current = str(sample["identity"]["sha256"]).encode("ascii")
+    forged = sample["regenerated_markdown"].replace(current, b"1" * 64, 1)
+    with pytest.raises(AssertionError, match="inconsistent with regenerated JSON"):
+        _assert_markdown_self_identity_contract(
+            forged,
+            sample["regenerated_json"],
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_markdown_hash_inconsistent_with_generator_bytes(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    wrong_identity = _generator_identity(Path(__file__).resolve())
+    forged_json = _strict_json_load(sample["regenerated_json"])
+    forged_json["generator"]["sha256"] = wrong_identity["sha256"]
+    current = str(sample["identity"]["sha256"]).encode("ascii")
+    forged_markdown = sample["regenerated_markdown"].replace(
+        current, str(wrong_identity["sha256"]).encode("ascii"), 1
+    )
+    with pytest.raises(AssertionError, match="inconsistent with generator bytes"):
+        _assert_markdown_self_identity_contract(
+            forged_markdown,
+            _canonical_json_bytes(forged_json),
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_any_second_markdown_line_difference(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    marker = "# P541B R2 — Fail-Closed Structured Evidence Classification".encode(
+        "utf-8"
+    )
+    assert sample["regenerated_markdown"].count(marker) == 1
+    forged = sample["regenerated_markdown"].replace(
+        marker,
+        "# P541B RX — Fail-Closed Structured Evidence Classification".encode("utf-8"),
+        1,
+    )
+    with pytest.raises(AssertionError, match="differs outside the closed exception"):
+        _assert_markdown_self_identity_contract(
+            forged,
+            sample["regenerated_json"],
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_protected_json_pin_drift(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    forged_protected = b"X" + sample["protected_json"][1:]
+    with pytest.raises(AssertionError, match="protected JSON pin"):
+        _assert_json_self_identity_contract(
+            sample["regenerated_json"],
+            generator_path=sample["generator_path"],
+            protected_json_raw=forged_protected,
+            protected_markdown_raw=sample["protected_markdown"],
+        )
+
+
+def test_self_identity_contract_rejects_protected_markdown_pin_drift(
+    self_identity_contract_samples,
+):
+    sample = self_identity_contract_samples
+    forged_protected = b"X" + sample["protected_markdown"][1:]
+    with pytest.raises(AssertionError, match="protected Markdown pin"):
+        _assert_markdown_self_identity_contract(
+            sample["regenerated_markdown"],
+            sample["regenerated_json"],
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=forged_protected,
+        )
+
+
+@pytest.mark.parametrize("mutation", ["generator_prefix", "identity_wildcard"])
+def test_self_identity_contract_rejects_wildcard_or_prefix_style_behavior(
+    self_identity_contract_samples, mutation
+):
+    sample = self_identity_contract_samples
+    forged = _strict_json_load(sample["regenerated_json"])
+    if mutation == "generator_prefix":
+        forged["generator"]["path"] += ".unexpected"
+    else:
+        forged["generator"]["sha256_backup"] = forged["generator"]["sha256"]
+    with pytest.raises(AssertionError, match="closed JSON exception mismatch"):
+        _assert_json_self_identity_contract(
+            _canonical_json_bytes(forged),
+            generator_path=sample["generator_path"],
+            protected_json_raw=sample["protected_json"],
+            protected_markdown_raw=sample["protected_markdown"],
+        )
 
 
 def test_json_and_markdown_describe_the_same_finding_and_status_schema(artifact):

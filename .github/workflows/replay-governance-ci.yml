@@ -42,6 +42,7 @@ jobs:
             /lottery_api/models/biglotto_p0_2bet_adapter.py
             /outputs/randomness_audit/randomness_audit_results.json
             /outputs/randomness_audit/randomness_audit_summary.md
+            /outputs/replay/non_online_replay_fixture_20260511.json
             /pytest.ini
             /scripts/randomness_audit.py
             /scripts/p238b_nist_randomness_audit_artifact_build.py

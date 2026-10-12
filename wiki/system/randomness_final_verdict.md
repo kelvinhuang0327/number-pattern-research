@@ -1,15 +1,9 @@
 # Randomness Final Verdict — Minimal Version
 
-<<<<<<< HEAD
-**Version:** 1.2<br>
-**Effective:** 2026-05-06<br>
-**Last verified:** 2026-07-18<br>
-**Authority:** wiki/system/governance.md<br>
-=======
-**Version:** 1.3
-**Effective:** 2026-07-18
+**Version:** 1.3<br>
+**Effective:** 2026-07-18<br>
+**Last verified:** 2026-10-12<br>
 **Authority:** wiki/system/governance.md  
->>>>>>> archive/p692-r6-superseded-deeb3af-20260719
 **Status:** ACTIVE — Source-of-Truth for research position  
 
 > **This document is the trusted source-of-truth for LotteryNew's current assessment of lottery randomness and exploitability.**  
@@ -49,48 +43,21 @@ This classification does not mean "research failed." It means: "We found the beg
 <!-- P692_CURRENT_EXECUTABLE_AUDIT_BEGIN -->
 ## 3. Randomness Audit Result
 
-<<<<<<< HEAD
-- **Last audit run:** 2026-07-18T13:35:18.685255Z
-- **Audit implementation:** `scripts/randomness_audit.py` (`RECONSTRUCTED`; historical implementation parity is not claimed)
-- **Audit outputs:** `outputs/randomness_audit/randomness_audit_results.json` and `outputs/randomness_audit/randomness_audit_summary.md`
-- **Verified normalized result SHA-256:** `ca097c324970ce06acb1fee29efccb48576b48cb9c34317fc24d341042338616`
-=======
-**Latest real executable audit:** 2026-07-18T13:37:50Z
+**Latest real executable audit:** 2026-10-12T10:11:04.508684Z
 **Audit script:** `scripts/randomness_audit.py`  
 **Audit outputs:** `outputs/randomness_audit/`  
 **Current bounded publication status:** `DIAGNOSTIC_ONLY`
->>>>>>> archive/p692-r6-superseded-deeb3af-20260719
 
 The unchanged P246K source diagnostics report 5 GREEN and 0 YELLOW outcomes across 5 checks for the current canonical BIG_LOTTO population. This bounded diagnostic result does not prove randomness, establish absence of an exploitable edge, validate another lottery, or authorize prediction or betting.
 
-<<<<<<< HEAD
-Interpretation:
-- The fresh executable audit analyzed 1,929 Power Lotto draws (through 2026-07-16), 2,125 canonical-main Big Lotto draws (through 2026-07-14), and 5,916 Daily 539 draws (through 2026-07-16)
-- One of 44 pre-declared confirmatory tests was nominally significant before correction: Big Lotto special-number uniformity, raw p = 0.0459634
-- The Big Lotto special-number null uses the full **1..49** marginal domain, consistent with the official sequential six-main-plus-special draw process
-- After Bonferroni correction for 44 hypotheses: **none passed threshold**
-- After BH-FDR correction: **none passed threshold**
-- No ball-level or draw-machine bias confirmed
-
-Limitations:
-- Statistical compatibility does not prove physical randomness
-- Monte Carlo p-values use 2,000 simulations and therefore have finite resolution
-- The confirmatory tests are correlated; Bonferroni remains the conservative family-wise gate
-- This result is not a prediction, strategy promotion, or betting recommendation
-
-**What this means for research:**
-- The deviations observed are consistent with random fluctuation
-- No confirmed structural exploitable bias
-- Physical-bias monitoring should continue; if future audit shows Bonferroni + BH-FDR significant deviation, Trigger T4 is activated (see wiki/system/controlled_edge_discovery.md §3)
-=======
 ### Canonical input and execution provenance
 
 - Scope: canonical BIG_LOTTO `CANONICAL_MAIN_DRAW` only.
-- Population: 2125 rows from draw `96000001` through `115000070`.
+- Population: 2134 rows from draw `96000001` through `115000079`.
 - Logical store: `canonical_big_lotto_store`.
 - SQLite contract: URI `mode=ro&immutable=1&cache=private`; `PRAGMA query_only=ON`; nonempty WAL fails closed.
-- Selected-row stream SHA-256: `7d48306f31746ec3ea8976b4d0b88f2577decd52191391ee5c059f2fd4588a09`.
-- P246K semantic output SHA-256: `48f72f61764e09de20702a853d124930eb3275ce49eb7e9b4b9e26e84f5d9dd1`.
+- Selected-row stream SHA-256: `d10c5cf7310fec1c741ff3406ef405b0a53e35db3fae185a04d3f62942ec7006`.
+- P246K semantic output SHA-256: `f55964cb24823c8e06ee955bae6f70f20b33b6b9cf4fc903b1c86b2c42350154`.
 - No statistic, p-value, threshold, correction, simulation, seed, or verdict value changed.
 - P238B contributes only its unchanged population-independent `_connect_ro` helper.
 
@@ -108,7 +75,7 @@ Limitations:
 3. The five P246K diagnostics have no multiplicity correction.
 4. Statistical power and minimum-detectable-effect have not been established for the published five-test diagnostic.
 5. P246K GREEN does not prove randomness.
-6. Earlier JSON and Markdown frequency-extrema values were inconsistent (JSON max/min 285/221; Markdown max/min 284/243). The current migration preserves both as conflicting historical evidence, selects neither historical value, and reports the separately recomputed current canonical extrema 286/222 only as part of the unchanged P246K source diagnostic payload.
+6. Earlier JSON and Markdown frequency-extrema values were inconsistent (JSON max/min 285/221; Markdown max/min 284/243). The current migration preserves both as conflicting historical evidence, selects neither historical value, and reports the separately recomputed current canonical extrema 289/223 only as part of the unchanged P246K source diagnostic payload.
 
 ### Historical date-conflict disclosure
 
@@ -121,7 +88,8 @@ The historical 44-test evidence remains unreproducible from committed source.
 - It supplies no prediction signal, strategy authorization, betting recommendation, or cross-lottery validation.
 - BIG_LOTTO predictive research remains blocked under its existing governance.
 <!-- P692_CURRENT_EXECUTABLE_AUDIT_END -->
->>>>>>> archive/p692-r6-superseded-deeb3af-20260719
+
+> Data coverage note: the selected draws span `2007/01/02` through `2026/08/14`; `2026/08/14` is the latest draw date present in the approved DB, while this audit ran on `2026-10-12`.
 
 ---
 
@@ -222,20 +190,14 @@ No shortcuts. No "just a quick check." All gates are mandatory.
 
 | Parameter | Value | Rationale |
 |-----------|-------|-----------|
-| Max calendar days between real executable audits | **14 calendar days** | Anchored to execution, never re-attestation |
+| Max calendar days between real executable audits | **14 days (calendar days)** | Anchored to execution, never re-attestation |
 | Max new draws since last audit | **50 new canonical BIG_LOTTO draws** | Current draws come from an independent canonical DB query |
 | Stale threshold | Either condition above | Both checked independently; either triggers failure |
 
 **Enforcement:**
-<<<<<<< HEAD
-- `tests/test_randomness_audit_cadence.py` CI gate enforces this policy (P0-1, 2026-05-08)
-- The cadence anchor is the audit artifact's UTC `run_timestamp`; the summary's `Run timestamp:` line must match it exactly
-- Human re-attestation of unchanged evidence does **not** reset either cadence trigger
-- The gate validates required audit evidence, immutable dataset digests, and the current canonical draw count; a timestamp without dataset evidence fails closed
-- The gate fails if either artifact is absent or unreadable, the audit is more than 14 days old, audited history changed, or 50 new canonical draws accumulated
-=======
-- The two triggers are 14 calendar days and 50 new canonical draws, **whichever occurs first**.
+- The two triggers are 14 days (calendar days) and 50 new canonical draws, **whichever occurs first**.
 - Calendar cadence reads `current_executable_audit.cadence_anchor.real_executable_audit_timestamp_utc` from the JSON artifact.
+- The legacy 44-test artifact's `run_timestamp` remains immutable historical metadata; the current calendar cadence uses the real executable timestamp above.
 - Draw cadence queries `draws_big_lotto_canonical_main` independently from generated audit outputs and verifies that the prior audited row-stream hash is still a suffix of canonical history.
 - Timestamp-only re-attestation is non-gating and resets neither trigger.
 - UTC offsets are explicit. Every future timestamp fails closed, including the smallest supported positive offset; equal-to-now remains valid.
@@ -243,7 +205,6 @@ No shortcuts. No "just a quick check." All gates are mandatory.
 - A generated Markdown/JSON pair is validated before publication, publishes Markdown first and cadence-bearing JSON last, and restores the previous pair on supported replacement failures.
 - Missing or malformed provenance, a changed historical row stream, a shrinking population, or a missing canonical view fails closed.
 - `tests/test_randomness_audit_cadence.py` enforces boundaries including 49 versus 50 new draws.
->>>>>>> archive/p692-r6-superseded-deeb3af-20260719
 
 **Routing:**  
 → cadence test: `tests/test_randomness_audit_cadence.py`  
@@ -266,9 +227,5 @@ python scripts/randomness_audit.py cadence \
 |---------|------|--------|
 | 1.0 (Minimal) | 2026-05-06 | Initial creation as part of P1-Rank1 Governance Lock-in. Establishes minimal trusted verdict; full audit cadence to be defined in future governance tasks. |
 | 1.1 | 2026-05-08 | Added §9 Audit Cadence Policy (policy v0.1): 14 calendar days / 50 draws, whichever comes first. CI gate added: tests/test_randomness_audit_cadence.py. |
-<<<<<<< HEAD
-| 1.2 | 2026-07-18 | Replaced human-only freshness with a verified executable audit bound to current canonical data; retained the verdict after Bonferroni and BH-FDR correction; anchored cadence to `run_timestamp` plus dataset evidence. |
-=======
 | 1.2 | 2026-07-18 | Added the existing-logic P246K executable path, separated immutable/unreproducible legacy 44-test evidence, and anchored cadence to real execution plus independent canonical draw counts. |
 | 1.3 | 2026-07-18 | Added strict duplicate-key rejection, complete fail-closed provenance, bounded P246K containment, six scientific limitations, historical-date disclosure, and one-timestamp JSON/Markdown/wiki publication. |
->>>>>>> archive/p692-r6-superseded-deeb3af-20260719

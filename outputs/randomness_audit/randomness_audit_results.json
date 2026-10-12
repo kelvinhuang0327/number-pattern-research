@@ -1124,7 +1124,7 @@
     "task_id": "P691_RANDOMNESS_EXISTING_LOGIC_TRANSFER_R1",
     "audit_type": "EXISTING_LOGIC_MIGRATION",
     "historical_44_test_reproduction": false,
-    "executed_at_utc": "2026-07-18T13:37:50Z",
+    "executed_at_utc": "2026-10-12T10:11:04.508684Z",
     "scope": {
       "lottery_type": "BIG_LOTTO",
       "population": "CANONICAL_MAIN_DRAW",
@@ -1180,20 +1180,20 @@
           "BIG_LOTTO"
         ]
       },
-      "raw_population_count": 3150,
-      "selected_row_count": 2125,
+      "raw_population_count": 3159,
+      "selected_row_count": 2134,
       "oldest_selected_row": {
         "draw": "96000001",
         "date": "2007/01/02"
       },
       "newest_selected_row": {
-        "draw": "115000070",
-        "date": "2026/07/14"
+        "draw": "115000079",
+        "date": "2026/08/14"
       },
       "selected_date_min": "2007/01/02",
-      "selected_date_max": "2026/07/14",
+      "selected_date_max": "2026/08/14",
       "selected_row_stream_serialization": "UTF-8 JSON Lines; each row has draw/date/numbers/special; keys sorted; compact separators; SQL result order",
-      "selected_row_stream_sha256": "7d48306f31746ec3ea8976b4d0b88f2577decd52191391ee5c059f2fd4588a09"
+      "selected_row_stream_sha256": "d10c5cf7310fec1c741ff3406ef405b0a53e35db3fae185a04d3f62942ec7006"
     },
     "p246k_existing_logic_payload_metadata": {
       "status": "UNCHANGED_SOURCE_DIAGNOSTIC_PAYLOAD",
@@ -1227,7 +1227,7 @@
         },
         {
           "id": "historical_frequency_extrema_conflict",
-          "statement": "Earlier JSON and Markdown frequency-extrema values were inconsistent (JSON max/min 285/221; Markdown max/min 284/243). The current migration preserves both as conflicting historical evidence, selects neither historical value, and reports the separately recomputed current canonical extrema 286/222 only as part of the unchanged P246K source diagnostic payload."
+          "statement": "Earlier JSON and Markdown frequency-extrema values were inconsistent (JSON max/min 285/221; Markdown max/min 284/243). The current migration preserves both as conflicting historical evidence, selects neither historical value, and reports the separately recomputed current canonical extrema 289/223 only as part of the unchanged P246K source diagnostic payload."
         }
       ]
     },
@@ -1240,12 +1240,12 @@
       "db_read_only": true,
       "db_write_performed": false,
       "input_population": "CANONICAL_MAIN_DRAW",
-      "raw_population_count": 3150,
-      "canonical_population_count": 2125,
+      "raw_population_count": 3159,
+      "canonical_population_count": 2134,
       "excluded_add_on_count": 1025,
       "exclusion_rules_verified": {
-        "canonical_count": 2125,
-        "raw_count": 3150,
+        "canonical_count": 2134,
+        "raw_count": 3159,
         "excluded_count": 1025,
         "hyphen_in_canonical": 0,
         "date_format_in_canonical": 0,
@@ -1255,11 +1255,7 @@
         "num_range_valid": true
       },
       "p238b_comparison": {
-        "artifact_found": true,
-        "classification": "RANDOMNESS_AUDIT_YELLOW_OBSERVATION_ONLY",
-        "test_count": 37,
-        "is_corrected_significant": false,
-        "note": "P238B ran on raw mixed 22,238-row BIG_LOTTO population including ADD_ON_PRIZE_EXCLUDED, DATE_FORMAT_ALIEN, SMALL_POOL_ALIEN. P246K runs on canonical 2,113-row population only."
+        "artifact_found": false
       },
       "audit_methods": {
         "draw_sum_ks_test": "KS test vs normal distribution",
@@ -1272,67 +1268,67 @@
       },
       "audit_results": {
         "draw_sum_distribution": {
-          "n": 2125,
-          "mean": 151.0,
-          "sd": 32.17,
+          "n": 2134,
+          "mean": 150.94,
+          "sd": 32.16,
           "min": 59,
           "max": 246,
           "theoretical_mean_6of49": 150.0,
-          "mean_deviation_from_theoretical": 1.0,
-          "ks_stat": 0.022,
-          "ks_p": 0.2504,
+          "mean_deviation_from_theoretical": 0.94,
+          "ks_stat": 0.0216,
+          "ks_p": 0.2697,
           "ks_interpretation": "consistent with normal",
           "status": "GREEN"
         },
         "number_frequency_uniformity": {
-          "n_draws": 2125,
-          "n_numbers": 12750,
-          "expected_per_number": 260.2,
-          "max_frequency": 286,
-          "min_frequency": 222,
-          "chi2_stat": 40.03,
-          "chi2_p": 0.7865,
+          "n_draws": 2134,
+          "n_numbers": 12804,
+          "expected_per_number": 261.31,
+          "max_frequency": 289,
+          "min_frequency": 223,
+          "chi2_stat": 40.567,
+          "chi2_p": 0.7681,
           "df": 48,
           "chi2_interpretation": "uniform distribution compatible",
           "status": "GREEN"
         },
         "serial_randomness": {
           "runs_test": {
-            "runs": 1063,
-            "n1_above": 1046,
-            "n2_below": 1079,
-            "z_stat": -0.0106,
-            "p_value": 0.9916,
+            "runs": 1058,
+            "n1_above": 1075,
+            "n2_below": 1059,
+            "z_stat": -0.4305,
+            "p_value": 0.6669,
             "interpretation": "no serial pattern",
             "status": "GREEN"
           },
           "ljung_box_lag10": {
-            "stat": 9.5168,
-            "p_value": 0.4839,
+            "stat": 9.8401,
+            "p_value": 0.4546,
             "interpretation": "no autocorrelation",
             "status": "GREEN"
           }
         },
         "entropy": {
-          "shannon_entropy": 5.612411,
+          "shannon_entropy": 5.612394,
           "max_entropy_uniform": 5.61471,
-          "normalized_entropy": 0.999591,
+          "normalized_entropy": 0.999587,
           "interpretation": "near-maximum entropy — consistent with uniform distribution",
           "status": "GREEN"
         },
         "per_position": {
           "pos_1": {
-            "mean": 7.05,
+            "mean": 7.04,
             "min": 1,
             "max": 32
           },
           "pos_2": {
-            "mean": 14.52,
+            "mean": 14.51,
             "min": 2,
             "max": 40
           },
           "pos_3": {
-            "mean": 21.78,
+            "mean": 21.77,
             "min": 4,
             "max": 46
           },
@@ -1342,7 +1338,7 @@
             "max": 47
           },
           "pos_5": {
-            "mean": 35.89,
+            "mean": 35.87,
             "min": 11,
             "max": 48
           },
@@ -1374,8 +1370,8 @@
             "mean": 149.3
           },
           "2026": {
-            "n": 69,
-            "mean": 150.9
+            "n": 78,
+            "mean": 149.2
           }
         },
         "summary": {
@@ -1406,10 +1402,10 @@
         "prediction_claim",
         "GATE_OPEN_for_BIG_LOTTO_predictive_research"
       ],
-      "final_decision": "P246K canonical BIG_LOTTO randomness audit complete on 2125 draws. All 5 tests: 5 GREEN / 0 YELLOW. P238B YELLOW (raw population) is NOT confirmed on canonical population. Canonical BIG_LOTTO draws are consistent with a fair random 6/49 process. This GREEN result supersedes P238B YELLOW for canonical randomness gating. NOTE: GREEN randomness ≠ exploitable signal. BIG_LOTTO predictive research remains blocked per L91 (zero signals pass p<0.05 even on canonical data). No DB write. No deletion. ADD_ON_PRIZE_EXCLUDED preserved. DB-level canonical separation (P247 Type D) still recommended.",
+      "final_decision": "P246K canonical BIG_LOTTO randomness audit complete on 2134 draws. All 5 tests: 5 GREEN / 0 YELLOW. P238B YELLOW (raw population) is NOT confirmed on canonical population. Canonical BIG_LOTTO draws are consistent with a fair random 6/49 process. This GREEN result supersedes P238B YELLOW for canonical randomness gating. NOTE: GREEN randomness ≠ exploitable signal. BIG_LOTTO predictive research remains blocked per L91 (zero signals pass p<0.05 even on canonical data). No DB write. No deletion. ADD_ON_PRIZE_EXCLUDED preserved. DB-level canonical separation (P247 Type D) still recommended.",
       "db_identity": "canonical_big_lotto_store"
     },
-    "p246k_semantic_output_sha256": "48f72f61764e09de20702a853d124930eb3275ce49eb7e9b4b9e26e84f5d9dd1",
+    "p246k_semantic_output_sha256": "f55964cb24823c8e06ee955bae6f70f20b33b6b9cf4fc903b1c86b2c42350154",
     "current_authoritative_conclusion": {
       "status": "DIAGNOSTIC_ONLY",
       "p246k_overall_status": "GREEN",
@@ -1430,18 +1426,18 @@
     },
     "p246k_result_retained_unchanged": true,
     "p246k_nonsemantic_location_sanitized": true,
-    "p246k_static_narrative_caveat": "The unchanged P246K payload contains historical raw-access prose referencing 22,238 rows and the legacy aggregate field name excluded_add_on_count. They are retained for exact equivalence and are not current row-family provenance. Current raw and canonical counts are the exact SQL results recorded above: 3150 and 2125.",
+    "p246k_static_narrative_caveat": "The unchanged P246K payload contains historical raw-access prose referencing 22,238 rows and the legacy aggregate field name excluded_add_on_count. They are retained for exact equivalence and are not current row-family provenance. Current raw and canonical counts are the exact SQL results recorded above: 3159 and 2134.",
     "cadence_anchor": {
-      "real_executable_audit_timestamp_utc": "2026-07-18T13:37:50Z",
-      "canonical_draw_count": 2125,
-      "selected_row_stream_sha256": "7d48306f31746ec3ea8976b4d0b88f2577decd52191391ee5c059f2fd4588a09",
+      "real_executable_audit_timestamp_utc": "2026-10-12T10:11:04.508684Z",
+      "canonical_draw_count": 2134,
+      "selected_row_stream_sha256": "d10c5cf7310fec1c741ff3406ef405b0a53e35db3fae185a04d3f62942ec7006",
       "oldest_selected_row": {
         "draw": "96000001",
         "date": "2007/01/02"
       },
       "newest_selected_row": {
-        "draw": "115000070",
-        "date": "2026/07/14"
+        "draw": "115000079",
+        "date": "2026/08/14"
       }
     },
     "cadence_policy": {

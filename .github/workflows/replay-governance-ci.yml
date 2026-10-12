@@ -19,6 +19,42 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.github/workflows/replay-governance-ci.yml
+            /analysis/p246k_canonical_big_lotto_nist_reaudit.py
+            /index.html
+            /styles.css
+            /src/
+            /lottery_api/database.py
+            /lottery_api/routes/__init__.py
+            /lottery_api/routes/replay.py
+            /lottery_api/models/__init__.py
+            /lottery_api/models/replay_strategy_registry.py
+            /lottery_api/models/replay_strategy_state_labels.py
+            /lottery_api/models/power_lotto_second_zone.py
+            /lottery_api/models/biglotto_zone_split_adapter.py
+            /lottery_api/models/biglotto_social_wisdom_adapter.py
+            /lottery_api/models/biglotto_p0_2bet_adapter.py
+            /outputs/randomness_audit/randomness_audit_results.json
+            /outputs/randomness_audit/randomness_audit_summary.md
+            /pytest.ini
+            /scripts/randomness_audit.py
+            /scripts/p238b_nist_randomness_audit_artifact_build.py
+            /scripts/run_replay_ci_default_validation.py
+            /scripts/build_replay_test_fixture.py
+            /scripts/run_replay_ci_db_validation.py
+            /tests/conftest.py
+            /tests/test_randomness_audit_cadence.py
+            /tests/test_strategy_replay_history_cutoff_integrity.py
+            /tests/test_replay_browser_smoke.py
+            /tests/test_replay_api_contract.py
+            /tests/test_replay_freshness_cadence.py
+            /wiki/system/randomness_final_verdict.md
+
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -40,6 +76,42 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.github/workflows/replay-governance-ci.yml
+            /analysis/p246k_canonical_big_lotto_nist_reaudit.py
+            /index.html
+            /styles.css
+            /src/
+            /lottery_api/database.py
+            /lottery_api/routes/__init__.py
+            /lottery_api/routes/replay.py
+            /lottery_api/models/__init__.py
+            /lottery_api/models/replay_strategy_registry.py
+            /lottery_api/models/replay_strategy_state_labels.py
+            /lottery_api/models/power_lotto_second_zone.py
+            /lottery_api/models/biglotto_zone_split_adapter.py
+            /lottery_api/models/biglotto_social_wisdom_adapter.py
+            /lottery_api/models/biglotto_p0_2bet_adapter.py
+            /outputs/randomness_audit/randomness_audit_results.json
+            /outputs/randomness_audit/randomness_audit_summary.md
+            /pytest.ini
+            /scripts/randomness_audit.py
+            /scripts/p238b_nist_randomness_audit_artifact_build.py
+            /scripts/run_replay_ci_default_validation.py
+            /scripts/build_replay_test_fixture.py
+            /scripts/run_replay_ci_db_validation.py
+            /tests/conftest.py
+            /tests/test_randomness_audit_cadence.py
+            /tests/test_strategy_replay_history_cutoff_integrity.py
+            /tests/test_replay_browser_smoke.py
+            /tests/test_replay_api_contract.py
+            /tests/test_replay_freshness_cadence.py
+            /wiki/system/randomness_final_verdict.md
+
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -69,6 +141,42 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.github/workflows/replay-governance-ci.yml
+            /analysis/p246k_canonical_big_lotto_nist_reaudit.py
+            /index.html
+            /styles.css
+            /src/
+            /lottery_api/database.py
+            /lottery_api/routes/__init__.py
+            /lottery_api/routes/replay.py
+            /lottery_api/models/__init__.py
+            /lottery_api/models/replay_strategy_registry.py
+            /lottery_api/models/replay_strategy_state_labels.py
+            /lottery_api/models/power_lotto_second_zone.py
+            /lottery_api/models/biglotto_zone_split_adapter.py
+            /lottery_api/models/biglotto_social_wisdom_adapter.py
+            /lottery_api/models/biglotto_p0_2bet_adapter.py
+            /outputs/randomness_audit/randomness_audit_results.json
+            /outputs/randomness_audit/randomness_audit_summary.md
+            /pytest.ini
+            /scripts/randomness_audit.py
+            /scripts/p238b_nist_randomness_audit_artifact_build.py
+            /scripts/run_replay_ci_default_validation.py
+            /scripts/build_replay_test_fixture.py
+            /scripts/run_replay_ci_db_validation.py
+            /tests/conftest.py
+            /tests/test_randomness_audit_cadence.py
+            /tests/test_strategy_replay_history_cutoff_integrity.py
+            /tests/test_replay_browser_smoke.py
+            /tests/test_replay_api_contract.py
+            /tests/test_replay_freshness_cadence.py
+            /wiki/system/randomness_final_verdict.md
+
 
       - name: Setup Python
         uses: actions/setup-python@v5

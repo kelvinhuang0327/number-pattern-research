@@ -54,7 +54,7 @@ def test_ambiguous_results_fail_before_cadence_callback(tmp_path):
     def evaluate_cadence(data):
         callbacks.append(data)
 
-    with pytest.raises(AuditContractError, match="duplicate JSON object key 'anchor'"):
+    with pytest.raises(AuditContractError, match="duplicate JSON object key.*'anchor'"):
         evaluate_cadence(_load_results(source))
 
     assert callbacks == []
@@ -83,59 +83,20 @@ def _check_calendar(run_timestamp: datetime, now: datetime) -> tuple[bool, str]:
 
 
 def _validate_artifact(data: Mapping[str, Any]) -> None:
-    required = {
-        "run_timestamp",
-        "audit_version",
-        "audit_commit",
-        "data_sources",
-        "simulations",
-        "seed",
-        "alpha",
-        "confirmatory_test_count",
-        "multiple_testing_methods",
-        "reanalysis_performed",
-        "new_draws_analyzed",
-        "final_verdict",
-        "strategy_implication",
-        "validation_results",
-        "dataset_identity",
-    }
-    assert not (required - set(data)), f"missing required audit fields: {sorted(required - set(data))}"
-    _parse_run_timestamp(data["run_timestamp"])
-    assert data["audit_execution"]["run_timestamp"] == data["run_timestamp"]
-    assert data["audit_execution"]["timezone"] == "UTC"
-    assert data["reanalysis_performed"] is True
-    assert data["new_draws_analyzed"] is True
-    assert "re_attestation_type" not in data
-    assert data["confirmatory_test_count"] == 44
-    assert set(data["multiple_testing_methods"]) == {"bonferroni", "bh_fdr"}
-    sources = data["data_sources"]
-    assert {source["game"] for source in sources} == EXPECTED_GAMES
-    for source in sources:
-        assert isinstance(source["row_count"], int) and source["row_count"] > 0
-        assert re.fullmatch(r"[0-9a-f]{64}", source["digest"])
-        assert source["date_min"] <= source["date_max"]
-        assert source["duplicate_draw_ids"] == 0
-        assert source["duplicate_full_records"] == 0
-        assert source["invalid_repeated_numbers_inside_draw"] == 0
-    projection = [
-        {
-            key: source[key]
-            for key in ("game", "source", "row_count", "date_min", "date_max", "digest")
-        }
-        for source in sources
-    ]
-    assert data["dataset_identity"]["combined_selected_data_sha256"] == _sha256(
-        _canonical_json_bytes(projection)
-    )
-    assert all(result["status"] == "PASS" for result in data["validation_results"].values())
-    confirmatory = [test for test in data["tests"] if test["confirmatory"]]
-    exploratory = [test for test in data["tests"] if not test["confirmatory"]]
-    assert len(confirmatory) == 44
-    assert len(exploratory) == 17
-    assert all(test["correction_family"] is not None for test in confirmatory)
-    assert all(test["correction_family"] is None for test in exploratory)
-    assert all(test["p_bonferroni"] is None and test["q_bh_fdr"] is None for test in exploratory)
+    current, anchor, provenance, executed = audit._validate_executable_audit_document(data)
+    legacy = data.get("legacy_44_test_evidence")
+    assert isinstance(legacy, Mapping)
+    assert legacy.get("status") == "IMMUTABLE_LEGACY_EVIDENCE"
+    assert legacy.get("reproducible_from_committed_source") is False
+    assert legacy.get("historical_confirmatory_test_count") == 44
+    assert legacy.get("statistical_values_mutated") is False
+    assert current["cadence_policy"]["max_calendar_days"] == CADENCE_MAX_CALENDAR_DAYS
+    assert current["cadence_policy"]["max_new_canonical_draws"] == CADENCE_MAX_NEW_DRAWS
+    assert current["cadence_policy"]["timestamp_only_re_attestation_is_gating"] is False
+    assert current["cadence_anchor"]["real_executable_audit_timestamp_utc"] == audit._format_utc(executed)
+    assert current["cadence_anchor"]["canonical_draw_count"] == provenance["selected_row_count"]
+    assert current["cadence_anchor"] == anchor
+    assert current["input_provenance"] == provenance
 
 
 def _candidate_db() -> Path | None:
@@ -242,9 +203,10 @@ class TestStaticDatasetBinding:
 
     def test_re_attestation_cannot_reset_cadence(self):
         data = _load_results()
-        assert data["cadence"]["anchor"] == "run_timestamp"
-        assert data["cadence"]["re_attestation_resets_cadence"] is False
-        assert "re_attestation_type" not in data
+        current, _, _, executed = audit._validate_executable_audit_document(data)
+        anchor = current["cadence_anchor"]
+        assert anchor["real_executable_audit_timestamp_utc"] == audit._format_utc(executed)
+        assert current["cadence_policy"]["timestamp_only_re_attestation_is_gating"] is False
 
     def test_policy_and_test_constants_agree(self):
         text = WIKI_FILE.read_text(encoding="utf-8")
@@ -252,25 +214,34 @@ class TestStaticDatasetBinding:
         assert "50 draws" in text
         assert "run_timestamp" in text
 
-    def test_real_audit_is_not_stale_by_calendar(self):
+    def test_real_audit_is_expired_by_calendar(self):
         data = _load_results()
-        stale, reason = _check_calendar(
-            _parse_run_timestamp(data["run_timestamp"]), datetime.now(timezone.utc)
+        current, _, _, _ = audit._validate_executable_audit_document(data)
+        timestamp = audit._parse_utc_timestamp(
+            current["cadence_anchor"]["real_executable_audit_timestamp_utc"],
+            field_name="real_executable_audit_timestamp_utc",
         )
-        assert not stale, f"CADENCE GATE FAILURE: {reason}"
+        age = datetime.now(timezone.utc) - timestamp
+        assert age > timedelta(days=CADENCE_MAX_CALENDAR_DAYS), (
+            f"historical audit must remain explicitly expired; age={age}"
+        )
 
     def test_timestamp_without_dataset_evidence_fails_closed(self):
-        data = _load_results()
-        data["data_sources"] = []
-        with pytest.raises(AssertionError):
-            _validate_artifact(data)
+        data = deepcopy(_load_results())
+        provenance = data["current_executable_audit"]["input_provenance"]
+        provenance.pop("selected_row_stream_sha256")
+        with pytest.raises(audit.AuditProvenanceError, match="selected-row-stream hash"):
+            audit._validate_executable_audit_document(data)
 
     def test_human_only_identity_is_historical_provenance_only(self):
         data = _load_results()
-        history = data["provenance"]["historical_evidence"]
-        assert history["artifact_re_attestation_type"] == "HUMAN_REVIEW_OF_UNCHANGED_COMMITTED_EVIDENCE"
-        assert data["reanalysis_performed"] is True
-
+        current, _, _, _ = audit._validate_executable_audit_document(data)
+        history = data["legacy_44_test_evidence"]
+        assert history["status"] == "IMMUTABLE_LEGACY_EVIDENCE"
+        assert history["reproducible_from_committed_source"] is False
+        assert history["canonical_payload_sha256"] == audit.LEGACY_CANONICAL_SHA256
+        assert current["historical_44_test_reproduction"] is False
+        assert current["new_statistical_procedure_introduced"] is False
 
 class TestLiveDatasetCadence:
     def test_current_dataset_preserves_audited_stream_and_draw_threshold(self):

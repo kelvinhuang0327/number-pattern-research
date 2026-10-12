@@ -29,6 +29,7 @@ jobs:
             /index.html
             /styles.css
             /src/
+            !/src/**/*.backup
             /lottery_api/database.py
             /lottery_api/routes/__init__.py
             /lottery_api/routes/replay.py
@@ -86,6 +87,7 @@ jobs:
             /index.html
             /styles.css
             /src/
+            !/src/**/*.backup
             /lottery_api/database.py
             /lottery_api/routes/__init__.py
             /lottery_api/routes/replay.py
@@ -151,6 +153,7 @@ jobs:
             /index.html
             /styles.css
             /src/
+            !/src/**/*.backup
             /lottery_api/database.py
             /lottery_api/routes/__init__.py
             /lottery_api/routes/replay.py

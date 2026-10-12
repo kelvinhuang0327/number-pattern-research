@@ -16,11 +16,20 @@ from typing import Any, Iterable, Optional, Union
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-BASE_COMMIT = "9572d994e94fae44cf7730297e7537c0901d5a78"
+P541D_GENERATION_BASE_COMMIT = "8db53f9cb829d658ea47f01476ec52a61c5c583c"
+P541D_GENERATION_BASE_TREE = "f0d26bd7235e3af02ba12790e18964b947e79d6f"
+SELECTED_METHOD_SOURCE_COMMIT = "9572d994e94fae44cf7730297e7537c0901d5a78"
+SELECTED_METHOD_SOURCE_TREE = "2cd6113c8450102d434044b7641a9d89f74cd682"
+HISTORICAL_P541C_ARTIFACT_COMMIT = SELECTED_METHOD_SOURCE_COMMIT
+P541C_ARTIFACT_COMMIT = "a68b5ca8663e82b7dad5da7c66d53eec10e517c0"
+P541C_SOURCE_REFERENCE_COMMIT = "1777e15556d41f1ff829f9ac18aa3f58d7f8f54f"
+P541C_SOURCE_REFERENCE_TREE = "5582783e56a930d7c9e637485b3c9749e66f470a"
+ADAPTER_REFERENCE_COMMIT = P541D_GENERATION_BASE_COMMIT
+PIN_ADOPTION_TASK_ID = "P541D_R2_R9_PIN_ADOPTION_IMPLEMENTATION_R1"
 TASK_ID = "P541D_R2_BIG_LOTTO_SELECTED_METHOD_ADAPTER_DESIGN_NO_DB_WRITE"
 SCHEMA_VERSION = "p541d-r2-adapter-design-v1"
 DESIGNER_VERSION = "p541d-r2-designer-v2"
-GENERATED_AT = "2026-07-13T00:00:00+00:00"
+GENERATED_AT = "2026-10-12T00:00:00+00:00"
 
 UPSTREAM_PATH = (
     "outputs/research/"
@@ -28,6 +37,19 @@ UPSTREAM_PATH = (
 )
 UPSTREAM_IDENTITY = {
     "path": UPSTREAM_PATH,
+    "artifact_commit": P541C_ARTIFACT_COMMIT,
+    "git_blob_sha": "0406f78c4d42b5551b12843f2d0d1443a55a9971",
+    "byte_size": 1_407_881,
+    "sha256": "ce0fa64f9b3b04dec4b42fddadce119c8f44ff5d36f10bf85a2dc0d3c2f3ac6c",
+    "schema_version": "p541c-r2-selection-v3",
+    "selector_version": "p541c-r2-selector-v5",
+    "record_count": 580,
+    "source_reference_commit": P541C_SOURCE_REFERENCE_COMMIT,
+}
+HISTORICAL_UPSTREAM_PIN = {
+    "path": UPSTREAM_PATH,
+    "artifact_commit": HISTORICAL_P541C_ARTIFACT_COMMIT,
+    "git_blob_sha": "2fb216be14b95b84107417f67b67fe430403742a",
     "byte_size": 1_401_576,
     "sha256": "f470b3c9da81fcb66ed5b0d60bc88c97bd8e51467a5e6e02dfd03cfb5ada013d",
     "schema_version": "p541c-r2-selection-v3",
@@ -47,6 +69,25 @@ ADAPTER_REFERENCE_PATHS = [
     "lottery_api/models/replay_strategy_registry.py",
     "lottery_api/models/p42_wave3_biglotto_adapters.py",
     "lottery_api/models/p93_tierb_replay_adapters.py",
+]
+ADAPTER_REFERENCE_BLOBS = {
+    "lottery_api/models/replay_strategy_registry.py": {
+        "historical": "45770dabaa46c80e6f564b61e5dae96b03bd856e",
+        "current": "21be32d9f0db2a600683dc1788a57f28b87f2529",
+    },
+    "lottery_api/models/p42_wave3_biglotto_adapters.py": {
+        "historical": "213193465f205faac47a23b4e6b07d6701626571",
+        "current": "213193465f205faac47a23b4e6b07d6701626571",
+    },
+    "lottery_api/models/p93_tierb_replay_adapters.py": {
+        "historical": "297681147267d937383d7f898e59b26f811c6722",
+        "current": "297681147267d937383d7f898e59b26f811c6722",
+    },
+}
+REGISTRY_CONTRACT_DELTA = [
+    "ReplayStrategyAdapter.get_one_bet now predicts a POWER_LOTTO special number with power_lotto_second_zone.second_zone_predict(history); BIG_LOTTO still returns special=None, so this change does not alter the five BIG_LOTTO designs.",
+    "The current registry adds P0 2-bet, BIG_LOTTO ZoneSplit, and Social Wisdom adapter factories. The ZoneSplit Bet1 and Social Wisdom IDs match two P541D proposed IDs, and their factory source declares status=ONLINE.",
+    "The two matching current registry declarations affect implementation follow-up: inspect and reconcile the existing source before any future implementation, and do not add duplicate strategy IDs. This static source finding is not runtime-state evidence and does not change P541C replay readiness.",
 ]
 
 JSON_OUTPUT = (
@@ -151,14 +192,28 @@ def _git(repo_root: Path, *args: str) -> bytes:
     return completed.stdout
 
 
-def git_blob_bytes(repo_root: Path, path: str) -> bytes:
+def git_blob_bytes(repo_root: Path, path: str, commit: str) -> bytes:
     if Path(path).is_absolute() or ".." in Path(path).parts:
         raise P541DR2ValidationError(f"unsafe Git path: {path}")
-    return _git(repo_root, "show", f"{BASE_COMMIT}:{path}")
+    return _git(repo_root, "show", f"{commit}:{path}")
 
 
-def git_blob_sha(repo_root: Path, path: str) -> str:
-    return _git(repo_root, "rev-parse", f"{BASE_COMMIT}:{path}").decode("ascii").strip()
+def git_blob_sha(repo_root: Path, path: str, commit: str) -> str:
+    return _git(repo_root, "rev-parse", f"{commit}:{path}").decode("ascii").strip()
+
+
+def git_tree_sha(repo_root: Path, commit: str) -> str:
+    return _git(repo_root, "rev-parse", f"{commit}^{{tree}}").decode("ascii").strip()
+
+
+def _blob_identity(repo_root: Path, path: str, commit: str) -> dict[str, Any]:
+    raw = git_blob_bytes(repo_root, path, commit)
+    return {
+        "commit": commit,
+        "git_blob_sha": git_blob_sha(repo_root, path, commit),
+        "byte_size": len(raw),
+        "sha256": hashlib.sha256(raw).hexdigest(),
+    }
 
 
 def _dotted_name(node: ast.AST) -> str:
@@ -281,7 +336,7 @@ SOURCE_SEMANTICS = {
 
 
 def source_manifest_record(repo_root: Path, path: str) -> dict[str, Any]:
-    raw = git_blob_bytes(repo_root, path)
+    raw = git_blob_bytes(repo_root, path, SELECTED_METHOD_SOURCE_COMMIT)
     try:
         text = raw.decode("utf-8", errors="strict")
         utf8 = "PASS"
@@ -340,7 +395,9 @@ def source_manifest_record(repo_root: Path, path: str) -> dict[str, Any]:
     )
     return {
         "source_path": path,
-        "git_blob_sha": git_blob_sha(repo_root, path),
+        "source_commit": SELECTED_METHOD_SOURCE_COMMIT,
+        "source_tree": SELECTED_METHOD_SOURCE_TREE,
+        "git_blob_sha": git_blob_sha(repo_root, path, SELECTED_METHOD_SOURCE_COMMIT),
         "byte_size": len(raw),
         "sha256": hashlib.sha256(raw).hexdigest(),
         "utf8_parse": utf8,
@@ -368,9 +425,82 @@ def source_manifest_record(repo_root: Path, path: str) -> dict[str, Any]:
     }
 
 
+def _registry_factory_evidence(repo_root: Path, registry_raw: bytes) -> list[dict[str, Any]]:
+    registry_text = registry_raw.decode("utf-8", errors="strict")
+    required_registry_markers = (
+        "power_lotto_second_zone.second_zone_predict(history)",
+        "build_zone_split_adapters(",
+        "build_social_wisdom_adapter(",
+        "*_BIGLOTTO_ZONE_SPLIT_ADAPTERS",
+        "_BIGLOTTO_SOCIAL_WISDOM_ADAPTER",
+    )
+    if any(marker not in registry_text for marker in required_registry_markers):
+        raise P541DR2ValidationError("current replay registry contract evidence mismatch")
+    registry_source_blob_sha = git_blob_sha(
+        repo_root,
+        "lottery_api/models/replay_strategy_registry.py",
+        ADAPTER_REFERENCE_COMMIT,
+    )
+
+    declarations = [
+        {
+            "strategy_id": "biglotto_social_wisdom_anti_popularity",
+            "source_path": "lottery_api/models/biglotto_social_wisdom_adapter.py",
+            "required_markers": (
+                'STRATEGY_ID = "biglotto_social_wisdom_anti_popularity"',
+                'strategy_id=STRATEGY_ID',
+                'status="ONLINE"',
+            ),
+        },
+        {
+            "strategy_id": "biglotto_zone_split_3bet_bet1",
+            "source_path": "lottery_api/models/biglotto_zone_split_adapter.py",
+            "required_markers": (
+                'BET1_STRATEGY_ID = "biglotto_zone_split_3bet_bet1"',
+                'strategy_id=BET1_STRATEGY_ID',
+                'status="ONLINE"',
+            ),
+        },
+    ]
+    evidence: list[dict[str, Any]] = []
+    for declaration in declarations:
+        source_path = declaration["source_path"]
+        raw = git_blob_bytes(repo_root, source_path, ADAPTER_REFERENCE_COMMIT)
+        text = raw.decode("utf-8", errors="strict")
+        if any(marker not in text for marker in declaration["required_markers"]):
+            raise P541DR2ValidationError(
+                f"current replay registry strategy declaration mismatch: {source_path}"
+            )
+        evidence.append(
+            {
+                "strategy_id": declaration["strategy_id"],
+                "source_path": source_path,
+                "source_commit": ADAPTER_REFERENCE_COMMIT,
+                "registry_source_blob_sha": registry_source_blob_sha,
+                "git_blob_sha": git_blob_sha(repo_root, source_path, ADAPTER_REFERENCE_COMMIT),
+                "byte_size": len(raw),
+                "sha256": hashlib.sha256(raw).hexdigest(),
+                "source_declared_status": "ONLINE",
+                "runtime_state_observed": False,
+            }
+        )
+    return evidence
+
+
 def _adapter_reference(repo_root: Path, path: str) -> dict[str, Any]:
-    raw = git_blob_bytes(repo_root, path)
+    historical = _blob_identity(repo_root, path, SELECTED_METHOD_SOURCE_COMMIT)
+    current = _blob_identity(repo_root, path, ADAPTER_REFERENCE_COMMIT)
+    expected = ADAPTER_REFERENCE_BLOBS[path]
+    if (
+        historical["git_blob_sha"] != expected["historical"]
+        or current["git_blob_sha"] != expected["current"]
+    ):
+        raise P541DR2ValidationError(f"canonical adapter reference pin mismatch: {path}")
+    raw = git_blob_bytes(repo_root, path, ADAPTER_REFERENCE_COMMIT)
     symbols: list[str]
+    change_class = "UNCHANGED"
+    contract_delta: list[str] = []
+    registration_evidence: list[dict[str, Any]] = []
     if path.endswith("replay_strategy_registry.py"):
         symbols = [
             "ReplayStrategyAdapter",
@@ -381,15 +511,26 @@ def _adapter_reference(repo_root: Path, path: str) -> dict[str, Any]:
             "InvalidOutput",
             "UnsupportedLotteryType",
         ]
+        change_class = "DESIGN_CONTRACT_DELTA"
+        contract_delta = REGISTRY_CONTRACT_DELTA.copy()
+        registration_evidence = _registry_factory_evidence(repo_root, raw)
     elif path.endswith("p42_wave3_biglotto_adapters.py"):
         symbols = ["strictly-prior history", "one recorded bet", "BIG_LOTTO 1..49 validation"]
     else:
         symbols = ["canonical primitive reuse", "lazy strategy imports", "first-bet normalization"]
     return {
         "path": path,
-        "git_blob_sha": git_blob_sha(repo_root, path),
-        "byte_size": len(raw),
-        "sha256": hashlib.sha256(raw).hexdigest(),
+        "historical_source_commit": SELECTED_METHOD_SOURCE_COMMIT,
+        "historical_git_blob_sha": historical["git_blob_sha"],
+        "historical_byte_size": historical["byte_size"],
+        "historical_sha256": historical["sha256"],
+        "reference_commit": ADAPTER_REFERENCE_COMMIT,
+        "git_blob_sha": current["git_blob_sha"],
+        "byte_size": current["byte_size"],
+        "sha256": current["sha256"],
+        "change_class": change_class,
+        "contract_delta": contract_delta,
+        "registered_factory_evidence": registration_evidence,
         "reused_contract": symbols,
     }
 
@@ -453,7 +594,7 @@ def _common_design(
             "strategy_id": strategy_id,
             "strategy_name": strategy_name,
             "strategy_version": "v0.1-design" if strategy_id else None,
-            "lifecycle": "DEFERRED_NOT_REGISTERED" if strategy_id else "NOT_PROPOSED",
+            "lifecycle": "NOT_ASSIGNED_BY_THIS_STATIC_DESIGN" if strategy_id else "NOT_PROPOSED",
             "supported_lottery_types": ["BIG_LOTTO"] if strategy_id else [],
         },
         "minimum_history": min_history,
@@ -485,8 +626,8 @@ def _common_design(
         ],
         "future_implementation_files": future_files,
         "deferred_registry_lifecycle_changes": [
-            "No registry entry in this task or implied by this design.",
-            "Lifecycle assignment, replay generation, promotion and ONLINE status require separate authorization.",
+            "This static design makes no registry entry, lifecycle, replay-generation, promotion or ONLINE-status change.",
+            "Current registry source observations are reported separately; future work must reconcile matching existing IDs before any implementation or registry change.",
         ],
         "blockers_and_cto_decisions": blockers,
         "readiness_gates": readiness_gates,
@@ -495,7 +636,10 @@ def _common_design(
     }
 
 
-def build_method_designs(shortlist: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def build_method_designs(
+    shortlist: list[dict[str, Any]],
+    registered_factory_evidence: Optional[list[dict[str, Any]]] = None,
+) -> list[dict[str, Any]]:
     provenance = {path: _p541c_provenance(shortlist, path) for path in SELECTED_PATHS}
     common_exceptions = {
         "unsupported lottery": "UnsupportedLotteryType",
@@ -677,6 +821,27 @@ def build_method_designs(shortlist: list[dict[str, Any]]) -> list[dict[str, Any]
         "candidate_minimum_history_result": "cannot produce a successful legacy ticket",
         "semantic_identity_consequence": "Clamping the loop boundary is a semantic repair, not identity-preserving extraction.",
     }
+    registry_by_id = {
+        item["strategy_id"]: item for item in (registered_factory_evidence or [])
+    }
+    for design in designs:
+        strategy_id = design["proposed_strategy"]["strategy_id"]
+        existing = registry_by_id.get(strategy_id)
+        if existing is None:
+            continue
+        design["current_registry_observation"] = {
+            "state": "MATCHING_STRATEGY_ID_DECLARED_IN_CURRENT_REGISTRY_SOURCE",
+            "strategy_id": strategy_id,
+            "registry_path": "lottery_api/models/replay_strategy_registry.py",
+            "registry_source_commit": ADAPTER_REFERENCE_COMMIT,
+            "registry_source_blob_sha": existing["registry_source_blob_sha"],
+            "factory_source_path": existing["source_path"],
+            "factory_source_blob_sha": existing["git_blob_sha"],
+            "source_declared_status": existing["source_declared_status"],
+            "runtime_state_observed": False,
+            "follow_up": "Review the existing source implementation against this design; do not create a duplicate strategy ID.",
+        }
+        design["future_implementation_files"] = []
     return designs
 
 
@@ -685,9 +850,20 @@ def validate_upstream(upstream: dict[str, Any]) -> list[dict[str, Any]]:
         raise P541DR2ValidationError("P541C_R2 schema mismatch")
     if upstream.get("selector_version") != UPSTREAM_IDENTITY["selector_version"]:
         raise P541DR2ValidationError("P541C_R2 selector mismatch")
+    if upstream.get("implementation_base_commit") != P541C_SOURCE_REFERENCE_COMMIT:
+        raise P541DR2ValidationError("P541C_R2 source-reference commit mismatch")
     records = upstream.get("reviewed_method_decisions")
     if not isinstance(records, list) or len(records) != UPSTREAM_IDENTITY["record_count"]:
         raise P541DR2ValidationError("P541C_R2 must contain exactly 580 reviewed records")
+    record_ids = [item.get("method_id") for item in records if isinstance(item, dict)]
+    source_paths = [item.get("source_path") for item in records if isinstance(item, dict)]
+    if (
+        len(record_ids) != UPSTREAM_IDENTITY["record_count"]
+        or any(not isinstance(value, str) or not value for value in record_ids + source_paths)
+        or len(set(record_ids)) != UPSTREAM_IDENTITY["record_count"]
+        or len(set(source_paths)) != UPSTREAM_IDENTITY["record_count"]
+    ):
+        raise P541DR2ValidationError("P541C_R2 record identity duplicate or invalid")
     shortlist = upstream.get("high_priority_candidate_shortlist")
     if not isinstance(shortlist, list) or [x.get("source_path") for x in shortlist] != SELECTED_PATHS:
         raise P541DR2ValidationError("P541C_R2 exact shortlist/order mismatch")
@@ -703,23 +879,128 @@ def validate_upstream(upstream: dict[str, Any]) -> list[dict[str, Any]]:
     return shortlist
 
 
-def _load_upstream(repo_root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
-    raw = git_blob_bytes(repo_root, UPSTREAM_PATH)
+def _historical_input_comparison(
+    repo_root: Path,
+    current_upstream: dict[str, Any],
+) -> dict[str, Any]:
+    raw = git_blob_bytes(
+        repo_root,
+        UPSTREAM_PATH,
+        HISTORICAL_P541C_ARTIFACT_COMMIT,
+    )
+    historical_blob_sha = git_blob_sha(
+        repo_root,
+        UPSTREAM_PATH,
+        HISTORICAL_P541C_ARTIFACT_COMMIT,
+    )
+    historical, actual = _verify_upstream_bytes(
+        raw,
+        HISTORICAL_UPSTREAM_PIN,
+        historical_blob_sha,
+        validate_current=False,
+    )
+    if (
+        historical.get("schema_version") != HISTORICAL_UPSTREAM_PIN["schema_version"]
+        or historical.get("selector_version") != HISTORICAL_UPSTREAM_PIN["selector_version"]
+    ):
+        raise P541DR2ValidationError("historical P541C_R2 selector identity mismatch")
+    old_records = historical["reviewed_method_decisions"]
+    new_records = current_upstream["reviewed_method_decisions"]
+    old_method_ids = [item["method_id"] for item in old_records]
+    new_method_ids = [item["method_id"] for item in new_records]
+    old_source_paths = [item["source_path"] for item in old_records]
+    new_source_paths = [item["source_path"] for item in new_records]
+    old_shortlist = [item.get("source_path") for item in historical["high_priority_candidate_shortlist"]]
+    new_shortlist = [item.get("source_path") for item in current_upstream["high_priority_candidate_shortlist"]]
+    if (
+        old_method_ids != new_method_ids
+        or old_source_paths != new_source_paths
+        or old_shortlist != new_shortlist
+        or old_shortlist != SELECTED_PATHS
+    ):
+        raise P541DR2ValidationError("P541C_R2 record or shortlist order changed")
+    return {
+        "historical_artifact_commit": HISTORICAL_P541C_ARTIFACT_COMMIT,
+        "historical_git_blob_sha": historical_blob_sha,
+        "historical_byte_size": actual["byte_size"],
+        "historical_sha256": actual["sha256"],
+        "historical_selector_version": historical["selector_version"],
+        "current_artifact_commit": P541C_ARTIFACT_COMMIT,
+        "current_git_blob_sha": UPSTREAM_IDENTITY["git_blob_sha"],
+        "record_count": len(new_records),
+        "unique_method_id_count": len(set(new_method_ids)),
+        "unique_source_path_count": len(set(new_source_paths)),
+        "record_method_id_order_sha256": hashlib.sha256(
+            canonical_json_bytes(new_method_ids)
+        ).hexdigest(),
+        "record_source_path_order_sha256": hashlib.sha256(
+            canonical_json_bytes(new_source_paths)
+        ).hexdigest(),
+        "record_method_id_order_matches_historical": True,
+        "record_source_path_order_matches_historical": True,
+        "shortlist_count": len(new_shortlist),
+        "shortlist_order_matches_historical": True,
+        "shortlist_order": new_shortlist,
+    }
+
+
+def _verify_upstream_bytes(
+    raw: bytes,
+    expected_identity: dict[str, Any],
+    actual_blob_sha: Optional[str] = None,
+    validate_current: bool = True,
+) -> tuple[dict[str, Any], dict[str, Any]]:
     actual = {"byte_size": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}
-    if actual["byte_size"] != UPSTREAM_IDENTITY["byte_size"] or actual["sha256"] != UPSTREAM_IDENTITY["sha256"]:
+    if (
+        actual["byte_size"] != expected_identity["byte_size"]
+        or actual["sha256"] != expected_identity["sha256"]
+        or (
+            expected_identity.get("git_blob_sha") is not None
+            and actual_blob_sha != expected_identity["git_blob_sha"]
+        )
+    ):
         raise P541DR2ValidationError("pinned P541C_R2 byte identity mismatch")
     upstream = strict_json_load_bytes(raw, UPSTREAM_PATH)
-    validate_upstream(upstream)
-    return upstream, {**UPSTREAM_IDENTITY, **actual, "verification": "PASS", "read_mechanism": "pinned Git blob"}
+    if validate_current:
+        validate_upstream(upstream)
+    return upstream, actual
+
+
+def _load_upstream(
+    repo_root: Path,
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, str]]:
+    raw = git_blob_bytes(repo_root, UPSTREAM_PATH, P541C_ARTIFACT_COMMIT)
+    blob_sha = git_blob_sha(repo_root, UPSTREAM_PATH, P541C_ARTIFACT_COMMIT)
+    upstream, actual = _verify_upstream_bytes(raw, UPSTREAM_IDENTITY, blob_sha)
+    source_reference_commit = upstream["implementation_base_commit"]
+    source_reference_tree = git_tree_sha(repo_root, source_reference_commit)
+    if source_reference_tree != P541C_SOURCE_REFERENCE_TREE:
+        raise P541DR2ValidationError("P541C_R2 source-reference tree mismatch")
+    identity = {
+        **UPSTREAM_IDENTITY,
+        **actual,
+        "verification": "PASS",
+        "read_mechanism": "git show <artifact commit>:<relative-path>",
+    }
+    source_reference = {
+        "commit": source_reference_commit,
+        "tree": source_reference_tree,
+        "declared_by_artifact_commit": P541C_ARTIFACT_COMMIT,
+    }
+    return upstream, identity, source_reference
 
 
 def build_packet(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
     repo_root = repo_root.resolve()
-    upstream, upstream_identity = _load_upstream(repo_root)
+    upstream, upstream_identity, source_reference = _load_upstream(repo_root)
     shortlist = validate_upstream(upstream)
+    input_comparison = _historical_input_comparison(repo_root, upstream)
     manifests = [source_manifest_record(repo_root, path) for path in SELECTED_PATHS]
     adapter_refs = [_adapter_reference(repo_root, path) for path in ADAPTER_REFERENCE_PATHS]
-    designs = build_method_designs(shortlist)
+    registry_ref = next(
+        item for item in adapter_refs if item["path"] == "lottery_api/models/replay_strategy_registry.py"
+    )
+    designs = build_method_designs(shortlist, registry_ref["registered_factory_evidence"])
     ready = [d["method_id"] for d in designs if d["ready_for_implementation"]]
     cto = [d["method_id"] for d in designs if d["design_status"] == "CTO_REVIEW_REQUIRED"]
     rejected = [d["method_id"] for d in designs if d["design_status"] == "NOT_AN_ADAPTER_CANDIDATE"]
@@ -729,15 +1010,69 @@ def build_packet(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
         "designer_version": DESIGNER_VERSION,
         "task": {
             "task_id": TASK_ID,
+            "pin_adoption_task_id": PIN_ADOPTION_TASK_ID,
             "generated_at": GENERATED_AT,
             "scope": "static no-DB adapter design for exactly five selected BIG_LOTTO methods",
             "design_only": True,
         },
-        "base": {"commit": BASE_COMMIT, "branch": "main"},
+        "base": {
+            "commit": P541D_GENERATION_BASE_COMMIT,
+            "tree": P541D_GENERATION_BASE_TREE,
+            "branch": "main",
+        },
+        "source_bases": {
+            "p541c_artifact": {
+                "commit": P541C_ARTIFACT_COMMIT,
+                "git_blob_sha": UPSTREAM_IDENTITY["git_blob_sha"],
+                "path": UPSTREAM_PATH,
+            },
+            "p541c_declared_source_reference": source_reference,
+            "p541d_generation_source": {
+                "commit": P541D_GENERATION_BASE_COMMIT,
+                "tree": P541D_GENERATION_BASE_TREE,
+            },
+            "selected_method_sources": {
+                "commit": SELECTED_METHOD_SOURCE_COMMIT,
+                "tree": SELECTED_METHOD_SOURCE_TREE,
+            },
+            "canonical_adapter_references": {
+                "commit": ADAPTER_REFERENCE_COMMIT,
+                "tree": P541D_GENERATION_BASE_TREE,
+                "historical_comparison_commit": SELECTED_METHOD_SOURCE_COMMIT,
+            },
+        },
         "upstream_identity": upstream_identity,
+        "p541c_readiness_context": {
+            "ready_for_replay_readiness_now": upstream["summary"]["ready_for_replay_readiness_now"],
+            "static_design_readiness_is_separate": True,
+            "interpretation": "P541D ready_for_implementation is a static design grade and does not promote P541C replay readiness or production status.",
+        },
+        "historical_input_comparison": input_comparison,
         "canonical_adapter_references": adapter_refs,
         "selected_source_manifest": manifests,
         "method_designs": designs,
+        "historical_design_comparison": {
+            "historical_generator_source_commit": P541D_GENERATION_BASE_COMMIT,
+            "historical_input_and_method_source_base_commit": SELECTED_METHOD_SOURCE_COMMIT,
+            "historical_p541c_selector": "p541c-r2-selector-v4",
+            "normalized_design_delta": "EXACT_EXPLAINED_DIFF",
+            "normalization": [
+                "Compare each method design after removing P541C provenance, current-registry observations, and the per-design lifecycle placeholder.",
+                "Compare current method source manifests at the same historical source commit; verify status, gates, selected identity, and design contract independently.",
+            ],
+            "unchanged": [
+                "Five selected method paths and order.",
+                "All 580 method IDs and source paths are unique and retain the exact historical order; the five-member shortlist order is unchanged.",
+                "Five selected source blob identities at the historical method-source commit.",
+                "Two implementation-ready static designs, two CTO-review designs, and one rejected design.",
+                "All design statuses, readiness gates, selected identities, and synthetic evidence after normalization.",
+            ],
+            "explained_deltas": [
+                "P541C provenance now uses the v5 artifact at its exact Git commit/blob and separately records its declared implementation/source-reference commit.",
+                "P541D generation provenance uses current main while the five reviewed legacy method sources remain pinned to their historical source base.",
+                "The current replay registry has a contract delta: POWER_LOTTO special-number behavior changed, and the matching Social Wisdom and ZoneSplit strategy IDs are already declared by current registry source. Those existing IDs are surfaced so future work avoids duplicate registration; static design counts and P541C readiness do not change.",
+            ],
+        },
         "summary": {
             "selected_methods": len(designs),
             "counts_by_status": counts,
@@ -771,13 +1106,19 @@ def build_packet(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
             {"wave": "REJECTED", "methods": [SELECTED_PATHS[3]], "reason": "outcome-aware audit is not a predictor"},
         ],
         "no_db_no_execution_evidence": {
-            "source_read_mechanism": "git show <base>:<relative-path>",
+            "source_read_mechanism": "git show <pinned commit>:<relative-path>",
+            "p541c_artifact_commit": P541C_ARTIFACT_COMMIT,
+            "p541c_source_reference_commit": P541C_SOURCE_REFERENCE_COMMIT,
+            "selected_method_source_commit": SELECTED_METHOD_SOURCE_COMMIT,
+            "adapter_reference_commit": ADAPTER_REFERENCE_COMMIT,
+            "p541d_generation_source_commit": P541D_GENERATION_BASE_COMMIT,
             "selected_modules_imported": False,
             "selected_modules_executed": False,
             "db_access": "NONE",
             "data_runtime_access": "NONE",
-            "network_access": "NONE",
+            "runtime_state_access": "NONE",
             "environment_access": "NONE",
+            "registry_runtime_state_access": "NONE",
             "writes": [
                 "outputs/research/p541d_r2_biglotto_selected_method_adapter_design_20260713.json",
                 "outputs/research/p541d_r2_biglotto_selected_method_adapter_design_20260713.md",
@@ -785,8 +1126,10 @@ def build_packet(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
         },
         "limits": [
             "Static design does not prove future implementation parity.",
-            "No adapter, registry, lifecycle, replay row, DB state or target runtime was created or observed.",
-            "Equivalent audit is pinned to Git objects at the authoritative base.",
+            "No adapter, registry, lifecycle, replay row, DB state, production behavior or target runtime was created, executed or queried.",
+            "Current registry declarations are static Git-source observations only; they do not prove that runtime adapters are active.",
+            "P541D ready_for_implementation is static design readiness and is not P541C ready_for_replay_readiness_now or production readiness.",
+            "Selected method sources are pinned to their historical Git object base; adapter references and generator provenance use current main.",
         ],
         "disclaimer": DISCLAIMER,
     }
@@ -807,6 +1150,68 @@ def _duplicates(values: Iterable[str]) -> set[str]:
 def validate_packet(packet: dict[str, Any]) -> None:
     if packet.get("schema_version") != SCHEMA_VERSION or packet.get("designer_version") != DESIGNER_VERSION:
         raise P541DR2ValidationError("schema/designer mismatch")
+    if packet.get("base") != {
+        "commit": P541D_GENERATION_BASE_COMMIT,
+        "tree": P541D_GENERATION_BASE_TREE,
+        "branch": "main",
+    }:
+        raise P541DR2ValidationError("P541D generation base pin mismatch")
+    expected_source_bases = {
+        "p541c_artifact": {
+            "commit": P541C_ARTIFACT_COMMIT,
+            "git_blob_sha": UPSTREAM_IDENTITY["git_blob_sha"],
+            "path": UPSTREAM_PATH,
+        },
+        "p541c_declared_source_reference": {
+            "commit": P541C_SOURCE_REFERENCE_COMMIT,
+            "tree": P541C_SOURCE_REFERENCE_TREE,
+            "declared_by_artifact_commit": P541C_ARTIFACT_COMMIT,
+        },
+        "p541d_generation_source": {
+            "commit": P541D_GENERATION_BASE_COMMIT,
+            "tree": P541D_GENERATION_BASE_TREE,
+        },
+        "selected_method_sources": {
+            "commit": SELECTED_METHOD_SOURCE_COMMIT,
+            "tree": SELECTED_METHOD_SOURCE_TREE,
+        },
+        "canonical_adapter_references": {
+            "commit": ADAPTER_REFERENCE_COMMIT,
+            "tree": P541D_GENERATION_BASE_TREE,
+            "historical_comparison_commit": SELECTED_METHOD_SOURCE_COMMIT,
+        },
+    }
+    if packet.get("source_bases") != expected_source_bases:
+        raise P541DR2ValidationError("separated source-base identities mismatch")
+    expected_upstream_identity = {
+        **UPSTREAM_IDENTITY,
+        "verification": "PASS",
+        "read_mechanism": "git show <artifact commit>:<relative-path>",
+    }
+    if packet.get("upstream_identity") != expected_upstream_identity:
+        raise P541DR2ValidationError("P541C artifact identity mismatch")
+    if packet.get("p541c_readiness_context") != {
+        "ready_for_replay_readiness_now": 0,
+        "static_design_readiness_is_separate": True,
+        "interpretation": "P541D ready_for_implementation is a static design grade and does not promote P541C replay readiness or production status.",
+    }:
+        raise P541DR2ValidationError("P541C/P541D readiness boundary mismatch")
+    input_comparison = packet.get("historical_input_comparison", {})
+    if (
+        input_comparison.get("historical_artifact_commit") != HISTORICAL_P541C_ARTIFACT_COMMIT
+        or input_comparison.get("historical_git_blob_sha") != HISTORICAL_UPSTREAM_PIN["git_blob_sha"]
+        or input_comparison.get("current_artifact_commit") != P541C_ARTIFACT_COMMIT
+        or input_comparison.get("current_git_blob_sha") != UPSTREAM_IDENTITY["git_blob_sha"]
+        or input_comparison.get("record_count") != UPSTREAM_IDENTITY["record_count"]
+        or input_comparison.get("unique_method_id_count") != UPSTREAM_IDENTITY["record_count"]
+        or input_comparison.get("unique_source_path_count") != UPSTREAM_IDENTITY["record_count"]
+        or input_comparison.get("record_method_id_order_matches_historical") is not True
+        or input_comparison.get("record_source_path_order_matches_historical") is not True
+        or input_comparison.get("shortlist_count") != len(SELECTED_PATHS)
+        or input_comparison.get("shortlist_order_matches_historical") is not True
+        or input_comparison.get("shortlist_order") != SELECTED_PATHS
+    ):
+        raise P541DR2ValidationError("P541C record uniqueness/order comparison mismatch")
     designs = packet.get("method_designs")
     manifests = packet.get("selected_source_manifest")
     if not isinstance(designs, list) or not isinstance(manifests, list):
@@ -816,6 +1221,12 @@ def validate_packet(packet: dict[str, Any]) -> None:
     manifest_paths = [item.get("source_path") for item in manifests]
     if paths != SELECTED_PATHS or method_ids != SELECTED_PATHS or manifest_paths != SELECTED_PATHS:
         raise P541DR2ValidationError("exact selected path/order contract failed")
+    if any(
+        item.get("source_commit") != SELECTED_METHOD_SOURCE_COMMIT
+        or item.get("source_tree") != SELECTED_METHOD_SOURCE_TREE
+        for item in manifests
+    ):
+        raise P541DR2ValidationError("selected source base identity mismatch")
     if _duplicates(paths) or _duplicates(method_ids) or _duplicates(manifest_paths):
         raise P541DR2ValidationError("duplicate method id/path")
     strategy_ids = [
@@ -825,6 +1236,47 @@ def validate_packet(packet: dict[str, Any]) -> None:
     ]
     if _duplicates(strategy_ids):
         raise P541DR2ValidationError("duplicate proposed strategy_id")
+    references = packet.get("canonical_adapter_references")
+    if not isinstance(references, list) or [item.get("path") for item in references] != ADAPTER_REFERENCE_PATHS:
+        raise P541DR2ValidationError("canonical adapter reference list/order mismatch")
+    for reference in references:
+        expected_blobs = ADAPTER_REFERENCE_BLOBS[reference["path"]]
+        if (
+            reference.get("historical_source_commit") != SELECTED_METHOD_SOURCE_COMMIT
+            or reference.get("historical_git_blob_sha") != expected_blobs["historical"]
+            or reference.get("reference_commit") != ADAPTER_REFERENCE_COMMIT
+            or reference.get("git_blob_sha") != expected_blobs["current"]
+        ):
+            raise P541DR2ValidationError("canonical adapter reference blob pin mismatch")
+    registry_reference = references[0]
+    if (
+        registry_reference.get("change_class") != "DESIGN_CONTRACT_DELTA"
+        or registry_reference.get("contract_delta") != REGISTRY_CONTRACT_DELTA
+    ):
+        raise P541DR2ValidationError("replay registry contract delta missing or changed")
+    registry_factories = registry_reference.get("registered_factory_evidence", [])
+    if [item.get("strategy_id") for item in registry_factories] != [
+        "biglotto_social_wisdom_anti_popularity",
+        "biglotto_zone_split_3bet_bet1",
+    ] or any(
+        item.get("source_declared_status") != "ONLINE"
+        or item.get("runtime_state_observed") is not False
+        or item.get("source_commit") != ADAPTER_REFERENCE_COMMIT
+        for item in registry_factories
+    ):
+        raise P541DR2ValidationError("current registry factory evidence mismatch")
+    if any(
+        reference.get("change_class") != "UNCHANGED" or reference.get("contract_delta")
+        for reference in references[1:]
+    ):
+        raise P541DR2ValidationError("unchanged adapter reference contract mismatch")
+    comparison = packet.get("historical_design_comparison", {})
+    if (
+        comparison.get("normalized_design_delta") != "EXACT_EXPLAINED_DIFF"
+        or comparison.get("historical_generator_source_commit") != P541D_GENERATION_BASE_COMMIT
+        or comparison.get("historical_input_and_method_source_base_commit") != SELECTED_METHOD_SOURCE_COMMIT
+    ):
+        raise P541DR2ValidationError("historical normalized design comparison missing")
     for item in designs:
         status = item.get("design_status")
         if status not in ALLOWED_STATUSES:
@@ -922,9 +1374,28 @@ def render_markdown(packet: dict[str, Any]) -> str:
         "",
         "## Executive summary",
         "",
-        f"Pinned static design at `{packet['base']['commit']}` for exactly five P541C_R2-selected methods. "
+        f"Pinned static design at generation base `{packet['base']['commit']}` for exactly five P541C_R2-selected methods. "
         "Two designs are implementation-ready, two require CTO identity decisions, and one is rejected as not an adapter candidate. "
-        "No selected module was imported or executed; no DB, data, runtime, network, environment, registry or lifecycle state was accessed or changed.",
+        "No selected module was imported or executed; no DB, data, runtime, network, environment, or registry runtime state was accessed or changed. "
+        "Canonical registry Git source was inspected at the pinned reference commit.",
+        "",
+        "## Pinned source identities",
+        "",
+        f"- P541C artifact: commit `{packet['source_bases']['p541c_artifact']['commit']}`, blob `{packet['source_bases']['p541c_artifact']['git_blob_sha']}`, {packet['upstream_identity']['byte_size']} bytes, SHA-256 `{packet['upstream_identity']['sha256']}`, selector `{packet['upstream_identity']['selector_version']}`.",
+        f"- P541C-declared source/reference: commit `{packet['source_bases']['p541c_declared_source_reference']['commit']}`, tree `{packet['source_bases']['p541c_declared_source_reference']['tree']}`.",
+        f"- P541D generation source: commit `{packet['source_bases']['p541d_generation_source']['commit']}`, tree `{packet['source_bases']['p541d_generation_source']['tree']}`.",
+        f"- Five selected method source blobs: historical source commit `{packet['source_bases']['selected_method_sources']['commit']}`, tree `{packet['source_bases']['selected_method_sources']['tree']}`.",
+        f"- Canonical adapter references: current commit `{packet['source_bases']['canonical_adapter_references']['commit']}`; compared with historical commit `{packet['source_bases']['canonical_adapter_references']['historical_comparison_commit']}`.",
+        "",
+        "## P541C readiness boundary",
+        "",
+        f"P541C `ready_for_replay_readiness_now`: **{packet['p541c_readiness_context']['ready_for_replay_readiness_now']}**. P541D `ready_for_implementation` grades only static design readiness; it does not promote P541C replay readiness or production status.",
+        "",
+        "## Record and shortlist stability",
+        "",
+        f"P541C v5 contains {packet['historical_input_comparison']['record_count']} records, with {packet['historical_input_comparison']['unique_method_id_count']} unique method IDs and {packet['historical_input_comparison']['unique_source_path_count']} unique source paths. Method-ID and source-path order both match the historical v4 artifact. The five-member shortlist order is unchanged: "
+        + ", ".join(f"`{path}`" for path in packet["historical_input_comparison"]["shortlist_order"])
+        + ".",
         "",
         "## Five-method decision table",
         "",
@@ -944,7 +1415,7 @@ def render_markdown(packet: dict[str, Any]) -> str:
             [
                 f"### `{design['source_path']}`",
                 "",
-                f"- Source identity: blob `{manifest['git_blob_sha']}`, {manifest['byte_size']} bytes, SHA-256 `{manifest['sha256']}`; UTF-8/AST `{manifest['utf8_parse']}/{manifest['ast_parse']}`.",
+                f"- Source identity: commit `{manifest['source_commit']}`, blob `{manifest['git_blob_sha']}`, {manifest['byte_size']} bytes, SHA-256 `{manifest['sha256']}`; UTF-8/AST `{manifest['utf8_parse']}/{manifest['ast_parse']}`.",
                 f"- Decision: **{design['design_status']}** — {design['design_rationale']}",
                 f"- Entry point: `{design['selected_entrypoint'] or 'UNRESOLVED / NONE'}`.",
                 f"- Equivalent audit: {design['equivalent_audit']['result']}; " + "; ".join(item["finding"] for item in design["equivalent_audit"]["evidence"]),
@@ -964,6 +1435,34 @@ def render_markdown(packet: dict[str, Any]) -> str:
                 f"- Semantic identity consequence: {defect['semantic_identity_consequence']} The proposed minimum history of {defect['candidate_minimum_history']} {defect['candidate_minimum_history_result']}.",
                 "",
             ]
+        registry_observation = design.get("current_registry_observation")
+        if registry_observation:
+            lines.extend(
+                [
+                    f"- Current registry source: `{registry_observation['strategy_id']}` appears in `{registry_observation['registry_path']}` at `{registry_observation['registry_source_commit']}` (blob `{registry_observation['registry_source_blob_sha']}`); factory source declares `{registry_observation['source_declared_status']}`. Runtime state was not observed. {registry_observation['follow_up']}",
+                    "",
+                ]
+            )
+    lines.extend(["## Canonical adapter reference comparison", ""])
+    lines.append("| Reference | Historical blob | Current blob | Classification |")
+    lines.append("|---|---|---|---|")
+    for reference in packet["canonical_adapter_references"]:
+        lines.append(
+            f"| `{reference['path']}` | `{reference['historical_git_blob_sha']}` | `{reference['git_blob_sha']}` | {reference['change_class']} |"
+        )
+        for delta in reference["contract_delta"]:
+            lines.append(f"  - {delta}")
+    lines.extend(
+        [
+            "",
+            "P42 and P93 blobs are unchanged, so their recorded identities are provenance-only. The replay registry blob changed and its source-level contract delta is recorded above; Social Wisdom and ZoneSplit IDs already appear in the current source. This is not evidence that a runtime was queried or that those candidates are P541C replay-ready.",
+            "",
+            "## Historical normalized design comparison",
+            "",
+            f"Normalized result: **{packet['historical_design_comparison']['normalized_design_delta']}**. The five methods, order, source identities, readiness gates, and 2 implementation-ready / 2 CTO-review / 1 rejected status counts are preserved. Explained differences are limited to P541C v5 provenance, separated generation/source bases, and the current registry contract/reference evidence.",
+            "",
+        ]
+    )
     lines.extend(["## Duplicate/equivalent findings", ""])
     for design in designs:
         lines.append(f"- `{design['source_path']}` — {design['equivalent_audit']['result']}: " + "; ".join(f"`{item['path']}` ({item['finding']})" for item in design["equivalent_audit"]["evidence"]))
@@ -972,7 +1471,7 @@ def render_markdown(packet: dict[str, Any]) -> str:
             "",
             "## Shared architecture",
             "",
-            "Future implementations must reuse `ReplayStrategyAdapter`, `_StrategyMeta`, `_validate_numbers`, `RejectPrediction`, `InsufficientHistory`, `InvalidOutput`, and `UnsupportedLotteryType`. History is strictly before target; prediction reads no DB/file/env/network state; the result is one validated six-number BIG_LOTTO bet with special `None`. This design assigns no lifecycle and does not imply ONLINE status.",
+            "The design references `ReplayStrategyAdapter`, `_StrategyMeta`, `_validate_numbers`, `RejectPrediction`, `InsufficientHistory`, `InvalidOutput`, and `UnsupportedLotteryType`. History is strictly before target; prediction reads no DB/file/env/network state; the result is one validated six-number BIG_LOTTO bet with special `None`. This static design assigns no lifecycle. The current registry source declares matching Social Wisdom and ZoneSplit IDs; reconcile those existing sources before any future implementation and do not create duplicate IDs.",
             "",
             "## Implementation waves",
             "",
@@ -994,7 +1493,7 @@ def render_markdown(packet: dict[str, Any]) -> str:
             "## Future test plan",
             "",
             "- Assert strictly-prior cutoff, canonical ordering, minimum history, unsupported lottery mapping and one-bet storage.",
-            "- Run exact synthetic vectors and the direct parity oracle for Social Wisdom; QuickML parity remains BLOCKED because the pinned callable has no successful legacy output.",
+            "- Reconcile the existing Social Wisdom and ZoneSplit source implementations with these designs before any further adapter work; do not create duplicate strategy IDs. QuickML parity remains BLOCKED because the pinned callable has no successful legacy output.",
             "- Preserve an order-asymmetric QuickML defect vector so newest/oldest history drift cannot be hidden by repeated draws.",
             "- Run ZoneSplit in separate processes and assert identical tickets, local-RNG isolation and first-zone membership.",
             "- Monkeypatch DB/file/env/network APIs to fail and prove prediction reaches none of them.",
@@ -1002,7 +1501,8 @@ def render_markdown(packet: dict[str, Any]) -> str:
             "",
             "## Non-claims",
             "",
-            "- No runtime adapter, registry entry, replay row, DB access, target execution, promotion, production lifecycle or ONLINE status exists from this task.",
+            "- This task creates or changes no runtime adapter, registry entry, replay row, DB state, target execution, promotion, production lifecycle or ONLINE status.",
+            "- Current source code declares matching Social Wisdom and ZoneSplit strategy IDs and status metadata; runtime state was not queried, so this is not a claim of active deployment or P541C replay readiness.",
             "- Static design does not establish future parity or production readiness.",
             f"- {packet['disclaimer']}",
             "",
@@ -1012,9 +1512,15 @@ def render_markdown(packet: dict[str, Any]) -> str:
 
 
 def main() -> None:
-    packet = build_packet(REPO_ROOT)
-    json_bytes = canonical_json_bytes(packet)
-    markdown_bytes = render_markdown(packet).encode("utf-8")
+    first_packet = build_packet(REPO_ROOT)
+    first_json = canonical_json_bytes(first_packet)
+    first_markdown = render_markdown(first_packet).encode("utf-8")
+    second_packet = build_packet(REPO_ROOT)
+    json_bytes = canonical_json_bytes(second_packet)
+    markdown_bytes = render_markdown(second_packet).encode("utf-8")
+    if first_json != json_bytes or first_markdown != markdown_bytes:
+        raise P541DR2ValidationError("restricted P541D generation is not deterministic")
+    JSON_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     JSON_OUTPUT.write_bytes(json_bytes)
     MARKDOWN_OUTPUT.write_bytes(markdown_bytes)
 

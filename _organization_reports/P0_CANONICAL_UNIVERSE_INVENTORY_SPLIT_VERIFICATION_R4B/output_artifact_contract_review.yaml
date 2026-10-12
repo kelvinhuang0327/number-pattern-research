@@ -1,0 +1,29 @@
+candidate_id: cand_059a_canonical_strategy_universe_inventory
+
+output_artifacts:
+  - path: outputs/replay/p0_canonical_strategy_universe_20260518.json
+    role: TEST_FIXTURE
+    generated_by: offline registry scan / manual governance inventory
+    runtime_consumers:
+      - tests/test_p0_canonical_universe.py
+    tests_compare_exact_bytes: false
+    contains_timestamp: true
+    contains_absolute_path: false
+    contains_db_hash_or_mtime: false
+    deterministically_regenerable: true
+    migration_action: COPY_AS_FIXTURE
+
+  - path: outputs/replay/p0_per_draw_coverage_matrix_20260518.json
+    role: DETERMINISTIC_GENERATED_OUTPUT
+    generated_by: scripts/p0_per_draw_coverage_matrix.py
+    runtime_consumers: []
+    tests_compare_exact_bytes: false
+    contains_timestamp: true
+    contains_absolute_path: true
+    contains_db_hash_or_mtime: false
+    deterministically_regenerable: true
+    migration_action: REGENERATE_IN_SANDBOX
+
+summary:
+  all_artifacts_classified: true
+  direct_branch_copy_without_sandbox_verification_forbidden: true

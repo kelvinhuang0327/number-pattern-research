@@ -1,0 +1,17 @@
+{
+  "writes_observed": [
+    "_integration_reports/PREDRAW_QUICK_PREDICT_LEDGER_OPT_IN_MIGRATION_R2A/runtime_sandbox/opt_in_ledger.jsonl"
+  ],
+  "unauthorized_writes": [],
+  "sandbox_clean": true,
+  "results": {
+    "cli_help": "PASS",
+    "flag_contract": "PASS",
+    "default_no_write": "PASS",
+    "opt_in_write": "PASS",
+    "custom_path_honored": "PASS",
+    "invalid_input_fails_closed": "PASS",
+    "prediction_failure_no_false_record": "PASS",
+    "existing_predraw_outputs_unchanged": "PASS"
+  }
+}

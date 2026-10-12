@@ -1,0 +1,27 @@
+task: LOTTERYNEW_CURRENT_STATE_CONFIRMATION_AND_NEXT_STEP_R9
+
+owner_decision:
+  state: NOT_REQUESTED
+  decision_packet_ready: false
+  standalone_token_present: false
+  implementation_authorized: false
+  owner_option_selected: false
+  owner_response_tokens_present: false
+  owner_response_tokens: []
+
+evidence:
+  r8_root_exists: false
+  r8_owner_decision_packet_exists: false
+  current_input_contains_standalone_owner_token: false
+  current_input_is_state_confirmation_packet: true
+  repository_recommendation_treated_as_owner_decision: false
+  repository_token_text_treated_as_owner_authorization: false
+
+claim_boundary:
+  recommendation_is_not_decision: true
+  task_packet_is_not_owner_decision: true
+  implementation_authority_not_inferred: true
+
+reason: >-
+  R8 has not produced an Owner decision packet, and the current input contains
+  no standalone exact Owner response token separated from the task packet.

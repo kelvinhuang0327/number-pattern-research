@@ -1,0 +1,47 @@
+selection: NEXT_SINGLE_VERTICAL
+candidate_id: cand_006_chore/p2_controlled_replay_backfill_dryrun_20260515
+title: P2 Controlled Replay Backfill Dry-run
+classification: AUDIT_OR_RESEARCH_TOOL
+domain: replay_audit_cli
+source_ref: refs/heads/chore/p2-controlled-replay-backfill-dryrun-20260515
+source_commit: fb49ae6b7a34ebf9b1ed0cd7b9c56fce82982636
+source_tree: d5ee3335506325b3fcc395c17de3a6a0ed4ef879
+exact_source_paths:
+  - scripts/p2_controlled_replay_backfill_dryrun.py
+  - docs/replay/p2_ts3_regime_backfill_dryrun_report_20260515.md
+  - outputs/replay/p2_ts3_regime_backfill_dryrun_20260515.json
+  - outputs/replay/p2_ts3_regime_backfill_dryrun_20260515.csv
+exact_target_paths:
+  - scripts/p2_controlled_replay_backfill_dryrun.py
+  - tests/test_p2_controlled_replay_backfill_dryrun.py
+entrypoint: scripts/p2_controlled_replay_backfill_dryrun.py
+consumer:
+  module: lottery_api/models/replay_strategy_registry.py
+  symbols:
+    - get_adapter
+    - ts3_regime_3bet
+focused_tests:
+  - tests/test_p2_controlled_replay_backfill_dryrun.py
+  - "python scripts/p2_controlled_replay_backfill_dryrun.py --help"
+  - "sandbox functional dry-run with a copied minimal SQLite fixture"
+database_behavior: READ_ONLY_FIXTURE_VIA_SQLITE_URI_MODE
+filesystem_writes: SANDBOX_JSON_AND_CSV_ONLY
+dependency_changes: false
+public_identity_changes: false
+dirty_path_collisions: []
+estimated_completion: 6-10 hours
+risk: LOW_WITH_BOUNDED_JUDGE
+owner_decisions_required: false
+future_production_write_authorized: false
+verification:
+  exact_target_paths_absent: PASS
+  path_scoped_collision_check: PASS
+  entrypoint_present_in_source_ref: PASS
+  consumer_present_in_target: PASS
+  precise_contract_present: PASS
+  production_db_write_required: false
+  schema_migration_required: false
+  runtime_outputs_isolatable: true
+  estimated_under_24h: true
+caveat: "Corrected disposition summary reports three missing paths, while direct exact-path existence checks found all four branch-specific script/report/output paths absent. The Worker scope intentionally uses only the script plus a new focused test."
+

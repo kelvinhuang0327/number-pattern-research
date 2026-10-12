@@ -4,12 +4,12 @@ test_replay_strategy_registry_online_candidates.py
 P1.3 registry ONLINE proposal tests.
 
 Validates:
-1. Registry total count is now 18 (was 16).
+1. The live registry has unique IDs and matches its public listing.
 2. fourier_rhythm_3bet exists with ONLINE status and POWER_LOTTO type.
 3. ts3_regime_3bet exists with ONLINE status and BIG_LOTTO type.
 4. Both new strategy IDs appear in list_strategies(lifecycle_status="ONLINE").
 5. Neither new strategy is classified as tombstone / non-ONLINE.
-6. All existing 16 registry entries are still present and unchanged.
+6. All P1.3 canonical registry entries remain present and unchanged.
 7. fourier_rhythm_3bet is executable (get_adapter returns adapter).
 8. ts3_regime_3bet raises AdapterBindingPending (not LifecycleNotExecutable).
 9. No DB writes on import.
@@ -67,39 +67,36 @@ _ORIGINAL_NON_ONLINE_IDS = frozenset({
     "h6_gate_mk20_ew85",
 })
 
-_EXPECTED_TOTAL = len(_ALL_ONLINE_IDS) + len(_ORIGINAL_NON_ONLINE_IDS)  # 18
-
-
-# ─── Test class: Registry count ──────────────────────────────────────────────
+# ─── Test class: Registry partitions ────────────────────────────────────────
 
 class TestRegistryCount:
-    """Total registry count must be 18 after P1.3."""
+    """Registry totals are live; identities and partitions must stay coherent."""
 
-    def test_total_adapter_count_is_18(self):
-        assert len(_ALL_ADAPTERS) == 18, (
-            f"Expected 18 adapters (16 original + 2 P1.3), got {len(_ALL_ADAPTERS)}"
-        )
+    def test_total_adapter_ids_are_unique(self):
+        adapter_ids = [adapter.meta.strategy_id for adapter in _ALL_ADAPTERS]
+        assert len(adapter_ids) == len(set(adapter_ids))
 
-    def test_list_strategies_total_count_is_18(self):
-        all_entries = list_strategies()
-        assert len(all_entries) == 18, (
-            f"list_strategies() returned {len(all_entries)}, expected 18"
-        )
+    def test_list_strategies_matches_live_adapter_universe(self):
+        listed_ids = {entry["strategy_id"] for entry in list_strategies()}
+        adapter_ids = {adapter.meta.strategy_id for adapter in _ALL_ADAPTERS}
+        assert listed_ids == adapter_ids
 
-    def test_online_count_is_8(self):
-        online = list_strategies(lifecycle_status="ONLINE")
-        assert len(online) == 8, (
-            f"Expected 8 ONLINE strategies, got {len(online)}"
-        )
+    def test_online_partition_matches_executable_registry(self):
+        online_ids = {
+            entry["strategy_id"]
+            for entry in list_strategies(lifecycle_status="ONLINE")
+        }
+        assert online_ids == set(_REGISTRY)
+        assert _ALL_ONLINE_IDS.issubset(online_ids)
 
-    def test_non_online_count_is_10(self):
-        non_online = [
-            a for a in _ALL_ADAPTERS
-            if a.meta.lifecycle_status != "ONLINE"
-        ]
-        assert len(non_online) == 10, (
-            f"Expected 10 non-ONLINE adapters (unchanged), got {len(non_online)}"
-        )
+    def test_non_online_partition_is_the_executable_complement(self):
+        non_online_ids = {
+            adapter.meta.strategy_id
+            for adapter in _ALL_ADAPTERS
+            if adapter.meta.lifecycle_status != "ONLINE"
+        }
+        assert non_online_ids == set(list_non_executable_strategy_ids())
+        assert _ORIGINAL_NON_ONLINE_IDS.issubset(non_online_ids)
 
 
 # ─── Test class: New ONLINE strategy IDs exist ───────────────────────────────
@@ -144,13 +141,10 @@ class TestNewOnlineStrategiesExist:
         assert "fourier_rhythm_3bet" in online_ids
         assert "ts3_regime_3bet" in online_ids
 
-    def test_all_8_online_ids_present(self):
+    def test_all_p13_online_ids_remain_present(self):
         online_ids = {s["strategy_id"] for s in list_strategies(lifecycle_status="ONLINE")}
-        assert online_ids == _ALL_ONLINE_IDS, (
-            f"ONLINE IDs mismatch.\n"
-            f"  Expected: {sorted(_ALL_ONLINE_IDS)}\n"
-            f"  Got:      {sorted(online_ids)}"
-        )
+        assert _ALL_ONLINE_IDS.issubset(online_ids)
+        assert online_ids == set(_REGISTRY)
 
 
 # ─── Test class: No tombstone / not in non-ONLINE lists ──────────────────────

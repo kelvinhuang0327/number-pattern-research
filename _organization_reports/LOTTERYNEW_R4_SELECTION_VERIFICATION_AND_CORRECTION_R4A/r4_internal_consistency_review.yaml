@@ -1,0 +1,33 @@
+task: R4_STATISTICAL_CONSISTENCY_REVIEW
+status: RECONCILED
+
+counts_reconciliation:
+  candidate_screening_records: 115
+  safe_records_in_jsonl: 1
+  excluded_records_in_jsonl: 24
+  owner_decision_records_in_jsonl: 90
+  safe_candidates_in_final_report: 1
+  entries_labeled_safe_in_top_10: 10
+
+screening_jsonl_breakdown:
+  SAFE: 1
+  EXCLUDED: 24
+  OWNER_DECISION_REQUIRED: 90
+  total: 115
+
+discrepancy_analysis:
+  screening_jsonl_safe_candidate: cand_002_biglotto_p0_2bet_two_id_target_native_vertical_r1
+  final_report_selected_winner: cand_059_feat/p0_schema_stabilization_20260518
+  winner_classification_in_screening_jsonl: OWNER_DECISION_REQUIRED
+  top_10_safe_md_entries: 10
+
+discrepancy_categories:
+  - category: TOP_10_LABELING_ERROR
+    explanation: top_10_safe_candidates.md incorrectly labeled 10 Owner-Decision and unmaterialized candidates as Top Safe Migration Candidates.
+  - category: MANUAL_UNSUPPORTED_RANKING
+    explanation: Original R4 selected cand_059 as winner despite it being classified as OWNER_DECISION_REQUIRED in candidate_screening.jsonl without explicit SAFE classification.
+  - category: SCREENING_LOGIC_ERROR
+    explanation: Original screening logic failed to perform AST/text inspection on cand_059 source code, missing apply_p0_schema_migration.py DB DDL statements and multiple mixed sub-functions.
+
+reconciliation_verdict: PASS_RECONCILED
+stop_condition_triggered: false

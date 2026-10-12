@@ -1,0 +1,37 @@
+task_id: LOTTERYNEW_DAILY539_SINGLE_BET_VERTICAL_R1
+repository: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+phase0_verified: true
+expected_branch: task/p273a-prize-aware-inferential-validation
+actual_branch: task/p273a-prize-aware-inferential-validation
+branch_matched: true
+expected_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+actual_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+head_matched: true
+snapshots:
+  snapshot_a_sha256:
+    lottery/prediction/__init__.py: 41cbab18870fcdb5c77884b081f7780bb96afc1f5ba38cc80aa2d1543edb9b87
+    lottery/prediction/batch_generate.py: 94d3b936fb4303a48fe8cd0bf6058b7c7d15ce6805f52e4ab107367bf9707f66
+    lottery/prediction/generate.py: e71eacf40f59f0656187227e1a0f6b2f0c6f9345119f3c3e76288f41790ba459
+    lottery/prediction/domain/__init__.py: 4039c59c0582b11755ce88be257299ebe7ac1b5691d323cb7bcf090744762508
+    lottery/prediction/domain/errors.py: c44561d0388eda55bc7fa7a9b516c1da1959aed542bdd8854dc116f561320c71
+    lottery/prediction/domain/models.py: 208c3dd9b5f8010f6de12735fad75e1280483297dcfb1d203ddfaef5e26e63cf
+    lottery/prediction/use_cases/__init__.py: 212060fd480b53e0857e8d286ddc264ebc3d12c1a381e620fd871b548d83668b
+    lottery/prediction/use_cases/generate_batch_use_case.py: 4e1b9e6861f08521e8275aa2f26a53f4716203e2f1daab435c0a49fb9f551785
+    lottery/prediction/use_cases/generate_one_bet_use_case.py: 7bfb175d58a30c546df3661c5ed8e34da44178659e56f38ed56d59422d8428e6
+    tests/test_lottery_prediction_batch_generate_vertical.py: 4cfc6b591e1b6630457128b708911505efe8808f4839d3f1958dcedc9200de53
+    tests/test_lottery_prediction_generate_vertical.py: 67b2520689c2b09a25cf935095478654ca4712cfd5dcb25687e12efe726ffbb5
+  snapshot_b_sha256:
+    lottery/prediction/__init__.py: 41cbab18870fcdb5c77884b081f7780bb96afc1f5ba38cc80aa2d1543edb9b87
+    lottery/prediction/batch_generate.py: 94d3b936fb4303a48fe8cd0bf6058b7c7d15ce6805f52e4ab107367bf9707f66
+    lottery/prediction/generate.py: e71eacf40f59f0656187227e1a0f6b2f0c6f9345119f3c3e76288f41790ba459
+    lottery/prediction/domain/__init__.py: 4039c59c0582b11755ce88be257299ebe7ac1b5691d323cb7bcf090744762508
+    lottery/prediction/domain/errors.py: c44561d0388eda55bc7fa7a9b516c1da1959aed542bdd8854dc116f561320c71
+    lottery/prediction/domain/models.py: 208c3dd9b5f8010f6de12735fad75e1280483297dcfb1d203ddfaef5e26e63cf
+    lottery/prediction/use_cases/__init__.py: 212060fd480b53e0857e8d286ddc264ebc3d12c1a381e620fd871b548d83668b
+    lottery/prediction/use_cases/generate_batch_use_case.py: 4e1b9e6861f08521e8275aa2f26a53f4716203e2f1daab435c0a49fb9f551785
+    lottery/prediction/use_cases/generate_one_bet_use_case.py: 7bfb175d58a30c546df3661c5ed8e34da44178659e56f38ed56d59422d8428e6
+    tests/test_lottery_prediction_batch_generate_vertical.py: 4cfc6b591e1b6630457128b708911505efe8808f4839d3f1958dcedc9200de53
+    tests/test_lottery_prediction_generate_vertical.py: 67b2520689c2b09a25cf935095478654ca4712cfd5dcb25687e12efe726ffbb5
+snapshots_identical: true
+baseline_tests_passed: 23
+baseline_test_count: 23

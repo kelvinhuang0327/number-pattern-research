@@ -1,0 +1,9 @@
+lottery/__init__.py
+lottery/prediction/__init__.py
+lottery/prediction/domain/__init__.py
+lottery/prediction/domain/errors.py
+lottery/prediction/domain/models.py
+lottery/prediction/use_cases/__init__.py
+lottery/prediction/use_cases/generate_one_bet_use_case.py
+lottery/prediction/generate.py
+tests/test_lottery_prediction_generate_vertical.py

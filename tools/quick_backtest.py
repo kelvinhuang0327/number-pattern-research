@@ -10,9 +10,11 @@
     python3 tools/quick_backtest.py 威力彩 2 --periods 500  # 自訂期數
     python3 tools/quick_backtest.py all               # 全部彩票默認注數
 
-策略對照 (2026-02-11):
-  大樂透 2注: 偏差互補+回聲 P0 (Edge +1.21%)
-  大樂透 3注: Triple Strike (Edge +0.98%, 1500期 STABLE)
+策略對照 (2026-07-25 legacy continuity 更新):
+  大樂透 2注: 偏差互補+回聲 P0 (historical edge +1.21%; evidence_status=
+    HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED)
+  大樂透 3注: Triple Strike (historical edge +0.98%; evidence_status=
+    HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED)
   威力彩 2注: Fourier Rhythm (Edge +1.91%)
   威力彩 3注: Power Precision (Edge +2.49%, 1384期 STABLE)
 """

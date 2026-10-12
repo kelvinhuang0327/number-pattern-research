@@ -1,0 +1,64 @@
+{
+  "schema_version": "p2.0",
+  "generated_at": "2026-07-29T21:57:16.388279+08:00",
+  "script_version": "p2.0",
+  "dry_run": true,
+  "final_classification": "P2_TS3_REGIME_BACKFILL_DRYRUN_READY",
+  "strategy_id": "ts3_regime_3bet",
+  "lottery_type": "BIG_LOTTO",
+  "input_prediction_item_ids": [
+    101
+  ],
+  "items_found_in_db": 1,
+  "items_missing_from_db": [],
+  "eligible_count": 1,
+  "blocked_count": 0,
+  "adapter_bound": true,
+  "adapter_check_result": "BOUND (_BigLottoTs3Regime3BetAdapter)",
+  "blocked_reason": null,
+  "preview_rows": [
+    {
+      "prediction_item_id": 101,
+      "prediction_run_id": 10,
+      "run_snapshot_source": "GENERATED",
+      "history_cutoff_draw": "115000001",
+      "target_draw": "115000002",
+      "draw_date": "2026-01-02",
+      "predicted_numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "actual_numbers": [
+        1,
+        2,
+        7,
+        8,
+        9,
+        10
+      ],
+      "actual_special": 11,
+      "hit_numbers": [
+        1,
+        2
+      ],
+      "hit_count": 2,
+      "would_insert_replay_row": true,
+      "truth_level": "REGENERATED_RETROSPECTIVE",
+      "risk_flags": [],
+      "notes": ""
+    }
+  ],
+  "safety": {
+    "db_written": false,
+    "replay_rows_inserted": false,
+    "prediction_items_promoted": false,
+    "backfill_committed": false,
+    "strategy_logic_changed": false,
+    "api_ui_backend_changed": false
+  },
+  "next_step": "P2B_OPERATOR_APPROVAL_FOR_DB_WRITE"
+}

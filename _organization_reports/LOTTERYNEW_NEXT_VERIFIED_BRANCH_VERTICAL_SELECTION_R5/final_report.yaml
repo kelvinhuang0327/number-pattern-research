@@ -1,0 +1,132 @@
+task: LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R5
+status: COMPLETED_NEXT_VERTICAL_SELECTION
+task_class: PLANNING_ONLY
+worker_route: NOT_APPLICABLE
+judge_mode: NOT_APPLICABLE
+
+resource_mode:
+  language_server_used: false
+  workspace_indexing_used: false
+  background_commands_used: false
+  parallel_commands_used: false
+  global_git_status_used: false
+  full_workspace_scan_used: false
+  path_scoped_checks: true
+
+r4b_completion:
+  final_report: _integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/final_report.yaml
+  judge_evidence: _integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/judge_report.md
+  verdict: PASS
+  accepted: true
+
+remaining_backlog:
+  total_candidates: 33
+  completed_excluded: 4
+  parent_composites_excluded: 2
+  duplicate_or_historical_excluded:
+    candidate_mappings: 53
+    merged_remote_candidate_aliases: 2
+    duplicate_commit_ref_aliases: 347
+    duplicate_tree_ref_aliases: 7
+  owner_decision_candidates: 13
+  fully_screened_candidates: 5
+  safe_candidates: 1
+
+selected:
+  result: NEXT_SINGLE_VERTICAL
+  candidate_id: cand_006_chore/p2_controlled_replay_backfill_dryrun_20260515
+  title: P2 Controlled Replay Backfill Dry-run
+  classification: AUDIT_OR_RESEARCH_TOOL
+  domain: replay_audit_cli
+  source_ref: refs/heads/chore/p2-controlled-replay-backfill-dryrun-20260515
+  source_commit: fb49ae6b7a34ebf9b1ed0cd7b9c56fce82982636
+  exact_target_paths:
+    - scripts/p2_controlled_replay_backfill_dryrun.py
+    - tests/test_p2_controlled_replay_backfill_dryrun.py
+  focused_tests:
+    - tests/test_p2_controlled_replay_backfill_dryrun.py
+    - CLI help
+    - sandbox functional dry-run
+  database_behavior: READ_ONLY_SANDBOX_FIXTURE
+  filesystem_writes: SANDBOX_JSON_AND_CSV_ONLY
+  risk: LOW_WITH_BOUNDED_JUDGE
+  estimated_completion: 6-10 hours
+  owner_decisions_required: false
+
+worker_packet:
+  issued: true
+  task_id: P2_CONTROLLED_REPLAY_BACKFILL_DRYRUN_MIGRATION_R5
+  task_class: STATE_CHANGING_IMPLEMENTATION
+  worker_route: STANDARD_JUDGED
+  judge_mode: FRESH_CONTEXT
+  judge_depth: BOUNDED
+  owner_authorization: PRESENT
+  standalone_authorization_required: false
+
+verification:
+  r4b_completion_evidence_verified: PASS
+  completed_candidates_excluded: PASS
+  parent_composite_candidates_excluded: PASS
+  duplicate_aliases_excluded: PASS
+  owner_decision_candidates_separated: PASS
+  top_candidates_content_checked: PASS
+  target_path_collisions_checked: PASS
+  single_candidate_selected: PASS
+  worker_packet_generated: PASS
+  required_artifacts_present: PASS
+  structured_artifacts_parse: PASS
+  ordinary_files_modified: false
+  database_accessed: false
+  candidate_commands_executed: false
+  git_refs_modified: false
+  language_server_used: false
+  global_workspace_scan_used: false
+
+write_ledger:
+  repository_files_modified:
+    - _organization_reports/LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R5/phase0_snapshot.yaml
+    - _organization_reports/LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R5/r4b_completion_review.yaml
+    - _organization_reports/LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R5/remaining_candidate_inventory.jsonl
+    - _organization_reports/LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R5/candidate_screening.jsonl
+    - _organization_reports/LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R5/excluded_candidates.jsonl
+    - _organization_reports/LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R5/owner_decision_candidates.jsonl
+    - _organization_reports/LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R5/top_verified_candidates.md
+    - _organization_reports/LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R5/next_single_vertical.yaml
+    - _organization_reports/LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R5/worker_task_packet.md
+    - _organization_reports/LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R5/final_report.yaml
+  ordinary_product_files_modified: []
+  toolchain_runtime_outputs_created: []
+  git_network_metadata_writes: []
+  git_worktree_metadata_writes: []
+  structured_parse_runs: 4
+  structured_parse_final_result: PASS
+
+safety:
+  ordinary_files_modified: false
+  tests_modified: false
+  database_accessed: false
+  candidate_commands_executed: false
+  git_refs_modified: false
+
+claim_boundary:
+  next_vertical_selected: true
+  implementation_started: false
+  branches_merged: false
+  all_branch_functions_migrated: false
+  production_ready_claimed: false
+
+not_run:
+  - candidate scripts
+  - candidate tests
+  - production or fixture DB access
+  - full repository tests and typecheck
+  - implementation
+  - commit, push, PR, merge, or branch operations
+blocked: []
+caveats:
+  - "Selected capability is an audit/research CLI, not production runtime capability."
+  - "Corrected disposition count says three paths missing; direct exact-path checks found four branch-specific script/report/output paths absent. Worker scope is narrowed to the script plus a new focused test."
+remaining_risks:
+  - "Implementation must prove SQLite and filesystem invariants in an isolated fixture sandbox."
+  - "Any later production replay-row insertion remains OWNER_DECISION_REQUIRED."
+next_worker_task: P2_CONTROLLED_REPLAY_BACKFILL_DRYRUN_MIGRATION_R5

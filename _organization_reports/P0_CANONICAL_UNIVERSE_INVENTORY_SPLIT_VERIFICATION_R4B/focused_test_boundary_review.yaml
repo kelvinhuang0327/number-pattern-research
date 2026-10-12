@@ -1,0 +1,14 @@
+candidate_id: cand_059a_canonical_strategy_universe_inventory
+
+focused_test: tests/test_p0_canonical_universe.py
+
+verifications:
+  only_tests_cand_059a: true
+  imports_migration_script: false
+  executes_ddl: false
+  modifies_production_db: false
+  requires_migration_log: false
+  requires_schema_mutation: false
+  depends_on_migration_tests: false
+
+verdict: CANDIDATE_059A_TEST_SPLIT_VALID

@@ -1,0 +1,248 @@
+task: LOTTERYNEW_CANONICAL_VS_MERGED_PROGRAM_VERSION_COMPARISON_R7
+status: COMPLETED_WITH_CAVEATS
+task_class_effective: STATE_CHANGING_IMPLEMENTATION
+packet_subtype: READ_ONLY_COMPLETION_REVIEW
+worker_route: STANDARD_JUDGED
+judge_mode: FRESH_CONTEXT
+judge_depth:
+  initial: BOUNDED
+  terminal: DELTA
+canonical:
+  repository: /Users/kelvin/Kelvin-WorkSpace/LotteryNew
+  ref: refs/remotes/origin/main
+  commit_oid: 3b32beb4543de9169dbfb2469b0577f8cc8a6f58
+  tree_oid: 077c39c7fd9dc82c19907815535f45efeee750e9
+  remote_freshness: UNVERIFIED_NO_FETCH
+  live_checkout_dirty:
+    - lottery_api/fetcher/taiwan_lottery_fetcher.py
+    - lottery_api/data/ingest_log.jsonl
+  comparison_used_exact_ref_tree: true
+merged:
+  repository: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  branch: task/p273a-prize-aware-inferential-validation
+  head_oid: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  tree_oid: beadb5fe3932a49d8619caf05c95ff3278489a44
+  dirty_in_scope: true
+  ordinary_modified_paths: 2
+  untracked_paths: 1422
+  verified_untracked_paths: 8
+  dirty_collision:
+    path: index.html
+    classification: DIRTY_PATH_COLLISION
+    included_in_equivalence: false
+comparison:
+  total_paths: 3301
+  identical: 1963
+  canonical_only: 8
+  merged_only: 1187
+  merged_only_verified: 8
+  merged_only_unverified: 1179
+  content_different: 143
+  semantic_rows_reviewed: 30
+  semantic_equivalent: 0
+  canonical_ahead: 13
+  merged_ahead_verified: 8
+  merged_ahead_unverified: 5
+  bidirectional_divergence: 2
+  contract_conflicts: 2
+  unresolved: 1317
+  nonidentical_outside_bounded_semantic_review: 1308
+program_verdict:
+  value: BIDIRECTIONAL_DIVERGENCE
+  safe_to_replace_either_tree: false
+  direct_merge_safe: false
+safety:
+  ordinary_program_files_modified_by_task: false
+  tests_modified_by_task: false
+  config_modified_by_task: false
+  program_outputs_modified_by_task: false
+  database_accessed: false
+  git_refs_modified: false
+  protected_content_read: false
+  unknown_content_read: false
+  owner_protected_content_read: false
+  network_used: false
+  fetch_used: false
+  language_server_used: false
+  workspace_indexing_used: false
+  background_commands_used: false
+  parallel_commands_used: false
+  global_git_status_used: false
+  full_workspace_scan_used: false
+claim_boundary:
+  version_comparison_completed: true
+  implementation_started: false
+  trees_merged: false
+  production_ready_claimed: false
+lifecycle:
+  implementation: COMPLETE
+  pull_request: NOT_APPLICABLE
+  postmerge: NOT_APPLICABLE
+  branch_cleanup: NOT_APPLICABLE
+  full_lifecycle_completed: false
+run_counts:
+  local_full_suite_runs: 0
+  focused_test_runs: 0
+  initial_judge_runs: 1
+  delta_rejudge_runs: 1
+  full_judge_runs: 0
+  exact_head_ci_runs: 0
+judge_continuity:
+  initial:
+    input_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+    input_tree: beadb5fe3932a49d8619caf05c95ff3278489a44
+    verdict: REFUTED
+    finding_type: REPORT_DEFECT
+    remediation_eligible: true
+    clean_retry_required: false
+  post_initial_source_or_test_edit: false
+  initial_evidence_valid_for_final_report: false
+  invalidation_reason: P541F semantic wording and five pre-remediation report identities were superseded
+  delta_required: true
+  delta:
+    input_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+    input_tree: beadb5fe3932a49d8619caf05c95ff3278489a44
+    verdict: VERIFIED_WITH_CAVEATS
+    packet_verdict: PASS_WITH_CAVEATS
+  post_delta_source_or_test_edit: false
+  delta_evidence_valid_for_final_report: true
+  final_input_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  final_input_tree: beadb5fe3932a49d8619caf05c95ff3278489a44
+  final_verdict: VERIFIED_WITH_CAVEATS
+  continuity: PASS
+evidence:
+  new_final_tree_evidence:
+    - corrected P541F source/test authority inspection
+    - five remediated report-file hashes reproduced by Delta Judge
+    - corrected 30-row semantic distribution reproduced by Delta Judge
+    - 13-file pre-Delta artifact-set digest reproduced by Delta Judge
+  reused_final_tree_evidence:
+    - unaffected Initial canonical and merged identities
+    - inventory and byte-level comparison
+    - migration lineage map
+    - dirty-collision handling
+    - scope and safety ledger
+  invalidated_evidence:
+    - Initial P541F semantic wording
+    - pre-remediation identities of five corrected reports
+    - Initial REFUTED verdict as a terminal verdict
+  unaffected_evidence_reused_by_delta:
+    - canonical and merged identities
+    - path inventory
+    - byte comparison
+    - migration map
+    - dirty-collision handling
+    - safety ledger
+  hashes:
+    canonical_safe_path_pair_sha256: 55701720f731b48da7c2fcf8aac2262e682b99d8ddca246541b8520e0834501
+    canonical_safe_blob_id_sha256: fe1c6a1bae90686aba49111e7fb1d2f3cc102af782b380313ddfd877a2182965
+    merged_safe_path_pair_sha256: e84c1909059693987c3e271ff34142470cad450831db1b46a01ac6db1cadedcc
+    path_inventory_sha256: 813a399c00bb262c1d10a6dcc00513e30f17412aaacb625e5efb4ee984ea1314
+    byte_level_comparison_sha256: 0fd4fcc66811f38e570894a2cf9db763249bd670f2b88eb30b87537325386895
+    semantic_comparison_sha256: f9d0fd8817985c4d9d29d6408403de5934cf3dd73dc8a097c37d436a56521c54
+    migration_lineage_map_sha256: 80018a3918de87d777c40b83ee52d6c50b2dfef1475266ccc99e81907790c7e7
+    pre_delta_artifact_set_sha256: daa3e8911e256b5a130c400c1006c33eb5b00df11387847abae8c868a782a688
+  artifact_manifest_rule: "Sort basenames by Ruby String#<=> bytewise order; serialize SHA256(file bytes), two ASCII spaces, basename, LF for every file including final LF; SHA256 the UTF-8 manifest bytes."
+search_completeness:
+  frozen_refs: 2
+  unique_tip_commits: 2
+  unique_paths: 3301
+  ref_path_pairs: 5407
+  committed_path_blob_triples: 3985
+  safe_text_paths: 3285
+  protected_paths: 4
+  unknown_paths: 11
+  owner_protected_paths: 1
+  content_searched_safe_paths: 5375
+  protected_content_searches: 0
+  unknown_content_searches: 0
+  owner_protected_content_searches: 0
+write_classification:
+  task_report_artifacts_written:
+    - phase0_snapshot.yaml
+    - canonical_baseline.yaml
+    - merged_live_state.yaml
+    - path_inventory.jsonl
+    - byte_level_comparison.jsonl
+    - semantic_comparison.jsonl
+    - migration_lineage_map.jsonl
+    - canonical_only_paths.md
+    - merged_only_paths.md
+    - contract_conflicts.md
+    - program_version_summary.yaml
+    - next_action_recommendation.md
+    - judge_report.md
+    - final_report.yaml
+  runtime_or_toolchain_outputs_created: []
+  materialization_or_git_metadata_created: []
+  product_files_modified: []
+retained_ledger:
+  task_created_retained:
+    - phase0_snapshot.yaml
+    - canonical_baseline.yaml
+    - merged_live_state.yaml
+    - path_inventory.jsonl
+    - byte_level_comparison.jsonl
+    - semantic_comparison.jsonl
+    - migration_lineage_map.jsonl
+    - canonical_only_paths.md
+    - merged_only_paths.md
+    - contract_conflicts.md
+    - program_version_summary.yaml
+    - next_action_recommendation.md
+    - judge_report.md
+    - final_report.yaml
+  task_created_deleted: []
+  preexisting_evidence_directories_retained_unchanged:
+    - R1
+    - R2A
+    - R3A
+    - R4B
+    - R5
+    - organization R2A
+    - organization R6
+runtime_write_preflight:
+  expected_writes: 14 report artifacts in the task report directory
+  actual_writes: 14 report artifacts in the task report directory
+  unexpected_writes: []
+verdict_axes:
+  substantive_technical_conclusion: VERIFIED_WITH_CAVEATS
+  boundary_compliance: VERIFIED
+  execution_provenance: VERIFIED
+  historical_provenance: VERIFIED_WITH_CAVEATS
+  final_judge_verdict: VERIFIED_WITH_CAVEATS
+  adoption: ADOPTED
+worktree:
+  mode: EXISTING_TASK_WORKTREE
+  route: ACTIVE_STABLE_TASK_OWNED_DIRTY
+  release_action: NOT_APPLICABLE
+  switch_action: NOT_APPLICABLE
+  final_state: ACTIVE_TASK_OWNED_DIRTY
+branch:
+  name: task/p273a-prize-aware-inferential-validation
+  existed_before_task: true
+  task_branch_created: false
+  branch_action: RETAINED_UNCHANGED
+commit_identity:
+  task_commit: NOT_APPLICABLE
+  final_merged_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  final_merged_tree: beadb5fe3932a49d8619caf05c95ff3278489a44
+  canonical_head: 3b32beb4543de9169dbfb2469b0577f8cc8a6f58
+  canonical_tree: 077c39c7fd9dc82c19907815535f45efeee750e9
+  pull_request: NOT_APPLICABLE
+not_run:
+  - tests
+  - application
+  - DB access
+  - typecheck/lint
+  - fetch/network
+  - commit/push/PR/merge
+blocked: []
+caveats:
+  - canonical remote freshness is UNVERIFIED_NO_FETCH
+  - semantic review is bounded to 30 load-bearing nonidentical files
+  - 11 unknown, 4 protected, and 1 owner-protected paths were metadata-only
+remaining_risks:
+  - two contract-bearing paths block direct adoption
+  - 1308 nonidentical paths remain outside bounded semantic review
+next_recommended_task: P541F source/test authority and lifecycle contract Owner decision

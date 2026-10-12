@@ -1,0 +1,88 @@
+task: LOTTERYNEW_R4_SELECTION_VERIFICATION_AND_CORRECTION_R4A
+status: COMPLETED_SELECTION_CORRECTED
+
+resource_mode:
+  language_server_used: false
+  workspace_indexing_used: false
+  background_commands_used: false
+  parallel_commands_used: false
+  global_git_status_used: false
+  full_workspace_scan_used: false
+  path_scoped_checks: true
+
+r4_review:
+  reported_safe_candidates: 1
+  top_10_safe_entries: 10
+  corrected_safe_candidates: 0
+  discrepancy_reason: "top_10_safe_candidates.md improperly labeled Owner-Decision candidates as safe; R4 winner cand_059 actually contained DB DDL schema migration logic and mixed sub-functions."
+
+candidate_059:
+  functional_components:
+    - canonical_strategy_universe_inventory_and_coverage_matrix
+    - p0_schema_migration_ddl_and_idempotency_engine
+    - schema_diff_documentation
+    - historical_evidence_logging
+  single_vertical: false
+  split_required: true
+  entrypoint:
+    - scripts/apply_p0_schema_migration.py
+    - scripts/p0_per_draw_coverage_matrix.py
+  consumers: []
+  focused_tests:
+    - tests/test_p0_canonical_universe.py
+    - tests/test_p0_schema_migration_idempotent.py
+  database_classification: PRODUCTION_DB_WRITE_OR_MIGRATION
+  production_db_write: true
+  schema_migration: true
+  output_artifact_classification:
+    outputs/replay/p0_canonical_strategy_universe_20260518.json: TEST_FIXTURE
+    outputs/replay/p0_migration_log_20260518.json: HISTORICAL_EVIDENCE
+    outputs/replay/p0_per_draw_coverage_matrix_20260518.json: DETERMINISTIC_GENERATED_OUTPUT
+    outputs/replay/p0_schema_diff_20260518.json: HISTORICAL_EVIDENCE
+  target_collisions: 0
+  final_disposition: OWNER_DECISION_REQUIRED
+
+corrected_selection:
+  candidate_id: cand_059a_canonical_strategy_universe_inventory
+  title: Canonical Strategy Universe Inventory & Coverage Matrix
+  source_ref: refs/heads/feat/p0-schema-stabilization-20260518
+  exact_target_paths:
+    - scripts/p0_per_draw_coverage_matrix.py
+    - tests/test_p0_canonical_universe.py
+    - docs/replay/p0_canonical_strategy_universe_20260518.md
+    - outputs/replay/p0_canonical_strategy_universe_20260518.json
+    - outputs/replay/p0_per_draw_coverage_matrix_20260518.json
+  focused_tests:
+    - tests/test_p0_canonical_universe.py
+  risk: LOW
+  database_write_required: false
+  owner_decisions_required: false
+  estimated_completion: 6 Hours
+
+worker_packet:
+  task_id: P0_SCHEMA_STABILIZATION_CANONICAL_UNIVERSE_MIGRATION_R4
+  task_class: STATE_CHANGING_IMPLEMENTATION
+  worker_route: STANDARD_JUDGED
+  judge_mode: FRESH_CONTEXT
+  owner_authorization: PRESENT
+  standalone_authorization_required: true
+
+safety:
+  ordinary_files_modified: false
+  tests_modified: false
+  database_accessed: false
+  candidate_script_executed: false
+  artifacts_regenerated: false
+  git_refs_modified: false
+
+claim_boundary:
+  selection_corrected: true
+  implementation_started: false
+  branches_merged: false
+  production_ready_claimed: false
+
+not_run: []
+blocked: []
+caveats: []
+remaining_risks: []
+next_worker_task: P0_SCHEMA_STABILIZATION_CANONICAL_UNIVERSE_MIGRATION_R4

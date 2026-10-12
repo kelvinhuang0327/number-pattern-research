@@ -1,0 +1,66 @@
+{
+  "test_size": 500,
+  "cv_folds": 5,
+  "methods": {
+    "Frequency_100": {
+      "count": 800,
+      "mean": 0.90875,
+      "std": 0.82539386433939,
+      "ci_95": [
+        0.851553123334833,
+        0.9659468766651669
+      ],
+      "match_3plus": 29,
+      "match_3plus_rate": 0.03625
+    },
+    "Frequency_50": {
+      "count": 800,
+      "mean": 0.91625,
+      "std": 0.7842223494435162,
+      "ci_95": [
+        0.8619061637575435,
+        0.9705938362424565
+      ],
+      "match_3plus": 20,
+      "match_3plus_rate": 0.025
+    },
+    "Frequency_200": {
+      "count": 800,
+      "mean": 0.935,
+      "std": 0.8376467424167253,
+      "ci_95": [
+        0.8769540422034346,
+        0.9930459577965655
+      ],
+      "match_3plus": 27,
+      "match_3plus_rate": 0.03375
+    },
+    "Frequency_Secondary": {
+      "count": 800,
+      "mean": 0.9825,
+      "std": 0.8459244855742845,
+      "ci_95": [
+        0.9238804238681109,
+        1.0411195761318892
+      ],
+      "match_3plus": 32,
+      "match_3plus_rate": 0.04
+    },
+    "Random": {
+      "count": 800,
+      "mean": 0.97,
+      "std": 0.8440915905673881,
+      "ci_95": [
+        0.9115074370119916,
+        1.0284925629880084
+      ],
+      "match_3plus": 33,
+      "match_3plus_rate": 0.04125
+    }
+  },
+  "best_method": "Frequency_Secondary",
+  "statistical_test": {
+    "t_statistic": 0.2958549998432082,
+    "p_value": 0.7673792579965396,
+    "cohens_d": 0.014792749992160412,
+    "significant": 

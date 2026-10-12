@@ -1,0 +1,54 @@
+task: LOTTERYNEW_CANONICAL_VS_MERGED_PROGRAM_VERSION_COMPARISON_R7
+timestamp: "2026-07-29T23:03:06+0800"
+task_class_effective: STATE_CHANGING_IMPLEMENTATION
+packet_subtype: READ_ONLY_COMPLETION_REVIEW
+worker_route: STANDARD_JUDGED
+judge_mode: FRESH_CONTEXT
+judge_depth: BOUNDED
+resource_safety:
+  language_server_used: false
+  workspace_indexing_used: false
+  background_commands_used: false
+  parallel_commands_used: false
+  global_git_status_used: false
+  full_workspace_scan_used: false
+  full_repository_tests_used: false
+  network_used: false
+  fetch_used: false
+  database_accessed: false
+scope_roots:
+  - lottery_api
+  - scripts
+  - tools
+  - tests
+  - docs/replay
+  - lottery_api/data
+excluded_content:
+  - packet exclusions
+  - protected binary/snapshot patterns
+  - owner-protected .env templates
+  - unknown binary/log/PID content
+inventory:
+  unique_paths: 3301
+  safe_text_paths: 3285
+  protected_paths: 4
+  unknown_paths: 11
+  owner_protected_paths: 1
+  protected_content_reads: 0
+attempt_ledger:
+  - attempt: canonical metadata classifier
+    result: DEFINITE_FAILURE
+    reason: bundled Ruby lacks Array#filter_map
+    writes: []
+  - attempt: consolidation wrapper
+    result: DEFINITE_FAILURE
+    reason: shell quoting error before Ruby body execution
+    writes: []
+  - attempt: unpaged metadata consolidation
+    result: DEFINITE_FAILURE
+    reason: tests payload exceeded tool return cap; partial in-memory result discarded
+    writes: []
+  - attempt: semantic extractor
+    result: DEFINITE_FAILURE
+    reason: bundled Ruby lacks Array#filter_map
+    writes: []

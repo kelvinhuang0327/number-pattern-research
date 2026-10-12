@@ -1,0 +1,54 @@
+{
+  "task": "P541F_OPTION_A_CANONICAL_FOUR_STRATEGY_IMPLEMENTATION_R10",
+  "expected_runtime_writes": [
+    "_integration_reports/P541F_OPTION_A_CANONICAL_FOUR_STRATEGY_IMPLEMENTATION_R10/**",
+    ".pytest_cache/**"
+  ],
+  "repository_files_created": [
+    "lottery_api/models/biglotto_social_wisdom_adapter.py",
+    "lottery_api/models/biglotto_zone_split_adapter.py",
+    "tests/fixtures/biglotto_zone_split_p541d.json",
+    "tests/test_biglotto_social_wisdom_adapter.py",
+    "tests/test_biglotto_zone_split_adapter.py"
+  ],
+  "repository_files_modified": [
+    "lottery_api/models/replay_strategy_registry.py",
+    "tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py"
+  ],
+  "task_report_files_created_or_modified": [
+    "_integration_reports/P541F_OPTION_A_CANONICAL_FOUR_STRATEGY_IMPLEMENTATION_R10/resolved_scope.yaml",
+    "_integration_reports/P541F_OPTION_A_CANONICAL_FOUR_STRATEGY_IMPLEMENTATION_R10/phase0_snapshot.yaml",
+    "_integration_reports/P541F_OPTION_A_CANONICAL_FOUR_STRATEGY_IMPLEMENTATION_R10/source_target_map.md",
+    "_integration_reports/P541F_OPTION_A_CANONICAL_FOUR_STRATEGY_IMPLEMENTATION_R10/identity_contract.yaml",
+    "_integration_reports/P541F_OPTION_A_CANONICAL_FOUR_STRATEGY_IMPLEMENTATION_R10/registry_changes.yaml",
+    "_integration_reports/P541F_OPTION_A_CANONICAL_FOUR_STRATEGY_IMPLEMENTATION_R10/stub_test_disposition.yaml",
+    "_integration_reports/P541F_OPTION_A_CANONICAL_FOUR_STRATEGY_IMPLEMENTATION_R10/migration_decisions.yaml",
+    "_integration_reports/P541F_OPTION_A_CANONICAL_FOUR_STRATEGY_IMPLEMENTATION_R10/changed_paths.txt",
+    "_integration_reports/P541F_OPTION_A_CANONICAL_FOUR_STRATEGY_IMPLEMENTATION_R10/verification.md",
+    "_integration_reports/P541F_OPTION_A_CANONICAL_FOUR_STRATEGY_IMPLEMENTATION_R10/runtime_write_ledger.json",
+    "_integration_reports/P541F_OPTION_A_CANONICAL_FOUR_STRATEGY_IMPLEMENTATION_R10/judge_report.md",
+    "_integration_reports/P541F_OPTION_A_CANONICAL_FOUR_STRATEGY_IMPLEMENTATION_R10/final_report.yaml"
+  ],
+  "toolchain_runtime_outputs_created": [],
+  "toolchain_runtime_outputs_modified": [
+    {
+      "path": ".pytest_cache/v/cache/nodeids",
+      "before_sha256": "cc7b1675ace780415568651acf577d4697ae8e9de7308ca7237a934b76037e35",
+      "after_sha256": "149865ac64ef678f0d0fe702eb12acaa9d98c0b5fcc5a7a5992aaffd04b8bab2"
+    }
+  ],
+  "pre_existing_runtime_outputs_retained_unchanged": [
+    ".pytest_cache/CACHEDIR.TAG",
+    ".pytest_cache/README.md",
+    ".pytest_cache/.gitignore",
+    ".pytest_cache/v/cache/lastfailed"
+  ],
+  "unexpected_runtime_writes": [],
+  "runtime_output_restoration_authority": "NOT_AUTHORIZED_OR_REQUIRED",
+  "runtime_output_cleanup_authorized": false,
+  "production_db_accessed": false,
+  "production_db_modified": false,
+  "network_used": false,
+  "dependency_installed": false,
+  "git_refs_mutated": false
+}

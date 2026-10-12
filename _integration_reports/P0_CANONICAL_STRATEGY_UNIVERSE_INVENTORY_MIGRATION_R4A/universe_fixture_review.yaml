@@ -1,0 +1,10 @@
+task: P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_FINAL_TREE_CLOSURE_R4A
+universe_fixture:
+  source_sha256: 3454e8b5a71816dd96347b0fcf5797ba3e255af9521c72dfdd4a75d696bd341a
+  target_sha256: 3454e8b5a71816dd96347b0fcf5797ba3e255af9521c72dfdd4a75d696bd341a
+  hashes_equal: true
+  json_parse: PASS
+  strategy_count: 18
+  contains_absolute_paths: false
+  contains_runtime_timestamp: false
+  contains_db_metadata: false

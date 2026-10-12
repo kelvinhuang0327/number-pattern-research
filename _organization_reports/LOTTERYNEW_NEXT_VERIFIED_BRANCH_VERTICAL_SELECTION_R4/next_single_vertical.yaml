@@ -1,0 +1,83 @@
+candidate_id: cand_059_feat/p0_schema_stabilization_20260518
+title: P0 Schema Stabilization & Canonical Strategy Universe Inventory
+domain: replay / strategy universe / schema governance
+source_repository: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+source_refs:
+  - refs/heads/feat/p0-schema-stabilization-20260518
+representative_ref: refs/heads/feat/p0-schema-stabilization-20260518
+
+source_paths:
+  entrypoints:
+    - scripts/p0_per_draw_coverage_matrix.py
+  implementation:
+    - scripts/p0_per_draw_coverage_matrix.py
+  consumers:
+    - scripts/p0_per_draw_coverage_matrix.py
+  tests:
+    - tests/test_p0_canonical_universe.py
+    - tests/test_p0_schema_migration_idempotent.py
+  configs:
+    - docs/replay/p0_canonical_strategy_universe_20260518.md
+    - docs/replay/p0_schema_diff_20260518.md
+
+target:
+  missing_paths:
+    - scripts/p0_per_draw_coverage_matrix.py
+    - tests/test_p0_canonical_universe.py
+    - tests/test_p0_schema_migration_idempotent.py
+    - docs/replay/p0_canonical_strategy_universe_20260518.md
+    - docs/replay/p0_schema_diff_20260518.md
+    - outputs/replay/p0_canonical_strategy_universe_20260518.json
+    - outputs/replay/p0_migration_log_20260518.json
+    - outputs/replay/p0_per_draw_coverage_matrix_20260518.json
+    - outputs/replay/p0_schema_diff_20260518.json
+  different_paths: []
+  expected_changed_paths:
+    - scripts/p0_per_draw_coverage_matrix.py
+    - docs/replay/p0_canonical_strategy_universe_20260518.md
+    - docs/replay/p0_schema_diff_20260518.md
+    - outputs/replay/p0_canonical_strategy_universe_20260518.json
+    - outputs/replay/p0_migration_log_20260518.json
+    - outputs/replay/p0_per_draw_coverage_matrix_20260518.json
+    - outputs/replay/p0_schema_diff_20260518.json
+  expected_test_paths:
+    - tests/test_p0_canonical_universe.py
+    - tests/test_p0_schema_migration_idempotent.py
+  existing_dirty_collisions: []
+
+contract:
+  inputs:
+    - sqlite database read-only schema inspection
+    - canonical strategy universe inventory specs
+  outputs:
+    - outputs/replay/p0_canonical_strategy_universe_20260518.json
+    - outputs/replay/p0_migration_log_20260518.json
+    - outputs/replay/p0_per_draw_coverage_matrix_20260518.json
+    - outputs/replay/p0_schema_diff_20260518.json
+  failure_behavior: raise explicit contract violation on missing schema or unexpected table mutation
+  public_identity: unchanged
+  database: read-only schema inspection (zero write)
+  filesystem_writes: restricted to outputs/replay/
+  external_services: none
+
+verification:
+  focused_tests:
+    - tests/test_p0_canonical_universe.py
+    - tests/test_p0_schema_migration_idempotent.py
+  relevant_regression:
+    - tests/test_p257b_best_strategy_overview_readonly_api.py
+    - tests/test_p261a_replay_detail_row_expand.py
+  lint_or_typecheck:
+    - python3 -m py_compile scripts/p0_per_draw_coverage_matrix.py
+  runtime_smoke:
+    - python3 scripts/p0_per_draw_coverage_matrix.py
+
+risk:
+  level: LOW
+  owner_decisions_required: false
+  dependency_change_required: false
+  database_write_required: false
+  dirty_path_dependency: false
+
+estimated_completion: 6 Hours
+reason_selected: Pure single vertical. Establishes P0 schema stabilization and canonical strategy universe inventory without DB writes, API breaking changes, dependency modifications, or dirty index.html collisions.

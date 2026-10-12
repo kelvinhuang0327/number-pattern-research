@@ -1,0 +1,27 @@
+{
+  "total_remaining_conflict_files": 1834,
+  "by_top_level_root": {
+    "_root_files": 116,
+    "analysis": 418,
+    "telegram_bot": 4,
+    "ai_lab": 42,
+    "rejected": 2,
+    ".claude": 3,
+    "models": 4,
+    "docs": 1,
+    "examples": 4,
+    "scripts": 982,
+    ".github": 9,
+    "report": 4,
+    ".ai": 8,
+    "data": 40,
+    "src": 197
+  },
+  "recommended_next_roots": [
+    "scripts",
+    "analysis",
+    "src",
+    "_root_files",
+    "ai_lab"
+  ]
+}

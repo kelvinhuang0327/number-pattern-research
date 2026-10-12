@@ -1,0 +1,29 @@
+task_id: LOTTERYNEW_BIGLOTTO_GENERATE_CANONICAL_VERTICAL_R1
+timestamp: 2026-07-28T16:05:00+0800
+workspace:
+  root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  is_git_repository: true
+  git_toplevel: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  git_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  git_branch: task/p273a-prize-aware-inferential-validation
+  dirty_before: true
+evidence_root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged/_merge_evidence/LOTTERYNEW_BRUTE_FORCE_FILE_CONSOLIDATION_R1_20260728T152730+0800
+candidate_discovery:
+  canonical_registry_path: lottery_api/models/replay_strategy_registry.py
+  canonical_strategy_ids:
+    - biglotto_triple_strike
+    - ts3_regime_3bet
+    - biglotto_deviation_2bet
+  conflict_copies:
+    - lottery_api/models/replay_strategy_registry.py.__CONFLICT__LotteryNew-agent__DETACHED__24617fe3__DETACHED__bf3fd41a
+    - lottery_api/models/replay_strategy_registry.py.__CONFLICT__LotteryNew-clean__DETACHED__NOHEAD__DETACHED__25f60c23
+    - lottery_api/models/replay_strategy_registry.py.__CONFLICT__LotteryNew-main__main__2aaa1874__main__bf3fd41a
+    - lottery_api/models/replay_strategy_registry.py.__CONFLICT__P691-fresh-main-successor-r1__codex-p691-fresh-main-successor-r1__e0f6c26f__codex-p691-fresh-main-successor-r1__c6c03528
+    - lottery_api/models/replay_strategy_registry.py.__CONFLICT__clever-villani-2f0ef7__claude-clever-villani-2f0ef7__7cd02b06__claude-clever-villani-2f0ef7__25f60c23
+    - lottery_api/models/replay_strategy_registry.py.__CONFLICT__hopeful-bouman-38cd5d__claude-priceless-newton-09ad69__2aaa1874__claude-priceless-newton-09ad69__bf3fd41a
+    - lottery_api/models/replay_strategy_registry.py.__CONFLICT__nifty-meitner-d9c302__claude-nifty-meitner-d9c302__2aaa1874__claude-nifty-meitner-d9c302__bf3fd41a
+    - lottery_api/models/replay_strategy_registry.py.__CONFLICT__objective-carson-fa5c72__claude-objective-carson-fa5c72__2aaa1874__claude-objective-carson-fa5c72__bf3fd41a
+    - lottery_api/models/replay_strategy_registry.py.__CONFLICT__p1-family-independent-reproduction-r2__DETACHED__24617fe3__DETACHED__bf3fd41a
+    - lottery_api/models/replay_strategy_registry.py.__CONFLICT__trusting-chaum-8cc8c5__claude-trusting-chaum-8cc8c5__684bffce__claude-trusting-chaum-8cc8c5__25f60c23
+    - lottery_api/models/replay_strategy_registry.py.__CONFLICT__zen-gates-ff6802__claude-zen-gates-ff6802__c8b423d0__claude-zen-gates-ff6802__e5e29b03
+stop_conditions_triggered: false

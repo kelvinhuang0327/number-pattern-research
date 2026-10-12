@@ -1,0 +1,21 @@
+task_id: PREDRAW_REPLAY_QUERY_NORMALIZATION_MIGRATION_R3A
+timestamp: '2026-07-29T15:24:12+08:00'
+pyc_inspection_results:
+  lottery_api/routes/__pycache__/replay.cpython-314.pyc:
+    size: 103816
+    mtime_utc: '2026-07-27T08:50:52.636204+00:00'
+    classification: PREEXISTING_CACHE_UNATTRIBUTED
+  lottery_api/routes/__pycache__/replay.cpython-310.pyc:
+    size: 25073
+    mtime_utc: '2026-05-21T06:17:06.370169+00:00'
+    classification: PREEXISTING_CACHE_UNATTRIBUTED
+  lottery_api/routes/__pycache__/replay.cpython-313.pyc:
+    size: 97319
+    mtime_utc: '2026-07-02T08:02:27.678593+00:00'
+    classification: PREEXISTING_CACHE_UNATTRIBUTED
+  tests/__pycache__/test_p354a*: NONE
+  tests/__pycache__/test_p355a*: NONE
+runtime_cache_status: PASS_WITH_CAVEAT
+provenance_summary: RUNTIME_WRITE_PROVENANCE_UNRESOLVED
+cleanup_performed: false
+deletion_authorized: false

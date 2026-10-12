@@ -1,0 +1,57 @@
+task: LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R4
+status: COMPLETED_NEXT_VERTICAL_SELECTION
+
+inputs:
+  corrected_backlog: _organization_reports/LOTTERYNEW_GIT_BRANCH_ORGANIZATION_VERIFICATION_R2A/corrected_priority_backlog.jsonl
+  completed_vertical_reports:
+    - _integration_reports/PREDRAW_STRATEGY_FREEZE_LEDGER_CAPTURE_ENGINE_MIGRATION_R1/final_report.yaml
+    - _integration_reports/PREDRAW_QUICK_PREDICT_LEDGER_OPT_IN_MIGRATION_R2A/final_report.yaml
+    - _integration_reports/PREDRAW_REPLAY_QUERY_NORMALIZATION_MIGRATION_R3A/final_report.yaml
+  candidates_considered: 115
+
+screening:
+  safe_candidates: 1
+  excluded_candidates: 24
+  owner_decision_candidates: 90
+  dirty_path_collisions: 0
+  database_sensitive_candidates: 12
+
+selected:
+  candidate_id: cand_059_feat/p0_schema_stabilization_20260518
+  title: P0 Schema Stabilization & Canonical Strategy Universe Inventory
+  source_ref: refs/heads/feat/p0-schema-stabilization-20260518
+  expected_changed_paths:
+    - scripts/p0_per_draw_coverage_matrix.py
+    - tests/test_p0_canonical_universe.py
+    - tests/test_p0_schema_migration_idempotent.py
+    - docs/replay/p0_canonical_strategy_universe_20260518.md
+    - docs/replay/p0_schema_diff_20260518.md
+    - outputs/replay/p0_canonical_strategy_universe_20260518.json
+    - outputs/replay/p0_migration_log_20260518.json
+    - outputs/replay/p0_per_draw_coverage_matrix_20260518.json
+    - outputs/replay/p0_schema_diff_20260518.json
+  focused_tests:
+    - tests/test_p0_canonical_universe.py
+    - tests/test_p0_schema_migration_idempotent.py
+  risk: LOW
+  estimated_completion: 6 Hours
+  owner_decisions_required: false
+
+safety:
+  ordinary_files_modified: false
+  tests_modified: false
+  database_accessed: false
+  source_refs_modified: false
+  git_mutation_performed: false
+
+claim_boundary:
+  next_vertical_selected: true
+  implementation_started: false
+  branches_merged: false
+  all_branch_functions_migrated: false
+  production_ready_claimed: false
+
+not_run: []
+blocked: []
+remaining_risks: []
+next_worker_task: P0_SCHEMA_STABILIZATION_CANONICAL_UNIVERSE_MIGRATION_R4

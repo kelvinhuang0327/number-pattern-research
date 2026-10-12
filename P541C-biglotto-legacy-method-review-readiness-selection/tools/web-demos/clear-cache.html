@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>清除緩存並重新載入</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #eee;
+        }
+
+        .container {
+            background: #16213e;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #00d4ff;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            background: #0f3460;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border-left: 4px solid #00d4ff;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+        }
+
+        .success {
+            background: #10b981;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .error {
+            background: #ef4444;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        code {
+            background: #0a0e27;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #00d4ff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔄 清除緩存並重新載入</h1>
+
+        <div class="step">
+            <h3>步驟 1: 清除瀏覽器緩存</h3>
+            <p>點擊下方按鈕清除緩存並重新載入頁面：</p>
+            <button onclick="clearCacheAndReload()">🗑️ 清除緩存並重新載入</button>
+        </div>
+
+        <div class="step">
+            <h3>步驟 2: 手動清除（如果上面的按鈕無效）</h3>
+            <p>使用鍵盤快捷鍵：</p>
+            <ul>
+                <li><strong>Mac:</strong> <code>Cmd + Shift + R</code> 或 <code>Cmd + Option + R</code></li>
+                <li><strong>Windows/Linux:</strong> <code>Ctrl + Shift + R</code> 或 <code>Ctrl + F5</code></li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>步驟 3: 測試 API 連接</h3>
+            <p>測試數據同步 API 是否正常：</p>
+            <button onclick="testSyncAPI()">🧪 測試同步 API</button>
+            <div id="test-result"></div>
+        </div>
+
+        <div class="step">
+            <h3>步驟 4: 返回主頁面</h3>
+            <p>清除緩存後，返回主頁面：</p>
+            <button onclick="goToMain()">🏠 返回主頁面</button>
+        </div>
+
+        <div id="success-msg" class="success"></div>
+        <div id="error-msg" class="error"></div>
+    </div>
+
+    <script>
+        function clearCacheAndReload() {
+            // 清除所有緩存
+            if ('caches' in window) {
+                caches.keys().then(function (names) {
+                    for (let name of names) {
+                        caches.delete(name);
+                    }
+                });
+            }
+
+            // 清除 localStorage
+            localStorage.clear();
+
+            // 清除 sessionStorage
+            sessionStorage.clear();
+
+            // 顯示成功消息
+            const successMsg = document.getElementById('success-msg');
+            successMsg.textContent = '✅ 緩存已清除！頁面將在 2 秒後重新載入...';
+            successMsg.style.display = 'block';
+
+            // 2秒後強制重新載入
+            setTimeout(() => {
+                window.location.href = window.location.href + '?nocache=' + Date.now();
+                window.location.reload(true);
+            }, 2000);
+        }
+
+        async function testSyncAPI() {
+            const resultDiv = document.getElementById('test-result');
+            resultDiv.innerHTML = '<p style="color: #fbbf24;">⏳ 測試中...</p>';
+
+            try {
+                const testData = {
+                    history: [{
+                        date: "2024-01-01",
+                        draw: "1",
+                        numbers: [1, 2, 3, 4, 5, 6],
+                        lotteryType: "BIG_LOTTO"
+                    }],
+                    lotteryRules: {
+                        pickCount: 6,
+                        minNumber: 1,
+                        maxNumber: 49
+                    }
+                };
+
+                const response = await fetch('http://localhost:5001/api/auto-learning/sync-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testData)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    resultDiv.innerHTML = `
+                        <p style="color: #10b981; margin-top: 10px;">
+                            ✅ API 測試成功！<br>
+                            響應: ${result.message || 'OK'}<br>
+                            數據量: ${result.data_count || 1} 期
+                        </p>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <p style="color: #ef4444; margin-top: 10px;">
+                            ❌ API 測試失敗！<br>
+                            狀態碼: ${response.status}<br>
+                            請確認後端服務是否運行
+                        </p>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <p style="color: #ef4444; margin-top: 10px;">
+                        ❌ 連接失敗: ${error.message}<br>
+                        請確認後端服務是否運行在 http://localhost:5001
+                    </p>
+                `;
+            }
+        }
+
+        function goToMain() {
+            // 添加時間戳避免緩存
+            window.location.href = '/index.html?nocache=' + Date.now();
+        }
+
+        // 頁面載入時自動測試 API
+        window.addEventListener('load', () => {
+            console.log('🔍 頁面已載入，可以進行測試');
+        });
+    </script>
+</body>
+
+</html>

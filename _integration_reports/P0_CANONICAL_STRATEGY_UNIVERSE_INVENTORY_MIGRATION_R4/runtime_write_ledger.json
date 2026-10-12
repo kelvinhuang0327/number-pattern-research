@@ -1,0 +1,29 @@
+{
+  "task": "P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4",
+  "ordinary_allowed_writes": [
+    "scripts/p0_per_draw_coverage_matrix.py",
+    "tests/test_p0_canonical_universe.py",
+    "docs/replay/p0_canonical_strategy_universe_20260518.md",
+    "outputs/replay/p0_canonical_strategy_universe_20260518.json"
+  ],
+  "task_report_writes": [
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4/phase0_snapshot.yaml",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4/source_target_map.md",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4/migration_decisions.yaml",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4/database_invariance.yaml",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4/fixture_review.yaml",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4/generated_output_comparison.yaml",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4/changed_paths.txt",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4/runtime_write_ledger.json",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4/verification.md",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4/judge_report.md",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4/final_report.yaml"
+  ],
+  "sandbox_writes": [
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4/runtime_sandbox/fixture.db",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4/runtime_sandbox/p0_per_draw_coverage_matrix.generated.json"
+  ],
+  "forbidden_writes_observed": [],
+  "production_db_accessed": false,
+  "production_db_modified": false
+}

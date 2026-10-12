@@ -7,8 +7,11 @@ Phase 1 改進: 基於 115000011 期檢討會議
 - 注2 (Cold+Echo): 低溫度 + 冷回歸回聲加權
 - 注3 (Echo+Warm): 回聲候選 + 中溫號覆蓋 (取代舊的結構過濾)
 
-基礎: mixed_3bet (Edge +1.01% ± 0.23%, 1000期+10種子)
+基礎: mixed_3bet (historical edge +1.01% ± 0.23%; evidence_status=
+HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED)
 改進目標: 第3注從結構過濾改為 echo+中溫，提升覆蓋盲區
+
+⚠️ No reliable predictive advantage is currently established for this strategy.
 
 使用方式:
     python3 tools/predict_biglotto_echo_3bet.py
@@ -213,8 +216,9 @@ def main():
             print(f"  注{i + 1} ∩ 注{j + 1} 重疊: {len(ov)} 個 {sorted(ov) if ov else ''}")
 
     print(f"\n{'=' * 65}")
-    print(f"  基礎: 混合 3注 (Edge +1.01% ± 0.23%)")
+    print(f"  基礎: 混合 3注 (historical edge +1.01% ± 0.23%) — HISTORICAL_RESEARCH_ONLY")
     print(f"  改進: Echo + 連續溫度 + 中溫覆蓋 (待回測驗證)")
+    print(f"  警告: No reliable predictive advantage is currently established.")
     print()
 
 

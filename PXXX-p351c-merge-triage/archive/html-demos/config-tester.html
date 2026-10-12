@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>配置測試控制台</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .config-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .config-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .config1 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .config2 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .config3 {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .config4 {
+            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+        }
+
+        .config5 {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #333;
+        }
+
+        .current {
+            border: 3px solid #FFD700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .info {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .test-btn {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .test-btn:hover {
+            box-shadow: 0 5px 20px rgba(56, 239, 125, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎯 配置測試控制台</h1>
+
+        <div id="current-info" class="info"></div>
+
+        <h2>選擇配置：</h2>
+        <button class="config-btn config1" onclick="selectConfig('config1')">
+            Config1 - 強化型<br>
+            <small>高權重奇偶(130)和總和(180)</small>
+        </button>
+
+        <button class="config-btn config2" onclick="selectConfig('config2')">
+            Config2 - 平衡型<br>
+            <small>各項權重平衡(120/160)</small>
+        </button>
+
+        <button class="config-btn config3" onclick="selectConfig('config3')">
+            Config3 - 激進型<br>
+            <small>極端權重(150/200)</small>
+        </button>
+
+        <button class="config-btn config4" onclick="selectConfig('config4')">
+            Config4 - 保守型<br>
+            <small>溫和權重(110/140)</small>
+        </button>
+
+        <button class="config-btn config5" onclick="selectConfig('config5')">
+            Config5 - 區間優先型<br>
+            <small>強化區間分佈(140)</small>
+        </button>
+
+        <button class="test-btn" onclick="goToTest()">
+            ▶ 前往主頁面測試
+        </button>
+
+        <div class="info" style="margin-top: 20px;">
+            <h3>💡 使用說明：</h3>
+            <ol>
+                <li>點擊上方按鈕選擇配置</li>
+                <li>點擊「前往主頁面測試」</li>
+                <li>在主頁面：載入範例數據 → 模擬測試 → 選擇戰術接力 → 開始模擬</li>
+                <li>記錄成功率</li>
+                <li>返回此頁面選擇下一個配置</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function updateCurrentConfig() {
+            const current = localStorage.getItem('tactical_relay_config') || 'config1';
+            const info = document.getElementById('current-info');
+            const names = {
+                config1: 'Config1 - 強化型',
+                config2: 'Config2 - 平衡型',
+                config3: 'Config3 - 激進型',
+                config4: 'Config4 - 保守型',
+                config5: 'Config5 - 區間優先型'
+            };
+            info.innerHTML = `<h3>當前配置: ${names[current]}</h3>`;
+
+            // 高亮當前按鈕
+            document.querySelectorAll('.config-btn').forEach(btn => {
+                btn.classList.remove('current');
+            });
+            const currentClass = '.' + current;
+            const currentBtn = document.querySelector(currentClass);
+            if (currentBtn) {
+                currentBtn.classList.add('current');
+            }
+        }
+
+        function selectConfig(config) {
+            localStorage.setItem('tactical_relay_config', config);
+            updateCurrentConfig();
+            alert('✅ 已切換到 ' + config.toUpperCase() + '\n\n請點擊下方按鈕前往測試頁面');
+        }
+
+        function goToTest() {
+            window.location.href = '/';
+        }
+
+        // 初始化
+        updateCurrentConfig();
+    </script>
+</body>
+
+</html>

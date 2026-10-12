@@ -1,0 +1,42 @@
+task: LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R6
+result: NO_SAFE_IMPLEMENTATION_CANDIDATE
+single_candidate_selected: false
+safe_candidate_count: 0
+
+selected:
+  candidate_id: null
+  title: null
+  classification: null
+  domain: null
+  source_ref: null
+  exact_target_paths: []
+  focused_tests: []
+  database_behavior: NOT_APPLICABLE
+  filesystem_writes: NOT_APPLICABLE
+  risk: NOT_APPLICABLE
+  estimated_completion: NOT_APPLICABLE
+  owner_decisions_required: NOT_APPLICABLE
+
+reason: >-
+  All five bounded semantic-review candidates were excluded by stale or
+  target-equivalent behavior, dirty-path ownership collisions, conflicting
+  shared contracts, dependency or lockfile authority, or incomplete source
+  materialization.
+
+worker_packet:
+  issued: false
+  task_id: null
+  task_class: NOT_APPLICABLE
+  worker_route: NOT_APPLICABLE
+  judge_mode: NOT_APPLICABLE
+  owner_authorization: NOT_APPLICABLE
+  standalone_authorization_required: false
+
+claim_boundary:
+  next_vertical_selected: false
+  implementation_started: false
+  production_backfill_completed: false
+  branches_merged: false
+  all_branch_functions_migrated: false
+  production_ready_claimed: false
+

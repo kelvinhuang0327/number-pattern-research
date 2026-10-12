@@ -1,0 +1,10 @@
+task: P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4
+production_db_path: lottery_api/data/lottery_v2.db
+production_db_accessed: false
+production_db_modified: false
+temporary_fixture_db_used: true
+temporary_fixture_db_path: _integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4/runtime_sandbox/fixture.db
+write_sql_queries_found: false
+ddl_statements_found: false
+schema_migration_executed: false
+database_safety_status: PASS

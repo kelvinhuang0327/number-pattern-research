@@ -1,0 +1,12 @@
+task: P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4
+fixture_file: outputs/replay/p0_canonical_strategy_universe_20260518.json
+source_sha256: 3454e8b5a71816dd96347b0fcf5797ba3e255af9521c72dfdd4a75d696bd341a
+target_sha256: 3454e8b5a71816dd96347b0fcf5797ba3e255af9521c72dfdd4a75d696bd341a
+sha256_identical: true
+valid_json: true
+contains_environment_specific_paths: false
+contains_timestamps_or_mtimes: false
+produced_by_migration_engine: false
+used_as_production_runtime_state: false
+role: CONTRACT_FIXTURE
+fixture_review_status: PASS

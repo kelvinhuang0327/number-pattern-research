@@ -1,0 +1,69 @@
+phase0_status: PASS
+live_target_state:
+  top_level: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  branch: task/p273a-prize-aware-inferential-validation
+  status: clean
+r2a_authority_verification:
+  branch_organization_verified: true
+  recommended_candidate: cand_087a_predraw_ledger_engine
+  judge_verdict: PASS_WITH_CAVEATS
+phase0_snapshots:
+  snapshot_count: 2
+  snapshots_identical: true
+  interval_seconds: 1.0
+extracted_source_files:
+  - path: docs/p360a_predraw_metadata_preregistration.md
+    size: 5893
+    sha256: 6152c2a19f67dad757b80a132d4cd28151fac25719253b1a1d6487355f2f944b
+    blob_oid: 30a5df4b4b2f0c1bcd30c49722f91fd2cf5c0cac
+    target_status: ABSENT
+    action: CREATE_FROM_SOURCE
+  - path: lottery_api/data/predraw_schedule_config.json
+    size: 1458
+    sha256: c4743850a5d644f9acb89ae4be1dbcbf14d596a22b0f46b142d4600285e7d021
+    blob_oid: ff5a92b7dbdccae4879119316d959f994e5dbea3
+    target_status: ABSENT
+    action: CREATE_FROM_SOURCE
+  - path: lottery_api/data/predraw_strategy_freeze_registry.json
+    size: 2632
+    sha256: a5e1feaed2ac0d44444fb2ce7fbf9adbdb383e59aafa4943461507ff367b6f3e
+    blob_oid: c02716603c0ca61047b0b8e8f5a8a9f945d84a45
+    target_status: ABSENT
+    action: CREATE_FROM_SOURCE
+  - path: lottery_api/engine/predraw_ledger.py
+    size: 33228
+    sha256: 5b2eb5d589e89b6d6a5123f7c7e4357ed3c7cf691e7e09aee993ebcdd83906ed
+    blob_oid: 86ebb09b1e6326cc3383a5419c35250f9dfe24c7
+    target_status: EXISTS_IDENTICAL
+    action: ALREADY_PRESENT_IDENTICAL
+  - path: tools/predraw_capture_runner.py
+    size: 10401
+    sha256: 08a66ce56036f1c05e940e491635ed2361b78bf8248a039752207f3ed41372f9
+    blob_oid: 6bcd81012e36bbb4291e65be88e3b4a5e70383f4
+    target_status: ABSENT
+    action: CREATE_FROM_SOURCE
+  - path: tools/predraw_ledger_verify.py
+    size: 8345
+    sha256: ea48288d828b2d285ca7660d302d16203c3af15d0f1f1e963022cbbfde964418
+    blob_oid: 508aacbc9eca8ae89d82d95c44aa45c46ee0a40e
+    target_status: EXISTS_IDENTICAL
+    action: ALREADY_PRESENT_IDENTICAL
+  - path: tests/test_p360a_predraw_metadata_instrumentation.py
+    size: 24373
+    sha256: c7e0284efc89b271b9f95c7a1fdab120d5c8c7726275288ece026516c65c23da
+    blob_oid: 3c0121ee7b2a619d5e89d55f5539fc4b208e35c5
+    target_status: ABSENT
+    action: CREATE_FROM_SOURCE
+  - path: tests/test_p364_predraw_capture_runner.py
+    size: 9163
+    sha256: f022886f02a23f1efc9ebb8c42612f85ae4a5dcdc9d56e1a5a05c8dae6294d4f
+    blob_oid: 44a038589bea524bcba139d1b983ef3190f84bda
+    target_status: ABSENT
+    action: CREATE_FROM_SOURCE
+  - path: tests/test_p365_predraw_ledger_verify.py
+    size: 8473
+    sha256: 94efc761e2e7f7de9fdbe32b5209c46c210c9620ee3c5410b65ba2f53eb90da2
+    blob_oid: 133cff27c44d0817214d1778618152fd68743bbd
+    target_status: EXISTS_IDENTICAL
+    action: ALREADY_PRESENT_IDENTICAL

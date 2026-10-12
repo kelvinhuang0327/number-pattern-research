@@ -1,0 +1,26 @@
+{
+  "task": "P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_LINT_REMEDIATION_R4B",
+  "timestamp": "2026-07-29T20:17:14+08:00",
+  "expected_runtime_writes": [
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/**",
+    "existing .pytest_cache/**"
+  ],
+  "actual_runtime_writes": [
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/phase0_snapshot.yaml",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/lint_findings_before.yaml",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/determinism_regression.yaml",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/fixture_db_invariance.yaml",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/read_only_contract_review.yaml",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/formatting_diff_review.yaml",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/final_tree_hashes.yaml",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/runtime_sandbox/fixture.db",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/runtime_sandbox/run_1.json",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/runtime_sandbox/run_2.json",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/runtime_write_ledger.json",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/verification.md",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/judge_report.md",
+    "_integration_reports/P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4B/final_report.yaml"
+  ],
+  "unauthorized_writes": [],
+  "status": "PASS"
+}

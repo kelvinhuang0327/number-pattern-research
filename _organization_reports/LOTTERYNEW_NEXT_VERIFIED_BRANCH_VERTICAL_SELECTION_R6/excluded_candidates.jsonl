@@ -1,0 +1,26 @@
+{"candidate_id":"cand_087a_predraw_ledger_engine","classification":"EXCLUDED_PREVIOUSLY_COMPLETED","reason":"completed Predraw ledger vertical"}
+{"candidate_id":"cand_087b_quick_predict_ledger_opt_in","classification":"EXCLUDED_PREVIOUSLY_COMPLETED","reason":"completed Quick Predict opt-in vertical"}
+{"candidate_id":"cand_087c_replay_query_normalization","classification":"EXCLUDED_PREVIOUSLY_COMPLETED","reason":"completed Replay normalization vertical"}
+{"candidate_id":"cand_059a_canonical_strategy_universe_inventory","classification":"EXCLUDED_PREVIOUSLY_COMPLETED","reason":"R4B final tree independently verified"}
+{"candidate_id":"cand_006_chore/p2_controlled_replay_backfill_dryrun_20260515","classification":"EXCLUDED_NEWLY_COMPLETED","reason":"R5 implementation and DELTA Judge continuity verified"}
+{"candidate_id":"cand_087_p273a_prize_aware_inferential_validation","classification":"EXCLUDED_PARENT_COMPOSITE","reason":"parent split; all three safe subverticals completed"}
+{"candidate_id":"cand_059_feat/p0_schema_stabilization_20260518","classification":"EXCLUDED_PARENT_COMPOSITE","reason":"inventory subvertical completed; schema migration remains Owner Decision Required"}
+{"candidate_id":"cluster_predraw_ledger_and_freeze","classification":"EXCLUDED_COMPLETED_CLUSTER","reason":"Predraw, Quick Predict, and Replay child verticals completed"}
+{"candidate_id":"cand_004_chore/fix_drift_guard_test_fixtures_20260520","classification":"EXCLUDED_STALE_TARGET_REGRESSION","reason":"would restore obsolete pre-backfill counts"}
+{"candidate_id":"cand_005_chore/ingestion_pipeline_diagnostic_20260515","classification":"EXCLUDED_UNSAFE_UNBOUNDED_DIAGNOSTIC","reason":"hard-coded production DB and no focused contract tests"}
+{"candidate_id":"cand_082_p18_replay_ui_timestamp_display","classification":"EXCLUDED_COMPLETED_OR_DIRTY_PATH_COLLISION","reason":"requires protected dirty index.html"}
+{"candidate_id":"cand_109_p96_governance_baseline_repair","classification":"EXCLUDED_STALE_TARGET_REGRESSION","reason":"would remove current post-P188 baseline support"}
+{"candidate_id":"cand_025_codex/p1_replay_lifecycle_hardening","classification":"EXCLUDED_STALE_TARGET_REGRESSION","reason":"source removes fixture-catalog support and replaces stronger target tests with older production-DB-dependent tests"}
+{"candidate_id":"cand_027_codex/p1_replay_lifecycle_multistate_fixture_browser_tooling","classification":"EXCLUDED_TARGET_EQUIVALENT_OR_STALE_REGRESSION","reason":"five functional paths are target-identical; only differing source test deletes newer target coverage"}
+{"candidate_id":"cand_013_codex/p0_replay_lifecycle_browser_e2e_ci_enablement","classification":"EXCLUDED_COMPLETED_OR_DIRTY_PATH_COLLISION","reason":"source test regresses target coverage and E2E depends on dirty index.html"}
+{"candidate_id":"cand_060_feat/p0_single_repo_stabilization_p1_catalog_plan_20260519","classification":"EXCLUDED_CONTRACT_OR_REPORT_ONLY","reason":"planning/catalog artifact, not runtime capability"}
+{"candidate_id":"cand_089_p35","classification":"EXCLUDED_CONTRACT_OR_REPORT_ONLY","reason":"planning artifact rather than runtime capability"}
+{"candidate_id":"cand_097_p54","classification":"EXCLUDED_CONTRACT_OR_REPORT_ONLY","reason":"roadmap artifact rather than runtime capability"}
+{"candidate_id":"cand_112_post_v3_replay_lifecycle_closure","classification":"EXCLUDED_CONTRACT_OR_REPORT_ONLY","reason":"closure artifact rather than implementation vertical"}
+{"candidate_id":"cluster_p1_replay_lifecycle_fixtures","classification":"EXCLUDED_CONTRACT_OR_REPORT_ONLY","reason":"two-path spec without focused tests"}
+{"candidate_id":"mapping_class_DUPLICATE_OR_HISTORICAL_IN_R5_REMAINING","classification":"EXCLUDED_AGGREGATE","count":0,"reason":"R5 remaining inventory already removed duplicate and historical aliases"}
+{"candidate_id":"r2a_preexcluded_candidate_mappings","classification":"EXCLUDED_AGGREGATE_AUTHORITY","count":53,"reason":"isolated/historical/target-equivalent candidate mappings excluded before R5 inventory"}
+{"candidate_id":"r2a_preexcluded_duplicate_commit_aliases","classification":"EXCLUDED_AGGREGATE_AUTHORITY","count":347,"reason":"duplicate commit aliases are not backlog candidates"}
+{"candidate_id":"r2a_preexcluded_duplicate_tree_aliases","classification":"EXCLUDED_AGGREGATE_AUTHORITY","count":7,"reason":"duplicate tree aliases are not backlog candidates"}
+{"candidate_id":"r2a_preexcluded_merged_remote_aliases","classification":"EXCLUDED_AGGREGATE_AUTHORITY","count":2,"reason":"historical merged remote aliases are not branch-only backlog candidates"}
+

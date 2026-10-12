@@ -1,0 +1,13 @@
+line-length = 100
+target-version = "py39"
+
+[lint]
+select = ["E", "F", "W", "C90", "B", "SIM", "UP"]
+ignore = [
+    "E501",
+    "SIM108",
+    "B905",   # zip(strict=) requires Python 3.10+, project targets 3.9
+]
+
+[lint.mccabe]
+max-complexity = 12

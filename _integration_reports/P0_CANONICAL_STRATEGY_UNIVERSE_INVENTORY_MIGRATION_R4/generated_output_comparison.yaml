@@ -1,0 +1,12 @@
+task: P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_MIGRATION_R4
+schema_equal: true
+deterministic_fields_equal: true
+environment_specific_fields:
+  - db_path
+timestamp_fields:
+  - generated_at
+database_specific_fields:
+  - replay_rows (dependent on sandbox database content)
+exact_bytes_equal: false
+historical_artifact_promoted: false
+explanation: The sandbox output was generated using a isolated temporary SQLite fixture database. Top-level keys and structure match schema contract. Differences are limited to runtime timestamp, local DB path, and sandbox fixture row counts as expected.

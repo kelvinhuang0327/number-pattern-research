@@ -1,0 +1,54 @@
+task: LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R6
+attempt: CLEAN_RETRY_1
+task_class: STATE_CHANGING_IMPLEMENTATION
+worker_route: STANDARD
+judge_mode: NOT_APPLICABLE
+
+owner_override:
+  present: true
+  exact_words: >-
+    授權將 R6 報告產出視為 STATE_CHANGING_IMPLEMENTATION，但不得實作所選候選；
+    開始新的 clean retry。
+  candidate_implementation_authorized: false
+  report_artifact_writes_authorized: true
+  second_confirmation_required: false
+
+repository:
+  expected_root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  observed_root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  expected_branch: task/p273a-prize-aware-inferential-validation
+  observed_branch: task/p273a-prize-aware-inferential-validation
+  expected_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  observed_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  result: PASS
+
+resource_mode:
+  language_server_used: false
+  workspace_indexing_used: false
+  background_commands_used: false
+  parallel_commands_used: false
+  global_git_status_used: false
+  full_workspace_scan_used: false
+  path_scoped_checks: true
+
+write_scope:
+  allowed_root: _organization_reports/LOTTERYNEW_NEXT_VERIFIED_BRANCH_VERTICAL_SELECTION_R6
+  ordinary_source_allowed: false
+  tests_allowed: false
+  configs_allowed: false
+  outputs_allowed: false
+  database_allowed: false
+  git_refs_allowed: false
+
+attempt_ledger:
+  inherited_failed_attempt:
+    boundary_compliance: REFUTED
+    reason: unpathscoped commit-tree name-status diff
+    evidence_reused_by_clean_retry: false
+    filesystem_writes: []
+    git_ref_mutations: []
+  clean_retry:
+    boundary_compliance: PASS
+    global_or_full_repository_path_scan_used: false
+    protected_content_scanned: false
+

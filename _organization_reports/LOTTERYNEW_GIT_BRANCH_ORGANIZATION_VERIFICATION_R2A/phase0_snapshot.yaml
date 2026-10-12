@@ -1,0 +1,115 @@
+task: "LOTTERYNEW_GIT_BRANCH_ORGANIZATION_VERIFICATION_R2A"
+timestamp: "2026-07-29T10:41:05+0800"
+expected_branch: "task/p273a-prize-aware-inferential-validation"
+expected_head: "3d6df001da3a0633ab91f164d722b595ca76d2e1"
+phase0_status: "PASS"
+manifest_count: 27
+manifests:
+  - path: "_git_ref_reference/LOTTERY_BRANCH_REF_EXTRACTION_R1/repositories.jsonl"
+    size: 24739
+    sha256: "1eabd055a0961d6ebe7aa87884acc4d18547fd1d191cfa4155bb64b43c437d72"
+    mtime: 1785239881.0592375
+  - path: "_git_ref_reference/LOTTERY_BRANCH_REF_EXTRACTION_R1/all_refs.jsonl"
+    size: 522215
+    sha256: "f3661d777f3453eef0d63d6dc93b35c325a6059d3588aeb22acac01a316356f5"
+    mtime: 1785239881.0601175
+  - path: "_git_ref_reference/LOTTERY_BRANCH_REF_EXTRACTION_R1/unmaterialized_refs.jsonl"
+    size: 474109
+    sha256: "2ab94682329a2c758061c63e93681bb456258f9ab58bc434c0c3278888f7bc95"
+    mtime: 1785239213.577105
+  - path: "_git_ref_reference/LOTTERY_BRANCH_REF_EXTRACTION_R1/duplicate_tree_groups.jsonl"
+    size: 144535
+    sha256: "3b2cfaba1b4fc0bbb3a70877b67dd7f8d1eacc9b96541d18dd1fa30c43f3e79e"
+    mtime: 1785239213.5800385
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_REF_INVENTORY_EXTRACTION_R1/materialization_classification.jsonl"
+    size: 562720
+    sha256: "06c580d5826f4d3ca83baeadfcd033b99eaf33033b72c277c44d7a89dea531ff"
+    mtime: 1785239213.5733387
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_REF_INVENTORY_EXTRACTION_R1/local_ref_inventory.jsonl"
+    size: 522215
+    sha256: "f3661d777f3453eef0d63d6dc93b35c325a6059d3588aeb22acac01a316356f5"
+    mtime: 1785239213.566785
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_REF_INVENTORY_EXTRACTION_R1/remote_advertised_ref_inventory.jsonl"
+    size: 97646
+    sha256: "ab240fbc7ade62d90b110962f908879ebc32645dfa0f42449be5ad70b5eec86f"
+    mtime: 1785239213.5679111
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_REF_INVENTORY_EXTRACTION_R1/worktree_inventory.jsonl"
+    size: 17376
+    sha256: "f040cd3de75e9deffd1d14f6dffb59209d0b178dfbd90b2e4d997090c065a52c"
+    mtime: 1785239179.0250576
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_REF_INVENTORY_EXTRACTION_R1/extraction_results.jsonl"
+    size: 245242
+    sha256: "7d09301eefc6e438a9230e29f55d11cc3f127ca23716215093aba084f13cd9b5"
+    mtime: 1785283732.0676303
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_REF_INVENTORY_EXTRACTION_R1/target_coverage_summary.json"
+    size: 239
+    sha256: "900dac8b370f19d93e94d0d772292d21f29a43597c1cd127e37eacbc85b821a8"
+    mtime: 1785283732.0677688
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_REF_INVENTORY_EXTRACTION_R1/final_report.yaml"
+    size: 2794
+    sha256: "355b7aff4da98d4c0a020d5193cf00817d62f2b5bb5da9339c91b274dfe7c042"
+    mtime: 1785239881.0606635
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_ORGANIZATION_COMPLETION_R2/ref_disposition_map.jsonl"
+    size: 664126
+    sha256: "13f15fee3c93c310114489292cc014a9fd8cb230ea01ef818b3979e129bb9c6b"
+    mtime: 1785249298.7636006
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_ORGANIZATION_COMPLETION_R2/representative_refs.jsonl"
+    size: 334193
+    sha256: "e3b24adadb9b2949cff3d03808850c16dee236625b905fb0f14c4edb17fb3951"
+    mtime: 1785249298.7715642
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_ORGANIZATION_COMPLETION_R2/duplicate_commit_groups.jsonl"
+    size: 146903
+    sha256: "649d45d445f940e5e20895a4e41d58eeca5afea80b38388a3f3a497ed790c244"
+    mtime: 1785249298.768041
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_ORGANIZATION_COMPLETION_R2/duplicate_tree_groups.jsonl"
+    size: 144535
+    sha256: "3b2cfaba1b4fc0bbb3a70877b67dd7f8d1eacc9b96541d18dd1fa30c43f3e79e"
+    mtime: 1785249298.769639
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_ORGANIZATION_COMPLETION_R2/materialized_refs.jsonl"
+    size: 53541
+    sha256: "568eafa961413c3c2005fffc96d752a7b94a940d4064fe6fec1fb6d21dfaf781"
+    mtime: 1785249298.7643833
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_ORGANIZATION_COMPLETION_R2/branch_only_refs.jsonl"
+    size: 41970
+    sha256: "5b64b41011600601f17a898a0e6eec1492bb7ba591b35205716cdc142128745e"
+    mtime: 1785249298.7650237
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_ORGANIZATION_COMPLETION_R2/target_partial_refs.jsonl"
+    size: 28635
+    sha256: "3036d171ef90f5f9c4e708e467527aade0cf85610249ca2f726f5069c1c60e19"
+    mtime: 1785249298.7653315
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_ORGANIZATION_COMPLETION_R2/target_equivalent_refs.jsonl"
+    size: 162202
+    sha256: "6c5b91b3097dc2587c7c617313057a083a0585250a3f7613bfbfed17516a470c"
+    mtime: 1785249298.7665381
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_ORGANIZATION_COMPLETION_R2/historical_reference_refs.jsonl"
+    size: 6245
+    sha256: "c1f60a51f5a212e4a402e032acf84e63e0e6665567e54072ae4744ad1978b697"
+    mtime: 1785249298.7667158
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_ORGANIZATION_COMPLETION_R2/owner_decision_refs.jsonl"
+    size: 1179
+    sha256: "7816d9bbd8bea6d250ca5a4fd5aefef3ac31c4dcb49f5d8a55347a5fc825bc47"
+    mtime: 1785249298.7668512
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_ORGANIZATION_COMPLETION_R2/functional_vertical_candidates.jsonl"
+    size: 9086460
+    sha256: "68da51be247d8a400ca7e1c56d2e572cf507af0848ec4a58a4db822a7e79e2e8"
+    mtime: 1785249301.747752
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_ORGANIZATION_COMPLETION_R2/priority_backlog.jsonl"
+    size: 9086460
+    sha256: "8eed32417584b741f9c0607b148099fe00f149367fb52c7aea4b5c9a65e074f8"
+    mtime: 1785249301.7845523
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_ORGANIZATION_COMPLETION_R2/top_20_migration_candidates.md"
+    size: 12602
+    sha256: "bcbe2a8e612631a2159eb9a4e11d30729ecc098beaea2bbbad7736be6f82a4c7"
+    mtime: 1785249301.7855492
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_ORGANIZATION_COMPLETION_R2/next_single_vertical.yaml"
+    size: 3613
+    sha256: "be4234902f5e203c8abd937bf6b8d7e528c0c4ad062d112cc65e0beed2dad951"
+    mtime: 1785249301.7851183
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_ORGANIZATION_COMPLETION_R2/final_report.yaml"
+    size: 4757
+    sha256: "6af4799b75066fcd59a52b45111759c1caed23e06cfa4684236e8181d1b52cf1"
+    mtime: 1785249301.7862365
+  - path: "_organization_reports/LOTTERYNEW_GIT_BRANCH_ORGANIZATION_COMPLETION_R2/organize_branches.py"
+    size: 29136
+    sha256: "5ee73d0d77a44b15d1847e6cd841027e77cba0ea10f282d8b1a6bccd08fdba84"
+    mtime: 1785249296.241135

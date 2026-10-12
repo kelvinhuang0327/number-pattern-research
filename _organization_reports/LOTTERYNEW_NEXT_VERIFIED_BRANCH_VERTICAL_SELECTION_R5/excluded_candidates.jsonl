@@ -1,0 +1,18 @@
+{"candidate_id":"cand_087a_predraw_ledger_engine","classification":"EXCLUDED_COMPLETED","reason":"completed Predraw ledger vertical"}
+{"candidate_id":"cand_087b_quick_predict_ledger_opt_in","classification":"EXCLUDED_COMPLETED","reason":"completed Quick Predict opt-in vertical"}
+{"candidate_id":"cand_087c_replay_query_normalization","classification":"EXCLUDED_COMPLETED","reason":"completed Replay normalization vertical"}
+{"candidate_id":"cand_059a_canonical_strategy_universe_inventory","classification":"EXCLUDED_COMPLETED","reason":"R4B final tree independently verified"}
+{"candidate_id":"cand_087_p273a_prize_aware_inferential_validation","classification":"EXCLUDED_PARENT_COMPOSITE","reason":"parent was split; all three safe subverticals are completed"}
+{"candidate_id":"cand_059_feat/p0_schema_stabilization_20260518","classification":"EXCLUDED_PARENT_COMPOSITE","reason":"inventory subvertical completed; migration remains Owner Decision Required"}
+{"candidate_id":"cluster_predraw_ledger_and_freeze","classification":"EXCLUDED_COMPLETED_CLUSTER","reason":"Predraw, Quick Predict, and Replay child verticals completed"}
+{"candidate_id":"cand_072_origin/merged/feat/p0_single_repo_stabilization_p1_catalog_plan_20260519","classification":"EXCLUDED_HISTORICAL_MERGED_REF","reason":"merged remote reference, not next branch-only authority"}
+{"candidate_id":"cand_073_origin/merged/feat/track_b_winning_quality","classification":"EXCLUDED_HISTORICAL_MERGED_REF","reason":"merged remote reference, not next branch-only authority"}
+{"candidate_id":"mapping_class_ISOLATED_FILE_REFERENCE","classification":"EXCLUDED_AGGREGATE","count":32,"reason":"isolated documents/reports are not verified function candidates"}
+{"candidate_id":"mapping_class_HISTORICAL_OR_SUCCESSOR_ALIAS","classification":"EXCLUDED_AGGREGATE","count":18,"reason":"historical and successor aliases removed"}
+{"candidate_id":"mapping_class_TARGET_EQUIVALENT_EXCLUDED","classification":"EXCLUDED_AGGREGATE","count":3,"reason":"target-equivalent implementations removed"}
+{"candidate_id":"ref_class_DUPLICATE_COMMIT_ALIAS","classification":"EXCLUDED_AGGREGATE","count":347,"reason":"duplicate ref aliases are not backlog candidates"}
+{"candidate_id":"ref_class_DUPLICATE_TREE_ALIAS","classification":"EXCLUDED_AGGREGATE","count":7,"reason":"duplicate tree aliases are not backlog candidates"}
+{"candidate_id":"cand_004_chore/fix_drift_guard_test_fixtures_20260520","classification":"EXCLUDED_STALE_TARGET_REGRESSION","reason":"would restore obsolete pre-backfill counts"}
+{"candidate_id":"cand_005_chore/ingestion_pipeline_diagnostic_20260515","classification":"EXCLUDED_UNSAFE_UNBOUNDED_DIAGNOSTIC","reason":"hard-coded production DB and no focused contract tests"}
+{"candidate_id":"cand_082_p18_replay_ui_timestamp_display","classification":"EXCLUDED_COMPLETED_OR_DIRTY_PATH_COLLISION","reason":"requires protected dirty index.html"}
+{"candidate_id":"cand_109_p96_governance_baseline_repair","classification":"EXCLUDED_STALE_TARGET_REGRESSION","reason":"would remove current post-P188 baseline support"}

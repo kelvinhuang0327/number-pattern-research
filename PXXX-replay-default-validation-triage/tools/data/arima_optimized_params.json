@@ -1,0 +1,24 @@
+{
+  "BIG_LOTTO": {
+    "type": "BIG_LOTTO",
+    "best_cfg": [
+      1,
+      0,
+      0
+    ],
+    "best_aic": 12766.918795922702,
+    "best_mse": 35.93723846391011,
+    "all_results": []
+  },
+  "POWER_LOTTO": {
+    "type": "POWER_LOTTO",
+    "best_cfg": [
+      1,
+      0,
+      0
+    ],
+    "best_aic": 10553.306431250061,
+    "best_mse": 19.200707843889806,
+    "all_results": []
+  }
+}

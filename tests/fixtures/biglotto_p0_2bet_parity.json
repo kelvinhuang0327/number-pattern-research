@@ -1,0 +1,871 @@
+{
+  "schema_version": 1,
+  "authority_ref": {
+    "approved_base_ref": "origin/main",
+    "approved_base_head": "6b3c0b74bc26a9b7fbb913b45d8cd3457d736ac3",
+    "base_pr": 711
+  },
+  "original_source_path": "tools/quick_predict.py",
+  "original_source_symbol": "biglotto_p0_2bet",
+  "original_source_blob_sha": "f3114603cbd77c6e0e096cfb4543a6894f7b758d",
+  "recovered_source_path": "recovered_strategies/biglotto/historical_adapters.py",
+  "recovered_source_symbol": "adapt_biglotto_p0_2bet",
+  "recovered_source_blob_sha": "9a8c990d5b640bb0492ba79757e748f1e7d074de",
+  "history_order": "old_to_new",
+  "window": 50,
+  "echo_boost": 1.5,
+  "history": [
+    {
+      "draw": "1140000",
+      "date": "2024/01/01",
+      "numbers": [
+        3,
+        12,
+        25,
+        28,
+        45,
+        48
+      ],
+      "special": 1
+    },
+    {
+      "draw": "1140001",
+      "date": "2024/02/02",
+      "numbers": [
+        2,
+        6,
+        10,
+        23,
+        27,
+        35
+      ],
+      "special": 14
+    },
+    {
+      "draw": "1140002",
+      "date": "2024/03/03",
+      "numbers": [
+        1,
+        6,
+        7,
+        26,
+        44,
+        46
+      ],
+      "special": 27
+    },
+    {
+      "draw": "1140003",
+      "date": "2024/04/04",
+      "numbers": [
+        4,
+        6,
+        19,
+        24,
+        26,
+        30
+      ],
+      "special": 40
+    },
+    {
+      "draw": "1140004",
+      "date": "2024/05/05",
+      "numbers": [
+        8,
+        10,
+        20,
+        28,
+        36,
+        40
+      ],
+      "special": 4
+    },
+    {
+      "draw": "1140005",
+      "date": "2024/06/06",
+      "numbers": [
+        9,
+        18,
+        23,
+        35,
+        40,
+        45
+      ],
+      "special": 17
+    },
+    {
+      "draw": "1140006",
+      "date": "2024/07/07",
+      "numbers": [
+        14,
+        22,
+        24,
+        30,
+        36,
+        40
+      ],
+      "special": 30
+    },
+    {
+      "draw": "1140007",
+      "date": "2024/08/08",
+      "numbers": [
+        1,
+        2,
+        10,
+        17,
+        19,
+        49
+      ],
+      "special": 43
+    },
+    {
+      "draw": "1140008",
+      "date": "2024/09/09",
+      "numbers": [
+        2,
+        15,
+        27,
+        37,
+        42,
+        46
+      ],
+      "special": 7
+    },
+    {
+      "draw": "1140009",
+      "date": "2024/10/10",
+      "numbers": [
+        10,
+        15,
+        24,
+        25,
+        29,
+        40
+      ],
+      "special": 20
+    },
+    {
+      "draw": "1140010",
+      "date": "2024/11/11",
+      "numbers": [
+        5,
+        9,
+        18,
+        26,
+        31,
+        41
+      ],
+      "special": 33
+    },
+    {
+      "draw": "1140011",
+      "date": "2024/12/12",
+      "numbers": [
+        1,
+        13,
+        21,
+        25,
+        29,
+        44
+      ],
+      "special": 46
+    },
+    {
+      "draw": "1140012",
+      "date": "2024/01/13",
+      "numbers": [
+        11,
+        25,
+        27,
+        30,
+        45,
+        47
+      ],
+      "special": 10
+    },
+    {
+      "draw": "1140013",
+      "date": "2024/02/14",
+      "numbers": [
+        1,
+        8,
+        13,
+        36,
+        38,
+        45
+      ],
+      "special": 23
+    },
+    {
+      "draw": "1140014",
+      "date": "2024/03/15",
+      "numbers": [
+        4,
+        16,
+        20,
+        24,
+        31,
+        37
+      ],
+      "special": 36
+    },
+    {
+      "draw": "1140015",
+      "date": "2024/04/16",
+      "numbers": [
+        1,
+        14,
+        27,
+        39,
+        43,
+        47
+      ],
+      "special": 49
+    },
+    {
+      "draw": "1140016",
+      "date": "2024/05/17",
+      "numbers": [
+        8,
+        9,
+        11,
+        15,
+        23,
+        32
+      ],
+      "special": 13
+    },
+    {
+      "draw": "1140017",
+      "date": "2024/06/18",
+      "numbers": [
+        3,
+        11,
+        23,
+        34,
+        41,
+        44
+      ],
+      "special": 26
+    },
+    {
+      "draw": "1140018",
+      "date": "2024/07/19",
+      "numbers": [
+        2,
+        21,
+        22,
+        26,
+        33,
+        43
+      ],
+      "special": 39
+    },
+    {
+      "draw": "1140019",
+      "date": "2024/08/20",
+      "numbers": [
+        4,
+        8,
+        10,
+        16,
+        33,
+        49
+      ],
+      "special": 3
+    },
+    {
+      "draw": "1140020",
+      "date": "2024/09/21",
+      "numbers": [
+        13,
+        24,
+        28,
+        33,
+        41,
+        43
+      ],
+      "special": 16
+    },
+    {
+      "draw": "1140021",
+      "date": "2024/10/22",
+      "numbers": [
+        10,
+        22,
+        24,
+        25,
+        30,
+        33
+      ],
+      "special": 29
+    },
+    {
+      "draw": "1140022",
+      "date": "2024/11/23",
+      "numbers": [
+        9,
+        13,
+        22,
+        23,
+        31,
+        32
+      ],
+      "special": 42
+    },
+    {
+      "draw": "1140023",
+      "date": "2024/12/24",
+      "numbers": [
+        3,
+        15,
+        20,
+        23,
+        31,
+        42
+      ],
+      "special": 6
+    },
+    {
+      "draw": "1140024",
+      "date": "2024/01/25",
+      "numbers": [
+        17,
+        30,
+        32,
+        37,
+        40,
+        46
+      ],
+      "special": 19
+    },
+    {
+      "draw": "1140025",
+      "date": "2024/02/26",
+      "numbers": [
+        2,
+        13,
+        14,
+        27,
+        29,
+        43
+      ],
+      "special": 32
+    },
+    {
+      "draw": "1140026",
+      "date": "2024/03/27",
+      "numbers": [
+        7,
+        9,
+        13,
+        17,
+        28,
+        30
+      ],
+      "special": 45
+    },
+    {
+      "draw": "1140027",
+      "date": "2024/04/28",
+      "numbers": [
+        9,
+        11,
+        18,
+        21,
+        22,
+        41
+      ],
+      "special": 9
+    },
+    {
+      "draw": "1140028",
+      "date": "2024/05/01",
+      "numbers": [
+        15,
+        22,
+        27,
+        31,
+        40,
+        42
+      ],
+      "special": 22
+    },
+    {
+      "draw": "1140029",
+      "date": "2024/06/02",
+      "numbers": [
+        14,
+        16,
+        20,
+        22,
+        46,
+        49
+      ],
+      "special": 35
+    },
+    {
+      "draw": "1140030",
+      "date": "2024/07/03",
+      "numbers": [
+        8,
+        17,
+        26,
+        38,
+        42,
+        46
+      ],
+      "special": 48
+    },
+    {
+      "draw": "1140031",
+      "date": "2024/08/04",
+      "numbers": [
+        2,
+        4,
+        9,
+        13,
+        19,
+        27
+      ],
+      "special": 12
+    },
+    {
+      "draw": "1140032",
+      "date": "2024/09/05",
+      "numbers": [
+        23,
+        26,
+        28,
+        35,
+        41,
+        47
+      ],
+      "special": 25
+    },
+    {
+      "draw": "1140033",
+      "date": "2024/10/06",
+      "numbers": [
+        13,
+        16,
+        18,
+        28,
+        32,
+        36
+      ],
+      "special": 38
+    },
+    {
+      "draw": "1140034",
+      "date": "2024/11/07",
+      "numbers": [
+        1,
+        11,
+        13,
+        39,
+        44,
+        47
+      ],
+      "special": 2
+    },
+    {
+      "draw": "1140035",
+      "date": "2024/12/08",
+      "numbers": [
+        2,
+        12,
+        25,
+        38,
+        41,
+        47
+      ],
+      "special": 15
+    },
+    {
+      "draw": "1140036",
+      "date": "2024/01/09",
+      "numbers": [
+        9,
+        14,
+        15,
+        30,
+        32,
+        44
+      ],
+      "special": 28
+    },
+    {
+      "draw": "1140037",
+      "date": "2024/02/10",
+      "numbers": [
+        4,
+        7,
+        31,
+        38,
+        42,
+        48
+      ],
+      "special": 41
+    },
+    {
+      "draw": "1140038",
+      "date": "2024/03/11",
+      "numbers": [
+        8,
+        16,
+        18,
+        29,
+        35,
+        49
+      ],
+      "special": 5
+    },
+    {
+      "draw": "1140039",
+      "date": "2024/04/12",
+      "numbers": [
+        24,
+        29,
+        31,
+        37,
+        41,
+        42
+      ],
+      "special": 18
+    },
+    {
+      "draw": "1140040",
+      "date": "2024/05/13",
+      "numbers": [
+        19,
+        22,
+        24,
+        28,
+        34,
+        41
+      ],
+      "special": 31
+    },
+    {
+      "draw": "1140041",
+      "date": "2024/06/14",
+      "numbers": [
+        16,
+        20,
+        23,
+        29,
+        32,
+        39
+      ],
+      "special": 44
+    },
+    {
+      "draw": "1140042",
+      "date": "2024/07/15",
+      "numbers": [
+        13,
+        19,
+        22,
+        27,
+        30,
+        44
+      ],
+      "special": 8
+    },
+    {
+      "draw": "1140043",
+      "date": "2024/08/16",
+      "numbers": [
+        24,
+        25,
+        27,
+        30,
+        33,
+        46
+      ],
+      "special": 21
+    },
+    {
+      "draw": "1140044",
+      "date": "2024/09/17",
+      "numbers": [
+        11,
+        12,
+        23,
+        24,
+        33,
+        41
+      ],
+      "special": 34
+    },
+    {
+      "draw": "1140045",
+      "date": "2024/10/18",
+      "numbers": [
+        5,
+        9,
+        11,
+        35,
+        38,
+        48
+      ],
+      "special": 47
+    },
+    {
+      "draw": "1140046",
+      "date": "2024/11/19",
+      "numbers": [
+        6,
+        12,
+        13,
+        21,
+        35,
+        48
+      ],
+      "special": 11
+    },
+    {
+      "draw": "1140047",
+      "date": "2024/12/20",
+      "numbers": [
+        14,
+        23,
+        34,
+        39,
+        41,
+        42
+      ],
+      "special": 24
+    },
+    {
+      "draw": "1140048",
+      "date": "2024/01/21",
+      "numbers": [
+        1,
+        5,
+        16,
+        20,
+        30,
+        33
+      ],
+      "special": 37
+    },
+    {
+      "draw": "1140049",
+      "date": "2024/02/22",
+      "numbers": [
+        1,
+        20,
+        28,
+        40,
+        44,
+        48
+      ],
+      "special": 1
+    },
+    {
+      "draw": "1140050",
+      "date": "2024/03/23",
+      "numbers": [
+        6,
+        11,
+        25,
+        34,
+        37,
+        43
+      ],
+      "special": 14
+    },
+    {
+      "draw": "1140051",
+      "date": "2024/04/24",
+      "numbers": [
+        13,
+        15,
+        24,
+        27,
+        30,
+        33
+      ],
+      "special": 27
+    },
+    {
+      "draw": "1140052",
+      "date": "2024/05/25",
+      "numbers": [
+        9,
+        10,
+        18,
+        28,
+        42,
+        48
+      ],
+      "special": 40
+    },
+    {
+      "draw": "1140053",
+      "date": "2024/06/26",
+      "numbers": [
+        1,
+        7,
+        13,
+        28,
+        29,
+        47
+      ],
+      "special": 4
+    },
+    {
+      "draw": "1140054",
+      "date": "2024/07/27",
+      "numbers": [
+        12,
+        25,
+        26,
+        41,
+        42,
+        49
+      ],
+      "special": 17
+    },
+    {
+      "draw": "1140055",
+      "date": "2024/08/28",
+      "numbers": [
+        11,
+        13,
+        18,
+        22,
+        33,
+        47
+      ],
+      "special": 30
+    },
+    {
+      "draw": "1140056",
+      "date": "2024/09/01",
+      "numbers": [
+        13,
+        18,
+        28,
+        36,
+        37,
+        42
+      ],
+      "special": 43
+    },
+    {
+      "draw": "1140057",
+      "date": "2024/10/02",
+      "numbers": [
+        17,
+        23,
+        28,
+        34,
+        46,
+        47
+      ],
+      "special": 7
+    },
+    {
+      "draw": "1140058",
+      "date": "2024/11/03",
+      "numbers": [
+        13,
+        14,
+        23,
+        25,
+        26,
+        47
+      ],
+      "special": 20
+    },
+    {
+      "draw": "1140059",
+      "date": "2024/12/04",
+      "numbers": [
+        3,
+        16,
+        17,
+        27,
+        32,
+        45
+      ],
+      "special": 33
+    },
+    {
+      "draw": "1140060",
+      "date": "2024/01/05",
+      "numbers": [
+        14,
+        16,
+        23,
+        24,
+        28,
+        45
+      ],
+      "special": 46
+    },
+    {
+      "draw": "1140061",
+      "date": "2024/02/06",
+      "numbers": [
+        6,
+        9,
+        10,
+        22,
+        29,
+        48
+      ],
+      "special": 10
+    }
+  ],
+  "expected_bet1": [
+    13,
+    16,
+    22,
+    23,
+    24,
+    28
+  ],
+  "expected_bet2": [
+    3,
+    5,
+    6,
+    7,
+    19,
+    21
+  ],
+  "original_output_shape": "list[dict[str, list[int]]]",
+  "recovered_output_shape": "list[list[int]]",
+  "parity_scope": "well_formed_input_only",
+  "documented_boundaries": {
+    "original_input_validation": "permissive",
+    "recovered_input_validation": "requires_at_least_one_well_formed_six_number_draw",
+    "original_output_shape": "list[dict[str, list[int]]]",
+    "recovered_output_shape": "list[list[int]]"
+  },
+  "engineered_echo_case": {
+    "echo_target_number": 16,
+    "second_to_last_draw_index": 60,
+    "bet1_without_echo_boost": [
+      9,
+      13,
+      22,
+      23,
+      28,
+      41
+    ],
+    "bet1_with_echo_boost": [
+      13,
+      16,
+      22,
+      23,
+      24,
+      28
+    ],
+    "note": "echo_target is absent from Bet1 when the same history is scored with echo_boost=0.0, and present in Bet1 at the fixture's actual echo_boost=1.5 -- verified by direct callable invocation, not predicted arithmetic."
+  }
+}

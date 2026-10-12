@@ -1,0 +1,48 @@
+task: P541F_OPTION_A_CANONICAL_FOUR_STRATEGY_IMPLEMENTATION_R10
+authority:
+  owner_token: AUTHORIZE_P541F_OPTION_A_ADOPT_CANONICAL_FOUR_R1
+  option: P541F_OPTION_A_ADOPT_CANONICAL_FOUR
+  canonical_commit: 3b32beb4543de9169dbfb2469b0577f8cc8a6f58
+
+decisions:
+  - decision: COPY_CANONICAL_ADAPTERS_EXACTLY
+    paths:
+      - lottery_api/models/biglotto_social_wisdom_adapter.py
+      - lottery_api/models/biglotto_zone_split_adapter.py
+    source_deviation: NONE
+  - decision: COPY_CANONICAL_FIXTURE_AND_FOCUSED_TESTS_EXACTLY
+    paths:
+      - tests/fixtures/biglotto_zone_split_p541d.json
+      - tests/test_biglotto_social_wisdom_adapter.py
+      - tests/test_biglotto_zone_split_adapter.py
+      - tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py
+    source_deviation: NONE
+  - decision: APPLY_ONLY_CANONICAL_P541F_REGISTRY_WIRING
+    path: lottery_api/models/replay_strategy_registry.py
+    source_deviation: >-
+      The P541F import/build/list hunk is canonical. Pre-existing target
+      architecture outside that hunk is retained, including target import,
+      typing, and replay special-number behavior differences.
+  - decision: RETAIN_IDENTICAL_SOCIAL_PREDICTOR
+    path: lottery_api/models/social_wisdom_predictor.py
+    sha256: a00829b5d875cb8202c3bbd90ad7202fa6b95f568e3e8d821a6cdbffe6a95e3b
+    write_performed: false
+  - decision: SUPERSEDE_P541D_PROPOSAL_TEST
+    path: tests/test_p541d_r2_biglotto_selected_adapters.py
+    write_performed: false
+    acceptance_membership: EXCLUDED
+    reason: >-
+      Option A permits supersession and does not include this path in the
+      ordinary write allowlist. Canonical target-native tests cover the
+      retained behavior without requiring the absent design fixture.
+
+p541d_fixture_boundary:
+  missing_fixture: outputs/research/p541d_r2_biglotto_selected_method_adapter_design_20260713.json
+  invented_or_reconstructed: false
+  mandatory_option_a_acceptance_requires_fixture: false
+
+algorithm_semantics_changed: false
+public_parameters_changed: false
+output_shape_changed: false
+failure_behavior_changed: false
+version_changed: false

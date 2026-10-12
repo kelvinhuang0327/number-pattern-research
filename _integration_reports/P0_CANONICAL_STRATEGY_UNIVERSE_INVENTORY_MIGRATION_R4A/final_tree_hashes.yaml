@@ -1,0 +1,15 @@
+task: P0_CANONICAL_STRATEGY_UNIVERSE_INVENTORY_FINAL_TREE_CLOSURE_R4A
+paths:
+  scripts/p0_per_draw_coverage_matrix.py:
+    sha256: ff15670fc33e76d8065c7c752f929ff6d2a77987768dc69db7eb49f53e98f1fa
+    size: 7785
+  tests/test_p0_canonical_universe.py:
+    sha256: d5433bfecbc7dfcd3ed11042a4c99b10f2adfa4068e3ae6372d6e0b08ffcd2ea
+    size: 8050
+  docs/replay/p0_canonical_strategy_universe_20260518.md:
+    sha256: 76548f92f288c259320da9e13807d3be94647e5eeb450c9ac1075a8b095b2517
+    size: 4463
+  outputs/replay/p0_canonical_strategy_universe_20260518.json:
+    sha256: 3454e8b5a71816dd96347b0fcf5797ba3e255af9521c72dfdd4a75d696bd341a
+    size: 7205
+ordinary_paths_modified_by_r4a: false

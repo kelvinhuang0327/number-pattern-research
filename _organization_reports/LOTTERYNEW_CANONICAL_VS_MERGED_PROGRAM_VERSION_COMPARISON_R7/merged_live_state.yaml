@@ -1,0 +1,47 @@
+repository: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+branch: task/p273a-prize-aware-inferential-validation
+head_oid: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+tree_oid: beadb5fe3932a49d8619caf05c95ff3278489a44
+expected_branch_match: PASS
+expected_head_match: PASS
+dirty_paths_in_scope:
+  modified:
+    - lottery_api/routes/replay.py
+    - tools/quick_predict.py
+  untracked_count: 1422
+  untracked_inventory: path_inventory.jsonl
+verified_lineage_untracked_paths:
+  - tests/test_p360b_quick_predict_ledger_entrypoint.py
+  - tests/test_p354a_replay_lottery_type_query_normalization.py
+  - tests/test_p355a_replay_detail_enum_query_normalization.py
+  - scripts/p0_per_draw_coverage_matrix.py
+  - tests/test_p0_canonical_universe.py
+  - docs/replay/p0_canonical_strategy_universe_20260518.md
+  - scripts/p2_controlled_replay_backfill_dryrun.py
+  - tests/test_p2_controlled_replay_backfill_dryrun.py
+known_lineage_untracked_paths:
+  - lottery_api/data/predraw_schedule_config.json
+  - lottery_api/data/predraw_strategy_freeze_registry.json
+  - lottery_api/engine/predraw_ledger.py
+  - tools/predraw_capture_runner.py
+  - tools/predraw_ledger_verify.py
+  - tests/test_p360a_predraw_metadata_instrumentation.py
+  - tests/test_p364_predraw_capture_runner.py
+  - tests/test_p365_predraw_ledger_verify.py
+  - tests/test_p360b_quick_predict_ledger_entrypoint.py
+  - tests/test_p354a_replay_lottery_type_query_normalization.py
+  - tests/test_p355a_replay_detail_enum_query_normalization.py
+  - scripts/p0_per_draw_coverage_matrix.py
+  - tests/test_p0_canonical_universe.py
+  - docs/replay/p0_canonical_strategy_universe_20260518.md
+  - scripts/p2_controlled_replay_backfill_dryrun.py
+  - tests/test_p2_controlled_replay_backfill_dryrun.py
+untracked_task_ownership:
+  known_lineage_paths: 16
+  verified_lineage_paths: 8
+  other_untracked_paths: 1406
+  other_ownership: UNKNOWN
+dirty_collision:
+  path: index.html
+  classification: DIRTY_PATH_COLLISION
+  included_in_equivalence: false

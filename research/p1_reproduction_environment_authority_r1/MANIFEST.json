@@ -1,0 +1,121 @@
+{
+  "schema_version": "P1ReproductionEnvironmentEvidenceManifestV1",
+  "task_id": "LOTTERYNEW_BIG_LOTTO_P1_REPRODUCTION_ENVIRONMENT_BOOTSTRAP_R1",
+  "owner_authorization_status": "PRESENT",
+  "contract_authority": {
+    "commit": "2aaa1874320ac50f2a08ed1414094faac7098146",
+    "tree": "806cd3aec4a2b290f40b647f0310aa51b010039a"
+  },
+  "task_base": {
+    "commit": "10951263f4e1c5094a92ed6083ccd100e8f1bc04",
+    "tree": "61941f6bea3c531b725eeb4e0d588c5bb2b2f0b8"
+  },
+  "python_authority": {
+    "implementation": "CPython",
+    "version": "3.12.12",
+    "build": "20251028",
+    "uv_identity": "cpython-3.12.12-macos-aarch64-none",
+    "artifact": "cpython-3.12.12+20251028-aarch64-apple-darwin-install_only_stripped.tar.gz",
+    "artifact_sha256": "194997bc8cc08f1ed19a7e6a72544d8ce6688ef5e8969d61de2848aeb68fbf6c"
+  },
+  "dependency_authority": {
+    "lock_sha256": "93eecfff998fe16f1bdd63e40d05637a5e0a57357fa12ea20fed43a28a3a412d",
+    "hashed_export_sha256": "7da26cb702b3a20c1ddcc9dc0414d1ac25653dcc19621f062dd6c3f07a56e88b",
+    "direct_distribution_count": 7,
+    "registry_distribution_count_all_platforms": 25,
+    "approved_platform_distribution_count": 23,
+    "approved_platform_transitive_only_distribution_count": 16
+  },
+  "evidence_digests": {
+    "expected_distribution_set_sha256": "752615e2a1da9aaa01cbaf12d64f7377c26c9704a937d522d0142b93a16566b6",
+    "approved_artifact_set_sha256": "4b6c98fb8a6df100628d3111650dfc5230f0994c960c8b74674ef14523b75a05",
+    "platform_fingerprint_sha256": "296bceb6077d0a9e83f075a6fb19d1a73b6ea4f4e24b0614085888801bc489b3",
+    "runtime_fingerprint_sha256": "d11006142d814ddf69313056210780c3ff0e16506cee923b39c07d8740d80388",
+    "environment_authority_sha256": "8db59e2bba1ac3b448c60c3cb73771aa61a7ca5f1ccf2e1e9562439d5df42ca9"
+  },
+  "verification": {
+    "offline_install_result": "PASS",
+    "distribution_set_match": true,
+    "deterministic_regeneration_result": "PASS",
+    "focused_test_result": "PASS",
+    "focused_test_count": 10
+  },
+  "judge": {
+    "provider": "FABLE5",
+    "depth": "DELTA",
+    "initial_input_head": "10951263f4e1c5094a92ed6083ccd100e8f1bc04",
+    "initial_input_tree": "142a266904a840b60cc85cd4df0d193c2c3e09f6",
+    "initial_verdict": "REFUTED",
+    "remediation_performed": true,
+    "delta_input_head": "10951263f4e1c5094a92ed6083ccd100e8f1bc04",
+    "delta_input_tree": "eb58b1b2137084363352f542d94a882133797f93",
+    "delta_verdict": "VERIFIED",
+    "post_delta_source_or_test_edit": false,
+    "final_verdict": "VERIFIED"
+  },
+  "seal_design": {
+    "manifest_hashes_itself": false,
+    "manifest_hashes_sha256sums": false,
+    "sha256sums_hashes_manifest": true,
+    "sha256sums_hashes_itself": false,
+    "description": "MANIFEST.json lists every payload hash. SHA256SUMS seals every payload plus MANIFEST.json and excludes only itself."
+  },
+  "sealed_payloads": [
+    {
+      "path": "research/p1_reproduction_environment_authority_r1/.python-version",
+      "sha256": "3167b43fc1a38bf88a70ab925fa5b4d6071541f43a6ba7cd87c091ba2a8728bc"
+    },
+    {
+      "path": "research/p1_reproduction_environment_authority_r1/README.md",
+      "sha256": "4e5794b575c58eaaf10e821613187ddb533587c4d866fd0a7783dc1c66acd9ee"
+    },
+    {
+      "path": "research/p1_reproduction_environment_authority_r1/REPORT.md",
+      "sha256": "f4d132f9d8902928fce5daa1ddb31781d60202a8ba6adb5c53b6c89021767fc1"
+    },
+    {
+      "path": "research/p1_reproduction_environment_authority_r1/approved_artifacts.json",
+      "sha256": "4b6c98fb8a6df100628d3111650dfc5230f0994c960c8b74674ef14523b75a05"
+    },
+    {
+      "path": "research/p1_reproduction_environment_authority_r1/approved_platform_fingerprint.json",
+      "sha256": "296bceb6077d0a9e83f075a6fb19d1a73b6ea4f4e24b0614085888801bc489b3"
+    },
+    {
+      "path": "research/p1_reproduction_environment_authority_r1/environment_authority.json",
+      "sha256": "8db59e2bba1ac3b448c60c3cb73771aa61a7ca5f1ccf2e1e9562439d5df42ca9"
+    },
+    {
+      "path": "research/p1_reproduction_environment_authority_r1/expected_distributions.json",
+      "sha256": "752615e2a1da9aaa01cbaf12d64f7377c26c9704a937d522d0142b93a16566b6"
+    },
+    {
+      "path": "research/p1_reproduction_environment_authority_r1/pyproject.toml",
+      "sha256": "bc913d167ba0c6021f6f3f7b0fdf659c21a18d38ca1eb66bc8586fd35bd57d84"
+    },
+    {
+      "path": "research/p1_reproduction_environment_authority_r1/requirements.lock.txt",
+      "sha256": "7da26cb702b3a20c1ddcc9dc0414d1ac25653dcc19621f062dd6c3f07a56e88b"
+    },
+    {
+      "path": "research/p1_reproduction_environment_authority_r1/runtime_fingerprint.json",
+      "sha256": "d11006142d814ddf69313056210780c3ff0e16506cee923b39c07d8740d80388"
+    },
+    {
+      "path": "research/p1_reproduction_environment_authority_r1/runtime_fingerprint.schema.json",
+      "sha256": "c57939fed7372f3d4b94de1240fc695a2c1c4eafdd7dd94ea506ccbc6559662d"
+    },
+    {
+      "path": "research/p1_reproduction_environment_authority_r1/tests/test_environment_authority.py",
+      "sha256": "9e694343de6f38736e2e24378676cf9cbaad5d98081b0fe7c8e4d69a638fd5c5"
+    },
+    {
+      "path": "research/p1_reproduction_environment_authority_r1/tools/build_environment_authority.py",
+      "sha256": "dc2d48c186524b1fc248c03232d58595e0bcd6b042f8568f3b6161e921dc4ecb"
+    },
+    {
+      "path": "research/p1_reproduction_environment_authority_r1/uv.lock",
+      "sha256": "93eecfff998fe16f1bdd63e40d05637a5e0a57357fa12ea20fed43a28a3a412d"
+    }
+  ]
+}

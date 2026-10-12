@@ -1,0 +1,30 @@
+candidate_id: cand_059a_canonical_strategy_universe_inventory
+
+database_contract:
+  connection_paths:
+    - lottery_api/data/lottery_v2.db
+  connection_modes:
+    scripts/p0_per_draw_coverage_matrix.py: read-only SELECT queries
+  read_queries:
+    - "SELECT draw, date FROM draws WHERE lottery_type = ? ORDER BY CAST(draw AS INTEGER) DESC LIMIT ?"
+    - "SELECT strategy_id, COUNT(*) as row_count, GROUP_CONCAT(DISTINCT truth_level) as truth_levels, MIN(generated_at) as first_generated FROM strategy_prediction_replays WHERE lottery_type = ? AND target_draw = ? GROUP BY strategy_id"
+  write_queries: []
+  ddl_queries: []
+  transaction_statements: []
+  production_db_default: lottery_api/data/lottery_v2.db
+  db_path_overridable: true
+  temporary_db_supported: true
+  migration_dependency: false
+
+proof_of_read_only:
+  no_write_sql: true
+  no_ddl: true
+  no_migration_callable: true
+  db_path_overridable: true
+  tests_do_not_require_prod_db_mutation: true
+  output_path_overridable: true
+
+classification: READ_ONLY_AND_SANDBOXABLE
+risk: LOW
+production_db_write: false
+schema_migration: false

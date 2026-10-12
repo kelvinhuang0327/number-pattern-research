@@ -4,15 +4,15 @@ test_replay_strategy_lifecycle_registry.py
 P2 lifecycle registry tests.
 
 Validates:
-1. ONLINE strategies (8 post-P1.3) are present and fully executable via registry.
-2. Non-ONLINE stubs (10) appear in list_strategies() with correct lifecycle.
+1. Required canonical ONLINE strategies remain present and executable.
+2. Every non-ONLINE stub appears in list_strategies() with its live lifecycle.
 3. Non-ONLINE stubs raise LifecycleNotExecutable on get_one_bet().
 4. Non-ONLINE stubs raise KeyError from get_adapter().
 5. Strategy ID uniqueness and valid lifecycle status values.
 6. No DB writes occur (registry is in-memory only).
 
-P1.3 update (2026-05-15): fourier_rhythm_3bet and ts3_regime_3bet added as ONLINE.
-Total registry: 18 entries (8 ONLINE + 10 non-ONLINE).
+Registry totals intentionally remain dynamic.  Adding a semantically valid unique
+adapter must not require editing a historical count assertion.
 """
 from __future__ import annotations
 
@@ -27,13 +27,13 @@ from lottery_api.models.replay_strategy_registry import (
     get_adapters_for_lottery,
     get_strategy_lifecycle_status,
     list_strategies,
+    normalise_lifecycle_status,
 )
 
 # ─── Expected strategy sets ───────────────────────────────────────────────────
 
-# P1.3 (2026-05-15): fourier_rhythm_3bet and ts3_regime_3bet added as ONLINE.
-# Registry now has 8 ONLINE + 10 non-ONLINE = 18 total.
-ONLINE_IDS = frozenset({
+# Historical canonical identities remain required; aggregate size is live data.
+REQUIRED_ONLINE_IDS = frozenset({
     "power_precision_3bet",
     "power_orthogonal_5bet",
     # P1.3 additions:
@@ -46,14 +46,14 @@ ONLINE_IDS = frozenset({
     "daily539_markov_cold",
 })
 
-REJECTED_IDS = frozenset({
+REQUIRED_REJECTED_IDS = frozenset({
     "biglotto_ts3_acb_4bet",
     "biglotto_ts3_markov_freq_5bet",
     "power_shlc_midfreq",
     "p1_deviation_2bet_539",
 })
 
-RETIRED_IDS = frozenset({
+REQUIRED_RETIRED_IDS = frozenset({
     "acb_1bet",
     "acb_markov_midfreq",
     "acb_markov_midfreq_3bet",
@@ -61,28 +61,48 @@ RETIRED_IDS = frozenset({
     "midfreq_fourier_2bet",
 })
 
-OBSERVATION_IDS = frozenset({
+REQUIRED_OBSERVATION_IDS = frozenset({
     "h6_gate_mk20_ew85",
 })
 
-NON_ONLINE_IDS = REJECTED_IDS | RETIRED_IDS | OBSERVATION_IDS
+REQUIRED_NON_ONLINE_IDS = (
+    REQUIRED_REJECTED_IDS | REQUIRED_RETIRED_IDS | REQUIRED_OBSERVATION_IDS
+)
+
+
+def live_ids_for_status(status: str) -> set[str]:
+    return {
+        adapter.meta.strategy_id
+        for adapter in _ALL_ADAPTERS
+        if adapter.meta.lifecycle_status == status
+    }
+
+
+def live_non_online_ids() -> set[str]:
+    return {
+        adapter.meta.strategy_id
+        for adapter in _ALL_ADAPTERS
+        if adapter.meta.lifecycle_status != "ONLINE"
+    }
 
 
 # ─── Test class: ONLINE strategies are unchanged ─────────────────────────────
 
 class TestOnlineStrategiesUnchanged:
-    """ONLINE strategies must be exactly the expected set (8 post-P1.3)."""
+    """Required canonical ONLINE identities must remain executable."""
 
-    def test_registry_contains_exactly_online_ids(self):
-        assert set(_REGISTRY.keys()) == ONLINE_IDS
+    def test_registry_contains_required_online_ids(self):
+        assert REQUIRED_ONLINE_IDS.issubset(_REGISTRY)
+        assert set(_REGISTRY) == live_ids_for_status("ONLINE")
 
     def test_list_strategies_online_filter_returns_all_eight(self):
         online = list_strategies(lifecycle_status="ONLINE")
         ids = {s["strategy_id"] for s in online}
-        assert ids == ONLINE_IDS
+        assert ids == live_ids_for_status("ONLINE")
+        assert REQUIRED_ONLINE_IDS.issubset(ids)
 
     def test_get_adapter_succeeds_for_all_online(self):
-        for sid in ONLINE_IDS:
+        for sid in REQUIRED_ONLINE_IDS:
             adapter = get_adapter(sid)
             assert adapter.meta.strategy_id == sid
             assert adapter.meta.lifecycle_status == "ONLINE"
@@ -97,7 +117,7 @@ class TestOnlineStrategiesUnchanged:
                 )
 
     def test_online_strategy_lifecycle_status_lookup(self):
-        for sid in ONLINE_IDS:
+        for sid in REQUIRED_ONLINE_IDS:
             assert get_strategy_lifecycle_status(sid) == "ONLINE"
 
 
@@ -108,38 +128,42 @@ class TestNonOnlineMetadataVisible:
 
     def test_all_non_online_ids_in_full_strategy_list(self):
         all_ids = {s["strategy_id"] for s in list_strategies()}
-        assert NON_ONLINE_IDS.issubset(all_ids)
+        assert REQUIRED_NON_ONLINE_IDS.issubset(all_ids)
+        assert live_non_online_ids().issubset(all_ids)
 
     def test_list_strategies_filter_rejected(self):
         ids = {s["strategy_id"] for s in list_strategies(lifecycle_status="REJECTED")}
-        assert ids == REJECTED_IDS
+        assert ids == live_ids_for_status("REJECTED")
+        assert REQUIRED_REJECTED_IDS.issubset(ids)
 
     def test_list_strategies_filter_retired(self):
         ids = {s["strategy_id"] for s in list_strategies(lifecycle_status="RETIRED")}
-        assert ids == RETIRED_IDS
+        assert ids == live_ids_for_status("RETIRED")
+        assert REQUIRED_RETIRED_IDS.issubset(ids)
 
     def test_list_strategies_filter_observation(self):
         ids = {s["strategy_id"] for s in list_strategies(lifecycle_status="OBSERVATION")}
-        assert ids == OBSERVATION_IDS
+        assert ids == live_ids_for_status("OBSERVATION")
+        assert REQUIRED_OBSERVATION_IDS.issubset(ids)
 
     def test_get_strategy_lifecycle_status_rejected(self):
-        for sid in REJECTED_IDS:
+        for sid in REQUIRED_REJECTED_IDS:
             assert get_strategy_lifecycle_status(sid) == "REJECTED", \
                 f"{sid} expected REJECTED"
 
     def test_get_strategy_lifecycle_status_retired(self):
-        for sid in RETIRED_IDS:
+        for sid in REQUIRED_RETIRED_IDS:
             assert get_strategy_lifecycle_status(sid) == "RETIRED", \
                 f"{sid} expected RETIRED"
 
     def test_get_strategy_lifecycle_status_observation(self):
-        for sid in OBSERVATION_IDS:
+        for sid in REQUIRED_OBSERVATION_IDS:
             assert get_strategy_lifecycle_status(sid) == "OBSERVATION", \
                 f"{sid} expected OBSERVATION"
 
     def test_non_online_not_in_online_list(self):
         online_ids = {s["strategy_id"] for s in list_strategies(lifecycle_status="ONLINE")}
-        assert online_ids.isdisjoint(NON_ONLINE_IDS)
+        assert online_ids.isdisjoint(live_non_online_ids())
 
 
 # ─── Test class: Non-ONLINE strategies cannot be executed ─────────────────────
@@ -148,20 +172,20 @@ class TestNonOnlineNotExecutable:
     """Non-ONLINE stubs must raise LifecycleNotExecutable on execution attempts."""
 
     def test_get_adapter_raises_key_error_for_non_online(self):
-        for sid in NON_ONLINE_IDS:
+        for sid in live_non_online_ids():
             with pytest.raises(KeyError):
                 get_adapter(sid)
 
     def test_get_one_bet_raises_lifecycle_not_executable(self):
         for a in _ALL_ADAPTERS:
-            if a.meta.strategy_id in NON_ONLINE_IDS:
+            if a.meta.strategy_id in live_non_online_ids():
                 with pytest.raises(LifecycleNotExecutable):
                     a.get_one_bet([], "POWER_LOTTO")
 
     def test_get_one_bet_raises_lifecycle_not_executable_all_lottery_types(self):
         """Stubs must raise regardless of lottery type argument."""
         for a in _ALL_ADAPTERS:
-            if a.meta.strategy_id in NON_ONLINE_IDS:
+            if a.meta.strategy_id in live_non_online_ids():
                 for lottery in ("POWER_LOTTO", "BIG_LOTTO", "DAILY_539"):
                     with pytest.raises(LifecycleNotExecutable):
                         a.get_one_bet([], lottery)
@@ -183,14 +207,24 @@ class TestDataIntegrity:
             assert a.meta.lifecycle_status in valid, \
                 f"{a.meta.strategy_id}: invalid status {a.meta.lifecycle_status!r}"
 
-    def test_total_adapter_count(self):
-        expected = len(ONLINE_IDS) + len(NON_ONLINE_IDS)
-        assert len(_ALL_ADAPTERS) == expected, \
-            f"Expected {expected} adapters, got {len(_ALL_ADAPTERS)}"
+    def test_required_canonical_identities_are_present(self):
+        all_ids = {adapter.meta.strategy_id for adapter in _ALL_ADAPTERS}
+        assert (REQUIRED_ONLINE_IDS | REQUIRED_NON_ONLINE_IDS).issubset(all_ids)
 
-    def test_list_strategies_total_count(self):
-        expected = len(ONLINE_IDS) + len(NON_ONLINE_IDS)
-        assert len(list_strategies()) == expected
+    def test_list_strategies_matches_adapter_universe(self):
+        listed_ids = {row["strategy_id"] for row in list_strategies()}
+        adapter_ids = {adapter.meta.strategy_id for adapter in _ALL_ADAPTERS}
+        assert listed_ids == adapter_ids
+
+    def test_active_alias_resolves_consistently_to_online(self):
+        assert normalise_lifecycle_status("ACTIVE") == "ONLINE"
+        active_ids = {row["strategy_id"] for row in list_strategies(lifecycle_status="ACTIVE")}
+        online_ids = {row["strategy_id"] for row in list_strategies(lifecycle_status="ONLINE")}
+        assert active_ids == online_ids
+
+    def test_no_duplicate_executable_adapter_entrypoints(self):
+        adapter_object_ids = [id(adapter) for adapter in _REGISTRY.values()]
+        assert len(adapter_object_ids) == len(set(adapter_object_ids))
 
     def test_unknown_strategy_id_returns_none_from_lifecycle_status(self):
         assert get_strategy_lifecycle_status("__not_a_real_strategy__") is None

@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>POWER_LOTTO Forward-row Progress Dashboard</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f7f8fa;
+      --panel: #ffffff;
+      --ink: #17202a;
+      --muted: #5f6b7a;
+      --line: #d8dee8;
+      --green: #177245;
+      --green-bg: #e7f6ee;
+      --blue: #2454a6;
+      --blue-bg: #e9f0ff;
+      --teal: #0f6b72;
+      --teal-bg: #e2f5f6;
+      --amber: #8a5a00;
+      --amber-bg: #fff4d6;
+      --red: #9b1c31;
+      --red-bg: #fde8ec;
+      --shadow: 0 12px 30px rgba(23, 32, 42, .08);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    header { background: #101820; color: white; padding: 34px 28px 30px; border-bottom: 5px solid #f0b429; }
+    .wrap { max-width: 1180px; margin: 0 auto; }
+    h1 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 46px); line-height: 1.08; letter-spacing: 0; }
+    h2 { margin: 0 0 18px; font-size: 24px; letter-spacing: 0; }
+    h3 { margin: 12px 0 8px; font-size: 18px; letter-spacing: 0; }
+    p { margin: 0 0 12px; }
+    code { white-space: normal; overflow-wrap: anywhere; background: #eef1f5; border-radius: 4px; padding: 2px 5px; }
+    .subhead { max-width: 900px; color: #dbe5ef; font-size: 17px; }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .pill { border: 1px solid rgba(255,255,255,.25); border-radius: 999px; padding: 6px 10px; color: #f5f7fa; background: rgba(255,255,255,.08); }
+    main { padding: 26px 28px 42px; }
+    section { margin: 0 auto 26px; max-width: 1180px; }
+    .warning { background: var(--red-bg); border: 1px solid #efb7c1; color: var(--red); padding: 16px 18px; border-radius: 8px; font-weight: 700; box-shadow: var(--shadow); }
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; box-shadow: 0 8px 18px rgba(23,32,42,.05); min-height: 186px; }
+    .card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .step { font-weight: 800; font-size: 18px; }
+    .badge, .result { display: inline-flex; align-items: center; border-radius: 999px; padding: 5px 9px; font-size: 12px; font-weight: 800; line-height: 1.1; white-space: nowrap; }
+    .ready { color: var(--green); background: var(--green-bg); }
+    .temp { color: var(--blue); background: var(--blue-bg); }
+    .copy { color: var(--teal); background: var(--teal-bg); }
+    .rollback { color: #473e99; background: #eeecff; }
+    .gated { color: var(--amber); background: var(--amber-bg); }
+    .neutral { color: var(--muted); background: #edf0f4; }
+    .pass { color: var(--green); background: var(--green-bg); }
+    .fail { color: var(--red); background: var(--red-bg); }
+    .not-run { color: var(--amber); background: var(--amber-bg); }
+    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 18px; box-shadow: var(--shadow); }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .list { margin: 0; padding-left: 20px; }
+    .list li { margin: 8px 0; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); padding: 11px 9px; }
+    th { color: #344255; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; background: #f3f5f8; }
+    .footer-note { color: var(--muted); font-size: 13px; }
+    @media (max-width: 980px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .two-col { grid-template-columns: 1fr; } }
+    @media (max-width: 620px) { header, main { padding-left: 16px; padding-right: 16px; } .grid { grid-template-columns: 1fr; } .badge, .result { white-space: normal; } th, td { display: block; width: 100%; } th { display: none; } tr { display: block; padding: 8px 0; border-bottom: 1px solid var(--line); } td { border: 0; padding: 5px 0; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>POWER_LOTTO Forward-row Progress Dashboard</h1>
+      <p class="subhead">Static read-only evidence dashboard converted from the P341A Markdown viewer. This artifact records technical progress only; it does not authorize durable database writes and does not provide recommended numbers.</p>
+      <div class="meta">
+        <span class="pill">Generated: 2026-07-02 11:58:26 Asia/Taipei +0800</span>
+        <span class="pill">Source: P341A viewer</span>
+        <span class="pill">Final state: Durable write GATED</span>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="warning">Durable canonical DB write is NOT authorized.</section>
+
+    <section>
+      <h2>Timeline</h2>
+      <div class="grid">
+      <article class="card">
+        <div class="card-top"><span class="step">P333A</span><span class="badge ready">READY</span></div>
+        <h3>Scorer computability audit</h3>
+        <p>Prize-aware scoring requirements were reconciled; POWER_LOTTO completeness remained blocked by missing second-zone values in historical rows. Technical audit only.</p>
+      </article>
+
+      <article class="card">
+        <div class="card-top"><span class="step">P334A</span><span class="badge ready">READY</span></div>
+        <h3>Second-zone gap root cause</h3>
+        <p>The POWER_LOTTO gap was traced to generation and persistence omissions. The boundary stayed forward-only with no historical backfill.</p>
+      </article>
+
+      <article class="card">
+        <div class="card-top"><span class="step">P335A</span><span class="badge ready">READY</span></div>
+        <h3>Second-zone helper and guard</h3>
+        <p>A forward helper and fail-fast guard were prepared in an external worktree for review; no canonical data was changed.</p>
+      </article>
+
+      <article class="card">
+        <div class="card-top"><span class="step">P336A</span><span class="badge ready">READY</span></div>
+        <h3>Forward row builder</h3>
+        <p>A guarded forward-row builder path was prepared for a single POWER_LOTTO row with non-NULL second-zone output when history is sufficient.</p>
+      </article>
+
+      <article class="card">
+        <div class="card-top"><span class="step">P337A</span><span class="badge temp">PROVEN IN TEMP DB</span></div>
+        <h3>Temp DB rehearsal</h3>
+        <p>Generate, guard, and persist were demonstrated only in an isolated rehearsal database.</p>
+      </article>
+
+      <article class="card">
+        <div class="card-top"><span class="step">P338A</span><span class="badge copy">PROVEN IN DB COPY</span></div>
+        <h3>Canonical-copy dry run</h3>
+        <p>Parent and child insert behavior was demonstrated on a byte-copied canonical database, not on the canonical database itself.</p>
+      </article>
+
+      <article class="card">
+        <div class="card-top"><span class="step">P339A</span><span class="badge rollback">PROVEN IN ROLLBACK</span></div>
+        <h3>Real DB rollback dry run</h3>
+        <p>The real canonical database was opened inside a guarded transaction, validated in transaction, then rolled back. No durable row remained.</p>
+      </article>
+
+      <article class="card">
+        <div class="card-top"><span class="step">P340A</span><span class="badge gated">GATED</span></div>
+        <h3>Durable canonical write gate</h3>
+        <p>No separate P340A evidence root was found. Durable canonical write, backup, insert, COMMIT, and backfill remain not authorized.</p>
+      </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Validation</h2>
+      <table>
+        <thead><tr><th>Check</th><th>Result</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>P341A viewer read</td>
+            <td><span class="result pass">PASS</span></td>
+            <td>/Users/kelvin/Kelvin-WorkSpace/p341a_power_lotto_readonly_progress_demo_20260702_120000/POWER_LOTTO_P333A_P340A_PROGRESS_VIEWER.md</td>
+          </tr>
+
+          <tr>
+            <td>P333A-P339A evidence roots found</td>
+            <td><span class="result pass">PASS</span></td>
+            <td>All seven listed roots are accessible as directories.</td>
+          </tr>
+
+          <tr>
+            <td>Separate P340A evidence root found</td>
+            <td><span class="result fail">FAIL</span></td>
+            <td>Repeated shallow discovery found no standalone p340a evidence root; the only p340a match was inside the P341A viewer filename.</td>
+          </tr>
+
+          <tr>
+            <td>Durable canonical DB write status</td>
+            <td><span class="result pass">PASS</span></td>
+            <td>GATED status preserved.</td>
+          </tr>
+
+          <tr>
+            <td>DB write / backup / insert / COMMIT / backfill</td>
+            <td><span class="result not-run">NOT RUN</span></td>
+            <td>No DB connection or mutation was needed for this static artifact.</td>
+          </tr>
+
+          <tr>
+            <td>Repo modification</td>
+            <td><span class="result pass">PASS</span></td>
+            <td>No planned or performed repo write; output root is external to the repo.</td>
+          </tr>
+
+          <tr>
+            <td>Recommended numbers / betting / prediction claim</td>
+            <td><span class="result pass">PASS</span></td>
+            <td>Dashboard contains technical evidence only and no recommended-number, betting, or prediction claim.</td>
+          </tr>
+
+          <tr>
+            <td>Repo tests</td>
+            <td><span class="result not-run">NOT RUN</span></td>
+            <td>Repo was not modified.</td>
+          </tr>
+
+          <tr>
+            <td>DB tests</td>
+            <td><span class="result not-run">NOT RUN</span></td>
+            <td>DB access was intentionally unnecessary.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="panel">
+      <h2>Evidence Roots</h2>
+      <table>
+        <thead><tr><th>Milestone</th><th>Badge</th><th>Root</th><th>Accessible</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>P333A</td>
+            <td><span class="badge ready">READY</span></td>
+            <td><code>/Users/kelvin/Kelvin-WorkSpace/p333a_prize_aware_success_reconciliation_audit_20260701_205132</code></td>
+            <td>PASS</td>
+          </tr>
+
+          <tr>
+            <td>P334A</td>
+            <td><span class="badge ready">READY</span></td>
+            <td><code>/Users/kelvin/Kelvin-WorkSpace/p334a_power_lotto_second_zone_coverage_feasibility_20260701_210705</code></td>
+            <td>PASS</td>
+          </tr>
+
+          <tr>
+            <td>P335A</td>
+            <td><span class="badge ready">READY</span></td>
+            <td><code>/Users/kelvin/Kelvin-WorkSpace/p335a_power_lotto_second_zone_forward_wiring_20260701_213746</code></td>
+            <td>PASS</td>
+          </tr>
+
+          <tr>
+            <td>P336A</td>
+            <td><span class="badge ready">READY</span></td>
+            <td><code>/Users/kelvin/Kelvin-WorkSpace/p336a_one_power_lotto_forward_row_generation_path_20260701_221919</code></td>
+            <td>PASS</td>
+          </tr>
+
+          <tr>
+            <td>P337A</td>
+            <td><span class="badge temp">PROVEN IN TEMP DB</span></td>
+            <td><code>/Users/kelvin/Kelvin-WorkSpace/p337a_power_lotto_single_row_persistence_rehearsal_20260701_225007</code></td>
+            <td>PASS</td>
+          </tr>
+
+          <tr>
+            <td>P338A</td>
+            <td><span class="badge copy">PROVEN IN DB COPY</span></td>
+            <td><code>/Users/kelvin/Kelvin-WorkSpace/p338a_power_lotto_canonical_equivalent_single_row_dry_run_20260702_094315</code></td>
+            <td>PASS</td>
+          </tr>
+
+          <tr>
+            <td>P339A</td>
+            <td><span class="badge rollback">PROVEN IN ROLLBACK</span></td>
+            <td><code>/Users/kelvin/Kelvin-WorkSpace/p339a_power_lotto_real_db_rollback_single_row_dry_run_20260702_100824</code></td>
+            <td>PASS</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="footer-note">Separate P340A evidence-root discovery remains FAIL. This dashboard preserves the P341A statement and the repeated shallow discovery result.</p>
+    </section>
+
+    <section class="two-col">
+      <div class="panel">
+        <h2>What this proves</h2>
+        <ul class="list">
+          <li>P333A through P339A evidence roots are present and reviewable.</li>
+          <li>The forward-row chain has been progressively demonstrated through temp DB, DB copy, and real-DB rollback stages.</li>
+          <li>The highest proven state remains a rollback-only transaction, not a durable canonical write.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h2>What this does not prove</h2>
+        <ul class="list">
+          <li>It does not prove that a durable canonical COMMIT is authorized.</li>
+          <li>It does not prove a separate P340A owner GO memo exists.</li>
+          <li>It does not provide recommended numbers, betting advice, or prediction claims.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Next-step Options</h2>
+      <ul class="list">
+        <li>Keep the read-only demo path: continue using external artifacts and review evidence without touching canonical data.</li>
+        <li>Owner GO durable-write path, separately authorized: create explicit owner authorization and a separate gated task before any backup, insert, COMMIT, or production pipeline action.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

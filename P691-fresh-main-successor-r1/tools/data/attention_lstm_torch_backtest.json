@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-01-27T10:13:42.199406",
+  "config": {
+    "lottery": "POWER_LOTTO",
+    "test_periods": 30,
+    "num_bets": 2,
+    "train_window": 50,
+    "lstm_window": 5,
+    "seed": 42
+  },
+  "results": {
+    "match3_plus": 10.0,
+    "match4_plus": 0.0,
+    "avg_match": 1.4333333333333333,
+    "match_distribution": {
+      "0": 4,
+      "1": 12,
+      "2": 11,
+      "3": 3,
+      "4": 0,
+      "5": 0,
+      "6": 0
+    },
+    "random_baseline": 3.7150000000000003,
+    "edge": 6.285
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "candidate_id": "cand_087a_predraw_ledger_engine",
+  "title": "Predraw Strategy Freeze and Ledger Capture Vertical",
+  "source_repository": "repo_1_lotterynew",
+  "source_refs": [
+    "refs/remotes/origin/task/p273a-prize-aware-inferential-validation"
+  ],
+  "representative_ref": "refs/remotes/origin/task/p273a-prize-aware-inferential-validation",
+  "source_paths": [
+    "docs/p360a_predraw_metadata_preregistration.md",
+    "lottery_api/data/predraw_schedule_config.json",
+    "lottery_api/data/predraw_strategy_freeze_registry.json",
+    "lottery_api/engine/predraw_ledger.py",
+    "tools/predraw_capture_runner.py",
+    "tools/predraw_ledger_verify.py",
+    "tests/test_p360a_predraw_metadata_instrumentation.py",
+    "tests/test_p364_predraw_capture_runner.py",
+    "tests/test_p365_predraw_ledger_verify.py"
+  ],
+  "target_missing_paths": [
+    "docs/p360a_predraw_metadata_preregistration.md",
+    "lottery_api/data/predraw_schedule_config.json",
+    "lottery_api/data/predraw_strategy_freeze_registry.json",
+    "lottery_api/engine/predraw_ledger.py",
+    "tools/predraw_capture_runner.py",
+    "tools/predraw_ledger_verify.py",
+    "tests/test_p360a_predraw_metadata_instrumentation.py",
+    "tests/test_p364_predraw_capture_runner.py",
+    "tests/test_p365_predraw_ledger_verify.py"
+  ],
+  "focused_test_paths": [
+    "tests/test_p360a_predraw_metadata_instrumentation.py",
+    "tests/test_p364_predraw_capture_runner.py",
+    "tests/test_p365_predraw_ledger_verify.py"
+  ],
+  "migration_risk": "LOW",
+  "owner_decisions_required": [],
+  "estimated_migration_duration_hours": 12,
+  "reason_selected": "Single vertical after splitting cand_087. Content-backed title (Predraw Strategy Freeze & Ledger Capture), clear CLI entrypoints, focused tests, zero production DB writes, <24h migration."
+}

@@ -1,0 +1,175 @@
+task: P541F_REGISTRY_SNAPSHOT_TEST_SCOPE_RESOLUTION_R10B
+status: COMPLETED_STALE_SCOPE_RESOLVED
+repository:
+  root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  branch: task/p273a-prize-aware-inferential-validation
+  head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+r10_evidence:
+  regression_nodes_found: 10
+  candidate_test_files: 3
+  authoritative_strategy_ids:
+    - biglotto_social_wisdom_anti_popularity
+    - biglotto_zone_split_3bet_bet1
+    - biglotto_zone_split_3bet_bet2
+    - biglotto_zone_split_3bet_bet3
+  lifecycle: ONLINE
+scope_resolution:
+  decision: STALE_SCOPE_RESOLVED
+  stale_registry_snapshot_test_paths:
+    - tests/test_replay_strategy_lifecycle_registry.py
+    - tests/test_replay_strategy_registry_online_candidates.py
+  stale_registry_snapshot_test_nodes:
+    - tests/test_replay_strategy_lifecycle_registry.py::TestOnlineStrategiesUnchanged::test_registry_contains_exactly_online_ids
+    - tests/test_replay_strategy_lifecycle_registry.py::TestOnlineStrategiesUnchanged::test_list_strategies_online_filter_returns_all_eight
+    - tests/test_replay_strategy_lifecycle_registry.py::TestDataIntegrity::test_total_adapter_count
+    - tests/test_replay_strategy_lifecycle_registry.py::TestDataIntegrity::test_list_strategies_total_count
+    - tests/test_replay_strategy_registry_online_candidates.py::TestRegistryCount::test_total_adapter_count_is_18
+    - tests/test_replay_strategy_registry_online_candidates.py::TestRegistryCount::test_list_strategies_total_count_is_18
+    - tests/test_replay_strategy_registry_online_candidates.py::TestRegistryCount::test_online_count_is_8
+    - tests/test_replay_strategy_registry_online_candidates.py::TestNewOnlineStrategiesExist::test_all_8_online_ids_present
+  non_stale_registry_test_paths:
+    - tests/test_replay_strategy_lifecycle_contract.py
+  p541d_paths_excluded:
+    - tests/test_p541d_r2_biglotto_selected_adapters.py
+  unresolved_nodes: []
+authorization:
+  previous_token: AUTHORIZE_P541F_REGISTRY_SNAPSHOT_TEST_CONTRACT_MIGRATION_R10A
+  reuse_decision: REUSE_AUTHORIZATION_ALLOWED
+  second_confirmation_required: false
+  reason: >-
+    The continuation only supplies exact R10-derived stale paths and assertion
+    nodes for the already-authorized registry snapshot/count migration; it adds
+    no production, registry, lifecycle, product, or P541D semantics.
+continuation:
+  issued: true
+  task: P541F_REGISTRY_SNAPSHOT_TEST_CONTRACT_MIGRATION_R10A
+  delta_path: _organization_reports/P541F_REGISTRY_SNAPSHOT_TEST_SCOPE_RESOLUTION_R10B/continuation_delta.md
+judge:
+  mode: FRESH_CONTEXT
+  depth: BOUNDED
+  initial_verdict: REFUTED
+  initial_packet_verdict: FAIL
+  finding: P541F-R10B-J1
+  finding_type: REPORT_DEFECT
+  remediation_eligible: true
+  remediation_cycles_used: 1
+  post_initial_source_or_test_edit: false
+  delta_rejudge_required: true
+  delta_rejudge_status: COMPLETE
+  delta_verdict: VERIFIED_WITH_CAVEATS
+  final_packet_verdict: PASS_WITH_CAVEATS
+  finding_closed: true
+  post_delta_source_or_test_edit: false
+  initial_input_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  initial_input_tree: beadb5fe3932a49d8619caf05c95ff3278489a44
+  delta_input_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  delta_input_tree: beadb5fe3932a49d8619caf05c95ff3278489a44
+  final_input_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  final_input_tree: beadb5fe3932a49d8619caf05c95ff3278489a44
+  final_tree_judge_continuity: PASS
+  verdict: VERIFIED_WITH_CAVEATS
+  caveats:
+    - >-
+      tests/test_replay_strategy_lifecycle_contract.py retains an unrelated
+      pre-P541F total == 16 pin; separate authority is required to repair it.
+safety:
+  tests_executed: false
+  ordinary_tests_modified: false
+  production_source_modified: false
+  registry_modified: false
+  database_accessed: false
+  git_refs_modified: false
+  language_server_used: false
+  network_used: false
+claim_boundary:
+  stale_scope_resolved: true
+  test_contract_migrated: false
+  production_tree_changed: false
+  source_branch_merged: false
+  production_ready_claimed: false
+artifacts:
+  allowed_root: _organization_reports/P541F_REGISTRY_SNAPSHOT_TEST_SCOPE_RESOLUTION_R10B
+  required_artifact_count: 9
+  retained:
+    - phase0_snapshot.yaml
+    - r10_regression_node_inventory.jsonl
+    - candidate_test_file_review.jsonl
+    - stale_registry_snapshot_scope.yaml
+    - non_stale_registry_tests.md
+    - authorization_reuse_decision.yaml
+    - continuation_delta.md
+    - judge_report.md
+    - final_report.yaml
+write_classification:
+  repository_files_modified:
+    - nine task-created report artifacts under the allowed report root
+  toolchain_runtime_outputs_created: []
+  toolchain_runtime_outputs_modified: []
+  pre_existing_runtime_outputs_retained_unchanged: []
+  worktree_materialization_created: []
+  worktree_materialization_updated: []
+  worktree_materialization_removed: []
+  git_network_metadata_writes: []
+  git_worktree_metadata_writes: []
+  harness_git_metadata_writes: []
+  product_files_edited_during_task: []
+retained_file_ledger:
+  task_created_files_retained:
+    - phase0_snapshot.yaml
+    - r10_regression_node_inventory.jsonl
+    - candidate_test_file_review.jsonl
+    - stale_registry_snapshot_scope.yaml
+    - non_stale_registry_tests.md
+    - authorization_reuse_decision.yaml
+    - continuation_delta.md
+    - judge_report.md
+    - final_report.yaml
+  task_created_files_deleted: []
+  pre_existing_files_retained_unchanged:
+    - tests/test_replay_strategy_lifecycle_registry.py
+    - tests/test_replay_strategy_registry_online_candidates.py
+    - tests/test_replay_strategy_lifecycle_contract.py
+  pre_existing_files_modified_and_ratified: []
+  files_modified_during_task:
+    - nine task-created report artifacts under the allowed report root
+run_counts:
+  local_full_suite_runs: 0
+  focused_test_runs: 0
+  initial_judge_runs: 1
+  delta_rejudge_runs: 1
+  full_judge_runs: 0
+  exact_head_ci_runs: 0
+attempt_ledger:
+  - attempt: 1
+    action: final static report-package validation
+    result: FAIL
+    classification: HARNESS_ASSERTION_TOO_BROAD
+    detail: >-
+      A package-wide text search rejected historical quotations of the Initial
+      PENDING defect even though every terminal machine-readable field was
+      complete.
+    mutation_applied: false
+  - attempt: 2
+    action: final static report-package validation
+    result: PASS
+    correction: >-
+      Validate the terminal YAML fields directly while preserving the accurate
+      Initial-Judge chronology in judge_report.md.
+not_run:
+  - tests and application execution — forbidden by packet
+  - database access — forbidden by packet
+  - network and fetch — forbidden by packet
+  - global Git status and full workspace scan — forbidden by packet
+  - language server and IDE indexing — forbidden by packet
+  - checkout, commit, push, PR, merge, deployment, and branch cleanup — forbidden by packet
+  - test, production, registry, and lifecycle mutation — forbidden by packet
+blocked: []
+caveats:
+  - >-
+    tests/test_replay_strategy_lifecycle_contract.py contains a pre-existing
+    total == 16 assertion that already conflicts with the pre-P541F 18-entry
+    baseline; it is excluded because R10A may not absorb that unrelated repair.
+  - The excluded lifecycle endpoint total pin requires separate authority but does not block R10A.
+remaining_risks:
+  - The unrelated lifecycle endpoint total pin requires separate contract authority if it is to be corrected.
+next_step: Resume P541F_REGISTRY_SNAPSHOT_TEST_CONTRACT_MIGRATION_R10A from continuation_delta.md.

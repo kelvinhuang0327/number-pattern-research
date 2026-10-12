@@ -1,0 +1,11 @@
+M lottery_api/models/replay_strategy_registry.py
+A lottery_api/models/biglotto_social_wisdom_adapter.py
+A lottery_api/models/biglotto_zone_split_adapter.py
+A tests/fixtures/biglotto_zone_split_p541d.json
+A tests/test_biglotto_social_wisdom_adapter.py
+A tests/test_biglotto_zone_split_adapter.py
+R tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py
+
+RETAINED_UNCHANGED lottery_api/models/social_wisdom_predictor.py
+RETAINED_UNCHANGED lottery_api/models/p541d_r2_biglotto_selected_adapters.py
+RETAINED_UNCHANGED tests/test_p541d_r2_biglotto_selected_adapters.py

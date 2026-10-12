@@ -1,0 +1,17 @@
+task: PREDRAW_QUICK_PREDICT_LEDGER_OPT_IN_MIGRATION_R2
+decisions:
+  - id: DECISION_01_OPT_IN_FLAG_SURFACE
+    description: Retained exact --write-predraw-ledger and --predraw-ledger-path surface without alteration.
+    status: ACCEPTED
+  - id: DECISION_02_LEDGER_ENGINE_REUSE
+    description: Reused existing lottery_api/engine/predraw_ledger.py without modifying engine code.
+    status: ACCEPTED
+  - id: DECISION_03_FAIL_SAFE_LEDGER_WRITES
+    description: Preserved source failure semantics where ledger write failure is logged as warning and prediction output succeeds.
+    status: ACCEPTED
+  - id: DECISION_04_TEST_ISOLATION
+    description: Dedicated test suite tests/test_p360b_quick_predict_ledger_entrypoint.py migrated to use synthetic DB and temp sandbox ledger paths.
+    status: ACCEPTED
+  - id: DECISION_05_EXCLUSION_OF_REPLAY_SCOPE
+    description: Strictly excluded cand_087c replay query normalization per task packet boundary.
+    status: ACCEPTED

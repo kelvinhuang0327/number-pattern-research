@@ -1,0 +1,28 @@
+candidate_id: cand_059a_canonical_strategy_universe_inventory
+
+functional_boundary:
+  entrypoint: scripts/p0_per_draw_coverage_matrix.py
+  callable_functions:
+    - run_coverage_matrix
+    - _get_registry_strategies
+    - main
+  consumers: []
+  required_inputs:
+    - lottery_api/models/replay_strategy_registry.py
+    - lottery_api/data/lottery_v2.db
+  generated_outputs:
+    - outputs/replay/p0_canonical_strategy_universe_20260518.json
+    - outputs/replay/p0_per_draw_coverage_matrix_20260518.json
+  focused_tests:
+    - tests/test_p0_canonical_universe.py
+  excluded_migration_symbols:
+    - scripts/apply_p0_schema_migration.py
+    - SPR_GOVERNANCE_COLUMNS
+    - GOVERNANCE_INDEXES
+    - run_migration
+    - tests/test_p0_schema_migration_idempotent.py
+    - lottery_api/migrations/0001_p0_schema_stabilization.sql
+    - outputs/replay/p0_migration_log_20260518.json
+    - outputs/replay/p0_schema_diff_20260518.json
+  imports_from_migration_vertical: []
+  single_vertical: true

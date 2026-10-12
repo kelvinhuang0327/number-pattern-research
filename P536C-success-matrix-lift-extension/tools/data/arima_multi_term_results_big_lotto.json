@@ -1,0 +1,50 @@
+[
+  {
+    "Lottery": "BIG_LOTTO",
+    "Term": "短期 (150期)",
+    "Method": "ARIMA (1,0,0)",
+    "M3+ Rate": "2.67%",
+    "Avg Match": "0.87",
+    "Edge": "+0.62%"
+  },
+  {
+    "Lottery": "BIG_LOTTO",
+    "Term": "短期 (150期)",
+    "Method": "Ensemble (ARIMA + Bi-LSTM)",
+    "M3+ Rate": "2.00%",
+    "Avg Match": "0.71",
+    "Edge": "-0.05%"
+  },
+  {
+    "Lottery": "BIG_LOTTO",
+    "Term": "中期 (500期)",
+    "Method": "ARIMA (1,0,0)",
+    "M3+ Rate": "2.80%",
+    "Avg Match": "0.78",
+    "Edge": "+0.75%"
+  },
+  {
+    "Lottery": "BIG_LOTTO",
+    "Term": "中期 (500期)",
+    "Method": "Ensemble (ARIMA + Bi-LSTM)",
+    "M3+ Rate": "2.20%",
+    "Avg Match": "0.74",
+    "Edge": "+0.15%"
+  },
+  {
+    "Lottery": "BIG_LOTTO",
+    "Term": "長期 (全部)",
+    "Method": "ARIMA (1,0,0)",
+    "M3+ Rate": "2.31%",
+    "Avg Match": "0.77",
+    "Edge": "+0.26%"
+  },
+  {
+    "Lottery": "BIG_LOTTO",
+    "Term": "長期 (全部)",
+    "Method": "Ensemble (ARIMA + Bi-LSTM)",
+    "M3+ Rate": "1.28%",
+    "Avg Match": "0.71",
+    "Edge": "-0.77%"
+  }
+]

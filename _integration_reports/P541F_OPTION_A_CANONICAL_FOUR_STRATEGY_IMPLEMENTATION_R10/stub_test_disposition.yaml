@@ -1,0 +1,27 @@
+task: P541F_OPTION_A_CANONICAL_FOUR_STRATEGY_IMPLEMENTATION_R10
+authority: P541F_OPTION_A_ADOPT_CANONICAL_FOUR
+
+dispositions:
+  tests/test_p541d_r2_biglotto_selected_adapters.py:
+    r8_action: REWRITE_OR_SUPERSEDE
+    selected_action: SUPERSEDE_WITH_CANONICAL_TARGET_NATIVE_ACCEPTANCE
+    file_action: RETAIN_UNCHANGED
+    acceptance_membership: EXCLUDED
+    preexisting_sha256: f2bfff8ad90b6f644ed3a52e03a6f623fa80c094d8d895d237cdb5ddb7881324
+    reason: >-
+      The exact Option A ordinary-path allowlist omits this untracked proposal,
+      and its absent P541D research fixture must not be invented. Canonical
+      target-native focused tests preserve the executable behavior vectors.
+  tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py:
+    r8_action: REWRITE
+    selected_action: REWRITE_TO_CANONICAL_FOUR_ONLINE_EXECUTABLE_CONTRACT
+    file_action: REPLACE_WITH_PINNED_CANONICAL_BYTES
+    acceptance_membership: INCLUDED
+    preexisting_sha256: 1a4bcfc0fec647025d104c43d7ac1e0fdfeab3c87c4113502be1b09f4fdee916
+    canonical_sha256: 99437e6a428b8754e5399eb1dc50368757a7425e225cee1a886245c419a6b8de
+
+missing_p541d_design_fixture:
+  path: outputs/research/p541d_r2_biglotto_selected_method_adapter_design_20260713.json
+  state: ABSENT
+  invented_or_reconstructed: false
+  required_by_option_a_acceptance: false

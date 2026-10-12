@@ -1,0 +1,21 @@
+final_edit:
+  changed_symbols:
+    - predraw_ledger_enabled
+    - resolve_predraw_ledger_path
+    - compute_next_scheduled_draw_date
+    - write_predraw_ledger_for_prediction
+    - main
+  changed_lines: "459-572, 670-677, 695-697, 740-743"
+  reason: "Opt-in integration of P360A predraw ledger into tools/quick_predict.py via --write-predraw-ledger and --predraw-ledger-path flags"
+  bug_fixed: "N/A - feature implementation of opt-in live predraw logging"
+  source_contract_deviation: false
+  behavior_changed: "Default behavior remains 100% unchanged. Opt-in flag or env var enables LIVE_PREDRAW sidecar writing without modifying source DB."
+  tests_added_or_updated:
+    - "tests/test_p360b_quick_predict_ledger_entrypoint.py (14 new unit & entrypoint tests)"
+  strptime_verification:
+    deterministic: true
+    fails_closed: true
+    timezone_date_semantics_match: true
+    default_behavior_unmodified: true
+    no_write_before_prediction_success: true
+    no_duplicate_records: true

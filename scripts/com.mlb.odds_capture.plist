@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.mlb.odds_capture</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>/Users/kelvin/Kelvin-WorkSpace/Betting-pool/scripts/odds_capture_daemon.py</string>
+        <string>--interval</string>
+        <string>15</string>
+    </array>
+
+    <!-- Start immediately when agent loads, and on every reboot -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- launchd will restart if the process exits for any reason -->
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/kelvin/Kelvin-WorkSpace/Betting-pool</string>
+
+    <!-- Logs: launchd appends, does NOT truncate -->
+    <key>StandardOutPath</key>
+    <string>/Users/kelvin/Kelvin-WorkSpace/Betting-pool/logs/odds_capture.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/kelvin/Kelvin-WorkSpace/Betting-pool/logs/odds_capture_error.log</string>
+
+    <!-- Environment: tell daemon it is managed by launchd (suppresses duplicate FileHandler) -->
+    <!-- Add ODDS_API_KEY here once you have a key from https://the-odds-api.com -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>LAUNCHED_BY_LAUNCHD</key>
+        <string>1</string>
+        <!-- Uncomment and set your key:
+        <key>ODDS_API_KEY</key>
+        <string>YOUR_KEY_HERE</string>
+        -->
+    </dict>
+
+    <!-- Throttle rapid restart loops (e.g. bad import) to once per 30 s -->
+    <key>ThrottleInterval</key>
+    <integer>30</integer>
+</dict>
+</plist>

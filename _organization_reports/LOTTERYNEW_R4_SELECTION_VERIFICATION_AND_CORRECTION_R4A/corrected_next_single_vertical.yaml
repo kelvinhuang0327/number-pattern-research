@@ -1,0 +1,44 @@
+candidate_id: cand_059_feat/p0_schema_stabilization_20260518
+title: P0 Schema Stabilization & Canonical Strategy Universe Inventory
+source_ref: refs/heads/feat/p0-schema-stabilization-20260518
+
+classification: OWNER_DECISION_REQUIRED
+reason: Candidate contains DDL schema migration logic targeting production DB (lottery_api/data/lottery_v2.db) and mixes 4 distinct sub-functions requiring a split.
+single_vertical: false
+split_required: true
+
+final_recommendation: NO_SAFE_IMPLEMENTATION_CANDIDATE
+
+proposed_sub_verticals:
+  - candidate_id: cand_059a_canonical_strategy_universe_inventory
+    title: Canonical Strategy Universe Inventory & Coverage Matrix
+    scope:
+      - scripts/p0_per_draw_coverage_matrix.py
+      - tests/test_p0_canonical_universe.py
+      - docs/replay/p0_canonical_strategy_universe_20260518.md
+      - outputs/replay/p0_canonical_strategy_universe_20260518.json
+      - outputs/replay/p0_per_draw_coverage_matrix_20260518.json
+    focused_tests:
+      - tests/test_p0_canonical_universe.py
+    risk: LOW
+    database_write: false
+    schema_migration: false
+    standalone_owner_authorization_required: false
+    estimated_hours: 6
+
+  - candidate_id: cand_059b_p0_schema_migration_engine
+    title: P0 Governance Schema Migration Engine
+    scope:
+      - scripts/apply_p0_schema_migration.py
+      - lottery_api/migrations/0001_p0_schema_stabilization.sql
+      - tests/test_p0_schema_migration_idempotent.py
+      - docs/replay/p0_schema_diff_20260518.md
+      - outputs/replay/p0_migration_log_20260518.json
+      - outputs/replay/p0_schema_diff_20260518.json
+    focused_tests:
+      - tests/test_p0_schema_migration_idempotent.py
+    risk: MEDIUM
+    database_write: true
+    schema_migration: true
+    standalone_owner_authorization_required: true
+    estimated_hours: 8

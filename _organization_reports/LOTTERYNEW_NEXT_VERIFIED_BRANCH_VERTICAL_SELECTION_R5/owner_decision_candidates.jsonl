@@ -1,0 +1,13 @@
+{"candidate_id":"cand_059_feat/p0_schema_stabilization_20260518","reason":"remaining schema DDL, migration, and idempotency engine","required_decision":"authorize or reject a separate production-schema migration packet"}
+{"candidate_id":"cand_002_biglotto_p0_2bet_two_id_target_native_vertical_r1","reason":"new/changed strategy identities and broad runtime wiring","required_decision":"choose the canonical BigLotto strategy identities and bounded split"}
+{"candidate_id":"cand_062_feat/p1_catalog_visibility_registry_expansion_20260518","reason":"registry mutation and public catalog visibility","required_decision":"approve the registry/public identity contract"}
+{"candidate_id":"cand_064_feat/p3_replay_pipeline_split_20260517","reason":"structural replay pipeline reorganization","required_decision":"approve architecture and deletion/move boundaries"}
+{"candidate_id":"cand_065_feat/p5_replay_db_source_of_truth_20260517","reason":"database source-of-truth contract","required_decision":"select authoritative replay source"}
+{"candidate_id":"cand_066_feat/p5a_replay_source_promotion_policy_20260517","reason":"promotion policy may choose between valid sources","required_decision":"approve promotion authority and precedence"}
+{"candidate_id":"cluster_daily539_vertical_adaptation","reason":"contains production DB applies, strategy identities, and broad mixed scope","required_decision":"split and authorize one exact strategy vertical"}
+{"candidate_id":"cluster_biglotto_vertical_adaptation","reason":"contains production DB apply/backfill operations","required_decision":"split dry-run from production write and approve identity"}
+{"candidate_id":"cluster_powerlotto_vertical_adaptation","reason":"contains production DB apply/backfill operations","required_decision":"split dry-run from production write and approve identity"}
+{"candidate_id":"cluster_wave6_entropy_reversion","reason":"controlled apply and strategy identity changes","required_decision":"approve exact strategy and production-write boundary"}
+{"candidate_id":"cand_067_feat/track_b_winning_quality","reason":"large strategy/public-identity surface","required_decision":"choose the canonical runtime strategy scope"}
+{"candidate_id":"cand_069_fresh_start","reason":"large repository replacement/restructure","required_decision":"approve structural migration scope"}
+{"candidate_id":"cand_070_init_release","reason":"large repository replacement/restructure","required_decision":"approve structural migration scope"}

@@ -1,0 +1,81 @@
+task_id: PREDRAW_REPLAY_QUERY_NORMALIZATION_MIGRATION_R3
+status: COMPLETED_VERTICAL_ONLY
+
+workspace:
+  root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  branch: task/p273a-prize-aware-inferential-validation
+  head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  resource_safe_path_scoped_checks: PASS
+  task_owned_dirty_paths:
+    - lottery_api/routes/replay.py
+    - tests/test_p354a_replay_lottery_type_query_normalization.py
+    - tests/test_p355a_replay_detail_enum_query_normalization.py
+  unattributed_dirty_paths_modified: false
+
+authority:
+  source_ref: refs/remotes/origin/task/p273a-prize-aware-inferential-validation
+  source_candidate: cand_087c_replay_query_normalization
+  contract_resolved: true
+
+changes:
+  created_paths:
+    - tests/test_p354a_replay_lottery_type_query_normalization.py
+    - tests/test_p355a_replay_detail_enum_query_normalization.py
+  modified_paths:
+    - lottery_api/routes/replay.py
+  source_deviations: []
+  unexpected_paths: []
+
+normalization:
+  lottery_type:
+    accepted_aliases: uppercase, lowercase, mixed case, surrounded by whitespace (e.g. " big_lotto ")
+    canonical_values: ["BIG_LOTTO", "POWER_LOTTO", "DAILY_539"]
+    invalid_behavior: returns None if empty/non-string
+  detail_enum:
+    accepted_aliases: uppercase, lowercase, mixed case, surrounded by whitespace (e.g. " TARGET_DRAW_ASC ", " HIT ")
+    canonical_values:
+      sort: ["target_draw_desc", "target_draw_asc"]
+      hit_filter: ["all", "hit", "miss"]
+    invalid_behavior: fail closed with HTTP 400 HTTPException
+  response_schema_changed: false
+  unrelated_route_behavior_changed: false
+
+verification:
+  focused_tests: PASS
+  replay_regression: PASS_WITH_CAVEATS
+  behavior_contract: PASS
+  ast_parse: PASS
+  import_check: PASS
+  lint: NOT_RUN_TOOL_NOT_AVAILABLE
+  typecheck: NOT_RUN_TOOL_NOT_AVAILABLE
+  diff_check: PASS
+  changed_path_review: PASS
+  judge: PASS_WITH_CAVEATS
+
+invariance:
+  quick_predict_sha256: d563d9484d09ded6f22ac18e532e3b841aa5f47c5be044a195ecccdaee650670
+  quick_predict_test_sha256: 2ba0797fc7d61b946826f92008ee8ef6fed4853b35c1355acb39267b106f9a7b
+  prior_hashes_unchanged: true
+  production_db_modified: false
+  predraw_engine_modified: false
+  existing_outputs_modified: false
+
+safety:
+  database_write_performed: false
+  dependency_installed: false
+  dependency_manifest_modified: false
+  strategy_identity_modified: false
+  git_refs_mutated: false
+  commit_created: false
+  push_run: false
+  pr_created: false
+
+claim_boundary:
+  predraw_engine_migrated: true
+  quick_predict_opt_in_migrated: true
+  replay_query_normalization_migrated: true
+  source_branch_merged: false
+  all_branch_functions_migrated: false
+  production_ready_claimed: false
+
+next_recommended_task: NONE

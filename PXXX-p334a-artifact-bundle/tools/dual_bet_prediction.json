@@ -1,0 +1,46 @@
+{
+  "draw_number": "next",
+  "strategy": "dual_bet_anomaly",
+  "bets": [
+    {
+      "numbers": [
+        3,
+        8,
+        11,
+        22,
+        24,
+        30
+      ],
+      "special": 7,
+      "source": "optimized_bayesian",
+      "confidence": 0.04785533749628309
+    },
+    {
+      "numbers": [
+        1,
+        14,
+        27,
+        30,
+        33,
+        37
+      ],
+      "special": 8,
+      "source": "anomaly_pattern",
+      "confidence": 0.45,
+      "anomaly_features": {
+        "odd_ratio": "4:2",
+        "zone_distribution": [
+          1,
+          1,
+          4
+        ],
+        "consecutive_pairs": 0,
+        "sum": 142
+      }
+    }
+  ],
+  "coverage_stats": {
+    "overlap": 1,
+    "total_coverage": 11
+  }
+}

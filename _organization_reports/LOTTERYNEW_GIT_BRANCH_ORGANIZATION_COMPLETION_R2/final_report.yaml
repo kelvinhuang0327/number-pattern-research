@@ -1,0 +1,116 @@
+task: "LOTTERYNEW_GIT_BRANCH_ORGANIZATION_COMPLETION_R2"
+status: "COMPLETED_BRANCH_ORGANIZATION_ONLY"
+repositories:
+  total: 61
+  unique_git_common_dirs: 3
+refs:
+  total_available: 835
+  materialized: 87
+  duplicate_commit_aliases: 347
+  duplicate_tree_aliases: 7
+  target_equivalent: 267
+  target_partial: 47
+  branch_only_unique: 68
+  historical_reference_only: 10
+  owner_decision_required: 2
+  blocked_or_unresolved: 0
+functional_candidates:
+  total: 115
+  p0: 1
+  p1: 10
+  p2: 104
+  p3: 0
+  excluded: 0
+recommended_next_vertical:
+  candidate_id: "cand_087_p273a_prize_aware_inferential_validation"
+  title: "Prize-Aware Inferential Validation Vertical (P273A)"
+  source_repository: "repo_1_lotterynew"
+  source_refs:
+    - "refs/remotes/origin/task/p273a-prize-aware-inferential-validation"
+  representative_ref: "refs/remotes/origin/task/p273a-prize-aware-inferential-validation"
+  source_paths:
+    - "docs/p360a_predraw_metadata_preregistration.md"
+    - "lottery_api/data/predraw_schedule_config.json"
+    - "lottery_api/data/predraw_strategy_freeze_registry.json"
+    - "lottery_api/engine/predraw_ledger.py"
+    - "tests/test_p354a_replay_lottery_type_query_normalization.py"
+    - "tests/test_p355a_replay_detail_enum_query_normalization.py"
+    - "tests/test_p360a_predraw_metadata_instrumentation.py"
+    - "tests/test_p360b_quick_predict_ledger_entrypoint.py"
+    - "tests/test_p364_predraw_capture_runner.py"
+    - "tests/test_p365_predraw_ledger_verify.py"
+    - "tools/predraw_capture_runner.py"
+    - "tools/predraw_ledger_verify.py"
+    - "00-Plan/roadmap/CTO-Analysis.md"
+    - "00-Plan/roadmap/active_task.md"
+    - "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md"
+  target_missing_paths:
+    - "docs/p360a_predraw_metadata_preregistration.md"
+    - "lottery_api/data/predraw_schedule_config.json"
+    - "lottery_api/data/predraw_strategy_freeze_registry.json"
+    - "lottery_api/engine/predraw_ledger.py"
+    - "tests/test_p354a_replay_lottery_type_query_normalization.py"
+    - "tests/test_p355a_replay_detail_enum_query_normalization.py"
+    - "tests/test_p360a_predraw_metadata_instrumentation.py"
+    - "tests/test_p360b_quick_predict_ledger_entrypoint.py"
+    - "tests/test_p364_predraw_capture_runner.py"
+    - "tests/test_p365_predraw_ledger_verify.py"
+    - "tools/predraw_capture_runner.py"
+    - "tools/predraw_ledger_verify.py"
+  target_different_paths:
+    - "00-Plan/roadmap/CTO-Analysis.md"
+    - "00-Plan/roadmap/active_task.md"
+    - "00-Plan/roadmap/agent_bootstrap/CURRENT_STATE.md"
+    - "00-Plan/roadmap/roadmap.md"
+    - "index.html"
+    - "lottery_api/routes/replay.py"
+    - "outputs/randomness_audit/randomness_audit_results.json"
+    - "outputs/randomness_audit/randomness_audit_summary.md"
+    - "tests/test_p257b_best_strategy_overview_readonly_api.py"
+    - "tests/test_p261a_replay_detail_row_expand.py"
+    - "tools/quick_predict.py"
+  expected_target_paths:
+    - "docs/p360a_predraw_metadata_preregistration.md"
+    - "lottery_api/data/predraw_schedule_config.json"
+    - "lottery_api/data/predraw_strategy_freeze_registry.json"
+    - "lottery_api/engine/predraw_ledger.py"
+    - "tools/predraw_capture_runner.py"
+    - "tools/predraw_ledger_verify.py"
+  focused_test_paths:
+    - "tests/test_p257b_best_strategy_overview_readonly_api.py"
+    - "tests/test_p261a_replay_detail_row_expand.py"
+    - "tests/test_p354a_replay_lottery_type_query_normalization.py"
+    - "tests/test_p355a_replay_detail_enum_query_normalization.py"
+    - "tests/test_p360a_predraw_metadata_instrumentation.py"
+    - "tests/test_p360b_quick_predict_ledger_entrypoint.py"
+    - "tests/test_p364_predraw_capture_runner.py"
+    - "tests/test_p365_predraw_ledger_verify.py"
+  migration_risk: "LOW"
+  owner_decisions_required:
+
+  reason_selected: "P273A is self-contained, target lacks inferential prize-aware validation module, clear tests exist, no DB write, <24h migration."
+safety:
+  all_available_refs_classified: "PASS"
+  duplicate_commit_groups_resolved: "PASS"
+  duplicate_tree_groups_resolved: "PASS"
+  materialized_refs_mapped: "PASS"
+  target_equivalent_refs_excluded_from_backlog: "PASS"
+  branch_only_refs_identified: "PASS"
+  target_partial_refs_identified: "PASS"
+  functional_verticals_clustered: "PASS"
+  priority_backlog_generated: "PASS"
+  single_next_vertical_selected: "PASS"
+  source_repositories_modified: false
+  source_refs_modified: false
+  mirrors_modified: false
+  target_ordinary_files_modified: false
+  branches_merged: false
+  branches_deleted: false
+  database_accessed: false
+  dependency_installed: false
+claim_boundary:
+  all_available_refs_classified_and_mapped: true
+  branches_merged: false
+  branches_deleted: false
+  functional_migration_completed: false
+  production_ready_claimed: false

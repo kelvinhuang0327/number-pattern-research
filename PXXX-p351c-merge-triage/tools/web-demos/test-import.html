@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test Import</title>
+</head>
+<body>
+    <h1>Testing Imports</h1>
+    <div id="result"></div>
+
+    <script type="module">
+        const resultDiv = document.getElementById('result');
+
+        try {
+            // Test 1: Import LotteryTypes
+            const lotteryTypes = await import('./src/utils/LotteryTypes.js');
+            resultDiv.innerHTML += '<p>✓ LotteryTypes loaded</p>';
+            resultDiv.innerHTML += '<p>Exports: ' + Object.keys(lotteryTypes).join(', ') + '</p>';
+
+            // Test 2: Import Constants
+            const constants = await import('./src/utils/Constants.js');
+            resultDiv.innerHTML += '<p>✓ Constants loaded</p>';
+            resultDiv.innerHTML += '<p>Exports: ' + Object.keys(constants).join(', ') + '</p>';
+
+            // Test 3: Test getRelatedTypes function
+            const { getRelatedTypes } = constants;
+            const related = getRelatedTypes('BIG_LOTTO');
+            resultDiv.innerHTML += '<p>✓ getRelatedTypes function works</p>';
+            resultDiv.innerHTML += '<p>Related types for BIG_LOTTO: ' + related.join(', ') + '</p>';
+
+            // Test 4: Import PredictionEngine
+            const predictionEngine = await import('./src/engine/PredictionEngine.js');
+            resultDiv.innerHTML += '<p>✓ PredictionEngine loaded</p>';
+
+            resultDiv.innerHTML += '<h2 style="color: green;">All tests passed!</h2>';
+        } catch (error) {
+            resultDiv.innerHTML += '<h2 style="color: red;">Error:</h2>';
+            resultDiv.innerHTML += '<pre>' + error.message + '\n\n' + error.stack + '</pre>';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+task: P541F_REGISTRY_SNAPSHOT_TEST_SCOPE_RESOLUTION_R10B
+decision: STALE_SCOPE_RESOLVED
+authority:
+  owner_option: OPTION_A_ADOPT_CANONICAL_FOUR
+  canonical_commit: 3b32beb4543de9169dbfb2469b0577f8cc8a6f58
+  authoritative_strategy_count: 4
+  authoritative_strategy_ids:
+    - biglotto_social_wisdom_anti_popularity
+    - biglotto_zone_split_3bet_bet1
+    - biglotto_zone_split_3bet_bet2
+    - biglotto_zone_split_3bet_bet3
+  lifecycle_for_all: ONLINE
+r10_regression_evidence:
+  complete_node_count: 10
+  candidate_test_file_count: 3
+  unresolved_nodes: []
+stale_registry_snapshot_test_paths:
+  - tests/test_replay_strategy_lifecycle_registry.py
+  - tests/test_replay_strategy_registry_online_candidates.py
+stale_registry_snapshot_test_nodes:
+  - tests/test_replay_strategy_lifecycle_registry.py::TestOnlineStrategiesUnchanged::test_registry_contains_exactly_online_ids
+  - tests/test_replay_strategy_lifecycle_registry.py::TestOnlineStrategiesUnchanged::test_list_strategies_online_filter_returns_all_eight
+  - tests/test_replay_strategy_lifecycle_registry.py::TestDataIntegrity::test_total_adapter_count
+  - tests/test_replay_strategy_lifecycle_registry.py::TestDataIntegrity::test_list_strategies_total_count
+  - tests/test_replay_strategy_registry_online_candidates.py::TestRegistryCount::test_total_adapter_count_is_18
+  - tests/test_replay_strategy_registry_online_candidates.py::TestRegistryCount::test_list_strategies_total_count_is_18
+  - tests/test_replay_strategy_registry_online_candidates.py::TestRegistryCount::test_online_count_is_8
+  - tests/test_replay_strategy_registry_online_candidates.py::TestNewOnlineStrategiesExist::test_all_8_online_ids_present
+file_mappings:
+  - test_path: tests/test_replay_strategy_lifecycle_registry.py
+    qualification:
+      fixed_registry_total_excludes_four_ids: true
+      exact_expected_set_excludes_four_ids: true
+      snapshot_fixture_excludes_four_ids: false
+      lifecycle_expectation_conflicts_with_online: true
+      no_unrelated_contract_conflict: true
+      no_dependency_or_schema_issue: true
+      not_p541d_proposal: true
+      path_is_referenced_by_r10_regression_evidence: true
+    stale_nodes:
+      - node_id: tests/test_replay_strategy_lifecycle_registry.py::TestOnlineStrategiesUnchanged::test_registry_contains_exactly_online_ids
+        assertion_kind: EXACT_EXPECTED_ONLINE_ID_SET
+        pre_p541f_expectation: Registry keys equal the eight-ID ONLINE_IDS set.
+        option_a_authoritative_expectation: Registry keys equal ONLINE_IDS plus the four authoritative P541F IDs.
+        evidence_lines: [36, 47, 76, 77]
+      - node_id: tests/test_replay_strategy_lifecycle_registry.py::TestOnlineStrategiesUnchanged::test_list_strategies_online_filter_returns_all_eight
+        assertion_kind: EXACT_EXPECTED_ONLINE_ID_SET
+        pre_p541f_expectation: ONLINE-filtered IDs equal the eight-ID ONLINE_IDS set.
+        option_a_authoritative_expectation: ONLINE-filtered IDs equal ONLINE_IDS plus the four authoritative P541F IDs.
+        evidence_lines: [36, 47, 79, 82]
+      - node_id: tests/test_replay_strategy_lifecycle_registry.py::TestDataIntegrity::test_total_adapter_count
+        assertion_kind: FIXED_REGISTRY_TOTAL_DERIVED_FROM_STALE_SET
+        pre_p541f_expectation: 8 ONLINE plus 10 non-ONLINE equals 18 adapters.
+        option_a_authoritative_expectation: 12 ONLINE plus 10 non-ONLINE equals 22 adapters.
+        evidence_lines: [35, 36, 68, 186, 189]
+      - node_id: tests/test_replay_strategy_lifecycle_registry.py::TestDataIntegrity::test_list_strategies_total_count
+        assertion_kind: FIXED_REGISTRY_TOTAL_DERIVED_FROM_STALE_SET
+        pre_p541f_expectation: list_strategies length equals 8 ONLINE plus 10 non-ONLINE.
+        option_a_authoritative_expectation: list_strategies length equals 12 ONLINE plus 10 non-ONLINE.
+        evidence_lines: [35, 36, 68, 191, 193]
+    non_stale_nodes:
+      - node_id: tests/test_replay_strategy_lifecycle_registry.py::TestOnlineStrategiesUnchanged::test_get_adapters_for_lottery_returns_only_online_adapters
+        reason_not_stale: General lifecycle filter invariant; it does not pin a count or complete ID set.
+      - node_id: tests/test_replay_strategy_lifecycle_registry.py::TestDataIntegrity::test_strategy_ids_unique_across_all_adapters
+        reason_not_stale: General uniqueness invariant.
+      - node_id: tests/test_replay_strategy_lifecycle_registry.py::TestDataIntegrity::test_all_lifecycle_statuses_valid
+        reason_not_stale: General enum-validity invariant.
+      - node_id: tests/test_replay_strategy_lifecycle_registry.py::TestDataIntegrity::test_unknown_strategy_id_returns_none_from_lifecycle_status
+        reason_not_stale: General unknown-ID behavior invariant.
+    non_stale_nodes_scope: R10_REFERENCED_NODES
+  - test_path: tests/test_replay_strategy_registry_online_candidates.py
+    qualification:
+      fixed_registry_total_excludes_four_ids: true
+      exact_expected_set_excludes_four_ids: true
+      snapshot_fixture_excludes_four_ids: false
+      lifecycle_expectation_conflicts_with_online: true
+      no_unrelated_contract_conflict: true
+      no_dependency_or_schema_issue: true
+      not_p541d_proposal: true
+      path_is_referenced_by_r10_regression_evidence: true
+    stale_nodes:
+      - node_id: tests/test_replay_strategy_registry_online_candidates.py::TestRegistryCount::test_total_adapter_count_is_18
+        assertion_kind: FIXED_REGISTRY_TOTAL
+        pre_p541f_expectation: _ALL_ADAPTERS has 18 entries.
+        option_a_authoritative_expectation: _ALL_ADAPTERS has 22 entries after four ONLINE additions.
+        evidence_lines: [70, 78, 81]
+      - node_id: tests/test_replay_strategy_registry_online_candidates.py::TestRegistryCount::test_list_strategies_total_count_is_18
+        assertion_kind: FIXED_REGISTRY_TOTAL
+        pre_p541f_expectation: list_strategies returns 18 entries.
+        option_a_authoritative_expectation: list_strategies returns 22 entries after four ONLINE additions.
+        evidence_lines: [70, 83, 87]
+      - node_id: tests/test_replay_strategy_registry_online_candidates.py::TestRegistryCount::test_online_count_is_8
+        assertion_kind: FIXED_ONLINE_COUNT
+        pre_p541f_expectation: ONLINE-filtered registry count is 8.
+        option_a_authoritative_expectation: ONLINE-filtered registry count is 12.
+        evidence_lines: [53, 54, 89, 93]
+      - node_id: tests/test_replay_strategy_registry_online_candidates.py::TestNewOnlineStrategiesExist::test_all_8_online_ids_present
+        assertion_kind: EXACT_EXPECTED_ONLINE_ID_SET
+        pre_p541f_expectation: ONLINE-filtered IDs equal the eight-ID _ALL_ONLINE_IDS set.
+        option_a_authoritative_expectation: ONLINE-filtered IDs equal _ALL_ONLINE_IDS plus the four authoritative P541F IDs.
+        evidence_lines: [53, 54, 147, 153]
+    non_stale_nodes:
+      - node_id: tests/test_replay_strategy_registry_online_candidates.py::TestExistingEntriesUnchanged::test_original_6_online_ids_still_present
+        reason_not_stale: Subset-preservation invariant; new IDs do not invalidate it.
+      - node_id: tests/test_replay_strategy_registry_online_candidates.py::TestExistingEntriesUnchanged::test_original_non_online_ids_still_present
+        reason_not_stale: Subset-preservation invariant for unchanged non-ONLINE IDs.
+      - node_id: tests/test_replay_strategy_registry_online_candidates.py::TestExistingEntriesUnchanged::test_original_online_strategies_still_executable
+        reason_not_stale: Executability-preservation invariant for original IDs.
+    non_stale_nodes_scope: R10_REFERENCED_NODES
+excluded_candidate_files:
+  - test_path: tests/test_replay_strategy_lifecycle_contract.py
+    candidate_classification: GENERAL_REGISTRY_REGRESSION
+    r10_referenced_nodes:
+      - tests/test_replay_strategy_lifecycle_contract.py::TestLifecycleCountsSchema::test_lifecycle_counts_sum_equals_total
+      - tests/test_replay_strategy_lifecycle_contract.py::TestIdSets::test_exec_and_non_exec_ids_are_disjoint
+      - tests/test_replay_strategy_lifecycle_contract.py::TestIdSets::test_only_online_strategies_are_executable
+    reason_not_stale_scope: >-
+      The R10 nodes are dynamic schema/set invariants. The file's separate
+      TestTotal::test_total_is_16 assertion was already stale against the
+      pre-P541F 18-entry baseline, so changing it to 22 would also repair an
+      unrelated P1.3 gap and fails no_unrelated_contract_conflict.
+p541d_paths_excluded:
+  - tests/test_p541d_r2_biglotto_selected_adapters.py
+authorization_reuse: REUSE_AUTHORIZATION_ALLOWED
+

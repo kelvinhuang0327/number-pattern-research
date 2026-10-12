@@ -1,0 +1,24 @@
+task: LOTTERYNEW_CURRENT_STATE_CONFIRMATION_AND_NEXT_STEP_R9
+selected_case: CASE_C
+
+decision_inputs:
+  r6_valid: true
+  r7_valid: true
+  r7_caveats_preserved: true
+  r8_status: NOT_STARTED
+  standalone_owner_decision_present: false
+
+next_step:
+  task: P541F_STRATEGY_ID_AND_LIFECYCLE_OWNER_DECISION_R8
+  action: EXECUTE_READ_ONLY_REVIEW
+  reason: >-
+    R6 is valid, R7 is valid with its declared caveats, and the exact R8 report
+    root does not exist; the Owner decision evidence package must therefore be
+    created before any Owner token or implementation packet can be considered.
+
+claim_boundary:
+  implementation_included: false
+  option_selection_included: false
+  registry_change_included: false
+  test_change_included: false
+  merge_included: false

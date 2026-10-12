@@ -1,0 +1,2 @@
+prediction_item_id,prediction_run_id,draw_date,predicted_numbers,actual_numbers,hit_count,would_insert_replay_row,truth_level,risk_flags,notes
+101,10,2026-01-02,"[1, 2, 3, 4, 5, 6]","[1, 2, 7, 8, 9, 10]",2,True,REGENERATED_RETROSPECTIVE,,

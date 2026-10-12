@@ -1,0 +1,110 @@
+task_id: LOTTERYNEW_DAILY539_SINGLE_BET_VERTICAL_R1
+status: COMPLETED_VERTICAL_ONLY
+
+workspace:
+  root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  branch: task/p273a-prize-aware-inferential-validation
+  head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  worktree_state_route: ACTIVE_STABLE_TASK_OWNED_DIRTY
+  dirty_before: 93770
+  dirty_after: 93776
+  unattributed_dirty_paths: 93770
+  unattributed_dirty_paths_modified: false
+
+baseline:
+  biglotto_single_tests: 8
+  biglotto_batch_tests: 15
+  combined_previous_tests: 23
+
+daily539_vertical:
+  public_entrypoint: lottery.prediction.daily539.generate_one_bet
+  request_type: Daily539GenerateBetRequest
+  use_case: Daily539GenerateOneBetUseCase
+  registry_catalog: lottery_api.models.replay_strategy_registry._REGISTRY
+  adapter: _Daily539F4ColdAdapter
+  result_type: Daily539GenerateBetResult
+  strategy_id: daily539_f4cold
+  strategy_lifecycle: ONLINE
+  call_chain: lottery.prediction.daily539.generate_one_bet -> Daily539GenerateBetRequest -> Daily539GenerateOneBetUseCase -> ReplayStrategyRegistry -> _Daily539F4ColdAdapter -> Daily539GenerateBetResult
+
+contract:
+  number_count: 5
+  minimum_number: 1
+  maximum_number: 39
+  unique: true
+  special_number: false
+  second_zone: false
+
+conflicts:
+  related_conflict_files_found: 49
+  fully_absorbed: 0
+  partially_absorbed: 0
+  not_used: 49
+  blocked_by_contract: 0
+  conflict_files_modified: false
+  runtime_imports_conflict_files: false
+
+changes:
+  changed_paths:
+    - _integration_reports/LOTTERYNEW_DAILY539_SINGLE_BET_VERTICAL_R1/changed_paths.txt
+    - _integration_reports/LOTTERYNEW_DAILY539_SINGLE_BET_VERTICAL_R1/conflict_decisions.yaml
+    - _integration_reports/LOTTERYNEW_DAILY539_SINGLE_BET_VERTICAL_R1/daily539_vertical_map.md
+    - _integration_reports/LOTTERYNEW_DAILY539_SINGLE_BET_VERTICAL_R1/final_report.yaml
+    - _integration_reports/LOTTERYNEW_DAILY539_SINGLE_BET_VERTICAL_R1/judge_report.md
+    - _integration_reports/LOTTERYNEW_DAILY539_SINGLE_BET_VERTICAL_R1/phase0_snapshot.yaml
+    - _integration_reports/LOTTERYNEW_DAILY539_SINGLE_BET_VERTICAL_R1/verification.md
+    - lottery/prediction/__init__.py
+    - lottery/prediction/daily539/__init__.py
+    - lottery/prediction/daily539/generate.py
+    - lottery/prediction/daily539/models.py
+    - lottery/prediction/daily539/use_cases.py
+    - tests/test_lottery_prediction_daily539_generate_vertical.py
+  created_paths:
+    - lottery/prediction/daily539/__init__.py
+    - lottery/prediction/daily539/generate.py
+    - lottery/prediction/daily539/models.py
+    - lottery/prediction/daily539/use_cases.py
+    - tests/test_lottery_prediction_daily539_generate_vertical.py
+  modified_paths:
+    - lottery/prediction/__init__.py
+  deleted_paths: []
+  out_of_scope_paths_changed: []
+
+verification:
+  previous_focused_tests: 23/23 PASSED
+  daily539_focused_tests: 17/17 PASSED
+  combined_prediction_tests: 40/40 PASSED
+  relevant_regression: 0 failures
+  import_check: PASS
+  ast_parse: PASS
+  lint: PASS
+  typecheck: PASS
+  diff_check: PASS
+  changed_path_review: PASS
+  judge: PASS
+
+safety:
+  database_accessed: false
+  secret_accessed: false
+  dependency_installed: false
+  dependency_manifest_modified: false
+  strategy_identity_modified: false
+  git_refs_mutated: false
+  commit_created: false
+  push_run: false
+  pr_created: false
+  unexpected_runtime_writes: []
+
+claim_boundary:
+  daily539_single_vertical_integrated: true
+  biglotto_verticals_preserved: true
+  daily539_batch_integrated: false
+  all_conflicts_resolved: false
+  all_lottery_features_integrated: false
+  application_runnable_established: false
+  production_ready_claimed: false
+
+not_run: None
+blocked: None
+remaining_risks: None
+next_recommended_vertical: LOTTERYNEW_DAILY539_BATCH_GENERATE_VERTICAL_R1

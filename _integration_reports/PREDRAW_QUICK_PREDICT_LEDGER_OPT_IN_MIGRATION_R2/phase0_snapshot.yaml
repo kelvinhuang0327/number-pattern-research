@@ -1,0 +1,18 @@
+task: PREDRAW_QUICK_PREDICT_LEDGER_OPT_IN_MIGRATION_R2
+phase0_timestamp: '2026-07-29T12:54:00+08:00'
+workspace:
+  root: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+  branch: task/p273a-prize-aware-inferential-validation
+  head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+  git_status_porcelain: []
+  complete_dirty_before: 0
+  task_owned_dirty_before: 0
+  unattributed_dirty_before: 0
+phase0_checks:
+  expected_branch_head_match: PASS
+  r1_engine_files_exist: PASS
+  r1_report_parses: PASS
+  r1_engine_focused_tests_exist: PASS
+  quick_predict_target_unmodified: PASS
+  test_p360b_absent: PASS
+  dirty_ownership_resolved: PASS

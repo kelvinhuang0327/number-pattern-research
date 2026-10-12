@@ -1,0 +1,7 @@
+candidate_id: cand_059a_canonical_strategy_universe_inventory
+decision: SAFE_SPLIT_CANDIDATE
+risk: LOW
+production_db_write: false
+schema_migration: false
+standalone_authorization_required: false
+owner_decisions_required: false

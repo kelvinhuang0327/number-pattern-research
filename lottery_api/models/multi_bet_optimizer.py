@@ -772,9 +772,14 @@ class MultiBetOptimizer:
 
     def generate_verified_ts3_plus_5bets(self, history: List[Dict], lottery_rules: Dict) -> Dict:
         """
-        ★ Verified Production Strategy: TS3+ (Triple Strike Plus)
-        Validated Results (1500p): +1.77% Edge (Deterministic)
-        
+        Legacy compatibility identity: verified_ts3_plus_5bet (TS3+ / Triple Strike Plus)
+
+        NOTE (2026-07-25 legacy-continuity correction): this method name and the
+        "+1.77%" figure below are retained only as a compatibility identifier and
+        a historical/descriptive record from a 1500p run. No reliable predictive
+        advantage is currently established — see edge_expected/evidence_status/
+        current_significance/warning in the returned dict.
+
         Exact Order (Critical for Orthogonality):
         1. Fourier Rhythm (TS3-B1) - Window: 500
         2. Cold Numbers (TS3-B2) - Window: 100
@@ -815,7 +820,10 @@ class MultiBetOptimizer:
         return {
             'bets': [{'numbers': b, 'source': sources[i]} for i, b in enumerate(all_bets)],
             'method': 'verified_ts3_plus_5bet',
-            'edge_expected': '+1.77%',
+            'edge_expected': 'Historical/descriptive only (1500p run, not currently established): +1.77%',
+            'evidence_status': 'HISTORICAL_RESEARCH_ONLY',
+            'current_significance': 'NOT_ESTABLISHED',
+            'warning': 'No reliable predictive advantage is currently established.',
             'coverage': len(all_covered) / max_num,
             'unique_numbers': sorted(list(all_covered))
         }

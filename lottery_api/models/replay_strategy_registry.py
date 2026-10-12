@@ -32,10 +32,11 @@ Backward compatibility:
 from __future__ import annotations
 
 import sys
-import json
 import logging
 from pathlib import Path
-from typing import Optional, List, Tuple, Callable
+from typing import Optional, List, Tuple
+
+from . import power_lotto_second_zone
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -205,7 +206,11 @@ class ReplayStrategyAdapter:
             )
         numbers = self._call_strategy(history, lottery_type)
         validated = _validate_numbers(numbers, lottery_type, self.meta.strategy_id)
-        special = None if lottery_type in _NO_SPECIAL_TYPES else None  # always None in replay v0.1
+        special = (
+            power_lotto_second_zone.second_zone_predict(history)
+            if lottery_type == "POWER_LOTTO"
+            else None
+        )
         return validated, special
 
     def _call_strategy(self, history: List[dict], lottery_type: str) -> List[int]:
@@ -466,6 +471,35 @@ class _BigLottoTs3Regime3BetAdapter(ReplayStrategyAdapter):
         return first
 
 
+from .biglotto_zone_split_adapter import build_zone_split_adapters  # noqa: E402
+from .biglotto_social_wisdom_adapter import (  # noqa: E402
+    build_social_wisdom_adapter,
+)
+from .biglotto_p0_2bet_adapter import build_p0_2bet_adapters  # noqa: E402
+
+
+_BIGLOTTO_ZONE_SPLIT_ADAPTERS = build_zone_split_adapters(
+    adapter_base=ReplayStrategyAdapter,
+    meta_type=_StrategyMeta,
+    invalid_output=InvalidOutput,
+    unsupported_lottery_type=UnsupportedLotteryType,
+)
+
+_BIGLOTTO_P0_2BET_ADAPTERS = build_p0_2bet_adapters(
+    adapter_base=ReplayStrategyAdapter,
+    meta_type=_StrategyMeta,
+    invalid_output=InvalidOutput,
+    unsupported_lottery_type=UnsupportedLotteryType,
+)
+
+_BIGLOTTO_SOCIAL_WISDOM_ADAPTER = build_social_wisdom_adapter(
+    adapter_base=ReplayStrategyAdapter,
+    meta_type=_StrategyMeta,
+    invalid_output=InvalidOutput,
+    unsupported_lottery_type=UnsupportedLotteryType,
+)
+
+
 # ─── Non-Executable Lifecycle Stubs ─────────────────────────────────────────
 # Registered in _ALL_ADAPTERS for governance visibility.
 # NOT added to _REGISTRY. MUST NOT be executed.
@@ -701,8 +735,11 @@ _ALL_ADAPTERS: List[ReplayStrategyAdapter] = [
     # P1.3: ts3_regime_3bet — live BIG_LOTTO production strategy (2026-05-15)
     # P1.4: adapter binding RESOLVED (SAFE_RECONSTRUCTION, 2026-05-15)
     _BigLottoTs3Regime3BetAdapter(),
+    *_BIGLOTTO_P0_2BET_ADAPTERS,
+    *_BIGLOTTO_ZONE_SPLIT_ADAPTERS,
     _Daily539F4ColdAdapter(),
     _Daily539MarkovColdAdapter(),
+    _BIGLOTTO_SOCIAL_WISDOM_ADAPTER,
     *_NON_EXECUTABLE_STUBS,
 ]
 

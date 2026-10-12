@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>P223-A Historical Evaluation Evidence Index</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 24px; color: #14213d; background: #f7f7f2; }
+    main { max-width: 1200px; margin: 0 auto; }
+    h1, h2 { color: #0b3954; }
+    .notice { padding: 12px 14px; background: #fff3cd; border-left: 4px solid #b08900; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+    section { background: white; padding: 16px; border: 1px solid #d9d9d9; border-radius: 8px; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #d9d9d9; padding: 8px; text-align: left; vertical-align: top; }
+    th { background: #eef4ed; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>P223-A Historical Evaluation Evidence Index</h1>
+  <p class="notice"><strong>Status:</strong> PASS_P216A_P222A_ARTIFACT_ONLY_HISTORICAL_EVALUATION_EVIDENCE_INDEX<br><strong>Disclaimer:</strong> Historical evaluation evidence index only. Not live predictions, not betting advice.</p>
+  <section>
+    <h2>Current Capability Statement</h2>
+    <ul><li>Verify a fixed P216-P222 evidence chain by SHA256 across 18 committed artifacts.</li><li>Trace deterministic lineage from bounded historical sample collection through quality review, feature construction, in-sample baseline evaluation, and time-split holdout evaluation.</li><li>Quantify current baseline behavior on the fixed sample: P219 baseline A accuracy 0.375, P219 baseline B accuracy 0.5, P221 baseline A accuracy 0.25, and P221 baseline B accuracy 0.3125.</li><li>Compare in-sample versus time-split degradation using the committed P220 and P222 dashboard evidence.</li></ul>
+  </section>
+  <section>
+    <h2>Artifact Chain</h2>
+    <table><thead><tr><th>Artifact</th><th>Status</th><th>Artifacts</th><th>Summary</th></tr></thead><tbody><tr><td>P216-A</td><td>PASS_FIXED_MULTIDATE_HISTORICAL_SAMPLE_PACK</td><td>report/p216a_pybaseball_multidate_sample_pack.csv, report/p216a_pybaseball_multidate_sample_pack.json, report/p216a_pybaseball_multidate_sample_pack.md</td><td>Fixed 24-row, 16-column historical sample covering 2024-04-01, 2024-04-02, 2024-04-03.</td></tr><tr><td>P217-A</td><td>PASS_P216A_ARTIFACT_ONLY_MULTIDATE_QUALITY_DASHBOARD</td><td>report/p217a_pybaseball_multidate_quality_dashboard.html, report/p217a_pybaseball_multidate_quality_dashboard.json</td><td>Deterministic quality dashboard over the same 24-row snapshot with per-date row counts {&#x27;2024-04-01&#x27;: 8, &#x27;2024-04-02&#x27;: 8, &#x27;2024-04-03&#x27;: 8}.</td></tr><tr><td>P218-A</td><td>PASS_P216A_P217A_ARTIFACT_ONLY_HISTORICAL_SAMPLE_FEATURE_TABLE_PROTOTYPE</td><td>report/p218a_historical_sample_feature_table.csv, report/p218a_historical_sample_feature_table.json, report/p218a_historical_sample_feature_table.md</td><td>24-row, 18-column feature table derived only from the fixed P216/P217 artifacts.</td></tr><tr><td>P219-A</td><td>PASS_P218A_ARTIFACT_ONLY_HISTORICAL_FEATURE_BASELINE_EVALUATION_PROTOTYPE</td><td>report/p219a_historical_feature_baseline_evaluation.csv, report/p219a_historical_feature_baseline_evaluation.json, report/p219a_historical_feature_baseline_evaluation.md</td><td>In-sample deterministic baselines on 24 rows: baseline A accuracy 0.375, baseline B accuracy 0.5.</td></tr><tr><td>P220-A</td><td>PASS_P219A_ARTIFACT_ONLY_HISTORICAL_BASELINE_ERROR_ANALYSIS_DASHBOARD</td><td>report/p220a_historical_baseline_error_dashboard.html, report/p220a_historical_baseline_error_dashboard.json</td><td>Error dashboard for P219 in-sample baselines, including pitch-type fallback analysis.</td></tr><tr><td>P221-A</td><td>PASS_P218A_P219A_P220A_ARTIFACT_ONLY_HISTORICAL_TIME_SPLIT_BASELINE_EVALUATION_PROTOTYPE</td><td>report/p221a_historical_time_split_baseline_evaluation.csv, report/p221a_historical_time_split_baseline_evaluation.json, report/p221a_historical_time_split_baseline_evaluation.md</td><td>Time-split holdout baseline evaluation on 16 rows across 2 splits: baseline A accuracy 0.25, baseline B accuracy 0.3125.</td></tr><tr><td>P222-A</td><td>PASS_P221A_P220A_ARTIFACT_ONLY_HISTORICAL_TIME_SPLIT_ERROR_ANALYSIS_DASHBOARD</td><td>report/p222a_historical_time_split_error_dashboard.html, report/p222a_historical_time_split_error_dashboard.json</td><td>Time-split error dashboard comparing P221 holdout behavior against P220 in-sample behavior.</td></tr></tbody></table>
+  </section>
+  <div class="grid">
+    <section>
+      <h2>Source Hashes</h2>
+      <table><thead><tr><th>Artifact Path</th><th>SHA256</th></tr></thead><tbody><tr><td>report/p216a_pybaseball_multidate_sample_pack.csv</td><td>e2d2eb233d4cb930ba7a886d7ca3350922aea671343ba23c6979f9dcedcac3c0</td></tr><tr><td>report/p216a_pybaseball_multidate_sample_pack.json</td><td>c4f048a072097378978dbb71b1ba60749f0014157b91affd9a3438f6531e72c8</td></tr><tr><td>report/p216a_pybaseball_multidate_sample_pack.md</td><td>f3ad49921b60df67449c6c846777318b5c4e81d79db393b47a14eac0c1e800b9</td></tr><tr><td>report/p217a_pybaseball_multidate_quality_dashboard.html</td><td>568ebfaca288a0c8dce56117d5f82673e89de074f46598a16067356556c657f0</td></tr><tr><td>report/p217a_pybaseball_multidate_quality_dashboard.json</td><td>850cfc282505df70f5472133d16ec1772df5411bdddb26bf30be6b5c414ac516</td></tr><tr><td>report/p218a_historical_sample_feature_table.csv</td><td>d3d00176e3e40163c8d38a60019e204b0d37ef7efb745b638e797578f197b507</td></tr><tr><td>report/p218a_historical_sample_feature_table.json</td><td>60fde1062e935c7f5d37a693611e6433d765b905fb7e1a499c513bf728e39844</td></tr><tr><td>report/p218a_historical_sample_feature_table.md</td><td>28aa4b4d17bade86fe9c51990cf1798640967ea3a6e7388a81e54d485efbf016</td></tr><tr><td>report/p219a_historical_feature_baseline_evaluation.csv</td><td>4c447f63e827d6fad4a4fdd6f2f36142cc601d6f622aceeca3a31f21a22075e7</td></tr><tr><td>report/p219a_historical_feature_baseline_evaluation.json</td><td>dc4ac6fce1e0f8f92a87a3bd3ab74d6aa60d8ea4b8205b3c8e822a1cbb370298</td></tr><tr><td>report/p219a_historical_feature_baseline_evaluation.md</td><td>2ba77c284d094a1e34770a1377cd47b25ef076f09c6b8187465ebcd0b970a1c9</td></tr><tr><td>report/p220a_historical_baseline_error_dashboard.html</td><td>b239b2249810b0b9c04551e625ac0c4f70c6298427756ab8e1cd5c2b80991f19</td></tr><tr><td>report/p220a_historical_baseline_error_dashboard.json</td><td>abd4a2540ea2109ee77f30a4a836f1800e3218cc003ed92fda0e1043c8f695f3</td></tr><tr><td>report/p221a_historical_time_split_baseline_evaluation.csv</td><td>2d17483e66a11069806f4b0f49bcd905f1d427ab56425edef9f24aba8844d3ae</td></tr><tr><td>report/p221a_historical_time_split_baseline_evaluation.json</td><td>0ccec8bc6b01c5bbdd8a3c082cbbc161d4a5fc0f39cc3cfe51948199e7528982</td></tr><tr><td>report/p221a_historical_time_split_baseline_evaluation.md</td><td>f31c00dbd65a86ae0224cbd147c1e2c39c45a58e13791f702266c54cb5b05617</td></tr><tr><td>report/p222a_historical_time_split_error_dashboard.html</td><td>620dea39de7464a7d1ae6f46dba9aab0d3687c2bb33b8d496b45a447ba783c94</td></tr><tr><td>report/p222a_historical_time_split_error_dashboard.json</td><td>97a9646e4892d7fcc49c48679760f8a86cff05f8c11565460c2c824d118b016f</td></tr></tbody></table>
+    </section>
+    <section>
+      <h2>Key Metrics</h2>
+      <table><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody><tr><td>P216 rows</td><td>24</td></tr><tr><td>P216 columns</td><td>16</td></tr><tr><td>P218 rows</td><td>24</td></tr><tr><td>P218 columns</td><td>18</td></tr><tr><td>P219 baseline A accuracy</td><td>0.375</td></tr><tr><td>P219 baseline B accuracy</td><td>0.5</td></tr><tr><td>P221 baseline A accuracy</td><td>0.25</td></tr><tr><td>P221 baseline B accuracy</td><td>0.3125</td></tr><tr><td>P222 vs P220 baseline A delta</td><td>-0.125</td></tr><tr><td>P222 vs P220 baseline B delta</td><td>-0.1875</td></tr></tbody></table>
+    </section>
+  </div>
+  <section>
+    <h2>Current Limitations</h2>
+    <ul><li>Fixed bounded sample only: P216/P218/P219/P220 are based on 24 rows across 3 dates for the committed historical snapshot.</li><li>Feature engineering remains heuristic and source-bounded; the artifacts do not establish full point-in-time pregame context, complete count state, or a production feature contract.</li><li>P219/P220 evidence is in-sample on the same 24 rows used to derive the baseline rules, so it does not establish out-of-sample predictive ability.</li><li>P221/P222 holdout evidence is still small: 16 evaluated rows across 2 time-split holdout dates.</li><li>Baseline A and baseline B are deterministic reference heuristics, not trained production models.</li><li>P221 baseline B fallback coverage remains weak: 5 of 16 rows used global fallback, with fallback accuracy 0.0.</li><li>Current evidence does not establish live data readiness, point-in-time integrity, or production activation readiness.</li><li>This index reads committed artifacts only and does not independently refresh, extend, or relabel the historical sample.</li></ul>
+  </section>
+  <section>
+    <h2>Prohibited Claims</h2>
+    <ul><li>Do not claim future prediction ability from this evidence index.</li><li>Do not claim betting advice, wagering edge, or pick quality from this evidence index.</li><li>Do not claim ROI, EV, Kelly, or CLV from this evidence index.</li><li>Do not claim production readiness or live pipeline readiness from this evidence index.</li><li>Do not claim season-wide or league-wide generalization from this bounded historical snapshot.</li><li>Do not claim point-in-time feature integrity beyond what the fixed P216-P222 artifacts explicitly show.</li></ul>
+  </section>
+  <section>
+    <h2>Not Claimed</h2>
+    <ul><li>No future predictive ability is established.</li><li>No betting advice or wagering edge is established.</li><li>No ROI, EV, Kelly, or CLV is established.</li><li>No production readiness or live pipeline readiness is established.</li><li>No model training, remote data refresh, or pybaseball invocation occurred in this task.</li><li>No database writes or live provider calls occurred in this task.</li></ul>
+  </section>
+  <section>
+    <h2>Next-Step Decision Points For CTO</h2>
+    <table><thead><tr><th>Option</th><th>Decision Point</th><th>Why Now</th><th>Requires New Artifacts</th></tr></thead><tbody><tr><td>cto_option_1</td><td>Authorize point-in-time feature and lineage contract design before any model design work.</td><td>The current evidence chain is historical and deterministic, but it does not prove point-in-time feature integrity.</td><td>True</td></tr><tr><td>cto_option_2</td><td>Expand the bounded historical sample and rerun the same artifact chain before interpreting baseline behavior more broadly.</td><td>The present evidence is limited to 24 in-sample rows and 16 holdout rows.</td><td>True</td></tr><tr><td>cto_option_3</td><td>Revisit target and feature design to reduce sparse classes and fallback-heavy baseline behavior before any model experimentation.</td><td>Baseline B still relies on global fallback for a material share of holdout rows and struggles on minority classes.</td><td>True</td></tr><tr><td>cto_option_4</td><td>Defer model design authorization until point-in-time integrity and broader historical coverage are explicitly demonstrated.</td><td>Nothing in the current evidence chain establishes live or production-readiness.</td><td>False</td></tr></tbody></table>
+  </section>
+</main>
+</body>
+</html>

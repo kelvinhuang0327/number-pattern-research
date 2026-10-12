@@ -1,0 +1,2293 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Betting-pool Task Orchestrator</title>
+
+    <!-- Professional Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Base Variables */
+        :root {
+            --bg-primary: #010409;
+            --bg-secondary: #0d1117;
+            --bg-tertiary: #161b22;
+            --bg-card: #161b22;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-muted: #7d8590;
+            --border-color: #30363d;
+            --accent: #58a6ff;
+            --success: #3fb950;
+            --warning: #e3b341;
+            --error: #f85149;
+            --info: #79c0ff;
+        }
+
+        /* Reset & Base */
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Layout */
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 16px; }
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 0;
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .title { font-size: 20px; font-weight: 700; margin: 0; }
+        .subtitle { font-size: 13px; color: var(--text-secondary); margin: 0; }
+
+        /* Navigation */
+        .nav-container { background: var(--bg-secondary); border-bottom: 1px solid var(--border-color); }
+        .nav-tabs { display: flex; gap: 2px; padding: 0; }
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 6px 6px 0 0;
+            transition: all 0.2s;
+        }
+        .nav-btn.active {
+            background: var(--bg-primary);
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+        }
+        .nav-btn:hover:not(.active) { background: var(--bg-tertiary); color: var(--text-primary); }
+
+        /* Sections */
+        .section { display: none; padding: 24px 0; }
+        .section.active { display: block; }
+        .section-title { font-size: 24px; font-weight: 700; margin: 0 0 8px 0; }
+        .section-subtitle { font-size: 14px; color: var(--text-secondary); margin: 0 0 24px 0; }
+
+        /* Metric Cards */
+        .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 16px;
+        }
+        .metric-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+        .metric-value { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+
+        /* Control Bars */
+        .control-bar {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .control-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+        .control-row:last-child { margin-bottom: 0; }
+
+        /* Buttons */
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            border: 1px solid;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-secondary {
+            background: var(--bg-secondary);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+        .btn-secondary:hover { background: var(--bg-tertiary); }
+        .btn-success {
+            background: #238636;
+            border-color: #238636;
+            color: white;
+        }
+        .btn-success:hover { background: #2ea043; }
+        .btn-success:disabled { background: #2d333b; color: #d1d5db; cursor: not-allowed; }
+        .btn-error {
+            background: #da3633;
+            border-color: #da3633;
+            color: white;
+        }
+        .btn-error:hover { background: #f85149; }
+        .btn-error:disabled { background: #2d333b; color: #d1d5db; cursor: not-allowed; }
+        .orc-trigger-btn {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+            color: #ffffff;
+        }
+        .orc-trigger-btn:hover { background: #1e40af; }
+        .orc-trigger-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+        /* Form Elements */
+        input[type="date"], input[type="text"], select {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 12px;
+        }
+
+        /* Status Badges */
+        .orc-status-badge { padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+        .orc-status-queued { background: #163a6b; color: #dbeafe; }
+        .orc-status-running { background: #5b3a00; color: #fde68a; }
+        .orc-status-completed { background: #0f5132; color: #dcfce7; }
+        .orc-status-failed { background: #7f1d1d; color: #fee2e2; }
+        .orc-status-replan_required { background: #713f12; color: #fef3c7; }
+        .orc-status-cancelled { background: #374151; color: #f3f4f6; }
+
+        /* Tables */
+        .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .data-table th, .data-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+            vertical-align: middle;
+        }
+        .data-table th:nth-child(3), .data-table td:nth-child(3),
+        .data-table th:nth-child(5), .data-table td:nth-child(5) {
+            text-align: left;
+        }
+        .data-table thead th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+            color: var(--text-muted);
+            position: sticky;
+            top: 0;
+        }
+        .data-table tbody tr:hover { background: rgba(88,166,255,.08); cursor: pointer; }
+        .rv-empty { text-align: center; color: var(--text-secondary); font-style: italic; }
+
+        /* Long text handling */
+        .truncate-text {
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Status improvements */
+        .worker-status-running { color: var(--warning) !important; }
+        .worker-status-idle { color: var(--success) !important; }
+        .worker-status-disabled { color: var(--text-secondary) !important; }
+
+        /* Card Layout */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 16px;
+        }
+        .card-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            background: var(--bg-secondary);
+        }
+        .card-body { padding: 16px; overflow-x: auto; }
+
+        /* Detail View */
+        .rv-hidden { display: none; }
+        .detail-content { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; }
+
+        /* Outcome Colors */
+        .orc-outcome-success { color: var(--success); font-weight: 600; }
+        .orc-outcome-error { color: var(--error); font-weight: 600; }
+        .orc-outcome-muted { color: var(--text-secondary); }
+        .orc-outcome-neutral { color: var(--text-primary); }
+
+        /* Force Warning */
+        .force-warning {
+            display: none;
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            background: rgba(248,81,73,.1);
+            border: 1px solid rgba(248,81,73,.35);
+            font-size: 12px;
+            color: var(--error);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .metric-grid { grid-template-columns: 1fr; }
+            .control-row { flex-direction: column; align-items: stretch; }
+            .nav-tabs { flex-wrap: wrap; }
+        }
+        /* Toast 通知 */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .toast {
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #fff;
+            opacity: 1;
+            transition: opacity 0.4s;
+            max-width: 320px;
+        }
+        .toast-success { background: #238636; }
+        .toast-error   { background: #da3633; }
+        .toast-info    { background: #1d4ed8; }
+        .toast-fade    { opacity: 0; }
+    </style>
+</head>
+<body>
+    <div class="toast-container" id="toast-container"></div>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div>
+                    <h1 class="title">Betting-pool Task Orchestrator</h1>
+                    <p class="subtitle">AI-driven Task Scheduling & CTO Review System</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="nav-container">
+        <div class="container">
+            <div class="nav-tabs">
+                <button class="nav-btn active" data-section="orchestration">
+                    <i data-lucide="zap"></i>
+                    <span>任務編排</span>
+                </button>
+                <button class="nav-btn" data-section="cto-review">
+                    <i data-lucide="shield-check"></i>
+                    <span>CTO 審核報告</span>
+                </button>
+                <button class="nav-btn" data-section="usage">
+                    <i data-lucide="bar-chart-2"></i>
+                    <span>Usage 詳細</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Orchestration Section -->
+        <section id="orchestration-section" class="section active">
+            <h2 class="section-title">任務編排</h2>
+            <p class="section-subtitle" id="orc-subtitle">可切換 Planner / Worker 組合的雙 Agent 自動化排程</p>
+
+            <!-- Summary Metrics -->
+            <div id="orc-summary" class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-label">今日任務</div>
+                    <div class="metric-value" id="orc-total">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">進行中</div>
+                    <div class="metric-value" id="orc-running">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">已完成</div>
+                    <div class="metric-value" id="orc-completed">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Worker 狀態</div>
+                    <div class="metric-value" id="orc-worker-status">—</div>
+                </div>
+            </div>
+
+            <!-- Control Bar 1: Filters & Refresh -->
+            <div class="control-bar">
+                <div class="control-row">
+                    <label>日期
+                        <input type="date" id="orc-date-filter">
+                    </label>
+                    <label>狀態
+                        <select id="orc-status-filter">
+                            <option value="ALL">全部狀態</option>
+                            <option value="QUEUED">QUEUED</option>
+                            <option value="RUNNING">RUNNING</option>
+                            <option value="COMPLETED">COMPLETED</option>
+                            <option value="FAILED">FAILED</option>
+                            <option value="FAILED_RATE_LIMIT">FAILED_RATE_LIMIT</option>
+                            <option value="BLOCKED_ENV">BLOCKED_ENV</option>
+                            <option value="REPLAN_REQUIRED">REPLAN_REQUIRED</option>
+                            <option value="CANCELLED">CANCELLED</option>
+                        </select>
+                    </label>
+                    <button id="orc-refresh-btn" class="btn-sm btn-secondary">重新整理</button>
+                    <span>排程：<b id="orc-scheduler-state">—</b></span>
+                    <button id="orc-scheduler-toggle-btn" class="btn-sm btn-success" data-enabled="false">啟用排程</button>
+                </div>
+                <div class="control-row">
+                    <span>下次 Planner：<b id="orc-next-planner-at">—</b></span>
+                    <span>下次 Worker：<b id="orc-next-worker-at">—</b></span>
+                    <span id="orc-next-tick-note">以最近一次 tick + 10 分鐘推估，請以日期加時間為主，括號倒數僅供參考</span>
+                    <button id="orc-run-planner-btn" class="btn-sm orc-trigger-btn">Planner 立即執行</button>
+                    <button id="orc-run-worker-btn" class="btn-sm orc-trigger-btn">Worker 立即執行</button>
+                </div>
+                <div class="control-row">
+                    <div style="font-size: 12px; color: var(--text-secondary);">
+                        <span>run_id：<b id="orc-planner-last-request-id">—</b></span>
+                        <span style="margin-left: 16px;">final outcome：<b id="orc-planner-last-outcome">—</b></span>
+                        <span style="margin-left: 16px;">task_id：<b id="orc-planner-last-task-id">—</b></span>
+                    </div>
+                    <div id="orc-planner-last-note" style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">尚未觸發 Planner</div>
+                </div>
+            </div>
+
+            <div class="control-bar">
+                <div class="control-row">
+                    <span>LLM 模式：<b id="orc-llm-mode">—</b></span>
+                    <button id="orc-llm-safe-run-btn" class="btn-sm btn-secondary">SAFE RUN</button>
+                    <button id="orc-llm-hard-off-btn" class="btn-sm btn-secondary">HARD OFF</button>
+                    <span>封鎖次數：<b id="orc-llm-blocked-count">—</b></span>
+                </div>
+                <div class="control-row" style="font-size: 12px; color: var(--text-secondary);">
+                    <span>最後 LLM 呼叫：<b id="orc-last-llm-call">—</b></span>
+                    <span>最後封鎖：<b id="orc-last-llm-blocked">—</b></span>
+                    <span>背景執行者：<b id="orc-active-background-runner">—</b></span>
+                </div>
+            </div>
+
+            <!-- Provider Configuration -->
+            <div class="control-bar">
+                <div class="control-row">
+                    <label>Planner provider
+                        <select id="orc-planner-provider"></select>
+                    </label>
+                    <label>Worker provider
+                        <select id="orc-worker-provider"></select>
+                    </label>
+                </div>
+                <div class="control-row">
+                    <label id="orc-worker-copilot-model-label">Copilot Model
+                        <input type="text" id="orc-worker-copilot-model" list="orc-worker-copilot-model-options" placeholder="例如 auto">
+                    </label>
+                    <datalist id="orc-worker-copilot-model-options">
+                    </datalist>
+                    <button id="orc-provider-save-btn" class="btn-sm btn-secondary">套用組合</button>
+                    <span id="orc-provider-hint" style="font-size: 12px; color: var(--text-secondary);">讀取 provider 狀態中…</span>
+                </div>
+            </div>
+
+            <!-- List / Detail views -->
+            <div id="orc-list-view">
+                <h3 style="margin-bottom: 8px;">任務清單</h3>
+                <table class="data-table" style="margin-bottom: 24px;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Planer 發佈時間</th>
+                            <th>標題</th>
+                            <th>狀態</th>
+                            <th>耗時</th>
+                            <th>Worker 完成時間</th>
+                            <th>異動檔案</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orc-task-tbody">
+                        <tr><td colspan="7" class="rv-empty">載入中…</td></tr>
+                    </tbody>
+                </table>
+                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 20px;">
+                    <button id="orc-task-prev-btn" class="btn-sm btn-secondary">上一頁</button>
+                    <button id="orc-task-next-btn" class="btn-sm btn-secondary">下一頁</button>
+                    <span id="orc-task-page-info" style="font-size: 12px; color: var(--text-secondary);">載入中…</span>
+                </div>
+
+                <h3 style="margin-bottom: 8px;">排程紀錄（最近 10 次 tick）</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>時間</th>
+                            <th>Runner</th>
+                            <th>結果</th>
+                            <th>任務 ID</th>
+                            <th>訊息</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orc-run-tbody">
+                        <tr><td colspan="5" class="rv-empty">載入中…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="orc-detail-view" class="rv-hidden">
+                <button id="orc-back-btn" class="btn-sm btn-secondary" style="margin-bottom: 12px;">← 返回列表</button>
+                <div id="orc-detail-content" class="detail-content"></div>
+            </div>
+        </section>
+
+        <!-- CTO Review Section -->
+        <section id="cto-review-section" class="section">
+            <h2 class="section-title">CTO 審核報告</h2>
+            <p class="section-subtitle">檢視 worker 自動提交、CTO 批次審核、合併與拒絕決策的完整歷程。</p>
+
+            <!-- CTO Control Bar 1: date / status / refresh / scheduler -->
+            <div class="control-bar">
+                <div class="control-row">
+                    <label>日期
+                        <input type="date" id="orc-cto-date-filter">
+                    </label>
+                    <label>狀態
+                        <select id="orc-cto-status-filter">
+                            <option value="">全部狀態</option>
+                            <option value="PENDING">待審核</option>
+                            <option value="APPROVED">已批准</option>
+                            <option value="MERGED">已合併</option>
+                            <option value="REJECTED">已拒絕</option>
+                        </select>
+                    </label>
+                    <button id="orc-cto-refresh-btn" class="btn-sm btn-secondary">重新整理</button>
+                    <span>排程：<b id="cto-scheduler-state">—</b></span>
+                    <button id="cto-scheduler-toggle-btn" class="btn-sm btn-success" data-enabled="false">啟用排程</button>
+                </div>
+                <div class="control-row">
+                    <span>下次 Planner：<b id="cto-next-planner-at">—</b></span>
+                    <span id="cto-next-tick-note">每秒倒數，歸零後自動刷新</span>
+                    <button id="orc-cto-run-now-btn" class="btn-sm orc-trigger-btn">CTO 立即執行</button>
+                    <label style="display: flex; align-items: center; gap: 4px; font-size: 12px;">
+                        <input type="checkbox" id="orc-cto-force-rerun-cb" style="accent-color: var(--error);">
+                        Force Re-run
+                    </label>
+                    <select id="orc-cto-run-intent" style="font-size: 12px; display: none;">
+                        <option value="retry">retry（重試失敗）</option>
+                        <option value="compare">compare（比對分析）</option>
+                        <option value="override">override（強制覆蓋）</option>
+                    </select>
+                </div>
+                <div id="orc-cto-force-warning" class="force-warning">
+                    ⚠️ Force Re-run 將忽略冷卻期限制，可能會對系統造成額外負載。僅在緊急情況下使用。
+                </div>
+            </div>
+
+            <!-- CTO Planner Trigger Trace -->
+            <div class="control-bar">
+                <div style="font-weight: 600; margin-bottom: 8px;">CTO Planner 觸發追蹤</div>
+                <div class="control-row">
+                    <span>run_id：<b id="orc-cto-planner-last-request-id">—</b></span>
+                    <span>final outcome：<b id="orc-cto-planner-last-outcome">—</b></span>
+                </div>
+                <div id="orc-cto-planner-last-note" style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">尚未觸發 CTO Planner</div>
+            </div>
+
+            <!-- CTO Provider Bar: Planner / Model / Apply -->
+            <div class="control-bar">
+                <div class="control-row">
+                    <label>Planner provider
+                        <select id="orc-cto-planner-provider">
+                            <option value="claude">claude</option>
+                            <option value="openai">openai</option>
+                        </select>
+                    </label>
+                    <label>Planner model
+                        <input type="text" id="orc-cto-planner-model" list="orc-cto-planner-model-options" placeholder="claude-3-5-sonnet-20241022">
+                    </label>
+                    <datalist id="orc-cto-planner-model-options">
+                        <option value="claude-3-5-sonnet-20241022">
+                        <option value="claude-3-5-haiku-20241022">
+                    </datalist>
+                    <button id="orc-cto-provider-save-btn" class="btn-sm btn-secondary">套用組合</button>
+                    <span id="orc-cto-provider-hint" style="font-size: 12px; color: var(--text-secondary);">讀取 CTO provider 狀態中…</span>
+                </div>
+            </div>
+
+            <!-- CTO Summary Metrics -->
+            <div id="cto-summary" class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-label">頻率模式</div>
+                    <div class="metric-value" id="cto-frequency-mode">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">待審核</div>
+                    <div class="metric-value" id="cto-pending-count">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">已批准</div>
+                    <div class="metric-value" id="cto-approved-count">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">已合併</div>
+                    <div class="metric-value" id="cto-merged-count">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">已拒絕</div>
+                    <div class="metric-value" id="cto-rejected-count">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">延後衝突</div>
+                    <div class="metric-value" id="cto-deferred-count">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">去重 / 取代</div>
+                    <div class="metric-value" id="cto-superseded-count">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">重複提交</div>
+                    <div class="metric-value" id="cto-duplicate-count">—</div>
+                </div>
+            </div>
+
+            <!-- CTO Latest Run Info -->
+            <div class="control-bar">
+                <div class="control-row">
+                    <span>最近執行：<b id="cto-latest-run-at">—</b></span>
+                    <span style="margin-left: 16px;">下次執行：<b id="cto-next-run-at">—</b></span>
+                    <span style="margin-left: 16px;">摘要：<span id="cto-latest-run-summary" style="color: var(--text-muted);">—</span></span>
+                </div>
+            </div>
+
+            <!-- CTO List View -->
+            <div id="cto-list-view">
+                <div class="card">
+                    <div class="card-header">CTO 批次列表</div>
+                    <div class="card-body">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Run ID</th>
+                                    <th>開始</th>
+                                    <th>完成</th>
+                                    <th>頻率</th>
+                                    <th>候選</th>
+                                    <th>批准</th>
+                                    <th>合併</th>
+                                    <th>拒絕</th>
+                                    <th>摘要</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orc-cto-run-tbody">
+                                <tr><td colspan="9" class="rv-empty">載入中…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="cto-detail-view" class="rv-hidden">
+                <button id="orc-cto-back-btn" class="btn-sm btn-secondary" style="margin-bottom: 12px;">← 返回列表</button>
+                <div id="orc-cto-detail-content" class="detail-content"></div>
+            </div>
+        </section>
+
+        <!-- Usage 詳細 Section -->
+        <section id="usage-section" class="section">
+            <h2 class="section-title">Usage 詳細</h2>
+            <p class="section-subtitle">今日 AI / GitHub 外部呼叫統計 — Planner / Worker / CTO 分角色明細。</p>
+
+            <!-- Top Summary Bar -->
+            <div class="control-bar" id="usage-top-bar">
+                <div class="control-row">
+                    <span>Tokens <b id="usage-tokens-summary">—</b></span>
+                    <span style="margin-left:16px;">Premium Requests: <b id="usage-premium">—</b></span>
+                    <span style="margin-left:16px;">Blocked Attempts: <b id="usage-blocked-total">—</b></span>
+                    <span style="margin-left:16px;">Rate Limit: <b id="usage-rate-limit">—</b></span>
+                    <button id="usage-refresh-btn" class="btn-sm btn-secondary" style="margin-left:auto;">重新整理</button>
+                    <label style="display:flex;align-items:center;gap:4px;font-size:12px;margin-left:8px;">
+                        <input type="checkbox" id="usage-all-time-cb"> 顯示全部時間
+                    </label>
+                </div>
+            </div>
+
+            <!-- Warnings Area -->
+            <div id="usage-warnings" style="margin-bottom:16px;"></div>
+
+            <!-- Role Cards Grid -->
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px;margin-bottom:24px;">
+
+                <!-- Planner Card -->
+                <div class="card" id="usage-planner-card">
+                    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+                        <span>Planner</span>
+                        <span id="usage-planner-badge" style="font-size:12px;color:var(--text-secondary);"></span>
+                    </div>
+                    <div class="card-body" id="usage-planner-body">
+                        <div class="rv-empty">今日尚無 LLM 呼叫紀錄</div>
+                    </div>
+                </div>
+
+                <!-- Worker Card -->
+                <div class="card" id="usage-worker-card">
+                    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+                        <span>Worker</span>
+                        <span id="usage-worker-badge" style="font-size:12px;color:var(--text-secondary);"></span>
+                    </div>
+                    <div class="card-body" id="usage-worker-body">
+                        <div class="rv-empty">今日尚無 LLM 呼叫紀錄</div>
+                    </div>
+                </div>
+
+                <!-- CTO Card -->
+                <div class="card" id="usage-cto-card">
+                    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+                        <span>CTO</span>
+                        <span id="usage-cto-badge" style="font-size:12px;color:var(--text-secondary);"></span>
+                    </div>
+                    <div class="card-body" id="usage-cto-body">
+                        <div class="rv-empty">今日尚無 LLM 呼叫紀錄</div>
+                    </div>
+                </div>
+
+                <!-- Manual / Backfill Card -->
+                <div class="card" id="usage-manual-card" style="display:none;">
+                    <div class="card-header">Manual / Backfill</div>
+                    <div class="card-body" id="usage-manual-body">
+                        <div class="rv-empty">尚無記錄</div>
+                    </div>
+                </div>
+
+                <!-- Phase 36: Usage Budget Guard Card -->
+                <div class="card" id="usage-budget-card">
+                    <div class="card-header" style="display:flex;align-items:center;gap:12px;">
+                        💰 Usage Budget Guard
+                        <span id="budget-status-badge" style="font-size:12px;padding:2px 8px;border-radius:4px;background:#333;color:#fff;">—</span>
+                        <span id="budget-scheduler-mode" style="font-size:12px;color:var(--text-secondary);margin-left:4px;"></span>
+                    </div>
+                    <div class="card-body" id="usage-budget-body">
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:12px;">
+                            <div><div style="font-size:11px;color:var(--text-secondary);">Worker 呼叫 (24h)</div><div id="budget-worker-calls" style="font-size:18px;font-weight:700;">—</div><div id="budget-worker-thresholds" style="font-size:11px;color:var(--text-secondary);"></div></div>
+                            <div><div style="font-size:11px;color:var(--text-secondary);">Copilot 呼叫</div><div id="budget-copilot-calls" style="font-size:18px;font-weight:700;">—</div><div id="budget-copilot-thresholds" style="font-size:11px;color:var(--text-secondary);"></div></div>
+                            <div><div style="font-size:11px;color:var(--text-secondary);">Claude 呼叫</div><div id="budget-claude-calls" style="font-size:18px;font-weight:700;">—</div><div id="budget-claude-thresholds" style="font-size:11px;color:var(--text-secondary);"></div></div>
+                            <div><div style="font-size:11px;color:var(--text-secondary);">Codex 呼叫</div><div id="budget-codex-calls" style="font-size:18px;font-weight:700;">—</div><div id="budget-codex-thresholds" style="font-size:11px;color:var(--text-secondary);"></div></div>
+                            <div><div style="font-size:11px;color:var(--text-secondary);">封鎖次數</div><div id="budget-blocked" style="font-size:18px;font-weight:700;">—</div></div>
+                            <div><div style="font-size:11px;color:var(--text-secondary);">Input Tokens</div><div id="budget-tokens" style="font-size:18px;font-weight:700;">—</div></div>
+                        </div>
+                        <div id="budget-planner-status" style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;"></div>
+                        <div id="budget-alerts" style="font-size:12px;"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Recent Usage Table -->
+            <div class="card">
+                <div class="card-header">最近 10 筆 Usage 明細</div>
+                <div class="card-body" style="overflow-x:auto;">
+                    <table class="data-table" id="usage-recent-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Role</th>
+                                <th>Provider</th>
+                                <th>Task</th>
+                                <th>Allowed</th>
+                                <th>Blocked</th>
+                                <th>Parsed</th>
+                                <th>Premium</th>
+                                <th>Tokens</th>
+                                <th>Rate Limit</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usage-recent-tbody">
+                            <tr><td colspan="10" class="rv-empty">載入中…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetSection = btn.dataset.section;
+
+                // Update nav buttons
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Update sections
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(`${targetSection}-section`).classList.add('active');
+
+                // Load section data
+                if (targetSection === 'orchestration') {
+                    loadOrchestrationData();
+                } else if (targetSection === 'cto-review') {
+                    loadCTOData();
+                } else if (targetSection === 'usage') {
+                    loadUsageData();
+                }
+            });
+        });
+
+        // API Base URL - 使用代理服務器解決 CORS 問題
+        const TRUSTED_UI_ORIGINS = new Set([
+            'http://127.0.0.1:8789',
+            'http://localhost:8789',
+            'http://127.0.0.1:8787',
+            'http://localhost:8787'
+        ]);
+        const LEGACY_BLOCKED_PORTS = new Set(['743']);
+        const DEFAULT_PROXY_BASE = 'http://127.0.0.1:8789';
+        const BROWSER_LOCATION = globalThis.location;
+
+        function normalizeApiBase(base) {
+            if (!base) {
+                return '';
+            }
+
+            try {
+                const url = new URL(base, BROWSER_LOCATION.origin);
+                return url.origin === BROWSER_LOCATION.origin ? '' : url.origin;
+            } catch (error) {
+                console.warn('Ignoring invalid orchestrator API base:', base, error);
+                return DEFAULT_PROXY_BASE;
+            }
+        }
+
+        function resolveApiBase() {
+            const configuredBase = globalThis.localStorage?.getItem('orchestrator_api_base') || '';
+            const currentOrigin = BROWSER_LOCATION.origin;
+            const currentPort = BROWSER_LOCATION.port || (BROWSER_LOCATION.protocol === 'https:' ? '443' : '80');
+
+            if (configuredBase) {
+                const normalizedConfigured = normalizeApiBase(configuredBase);
+                if (normalizedConfigured) {
+                    try {
+                        const configuredUrl = new URL(normalizedConfigured);
+                        if (LEGACY_BLOCKED_PORTS.has(configuredUrl.port)) {
+                            console.warn(
+                                `Blocked stale orchestrator_api_base ${normalizedConfigured}; falling back to ${DEFAULT_PROXY_BASE}`
+                            );
+                            return DEFAULT_PROXY_BASE;
+                        }
+                    } catch (error) {
+                        console.warn('Invalid configured orchestrator_api_base; falling back to default proxy.', error);
+                        return DEFAULT_PROXY_BASE;
+                    }
+                }
+
+                return normalizedConfigured;
+            }
+
+            if (LEGACY_BLOCKED_PORTS.has(currentPort)) {
+                console.warn(
+                    `Detected stale UI origin ${currentOrigin}; forcing orchestrator API traffic to ${DEFAULT_PROXY_BASE}`
+                );
+                return DEFAULT_PROXY_BASE;
+            }
+
+            if (TRUSTED_UI_ORIGINS.has(currentOrigin)) {
+                return '';
+            }
+
+            console.warn(
+                `Untrusted UI origin ${currentOrigin}; forcing orchestrator API traffic to ${DEFAULT_PROXY_BASE}`
+            );
+            return DEFAULT_PROXY_BASE;
+        }
+
+        const API_BASE = resolveApiBase();
+        console.log('Resolved orchestrator API base:', API_BASE || BROWSER_LOCATION.origin);
+
+        function setOrchestrationErrorState() {
+            document.getElementById('orc-total').textContent = 'Error';
+            document.getElementById('orc-worker-status').textContent = '載入失敗';
+            document.getElementById('orc-provider-hint').textContent = '載入失敗 - 請檢查 API 連接';
+            document.getElementById('orc-llm-mode').textContent = '載入失敗';
+        }
+
+        function updateSummaryMetrics(counts) {
+            const total = Object.values(counts).reduce((a, b) => a + b, 0);
+            document.getElementById('orc-total').textContent = total || '0';
+            document.getElementById('orc-running').textContent = counts.RUNNING || '0';
+            document.getElementById('orc-completed').textContent = counts.COMPLETED || '0';
+        }
+
+        function getWorkerDisplayState(scheduler, latestTask, counts) {
+            if (!scheduler.enabled) {
+                return { text: '暫停', color: 'var(--text-secondary)' };
+            }
+            if (latestTask && latestTask.status === 'RUNNING') {
+                return { text: `執行中 (任務 ${latestTask.id})`, color: 'var(--warning)' };
+            }
+            if ((counts.RUNNING || 0) > 0) {
+                return { text: '執行中', color: 'var(--warning)' };
+            }
+            return { text: '閒置', color: 'var(--success)' };
+        }
+
+        function updateWorkerStatus(scheduler, latestTask, counts) {
+            const workerState = getWorkerDisplayState(scheduler, latestTask, counts);
+            const workerEl = document.getElementById('orc-worker-status');
+            workerEl.textContent = workerState.text;
+            workerEl.style.color = workerState.color;
+        }
+
+        function showToast(message, type = 'info', duration = 3000) {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('toast-fade');
+                setTimeout(() => toast.remove(), 450);
+            }, duration);
+        }
+
+        function updateSchedulerControls(scheduler) {
+            // New API shape: scheduler_enabled at top level, next_planner_tick_estimate / next_worker_tick_estimate
+            const enabled = scheduler.enabled ?? scheduler.scheduler_enabled ?? false;
+            const nextPlannerAt = scheduler.next_planner_run_at ?? scheduler.next_planner_tick_estimate;
+            const nextWorkerAt = scheduler.next_worker_run_at ?? scheduler.next_worker_tick_estimate;
+
+            document.getElementById('orc-scheduler-state').textContent = enabled ? '啟用' : '暫停';
+            const toggleBtn = document.getElementById('orc-scheduler-toggle-btn');
+            if (toggleBtn) {
+                toggleBtn.dataset.enabled = enabled ? 'true' : 'false';
+                toggleBtn.textContent = enabled ? '停止排程' : '啟用排程';
+                toggleBtn.className = enabled ? 'btn-sm btn-error' : 'btn-sm btn-success';
+            }
+
+            if (nextPlannerAt) {
+                const plannerEl = document.getElementById('orc-next-planner-at');
+                plannerEl.textContent = formatDateTime(nextPlannerAt);
+                plannerEl.dataset.originalTime = nextPlannerAt;
+                plannerEl.dataset.displayTime = formatDateTime(nextPlannerAt);
+            }
+            if (nextWorkerAt) {
+                const workerEl = document.getElementById('orc-next-worker-at');
+                workerEl.textContent = formatDateTime(nextWorkerAt);
+                workerEl.dataset.originalTime = nextWorkerAt;
+                workerEl.dataset.displayTime = formatDateTime(nextWorkerAt);
+            }
+        }
+
+        function updateLlmControlPanel(data) {
+            const mode = data.llm_execution_mode || '—';
+            document.getElementById('orc-llm-mode').textContent = mode;
+            document.getElementById('orc-llm-blocked-count').textContent = data.llm_blocked_count ?? 0;
+
+            const lastCall = data.last_llm_call_at
+                ? `${formatDateTime(data.last_llm_call_at)} | ${data.last_llm_call_runner || '—'} / ${data.last_llm_call_provider || '—'}`
+                : '—';
+            const lastBlocked = data.last_llm_blocked_at
+                ? `${formatDateTime(data.last_llm_blocked_at)} | ${data.last_llm_blocked_reason || '—'}`
+                : '—';
+            const activeRunner = data.active_background_runner || '—';
+
+            document.getElementById('orc-last-llm-call').textContent = lastCall;
+            document.getElementById('orc-last-llm-blocked').textContent = lastBlocked;
+            document.getElementById('orc-active-background-runner').textContent = activeRunner;
+
+            const safeRunBtn = document.getElementById('orc-llm-safe-run-btn');
+            const hardOffBtn = document.getElementById('orc-llm-hard-off-btn');
+            if (safeRunBtn) {
+                safeRunBtn.className = mode === 'safe-run' ? 'btn-sm btn-success' : 'btn-sm btn-secondary';
+            }
+            if (hardOffBtn) {
+                hardOffBtn.className = mode === 'hard-off' ? 'btn-sm btn-error' : 'btn-sm btn-secondary';
+            }
+        }
+
+        async function _setLlmMode(mode) {
+            try {
+                const response = await fetch(`${API_BASE}/api/orchestrator/llm-control`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mode })
+                });
+                if (!response.ok) {
+                    showToast(`LLM 模式切換失敗：HTTP ${response.status}`, 'error');
+                    return;
+                }
+                const data = await response.json();
+                updateLlmControlPanel(data);
+                showToast(`LLM 模式已切換為 ${data.llm_execution_mode}`, 'success');
+                await _loadSummary();
+            } catch (error) {
+                console.error('Error setting LLM mode:', error);
+                showToast('LLM 模式切換失敗：請檢查 API 連線', 'error');
+            }
+        }
+
+        function renderProviderOptions(selectEl, options, selectedValue) {
+            if (!selectEl) return;
+            selectEl.innerHTML = (options || []).map(option => `
+                <option value="${option.value}" ${option.available ? '' : 'disabled'}>
+                    ${option.label}${option.available ? '' : '（不可用）'}
+                </option>
+            `).join('');
+            if (selectedValue) {
+                selectEl.value = selectedValue;
+            }
+        }
+
+        function renderWorkerCopilotPresets(presets) {
+            const datalist = document.getElementById('orc-worker-copilot-model-options');
+            if (!datalist) return;
+            datalist.innerHTML = (presets || []).map(preset => `<option value="${preset.value}">${preset.label}</option>`).join('');
+        }
+
+        function updateCopilotModelVisibility(workerProvider) {
+            const label = document.getElementById('orc-worker-copilot-model-label');
+            if (!label) return;
+            label.style.display = ['copilot', 'copilot-daemon'].includes(workerProvider) ? '' : 'none';
+        }
+
+        function renderProviderHint(config) {
+            const workerOption = (config.worker_options || []).find(option => option.value === config.worker_provider);
+            const daemonReason = config.worker_provider === 'copilot-daemon' ? (workerOption?.reason || '未取得 Daemon 狀態') : null;
+            const copilotModel = config.worker_copilot_model || '預設';
+            const parts = [
+                `當前組合：${config.combo_label || 'N/A'}`,
+                '切換後會影響下一次 planner / worker 啟動；不會中斷目前已在執行的任務。',
+            ];
+            if (daemonReason) {
+                parts.push(`Copilot Daemon：${daemonReason}`);
+            }
+            parts.push(`Copilot Model：${copilotModel}`);
+            document.getElementById('orc-provider-hint').textContent = parts.join(' ');
+        }
+
+        function updateProviderSummary(config) {
+            renderProviderOptions(document.getElementById('orc-planner-provider'), config.planner_options, config.planner_provider);
+            renderProviderOptions(document.getElementById('orc-worker-provider'), config.worker_options, config.worker_provider);
+            document.getElementById('orc-worker-copilot-model').value = config.worker_copilot_model || '';
+            renderWorkerCopilotPresets(config.worker_copilot_model_presets || []);
+            updateCopilotModelVisibility(config.worker_provider);
+            renderProviderHint(config);
+        }
+
+        async function fetchProviderConfig() {
+            const response = await fetch(`${API_BASE}/api/orchestrator/providers`);
+            if (!response.ok) {
+                throw new Error(`Failed to load providers, status: ${response.status}`);
+            }
+            return response.json();
+        }
+
+        function buildPlannerNote(latestTask, latestPlannerRun) {
+            if (latestTask.status === 'RUNNING') {
+                return `任務 ${latestTask.id} 執行中: ${latestTask.objective || 'N/A'}`;
+            }
+            let plannerNote = `最近任務: ${latestTask.objective || 'N/A'} | Quality Gate: ${latestTask.quality_status || 'PASS'}`;
+            if (latestPlannerRun?.outcome === 'REJECTED' && latestPlannerRun.rejection_reasons?.length) {
+                plannerNote += ` | 最近拒絕: ${latestPlannerRun.rejection_reasons[0]}`;
+            }
+            return plannerNote;
+        }
+
+        function updateLatestPlannerInfo(latestTask, latestPlannerRun) {
+            const plannerNoteEl = document.getElementById('orc-planner-last-note');
+            if (latestTask) {
+                document.getElementById('orc-planner-last-task-id').textContent = latestTask.id || '—';
+                document.getElementById('orc-planner-last-outcome').textContent = latestTask.status || '—';
+                plannerNoteEl.textContent = buildPlannerNote(latestTask, latestPlannerRun);
+                return;
+            }
+            if (latestPlannerRun?.outcome === 'REJECTED') {
+                const reasons = latestPlannerRun.rejection_reasons || [];
+                plannerNoteEl.textContent = reasons.length > 0
+                    ? `最近 Planner 拒絕: ${reasons[0]}`
+                    : '最近 Planner 拒絕了一個任務草稿';
+            }
+        }
+
+        async function fetchSummaryData() {
+            const response = await fetch(`${API_BASE}/api/summary`);
+            console.log('Summary response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`Failed to load summary, status: ${response.status}`);
+            }
+            return response.json();
+        }
+
+        function renderTaskDetailSections(task, data) {
+            return `
+                <div>
+                    <strong>標題:</strong> ${task.objective || task.task_key || '—'}<br>
+                    <strong>狀態:</strong> <span class="orc-status-badge orc-status-${task.status?.toLowerCase() || 'unknown'}">${task.status || 'UNKNOWN'}</span><br>
+                    <strong>Quality Gate:</strong> ${task.quality_status || 'PASS'}<br>
+                    <strong>建立時間:</strong> ${formatDateTime(task.created_at)}<br>
+                    <strong>完成時間:</strong> ${formatDateTime(task.finished_at || task.completed_at)}<br>
+                    <strong>耗時:</strong> ${task.execution_time_seconds ? formatDuration(task.execution_time_seconds) : '—'}
+                </div>
+                ${task.rejection_reasons && task.rejection_reasons.length > 0 ? `
+                    <div>
+                        <strong>拒絕原因:</strong>
+                        <ul style="margin: 8px 0; padding-left: 20px;">
+                            ${task.rejection_reasons.map(reason => `<li>${reason}</li>`).join('')}
+                        </ul>
+                    </div>
+                ` : ''}
+                ${data.contract_text ? `
+                    <details>
+                        <summary><strong>Contract</strong></summary>
+                        <pre style="background: var(--bg-secondary); padding: 12px; border-radius: 6px; overflow-x: auto; white-space: pre-wrap;">${data.contract_text}</pre>
+                    </details>
+                ` : ''}
+                ${data.result_text ? `
+                    <details>
+                        <summary><strong>執行結果</strong></summary>
+                        <pre style="background: var(--bg-secondary); padding: 12px; border-radius: 6px; overflow-x: auto; white-space: pre-wrap;">${data.result_text}</pre>
+                    </details>
+                ` : ''}
+                ${data.completed_text ? `
+                    <details>
+                        <summary><strong>完成報告</strong></summary>
+                        <pre style="background: var(--bg-secondary); padding: 12px; border-radius: 6px; overflow-x: auto; white-space: pre-wrap;">${data.completed_text}</pre>
+                    </details>
+                ` : ''}
+                ${task.changed_files_list && task.changed_files_list.length > 0 ? `
+                    <div>
+                        <strong>異動檔案:</strong>
+                        <ul style="margin: 8px 0; padding-left: 20px;">
+                            ${task.changed_files_list.map(file => `<li>${file}</li>`).join('')}
+                        </ul>
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        // Orchestration Functions
+        async function _loadSummary() {
+            const response = await fetch(`${API_BASE}/api/orchestrator/summary`);
+            if (!response.ok) throw new Error(`Summary failed: ${response.status}`);
+            const data = await response.json();
+            // Map new shape to existing renderers
+            const counts = data.task_counts || {};
+            const scheduler = {
+                enabled: data.scheduler_enabled,
+                next_planner_tick_estimate: data.next_planner_tick_estimate,
+                next_worker_tick_estimate: data.next_worker_tick_estimate,
+            };
+            updateSummaryMetrics(counts);
+            updateSchedulerControls(scheduler);
+            updateLlmControlPanel(data);
+            // worker status
+            const workerEl = document.getElementById('orc-worker-status');
+            if (workerEl) workerEl.textContent = data.worker_state || '—';
+            return data;
+        }
+
+        async function _loadProviders() {
+            const response = await fetch(`${API_BASE}/api/orchestrator/providers`);
+            if (!response.ok) return;
+            const config = await response.json();
+            updateProviderSummary(config);
+        }
+
+        async function _loadTasks() {
+            try {
+                const dateFilter = document.getElementById('orc-date-filter')?.value || '';
+                const statusFilter = document.getElementById('orc-status-filter')?.value || 'ALL';
+                const page = _orcPage || 1;
+                const params = new URLSearchParams({ page, page_size: 10 });
+                if (dateFilter) params.set('date', dateFilter.replace(/-/g, ''));
+                if (statusFilter && statusFilter !== 'ALL') params.set('status', statusFilter);
+
+                const response = await fetch(`${API_BASE}/api/orchestrator/tasks?${params}`);
+                if (!response.ok) return;
+                const data = await response.json();
+                const tasks = data.tasks || [];
+                const tbody = document.getElementById('orc-task-tbody');
+
+                if (tasks.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="rv-empty">暫無任務</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = tasks.map(task => {
+                    let duration = '—';
+                    if (task.duration_seconds) {
+                        duration = formatDuration(task.duration_seconds);
+                    } else if (task.started_at && task.status === 'RUNNING') {
+                        const start = new Date(task.started_at);
+                        const seconds = Math.floor((Date.now() - start) / 1000);
+                        duration = formatDuration(seconds) + ' (進行中)';
+                    }
+                    let changedFiles = '—';
+                    if (task.changed_files_list && task.changed_files_list.length > 0) {
+                        changedFiles = formatFileList(task.changed_files_list);
+                    }
+                    return `
+                        <tr data-task-id="${task.id}" onclick="showTaskDetail('${task.id}')">
+                            <td>${task.id}</td>
+                            <td>${formatDateTime(task.planner_published_at || task.created_at)}</td>
+                            <td style="text-align:left;max-width:300px;word-wrap:break-word;">${task.objective || task.task_key || '—'}</td>
+                            <td><span class="orc-status-badge orc-status-${(task.status||'unknown').toLowerCase()}">${task.status||'UNKNOWN'}</span></td>
+                            <td>${duration}</td>
+                            <td>${formatDateTime(task.worker_completed_at || task.completed_at)}</td>
+                            <td>${changedFiles}</td>
+                        </tr>`;
+                }).join('');
+
+                // pagination
+                const totalPages = data.total_pages || 1;
+                const pageInfo = document.getElementById('orc-page-info');
+                if (pageInfo) pageInfo.textContent = `第 ${data.page}/${totalPages} 頁，共 ${data.total} 筆`;
+            } catch (error) {
+                console.error('Error loading tasks:', error);
+                document.getElementById('orc-task-tbody').innerHTML = '<tr><td colspan="7" class="rv-empty">載入失敗</td></tr>';
+            }
+        }
+
+        let _orcPage = 1;
+
+        async function _loadRuns() {
+            try {
+                const response = await fetch(`${API_BASE}/api/orchestrator/runs?limit=500`);
+                if (!response.ok) return;
+                const data = await response.json();
+                const runs = data.runs || [];
+                const tbody = document.getElementById('orc-run-tbody');
+
+                if (runs.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="rv-empty">暫無記錄</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = runs.slice(0, 20).map(run => {
+                    const runnerType = translateRunnerType(run.tick_type || run.runner);
+                    const outcomeClass = getOutcomeClass(run.outcome || run.status);
+                    const outcomeLabel = translateOutcome(run.outcome || run.status);
+                    const messageLabel = translateRunMessage(run);
+                    return `
+                        <tr>
+                            <td>${formatDateTime(run.started_at || run.tick_at)}</td>
+                            <td>${runnerType}</td>
+                            <td><span class="orc-outcome-${outcomeClass}">${outcomeLabel}</span></td>
+                            <td>${run.task_id || '—'}</td>
+                            <td style="text-align:left;max-width:300px;word-wrap:break-word;">${messageLabel}</td>
+                        </tr>`;
+                }).join('');
+            } catch (error) {
+                console.error('Error loading runs:', error);
+            }
+        }
+
+        async function _loadAll() {
+            try {
+                await Promise.all([_loadSummary(), _loadProviders()]);
+                await Promise.all([_loadTasks(), _loadRuns()]);
+            } catch (error) {
+                console.error('Error in _loadAll:', error);
+                setOrchestrationErrorState();
+            }
+        }
+
+        async function loadOrchestrationData() {
+            return _loadAll();
+        }
+
+        async function loadTaskList() {
+            return _loadTasks();
+        }
+
+        async function loadRunHistory() {
+            return _loadRuns();
+        }
+
+        async function _waitForRunnerOutcome(runner, requestId, timeoutMs = 70000) {
+            const pollInterval = 3000;
+            const deadline = Date.now() + timeoutMs;
+            const noteEl = runner === 'planner'
+                ? document.getElementById('orc-planner-last-note')
+                : document.getElementById('orc-worker-last-note');
+            const reqEl = document.getElementById('orc-planner-last-request-id');
+
+            while (Date.now() < deadline) {
+                await new Promise(r => setTimeout(r, pollInterval));
+                try {
+                    const resp = await fetch(`${API_BASE}/api/orchestrator/run-status?runner=${runner}&request_id=${requestId}`);
+                    if (!resp.ok) continue;
+                    const status = await resp.json();
+                    if (status.status === 'RUNNING' && noteEl) {
+                        noteEl.textContent = '執行中…';
+                    }
+                    if (status.final) {
+                        const run = status.run || {};
+                        if (reqEl) reqEl.textContent = run.run_id || requestId;
+                        if (noteEl) noteEl.textContent = `完成：${run.outcome || 'DONE'} — ${run.message || ''}`;
+                        document.getElementById('orc-planner-last-outcome').textContent = run.outcome || 'DONE';
+                        await _loadAll();
+                        return;
+                    }
+                } catch (e) { /* ignore */ }
+            }
+            if (noteEl) noteEl.textContent = '等待逾時，請手動重新整理';
+            await _loadAll();
+        }
+
+        async function _triggerRunnerNow(runner) {
+            try {
+                const response = await fetch(`${API_BASE}/api/orchestrator/run-now`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ runner })
+                });
+                if (!response.ok) {
+                    showToast(`觸發失敗：HTTP ${response.status}`, 'error');
+                    return;
+                }
+                const result = await response.json();
+                const requestId = result.request_id;
+                const noteEl = document.getElementById('orc-planner-last-note');
+                const reqEl = document.getElementById('orc-planner-last-request-id');
+                if (reqEl) reqEl.textContent = requestId;
+                if (noteEl) noteEl.textContent = `已送出，等待結果（request_id: ${requestId}）`;
+                showToast(`${runner} 已觸發`, 'info');
+                _waitForRunnerOutcome(runner, requestId);
+            } catch (error) {
+                console.error('Error triggering runner:', error);
+                showToast('觸發失敗：請檢查 API 連線', 'error');
+            }
+        }
+
+        async function _toggleScheduler() {
+            const toggleBtn = document.getElementById('orc-scheduler-toggle-btn');
+            const currentEnabled = toggleBtn?.dataset.enabled === 'true';
+            const newEnabled = !currentEnabled;
+            try {
+                const response = await fetch(`${API_BASE}/api/orchestrator/scheduler`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ enabled: newEnabled })
+                });
+                if (response.ok) {
+                    showToast(newEnabled ? '排程已啟用' : '排程已暫停', newEnabled ? 'success' : 'info');
+                    await _loadSummary();
+                } else {
+                    showToast(`操作失敗：HTTP ${response.status}`, 'error');
+                }
+            } catch (error) {
+                showToast('操作失敗：請檢查 API 連線', 'error');
+            }
+        }
+
+        // CTO Functions
+        async function _loadCtoSummary() {
+            const response = await fetch(`${API_BASE}/api/orchestrator/cto/summary`);
+            if (!response.ok) return;
+            const data = await response.json();
+            document.getElementById('cto-frequency-mode').textContent = data.frequency_mode || '—';
+            document.getElementById('cto-pending-count').textContent = data.pending_count || 0;
+            document.getElementById('cto-approved-count').textContent = data.approved_count || 0;
+            document.getElementById('cto-merged-count').textContent = data.merged_count || 0;
+            document.getElementById('cto-rejected-count').textContent = data.rejected_count || 0;
+            document.getElementById('cto-deferred-count').textContent = data.deferred_count || 0;
+            document.getElementById('cto-superseded-count').textContent = data.superseded_count || 0;
+            document.getElementById('cto-duplicate-count').textContent = data.duplicate_count || 0;
+            const enabled = data.scheduler_enabled || false;
+            document.getElementById('cto-scheduler-state').textContent = enabled ? '啟用' : '暫停';
+            const ctoToggleBtn = document.getElementById('cto-scheduler-toggle-btn');
+            if (ctoToggleBtn) {
+                ctoToggleBtn.dataset.enabled = enabled ? 'true' : 'false';
+                ctoToggleBtn.textContent = enabled ? '停止排程' : '啟用排程';
+                ctoToggleBtn.className = enabled ? 'btn-sm btn-error' : 'btn-sm btn-success';
+            }
+            if (data.latest_run) {
+                const latestRun = data.latest_run;
+                const latestRunAtEl = document.getElementById('cto-latest-run-at');
+                if (latestRunAtEl) latestRunAtEl.textContent = formatDateTime(latestRun.started_at);
+                const latestRunSummaryEl = document.getElementById('cto-latest-run-summary');
+                if (latestRunSummaryEl) latestRunSummaryEl.textContent = latestRun.summary || '—';
+            }
+        }
+
+        async function _loadCtoProviders() {
+            const response = await fetch(`${API_BASE}/api/orchestrator/cto/providers`);
+            if (!response.ok) return;
+            const data = await response.json();
+            const providerEl = document.getElementById('orc-cto-planner-provider');
+            if (providerEl && data.planner_provider) providerEl.value = data.planner_provider;
+            const modelEl = document.getElementById('orc-cto-planner-model');
+            if (modelEl && data.planner_model) modelEl.value = data.planner_model;
+            const hintEl = document.getElementById('orc-cto-provider-hint');
+            if (hintEl) hintEl.textContent = `當前：${data.planner_provider_label || data.planner_provider || 'N/A'}`;
+        }
+
+        async function _loadCtoRuns() {
+            try {
+                const response = await fetch(`${API_BASE}/api/orchestrator/cto/runs?limit=15`);
+                if (!response.ok) return;
+                const data = await response.json();
+                const runs = data.runs || [];
+                const tbody = document.getElementById('orc-cto-run-tbody');
+                if (runs.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="9" class="rv-empty">暫無記錄</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = runs.map(run => `
+                    <tr onclick="showCTODetail('${run.run_id || run.id}')">
+                        <td>${run.run_id || run.id}</td>
+                        <td>${formatDateTime(run.started_at)}</td>
+                        <td>${formatDateTime(run.completed_at)}</td>
+                        <td>${run.frequency_mode || '—'}</td>
+                        <td>${run.candidates_count || 0}</td>
+                        <td>${run.approved_count || 0}</td>
+                        <td>${run.merged_count || 0}</td>
+                        <td>${run.rejected_count || 0}</td>
+                        <td>${run.summary || '—'}</td>
+                    </tr>`).join('');
+            } catch (error) {
+                console.error('Error loading CTO runs:', error);
+                document.getElementById('orc-cto-run-tbody').innerHTML = '<tr><td colspan="9" class="rv-empty">載入失敗</td></tr>';
+            }
+        }
+
+        async function _loadCtoAll() {
+            try {
+                await Promise.all([_loadCtoSummary(), _loadCtoProviders()]);
+                await _loadCtoRuns();
+            } catch (error) {
+                console.error('Error loading CTO data:', error);
+            }
+        }
+
+        async function loadCTOData() {
+            return _loadCtoAll();
+        }
+
+        async function loadCTORuns() {
+            return _loadCtoRuns();
+        }
+
+        async function _waitForCtoOutcome(requestId, timeoutMs = 90000) {
+            const pollInterval = 3000;
+            const deadline = Date.now() + timeoutMs;
+            const noteEl = document.getElementById('orc-cto-planner-last-note');
+            while (Date.now() < deadline) {
+                await new Promise(r => setTimeout(r, pollInterval));
+                try {
+                    const resp = await fetch(`${API_BASE}/api/orchestrator/cto/run-status?request_id=${requestId}`);
+                    if (!resp.ok) continue;
+                    const status = await resp.json();
+                    if (status.status === 'RUNNING' && noteEl) noteEl.textContent = '執行中…';
+                    if (status.final) {
+                        const run = status.run || {};
+                        const reqEl = document.getElementById('orc-cto-planner-last-request-id');
+                        if (reqEl) reqEl.textContent = run.run_id || requestId;
+                        if (noteEl) noteEl.textContent = `完成：${run.outcome || 'DONE'}`;
+                        await _loadCtoAll();
+                        return;
+                    }
+                } catch (e) { /* ignore */ }
+            }
+            if (noteEl) noteEl.textContent = '等待逾時，請手動重新整理';
+            await _loadCtoAll();
+        }
+
+        async function _triggerCtoRunNow() {
+            const forceRerun = document.getElementById('orc-cto-force-rerun-cb')?.checked || false;
+            const runIntent = document.getElementById('orc-cto-run-intent')?.value || null;
+            try {
+                const response = await fetch(`${API_BASE}/api/orchestrator/cto/run-now`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ force: forceRerun, run_intent: runIntent || null })
+                });
+                if (!response.ok) {
+                    const txt = await response.text();
+                    showToast(`CTO 觸發失敗：${txt}`, 'error');
+                    return;
+                }
+                const result = await response.json();
+                const requestId = result.request_id;
+                const reqEl = document.getElementById('orc-cto-planner-last-request-id');
+                const noteEl = document.getElementById('orc-cto-planner-last-note');
+                if (reqEl) reqEl.textContent = requestId;
+                if (noteEl) noteEl.textContent = `已送出，等待結果（request_id: ${requestId}）`;
+                showToast('CTO 已觸發', 'info');
+                _waitForCtoOutcome(requestId);
+            } catch (error) {
+                console.error('Error running CTO:', error);
+                showToast('CTO 觸發失敗：請檢查 API 連線', 'error');
+            }
+        }
+
+        async function _toggleCtoScheduler() {
+            const toggleBtn = document.getElementById('cto-scheduler-toggle-btn');
+            const currentEnabled = toggleBtn?.dataset.enabled === 'true';
+            const newEnabled = !currentEnabled;
+            try {
+                const response = await fetch(`${API_BASE}/api/orchestrator/cto/scheduler`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ enabled: newEnabled })
+                });
+                if (response.ok) {
+                    showToast(newEnabled ? 'CTO 排程已啟用' : 'CTO 排程已暫停', newEnabled ? 'success' : 'info');
+                    await _loadCtoSummary();
+                } else {
+                    showToast(`操作失敗：HTTP ${response.status}`, 'error');
+                }
+            } catch (error) {
+                showToast('操作失敗：請檢查 API 連線', 'error');
+            }
+        }
+
+        // Add countdown timer for next runs
+        function startCountdownTimer() {
+            setInterval(updateCountdowns, 1000);
+        }
+
+        function updateCountdowns() {
+            updateCountdown('orc-next-planner-at');
+            updateCountdown('orc-next-worker-at');
+            updateCountdown('cto-next-planner-at');
+        }
+
+        function updateCountdown(elementId) {
+            const element = document.getElementById(elementId);
+            if (!element || element.textContent === '—') return;
+
+            try {
+                const baseTime = element.dataset.originalTime || element.textContent;
+                const displayTime = element.dataset.displayTime || formatDateTime(baseTime);
+                const nextTime = new Date(baseTime);
+                if (Number.isNaN(nextTime.getTime())) {
+                    return;
+                }
+                const now = new Date();
+                const diffMs = nextTime - now;
+
+                if (diffMs <= 0) {
+                    element.textContent = `${displayTime} (即將執行)`;
+                    element.style.color = 'var(--warning)';
+                    return;
+                }
+
+                const totalSeconds = Math.floor(diffMs / 1000);
+                const hours = Math.floor(totalSeconds / 3600);
+                const minutes = Math.floor((totalSeconds % 3600) / 60);
+                const seconds = totalSeconds % 60;
+
+                let countdownText = displayTime;
+                if (totalSeconds < 300) { // Show countdown for last 5 minutes
+                    if (hours > 0) {
+                        countdownText += ` (${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')})`;
+                    } else {
+                        countdownText += ` (${minutes}:${seconds.toString().padStart(2, '0')})`;
+                    }
+                    element.style.color = 'var(--warning)';
+                } else {
+                    element.style.color = 'inherit';
+                }
+
+                element.textContent = countdownText;
+            } catch (error) {
+                console.error(`Failed to update countdown for ${elementId}:`, error);
+            }
+        }
+
+        // Event Handlers
+        document.getElementById('orc-refresh-btn')?.addEventListener('click', loadOrchestrationData);
+        document.getElementById('orc-cto-refresh-btn')?.addEventListener('click', loadCTOData);
+
+        // Scheduler Control Event Handlers (single toggle)
+        document.getElementById('orc-scheduler-toggle-btn')?.addEventListener('click', _toggleScheduler);
+        document.getElementById('orc-llm-safe-run-btn')?.addEventListener('click', () => _setLlmMode('safe-run'));
+        document.getElementById('orc-llm-hard-off-btn')?.addEventListener('click', () => _setLlmMode('hard-off'));
+
+        // CTO Scheduler toggle
+        document.getElementById('cto-scheduler-toggle-btn')?.addEventListener('click', _toggleCtoScheduler);
+
+        document.getElementById('orc-run-planner-btn')?.addEventListener('click', () => _triggerRunnerNow('planner'));
+
+        document.getElementById('orc-run-worker-btn')?.addEventListener('click', () => _triggerRunnerNow('worker'));
+
+        document.getElementById('orc-cto-run-now-btn')?.addEventListener('click', _triggerCtoRunNow);
+
+        // Status / date filter
+        document.getElementById('orc-status-filter')?.addEventListener('change', _loadTasks);
+        document.getElementById('orc-date-filter')?.addEventListener('change', _loadTasks);
+
+        // Provider save handlers
+        document.getElementById('orc-provider-save-btn')?.addEventListener('click', async () => {
+            const plannerProvider = document.getElementById('orc-planner-provider').value;
+            const workerProvider = document.getElementById('orc-worker-provider').value;
+            const workerCopilotModel = document.getElementById('orc-worker-copilot-model').value.trim();
+
+            if (['copilot', 'copilot-daemon'].includes(workerProvider) && workerCopilotModel && !/^[A-Za-z0-9._:-]+$/.test(workerCopilotModel)) {
+                document.getElementById('orc-provider-hint').textContent = '❌ Copilot Model 格式不合法';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/orchestrator/providers`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        planner_provider: plannerProvider,
+                        worker_provider: workerProvider,
+                        worker_copilot_model: workerCopilotModel
+                    })
+                });
+
+                if (response.ok) {
+                    const config = await response.json();
+                    updateProviderSummary(config);
+                    document.getElementById('orc-provider-hint').textContent = `✓ 已儲存：${config.combo_label}`;
+                    setTimeout(() => renderProviderHint(config), 3000);
+                } else {
+                    const errorText = await response.text();
+                    document.getElementById('orc-provider-hint').textContent = `❌ 儲存失敗：${errorText}`;
+                }
+            } catch (error) {
+                console.error('Error saving providers:', error);
+                document.getElementById('orc-provider-hint').textContent = '❌ 儲存失敗';
+            }
+        });
+
+        document.getElementById('orc-worker-provider')?.addEventListener('change', (event) => {
+            updateCopilotModelVisibility(event.target.value);
+        });
+
+        document.getElementById('orc-cto-provider-save-btn')?.addEventListener('click', async () => {
+            const plannerProvider = document.getElementById('orc-cto-planner-provider').value;
+            const plannerModel = document.getElementById('orc-cto-planner-model').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/cto/settings`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        planner_provider: plannerProvider,
+                        planner_model: plannerModel
+                    })
+                });
+
+                if (response.ok) {
+                    document.getElementById('orc-cto-provider-hint').textContent = `✓ 已儲存：${plannerProvider}`;
+                    setTimeout(() => {
+                        document.getElementById('orc-cto-provider-hint').textContent = `當前：${plannerProvider}`;
+                    }, 3000);
+                } else {
+                    document.getElementById('orc-cto-provider-hint').textContent = '❌ 儲存失敗';
+                }
+            } catch (error) {
+                console.error('Error saving CTO settings:', error);
+                document.getElementById('orc-cto-provider-hint').textContent = '❌ 儲存失敗';
+            }
+        });
+
+        // Force rerun warning
+        document.getElementById('orc-cto-force-rerun-cb')?.addEventListener('change', (e) => {
+            const warning = document.getElementById('orc-cto-force-warning');
+            warning.style.display = e.target.checked ? 'block' : 'none';
+        });
+
+        // Detail Views
+        async function showTaskDetail(taskId) {
+            try {
+                const response = await fetch(`${API_BASE}/api/tasks/${taskId}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const task = data.task;
+                    const content = document.getElementById('orc-detail-content');
+
+                    content.innerHTML = `
+                        <h3>任務 ${taskId}</h3>
+                        <div style="display: grid; gap: 16px;">
+                            ${renderTaskDetailSections(task, data)}
+                        </div>
+                    `;
+
+                    document.getElementById('orc-list-view').style.display = 'none';
+                    document.getElementById('orc-detail-view').classList.remove('rv-hidden');
+                }
+            } catch (error) {
+                console.error('Error loading task detail:', error);
+            }
+        }
+
+        async function showCTODetail(runId) {
+            try {
+                const response = await fetch(`${API_BASE}/api/cto/runs/${runId}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const run = data.run;
+                    const content = document.getElementById('orc-cto-detail-content');
+
+                    content.innerHTML = `
+                        <h3>CTO 執行 ${runId}</h3>
+                        <div style="display: grid; gap: 16px;">
+                            <div>
+                                <strong>開始時間:</strong> ${formatDateTime(run.started_at)}<br>
+                                <strong>完成時間:</strong> ${formatDateTime(run.completed_at)}<br>
+                                <strong>頻率模式:</strong> ${run.frequency_mode || '—'}<br>
+                                <strong>處理結果:</strong> 候選 ${run.candidates_count || 0}，批准 ${run.approved_count || 0}，合併 ${run.merged_count || 0}，拒絕 ${run.rejected_count || 0}
+                            </div>
+                            ${data.report_json ? `
+                                <div>
+                                    <strong>Intelligence Blocks:</strong>
+                                    <pre style="background: var(--bg-secondary); padding: 12px; border-radius: 6px; overflow-x: auto; white-space: pre-wrap;">${JSON.stringify(data.report_json, null, 2)}</pre>
+                                </div>
+                            ` : ''}
+                            ${data.report_md ? `
+                                <div>
+                                    <strong>報告內容:</strong>
+                                    <div style="background: var(--bg-secondary); padding: 12px; border-radius: 6px; white-space: pre-wrap;">${data.report_md}</div>
+                                </div>
+                            ` : ''}
+                            ${run.summary ? `
+                                <div>
+                                    <strong>摘要:</strong>
+                                    <p style="background: var(--bg-secondary); padding: 12px; border-radius: 6px;">${run.summary}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+
+                    document.getElementById('cto-list-view').style.display = 'none';
+                    document.getElementById('cto-detail-view').classList.remove('rv-hidden');
+                }
+            } catch (error) {
+                console.error('Error loading CTO detail:', error);
+            }
+        }
+
+        // Back buttons
+        document.getElementById('orc-back-btn')?.addEventListener('click', () => {
+            document.getElementById('orc-detail-view').classList.add('rv-hidden');
+            document.getElementById('orc-list-view').style.display = 'block';
+        });
+
+        document.getElementById('orc-cto-back-btn')?.addEventListener('click', () => {
+            document.getElementById('cto-detail-view').classList.add('rv-hidden');
+            document.getElementById('cto-list-view').style.display = 'block';
+        });
+
+        // Utility Functions
+        function formatDateTime(dateStr) {
+            if (!dateStr) return '—';
+            try {
+                const date = new Date(dateStr);
+                if (Number.isNaN(date.getTime())) {
+                    return dateStr;
+                }
+                return new Intl.DateTimeFormat('zh-TW', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false,
+                }).format(date);
+            } catch {
+                return dateStr;
+            }
+        }
+
+        function formatDuration(seconds) {
+            if (!seconds) return '—';
+            if (seconds < 60) return `${seconds}s`;
+            if (seconds < 3600) return `${Math.floor(seconds / 60)}m ${seconds % 60}s`;
+            return `${Math.floor(seconds / 3600)}h ${Math.floor((seconds % 3600) / 60)}m`;
+        }
+
+        function formatFileList(files) {
+            if (!files || !Array.isArray(files) || files.length === 0) return '—';
+            return `${files.length} 個檔案`;
+        }
+
+        function getOutcomeClass(outcome) {
+            if (!outcome) return 'muted';
+            const lower = outcome.toLowerCase();
+            if (lower.includes('success') || lower.includes('completed') || lower === 'ok') return 'success';
+            if (lower.includes('rejected')) return 'warning';
+            if (lower.includes('error') || lower.includes('failed') || lower === 'failure') return 'error';
+            if (lower.includes('warning') || lower.includes('timeout') || lower === 'skipped') return 'muted';
+            if (lower === 'running' || lower === 'in_progress') return 'warning';
+            return 'neutral';
+        }
+
+        function translateRunnerType(tickType) {
+            if (tickType === 'planner_tick') return '規劃器';
+            if (tickType === 'worker_tick') return '執行器';
+            return tickType || '—';
+        }
+
+        function translateOutcome(status) {
+            const mapping = {
+                SUCCESS: '成功',
+                SKIPPED: '略過',
+                REJECTED: '已拒絕',
+                FAILED: '失敗',
+                RUNNING: '執行中',
+                COMPLETED: '完成',
+            };
+            return mapping[status] || status || '—';
+        }
+
+        function translateRunMessage(run) {
+            const message = run?.message || '';
+            if (!message) return '—';
+
+            const createdTask = message.match(/^Planner created new task #(\d+):\s*(.+)$/);
+            if (createdTask) {
+                return `規劃器建立新任務 #${createdTask[1]}：${createdTask[2]}`;
+            }
+
+            const completedTask = message.match(/^Worker completed task #(\d+):\s*(.+)$/);
+            if (completedTask) {
+                return `執行器完成任務 #${completedTask[1]}：${completedTask[2]}`;
+            }
+
+            const runningBlock = message.match(/^Planner skipped: latest task #(\d+) still RUNNING\.$/);
+            if (runningBlock) {
+                return `規劃器略過：最新任務 #${runningBlock[1]} 仍在執行中`;
+            }
+
+            const duplicateCooldownBlock = message.match(/^Planner skipped: all (\d+) candidates blocked by recent-task cooldown \/ duplicate gate \((\d+)h window\)$/);
+            if (duplicateCooldownBlock) {
+                return `規劃器略過：全部 ${duplicateCooldownBlock[1]} 個候選仍在最近任務冷卻 / 重複規則內（${duplicateCooldownBlock[2]} 小時視窗）`;
+            }
+
+            const qualityRejected = message.match(/^Planner rejected all (\d+) candidates by quality gate$/);
+            if (qualityRejected) {
+                return `規劃器拒絕：全部 ${qualityRejected[1]} 個候選未通過品質閘門`;
+            }
+
+            const workerSkipped = message.match(/^Worker skipped: no queued tasks available \((\d+) REPLAN_REQUIRED, total_tasks=(\d+)\)$/);
+            if (workerSkipped) {
+                return `執行器略過：目前沒有佇列任務可執行（${workerSkipped[1]} 個 REPLAN_REQUIRED，總任務數 ${workerSkipped[2]}）`;
+            }
+
+            if (message === 'Planner skipped: scheduler disabled') {
+                return '規劃器略過：排程器目前停用';
+            }
+
+            if (message.startsWith('Worker failed:')) {
+                return message.replace('Worker failed:', '執行器失敗：');
+            }
+
+            if (message.startsWith('Planner failed:')) {
+                return message.replace('Planner failed:', '規劃器失敗：');
+            }
+
+            return message
+                .replace(/^Planner /, '規劃器 ')
+                .replace(/^Worker /, '執行器 ')
+                .replaceAll(' skipped', ' 略過')
+                .replaceAll(' failed', ' 失敗');
+        }
+
+        // ── Usage 詳細 Functions ──────────────────────────────────────────────
+
+        /**
+         * Format token counts into "↑3.8M / ↓74.2k / 3.4Mc" string.
+         * @param {number} input
+         * @param {number} output
+         * @param {number} cached
+         * @returns {string}
+         */
+        function fmtTokens(input, output, cached) {
+            function fmtNum(n) {
+                n = n || 0;
+                if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`;
+                if (n >= 1_000)     return `${(n / 1_000).toFixed(1).replace(/\.0$/, '')}k`;
+                return String(n);
+            }
+            const parts = [`↑${fmtNum(input)}`, `↓${fmtNum(output)}`];
+            if (cached) parts.push(`${fmtNum(cached)}c`);
+            return parts.join(' / ');
+        }
+
+        /**
+         * Fetch usage data from backend (summary.usage_detail → llm-usage/today fallback).
+         * Never calls external AI. Only reads local backend usage APIs.
+         * @param {boolean} allTime
+         * @returns {Promise<object>}
+         */
+        async function _fetchUsageDetail(allTime = false) {
+            const _empty = () => ({ roles: {}, total: { calls: 0, input_tokens: 0, output_tokens: 0, cached_tokens: 0, premium_requests: 0 }, warnings: [], recent: [], malformed_count: 0 });
+
+            if (!allTime) {
+                // ── Today mode ───────────────────────────────────────────────
+                // Priority 1: summary.usage_detail
+                //   Uses llm_usage_summary (window="today", calendar UTC day).
+                //   Has full roles.agents breakdown. Return only if has actual calls.
+                try {
+                    const res = await fetch(`${API_BASE}/api/orchestrator/summary`);
+                    if (res.ok) {
+                        const d = await res.json();
+                        const ud = d?.usage_detail;
+                        if (ud && ud.roles && (ud.total?.calls || 0) > 0) return ud;
+                    }
+                } catch (_) { /* ignore */ }
+
+                // Priority 2: /api/orchestrator/usage?hours=24 (rolling window)
+                //   Uses usage_reader — has counts but no agents.
+                //   Rebuild agents client-side from recent rows.
+                try {
+                    const res = await fetch(`${API_BASE}/api/orchestrator/usage?hours=24&tail=50`);
+                    if (res.ok) {
+                        const d = await res.json();
+                        if (d && d.by_role) {
+                            const payload = _normaliseUsageReaderPayload(d);
+                            _rebuildAgentsFromRecent(payload);
+                            return payload;
+                        }
+                    }
+                } catch (_) { /* ignore */ }
+
+                // Priority 3: /api/orchestrator/llm-usage/today
+                try {
+                    const res = await fetch(`${API_BASE}/api/orchestrator/llm-usage/today`);
+                    if (res.ok) {
+                        const d = await res.json();
+                        if (d && d.roles) { _rebuildAgentsFromRecent(d); return d; }
+                        if (d && d.by_role) {
+                            const payload = _normaliseUsageReaderPayload(d);
+                            _rebuildAgentsFromRecent(payload);
+                            return payload;
+                        }
+                    }
+                } catch (_) { /* ignore */ }
+
+                return _empty();
+            }
+
+            // ── All-time mode ────────────────────────────────────────────────
+            try {
+                const res = await fetch(`${API_BASE}/api/orchestrator/usage?hours=0&tail=200`);
+                if (res.ok) {
+                    const d = await res.json();
+                    if (d && d.by_role) {
+                        const payload = _normaliseUsageReaderPayload(d);
+                        _rebuildAgentsFromRecent(payload);
+                        return payload;
+                    }
+                }
+            } catch (_) { /* ignore */ }
+
+            // All-time fallback: recent endpoint
+            try {
+                const res = await fetch(`${API_BASE}/api/orchestrator/llm-usage/recent?limit=200`);
+                if (res.ok) {
+                    const d = await res.json();
+                    if (d && d.roles) { _rebuildAgentsFromRecent(d); return d; }
+                    if (d && d.by_role) {
+                        const payload = _normaliseUsageReaderPayload(d);
+                        _rebuildAgentsFromRecent(payload);
+                        return payload;
+                    }
+                }
+            } catch (_) { /* ignore */ }
+
+            return _empty();
+        }
+
+        /**
+         * Rebuild roles.agents from recent rows when usage_reader doesn't provide them.
+         * Mutates payload.roles in-place.
+        /**
+         * Rebuild roles.agents from recent rows when usage_reader doesn't provide them.
+         * Mutates payload.roles in-place.
+         * @param {object} payload — normalised usage payload
+         */
+        function _rebuildAgentsFromRecent(payload) {
+            const roles = payload.roles || {};
+            for (const row of (payload.recent || [])) {
+                if (row.blocked) continue;
+                const role = row.role || 'unknown';
+                // row.agent is already the display name (set by _normaliseUsageReaderPayload or llm_usage_summary)
+                const agent = row.agent || '—';
+                if (!agent || agent === '—') continue;
+                if (!roles[role]) roles[role] = { calls: 0, blocked: 0, input_tokens: 0, output_tokens: 0, cached_tokens: 0, premium_requests: 0, agents: {} };
+                if (!roles[role].agents) roles[role].agents = {};
+                if (!roles[role].agents[agent]) roles[role].agents[agent] = { calls: 0, input_tokens: 0, output_tokens: 0, cached_tokens: 0 };
+                roles[role].agents[agent].calls += 1;
+            }
+        }
+
+        /**
+         * Provider display name mapping (matches llm_usage_summary._PROVIDER_DISPLAY).
+         */
+        const _PROVIDER_DISPLAY_MAP = {
+            'github-copilot': 'Copilot-Daemon',
+            'copilot':        'Copilot-Daemon',
+            'copilot-daemon': 'Copilot-Daemon',
+            'codex':          'Codex',
+            'codex-cli':      'Codex CLI',
+            'claude':         'Claude',
+            'claude-cli':     'Claude CLI',
+            'openai':         'OpenAI',
+            'anthropic':      'Anthropic',
+            'github-cli':     'GitHub CLI',
+            'github-api':     'GitHub API',
+            'git-remote':     'Git Remote',
+            'gemini':         'Gemini',
+            'gemini-cli':     'Gemini CLI',
+        };
+
+        function _providerDisplay(raw) {
+            if (!raw || raw === '—') return raw || '—';
+            return _PROVIDER_DISPLAY_MAP[raw.toLowerCase()] || raw;
+        }
+
+        /**
+         * Normalise usage_reader payload (by_role) to match llm_usage_summary payload (roles).
+         */
+        function _normaliseUsageReaderPayload(d) {
+            const by_role = d.by_role || {};
+            const roles = {};
+            for (const [role, data] of Object.entries(by_role)) {
+                roles[role] = {
+                    calls: data.total || 0,
+                    blocked: data.blocked || 0,
+                    input_tokens: 0,
+                    output_tokens: 0,
+                    cached_tokens: 0,
+                    premium_requests: 0,
+                    agents: {},
+                };
+            }
+            const tokens = d.tokens || {};
+            return {
+                roles,
+                total: { calls: d.total || 0, input_tokens: tokens.input || 0, output_tokens: tokens.output || 0, cached_tokens: tokens.cached || 0, premium_requests: tokens.premium_requests || 0 },
+                warnings: [],
+                recent: (d.recent || []).map(r => ({
+                    time: r.timestamp ? new Date(r.timestamp).toTimeString().slice(0, 8) : '—',
+                    role: r.role || '—',
+                    agent: _providerDisplay(r.provider) || '—',
+                    task_id: r.task_id,
+                    parsed: r.success === true,
+                    premium_requests: r.premium_requests || 0,
+                    tokens_text: fmtTokens(r.input_tokens, r.output_tokens, r.cached_tokens),
+                    rate_limit: r.rate_limit ? '⚠️ RL' : '—',
+                    blocked: !!r.blocked,
+                    block_reason: r.block_reason,
+                })),
+                malformed_count: d.malformed || 0,
+            };
+        }
+
+        /**
+         * Render a single role card body (Planner / Worker / CTO).
+         * @param {string} roleName
+         * @param {object} roleData  — {calls, blocked, input_tokens, output_tokens, cached_tokens, agents}
+         * @param {string} bodyId    — DOM element id
+         * @param {string} badgeId   — DOM element id for badge
+         */
+        function _renderRoleCard(roleName, roleData, bodyId, badgeId) {
+            const bodyEl = document.getElementById(bodyId);
+            const badgeEl = document.getElementById(badgeId);
+            if (!bodyEl) return;
+
+            const calls = roleData?.calls || 0;
+            const blocked = roleData?.blocked || 0;
+            const allowed = calls - blocked;
+            const inTok = roleData?.input_tokens || 0;
+            const outTok = roleData?.output_tokens || 0;
+            const cacTok = roleData?.cached_tokens || 0;
+            const prem = roleData?.premium_requests || 0;
+            const agents = roleData?.agents || {};
+
+            if (badgeEl) {
+                badgeEl.textContent = calls > 0 ? `${calls} 次` : '';
+            }
+
+            if (calls === 0) {
+                bodyEl.innerHTML = '<div class="rv-empty">今日尚無 LLM 呼叫紀錄</div>';
+                return;
+            }
+
+            const hasTokens = inTok || outTok || cacTok;
+            const tokenLine = hasTokens ? `<div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">Tokens ${fmtTokens(inTok, outTok, cacTok)}</div>` : '';
+
+            const agentRows = Object.entries(agents).map(([name, ag]) => {
+                const agHasTok = ag.input_tokens || ag.output_tokens || ag.cached_tokens;
+                return `
+                    <div style="margin-top:10px;padding:8px;background:var(--bg-secondary);border-radius:6px;">
+                        <div style="font-weight:600;font-size:13px;">${_escHtml(name)}</div>
+                        <div style="font-size:12px;color:var(--text-secondary);">${ag.calls} 次${agHasTok ? ' &nbsp; Tokens ' + fmtTokens(ag.input_tokens, ag.output_tokens, ag.cached_tokens) : ''}</div>
+                    </div>`;
+            }).join('');
+
+            bodyEl.innerHTML = `
+                <div>
+                    <span style="font-size:13px;">呼叫 <b>${calls}</b> 次 &nbsp;|&nbsp; 允許 <b style="color:var(--success)">${allowed}</b> &nbsp;|&nbsp; 封鎖 <b style="color:${blocked > 0 ? 'var(--error)' : 'var(--text-secondary)'}">${blocked}</b></span>
+                    ${tokenLine}
+                    ${prem > 0 ? `<div style="font-size:12px;color:var(--warning);margin-top:2px;">Premium Requests: ${prem}</div>` : ''}
+                </div>
+                ${agentRows || '<div style="font-size:12px;color:var(--text-muted);margin-top:6px;">（無 provider 明細）</div>'}
+            `;
+        }
+
+        /** HTML escape helper */
+        function _escHtml(s) {
+            return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        /**
+         * Render warning banners from usage data warnings array plus inline logic.
+         * @param {object} usageData
+         */
+        function _renderUsageWarnings(usageData) {
+            const el = document.getElementById('usage-warnings');
+            if (!el) return;
+
+            const warnings = [...(usageData.warnings || [])];
+
+            // Copilot spike detection (>20 calls)
+            const workerAgents = usageData.roles?.worker?.agents || {};
+            const copilotDaemonCalls = workerAgents['Copilot-Daemon']?.calls || 0;
+            if (copilotDaemonCalls > 20) {
+                warnings.push(`⚠️ Copilot-Daemon 今日呼叫次數偏高：${copilotDaemonCalls} 次`);
+            }
+
+            // Blocked attempts
+            const totalBlocked = (usageData.roles?.planner?.blocked || 0)
+                               + (usageData.roles?.worker?.blocked || 0)
+                               + (usageData.roles?.cto?.blocked || 0);
+            if (totalBlocked > 0) {
+                warnings.push(`⚠️ 已封鎖外部呼叫嘗試：${totalBlocked} 次`);
+            }
+
+            if (warnings.length === 0) {
+                el.innerHTML = '';
+                return;
+            }
+
+            el.innerHTML = warnings.map(w =>
+                `<div style="background:rgba(227,179,65,0.12);border:1px solid var(--warning);border-radius:6px;padding:8px 12px;margin-bottom:8px;font-size:13px;color:var(--warning);">${_escHtml(w)}</div>`
+            ).join('');
+        }
+
+        /**
+         * Render recent 10 usage rows into the table.
+         * @param {Array} recent
+         */
+        function _renderUsageRecentTable(recent) {
+            const tbody = document.getElementById('usage-recent-tbody');
+            if (!tbody) return;
+
+            const rows = (recent || []).slice(0, 10);
+            if (rows.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="10" class="rv-empty">今日尚無 LLM 呼叫紀錄</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = rows.map(r => {
+                const blockedIcon = r.blocked ? '⚠️' : '';
+                const parsedIcon  = r.blocked ? '—' : (r.parsed ? '✅' : '❌');
+                const allowedIcon = r.blocked ? '—' : '✅';
+                return `<tr>
+                    <td style="font-family:monospace;font-size:12px;">${_escHtml(r.time || '—')}</td>
+                    <td>${_escHtml(r.role || '—')}</td>
+                    <td>${_escHtml(r.agent || '—')}</td>
+                    <td style="font-size:11px;">${r.task_id != null ? _escHtml(String(r.task_id)) : '—'}</td>
+                    <td style="text-align:center;">${allowedIcon}</td>
+                    <td style="text-align:center;">${blockedIcon || '—'}</td>
+                    <td style="text-align:center;">${parsedIcon}</td>
+                    <td style="text-align:center;">${r.premium_requests > 0 ? r.premium_requests : '—'}</td>
+                    <td style="font-family:monospace;font-size:11px;">${_escHtml(r.tokens_text || '—')}</td>
+                    <td style="text-align:center;">${_escHtml(r.rate_limit || '—')}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        /**
+         * Main entry point for loading and rendering all usage data.
+         */
+        async function loadUsageData() {
+            const allTime = document.getElementById('usage-all-time-cb')?.checked || false;
+
+            // Reset state to loading
+            ['usage-planner-body', 'usage-worker-body', 'usage-cto-body'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = '<div class="rv-empty">載入中…</div>';
+            });
+            const tbody = document.getElementById('usage-recent-tbody');
+            if (tbody) tbody.innerHTML = '<tr><td colspan="10" class="rv-empty">載入中…</td></tr>';
+
+            let usageData;
+            try {
+                usageData = await _fetchUsageDetail(allTime);
+            } catch (err) {
+                console.error('Usage data fetch error:', err);
+                usageData = { roles: {}, total: {}, warnings: [], recent: [], malformed_count: 0 };
+            }
+
+            // Phase 36: fetch budget guard status separately
+            try {
+                const budgetRes = await fetch(`${API_BASE}/api/orchestrator/usage-budget`);
+                if (budgetRes.ok) {
+                    const budgetData = await budgetRes.json();
+                    if (budgetData && budgetData.budget_status) {
+                        usageData.usage_budget = budgetData;
+                    }
+                }
+            } catch (_) { /* budget API not available, non-fatal */ }
+
+            // Ensure safe shape
+            if (!usageData || typeof usageData !== 'object') {
+                usageData = {};
+            }
+            const roles   = usageData.roles || {};
+            const total   = usageData.total || {};
+            const recent  = usageData.recent || [];
+
+            // Top summary
+            const inTok  = total.input_tokens  || 0;
+            const outTok = total.output_tokens || 0;
+            const cacTok = total.cached_tokens || 0;
+            const prem   = total.premium_requests || 0;
+            const hasTokens = inTok || outTok || cacTok;
+
+            const tokensSummaryEl = document.getElementById('usage-tokens-summary');
+            if (tokensSummaryEl) tokensSummaryEl.textContent = hasTokens ? fmtTokens(inTok, outTok, cacTok) : '—';
+
+            const premEl = document.getElementById('usage-premium');
+            if (premEl) premEl.textContent = prem > 0 ? String(prem) : '0.00';
+
+            // Blocked total across all roles
+            const blockedTotal = Object.values(roles).reduce((acc, r) => acc + (r?.blocked || 0), 0);
+            const blockedEl = document.getElementById('usage-blocked-total');
+            if (blockedEl) blockedEl.textContent = String(blockedTotal);
+
+            // Rate limit — check recent records
+            const rlProviders = [...new Set(
+                recent.filter(r => r.rate_limit && r.rate_limit !== '—').map(r => r.agent || r.role)
+            )];
+            const rlEl = document.getElementById('usage-rate-limit');
+            if (rlEl) rlEl.textContent = rlProviders.length > 0 ? rlProviders.join(', ') : '—';
+
+            // Render role cards
+            _renderRoleCard('planner', roles.planner, 'usage-planner-body', 'usage-planner-badge');
+            _renderRoleCard('worker',  roles.worker,  'usage-worker-body',  'usage-worker-badge');
+            _renderRoleCard('cto',     roles.cto,     'usage-cto-body',     'usage-cto-badge');
+
+            // Manual / backfill card
+            const manualCard = document.getElementById('usage-manual-card');
+            const manualData = roles.manual || roles.backfill;
+            if (manualCard) {
+                if (manualData && (manualData.calls || 0) > 0) {
+                    manualCard.style.display = '';
+                    _renderRoleCard('manual', manualData, 'usage-manual-body', null);
+                } else {
+                    manualCard.style.display = 'none';
+                }
+            }
+
+            // Warnings
+            _renderUsageWarnings(usageData);
+
+            // Recent table
+            _renderUsageRecentTable(recent);
+
+            // Phase 36: Render Budget Guard panel
+            _renderBudgetGuard(usageData?.usage_budget);
+        }
+
+        function _renderBudgetGuard(ub) {
+            if (!ub || !ub.budget_status) return;
+            const statusColors = { OK: '#22c55e', WARN: '#f59e0b', CRITICAL: '#ef4444', HARD_CAP: '#7c3aed' };
+            const badge = document.getElementById('budget-status-badge');
+            if (badge) {
+                badge.textContent = ub.budget_status;
+                badge.style.background = statusColors[ub.budget_status] || '#555';
+            }
+            const modeEl = document.getElementById('budget-scheduler-mode');
+            if (modeEl) modeEl.textContent = `排程: ${ub.recommended_scheduler_mode || '?'}`;
+
+            // Worker
+            const wRole = ub.roles?.worker || {};
+            const wEl = document.getElementById('budget-worker-calls');
+            if (wEl) wEl.textContent = wRole.calls ?? '—';
+            const wTEl = document.getElementById('budget-worker-thresholds');
+            if (wTEl) wTEl.textContent = `WARN>${wRole.warn_calls ?? '?'} | CAP=${wRole.hard_cap_calls ?? '?'}`;
+
+            // Providers
+            const setProvider = (id, thId, name) => {
+                const p = ub.providers?.[name] || {};
+                const el = document.getElementById(id);
+                if (el) el.textContent = p.calls ?? '—';
+                const tEl = document.getElementById(thId);
+                if (tEl) tEl.textContent = `WARN>${p.warn_calls ?? '?'} | CAP=${p.hard_cap_calls ?? '?'}`;
+            };
+            setProvider('budget-copilot-calls', 'budget-copilot-thresholds', 'github-copilot');
+            setProvider('budget-claude-calls', 'budget-claude-thresholds', 'claude');
+            setProvider('budget-codex-calls', 'budget-codex-thresholds', 'codex');
+
+            const bEl = document.getElementById('budget-blocked');
+            if (bEl) bEl.textContent = ub.total_blocked ?? '—';
+
+            const tok = ub.tokens || {};
+            const tEl = document.getElementById('budget-tokens');
+            if (tEl) tEl.textContent = (tok.input_tokens ?? 0).toLocaleString();
+
+            const planEl = document.getElementById('budget-planner-status');
+            if (planEl) {
+                const pl = ub.roles?.planner || {};
+                const ct = ub.roles?.cto || {};
+                planEl.textContent = `Planner: ${pl.status ?? 'OK'} (外部呼叫=${pl.calls ?? 0})  |  CTO: ${ct.status ?? 'OK'} (外部呼叫=${ct.calls ?? 0})`;
+            }
+
+            const alertsEl = document.getElementById('budget-alerts');
+            if (alertsEl) {
+                const all = [...(ub.critical_alerts || []), ...(ub.warnings || [])];
+                alertsEl.innerHTML = all.map(a => `<div style="color:#ef4444;">${a}</div>`).join('');
+            }
+        }
+
+        // ── End Usage 詳細 Functions ──────────────────────────────────────────
+
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            const activeSection = document.querySelector('.section.active');
+            if (activeSection?.id === 'orchestration-section') {
+                loadOrchestrationData();
+            } else if (activeSection?.id === 'cto-review-section') {
+                loadCTOData();
+            } else if (activeSection?.id === 'usage-section') {
+                loadUsageData();
+            }
+        }, 30000);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadOrchestrationData();
+            startCountdownTimer();
+
+            // Usage section controls
+            document.getElementById('usage-refresh-btn')?.addEventListener('click', loadUsageData);
+            document.getElementById('usage-all-time-cb')?.addEventListener('change', loadUsageData);
+        });
+    </script>
+</body>
+</html>

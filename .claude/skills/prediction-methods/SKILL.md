@@ -24,7 +24,9 @@ python3 tools/quick_predict.py 今彩539 3     # 3注
 python3 tools/quick_predict.py all           # 全部彩票
 ```
 
-## 已驗證策略（2026-02-11 當前有效）
+## 已驗證策略（2026-02-11 當前有效；2026-07-25 訂正：大樂透 2注／3注 evidence_status=
+HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED — No reliable predictive
+advantage is currently established. Edge 數值僅為歷史回測描述性紀錄）
 
 ### 威力彩 (38選6 + 特別號1-8)
 
@@ -38,8 +40,8 @@ python3 tools/quick_predict.py all           # 全部彩票
 
 | 注數 | 策略 | Edge | M3+ 率 | 基準 | 穩定性 |
 |-----|------|------|--------|------|--------|
-| 3注 | **Triple Strike** | **+0.98%** | 6.36% | 5.49% | STABLE 三窗口全正 ★推薦 |
-| 2注 | P0 偏差互補+回聲 | +1.21% | 4.90% | 3.69% | STABLE |
+| 3注 | Triple Strike | +0.98% (historical) | 6.36% | 5.49% | HISTORICAL_RESEARCH_ONLY |
+| 2注 | P0 偏差互補+回聲 | +1.21% (historical) | 4.90% | 3.69% | HISTORICAL_RESEARCH_ONLY |
 | 2注 | Fourier Rhythm | +0.51% | 4.20% | 3.69% | MODERATE_DECAY |
 
 ### 隨機基準公式

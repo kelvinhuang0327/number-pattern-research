@@ -1,0 +1,16 @@
+{
+  "total_remaining_conflict_files": 38,
+  "by_top_level_root": {
+    "telegram_bot": 4,
+    "rejected": 2,
+    ".claude": 3,
+    "models": 4,
+    "examples": 4,
+    ".github": 9,
+    "report": 4,
+    ".ai": 8
+  },
+  "recommended_next_roots": [
+    "LOTTERYNEW_CONFLICT_REFERENCE_NORMALIZATION_FINAL_SWEEP_R4"
+  ]
+}

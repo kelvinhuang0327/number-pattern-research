@@ -1,0 +1,29 @@
+{
+  "draw": "115000007",
+  "lottery_type": "BIG_LOTTO",
+  "method": "2bet_elite",
+  "strategy": "Top12 分組覆蓋",
+  "bets": [
+    {
+      "numbers": [
+        2,
+        6,
+        11,
+        12,
+        29,
+        44
+      ]
+    },
+    {
+      "numbers": [
+        9,
+        16,
+        17,
+        26,
+        28,
+        39
+      ]
+    }
+  ],
+  "generated_at": "2026-01-23"
+}

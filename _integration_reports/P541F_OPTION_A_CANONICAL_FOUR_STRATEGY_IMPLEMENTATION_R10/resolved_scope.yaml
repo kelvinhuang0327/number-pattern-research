@@ -1,0 +1,87 @@
+task: P541F_OPTION_A_CANONICAL_FOUR_STRATEGY_IMPLEMENTATION_R10
+resolution_status: RESOLVED_FROM_R8_OPTION_A
+owner_authorization: AUTHORIZE_P541F_OPTION_A_ADOPT_CANONICAL_FOUR_R1
+canonical_repository: /Users/kelvin/Kelvin-WorkSpace/LotteryNew
+canonical_commit: 3b32beb4543de9169dbfb2469b0577f8cc8a6f58
+target_repository: /Users/kelvin/VibeCoding-WorkSpace/LotteryNewMeraged
+target_branch: task/p273a-prize-aware-inferential-validation
+target_head: 3d6df001da3a0633ab91f164d722b595ca76d2e1
+
+authoritative_strategy_ids:
+  - biglotto_social_wisdom_anti_popularity
+  - biglotto_zone_split_3bet_bet1
+  - biglotto_zone_split_3bet_bet2
+  - biglotto_zone_split_3bet_bet3
+
+lifecycle_by_id:
+  biglotto_social_wisdom_anti_popularity: ONLINE
+  biglotto_zone_split_3bet_bet1: ONLINE
+  biglotto_zone_split_3bet_bet2: ONLINE
+  biglotto_zone_split_3bet_bet3: ONLINE
+
+canonical_source_paths:
+  - lottery_api/models/biglotto_social_wisdom_adapter.py
+  - lottery_api/models/biglotto_zone_split_adapter.py
+  - lottery_api/models/replay_strategy_registry.py
+  - tests/fixtures/biglotto_zone_split_p541d.json
+  - tests/test_biglotto_social_wisdom_adapter.py
+  - tests/test_biglotto_zone_split_adapter.py
+  - tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py
+
+canonical_dependency_paths:
+  - lottery_api/models/social_wisdom_predictor.py
+
+target_implementation_paths:
+  - lottery_api/models/biglotto_social_wisdom_adapter.py
+  - lottery_api/models/biglotto_zone_split_adapter.py
+
+target_adapter_paths:
+  - lottery_api/models/biglotto_social_wisdom_adapter.py
+  - lottery_api/models/biglotto_zone_split_adapter.py
+
+target_registry_paths:
+  - lottery_api/models/replay_strategy_registry.py
+
+target_test_paths:
+  - tests/fixtures/biglotto_zone_split_p541d.json
+  - tests/test_biglotto_social_wisdom_adapter.py
+  - tests/test_biglotto_zone_split_adapter.py
+  - tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py
+
+merged_stub_test_paths:
+  - tests/test_p541d_r2_biglotto_selected_adapters.py
+  - tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py
+
+supporting_config_paths: []
+
+related_read_only_paths:
+  - lottery_api/models/social_wisdom_predictor.py
+  - lottery_api/models/p541d_r2_biglotto_selected_adapters.py
+
+stub_test_disposition:
+  tests/test_p541d_r2_biglotto_selected_adapters.py:
+    action: SUPERSEDE_WITH_CANONICAL_TARGET_NATIVE_ACCEPTANCE
+    write_authorized: false
+    replacement_tests:
+      - tests/test_biglotto_social_wisdom_adapter.py
+      - tests/test_biglotto_zone_split_adapter.py
+    rationale: >-
+      R8 Option A permits REWRITE_OR_SUPERSEDE, while its exact ordinary-path
+      allowlist omits this path. The absent P541D design fixture must not be
+      invented, so the existing untracked proposal is retained unchanged and
+      excluded from this task's acceptance in favor of canonical focused tests.
+  tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py:
+    action: REWRITE_TO_CANONICAL_FOUR_ONLINE_EXECUTABLE_CONTRACT
+    write_authorized: true
+
+ordinary_write_allowlist:
+  - lottery_api/models/biglotto_social_wisdom_adapter.py
+  - lottery_api/models/biglotto_zone_split_adapter.py
+  - lottery_api/models/replay_strategy_registry.py
+  - tests/fixtures/biglotto_zone_split_p541d.json
+  - tests/test_biglotto_social_wisdom_adapter.py
+  - tests/test_biglotto_zone_split_adapter.py
+  - tests/test_p541f_r2_social_wisdom_zone_split_observation_registry.py
+
+frozen_vertical_intersection: []
+scope_expansion_required: false

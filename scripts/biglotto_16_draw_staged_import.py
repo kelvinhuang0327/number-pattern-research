@@ -38,11 +38,16 @@ TARGET_DRAW_IDS: Tuple[str, ...] = tuple(
 )
 _PERIOD_RE = re.compile(r"^[0-9]{9}$")
 _SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
-_VIEW_FILTER_RE = re.compile(
-    r"MAX\s*\(\s*CAST\s*\(\s*j\.value\s+AS\s+INTEGER\s*\)\s*\)"
-    r"[\s\S]{0,300}?>\s*25\b",
-    re.IGNORECASE,
-)
+_LEGACY_CANONICAL_VIEW_SQL = """CREATE VIEW draws_big_lotto_canonical_main AS
+SELECT d.*
+FROM draws AS d
+WHERE d.lottery_type = 'BIG_LOTTO'
+  AND CAST(d.draw AS INTEGER) < 115000080
+  AND (
+      SELECT MAX(CAST(j.value AS INTEGER))
+      FROM json_each(d.numbers) AS j
+  ) > 25
+"""
 
 
 class StagingError(RuntimeError):
@@ -330,6 +335,115 @@ def _database_identity(path: Path) -> Dict[str, Any]:
     }
 
 
+def _sql_fingerprint(sql: str) -> str:
+    """Return a whitespace-normalized digest for a trusted view definition."""
+    normalized = " ".join(sql.split())
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+
+
+def _validate_official_identity_tables_read_only(
+    connection: sqlite3.Connection,
+) -> None:
+    """Verify that a new canonical view is bound to the complete pinned dataset."""
+    expected_schemas = {
+        membership.IDENTITY_TABLE: (
+            "period",
+            "draw_date",
+            "numbers_json",
+            "numbers_csv",
+            "special",
+            "dataset_sha256",
+        ),
+        membership.MANIFEST_TABLE: (
+            "singleton",
+            "source_page",
+            "source_endpoint",
+            "query_scope",
+            "as_of_period",
+            "official_record_count",
+            "normalized_sha256",
+        ),
+    }
+    for table_name, expected_columns in expected_schemas.items():
+        object_row = connection.execute(
+            "SELECT type FROM sqlite_master WHERE name=?", (table_name,)
+        ).fetchone()
+        if object_row != ("table",):
+            raise StagingError(
+                "official identity object {} is missing or is not a table".format(
+                    table_name
+                )
+            )
+        actual_columns = tuple(
+            row[1]
+            for row in connection.execute(
+                "PRAGMA table_info({})".format(table_name)
+            ).fetchall()
+        )
+        if actual_columns != expected_columns:
+            raise StagingError(
+                "official identity table {} has an incompatible schema".format(
+                    table_name
+                )
+            )
+
+    expected_manifest = (
+        1,
+        membership.OFFICIAL_SOURCE_PAGE,
+        membership.OFFICIAL_SOURCE_ENDPOINT,
+        membership.OFFICIAL_SOURCE_QUERY,
+        membership.OFFICIAL_AS_OF_PERIOD,
+        len(membership.OFFICIAL_IDENTITIES),
+        membership.OFFICIAL_DATASET_SHA256,
+    )
+    manifest_rows = connection.execute(
+        "SELECT singleton, source_page, source_endpoint, query_scope, as_of_period, "
+        "official_record_count, normalized_sha256 FROM {} ORDER BY singleton".format(
+            membership.MANIFEST_TABLE
+        )
+    ).fetchall()
+    if manifest_rows != [expected_manifest]:
+        raise StagingError("official identity manifest does not match its pinned digest")
+
+    expected_identity_rows = tuple(
+        (
+            draw.period,
+            draw.draw_date,
+            json.dumps(list(draw.numbers), separators=(",", ":")),
+            ",".join(str(number) for number in draw.numbers),
+            draw.special,
+            membership.OFFICIAL_DATASET_SHA256,
+        )
+        for draw in membership.OFFICIAL_IDENTITIES
+    )
+    identity_rows = tuple(
+        connection.execute(
+            "SELECT period, draw_date, numbers_json, numbers_csv, special, dataset_sha256 "
+            "FROM {} ORDER BY period".format(membership.IDENTITY_TABLE)
+        ).fetchall()
+    )
+    if identity_rows != expected_identity_rows:
+        raise StagingError("official identity rows do not match the pinned dataset")
+
+
+def _validate_canonical_view_read_only(connection: sqlite3.Connection) -> str:
+    """Accept only the exact known legacy view or digest-bound official view."""
+    view_row = connection.execute(
+        "SELECT sql FROM sqlite_master WHERE type='view' AND name=?",
+        (CANONICAL_VIEW,),
+    ).fetchone()
+    if not view_row or not isinstance(view_row[0], str):
+        raise StagingError("canonical Big Lotto view is missing")
+
+    actual_fingerprint = _sql_fingerprint(view_row[0])
+    if actual_fingerprint == _sql_fingerprint(_LEGACY_CANONICAL_VIEW_SQL):
+        return "LEGACY_MAX_MAIN_GT_25"
+    if actual_fingerprint == _sql_fingerprint(membership.CREATE_VIEW_SQL):
+        _validate_official_identity_tables_read_only(connection)
+        return "OFFICIAL_IDENTITY_SHA256"
+    raise StagingError("canonical Big Lotto view definition is not recognized")
+
+
 def _stored_row_matches(
     row: Tuple[Any, Any, Any, Any], record: DrawRecord
 ) -> bool:
@@ -394,16 +508,7 @@ def inspect_database_read_only(
             columns
         ):
             raise StagingError("database draws table has an incompatible schema")
-        view_row = connection.execute(
-            "SELECT sql FROM sqlite_master WHERE type='view' AND name=?",
-            (CANONICAL_VIEW,),
-        ).fetchone()
-        if not view_row or not isinstance(view_row[0], str):
-            raise StagingError("canonical Big Lotto view is missing")
-        if not _VIEW_FILTER_RE.search(view_row[0]):
-            raise StagingError(
-                "canonical view no longer contains the expected MAX(number) > 25 rule"
-            )
+        canonical_view_kind = _validate_canonical_view_read_only(connection)
 
         placeholders = ",".join("?" for _ in verified)
         query = (
@@ -450,6 +555,7 @@ def inspect_database_read_only(
         "sha256_after": after["sha256"],
         "identity_before": before,
         "identity_after": after,
+        "canonical_view_kind": canonical_view_kind,
         "target_presence": presence,
         "db_copy": "NONE",
         "db_writes": "NONE",
@@ -598,6 +704,34 @@ def _existing_rows(
     return by_draw
 
 
+def _plan_batch_import(
+    connection: sqlite3.Connection, records: Sequence[DrawRecord]
+) -> Tuple[Tuple[DrawRecord, ...], int]:
+    """Read existing staged rows and return inserts plus identical-row count."""
+    by_draw = _existing_rows(connection, records)
+    to_insert: List[DrawRecord] = []
+    identical = 0
+    for record in records:
+        existing = by_draw.get(record.draw, [])
+        if not existing:
+            to_insert.append(record)
+        elif len(existing) != 1:
+            raise DrawConflictError(
+                "database contains duplicate BIG_LOTTO rows for {}".format(
+                    record.draw
+                )
+            )
+        elif not _stored_row_matches(existing[0], record):
+            raise DrawConflictError(
+                "database content conflicts with official period {}".format(
+                    record.draw
+                )
+            )
+        else:
+            identical += 1
+    return tuple(to_insert), identical
+
+
 def apply_batch(
     connection: sqlite3.Connection,
     records: Sequence[DrawRecord],
@@ -633,27 +767,7 @@ def apply_batch(
             columns
         ):
             raise StagingError("database draws table has an incompatible schema")
-        by_draw = _existing_rows(connection, verified)
-        to_insert: List[DrawRecord] = []
-        identical = 0
-        for record in verified:
-            existing = by_draw.get(record.draw, [])
-            if not existing:
-                to_insert.append(record)
-            elif len(existing) != 1:
-                raise DrawConflictError(
-                    "database contains duplicate BIG_LOTTO rows for {}".format(
-                        record.draw
-                    )
-                )
-            elif not _stored_row_matches(existing[0], record):
-                raise DrawConflictError(
-                    "database content conflicts with official period {}".format(
-                        record.draw
-                    )
-                )
-            else:
-                identical += 1
+        to_insert, identical = _plan_batch_import(connection, verified)
 
         for record in to_insert:
             connection.execute(
@@ -743,7 +857,7 @@ def _canonical_periods_in_view(connection: sqlite3.Connection) -> Tuple[str, ...
     return tuple(sorted(periods, key=int))
 
 
-def apply_staged_import_atomically(
+def _validate_staged_import_prewrite(
     connection: sqlite3.Connection,
     manifest_path: Union[str, Path],
     *,
@@ -751,26 +865,9 @@ def apply_staged_import_atomically(
     approved_official_dataset_sha256: str,
     expected_db_identity: Mapping[str, Any],
     expected_canonical_periods: Sequence[str],
+    allow_query_only: bool,
 ) -> Dict[str, Any]:
-    """以一筆 SQLite 交易套用官方身分及 manifest，再匯入 16 筆暫存開獎資料。
-
-    在第一次資料庫寫入前，先驗證 manifest 完整檔案 SHA-256、固定的官方
-    身分資料集、呼叫端預期的資料庫身分，以及預期 canonical 期號集合。
-    manifest 內自算的 content digest 只檢查內容一致性，不是數位簽章；
-    呼叫端另提供完整檔案 SHA-256，作為核准檔案 pin。既有 CLI 維持唯讀
-    staging，沒有正式資料庫 apply 子命令；此入口僅由程式呼叫。
-
-    範例（僅限核准來源與合成資料庫驗證）::
-
-        result = apply_staged_import_atomically(
-            connection,
-            manifest_path,
-            approved_manifest_sha256=manifest_file_sha256,
-            approved_official_dataset_sha256=OFFICIAL_DATASET_SHA256,
-            expected_db_identity=expected_db_identity,
-            expected_canonical_periods=expected_periods,
-        )
-    """
+    """Run the shared, non-mutating checks before either probe or Apply."""
     if not isinstance(approved_manifest_sha256, str) or not _SHA256_RE.fullmatch(
         approved_manifest_sha256
     ):
@@ -781,7 +878,8 @@ def apply_staged_import_atomically(
         raise StagingError("approved official dataset SHA-256 is malformed")
     if connection.in_transaction:
         raise StagingError("atomic apply requires a connection with no open transaction")
-    if int(connection.execute("PRAGMA query_only").fetchone()[0]) == 1:
+    query_only = int(connection.execute("PRAGMA query_only").fetchone()[0]) == 1
+    if query_only and not allow_query_only:
         raise StagingError("atomic apply refuses a query_only connection")
 
     try:
@@ -848,11 +946,133 @@ def apply_staged_import_atomically(
     expected_periods = _expected_periods(expected_canonical_periods)
     if not expected_periods:
         raise StagingError("expected canonical period set must not be empty")
-    columns = {
-        row[1] for row in connection.execute("PRAGMA table_info(draws)")
-    }
+    columns = {row[1] for row in connection.execute("PRAGMA table_info(draws)")}
     if not {"draw", "date", "lottery_type", "numbers", "special"}.issubset(columns):
         raise StagingError("database draws table has an incompatible schema")
+    canonical_view_kind = _validate_canonical_view_read_only(connection)
+
+    return {
+        "records": records,
+        "manifest_file_sha256": actual_manifest_sha256,
+        "database_path": database_path,
+        "database_identity": actual_db_identity,
+        "expected_periods": expected_periods,
+        "canonical_view_kind": canonical_view_kind,
+        "query_only": query_only,
+    }
+
+
+def apply_staged_import_atomically(
+    connection: sqlite3.Connection,
+    manifest_path: Union[str, Path],
+    *,
+    approved_manifest_sha256: str,
+    approved_official_dataset_sha256: str,
+    expected_db_identity: Mapping[str, Any],
+    expected_canonical_periods: Sequence[str],
+    preflight_only: bool = False,
+) -> Dict[str, Any]:
+    """以一筆 SQLite 交易套用官方身分及 manifest，再匯入 16 筆暫存開獎資料。
+
+    在第一次資料庫寫入前，先驗證 manifest 完整檔案 SHA-256、固定的官方
+    身分資料集、呼叫端預期的資料庫身分，以及預期 canonical 期號集合。
+    `preflight_only=True` 會走同一個 prewrite 驗證，但在任何寫入交易前
+    回傳明確的唯讀結果；它不測試 writer lock 或真實 COMMIT。manifest
+    內自算的 content digest 只檢查內容一致性，不是數位簽章；
+    呼叫端另提供完整檔案 SHA-256，作為核准檔案 pin。既有 CLI 維持唯讀
+    staging，沒有正式資料庫 apply 子命令；此入口僅由程式呼叫。
+
+    範例（僅限核准來源與合成資料庫驗證）::
+
+        result = apply_staged_import_atomically(
+            connection,
+            manifest_path,
+            approved_manifest_sha256=manifest_file_sha256,
+            approved_official_dataset_sha256=OFFICIAL_DATASET_SHA256,
+            expected_db_identity=expected_db_identity,
+            expected_canonical_periods=expected_periods,
+            preflight_only=True,
+        )
+    """
+    if not isinstance(preflight_only, bool):
+        raise StagingError("preflight_only must be a boolean")
+    prepared = _validate_staged_import_prewrite(
+        connection,
+        manifest_path,
+        approved_manifest_sha256=approved_manifest_sha256,
+        approved_official_dataset_sha256=approved_official_dataset_sha256,
+        expected_db_identity=expected_db_identity,
+        expected_canonical_periods=expected_canonical_periods,
+        allow_query_only=preflight_only,
+    )
+    records = prepared["records"]
+    actual_manifest_sha256 = prepared["manifest_file_sha256"]
+    database_path = prepared["database_path"]
+    actual_db_identity = prepared["database_identity"]
+    expected_periods = prepared["expected_periods"]
+
+    if preflight_only:
+        official_periods = tuple(draw.period for draw in membership.OFFICIAL_IDENTITIES)
+        if expected_periods != official_periods:
+            raise StagingError(
+                "expected canonical period set does not match the pinned official dataset"
+            )
+        current_periods = _canonical_periods_in_view(connection)
+        if len(current_periods) != len(set(current_periods)):
+            raise StagingError("canonical view contains duplicate official periods")
+        if set(current_periods).difference(official_periods):
+            raise StagingError("canonical view contains periods outside the pinned dataset")
+
+        inserted_records, identical_count = _plan_batch_import(connection, records)
+        if prepared["canonical_view_kind"] == "OFFICIAL_IDENTITY_SHA256":
+            predicted_periods = tuple(
+                sorted(
+                    set(current_periods).union(record.draw for record in inserted_records),
+                    key=int,
+                )
+            )
+            if predicted_periods != expected_periods:
+                raise StagingError(
+                    "canonical view cannot reach the expected period set from this batch"
+                )
+        else:
+            expected_legacy_periods = tuple(
+                draw.period
+                for draw in membership.OFFICIAL_IDENTITIES
+                if draw.period not in TARGET_DRAW_IDS
+                and draw.period < TARGET_DRAW_IDS[0]
+                and max(draw.numbers) > 25
+            )
+            if current_periods != expected_legacy_periods:
+                raise StagingError(
+                    "legacy canonical view periods do not match the known legacy subset"
+                )
+
+        identity_after = _database_identity(database_path)
+        if identity_after != actual_db_identity:
+            raise StagingError("database or SQLite sidecar identity changed during preflight")
+        return {
+            "PREFLIGHT_VALIDATION": "PASS",
+            "MUTATION_PERFORMED": "NO",
+            "WRITER_LOCK_TESTED": "NO",
+            "REAL_TRANSACTION_COMMIT_TESTED": "NO",
+            "DATABASE_IDENTITY_UNCHANGED": "PASS",
+            "SIDECARS": "OBSERVED"
+            if any(identity_after["sidecars"].values())
+            else "NONE",
+            "CONNECTION_QUERY_ONLY": "YES" if prepared["query_only"] else "NO",
+            "SAME_CHAIN_VALIDATION": "PASS",
+            "MANIFEST_FILE_SHA256": actual_manifest_sha256,
+            "OFFICIAL_DATASET_SHA256": membership.OFFICIAL_DATASET_SHA256,
+            "DATABASE_SHA256": actual_db_identity["sha256"],
+            "CANONICAL_VIEW_KIND": prepared["canonical_view_kind"],
+            "CANONICAL_PERIODS_BEFORE": list(current_periods),
+            "EXPECTED_CANONICAL_PERIODS": list(expected_periods),
+            "EXPECTED_CANONICAL_PERIOD_COUNT": len(expected_periods),
+            "STAGED_PERIOD_COUNT": len(records),
+            "INSERTED_PERIOD_COUNT": len(inserted_records),
+            "IDENTICAL_PERIOD_COUNT": identical_count,
+        }
 
     connection.execute("BEGIN IMMEDIATE")
     try:

@@ -218,6 +218,70 @@ def _transaction_statements(trace):
     ]
 
 
+def _deny_mutating_sqlite_actions(connection):
+    action_names = (
+        "SQLITE_INSERT",
+        "SQLITE_UPDATE",
+        "SQLITE_DELETE",
+        "SQLITE_CREATE_INDEX",
+        "SQLITE_CREATE_TABLE",
+        "SQLITE_CREATE_TEMP_INDEX",
+        "SQLITE_CREATE_TEMP_TABLE",
+        "SQLITE_CREATE_TEMP_TRIGGER",
+        "SQLITE_CREATE_TEMP_VIEW",
+        "SQLITE_CREATE_TRIGGER",
+        "SQLITE_CREATE_VIEW",
+        "SQLITE_CREATE_VTABLE",
+        "SQLITE_DROP_INDEX",
+        "SQLITE_DROP_TABLE",
+        "SQLITE_DROP_TEMP_INDEX",
+        "SQLITE_DROP_TEMP_TABLE",
+        "SQLITE_DROP_TEMP_TRIGGER",
+        "SQLITE_DROP_TEMP_VIEW",
+        "SQLITE_DROP_TRIGGER",
+        "SQLITE_DROP_VIEW",
+        "SQLITE_DROP_VTABLE",
+        "SQLITE_ALTER_TABLE",
+        "SQLITE_REINDEX",
+        "SQLITE_ANALYZE",
+        "SQLITE_TRANSACTION",
+        "SQLITE_SAVEPOINT",
+        "SQLITE_ATTACH",
+        "SQLITE_DETACH",
+    )
+    denied_actions = {
+        getattr(sqlite3, name)
+        for name in action_names
+        if hasattr(sqlite3, name)
+    }
+    observed = []
+
+    def authorize(action, argument1, argument2, _database, _trigger):
+        if action in denied_actions:
+            observed.append((action, argument1, argument2))
+            return sqlite3.SQLITE_DENY
+        return sqlite3.SQLITE_OK
+
+    connection.set_authorizer(authorize)
+    return observed
+
+
+def _query_only_connection(database_path):
+    connection = sqlite3.connect(
+        database_path.as_uri() + "?mode=ro", uri=True, isolation_level=None
+    )
+    connection.execute("PRAGMA query_only=ON")
+    assert connection.execute("PRAGMA query_only").fetchone()[0] == 1
+    return connection
+
+
+def _sqlite_sidecars(database_path):
+    return {
+        suffix: Path(str(database_path) + suffix).exists()
+        for suffix in ("-journal", "-wal", "-shm")
+    }
+
+
 def _prepared_atomic_apply(tmp_path, records=None):
     database_path = tmp_path / "synthetic.sqlite"
     connection = _synthetic_atomic_database(database_path)
@@ -591,7 +655,7 @@ def test_view_replacement_failure_rolls_back_the_entire_atomic_apply(tmp_path):
         with pytest.raises(sqlite3.DatabaseError, match="not authorized"):
             _apply_atomic(connection, manifest_path, manifest_sha, database_identity)
     finally:
-        connection.set_authorizer(None)
+        connection.set_authorizer(lambda *_args: sqlite3.SQLITE_OK)
 
     assert _transaction_statements(trace) == ["BEGIN IMMEDIATE", "ROLLBACK"]
     assert connection.in_transaction is False
@@ -728,3 +792,293 @@ def test_cli_has_no_database_apply_command_without_owner_authorization(capsys):
 
     assert exc_info.value.code == 2
     assert "invalid choice" in capsys.readouterr().err
+
+
+def test_same_chain_preflight_is_query_only_and_performs_no_sqlite_mutations(tmp_path):
+    (
+        connection,
+        database_path,
+        database_identity,
+        manifest_path,
+        manifest_sha,
+        _manifest,
+    ) = _prepared_atomic_apply(tmp_path)
+    connection.close()
+
+    before_bytes = database_path.read_bytes()
+    before_sidecars = _sqlite_sidecars(database_path)
+    connection = _query_only_connection(database_path)
+    trace = []
+    connection.set_trace_callback(trace.append)
+    mutations = _deny_mutating_sqlite_actions(connection)
+
+    result = _apply_atomic(
+        connection,
+        manifest_path,
+        manifest_sha,
+        database_identity,
+        preflight_only=True,
+    )
+
+    assert result["PREFLIGHT_VALIDATION"] == "PASS"
+    assert result["SAME_CHAIN_VALIDATION"] == "PASS"
+    assert result["MUTATION_PERFORMED"] == "NO"
+    assert result["WRITER_LOCK_TESTED"] == "NO"
+    assert result["REAL_TRANSACTION_COMMIT_TESTED"] == "NO"
+    assert result["DATABASE_IDENTITY_UNCHANGED"] == "PASS"
+    assert result["CONNECTION_QUERY_ONLY"] == "YES"
+    assert result["CANONICAL_VIEW_KIND"] == "LEGACY_MAX_MAIN_GT_25"
+    assert result["EXPECTED_CANONICAL_PERIOD_COUNT"] == len(
+        membership.OFFICIAL_IDENTITIES
+    )
+    assert _transaction_statements(trace) == []
+    assert mutations == []
+    connection.close()
+
+    assert database_path.read_bytes() == before_bytes
+    assert before_sidecars == {"-journal": False, "-wal": False, "-shm": False}
+    assert _sqlite_sidecars(database_path) == before_sidecars
+
+
+def test_preflight_rejects_manifest_file_pin_mismatch_without_writes(tmp_path):
+    (
+        connection,
+        database_path,
+        database_identity,
+        manifest_path,
+        manifest_sha,
+        _manifest,
+    ) = _prepared_atomic_apply(tmp_path)
+    before_bytes = database_path.read_bytes()
+    manifest_path.write_bytes(manifest_path.read_bytes() + b" ")
+    trace = []
+    connection.set_trace_callback(trace.append)
+    mutations = _deny_mutating_sqlite_actions(connection)
+
+    with pytest.raises(staged.StagingError, match="external manifest file SHA-256"):
+        _apply_atomic(
+            connection,
+            manifest_path,
+            manifest_sha,
+            database_identity,
+            preflight_only=True,
+        )
+
+    assert _transaction_statements(trace) == []
+    assert mutations == []
+    assert database_path.read_bytes() == before_bytes
+    assert _sqlite_sidecars(database_path) == {
+        "-journal": False,
+        "-wal": False,
+        "-shm": False,
+    }
+    connection.close()
+
+
+def test_preflight_rejects_official_dataset_digest_mismatch(tmp_path):
+    (
+        connection,
+        database_path,
+        database_identity,
+        manifest_path,
+        manifest_sha,
+        _manifest,
+    ) = _prepared_atomic_apply(tmp_path)
+    before_bytes = database_path.read_bytes()
+    trace = []
+    connection.set_trace_callback(trace.append)
+    mutations = _deny_mutating_sqlite_actions(connection)
+
+    with pytest.raises(staged.StagingError, match="official identity dataset"):
+        _apply_atomic(
+            connection,
+            manifest_path,
+            manifest_sha,
+            database_identity,
+            approved_official_dataset_sha256="0" * 64,
+            preflight_only=True,
+        )
+
+    assert _transaction_statements(trace) == []
+    assert mutations == []
+    assert database_path.read_bytes() == before_bytes
+    connection.close()
+
+
+def test_preflight_rejects_database_identity_mismatch(tmp_path):
+    (
+        connection,
+        database_path,
+        database_identity,
+        manifest_path,
+        manifest_sha,
+        _manifest,
+    ) = _prepared_atomic_apply(tmp_path)
+    before_bytes = database_path.read_bytes()
+    wrong_identity = dict(database_identity)
+    wrong_identity["sha256"] = "0" * 64
+    trace = []
+    connection.set_trace_callback(trace.append)
+    mutations = _deny_mutating_sqlite_actions(connection)
+
+    with pytest.raises(staged.StagingError, match="database identity does not match"):
+        _apply_atomic(
+            connection,
+            manifest_path,
+            manifest_sha,
+            wrong_identity,
+            preflight_only=True,
+        )
+
+    assert _transaction_statements(trace) == []
+    assert mutations == []
+    assert database_path.read_bytes() == before_bytes
+    connection.close()
+
+
+def test_preflight_rejects_conflicting_sixteenth_period_before_transaction(tmp_path):
+    (
+        connection,
+        database_path,
+        _old_database_identity,
+        _old_manifest_path,
+        _old_manifest_sha,
+        _manifest,
+    ) = _prepared_atomic_apply(tmp_path)
+    record = _official_records()[-1]
+    conflicting_numbers = tuple(
+        number
+        for number in range(1, 50)
+        if number not in record.numbers and number != record.special
+    )[:6]
+    connection.execute(
+        "INSERT INTO draws(draw, date, lottery_type, numbers, special) "
+        "VALUES (?, ?, 'BIG_LOTTO', ?, ?)",
+        (
+            record.draw,
+            record.date,
+            json.dumps(list(conflicting_numbers), separators=(",", ":")),
+            record.special,
+        ),
+    )
+    connection.commit()
+    database_identity = staged._database_identity(database_path.resolve())
+    manifest_path = tmp_path / "conflicting-stage.json"
+    manifest_sha, _ = _atomic_manifest(manifest_path, database_identity)
+    before_bytes = database_path.read_bytes()
+    trace = []
+    connection.set_trace_callback(trace.append)
+    mutations = _deny_mutating_sqlite_actions(connection)
+
+    with pytest.raises(staged.DrawConflictError, match="conflicts with official period 115000095"):
+        _apply_atomic(
+            connection,
+            manifest_path,
+            manifest_sha,
+            database_identity,
+            preflight_only=True,
+        )
+
+    assert _transaction_statements(trace) == []
+    assert mutations == []
+    assert database_path.read_bytes() == before_bytes
+    connection.close()
+
+
+def test_read_only_inspection_recognizes_legacy_canonical_view(tmp_path):
+    database_path = tmp_path / "legacy.sqlite"
+    connection = _synthetic_atomic_database(database_path)
+    database_identity = staged._database_identity(database_path.resolve())
+    connection.close()
+    before_bytes = database_path.read_bytes()
+
+    result = staged.inspect_database_read_only(
+        database_path,
+        _official_records(),
+        expected_sha256=database_identity["sha256"],
+    )
+
+    assert result["canonical_view_kind"] == "LEGACY_MAX_MAIN_GT_25"
+    assert result["query_only"] == 1
+    assert database_path.read_bytes() == before_bytes
+    assert _sqlite_sidecars(database_path) == {
+        "-journal": False,
+        "-wal": False,
+        "-shm": False,
+    }
+
+
+def test_read_only_inspection_and_preflight_accept_digest_bound_official_view(
+    tmp_path,
+):
+    (
+        connection,
+        database_path,
+        _old_identity,
+        _old_manifest_path,
+        _old_manifest_sha,
+        _manifest,
+    ) = _prepared_atomic_apply(tmp_path)
+    membership.apply_official_membership_projection(connection)
+    connection.commit()
+    database_identity = staged._database_identity(database_path.resolve())
+    manifest_path = tmp_path / "official-view-stage.json"
+    manifest_sha, _ = _atomic_manifest(manifest_path, database_identity)
+    connection.close()
+    before_bytes = database_path.read_bytes()
+
+    inspection = staged.inspect_database_read_only(
+        database_path,
+        _official_records(),
+        expected_sha256=database_identity["sha256"],
+    )
+    assert inspection["canonical_view_kind"] == "OFFICIAL_IDENTITY_SHA256"
+
+    connection = _query_only_connection(database_path)
+    trace = []
+    connection.set_trace_callback(trace.append)
+    mutations = _deny_mutating_sqlite_actions(connection)
+    result = _apply_atomic(
+        connection,
+        manifest_path,
+        manifest_sha,
+        database_identity,
+        preflight_only=True,
+    )
+
+    assert result["PREFLIGHT_VALIDATION"] == "PASS"
+    assert result["CANONICAL_VIEW_KIND"] == "OFFICIAL_IDENTITY_SHA256"
+    assert result["INSERTED_PERIOD_COUNT"] == len(staged.TARGET_DRAW_IDS)
+    assert _transaction_statements(trace) == []
+    assert mutations == []
+    connection.close()
+    assert database_path.read_bytes() == before_bytes
+    assert _sqlite_sidecars(database_path) == {
+        "-journal": False,
+        "-wal": False,
+        "-shm": False,
+    }
+
+
+def test_read_only_inspection_rejects_unknown_modified_canonical_view(tmp_path):
+    database_path = tmp_path / "unknown-view.sqlite"
+    connection = _synthetic_atomic_database(database_path)
+    connection.execute("DROP VIEW draws_big_lotto_canonical_main")
+    connection.execute(
+        """
+        CREATE VIEW draws_big_lotto_canonical_main AS
+        SELECT d.*
+        FROM draws AS d
+        WHERE d.lottery_type = 'BIG_LOTTO'
+          AND CAST(d.draw AS INTEGER) < 115000081
+          AND (
+              SELECT MAX(CAST(j.value AS INTEGER))
+              FROM json_each(d.numbers) AS j
+          ) > 25
+        """
+    )
+    connection.commit()
+    connection.close()
+
+    with pytest.raises(staged.StagingError, match="definition is not recognized"):
+        staged.inspect_database_read_only(database_path, _official_records())

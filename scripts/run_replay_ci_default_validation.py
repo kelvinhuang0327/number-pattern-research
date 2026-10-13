@@ -16,6 +16,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 TEST_ARGS = [
     "tests/test_randomness_audit.py",
     "tests/test_randomness_audit_cadence.py",
+    "tests/test_biglotto_official_membership_projection.py",
     "tests/test_strategy_replay_history_cutoff_integrity.py",
     "tests/test_replay_browser_smoke.py",
     "tests/test_replay_api_contract.py",

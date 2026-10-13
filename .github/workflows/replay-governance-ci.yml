@@ -46,12 +46,14 @@ jobs:
             /pytest.ini
             /scripts/randomness_audit.py
             /scripts/p238b_nist_randomness_audit_artifact_build.py
+            /scripts/biglotto_official_membership_projection.py
             /scripts/run_replay_ci_default_validation.py
             /scripts/build_replay_test_fixture.py
             /scripts/run_replay_ci_db_validation.py
             /tests/conftest.py
             /tests/test_randomness_audit.py
             /tests/test_randomness_audit_cadence.py
+            /tests/test_biglotto_official_membership_projection.py
             /tests/test_strategy_replay_history_cutoff_integrity.py
             /tests/test_replay_browser_smoke.py
             /tests/test_replay_api_contract.py

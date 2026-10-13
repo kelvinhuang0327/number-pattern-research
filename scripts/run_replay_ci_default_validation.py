@@ -14,6 +14,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 TEST_ARGS = [
+    "tests/test_randomness_audit.py",
     "tests/test_randomness_audit_cadence.py",
     "tests/test_strategy_replay_history_cutoff_integrity.py",
     "tests/test_replay_browser_smoke.py",
@@ -23,9 +24,9 @@ TEST_ARGS = [
 
 
 def main() -> int:
-    cmd = [sys.executable, "-m", "pytest", *TEST_ARGS, "-q"]
-    print("[replay-ci-default] Running:")
-    print(" ", " ".join(cmd))
+    cmd = [sys.executable, "-m", "pytest", "-vv", "-ra", *TEST_ARGS]
+    print("[replay-ci-default] Running:", flush=True)
+    print(" ", " ".join(cmd), flush=True)
     completed = subprocess.run(cmd, cwd=REPO_ROOT)
     return completed.returncode
 

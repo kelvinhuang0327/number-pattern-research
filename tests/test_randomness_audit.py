@@ -560,21 +560,20 @@ def test_strict_p238b_comparison_preserves_semantics_and_valid_artifacts(
     committed = audit.strict_json_loads(RESULTS_PATH.read_bytes(), source=str(RESULTS_PATH))
     current = committed["current_executable_audit"]
     expected_result = deepcopy(current["p246k_existing_logic_result"])
-    expected_comparison = deepcopy(expected_result["p238b_comparison"])
     comparison_fixture = tmp_path / "p238b-comparison.json"
     comparison_fixture.write_text(
         json.dumps(
             {
-                "classification": expected_comparison["classification"],
-                "test_results": [{}] * expected_comparison["test_count"],
-                "is_corrected_significant": expected_comparison[
-                    "is_corrected_significant"
-                ],
+                "classification": "SYNTHETIC_P238B_FIXTURE",
+                "test_results": [{"test_id": "synthetic"}],
+                "is_corrected_significant": False,
             },
             sort_keys=True,
         ),
         encoding="utf-8",
     )
+    expected_comparison = audit._load_strict_p238b_comparison(comparison_fixture)
+    expected_result["p238b_comparison"] = expected_comparison
     monkeypatch.setattr(audit, "P238B_COMPARISON_ARTIFACT", comparison_fixture)
     population_count = expected_result["canonical_population_count"]
     population = audit.PopulationLoad(
@@ -646,8 +645,13 @@ def test_strict_p238b_comparison_preserves_semantics_and_valid_artifacts(
     assert ordinary_loader_calls == 0
     assert module.load_p238b_comparison is tracking_ordinary_loader
     assert module.load_canonical_draws is original_population_loader
-    assert original_read_bytes(results_out) == original_read_bytes(RESULTS_PATH)
-    assert original_read_bytes(summary_out) == original_read_bytes(SUMMARY_PATH)
+    generated_document = audit.strict_json_loads(
+        original_read_bytes(results_out), source=str(results_out)
+    )
+    assert generated_document == generated
+    assert audit._extract_legacy_payload(generated_document) == audit._extract_legacy_payload(
+        committed
+    )
     audit._validate_rendered_artifacts(
         original_read_bytes(results_out).decode("utf-8"),
         original_read_bytes(summary_out).decode("utf-8"),

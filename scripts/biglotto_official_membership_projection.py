@@ -2400,17 +2400,37 @@ def _sqlite_object_type(connection: sqlite3.Connection, name: str):
 
 def apply_official_membership_projection(
     connection: sqlite3.Connection,
+    *,
+    manage_transaction: bool = True,
 ) -> ProjectionResult:
-    """Atomically replace the identity projection and canonical view on a DB connection.
+    """在呼叫端提供的 SQLite 連線中替換官方身分表、manifest 與 canonical view。
 
-    Callers supply the connection explicitly. This helper performs no network
-    calls and does not choose or open a database path. Tests use synthetic
-    in-memory SQLite databases; formal databases are outside this candidate's
-    apply scope.
+    不執行網路請求，也不自行選擇或開啟資料庫路徑。預設由本函式管理
+    一筆交易。整合入口若已持有外層交易，可傳入
+    ``manage_transaction=False``；此時本函式不會開始、提交或回滾交易。
+    本候選的套用驗證只使用合成 SQLite，未授權正式資料庫套用。
+
+    範例（單獨投影，由函式管理交易）::
+
+        result = apply_official_membership_projection(connection)
+
+    範例（加入外層交易）::
+
+        connection.execute("BEGIN IMMEDIATE")
+        try:
+            result = apply_official_membership_projection(
+                connection, manage_transaction=False
+            )
+            connection.commit()
+        except BaseException:
+            connection.rollback()
+            raise
     """
     _validate_identities(OFFICIAL_IDENTITIES)
-    if connection.in_transaction:
+    if manage_transaction and connection.in_transaction:
         raise ProjectionError("caller must provide a connection outside a transaction")
+    if not manage_transaction and not connection.in_transaction:
+        raise ProjectionError("manage_transaction=False requires an open transaction")
     if int(connection.execute("PRAGMA query_only").fetchone()[0]) == 1:
         raise ProjectionError("projection update requires a writable synthetic connection")
     try:
@@ -2422,7 +2442,8 @@ def apply_official_membership_projection(
     if json1_ok is None or int(json1_ok[0]) != 1:
         raise ProjectionError("SQLite JSON1 support is required")
 
-    connection.execute("BEGIN IMMEDIATE")
+    if manage_transaction:
+        connection.execute("BEGIN IMMEDIATE")
     try:
         expected_objects = (
             (IDENTITY_TABLE, "table"),
@@ -2476,9 +2497,10 @@ def apply_official_membership_projection(
         view_row_count = int(
             connection.execute("SELECT COUNT(*) FROM {}".format(CANONICAL_VIEW)).fetchone()[0]
         )
-        connection.commit()
+        if manage_transaction:
+            connection.commit()
     except BaseException:
-        if connection.in_transaction:
+        if manage_transaction and connection.in_transaction:
             connection.rollback()
         raise
 

@@ -21,6 +21,11 @@ from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
 from urllib.parse import quote, urlencode
 from urllib.request import Request, urlopen
 
+if __package__:
+    from . import biglotto_official_membership_projection as membership
+else:  # 支援既有直接執行 staging 腳本的入口。
+    import biglotto_official_membership_projection as membership
+
 
 TASK_ID = "NPR_BIGLOTTO_16_DRAW_STAGED_IMPORT_R1"
 API_BASE_URL = "https://api.taiwanlottery.com/TLCAPIWeB"
@@ -520,11 +525,7 @@ def write_manifest_exclusive(path: Union[str, Path], manifest: Mapping[str, Any]
     return hashlib.sha256(content).hexdigest()
 
 
-def records_from_manifest(manifest_path: Union[str, Path]) -> Tuple[DrawRecord, ...]:
-    """只在 manifest 摘要與期別範圍正確時載入資料。"""
-    manifest = strict_json_loads(
-        Path(manifest_path).read_bytes(), source="staged manifest"
-    )
+def _records_from_manifest_object(manifest: Any) -> Tuple[DrawRecord, ...]:
     if not isinstance(manifest, dict):
         raise StagingError("staged manifest must be a JSON object")
     recorded_digest = manifest.get("content_sha256")
@@ -532,7 +533,7 @@ def records_from_manifest(manifest_path: Union[str, Path]) -> Tuple[DrawRecord, 
     unsigned.pop("content_sha256", None)
     actual_digest = hashlib.sha256(_canonical_json_bytes(unsigned)).hexdigest()
     if recorded_digest != actual_digest:
-        raise StagingError("staged manifest content digest mismatch")
+        raise StagingError("staged manifest self-calculated content digest mismatch")
     if manifest.get("task_id") != TASK_ID:
         raise StagingError("staged manifest belongs to a different task")
     if manifest.get("expected_draw_ids") != list(TARGET_DRAW_IDS):
@@ -564,6 +565,22 @@ def records_from_manifest(manifest_path: Union[str, Path]) -> Tuple[DrawRecord, 
     return verified
 
 
+def records_from_manifest(manifest_path: Union[str, Path]) -> Tuple[DrawRecord, ...]:
+    """檢查 manifest 自算的內容摘要與固定期別範圍後載入開獎資料。
+
+    內容摘要可發現意外的不一致，但不是數位簽章或外部核准。套用資料
+    時，呼叫端還必須提供完整 manifest 檔案的獨立 SHA-256 pin。
+
+    範例::
+
+        records = records_from_manifest("/tmp/approved-stage.json")
+    """
+    manifest = strict_json_loads(
+        Path(manifest_path).read_bytes(), source="staged manifest"
+    )
+    return _records_from_manifest_object(manifest)
+
+
 def _existing_rows(
     connection: sqlite3.Connection, records: Sequence[DrawRecord]
 ) -> Dict[str, List[Tuple[Any, Any, Any, Any]]]:
@@ -582,20 +599,32 @@ def _existing_rows(
 
 
 def apply_batch(
-    connection: sqlite3.Connection, records: Sequence[DrawRecord]
+    connection: sqlite3.Connection,
+    records: Sequence[DrawRecord],
+    *,
+    manage_transaction: bool = True,
 ) -> Dict[str, Any]:
     """以單一 transaction 匯入完整 16 期批次，確保全成或全數 rollback。
 
     完全相同的既有資料可安全重跑；內容衝突或 SQL 錯誤都拒絕整批，
-    不使用忽略衝突的 INSERT，也不逐筆 commit。
+    不使用忽略衝突的 INSERT，也不逐筆 commit。預設由本函式管理交易；
+    外層整合交易可先 BEGIN 再傳入 ``manage_transaction=False``，由外層
+    負責提交或回滾。
+
+    範例::
+
+        result = apply_batch(connection, records)
     """
     verified = validate_records(records)
-    if connection.in_transaction:
+    if manage_transaction and connection.in_transaction:
         raise StagingError("apply_batch requires a connection with no open transaction")
+    if not manage_transaction and not connection.in_transaction:
+        raise StagingError("manage_transaction=False requires an open transaction")
     query_only = connection.execute("PRAGMA query_only").fetchone()[0]
     if query_only:
         raise StagingError("apply_batch refuses a query_only connection")
-    connection.execute("BEGIN IMMEDIATE")
+    if manage_transaction:
+        connection.execute("BEGIN IMMEDIATE")
     try:
         columns = {
             row[1] for row in connection.execute("PRAGMA table_info(draws)")
@@ -638,16 +667,229 @@ def apply_batch(
                     record.special,
                 ),
             )
-        connection.commit()
+        if manage_transaction:
+            connection.commit()
         return {
             "inserted_count": len(to_insert),
             "inserted_draw_ids": [record.draw for record in to_insert],
             "identical_existing_count": identical,
         }
     except BaseException:
+        if manage_transaction and connection.in_transaction:
+            connection.rollback()
+        raise
+
+
+def _main_database_path(connection: sqlite3.Connection) -> Path:
+    databases = connection.execute("PRAGMA database_list").fetchall()
+    if len(databases) != 1 or databases[0][1] != "main" or not databases[0][2]:
+        raise StagingError(
+            "atomic apply requires one file-backed main database and no attached databases"
+        )
+    path = Path(str(databases[0][2])).resolve(strict=True)
+    if not path.is_file():
+        raise StagingError("atomic apply database is not a regular file")
+    return path
+
+
+def _validate_expected_database_identity(
+    connection: sqlite3.Connection,
+    expected_db_identity: Mapping[str, Any],
+) -> Tuple[Path, Dict[str, Any]]:
+    if not isinstance(expected_db_identity, Mapping):
+        raise StagingError("caller must provide the expected database identity")
+    expected = dict(expected_db_identity)
+    expected_path = expected.get("path")
+    if not isinstance(expected_path, str) or not expected_path:
+        raise StagingError("expected database identity must include its absolute path")
+    try:
+        resolved_expected_path = Path(expected_path).resolve(strict=True)
+        database_path = _main_database_path(connection)
+        actual = _database_identity(database_path)
+    except OSError as exc:
+        raise StagingError("could not resolve the expected database identity") from exc
+    if str(resolved_expected_path) != str(database_path):
+        raise StagingError("SQLite connection does not match the expected database path")
+    if actual != expected:
+        raise StagingError("database identity does not match the caller's expected identity")
+    return database_path, actual
+
+
+def _expected_periods(periods: Sequence[str]) -> Tuple[str, ...]:
+    if not isinstance(periods, Sequence) or isinstance(periods, (str, bytes)):
+        raise StagingError("expected canonical periods must be a sequence")
+    normalized = tuple(periods)
+    if any(
+        not isinstance(period, str) or not _PERIOD_RE.fullmatch(period)
+        for period in normalized
+    ):
+        raise StagingError("expected canonical periods must be nine-digit strings")
+    if len(set(normalized)) != len(normalized):
+        raise StagingError("expected canonical periods must not contain duplicates")
+    return tuple(sorted(normalized, key=int))
+
+
+def _canonical_periods_in_view(connection: sqlite3.Connection) -> Tuple[str, ...]:
+    rows = connection.execute(
+        "SELECT draw FROM {}".format(membership.CANONICAL_VIEW)
+    ).fetchall()
+    periods: List[str] = []
+    for row in rows:
+        value = row[0]
+        text = str(value)
+        if not text.isdigit() or len(text) > 9:
+            raise StagingError("canonical view contains a non-period draw value")
+        periods.append(text.zfill(9))
+    return tuple(sorted(periods, key=int))
+
+
+def apply_staged_import_atomically(
+    connection: sqlite3.Connection,
+    manifest_path: Union[str, Path],
+    *,
+    approved_manifest_sha256: str,
+    approved_official_dataset_sha256: str,
+    expected_db_identity: Mapping[str, Any],
+    expected_canonical_periods: Sequence[str],
+) -> Dict[str, Any]:
+    """以一筆 SQLite 交易套用官方身分及 manifest，再匯入 16 筆暫存開獎資料。
+
+    在第一次資料庫寫入前，先驗證 manifest 完整檔案 SHA-256、固定的官方
+    身分資料集、呼叫端預期的資料庫身分，以及預期 canonical 期號集合。
+    manifest 內自算的 content digest 只檢查內容一致性，不是數位簽章；
+    呼叫端另提供完整檔案 SHA-256，作為核准檔案 pin。既有 CLI 維持唯讀
+    staging，沒有正式資料庫 apply 子命令；此入口僅由程式呼叫。
+
+    範例（僅限核准來源與合成資料庫驗證）::
+
+        result = apply_staged_import_atomically(
+            connection,
+            manifest_path,
+            approved_manifest_sha256=manifest_file_sha256,
+            approved_official_dataset_sha256=OFFICIAL_DATASET_SHA256,
+            expected_db_identity=expected_db_identity,
+            expected_canonical_periods=expected_periods,
+        )
+    """
+    if not isinstance(approved_manifest_sha256, str) or not _SHA256_RE.fullmatch(
+        approved_manifest_sha256
+    ):
+        raise StagingError("approved manifest file SHA-256 is malformed")
+    if not isinstance(approved_official_dataset_sha256, str) or not _SHA256_RE.fullmatch(
+        approved_official_dataset_sha256
+    ):
+        raise StagingError("approved official dataset SHA-256 is malformed")
+    if connection.in_transaction:
+        raise StagingError("atomic apply requires a connection with no open transaction")
+    if int(connection.execute("PRAGMA query_only").fetchone()[0]) == 1:
+        raise StagingError("atomic apply refuses a query_only connection")
+
+    try:
+        manifest_bytes = Path(manifest_path).read_bytes()
+    except OSError as exc:
+        raise StagingError("could not read the staged manifest") from exc
+    actual_manifest_sha256 = hashlib.sha256(manifest_bytes).hexdigest()
+    if actual_manifest_sha256 != approved_manifest_sha256:
+        raise StagingError("external manifest file SHA-256 does not match its approved pin")
+    manifest = strict_json_loads(manifest_bytes, source="staged manifest")
+    records = _records_from_manifest_object(manifest)
+
+    actual_dataset_sha256 = membership.identity_dataset_sha256(
+        membership.OFFICIAL_IDENTITIES
+    )
+    if (
+        len(membership.OFFICIAL_IDENTITIES) != 2177
+        or membership.OFFICIAL_AS_OF_PERIOD != "115000095"
+        or approved_official_dataset_sha256 != membership.OFFICIAL_DATASET_SHA256
+        or actual_dataset_sha256 != approved_official_dataset_sha256
+    ):
+        raise StagingError("official identity dataset does not match its approved SHA-256")
+    official_target = tuple(
+        draw
+        for draw in membership.OFFICIAL_IDENTITIES
+        if draw.period in TARGET_DRAW_IDS
+    )
+    if tuple(draw.period for draw in official_target) != TARGET_DRAW_IDS:
+        raise StagingError("official identity snapshot does not contain the exact 16-period range")
+    official_by_period = {draw.period: draw for draw in official_target}
+    for record in records:
+        official = official_by_period[record.draw]
+        if (
+            record.date != official.draw_date
+            or record.numbers != official.numbers
+            or record.special != official.special
+        ):
+            raise StagingError(
+                "staged period {} does not match the fixed official identity snapshot".format(
+                    record.draw
+                )
+            )
+
+    database_check = manifest.get("database_check")
+    if not isinstance(database_check, dict):
+        raise StagingError("staged manifest is missing its database check")
+    if (
+        database_check.get("read_only") is not True
+        or database_check.get("db_copy") != "NONE"
+        or database_check.get("db_writes") != "NONE"
+        or not isinstance(database_check.get("path"), str)
+    ):
+        raise StagingError("staged manifest does not record a read-only database inspection")
+    try:
+        staged_database_path = Path(database_check["path"]).resolve(strict=True)
+        database_path, actual_db_identity = _validate_expected_database_identity(
+            connection, expected_db_identity
+        )
+    except OSError as exc:
+        raise StagingError("could not resolve the staged database path") from exc
+    if staged_database_path != database_path:
+        raise StagingError("staged manifest and expected database identify different paths")
+
+    expected_periods = _expected_periods(expected_canonical_periods)
+    if not expected_periods:
+        raise StagingError("expected canonical period set must not be empty")
+    columns = {
+        row[1] for row in connection.execute("PRAGMA table_info(draws)")
+    }
+    if not {"draw", "date", "lottery_type", "numbers", "special"}.issubset(columns):
+        raise StagingError("database draws table has an incompatible schema")
+
+    connection.execute("BEGIN IMMEDIATE")
+    try:
+        locked_db_identity = _database_identity(database_path)
+        if locked_db_identity != actual_db_identity:
+            raise StagingError("database identity changed before the transaction acquired its lock")
+        projection_result = membership.apply_official_membership_projection(
+            connection, manage_transaction=False
+        )
+        batch_result = apply_batch(connection, records, manage_transaction=False)
+        canonical_periods = _canonical_periods_in_view(connection)
+        if canonical_periods != expected_periods:
+            raise StagingError(
+                "canonical view period set differs from the caller's expected result"
+            )
+        if len(canonical_periods) != projection_result.view_row_count + batch_result[
+            "inserted_count"
+        ]:
+            raise StagingError("canonical view row count is inconsistent with the atomic apply")
+        connection.commit()
+    except BaseException:
         if connection.in_transaction:
             connection.rollback()
         raise
+
+    return {
+        "official_record_count": projection_result.official_record_count,
+        "identity_rows_written": projection_result.identity_rows_written,
+        "official_dataset_sha256": projection_result.dataset_sha256,
+        "canonical_count_before_staged_rows": projection_result.view_row_count,
+        "inserted_count": batch_result["inserted_count"],
+        "inserted_draw_ids": batch_result["inserted_draw_ids"],
+        "identical_existing_count": batch_result["identical_existing_count"],
+        "canonical_period_count": len(canonical_periods),
+        "canonical_periods": list(canonical_periods),
+        "manifest_file_sha256": actual_manifest_sha256,
+    }
 
 
 def _stage(args: argparse.Namespace) -> Dict[str, Any]:

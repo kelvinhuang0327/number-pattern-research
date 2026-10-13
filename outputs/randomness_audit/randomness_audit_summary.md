@@ -1,6 +1,6 @@
 # Lottery Randomness Audit Report — Current Executable Path
 
-**Current executable audit timestamp (UTC):** 2026-07-18T13:37:50Z
+**Current executable audit timestamp (UTC):** 2026-10-12T10:11:04.508684Z
 **Task:** `P691_RANDOMNESS_EXISTING_LOGIC_TRANSFER_R1`
 **Type:** existing-logic migration; not historical 44-test reproduction
 **Current scope:** canonical BIG_LOTTO only; P246K controls statistical behavior
@@ -27,12 +27,12 @@ The unchanged P246K source diagnostics report 5 GREEN and 0 YELLOW outcomes acro
 - Logical DB identity: `canonical_big_lotto_store`
 - SQLite mode: URI `mode=ro&immutable=1&cache=private`; `PRAGMA query_only=ON` verified; WAL empty/absent precondition enforced
 - Selected population: `BIG_LOTTO/CANONICAL_MAIN_DRAW`
-- Canonical rows: `2125`
-- Raw BIG_LOTTO rows observed: `3150`
+- Canonical rows: `2134`
+- Raw BIG_LOTTO rows observed: `3159`
 - P246K compatibility note: its unchanged nested payload retains a historical 22,238-row raw-access sentence and legacy aggregate exclusion field name; the SQL-derived counts above are the current provenance values.
-- Boundary: `96000001` through `115000070`
-- Selected-row stream SHA-256: `7d48306f31746ec3ea8976b4d0b88f2577decd52191391ee5c059f2fd4588a09`
-- P246K semantic output SHA-256: `48f72f61764e09de20702a853d124930eb3275ce49eb7e9b4b9e26e84f5d9dd1`
+- Boundary: `96000001` through `115000079`
+- Selected-row stream SHA-256: `d10c5cf7310fec1c741ff3406ef405b0a53e35db3fae185a04d3f62942ec7006`
+- P246K semantic output SHA-256: `f55964cb24823c8e06ee955bae6f70f20b33b6b9cf4fc903b1c86b2c42350154`
 - Exact canonical SQL:
 
 ```sql
@@ -62,7 +62,7 @@ ORDER BY CAST(draw AS INTEGER) DESC, draw DESC
 3. The five P246K diagnostics have no multiplicity correction.
 4. Statistical power and minimum-detectable-effect have not been established for the published five-test diagnostic.
 5. P246K GREEN does not prove randomness.
-6. Earlier JSON and Markdown frequency-extrema values were inconsistent (JSON max/min 285/221; Markdown max/min 284/243). The current migration preserves both as conflicting historical evidence, selects neither historical value, and reports the separately recomputed current canonical extrema 286/222 only as part of the unchanged P246K source diagnostic payload.
+6. Earlier JSON and Markdown frequency-extrema values were inconsistent (JSON max/min 285/221; Markdown max/min 284/243). The current migration preserves both as conflicting historical evidence, selects neither historical value, and reports the separately recomputed current canonical extrema 289/223 only as part of the unchanged P246K source diagnostic payload.
 
 ## Historical Date-Conflict Disclosure
 
@@ -71,8 +71,8 @@ The wiki historically cited 2026-05-01, while the preserved historical artifact 
 ## Cadence
 
 The next real executable audit is due at **14 calendar days** or **50 new canonical BIG_LOTTO draws**, whichever occurs first. Timestamp-only re-attestation is non-gating and resets neither trigger.
-- Executable anchor timestamp: `2026-07-18T13:37:50Z`
-- Executable anchor canonical rows: `2125`
+- Executable anchor timestamp: `2026-10-12T10:11:04.508684Z`
+- Executable anchor canonical rows: `2134`
 - Cadence policy identity: `whichever_occurs_first`
 - Every future or incompatible executable anchor fails closed.
 

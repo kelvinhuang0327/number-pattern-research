@@ -78,7 +78,7 @@ def _check_calendar(run_timestamp: datetime, now: datetime) -> tuple[bool, str]:
     if run_utc > now_utc:
         return True, "run_timestamp is in the future"
     age = now_utc - run_utc
-    stale = age > timedelta(days=CADENCE_MAX_CALENDAR_DAYS)
+    stale = age >= timedelta(days=CADENCE_MAX_CALENDAR_DAYS)
     return stale, f"audit age is {age.total_seconds() / 86400:.2f} days"
 
 
@@ -177,9 +177,14 @@ class TestTimestampSemantics:
         stale, reason = _check_calendar(now + timedelta(microseconds=1), now)
         assert stale and "future" in reason
 
-    def test_exactly_fourteen_days_is_current(self):
+    def test_exactly_fourteen_days_is_due(self):
         now = datetime(2026, 7, 18, tzinfo=timezone.utc)
         stale, _ = _check_calendar(now - timedelta(days=14), now)
+        assert stale
+
+    def test_thirteen_days_is_current(self):
+        now = datetime(2026, 7, 18, tzinfo=timezone.utc)
+        stale, _ = _check_calendar(now - timedelta(days=13), now)
         assert not stale
 
     def test_over_fourteen_days_is_stale(self):
@@ -213,18 +218,6 @@ class TestStaticDatasetBinding:
         assert "14 days" in text
         assert "50 draws" in text
         assert "run_timestamp" in text
-
-    def test_real_audit_is_expired_by_calendar(self):
-        data = _load_results()
-        current, _, _, _ = audit._validate_executable_audit_document(data)
-        timestamp = audit._parse_utc_timestamp(
-            current["cadence_anchor"]["real_executable_audit_timestamp_utc"],
-            field_name="real_executable_audit_timestamp_utc",
-        )
-        age = datetime.now(timezone.utc) - timestamp
-        assert age > timedelta(days=CADENCE_MAX_CALENDAR_DAYS), (
-            f"historical audit must remain explicitly expired; age={age}"
-        )
 
     def test_timestamp_without_dataset_evidence_fails_closed(self):
         data = deepcopy(_load_results())
@@ -480,6 +473,17 @@ def test_calendar_trigger_not_due_one_second_before_14_days(baseline):
         _document(audit_time, baseline),
         baseline,
         audit_time + timedelta(days=14) - timedelta(seconds=1),
+    )
+    assert result["status"] == "CURRENT"
+    assert result["calendar_due"] is False
+
+
+def test_calendar_trigger_not_due_at_13_days(baseline):
+    audit_time = datetime(2026, 7, 1, tzinfo=timezone.utc)
+    result = audit.evaluate_cadence(
+        _document(audit_time, baseline),
+        baseline,
+        audit_time + timedelta(days=13),
     )
     assert result["status"] == "CURRENT"
     assert result["calendar_due"] is False
@@ -879,17 +883,15 @@ def test_committed_artifact_anchors_to_real_executable_audit():
 
 def test_committed_real_audit_calendar_gate_is_current():
     document = audit.strict_json_loads(RESULTS_PATH.read_bytes(), source=str(RESULTS_PATH))
-    timestamp = document["current_executable_audit"]["cadence_anchor"][
-        "real_executable_audit_timestamp_utc"
-    ]
-    audit_time = audit._parse_utc_timestamp(
-        timestamp,
-        field_name="real_executable_audit_timestamp_utc",
+    current, anchor, provenance, executed = audit._validate_executable_audit_document(
+        document
     )
-    age = datetime.now(timezone.utc) - audit_time
-    assert age < timedelta(days=14), (
-        f"real executable randomness audit is due by calendar cadence: age={age}"
-    )
+    assert anchor["real_executable_audit_timestamp_utc"] == audit._format_utc(executed)
+    assert anchor["canonical_draw_count"] == provenance["selected_row_count"]
+    assert anchor["selected_row_stream_sha256"] == provenance["selected_row_stream_sha256"]
+    assert current["cadence_anchor"] == anchor
+    due, reason = _check_calendar(executed, datetime.now(timezone.utc))
+    assert not due, f"real executable randomness audit is due by calendar cadence: {reason}"
 
 
 def test_summary_timestamp_matches_committed_cadence_anchor():

@@ -40,12 +40,13 @@ _PERIOD_RE = re.compile(r"^[0-9]{9}$")
 _SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 _LEGACY_CANONICAL_VIEW_SQL = """CREATE VIEW draws_big_lotto_canonical_main AS
 SELECT d.*
-FROM draws AS d
+FROM draws d
 WHERE d.lottery_type = 'BIG_LOTTO'
-  AND CAST(d.draw AS INTEGER) < 115000080
+  AND d.draw NOT LIKE '%-%'
+  AND NOT (LENGTH(d.draw) = 8 AND d.draw LIKE '20%')
   AND (
-      SELECT MAX(CAST(j.value AS INTEGER))
-      FROM json_each(d.numbers) AS j
+    SELECT MAX(CAST(j.value AS INTEGER))
+    FROM json_each(d.numbers) j
   ) > 25
 """
 

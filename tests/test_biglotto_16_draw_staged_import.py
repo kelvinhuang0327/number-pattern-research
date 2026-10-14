@@ -14,6 +14,24 @@ from scripts import biglotto_16_draw_staged_import as staged
 from scripts import biglotto_official_membership_projection as membership
 
 
+_AUTHENTIC_LEGACY_CANONICAL_VIEW_SQL = """CREATE VIEW draws_big_lotto_canonical_main AS
+SELECT d.*
+FROM draws d
+WHERE d.lottery_type = 'BIG_LOTTO'
+  AND d.draw NOT LIKE '%-%'
+  AND NOT (LENGTH(d.draw) = 8 AND d.draw LIKE '20%')
+  AND (
+    SELECT MAX(CAST(j.value AS INTEGER))
+    FROM json_each(d.numbers) j
+  ) > 25"""
+_AUTHENTIC_LEGACY_VIEW_SQL_SHA256 = (
+    "1aec01d305a48a19453313be28370eb544ca629686459ddae96ee6e1246b7e6a"
+)
+_AUTHENTIC_LEGACY_VIEW_NORMALIZED_SQL_SHA256 = (
+    "2b2717c761a2ea2d7a7408069af6d6787dcf58cc3700675618107669e8f24788"
+)
+
+
 def _records():
     first_date = date(2026, 8, 18)
     records = []
@@ -124,21 +142,9 @@ def _synthetic_atomic_database(path: Path):
         connection.execute(
             "INSERT INTO draws(draw, date, lottery_type, numbers, special) "
             "VALUES (?, '2026/10/10', 'BIG_LOTTO', '[1,2,3,4,5,49]', 7)",
-            ("{:09d}".format(120000001 + index),),
+            ("{:08d}".format(20200000 + index),),
         )
-    connection.execute(
-        """
-        CREATE VIEW draws_big_lotto_canonical_main AS
-        SELECT d.*
-        FROM draws AS d
-        WHERE d.lottery_type = 'BIG_LOTTO'
-          AND CAST(d.draw AS INTEGER) < 115000080
-          AND (
-              SELECT MAX(CAST(j.value AS INTEGER))
-              FROM json_each(d.numbers) AS j
-          ) > 25
-        """
-    )
+    connection.execute(_AUTHENTIC_LEGACY_CANONICAL_VIEW_SQL)
     connection.commit()
     return connection
 
@@ -562,11 +568,15 @@ def test_atomic_projection_and_staged_import_commit_once_and_reapply_idempotentl
     assert len(recovered) == 27
     assert recovered <= canonical_periods
     unmatched_periods = {
-        "{:09d}".format(120000001 + index) for index in range(998)
+        "{:08d}".format(20200000 + index) for index in range(998)
     }
-    assert connection.execute(
-        "SELECT COUNT(*) FROM draws WHERE draw BETWEEN '120000001' AND '120000998'"
-    ).fetchone()[0] == 998
+    stored_unmatched_periods = {
+        row[0]
+        for row in connection.execute(
+            "SELECT draw FROM draws WHERE LENGTH(draw) = 8 AND draw LIKE '20%'"
+        ).fetchall()
+    }
+    assert stored_unmatched_periods == unmatched_periods
     assert canonical_periods.isdisjoint(unmatched_periods)
     assert _other_table_snapshot(connection) == other_tables_before
     after_first = _atomic_snapshot(connection)
@@ -828,6 +838,23 @@ def test_same_chain_preflight_is_query_only_and_performs_no_sqlite_mutations(tmp
     assert result["DATABASE_IDENTITY_UNCHANGED"] == "PASS"
     assert result["CONNECTION_QUERY_ONLY"] == "YES"
     assert result["CANONICAL_VIEW_KIND"] == "LEGACY_MAX_MAIN_GT_25"
+    assert len(result["CANONICAL_PERIODS_BEFORE"]) == 2134
+    assert result["EXPECTED_CANONICAL_PERIOD_COUNT"] == 2177
+    assert result["INSERTED_PERIOD_COUNT"] == 16
+    legacy_periods = set(result["CANONICAL_PERIODS_BEFORE"])
+    official_periods = {
+        draw.period for draw in membership.OFFICIAL_IDENTITIES
+    }
+    historical_false_exclusions = {
+        draw.period
+        for draw in membership.OFFICIAL_IDENTITIES
+        if draw.period not in staged.TARGET_DRAW_IDS
+        and max(draw.numbers) <= 25
+    }
+    assert len(historical_false_exclusions) == 27
+    assert official_periods - legacy_periods == historical_false_exclusions | set(
+        staged.TARGET_DRAW_IDS
+    )
     assert result["EXPECTED_CANONICAL_PERIOD_COUNT"] == len(
         membership.OFFICIAL_IDENTITIES
     )
@@ -1008,6 +1035,29 @@ def test_read_only_inspection_recognizes_legacy_canonical_view(tmp_path):
     }
 
 
+def test_legacy_view_fixture_matches_authentic_sqlite_master_sql_and_digests(
+    tmp_path,
+):
+    database_path = tmp_path / "authentic-legacy.sqlite"
+    connection = _synthetic_atomic_database(database_path)
+    stored_sql = connection.execute(
+        "SELECT sql FROM sqlite_master WHERE type='view' AND name=?",
+        (staged.CANONICAL_VIEW,),
+    ).fetchone()[0]
+
+    assert stored_sql == _AUTHENTIC_LEGACY_CANONICAL_VIEW_SQL
+    assert hashlib.sha256(stored_sql.encode("utf-8")).hexdigest() == (
+        _AUTHENTIC_LEGACY_VIEW_SQL_SHA256
+    )
+    assert staged._sql_fingerprint(stored_sql) == (
+        _AUTHENTIC_LEGACY_VIEW_NORMALIZED_SQL_SHA256
+    )
+    assert staged._validate_canonical_view_read_only(connection) == (
+        "LEGACY_MAX_MAIN_GT_25"
+    )
+    connection.close()
+
+
 def test_read_only_inspection_and_preflight_accept_digest_bound_official_view(
     tmp_path,
 ):
@@ -1060,23 +1110,27 @@ def test_read_only_inspection_and_preflight_accept_digest_bound_official_view(
     }
 
 
-def test_read_only_inspection_rejects_unknown_modified_canonical_view(tmp_path):
+@pytest.mark.parametrize(
+    ("old_sql", "new_sql"),
+    [
+        ("d.draw NOT LIKE '%-%'", "d.draw LIKE '%-%'"),
+        (
+            "NOT (LENGTH(d.draw) = 8 AND d.draw LIKE '20%')",
+            "NOT (LENGTH(d.draw) = 8 AND d.draw LIKE '19%')",
+        ),
+        ("  ) > 25", "  ) >= 25"),
+        ("FROM draws d", "FROM prediction_runs d"),
+    ],
+    ids=("hyphen-period-filter", "date-period-filter", "max-main-threshold", "data-source"),
+)
+def test_read_only_inspection_rejects_unknown_modified_canonical_view(
+    tmp_path, old_sql, new_sql
+):
     database_path = tmp_path / "unknown-view.sqlite"
     connection = _synthetic_atomic_database(database_path)
     connection.execute("DROP VIEW draws_big_lotto_canonical_main")
-    connection.execute(
-        """
-        CREATE VIEW draws_big_lotto_canonical_main AS
-        SELECT d.*
-        FROM draws AS d
-        WHERE d.lottery_type = 'BIG_LOTTO'
-          AND CAST(d.draw AS INTEGER) < 115000081
-          AND (
-              SELECT MAX(CAST(j.value AS INTEGER))
-              FROM json_each(d.numbers) AS j
-          ) > 25
-        """
-    )
+    assert _AUTHENTIC_LEGACY_CANONICAL_VIEW_SQL.count(old_sql) == 1
+    connection.execute(_AUTHENTIC_LEGACY_CANONICAL_VIEW_SQL.replace(old_sql, new_sql))
     connection.commit()
     connection.close()
 

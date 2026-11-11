@@ -1,0 +1,28 @@
+{
+  "ensemble_name": "ENSEMBLE_TEMPORAL_PROFILE_MINOVERLAP_GEOMETRY_V1",
+  "evaluation_draws": 500,
+  "base_strategies": [
+    {
+      "name": "BIGLOTTO_MULTISCALE_TEMPORAL_PROFILE_CLUSTER",
+      "tickets": 10,
+      "m3_plus_rate": 0.144,
+      "baseline_rate": 0.1816714407569436,
+      "edge": -0.03767144075694362
+    },
+    {
+      "name": "BENCHMARK_MINOVERLAP_GEOMETRY",
+      "tickets": 10,
+      "m3_plus_rate": 0.152,
+      "baseline_rate": 0.1816714407569436,
+      "edge": -0.029671440756943612
+    }
+  ],
+  "ensemble_portfolio_20_tickets": {
+    "m3_plus_rate": 0.164,
+    "baseline_rate": 0.3353636089033208,
+    "edge": -0.17136360890332078,
+    "edge_pct": -51.097854494022265,
+    "synergy_gain_over_single_base": 0.020000000000000018
+  },
+  "timestamp": "2026-08-23T19:09:32.564951"
+}

@@ -111,7 +111,7 @@ def default_db_path() -> Path:
     local = REPO_ROOT / "lottery_api" / "data" / "lottery_v2.db"
     if local.exists():
         return local
-    canonical = Path("/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db")
+    canonical = Path(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "legacy-source", "LotteryNew", "lottery_api", "data", "lottery_v2.db")))
     return canonical
 
 

@@ -29,6 +29,11 @@ from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query
 
+try:
+    from database import DatabaseManager
+except ImportError:
+    from lottery_api.database import DatabaseManager
+
 from lottery_api.models.replay_strategy_registry import (
     get_strategy_lifecycle_status,
     list_strategies,
@@ -43,41 +48,6 @@ from lottery_api.models.replay_strategy_state_labels import (
     get_label_summary as _p26_get_label_summary,
     _load_p24_inventory as _p26_load_p24_inventory,
 )
-
-
-def _p291u_repo_root():
-    current = Path(__file__)
-    if not current.is_absolute():
-        raise FileNotFoundError(f"Source file path is not absolute: {current}")
-    for parent in (current.parent, *current.parents):
-        if (parent / "lottery_api").is_dir():
-            return parent
-    raise FileNotFoundError(f"Unable to locate repository root from source file: {current}")
-
-
-def _p291u_default_db_path():
-    db_path = _p291u_repo_root() / "lottery_api" / "data" / "lottery_v2.db"
-    if not db_path.is_file():
-        raise FileNotFoundError(f"Default lottery DB path is missing or non-regular: {db_path}")
-    return db_path
-
-
-def _p291u_resolve_db_path(db_path=None):
-    if db_path is None:
-        return _p291u_default_db_path()
-    path = Path(db_path)
-    if not path.is_absolute():
-        raise ValueError(f"Explicit DB path must be absolute: {db_path}")
-    if not path.is_file():
-        raise FileNotFoundError(f"Explicit DB path is missing or non-regular: {path}")
-    return path
-
-
-def _p291u_connect_resolved(db_path, *, uri=False):
-    if uri:
-        return sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
-    return sqlite3.connect(str(db_path))
-
 
 _api_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _api_root not in sys.path:
@@ -105,124 +75,26 @@ _D3_STRATEGY_STATUS_AUDIT_PATH = (
     / "research"
     / "p258n_d3_strategy_status_audit_payload_20260609.json"
 )
-_STRATEGY_PICK_SCOREBOARD_PATH = (
-    Path(_api_root).parent
-    / "outputs"
-    / "research"
-    / "p333_strategy_pick_combination_scoreboard_20260702.json"
-)
-_LIFT_EXTENSION_PATH = (
-    Path(_api_root).parent
-    / "outputs"
-    / "research"
-    / "p536c_success_matrix_lift_extension_20260708.json"
-)
-_LIFT_CANDIDATE_SHORTLIST_PATH = (
-    Path(_api_root).parent
-    / "outputs"
-    / "research"
-    / "p536k_lift_candidate_shortlist_20260708.json"
-)
-_SHORTLIST_ROBUSTNESS_REVIEW_PATH = (
-    Path(_api_root).parent
-    / "outputs"
-    / "research"
-    / "p537a_shortlist_robustness_review_20260709.json"
-)
-_BIG649_MEASUREMENT_EXPORT_PATH = (
-    Path(_api_root).parent
-    / "outputs"
-    / "research"
-    / "big649_measurement_export_20260621.json"
-)
 
 # Conservative disclaimer used by all replay endpoints
 _DISCLAIMER = (
     "本資料為歷史預測回放資料，用於查詢與稽核；"
-    "不代表未來結果，也不保證任何回放結果。"
+    "不代表提高中獎率，也不保證任何回放結果。"
 )
-
-_DISPLAY_DEPTH_REJECTED_DRAWS = 300
-_ARTIFACT_RECONSTRUCTED_TRUTH_LEVEL = "ARTIFACT_RECONSTRUCTED_RETROSPECTIVE"
-_REGENERATED_TRUTH_LEVEL = "REGENERATED_RETROSPECTIVE"
 
 # ─── DB access ────────────────────────────────────────────────────────────────
 
 def _get_db():
     """Returns a DatabaseManager instance."""
-    try:
-        from database import DatabaseManager
-    except ImportError:
-        from lottery_api.database import DatabaseManager
     return DatabaseManager()
 
 
 def _open_conn():
-    """Returns a raw read-only sqlite3 connection to the lottery DB."""
-    _p291u_db_path = _p291u_resolve_db_path()
-    conn = _p291u_connect_resolved(_p291u_db_path, uri=True)
+    """Returns a raw sqlite3 connection to the lottery DB."""
+    db_path = Path(_api_root) / "data" / "lottery_v2.db"
+    conn = sqlite3.connect(str(db_path))
     conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA query_only = ON")
     return conn
-
-
-def _display_lifecycle_for_strategy(strategy_id: str) -> Optional[str]:
-    lifecycle = get_strategy_lifecycle_status(strategy_id)
-    return normalise_lifecycle_status(lifecycle) if lifecycle else None
-
-
-def _display_depth_clause(lifecycle_status: Optional[str]) -> tuple[str, int, str]:
-    """Return deterministic display-depth SQL for strategy detail endpoints."""
-    if lifecycle_status == "REJECTED":
-        return (
-            """
-            AND target_draw IN (
-                SELECT target_draw FROM (
-                    SELECT DISTINCT target_draw
-                    FROM strategy_prediction_replays
-                    WHERE lottery_type = ? AND strategy_id = ?
-                    ORDER BY CAST(target_draw AS INTEGER) DESC, target_draw DESC
-                    LIMIT ?
-                )
-            )
-            """,
-            _DISPLAY_DEPTH_REJECTED_DRAWS,
-            "LATEST_300_PERIODS_FOR_REJECTED",
-        )
-    return "", 0, "ALL_LEGALLY_AVAILABLE_ROWS"
-
-
-def _display_trust_for_row(lifecycle_status: Optional[str], truth_level: Optional[str]) -> dict:
-    """Map persisted row provenance to display-only trust semantics."""
-    if truth_level == _ARTIFACT_RECONSTRUCTED_TRUTH_LEVEL:
-        return {
-            "label": "RETROSPECTIVE",
-            "detail": "Artifact Reconstructed",
-            "is_live": False,
-        }
-    if truth_level == _REGENERATED_TRUTH_LEVEL:
-        return {
-            "label": "RETROSPECTIVE",
-            "detail": "Regenerated Historical",
-            "is_live": False,
-        }
-    if truth_level in ("LIVE", "LIVE_MONITOR", "DRAW_TIME_LIVE_MONITOR"):
-        return {
-            "label": "LIVE",
-            "detail": "Draw-time monitor",
-            "is_live": True,
-        }
-    if lifecycle_status == "OBSERVATION":
-        return {
-            "label": "OBSERVATION",
-            "detail": "Shadow / monitoring context",
-            "is_live": False,
-        }
-    return {
-        "label": "PROVENANCE_UNSET",
-        "detail": "No row truth_level is persisted",
-        "is_live": False,
-    }
 
 
 def _normalise_lifecycle_filter(lifecycle_status: Optional[str]) -> Optional[str]:
@@ -757,7 +629,7 @@ async def get_replay_summary(
                         "summaries":    [],
                         "disclaimer":   (
                             "本摘要為歷史預測回放統計，只用於查詢與稽核；"
-                            "不代表未來結果，也不保證任何回放結果。"
+                            "不代表提高中獎率，也不保證任何回放結果。"
                         ),
                         "data_scope":         "ALL_REPLAY_ROWS",
                         "legacy_error_count": 0,
@@ -816,7 +688,7 @@ async def get_replay_summary(
 
             disclaimer = (
                 "本摘要為歷史預測回放統計，只用於查詢與稽核；"
-                "不代表未來結果，也不保證任何回放結果。"
+                "不代表提高中獎率，也不保證任何回放結果。"
             )
 
             # Count legacy errors for this lottery type (from FAILED_LEGACY runs only)
@@ -976,7 +848,7 @@ async def get_replay_freshness(
     Returns data freshness / coverage status for the replay store.
 
     Reads from DB only — NOT from outputs/.
-    Does not emit promotion or decision verdict labels.
+    Does NOT emit SIGNAL / NO_SIGNAL / NO_VALIDATED_EDGE.
     Use this endpoint to build the UI freshness badge and coverage advisory.
     """
     try:
@@ -1245,11 +1117,11 @@ def _parse_json(val):
 
 
 def _load_best_strategy_overview_payload() -> dict:
-    """Load the P257A historical strategy overview artifact without mutating state."""
+    """Load the P257A best-strategy overview artifact without mutating state."""
     if not _BEST_STRATEGY_OVERVIEW_PATH.exists():
         raise HTTPException(
             status_code=500,
-            detail=f"historical strategy overview artifact not found: {_BEST_STRATEGY_OVERVIEW_PATH}",
+            detail=f"best strategy overview artifact not found: {_BEST_STRATEGY_OVERVIEW_PATH}",
         )
     try:
         with _BEST_STRATEGY_OVERVIEW_PATH.open("r", encoding="utf-8") as handle:
@@ -1257,12 +1129,12 @@ def _load_best_strategy_overview_payload() -> dict:
     except json.JSONDecodeError as exc:
         raise HTTPException(
             status_code=500,
-            detail=f"historical strategy overview artifact is invalid JSON: {exc}",
+            detail=f"best strategy overview artifact is invalid JSON: {exc}",
         ) from exc
     if not isinstance(payload, dict):
         raise HTTPException(
             status_code=500,
-            detail="historical strategy overview artifact must be a JSON object",
+            detail="best strategy overview artifact must be a JSON object",
         )
     return payload
 
@@ -1270,12 +1142,12 @@ def _load_best_strategy_overview_payload() -> dict:
 @router.get("/api/replay/best-strategy-overview")
 async def get_replay_best_strategy_overview():
     """
-    P257B: Read-only historical N-bet strategy overview payload.
+    P257B: Read-only best N-bet strategy overview payload.
 
     Serves the published P257A historical replay artifact.
     Data source: P257A artifact (NOT DB query, NOT registry mutation, NOT prediction generation).
 
-    Returns N-bet portfolio rankings per lottery, historical high-hit events,
+    Returns best N-bet portfolio rankings per lottery, historical high-hit events,
     page contract, and warning copy. All data is historical replay only.
 
     READ-ONLY: no DB query, no registry mutation, no strategy promotion, no betting advice.
@@ -1295,348 +1167,6 @@ async def get_replay_best_strategy_overview():
         raise
     except Exception as e:
         logger.exception("get_replay_best_strategy_overview failed")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-def _load_strategy_pick_scoreboard_payload() -> dict:
-    """Load the P333 strategy pick/combination scoreboard artifact."""
-    if not _STRATEGY_PICK_SCOREBOARD_PATH.exists():
-        raise HTTPException(
-            status_code=500,
-            detail=f"strategy pick scoreboard artifact not found: {_STRATEGY_PICK_SCOREBOARD_PATH}",
-        )
-    try:
-        with _STRATEGY_PICK_SCOREBOARD_PATH.open("r", encoding="utf-8") as handle:
-            payload = json.load(handle)
-    except json.JSONDecodeError as exc:
-        raise HTTPException(
-            status_code=500,
-            detail=f"strategy pick scoreboard artifact is invalid JSON: {exc}",
-        ) from exc
-    if not isinstance(payload, dict):
-        raise HTTPException(
-            status_code=500,
-            detail="strategy pick scoreboard artifact must be a JSON object",
-        )
-    return payload
-
-
-@router.get("/api/replay/strategy-pick-scoreboard")
-async def get_replay_strategy_pick_scoreboard():
-    """
-    P333: Read-only strategy pick / combination scoreboard.
-
-    Serves a generated artifact built from existing replay rows.  No DB write,
-    replay generation, model training, registry mutation, or strategy promotion.
-    """
-    try:
-        payload = _load_strategy_pick_scoreboard_payload()
-        return {
-            **payload,
-            "historical_replay_only": True,
-            "no_future_guarantee": True,
-            "no_betting_advice": True,
-            "no_strategy_promotion": True,
-            "source_artifact": str(_STRATEGY_PICK_SCOREBOARD_PATH.name),
-        }
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.exception("get_replay_strategy_pick_scoreboard failed")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-def _load_lift_extension_payload() -> dict:
-    """Load the P536C success-rate matrix lift extension artifact."""
-    if not _LIFT_EXTENSION_PATH.exists():
-        raise HTTPException(
-            status_code=500,
-            detail=f"lift extension artifact not found: {_LIFT_EXTENSION_PATH}",
-        )
-    try:
-        with _LIFT_EXTENSION_PATH.open("r", encoding="utf-8") as handle:
-            payload = json.load(handle)
-    except json.JSONDecodeError as exc:
-        raise HTTPException(
-            status_code=500,
-            detail=f"lift extension artifact is invalid JSON: {exc}",
-        ) from exc
-    if not isinstance(payload, dict):
-        raise HTTPException(
-            status_code=500,
-            detail="lift extension artifact must be a JSON object",
-        )
-    return payload
-
-
-def _top_lift_cells_by_lottery_window(matrix: list, per_group_limit: int = 3) -> list:
-    """Top cells per (lottery_type, window), ranked by any_main_hit_lift desc."""
-    groups: dict = {}
-    for row in matrix:
-        key = (row.get("lottery_type"), row.get("window"))
-        groups.setdefault(key, []).append(row)
-
-    top_cells = []
-    for (lottery_type, window) in sorted(groups.keys(), key=lambda k: (str(k[0]), k[1] if k[1] is not None else -1)):
-        ranked = sorted(
-            (r for r in groups[(lottery_type, window)] if r.get("any_main_hit_lift") is not None),
-            key=lambda r: r["any_main_hit_lift"],
-            reverse=True,
-        )
-        for row in ranked[:per_group_limit]:
-            top_cells.append({
-                "lottery_type": lottery_type,
-                "window": window,
-                "strategy_id": row.get("strategy_id"),
-                "feature_family": row.get("feature_family"),
-                "pick_k": row.get("pick_k"),
-                "support_draws": row.get("support_draws"),
-                "any_main_hit_rate": row.get("any_main_hit_rate"),
-                "baseline_any_main_hit_rate": row.get("baseline_any_main_hit_rate"),
-                "any_main_hit_lift": row.get("any_main_hit_lift"),
-                "m3_plus_lift": row.get("m3_plus_lift"),
-                "prize_signal_lift": row.get("prize_signal_lift"),
-            })
-    return top_cells
-
-
-def _top_cross_lottery_normalized_lift(rows: list, limit: int = 10) -> list:
-    """Top cross-lottery normalized lift rows, ranked by best avg_any_main_hit_lift among lotteries."""
-    def _best_lift(row):
-        best = None
-        for stats in (row.get("lotteries") or {}).values():
-            value = stats.get("avg_any_main_hit_lift")
-            if value is not None and (best is None or value > best):
-                best = value
-        return best
-
-    ranked = sorted(
-        (r for r in rows if _best_lift(r) is not None),
-        key=_best_lift,
-        reverse=True,
-    )
-    return [
-        {
-            "feature_family": row.get("feature_family"),
-            "pick_k": row.get("pick_k"),
-            "window": row.get("window"),
-            "lotteries": row.get("lotteries"),
-        }
-        for row in ranked[:limit]
-    ]
-
-
-def _top_combination_stability_rank(rows: list, limit: int = 15) -> list:
-    """Top combination-stability rows, ranked by stability_rank ascending (1 = most stable)."""
-    ranked = sorted(
-        (r for r in rows if r.get("stability_rank") is not None),
-        key=lambda r: r["stability_rank"],
-    )
-    return [
-        {
-            "lottery_type": row.get("lottery_type"),
-            "combo_id": row.get("combo_id"),
-            "stability_rank": row.get("stability_rank"),
-            "windows_present": row.get("windows_present"),
-            "windows_present_count": row.get("windows_present_count"),
-            "avg_prize_signal_lift_across_present_windows": row.get(
-                "avg_prize_signal_lift_across_present_windows"
-            ),
-        }
-        for row in ranked[:limit]
-    ]
-
-
-@router.get("/api/replay/strategy-lift-extension")
-async def get_replay_strategy_lift_extension():
-    """
-    P536E: Read-only strategy success-rate matrix lift extension summary.
-
-    Serves a compact subset of the already-committed P536C artifact
-    (top lift cells by lottery x window, cross-lottery normalized lift,
-    combination stability rank) for UI display. No DB access, no
-    recomputation of P536C, no artifact regeneration, no betting advice.
-    """
-    try:
-        payload = _load_lift_extension_payload()
-        source = payload.get("source") or {}
-        return {
-            "artifact_version": payload.get("schema_version"),
-            "generated_at": payload.get("generated_at"),
-            "source": {
-                "db_open_mode": source.get("db_open_mode"),
-                "data_hash_sha256": source.get("data_hash_sha256"),
-                "row_counts_by_lottery": source.get("row_counts_by_lottery"),
-                "filters": source.get("filters"),
-            },
-            "record_counts": payload.get("summary"),
-            "top_lift_cells": _top_lift_cells_by_lottery_window(
-                payload.get("strategy_pick_matrix_lift_extension") or []
-            ),
-            "cross_lottery_normalized_lift_summary": _top_cross_lottery_normalized_lift(
-                payload.get("cross_lottery_normalized_lift") or []
-            ),
-            "combination_stability_rank_summary": _top_combination_stability_rank(
-                payload.get("combination_stability_rank") or []
-            ),
-            "disclaimer": (
-                "Retrospective historical replay evidence only; no prediction, "
-                "betting, edge, future-winning, or production-readiness claim."
-            ),
-            "historical_replay_only": True,
-            "no_future_guarantee": True,
-            "no_betting_advice": True,
-            "no_strategy_promotion": True,
-            "source_artifact": str(_LIFT_EXTENSION_PATH.name),
-        }
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.exception("get_replay_strategy_lift_extension failed")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-def _load_lift_candidate_shortlist_payload() -> dict:
-    """Load the P536K lift candidate shortlist artifact."""
-    if not _LIFT_CANDIDATE_SHORTLIST_PATH.exists():
-        raise HTTPException(
-            status_code=500,
-            detail=f"lift candidate shortlist artifact not found: {_LIFT_CANDIDATE_SHORTLIST_PATH}",
-        )
-    try:
-        with _LIFT_CANDIDATE_SHORTLIST_PATH.open("r", encoding="utf-8") as handle:
-            payload = json.load(handle)
-    except json.JSONDecodeError as exc:
-        raise HTTPException(
-            status_code=500,
-            detail=f"lift candidate shortlist artifact is invalid JSON: {exc}",
-        ) from exc
-    if not isinstance(payload, dict):
-        raise HTTPException(
-            status_code=500,
-            detail="lift candidate shortlist artifact must be a JSON object",
-        )
-    return payload
-
-
-@router.get("/api/replay/lift-candidate-shortlist")
-async def get_replay_lift_candidate_shortlist():
-    """
-    P536L: Read-only lift candidate shortlist summary.
-
-    Serves the already-committed P536K artifact (itself a deterministic,
-    read-only filter over the committed P536C artifact) for UI display.
-    No DB access, no recomputation of P536K/P536C, no new ranking/metric,
-    no betting advice.
-    """
-    try:
-        payload = _load_lift_candidate_shortlist_payload()
-        section_keys = [
-            "stable_300_750_review_candidates",
-            "short_window_spike_review_candidates",
-            "combination_review_candidates",
-            "cross_lottery_review_candidates",
-        ]
-        return {
-            "artifact_version": payload.get("schema_version"),
-            "task_id": payload.get("task_id"),
-            "extends_task_id": payload.get("extends_task_id"),
-            "generated_at": payload.get("generated_at"),
-            "classification": payload.get("classification"),
-            "counts": {key: len(payload.get(key) or []) for key in section_keys},
-            "stable_300_750_review_candidates": payload.get("stable_300_750_review_candidates") or [],
-            "short_window_spike_review_candidates": payload.get("short_window_spike_review_candidates") or [],
-            "combination_review_candidates": payload.get("combination_review_candidates") or [],
-            "cross_lottery_review_candidates": payload.get("cross_lottery_review_candidates") or [],
-            "provenance_and_limits": payload.get("provenance_and_limits") or {},
-            "disclaimer": (
-                "Historical replay review artifact only; not a prediction, "
-                "betting edge, future-winning, or production-readiness claim."
-            ),
-            "historical_replay_only": True,
-            "no_future_guarantee": True,
-            "no_betting_advice": True,
-            "no_strategy_promotion": True,
-            "source_artifact": _LIFT_CANDIDATE_SHORTLIST_PATH.name,
-        }
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.exception("get_replay_lift_candidate_shortlist failed")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-def _load_shortlist_robustness_review_payload() -> dict:
-    """Load the P537A shortlist robustness review artifact."""
-    if not _SHORTLIST_ROBUSTNESS_REVIEW_PATH.exists():
-        raise HTTPException(
-            status_code=500,
-            detail=f"shortlist robustness review artifact not found: {_SHORTLIST_ROBUSTNESS_REVIEW_PATH}",
-        )
-    try:
-        with _SHORTLIST_ROBUSTNESS_REVIEW_PATH.open("r", encoding="utf-8") as handle:
-            payload = json.load(handle)
-    except json.JSONDecodeError as exc:
-        raise HTTPException(
-            status_code=500,
-            detail=f"shortlist robustness review artifact is invalid JSON: {exc}",
-        ) from exc
-    if not isinstance(payload, dict):
-        raise HTTPException(
-            status_code=500,
-            detail="shortlist robustness review artifact must be a JSON object",
-        )
-    return payload
-
-
-@router.get("/api/replay/shortlist-robustness-review")
-async def get_replay_shortlist_robustness_review():
-    """
-    P537B: Read-only shortlist robustness review summary.
-
-    Serves the already-committed P537A artifact (itself a deterministic,
-    read-only relabeling/re-bucketing over the committed P536K shortlist,
-    which in turn derives from P536C) for UI display. No DB access, no
-    recomputation of P537A/P536K/P536C, no new ranking/metric, no betting
-    advice.
-    """
-    try:
-        payload = _load_shortlist_robustness_review_payload()
-        section_keys = [
-            "stable_candidates_for_owner_review",
-            "short_window_spike_caution_list",
-            "combination_candidates_for_followup",
-            "cross_lottery_candidates_for_followup",
-            "insufficient_or_ambiguous_candidates",
-        ]
-        return {
-            "artifact_version": payload.get("schema_version"),
-            "task_id": payload.get("task_id"),
-            "extends_task_id": payload.get("extends_task_id"),
-            "upstream_task_id": payload.get("upstream_task_id"),
-            "generated_at": payload.get("generated_at"),
-            "classification": payload.get("classification"),
-            "counts": {key: len(payload.get(key) or []) for key in section_keys},
-            "stable_candidates_for_owner_review": payload.get("stable_candidates_for_owner_review") or [],
-            "short_window_spike_caution_list": payload.get("short_window_spike_caution_list") or [],
-            "combination_candidates_for_followup": payload.get("combination_candidates_for_followup") or [],
-            "cross_lottery_candidates_for_followup": payload.get("cross_lottery_candidates_for_followup") or [],
-            "insufficient_or_ambiguous_candidates": payload.get("insufficient_or_ambiguous_candidates") or [],
-            "provenance_and_limits": payload.get("provenance_and_limits") or {},
-            "disclaimer": (
-                "Historical replay review artifact only; not a prediction, "
-                "betting edge, future-winning, or production-readiness claim."
-            ),
-            "historical_replay_only": True,
-            "no_future_guarantee": True,
-            "no_betting_advice": True,
-            "no_strategy_promotion": True,
-            "source_artifact": _SHORTLIST_ROBUSTNESS_REVIEW_PATH.name,
-        }
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.exception("get_replay_shortlist_robustness_review failed")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1687,168 +1217,6 @@ async def get_d3_strategy_status_audit():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# ─── BIG649 Measurement Export (read-only, artifact-backed) ──────────────────
-
-_BIG649_MEASUREMENT_EXPORT_ROUTE = "/api/replay/big649-measurement-export"
-# API window query value -> internal frozen window name.
-_BIG649_MEASUREMENT_WINDOWS = {
-    "all_reference": "REFERENCE_ALL_ELIGIBLE",
-    "recent_750": "RECENT_750",
-    "recent_300": "RECENT_300",
-    "recent_50": "RECENT_50",
-}
-# Metric scope query value -> measurement sub-payload key.
-_BIG649_MEASUREMENT_SCOPES = {
-    "ticket_slot": "per_strategy_ticket_level_distribution",
-    "target_level": "per_strategy_target_level_distribution",
-    "prize_aware": "per_strategy_prize_aware_distribution",
-    "redundancy": "per_strategy_redundancy_diagnostics",
-    "pairwise_overlap": "pairwise_ticket_overlap_diagnostics",
-}
-
-
-def _load_big649_measurement_export_payload() -> dict:
-    """Load the committed BIG649 measurement-export artifact without mutating state.
-
-    READ-ONLY: reads the committed artifact file only; performs NO DB query.
-    """
-    if not _BIG649_MEASUREMENT_EXPORT_PATH.exists():
-        raise HTTPException(
-            status_code=500,
-            detail=f"big649 measurement export artifact not found: {_BIG649_MEASUREMENT_EXPORT_PATH}",
-        )
-    try:
-        with _BIG649_MEASUREMENT_EXPORT_PATH.open("r", encoding="utf-8") as handle:
-            payload = json.load(handle)
-    except json.JSONDecodeError as exc:
-        raise HTTPException(
-            status_code=500,
-            detail=f"big649 measurement export artifact is invalid JSON: {exc}",
-        ) from exc
-    if not isinstance(payload, dict):
-        raise HTTPException(
-            status_code=500,
-            detail="big649 measurement export artifact must be a JSON object",
-        )
-    if not isinstance(payload.get("payload"), dict):
-        raise HTTPException(
-            status_code=500,
-            detail="big649 measurement export artifact missing 'payload' object",
-        )
-    return payload
-
-
-@router.get("/api/replay/big649-measurement-export")
-async def get_big649_measurement_export(
-    window: str = Query(
-        "all_reference",
-        description="Measurement window: all_reference | recent_750 | recent_300 | recent_50.",
-    ),
-    metric_scope: str = Query(
-        "ticket_slot",
-        description=(
-            "Metric scope: ticket_slot | target_level | prize_aware | redundancy "
-            "| pairwise_overlap."
-        ),
-    ),
-):
-    """
-    BIG649 read-only measurement export (artifact-backed).
-
-    Serves a window + metric-scope slice of the committed BIG649 hit-distribution &
-    redundancy measurement artifact (frozen contract ``big649_measurement_contract_v1``).
-    Data source: the committed artifact ONLY (NOT a DB query, NOT registry mutation,
-    NOT prediction generation). Strategy and pair rows are LEXICAL and unranked.
-
-    READ-ONLY and MEASUREMENT-ONLY: this is a local historical measurement. It is NOT
-    a ranking, recommendation, candidate classification, random baseline, p-value,
-    payout, ROI, or official-prize statement, and it returns none of those.
-    """
-    if window not in _BIG649_MEASUREMENT_WINDOWS:
-        raise HTTPException(
-            status_code=400,
-            detail=f"invalid window {window!r}; allowed: {sorted(_BIG649_MEASUREMENT_WINDOWS)}",
-        )
-    if metric_scope not in _BIG649_MEASUREMENT_SCOPES:
-        raise HTTPException(
-            status_code=400,
-            detail=(
-                f"invalid metric_scope {metric_scope!r}; "
-                f"allowed: {sorted(_BIG649_MEASUREMENT_SCOPES)}"
-            ),
-        )
-    try:
-        artifact = _load_big649_measurement_export_payload()
-        internal_window = _BIG649_MEASUREMENT_WINDOWS[window]
-        sub_key = _BIG649_MEASUREMENT_SCOPES[metric_scope]
-        sub = artifact["payload"].get(sub_key)
-        if not isinstance(sub, dict):
-            raise HTTPException(
-                status_code=500,
-                detail=f"big649 measurement export artifact missing sub-payload {sub_key!r}",
-            )
-
-        window_def = (artifact.get("window_definitions") or {}).get(internal_window)
-        result = {
-            "route_path": _BIG649_MEASUREMENT_EXPORT_ROUTE,
-            "schema_version": artifact.get("schema_version"),
-            "lottery_type": artifact.get("lottery_type"),
-            "measurement_only_notice": artifact.get("measurement_only_notice"),
-            "local_historical_measurement_disclaimer": artifact.get(
-                "local_historical_measurement_disclaimer"
-            ),
-            "endpoint_support_status": artifact.get("endpoint_support_status"),
-            "safety_limitations": artifact.get("safety_limitations"),
-            "coverage_denominators": artifact.get("coverage_denominators"),
-            "window_order": artifact.get("window_order"),
-            "window": window,
-            "window_internal": internal_window,
-            "window_definition": window_def,
-            "metric_scope": metric_scope,
-            "source_artifact": _BIG649_MEASUREMENT_EXPORT_PATH.name,
-            "historical_replay_only": True,
-            "no_recommendation": True,
-            "no_ranking": True,
-            "no_betting_advice": True,
-        }
-
-        if metric_scope == "pairwise_overlap":
-            pairs_out = []
-            for row in sub.get("pairs", []):
-                cell = (row.get("by_window") or {}).get(internal_window)
-                pairs_out.append({"pair_key": row.get("pair_key"), "cell": cell})
-            result["level"] = "STRUCTURAL_DIAGNOSTIC_PAIRWISE"
-            result["pair_count"] = sub.get("pair_count")
-            result["pairs_lexical"] = sub.get("pairs_lexical", [])
-            result["pairs"] = pairs_out
-            if "note" in sub:
-                result["note"] = sub.get("note")
-            return result
-
-        # Per-strategy scopes: ticket_slot / target_level / prize_aware / redundancy.
-        by_strategy_full = sub.get("by_strategy", {})
-        strategy_order = sub.get("strategy_order_lexical", [])
-        sliced = {}
-        for sid in strategy_order:
-            sliced[sid] = (by_strategy_full.get(sid) or {}).get(internal_window)
-        result["strategy_order_lexical"] = strategy_order
-        result["by_strategy"] = sliced
-        if "level" in sub:
-            result["level"] = sub.get("level")
-        if "denominator_kind" in sub:
-            result["denominator_kind"] = sub.get("denominator_kind")
-        if metric_scope == "prize_aware" and "endpoint_definitions" in sub:
-            result["endpoint_definitions"] = sub.get("endpoint_definitions")
-        if metric_scope == "redundancy" and "note" in sub:
-            result["note"] = sub.get("note")
-        return result
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.exception("get_big649_measurement_export failed")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
 # ─── P259A: History Replay Overview ─────────────────────────────────────────
 
 
@@ -1865,6 +1233,14 @@ def _derive_bet_count(strategy_id: str) -> int:
     if "triple_strike" in strategy_id:
         return 3
     return 1
+
+
+def _normalise_lottery_type_query(lottery_type: Optional[str]) -> Optional[str]:
+    """Return the canonical replay lottery_type query value."""
+    if not isinstance(lottery_type, str):
+        return None
+    canonical = lottery_type.strip().upper()
+    return canonical or None
 
 
 _REPLAY_STATUS_CATEGORIES = {
@@ -1902,7 +1278,7 @@ def _coverage_missing_reason(registry_status: str, has_rows: bool,
     """Read-only classification of WHY a coverage cell lacks production replay rows.
 
     Returns one of: registered_without_rows | artifact_only | observation_no_data
-    | retired_no_rows | no_production_replay, or None when the cell HAS rows (orphan/mismatch cells
+    | no_production_replay, or None when the cell HAS rows (orphan/mismatch cells
     have rows by definition and return None — their gap is registration, surfaced
     via coverage_warning instead).
     """
@@ -1912,11 +1288,9 @@ def _coverage_missing_reason(registry_status: str, has_rows: bool,
         return None
     if lifecycle == "OBSERVATION":
         return "observation_no_data"
-    if lifecycle == "RETIRED":
-        return "retired_no_rows"
     if replay_cat == "artifact_only":
         return "artifact_only"
-    if lifecycle in ("REJECTED", "OFFLINE"):
+    if lifecycle in ("REJECTED", "RETIRED", "OFFLINE"):
         return "registered_without_rows"
     return "no_production_replay"
 
@@ -2032,6 +1406,8 @@ async def get_history_replay_overview(
     No migration. No production deployment change.
     """
     try:
+        lottery_type_filter = _normalise_lottery_type_query(lottery_type)
+
         # ── 1. Get all strategies from registry (all lifecycle states) ──────
         all_meta = list_strategy_lifecycle_metadata()
         exec_ids = set(list_executable_strategy_ids())
@@ -2107,7 +1483,7 @@ async def get_history_replay_overview(
 
             for lt in meta["supported_lottery_types"]:
                 # lottery_type filter
-                if lottery_type and lt != lottery_type:
+                if lottery_type_filter and lt != lottery_type_filter:
                     continue
                 # bet_index filter (0 = all)
                 if bet_index != 0 and derived_bets != bet_index:
@@ -2134,7 +1510,7 @@ async def get_history_replay_overview(
             for (lt, sid), db in db_index.items():
                 if (lt, sid) in registry_supported:
                     continue  # already produced by the registry walk above
-                if lottery_type and lt != lottery_type:
+                if lottery_type_filter and lt != lottery_type_filter:
                     continue
                 derived_bets = _derive_bet_count(sid)
                 if bet_index != 0 and derived_bets != bet_index:
@@ -2185,7 +1561,7 @@ async def get_history_replay_overview(
         return {
             "default_bet_index":            1,
             "bet_index_filter":             bet_index,
-            "lottery_type_filter":          lottery_type or None,
+            "lottery_type_filter":          lottery_type_filter,
             "replay_status_category_filter": replay_status_category or None,
             "coverage_mode":                coverage_mode,
             "total_rows":                   len(rows),
@@ -2215,6 +1591,18 @@ async def get_history_replay_overview(
 
 _DETAIL_SORTS = ("target_draw_desc", "target_draw_asc")
 _DETAIL_HIT_FILTERS = ("all", "hit", "miss")
+
+
+def _normalise_detail_enum_query(value: str, allowed: tuple[str, ...], param_name: str) -> str:
+    """Return canonical detail enum query values while preserving strict validation."""
+    original = value
+    canonical = value.strip().lower() if isinstance(value, str) else value
+    if canonical not in allowed:
+        raise HTTPException(
+            status_code=400,
+            detail=f"invalid {param_name} {original!r}; allowed: {list(allowed)}",
+        )
+    return canonical
 
 
 def _parse_numbers_field(raw):
@@ -2305,28 +1693,18 @@ async def get_history_replay_detail(
     execution. No migration. No betting advice.
     """
     try:
+        canonical_lottery_type = _normalise_lottery_type_query(lottery_type) or lottery_type
+
         # ── Validate enum params ────────────────────────────────────────────
-        if sort not in _DETAIL_SORTS:
-            raise HTTPException(
-                status_code=400,
-                detail=f"invalid sort {sort!r}; allowed: {list(_DETAIL_SORTS)}",
-            )
-        if hit_filter not in _DETAIL_HIT_FILTERS:
-            raise HTTPException(
-                status_code=400,
-                detail=f"invalid hit_filter {hit_filter!r}; allowed: {list(_DETAIL_HIT_FILTERS)}",
-            )
+        sort = _normalise_detail_enum_query(sort, _DETAIL_SORTS, "sort")
+        hit_filter = _normalise_detail_enum_query(hit_filter, _DETAIL_HIT_FILTERS, "hit_filter")
 
         derived_bet_count = _derive_bet_count(strategy_id)
         bet_index_matches = (derived_bet_count == bet_index)
-        lifecycle_status = _display_lifecycle_for_strategy(strategy_id)
-        display_depth_sql, display_depth_limit, display_depth_policy = (
-            _display_depth_clause(lifecycle_status)
-        )
 
         # ── Build WHERE clause (always scoped to lottery_type + strategy_id) ─
         where_parts = ["lottery_type = ?", "strategy_id = ?"]
-        params: list = [lottery_type, strategy_id]
+        params: list = [canonical_lottery_type, strategy_id]
 
         if hit_filter == "hit":
             where_parts.append("hit_count > 0")
@@ -2338,9 +1716,6 @@ async def get_history_replay_detail(
             params.append(target_draw)
 
         where_sql = " AND ".join(where_parts)
-        if display_depth_sql:
-            where_sql += display_depth_sql
-            params.extend([lottery_type, strategy_id, display_depth_limit])
         order_dir = "DESC" if sort == "target_draw_desc" else "ASC"
 
         conn = _open_conn()
@@ -2357,9 +1732,7 @@ async def get_history_replay_detail(
                 SELECT
                     lottery_type, strategy_id, strategy_name, target_draw, target_date,
                     predicted_numbers, predicted_special, actual_numbers, actual_special,
-                    hit_count, hit_numbers, special_hit, generated_at,
-                    truth_level, controlled_apply_id, source,
-                    provenance_hash, provenance_source
+                    hit_count, hit_numbers, special_hit, generated_at
                 FROM strategy_prediction_replays
                 WHERE {where_sql}
                 ORDER BY CAST(target_draw AS INTEGER) {order_dir}, id {order_dir}
@@ -2370,13 +1743,10 @@ async def get_history_replay_detail(
 
             rows = []
             for r in page_rows:
-                trust = _display_trust_for_row(lifecycle_status, r["truth_level"])
                 rows.append({
                     "lottery_type":      r["lottery_type"],
                     "strategy_id":       r["strategy_id"],
                     "strategy_name":     r["strategy_name"],
-                    "lifecycle_status":  lifecycle_status,
-                    "strategy_lifecycle_status": lifecycle_status,
                     "bet_index":         derived_bet_count,  # P259A-consistent strategy-level value
                     "target_draw":       r["target_draw"],
                     "draw_date":         r["target_date"],
@@ -2389,14 +1759,6 @@ async def get_history_replay_detail(
                     "special_hit":       bool(r["special_hit"]),
                     "result_label":      _detail_result_label(r["hit_count"], r["special_hit"]),
                     "replay_created_at": r["generated_at"],
-                    "truth_level":       r["truth_level"],
-                    "controlled_apply_id": r["controlled_apply_id"],
-                    "source":            r["source"],
-                    "provenance_hash":   r["provenance_hash"],
-                    "provenance_source": r["provenance_source"],
-                    "display_trust_label": trust["label"],
-                    "display_trust_detail": trust["detail"],
-                    "display_trust_is_live": trust["is_live"],
                 })
 
             # ── Summary over the FULL (lottery, strategy) set (unfiltered) ───
@@ -2410,7 +1772,7 @@ async def get_history_replay_detail(
                 FROM strategy_prediction_replays
                 WHERE lottery_type = ? AND strategy_id = ?
                 """,
-                [lottery_type, strategy_id],
+                [canonical_lottery_type, strategy_id],
             ).fetchone()
         finally:
             conn.close()
@@ -2424,17 +1786,11 @@ async def get_history_replay_detail(
         has_next = (page * page_size) < total_count
 
         return {
-            "lottery_type":      lottery_type,
+            "lottery_type":      canonical_lottery_type,
             "strategy_id":       strategy_id,
             "bet_index":         bet_index,
             "derived_bet_count": derived_bet_count,
             "bet_index_matches_strategy": bet_index_matches,
-            "lifecycle_status":  lifecycle_status,
-            "strategy_lifecycle_status": lifecycle_status,
-            "display_depth_policy": display_depth_policy,
-            "display_depth_limit": (
-                display_depth_limit if display_depth_policy == "LATEST_300_PERIODS_FOR_REJECTED" else None
-            ),
             "page":              page,
             "page_size":         page_size,
             "total_count":       total_count,
@@ -2450,7 +1806,7 @@ async def get_history_replay_detail(
                 "last_target_draw":  last_draw,
                 "latest_target_draw": last_draw,
                 "current_filters": {
-                    "lottery_type": lottery_type,
+                    "lottery_type": canonical_lottery_type,
                     "strategy_id":  strategy_id,
                     "bet_index":    bet_index,
                     "sort":         sort,
@@ -2545,35 +1901,22 @@ async def get_history_replay_detail_grouped(
     execution. No migration. No schema change. No betting advice.
     """
     try:
+        canonical_lottery_type = _normalise_lottery_type_query(lottery_type) or lottery_type
+
         # ── Validate enum params ────────────────────────────────────────────
-        if sort not in _DETAIL_SORTS:
-            raise HTTPException(
-                status_code=400,
-                detail=f"invalid sort {sort!r}; allowed: {list(_DETAIL_SORTS)}",
-            )
-        if hit_filter not in _DETAIL_HIT_FILTERS:
-            raise HTTPException(
-                status_code=400,
-                detail=f"invalid hit_filter {hit_filter!r}; allowed: {list(_DETAIL_HIT_FILTERS)}",
-            )
+        sort = _normalise_detail_enum_query(sort, _DETAIL_SORTS, "sort")
+        hit_filter = _normalise_detail_enum_query(hit_filter, _DETAIL_HIT_FILTERS, "hit_filter")
 
         derived_bet_count = _derive_bet_count(strategy_id)
         bet_index_matches = (derived_bet_count == bet_index)
-        lifecycle_status = _display_lifecycle_for_strategy(strategy_id)
-        display_depth_sql, display_depth_limit, display_depth_policy = (
-            _display_depth_clause(lifecycle_status)
-        )
 
         # ── Base WHERE (scoped to lottery_type + strategy_id) ────────────────
         base_where = ["lottery_type = ?", "strategy_id = ?"]
-        base_params: list = [lottery_type, strategy_id]
+        base_params: list = [canonical_lottery_type, strategy_id]
         if target_draw:
             base_where.append("target_draw = ?")
             base_params.append(target_draw)
         base_where_sql = " AND ".join(base_where)
-        if display_depth_sql:
-            base_where_sql += display_depth_sql
-            base_params.extend([lottery_type, strategy_id, display_depth_limit])
         order_dir = "DESC" if sort == "target_draw_desc" else "ASC"
 
         # Draw-level hit_filter applied via HAVING on the per-draw aggregate.
@@ -2632,15 +1975,13 @@ async def get_history_replay_detail_grouped(
                         target_draw, bet_index, strategy_name, target_date,
                         predicted_numbers, predicted_special,
                         actual_numbers, actual_special,
-                        hit_numbers, hit_count, special_hit, replay_status,
-                        truth_level, controlled_apply_id, source,
-                        provenance_hash, provenance_source
+                        hit_numbers, hit_count, special_hit, replay_status
                     FROM strategy_prediction_replays
                     WHERE lottery_type = ? AND strategy_id = ?
                       AND target_draw IN ({placeholders})
                     ORDER BY CAST(target_draw AS INTEGER) {order_dir}, bet_index ASC
                     """,
-                    [lottery_type, strategy_id] + page_draws,
+                    [canonical_lottery_type, strategy_id] + page_draws,
                 ).fetchall()
                 for br in bet_rows:
                     bet_rows_by_draw.setdefault(str(br["target_draw"]), []).append(br)
@@ -2655,16 +1996,10 @@ async def get_history_replay_detail_grouped(
                 actual_numbers = []
                 actual_special = None
                 strategy_name = None
-                row_truth_levels = []
-                row_controlled_apply_ids = []
-                row_sources = []
-                row_provenance_hashes = []
-                row_provenance_sources = []
                 for br in bet_list:
                     b_pred = _parse_numbers_field(br["predicted_numbers"])
                     b_actual = _parse_numbers_field(br["actual_numbers"])
                     b_hits = _parse_numbers_field(br["hit_numbers"])
-                    trust = _display_trust_for_row(lifecycle_status, br["truth_level"])
                     if not actual_numbers and b_actual:
                         actual_numbers = b_actual
                     if actual_special is None:
@@ -2688,20 +2023,7 @@ async def get_history_replay_detail_grouped(
                         "result_label":      _detail_result_label(br["hit_count"], br["special_hit"]),
                         "strategy_name":     br["strategy_name"],
                         "replay_status":     br["replay_status"],
-                        "truth_level":       br["truth_level"],
-                        "controlled_apply_id": br["controlled_apply_id"],
-                        "source":            br["source"],
-                        "provenance_hash":   br["provenance_hash"],
-                        "provenance_source": br["provenance_source"],
-                        "display_trust_label": trust["label"],
-                        "display_trust_detail": trust["detail"],
-                        "display_trust_is_live": trust["is_live"],
                     })
-                    row_truth_levels.append(br["truth_level"])
-                    row_controlled_apply_ids.append(br["controlled_apply_id"])
-                    row_sources.append(br["source"])
-                    row_provenance_hashes.append(br["provenance_hash"])
-                    row_provenance_sources.append(br["provenance_source"])
 
                 max_hit = d["max_hit_count"] or 0
                 # Draw-level summary fields (history-detail-compatible names):
@@ -2710,17 +2032,10 @@ async def get_history_replay_detail_grouped(
                 predicted_summary = bets[0]["predicted_numbers"] if bets else []
                 predicted_special_summary = bets[0]["predicted_special"] if bets else None
                 special_hit_any = any(b["special_hit"] for b in bets)
-                distinct_truth = {v for v in row_truth_levels if v is not None}
-                row_truth_level = next(iter(distinct_truth)) if len(distinct_truth) == 1 else (
-                    "MIXED_PROVENANCE" if len(distinct_truth) > 1 else None
-                )
-                row_trust = _display_trust_for_row(lifecycle_status, row_truth_level)
                 rows.append({
-                    "lottery_type":      lottery_type,
+                    "lottery_type":      canonical_lottery_type,
                     "strategy_id":       strategy_id,
                     "strategy_name":     strategy_name,
-                    "lifecycle_status":  lifecycle_status,
-                    "strategy_lifecycle_status": lifecycle_status,
                     "target_draw":       td,
                     "draw_date":         d["draw_date"],
                     "n_bets":            d["n_bets"] or len(bets),
@@ -2735,14 +2050,6 @@ async def get_history_replay_detail_grouped(
                     "hit_bets":          d["hit_bets"] or 0,
                     "any_hit":           max_hit > 0,
                     "special_hit":       special_hit_any,
-                    "truth_level":       row_truth_level,
-                    "controlled_apply_id": next((v for v in row_controlled_apply_ids if v), None),
-                    "source":            next((v for v in row_sources if v), None),
-                    "provenance_hash":   next((v for v in row_provenance_hashes if v), None),
-                    "provenance_source": next((v for v in row_provenance_sources if v), None),
-                    "display_trust_label": row_trust["label"],
-                    "display_trust_detail": row_trust["detail"],
-                    "display_trust_is_live": row_trust["is_live"],
                     "bets":              bets,
                 })
 
@@ -2758,7 +2065,7 @@ async def get_history_replay_detail_grouped(
                 FROM strategy_prediction_replays
                 WHERE lottery_type = ? AND strategy_id = ?
                 """,
-                [lottery_type, strategy_id],
+                [canonical_lottery_type, strategy_id],
             ).fetchone()
 
             # Distinct draws that have at least one bet hit (draw-level hit rate).
@@ -2772,7 +2079,7 @@ async def get_history_replay_detail_grouped(
                     HAVING SUM(CASE WHEN hit_count > 0 THEN 1 ELSE 0 END) > 0
                 )
                 """,
-                [lottery_type, strategy_id],
+                [canonical_lottery_type, strategy_id],
             ).fetchone()
         finally:
             conn.close()
@@ -2789,17 +2096,11 @@ async def get_history_replay_detail_grouped(
         has_next = (page * page_size) < total_count
 
         return {
-            "lottery_type":      lottery_type,
+            "lottery_type":      canonical_lottery_type,
             "strategy_id":       strategy_id,
             "bet_index":         bet_index,
             "derived_bet_count": derived_bet_count,
             "bet_index_matches_strategy": bet_index_matches,
-            "lifecycle_status":  lifecycle_status,
-            "strategy_lifecycle_status": lifecycle_status,
-            "display_depth_policy": display_depth_policy,
-            "display_depth_limit": (
-                display_depth_limit if display_depth_policy == "LATEST_300_PERIODS_FOR_REJECTED" else None
-            ),
             "grouped":           True,
             "page":              page,
             "page_size":         page_size,
@@ -2820,7 +2121,7 @@ async def get_history_replay_detail_grouped(
                 "last_target_draw":  last_draw,
                 "latest_target_draw": last_draw,
                 "current_filters": {
-                    "lottery_type": lottery_type,
+                    "lottery_type": canonical_lottery_type,
                     "strategy_id":  strategy_id,
                     "bet_index":    bet_index,
                     "sort":         sort,

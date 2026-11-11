@@ -1,0 +1,28 @@
+{
+  "ensemble_name": "ENSEMBLE_MMS_EXACT_DELETE_GEOMETRIC_V1",
+  "evaluation_draws": 500,
+  "base_strategies": [
+    {
+      "name": "BIGLOTTO_MMS_EXACT_DELETE",
+      "tickets": 10,
+      "m3_plus_rate": 0.17,
+      "baseline_rate": 0.1816714407569436,
+      "edge": -0.011671440756943596
+    },
+    {
+      "name": "BENCHMARK_MINOVERLAP_GEOMETRY",
+      "tickets": 10,
+      "m3_plus_rate": 0.152,
+      "baseline_rate": 0.1816714407569436,
+      "edge": -0.029671440756943612
+    }
+  ],
+  "ensemble_portfolio_20_tickets": {
+    "m3_plus_rate": 0.184,
+    "baseline_rate": 0.3353636089033208,
+    "edge": -0.1513636089033208,
+    "edge_pct": -45.13417821280547,
+    "synergy_gain_over_single_base": 0.013999999999999985
+  },
+  "timestamp": "2026-09-02T09:56:28.790150"
+}

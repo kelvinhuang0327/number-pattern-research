@@ -92,7 +92,8 @@ def get_stability_profile():
     global _global_stability_profile
     if _global_stability_profile is None:
         # Check root, tools/, and ../tools/
-        paths_to_check = [".", "tools", "../tools", "/Users/kelvin/Kelvin-WorkSpace/LotteryNew"]
+        legacy_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "legacy-source", "LotteryNew"))
+        paths_to_check = [".", "tools", "../tools", legacy_root]
         data_path = "."
         for p in paths_to_check:
             if os.path.exists(os.path.join(p, "benchmark_POWER_LOTTO_500.json")):

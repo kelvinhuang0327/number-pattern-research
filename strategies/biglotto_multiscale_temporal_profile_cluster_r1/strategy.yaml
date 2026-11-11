@@ -1,0 +1,33 @@
+# Strategy Specification: BIGLOTTO_MULTISCALE_TEMPORAL_PROFILE_CLUSTER_MULTI_TICKET_CANDIDATE_BATCH_R1
+strategy_name: BIGLOTTO_MULTISCALE_TEMPORAL_PROFILE_CLUSTER_MULTI_TICKET_CANDIDATE_BATCH_R1
+version: "1.0.0"
+author: "Autonomous Quant Agent"
+lottery_type: BIG_LOTTO
+mechanism_family: MULTISCALE_TEMPORAL_PROFILE_CLUSTERING
+description: >
+  Multiscale temporal profile clustering with cluster-stratified low-overlap geometric candidate generation
+
+features:
+  - name: frequency_multiscale
+    scales: [10, 30, 100, 300]
+    type: rolling_frequency_and_zscore
+  - name: gap_hazard_profile
+    lookback: 300
+    type: recency_and_hazard_survival
+  - name: temporal_velocity
+    ratio: freq10_over_freq100
+    type: acceleration
+
+parameters:
+  n_clusters: 5
+  scales: [10, 30, 100, 300]
+  max_overlap_threshold: 3
+  selection_temperature: 1.0
+  weights:
+    momentum_10: 0.35
+    readiness_30: 0.25
+    baseline_100: 0.20
+    hazard_gap: 0.20
+
+portfolio_sizes: [1, 5, 10, 15, 20]
+created_at: "2026-08-23T19:08:21.333706"

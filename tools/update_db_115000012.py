@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 from lottery_api.database import DatabaseManager
 
 def update():
-    db_path = '/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db'
+    db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "legacy-source", "LotteryNew", "lottery_api", "data", "lottery_v2.db"))
     db = DatabaseManager(db_path)
     # Big Lotto 115000012
     draw_data = {

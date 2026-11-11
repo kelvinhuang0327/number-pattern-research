@@ -12,7 +12,6 @@ production-ready implementations.
 """
 
 import os
-import sys
 import json
 import sqlite3
 import random
@@ -26,9 +25,7 @@ import logging
 random.seed(42)
 np.random.seed(42)
 
-project_root = "/Users/kelvin/Kelvin-WorkSpace/LotteryNew"
-sys.path.insert(0, project_root)
-sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', 'legacy-source', 'LotteryNew'))
 
 # =============================================================================
 # DATA LOADING

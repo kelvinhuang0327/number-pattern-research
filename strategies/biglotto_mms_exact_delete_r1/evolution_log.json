@@ -1,0 +1,174 @@
+{
+  "task_id": "BIGLOTTO_MMS_EXACT_DELETE_EVOLUTION_R1",
+  "generations_run": 8,
+  "population_size": 20,
+  "history_window_used": 300,
+  "generation_history": [
+    {
+      "generation": 1,
+      "best_fitness_edge": -0.01536360890332078,
+      "mean_fitness_edge": -0.02836360890332078,
+      "best_chromosome": {
+        "k_delete": 8,
+        "windows": [
+          50,
+          300,
+          750
+        ],
+        "weights": {
+          "markov_transition": 0.31,
+          "momentum_z10": 0.18,
+          "readiness_z30": 0.17
+        },
+        "max_overlap_threshold": 4
+      }
+    },
+    {
+      "generation": 2,
+      "best_fitness_edge": -0.01536360890332078,
+      "mean_fitness_edge": -0.02136360890332078,
+      "best_chromosome": {
+        "k_delete": 8,
+        "windows": [
+          50,
+          300,
+          750
+        ],
+        "weights": {
+          "markov_transition": 0.31,
+          "momentum_z10": 0.18,
+          "readiness_z30": 0.17
+        },
+        "max_overlap_threshold": 4
+      }
+    },
+    {
+      "generation": 3,
+      "best_fitness_edge": -0.01536360890332078,
+      "mean_fitness_edge": -0.02336360890332078,
+      "best_chromosome": {
+        "k_delete": 8,
+        "windows": [
+          50,
+          300,
+          750
+        ],
+        "weights": {
+          "markov_transition": 0.31,
+          "momentum_z10": 0.18,
+          "readiness_z30": 0.17
+        },
+        "max_overlap_threshold": 4
+      }
+    },
+    {
+      "generation": 4,
+      "best_fitness_edge": -0.01536360890332078,
+      "mean_fitness_edge": -0.030363608903320773,
+      "best_chromosome": {
+        "k_delete": 8,
+        "windows": [
+          50,
+          300,
+          750
+        ],
+        "weights": {
+          "markov_transition": 0.31,
+          "momentum_z10": 0.18,
+          "readiness_z30": 0.17
+        },
+        "max_overlap_threshold": 4
+      }
+    },
+    {
+      "generation": 5,
+      "best_fitness_edge": -0.01536360890332078,
+      "mean_fitness_edge": -0.02836360890332077,
+      "best_chromosome": {
+        "k_delete": 8,
+        "windows": [
+          50,
+          300,
+          750
+        ],
+        "weights": {
+          "markov_transition": 0.31,
+          "momentum_z10": 0.18,
+          "readiness_z30": 0.17
+        },
+        "max_overlap_threshold": 4
+      }
+    },
+    {
+      "generation": 6,
+      "best_fitness_edge": -0.01536360890332078,
+      "mean_fitness_edge": -0.01536360890332078,
+      "best_chromosome": {
+        "k_delete": 8,
+        "windows": [
+          50,
+          300,
+          750
+        ],
+        "weights": {
+          "markov_transition": 0.31,
+          "momentum_z10": 0.18,
+          "readiness_z30": 0.17
+        },
+        "max_overlap_threshold": 4
+      }
+    },
+    {
+      "generation": 7,
+      "best_fitness_edge": -0.01536360890332078,
+      "mean_fitness_edge": -0.02236360890332078,
+      "best_chromosome": {
+        "k_delete": 8,
+        "windows": [
+          50,
+          300,
+          750
+        ],
+        "weights": {
+          "markov_transition": 0.31,
+          "momentum_z10": 0.18,
+          "readiness_z30": 0.17
+        },
+        "max_overlap_threshold": 4
+      }
+    },
+    {
+      "generation": 8,
+      "best_fitness_edge": -0.01536360890332078,
+      "mean_fitness_edge": -0.03336360890332078,
+      "best_chromosome": {
+        "k_delete": 8,
+        "windows": [
+          50,
+          300,
+          750
+        ],
+        "weights": {
+          "markov_transition": 0.31,
+          "momentum_z10": 0.18,
+          "readiness_z30": 0.17
+        },
+        "max_overlap_threshold": 4
+      }
+    }
+  ],
+  "best_overall_parameters": {
+    "k_delete": 8,
+    "windows": [
+      50,
+      300,
+      750
+    ],
+    "weights": {
+      "markov_transition": 0.31,
+      "momentum_z10": 0.18,
+      "readiness_z30": 0.17
+    },
+    "max_overlap_threshold": 4
+  }
+}

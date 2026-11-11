@@ -3,8 +3,9 @@
 Comprehensive verification of all Wheel Tables.
 """
 
+from pathlib import Path
 import sys
-sys.path.insert(0, '/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api')
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "lottery_api"))
 
 from models.wheel_tables import WheelGenerator, WHEEL_TABLES
 

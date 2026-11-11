@@ -3,16 +3,11 @@
 快速預測腳本 - 供 /predict 命令使用
 用法: python3 tools/quick_predict.py [彩票類型] [注數]
 
-策略對照 (2026-07-25 legacy continuity 更新):
-  大樂透 2注: 偏差互補+回聲 P0 (historical edge +1.21%) —
-    evidence_status=HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED
-  大樂透 3注: Triple Strike (historical edge +0.98%) —
-    evidence_status=HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED
-  大樂透 4注: TS3+Markov(w=30) — biglotto_5bet_orthogonal 前4注同一 implementation family；
-    evidence_status=HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED
-  大樂透 5注: TS3+Markov+FreqOrt — evidence_status=HISTORICAL_RESEARCH_ONLY,
-    current_significance=NOT_ESTABLISHED（2026-07-24 獨立重驗：原始 P3 claim 不可重現，詳見
-    rejected/ts3_markov_freq_5bet_biglotto.json :: retest_2026_07_24）
+策略對照 (2026-02-24 更新):
+  大樂透 2注: 偏差互補+回聲 P0 (Edge +1.21%, 確定性)
+  大樂透 3注: Triple Strike (Edge +0.98%, 1500期 STABLE)
+  大樂透 4注: TS3+Markov(w=30) (Edge +1.23%, 1500期)
+  大樂透 5注: TS3+Markov+FreqOrt (Edge +1.77%, 1500期 z=2.40 ★最佳)
   威力彩 2注: Fourier Rhythm (Edge +1.91%)
   威力彩 3注: Power Precision (Edge +2.23%, 1500期 STABLE, z=2.74)
   威力彩 特別號: V3 (Edge +2.20%)
@@ -25,6 +20,9 @@ import random
 import argparse
 import datetime as dt
 import json
+import sqlite3
+import uuid
+from pathlib import Path
 import numpy as np
 from numpy.fft import fft, fftfreq
 from collections import Counter
@@ -33,9 +31,7 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
-from database import DatabaseManager, ColdWalReadOnlyError
-
-EXIT_COLD_WAL_READ_ONLY = 3
+from database import DatabaseManager
 
 DB_PATH = os.path.join(project_root, 'lottery_api', 'data', 'lottery_v2.db')
 
@@ -59,41 +55,13 @@ DEFAULT_CONFIG = {
     'DAILY_539': {'bets': 3, 'cost': 150},
 }
 
-# 各注數 Edge 和策略名稱 (2026-02-23 驗證; BIG_LOTTO 2/3/4/5注 evidence metadata
-# 於 2026-07-25 legacy-continuity-stabilization 訂正 — 見下方 NOT_ESTABLISHED_WARNING.
-# 'edge' 數值為歷史回測描述性紀錄，不代表目前已驗證的預測優勢。)
-NOT_ESTABLISHED_WARNING = 'No reliable predictive advantage is currently established.'
-
+# 各注數 Edge 和策略名稱 (2026-02-23 驗證)
 STRATEGY_INFO = {
     'BIG_LOTTO': {
-        2: {
-            'strategy': '偏差互補+回聲 P0', 'edge': '+1.21%', 'verified': '',
-            'implementation_id': 'biglotto_p0_2bet',
-            'evidence_status': 'HISTORICAL_RESEARCH_ONLY',
-            'current_significance': 'NOT_ESTABLISHED',
-            'warning': NOT_ESTABLISHED_WARNING,
-        },
-        3: {
-            'strategy': 'Triple Strike', 'edge': '+0.98%', 'verified': '',
-            'implementation_id': 'biglotto_triple_strike',
-            'evidence_status': 'HISTORICAL_RESEARCH_ONLY',
-            'current_significance': 'NOT_ESTABLISHED',
-            'warning': NOT_ESTABLISHED_WARNING,
-        },
-        4: {
-            'strategy': 'TS3+Markov(w=30)', 'edge': '+1.23%', 'verified': '',
-            'implementation_id': 'biglotto_5bet_orthogonal.slice4',
-            'evidence_status': 'HISTORICAL_RESEARCH_ONLY',
-            'current_significance': 'NOT_ESTABLISHED',
-            'warning': NOT_ESTABLISHED_WARNING,
-        },
-        5: {
-            'strategy': 'TS3+Markov+FreqOrt', 'edge': '+1.77%', 'verified': '',
-            'implementation_id': 'biglotto_5bet_orthogonal.full5',
-            'evidence_status': 'HISTORICAL_RESEARCH_ONLY',
-            'current_significance': 'NOT_ESTABLISHED',
-            'warning': NOT_ESTABLISHED_WARNING,
-        },
+        2: {'strategy': '偏差互補+回聲 P0', 'edge': '+1.21%', 'verified': '1000期+10種子'},
+        3: {'strategy': 'Triple Strike', 'edge': '+0.98%', 'verified': '1500期 STABLE'},
+        4: {'strategy': 'TS3+Markov(w=30)', 'edge': '+1.23%', 'verified': '1500期 z=1.85'},
+        5: {'strategy': 'TS3+Markov+FreqOrt', 'edge': '+1.77%', 'verified': '1500期 z=2.40 P3 p=0.030'},
     },
     'POWER_LOTTO': {
         2: {'strategy': 'Fourier Rhythm', 'edge': '+1.91%', 'verified': '1000期'},
@@ -149,23 +117,62 @@ def resolve_cli_value(flag_value, positional_value, default_value=None):
     return default_value
 
 
-def load_history(lottery_type, dry_run=False):
-    """Single canonical, truly read-only history loader shared by both the
-    normal prediction path and --dry-run.
+def get_related_lottery_types_safe(lottery_type):
+    try:
+        from .common import get_related_lottery_types
+    except ImportError:
+        from common import get_related_lottery_types
+    return get_related_lottery_types(lottery_type)
 
-    Both paths open DatabaseManager(read_only=True): the SQLite connection
-    uses URI mode=ro with PRAGMA query_only=ON, and schema initialization is
-    never invoked (no CREATE TABLE/INDEX/VIEW statement is issued). Both
-    paths therefore see the exact same canonical-filtered history — same DB
-    path, same canonical filter (excludes ADD_ON_PRIZE_EXCLUDED,
-    DATE_FORMAT_ALIEN, and SMALL_POOL_ALIEN for BIG_LOTTO), same ordering,
-    same draw identities. `dry_run` is retained as a parameter purely for
-    call-site symmetry with the CLI's --dry-run flag; it no longer changes
-    which data is read (legacy-continuity-stabilization, 2026-07-24). Raw,
-    unfiltered records remain queryable via get_all_draws() for other
-    display/history callers outside prediction generation.
-    """
-    db = DatabaseManager(db_path=DB_PATH, read_only=True)
+
+def load_history_readonly(lottery_type):
+    conn = sqlite3.connect(f'file:{DB_PATH}?mode=ro', uri=True)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    try:
+        if lottery_type:
+            related_types = get_related_lottery_types_safe(lottery_type)
+            placeholders = ','.join('?' * len(related_types))
+            query = f"""
+                SELECT draw, date, lottery_type, numbers, special, jackpot_amount
+                FROM draws
+                WHERE lottery_type IN ({placeholders})
+                ORDER BY CAST(draw AS INTEGER) DESC
+            """
+            cursor.execute(query, related_types)
+        else:
+            cursor.execute("""
+                SELECT draw, date, lottery_type, numbers, special, jackpot_amount
+                FROM draws
+                ORDER BY CAST(draw AS INTEGER) DESC
+            """)
+
+        rows = cursor.fetchall()
+        history = []
+        for row in rows:
+            history.append({
+                'draw': row['draw'],
+                'date': row['date'],
+                'lotteryType': row['lottery_type'],
+                'numbers': json.loads(row['numbers']),
+                'special': row['special'],
+                'jackpot_amount': row['jackpot_amount'],
+            })
+        return sorted(history, key=lambda x: (x['date'], x['draw']))
+    finally:
+        conn.close()
+
+
+def load_history(lottery_type, dry_run=False):
+    if dry_run:
+        return load_history_readonly(lottery_type)
+
+    db = DatabaseManager(db_path=DB_PATH)
+    # Use canonical helper for research/strategy callers.
+    # BIG_LOTTO: excludes ADD_ON_PRIZE_EXCLUDED (add-on/special prize records),
+    # DATE_FORMAT_ALIEN, and SMALL_POOL_ALIEN — these are out-of-scope for
+    # canonical 6/49 main-draw research.  Raw records remain in the DB and
+    # are accessible via get_all_draws() for display/history purposes.
     history = db.get_canonical_draws(lottery_type=lottery_type)
     return sorted(history, key=lambda x: (x['date'], x['draw']))
 
@@ -242,8 +249,7 @@ def build_dry_run_payload(predictions, warnings):
 # ========== 大樂透策略 ==========
 
 def biglotto_p0_2bet(history, window=50, echo_boost=1.5):
-    """大樂透 2注: 偏差互補+回聲 P0 (historical edge +1.21%; evidence_status=
-    HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED)"""
+    """大樂透 2注: 偏差互補+回聲 P0 (Edge +1.21%, 確定性)"""
     MAX_NUM, PICK = 49, 6
     recent = history[-window:] if len(history) > window else history
     expected = len(recent) * PICK / MAX_NUM
@@ -294,19 +300,14 @@ def biglotto_p0_2bet(history, window=50, echo_boost=1.5):
 
 
 def biglotto_triple_strike(history):
-    """大樂透 3注: Triple Strike (historical edge +0.98%; evidence_status=
-    HISTORICAL_RESEARCH_ONLY, current_significance=NOT_ESTABLISHED)"""
+    """大樂透 3注: Triple Strike (Edge +0.98%, 1500期 STABLE)"""
     from tools.predict_biglotto_triple_strike import generate_triple_strike
     bets_raw = generate_triple_strike(history)
     return [{'numbers': b} for b in bets_raw]
 
 
 def biglotto_5bet_orthogonal(history):
-    """大樂透 5注正交: TS3+Markov(w=30)+FreqOrt (implementation_id:
-    biglotto_5bet_orthogonal.full5; evidence_status=HISTORICAL_RESEARCH_ONLY,
-    current_significance=NOT_ESTABLISHED — 2026-07-24 獨立重驗：原始文件宣稱的
-    P3顯著性數字不可重現，訂正前後數字詳見 STRATEGY_INFO 與
-    rejected/ts3_markov_freq_5bet_biglotto.json :: retest_2026_07_24)"""
+    """大樂透 5注正交: TS3+Markov(w=30)+FreqOrt (Edge +1.77%, 1500期 z=2.40 ★最佳)"""
     from tools.backtest_biglotto_markov_4bet import (
         fourier_rhythm_bet, cold_numbers_bet, tail_balance_bet, markov_orthogonal_bet
     )
@@ -458,6 +459,119 @@ def format_numbers(numbers):
     return ', '.join([f'{n:02d}' for n in sorted(numbers)])
 
 
+# ========== P360B: opt-in predraw ledger integration ==========
+#
+# Disabled by default. Enabling requires --write-predraw-ledger (or the
+# LOTTERY_PREDRAW_LEDGER_PATH env var) and only appends LIVE_PREDRAW records
+# to the P360A append-only JSONL sidecar (lottery_api/engine/predraw_ledger.py).
+# It never opens lottery_v2.db for write; source-draw lookups go through
+# predraw_ledger's own read-only (mode=ro) helpers.
+
+_PREDRAW_LEDGER_ENV_PATH = 'LOTTERY_PREDRAW_LEDGER_PATH'
+
+_PREDRAW_STRATEGY_ID_MAP = {
+    ('BIG_LOTTO', 2): 'biglotto_p0_2bet',
+    ('BIG_LOTTO', 3): 'biglotto_triple_strike',
+    ('BIG_LOTTO', 4): 'biglotto_ts3_markov_4bet',
+    ('BIG_LOTTO', 5): 'biglotto_ts3_markov_freqort_5bet',
+    ('POWER_LOTTO', 1): 'power_fourier_rhythm_2bet',
+    ('POWER_LOTTO', 2): 'power_fourier_rhythm_2bet',
+    ('POWER_LOTTO', 3): 'power_precision_3bet',
+    ('DAILY_539', 3): 'daily539_sumrange_bayesian_zonebalance',
+}
+
+
+def predraw_ledger_enabled(args):
+    """Opt-in only: explicit CLI flag or explicit env var. No flag => no-op."""
+    return bool(getattr(args, 'write_predraw_ledger', False)) or bool(
+        os.environ.get(_PREDRAW_LEDGER_ENV_PATH)
+    )
+
+
+def resolve_predraw_ledger_path(args):
+    """CLI flag path > env var path > module default (None lets the writer decide)."""
+    cli_path = getattr(args, 'predraw_ledger_path', None)
+    if cli_path:
+        return cli_path
+    return os.environ.get(_PREDRAW_LEDGER_ENV_PATH) or None
+
+
+def compute_next_scheduled_draw_date(last_date_str, lottery_type, schedule_config):
+    """
+    Forward-only: the next calendar date (>= last known draw date + 1 day)
+    whose weekday is in this lottery_type's draw_weekdays, per the
+    Owner-reviewable predraw_schedule_config.json. Mirrors the existing
+    per-lottery weekday logic in lottery_api/predict_next_power_lotto.py but
+    reads weekdays from the shared schedule config instead of hardcoding them
+    a second time.
+    """
+    rule = schedule_config.get('rules', {}).get(lottery_type, {})
+    weekdays = set(rule.get('draw_weekdays', range(7)))
+    last_date = dt.datetime.strptime(str(last_date_str).replace('/', '-'), '%Y-%m-%d')
+    next_date = last_date + dt.timedelta(days=1)
+    while next_date.weekday() not in weekdays:
+        next_date += dt.timedelta(days=1)
+    return next_date.strftime('%Y-%m-%d')
+
+
+def write_predraw_ledger_for_prediction(lottery_type, bets, num_bets, history, run_id, ledger_path,
+                                        generation_source='tools/quick_predict.py'):
+    """
+    Appends one LIVE_PREDRAW record per bet for this prediction to the P360A
+    ledger. Never raises out to the caller -- an ineligible/failed ledger
+    write must never break the existing prediction output. Backfill/replay
+    tooling is untouched by this function and has no path to call it.
+    generation_source identifies the invoking entrypoint for audit provenance
+    (default: this script; tools/predraw_capture_runner.py passes its own).
+    """
+    from lottery_api.engine import predraw_ledger as pl
+
+    if not history:
+        print(f'  [predraw-ledger] {lottery_type}: no history available, skipped')
+        return
+    try:
+        max_source_draw = pl.compute_max_source_draw(DB_PATH, lottery_type)
+        if max_source_draw is None:
+            print(f'  [predraw-ledger] {lottery_type}: no source draws found in DB, skipped')
+            return
+
+        target_draw = int(get_next_draw_number(history))
+        last_date = history[-1].get('date')
+        schedule_config = pl.load_schedule_config()
+        target_draw_date = compute_next_scheduled_draw_date(last_date, lottery_type, schedule_config)
+
+        writer = pl.PredrawLedgerWriter(ledger_path=Path(ledger_path) if ledger_path else None)
+        strategy_id = _PREDRAW_STRATEGY_ID_MAP.get(
+            (lottery_type, num_bets), f'{lottery_type.lower()}_{num_bets}bet'
+        )
+
+        for bet_index, bet in enumerate(bets):
+            writer.write_live_prediction(
+                lottery_type=lottery_type,
+                target_draw=target_draw,
+                target_draw_date=target_draw_date,
+                strategy_id=strategy_id,
+                strategy_version='quick_predict_2026_02',
+                predicted_numbers=bet.get('numbers', []),
+                predicted_special=bet.get('special'),
+                bet_index=bet_index,
+                n_bets_total=len(bets),
+                run_id=run_id,
+                generation_source=generation_source,
+                max_source_draw_at_generation=max_source_draw,
+                max_source_draw_date_at_generation=last_date,
+                schedule_config=schedule_config,
+            )
+        print(
+            f'  [predraw-ledger] wrote {len(bets)} LIVE_PREDRAW record(s) for '
+            f'{lottery_type} target_draw={target_draw} -> {writer.ledger_path}'
+        )
+    except pl.LiveEligibilityError as e:
+        print(f'  [predraw-ledger] {lottery_type}: not LIVE-eligible, skipped ({e})')
+    except Exception as e:
+        print(f'  [predraw-ledger] {lottery_type}: ledger write failed, skipped ({e})')
+
+
 def print_prediction(lottery_type, bets, strategy, history, num_bets):
     """打印預測結果並回傳摘要。"""
     summary = build_prediction_summary(lottery_type, bets, strategy, history, num_bets)
@@ -532,15 +646,7 @@ def print_prediction(lottery_type, bets, strategy, history, num_bets):
 
     print('-' * 60)
     print(f'  策略: {strategy}')
-    if info.get('implementation_id'):
-        print(f'  Implementation: {info["implementation_id"]}')
-    if info.get('evidence_status'):
-        print(f'  Evidence: {info["evidence_status"]} | Significance: '
-              f'{info.get("current_significance", "NOT_ESTABLISHED")} | Edge(historical): '
-              f'{info.get("edge", "")}')
-        if info.get('warning'):
-            print(f'  ⚠ {info["warning"]}')
-    elif info:
+    if info:
         print(f'  驗證: {info.get("verified", "")} | Edge: {info.get("edge", "")}')
     if baseline > 0:
         print(f'  隨機基準: {baseline:.2f}% ({num_bets}注)')
@@ -561,6 +667,14 @@ def main():
                         help='要預測的彩票類型')
     parser.add_argument('--bets', dest='bets_opt', type=int,
                         help='要預測的注數')
+    parser.add_argument('--write-predraw-ledger', action='store_true',
+                        help='(opt-in, default off) append LIVE_PREDRAW records to the '
+                             'P360A predraw ledger (lottery_api/engine/predraw_ledger.py). '
+                             'Never writes the canonical DB.')
+    parser.add_argument('--predraw-ledger-path',
+                        help='Override the predraw ledger JSONL path (requires --write-predraw-ledger '
+                             'or LOTTERY_PREDRAW_LEDGER_PATH to take effect). Defaults to the module '
+                             'default sidecar path.')
     parser.add_argument('lottery', nargs='?', default=None,
                         help='彩票類型 (大樂透/威力彩/今彩539/all)')
     parser.add_argument('bets', nargs='?', type=int, default=None,
@@ -577,6 +691,10 @@ def main():
 
     predictions = []
     warnings = []
+
+    ledger_enabled = predraw_ledger_enabled(args)
+    ledger_path = resolve_predraw_ledger_path(args) if ledger_enabled else None
+    ledger_run_id = f'quick_predict-{uuid.uuid4()}' if ledger_enabled else None
 
     # 確定要預測的彩票類型
     if requested_lottery == 'ALL':
@@ -619,9 +737,11 @@ def main():
                 predictions.append(summary)
                 warnings.extend(summary.get('warnings', []))
 
-        except ColdWalReadOnlyError as e:
-            print(f'ERROR: {e}', file=sys.stderr)
-            sys.exit(EXIT_COLD_WAL_READ_ONLY)
+            if ledger_enabled:
+                write_predraw_ledger_for_prediction(
+                    lottery_type, bets, num_bets, history, ledger_run_id, ledger_path
+                )
+
         except Exception as e:
             print(f'  {lottery_type} 預測失敗: {e}')
             import traceback

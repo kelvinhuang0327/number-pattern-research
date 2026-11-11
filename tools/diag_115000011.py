@@ -8,7 +8,7 @@ import numpy as np
 from collections import Counter
 from typing import List, Dict
 
-project_root = "/Users/kelvin/Kelvin-WorkSpace/LotteryNew"
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
 sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
@@ -26,7 +26,7 @@ from tools.advanced_methods_benchmark import (
 )
 
 def load_history_up_to(lottery_type: str, target_draw: str) -> List[Dict]:
-    db_path = os.path.join(project_root, 'lottery_api/data/lottery_v2.db')
+    db_path = os.path.join(project_root, 'data/legacy-source/LotteryNew/lottery_api/data/lottery_v2.db')
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("""
@@ -50,7 +50,7 @@ def load_history_up_to(lottery_type: str, target_draw: str) -> List[Dict]:
     return history
 
 def get_actual_draw(lottery_type: str, target_draw: str) -> Dict:
-    db_path = os.path.join(project_root, 'lottery_api/data/lottery_v2.db')
+    db_path = os.path.join(project_root, 'data/legacy-source/LotteryNew/lottery_api/data/lottery_v2.db')
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("""

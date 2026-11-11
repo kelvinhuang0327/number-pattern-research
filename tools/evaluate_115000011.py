@@ -14,7 +14,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 # ====== CONFIGURATION ======
-DB_PATH = Path("/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/data/lottery_v2.db")
+DB_PATH = Path(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "legacy-source", "LotteryNew", "lottery_api", "data", "lottery_v2.db")))
 ACTUAL_NUMBERS = {7, 22, 28, 34, 36, 37}
 ACTUAL_SPECIAL = 7
 ACTUAL_DRAW = '115000011'

@@ -1,0 +1,38 @@
+================================================================================
+STATISTICAL SIGNIFICANCE VALIDATION TEST REPORT
+Strategy: BIGLOTTO_MULTISCALE_TEMPORAL_PROFILE_CLUSTER_MULTI_TICKET_CANDIDATE_BATCH_R1
+Universe: 1500 Causal Draws (20-Ticket Portfolio)
+Execution Date: 2026-08-23 19:08:46
+================================================================================
+
+1. OBSERVED METRICS:
+--------------------------------------------------------------------------------
+Observed M3+ Hits:               330 / 1500
+Observed M3+ Empirical Rate:     0.220000
+Combinatorial Random Baseline:   0.335364
+Empirical Absolute Edge:         -0.115364
+Empirical Relative Edge:         -34.40%
+
+2. MONTE CARLO PERMUTATION TEST (1,000 REPLICATES UNDER EXCHANGEABLE NULL):
+--------------------------------------------------------------------------------
+Null Distribution Mean Rate:     0.218155
+Null Distribution Std Dev:       0.010200
+Permutation Test p-value:        0.439000
+Permutation Test Result:         FAILED_SIGNIFICANCE (p >= 0.05)
+
+3. 5-FOLD WALK-FORWARD CROSS-VALIDATION:
+--------------------------------------------------------------------------------
+Fold 1 (Draws 1-300):            Rate = 0.2567 | Edge = -0.0787
+Fold 2 (Draws 301-600):          Rate = 0.1867 | Edge = -0.1487
+Fold 3 (Draws 601-900):          Rate = 0.1967 | Edge = -0.1387
+Fold 4 (Draws 901-1200):         Rate = 0.2133 | Edge = -0.1220
+Fold 5 (Draws 1201-1500):        Rate = 0.2467 | Edge = -0.0887
+Fold Mean Edge:                  -0.115364
+Fold Edge Std Dev:               0.027406
+Stability Score (Consistency):   0.7625
+
+4. VALIDATION GATE DECISION:
+--------------------------------------------------------------------------------
+Validation Status:               REJECTED
+Rejection / Advance Gate:        REJECTED_INSUFFICIENT_EDGE_UNDER_NULL
+================================================================================

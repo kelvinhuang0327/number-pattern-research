@@ -1,0 +1,45 @@
+{
+  "artifacts": [
+    {
+      "captureMethod": "working-tree bytes; not tracked in source Git",
+      "sha256": "beabba2b42f9bc759157e64901311d527e899f0c2973adf74d80c23dac2b1b6b",
+      "sizeBytes": 99368960,
+      "sourceCommit": "453bfe2648aba75fcd446614546e8e4a429bf6c8",
+      "sourcePath": "lottery_api/data/lottery_v2.db",
+      "sourceRepository": "LotteryNew",
+      "sqlite": {
+        "copiedAsRawBytes": true,
+        "journalMode": "delete",
+        "quickCheck": "ok"
+      }
+    },
+    {
+      "captureMethod": "tracked Git blob",
+      "gitBlobSha1": "b53d82e7a82944f2a14d69e76ac918e57ee41705",
+      "sha256": "9662e9025f0f2ab45a431f049966361768fcf6c61c1962b653c4f246d2db1b5c",
+      "sizeBytes": 888,
+      "sourceCommit": "453bfe2648aba75fcd446614546e8e4a429bf6c8",
+      "sourcePath": "benchmark_POWER_LOTTO_500.json",
+      "sourceRepository": "LotteryNew"
+    },
+    {
+      "captureMethod": "tracked Git blob",
+      "gitBlobSha1": "e968c7c0a2ce283e8c4c2064e6ab2217016168ec",
+      "sha256": "ddf9a55b5d8781f33955f98698ea429b0e8fd7b0f46ff4d6abb826c1f699fcfe",
+      "sizeBytes": 885,
+      "sourceCommit": "453bfe2648aba75fcd446614546e8e4a429bf6c8",
+      "sourcePath": "benchmark_BIG_LOTTO_500.json",
+      "sourceRepository": "LotteryNew"
+    },
+    {
+      "captureMethod": "tracked Git blob",
+      "gitBlobSha1": "537c26a9b2b8136e7e2fdf41b2ba4aaff9593b1a",
+      "sha256": "a0a7171b017c08e55bdf0f4b047e6e84c458ce407af9cd0ca27ef4ba2e946b14",
+      "sizeBytes": 2809,
+      "sourceCommit": "03b2fcf4de1a13ee9929afcef803d61955c9f41b",
+      "sourcePath": "00-BettingPlan/20260510/fixture_runtime_metadata_injection_registry.jsonl",
+      "sourceRepository": "Betting-pool"
+    }
+  ],
+  "schemaVersion": 1
+}

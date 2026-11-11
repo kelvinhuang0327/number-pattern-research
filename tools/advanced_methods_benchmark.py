@@ -28,7 +28,7 @@ np.random.seed(42)
 
 logging.basicConfig(level=logging.WARNING)
 
-project_root = "/Users/kelvin/Kelvin-WorkSpace/LotteryNew"
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
 sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 
@@ -37,7 +37,7 @@ sys.path.insert(0, os.path.join(project_root, 'lottery_api'))
 # =============================================================================
 
 def load_history(lottery_type: str, max_records: int = 2000) -> List[Dict]:
-    db_path = os.path.join(project_root, 'lottery_api/data/lottery_v2.db')
+    db_path = os.path.join(project_root, 'data/legacy-source/LotteryNew/lottery_api/data/lottery_v2.db')
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("""

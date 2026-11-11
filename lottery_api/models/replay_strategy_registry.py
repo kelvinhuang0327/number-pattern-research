@@ -32,11 +32,10 @@ Backward compatibility:
 from __future__ import annotations
 
 import sys
+import json
 import logging
 from pathlib import Path
-from typing import Optional, List, Tuple
-
-from . import power_lotto_second_zone
+from typing import Optional, List, Tuple, Callable
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -206,11 +205,7 @@ class ReplayStrategyAdapter:
             )
         numbers = self._call_strategy(history, lottery_type)
         validated = _validate_numbers(numbers, lottery_type, self.meta.strategy_id)
-        special = (
-            power_lotto_second_zone.second_zone_predict(history)
-            if lottery_type == "POWER_LOTTO"
-            else None
-        )
+        special = None if lottery_type in _NO_SPECIAL_TYPES else None  # always None in replay v0.1
         return validated, special
 
     def _call_strategy(self, history: List[dict], lottery_type: str) -> List[int]:
@@ -475,17 +470,9 @@ from .biglotto_zone_split_adapter import build_zone_split_adapters  # noqa: E402
 from .biglotto_social_wisdom_adapter import (  # noqa: E402
     build_social_wisdom_adapter,
 )
-from .biglotto_p0_2bet_adapter import build_p0_2bet_adapters  # noqa: E402
 
 
 _BIGLOTTO_ZONE_SPLIT_ADAPTERS = build_zone_split_adapters(
-    adapter_base=ReplayStrategyAdapter,
-    meta_type=_StrategyMeta,
-    invalid_output=InvalidOutput,
-    unsupported_lottery_type=UnsupportedLotteryType,
-)
-
-_BIGLOTTO_P0_2BET_ADAPTERS = build_p0_2bet_adapters(
     adapter_base=ReplayStrategyAdapter,
     meta_type=_StrategyMeta,
     invalid_output=InvalidOutput,
@@ -735,7 +722,6 @@ _ALL_ADAPTERS: List[ReplayStrategyAdapter] = [
     # P1.3: ts3_regime_3bet — live BIG_LOTTO production strategy (2026-05-15)
     # P1.4: adapter binding RESOLVED (SAFE_RECONSTRUCTION, 2026-05-15)
     _BigLottoTs3Regime3BetAdapter(),
-    *_BIGLOTTO_P0_2BET_ADAPTERS,
     *_BIGLOTTO_ZONE_SPLIT_ADAPTERS,
     _Daily539F4ColdAdapter(),
     _Daily539MarkovColdAdapter(),

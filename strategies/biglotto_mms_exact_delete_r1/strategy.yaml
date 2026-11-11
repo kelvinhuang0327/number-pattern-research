@@ -1,0 +1,31 @@
+# Strategy Specification: BIGLOTTO_MMS_EXACT_DELETE_MULTI_TICKET_CANDIDATE_BATCH_R1
+strategy_name: BIGLOTTO_MMS_EXACT_DELETE_MULTI_TICKET_CANDIDATE_BATCH_R1
+version: "1.0.0"
+author: "Autonomous Quant Agent"
+lottery_type: BIG_LOTTO
+mechanism_family: MULTISCALE_MARKOV_EXACT_DELETION
+description: >
+  Multiscale Markov transition space with deterministic exact-deletion filtering and low-overlap candidate portfolio generation
+
+features:
+  - name: multiscale_markov_transitions
+    windows: [50, 300, 750]
+    type: anchor_conditioned_transition_probability
+  - name: exact_deletion_filter
+    k_delete: 12
+    type: anti_resonance_pruning
+  - name: short_term_momentum
+    scales: [10, 30]
+    type: zscore_velocity
+
+parameters:
+  k_delete: 12
+  windows: [50, 300, 750]
+  max_overlap_threshold: 3
+  weights:
+    markov_transition: 0.50
+    momentum_z10: 0.30
+    readiness_z30: 0.20
+
+portfolio_sizes: [1, 5, 10, 15, 20]
+created_at: "2026-09-02T09:55:26.644222"

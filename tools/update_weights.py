@@ -1,6 +1,8 @@
+from pathlib import Path
+
 import re
 
-path = '/Users/kelvin/Kelvin-WorkSpace/LotteryNew/lottery_api/models/optimized_ensemble.py'
+path = Path(__file__).resolve().parents[1] / 'lottery_api' / 'models' / 'optimized_ensemble.py'
 with open(path, 'r', encoding='utf-8') as f:
     content = f.read()
 
